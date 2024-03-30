@@ -374,6 +374,15 @@
     padding-bottom: 22px;
   }
 
+  .stdPadding {
+    @media screen and (min-width: $screenMinWith) {
+      padding: 15px 10px 15px $fixedWidthTextStdPadding;
+    }
+    @media (max-width: $screenMinWith - 1) {
+      padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
+    }
+  }
+
   .amendmentTextModeSelector {
     float: right;
   }

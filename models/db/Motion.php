@@ -196,12 +196,13 @@ class Motion extends IMotion implements IRSSItem
         $hadNonPublicSections = false;
         $foundSectionTypes = [];
         foreach ($this->sections as $section) {
-            $foundSectionTypes[] = $section->getSettings()->id;
-
             if (!$section->getSettings()) {
                 // Internal problem - maybe an accidentally deleted motion type
                 continue;
             }
+
+            $foundSectionTypes[] = $section->getSettings()->id;
+
             if ($filterType !== null && $section->getSettings()->type !== $filterType) {
                 continue;
             }

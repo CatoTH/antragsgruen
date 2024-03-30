@@ -195,6 +195,10 @@ button.link {
   margin: -10px 20px 20px 20px;
 }
 
+.saveRow {
+  text-align: center;
+}
+
 .stdSortingWidget {
   .list-group-item {
     cursor: move;
@@ -209,7 +213,6 @@ button.link {
   }
   .saveRow {
     margin-top: 20px;
-    text-align: center;
   }
 }
 
