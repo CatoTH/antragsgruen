@@ -1,53 +1,74 @@
 import { AntragsgruenEditor } from '../shared/AntragsgruenEditor';
 
 export class EditorialEdit {
-    private $editCaller: JQuery;
-    private $textHolder: JQuery;
-    private $saveRow: JQuery;
+    private readonly editCaller: HTMLDivElement;
+    private readonly textHolder: HTMLDivElement;
+    private readonly metadataView: HTMLDivElement;
+    private readonly metadataEdit: HTMLDivElement;
+    private readonly saveRow: HTMLDivElement;
     private editor: AntragsgruenEditor;
 
-    constructor(private $form: JQuery) {
-        $form.on("submit", e => e.preventDefault()); // necessary for IE11
-        this.$saveRow = this.$form.find('.saveRow');
-        this.$textHolder = this.$form.find('.textHolder');
-        this.$editCaller = this.$form.find('.editCaller');
+    constructor(_, private form: HTMLFormElement) {
+        this.form.addEventListener('submit', e => e.preventDefault()); // necessary for IE11
 
-        this.$editCaller.on("click", this.editCalled.bind(this));
-        this.$saveRow.addClass('hidden');
-        this.$saveRow.find('button').on("click", this.save.bind(this));
+        this.saveRow = this.form.querySelector('.saveRow');
+        this.textHolder = this.form.querySelector('.textHolder');
+        this.editCaller = this.form.querySelector('.editCaller');
+        this.metadataEdit = this.form.querySelector('.metadataEdit');
+        this.metadataView = this.form.querySelector('.metadataView');
+
+        this.editCaller.addEventListener('click', this.editCalled.bind(this));
+        this.saveRow.querySelector('button').addEventListener('click', this.save.bind(this));
     }
 
     private editCalled(ev) {
         ev.preventDefault();
-        this.$editCaller.addClass('hidden');
-        this.$textHolder.attr('contenteditable', "true");
+        this.textHolder.setAttribute('contenteditable', "true");
+        this.editor = new AntragsgruenEditor(this.textHolder.getAttribute("id"));
+        this.textHolder.focus();
 
-        this.editor = new AntragsgruenEditor(this.$textHolder.attr("id"));
-
-        this.$textHolder.trigger("focus");
-        this.$saveRow.removeClass('hidden');
+        this.editCaller.classList.add('hidden');
+        this.saveRow.classList.remove('hidden');
+        this.metadataView.classList.add('hidden');
+        this.metadataEdit.classList.remove('hidden');
     }
 
     private async save(ev) {
         ev.preventDefault();
-        let data = {
+        let postData = {
             'data': this.editor.getEditor().getData(),
-            '_csrf': this.$form.find('> input[name=_csrf]').val()
+            'author': (this.metadataEdit.querySelector('.author') as HTMLInputElement).value,
+            'updateDate': ((this.metadataEdit.querySelector('.updateDate') as HTMLInputElement).checked ? 1 : 0),
         };
+        const csrf = (this.form.querySelector('input[name=_csrf]') as HTMLInputElement).value;
 
-        $.post(this.$form.attr('action'), data, (ret) => {
-            if (ret['success']) {
-                window.setTimeout(() => {
-                    this.editor.getEditor().destroy();
-                }, 100);
-                this.$saveRow.addClass('hidden');
-                this.$textHolder.attr('contenteditable', 'false');
-                this.$editCaller.removeClass('hidden');
+        $.ajax({
+            url: this.form.getAttribute('action'),
+            type: "POST",
+            data: JSON.stringify(postData),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            headers: {"X-CSRF-Token": csrf},
+            success: ret => {
+                if (ret['success']) {
+                    window.setTimeout(() => {
+                        AntragsgruenEditor.destroyInstanceById(this.textHolder.getAttribute("id"));
+                    }, 100);
+                    this.saveRow.classList.add('hidden');
+                    this.textHolder.setAttribute('contenteditable', 'false');
+                    this.editCaller.classList.remove('hidden');
+                    this.metadataEdit.classList.add('hidden');
+                    this.metadataView.classList.remove('hidden');
 
-                this.$textHolder.html(ret['html']);
-            } else {
-                alert('Something went wrong...');
-            }
+                    this.textHolder.innerHTML = ret['html'];
+                    this.metadataView.innerHTML = ret['metadataFormatted'];
+                } else {
+                    alert('Something went wrong...');
+                }
+            },
+        }).catch(function (err) {
+            alert(err.responseText);
         })
     }
 }

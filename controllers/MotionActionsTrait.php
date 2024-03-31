@@ -6,6 +6,7 @@ use app\models\consultationLog\ProposedProcedureChange;
 use app\models\forms\ProposedChangeForm;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TextEditorial;
 use app\models\http\{HtmlErrorResponse,
     HtmlResponse,
     JsonResponse,
@@ -688,13 +689,19 @@ trait MotionActionsTrait
         if (!$section) {
             return new RestApiExceptionResponse(404, 'Section not found');
         }
-        $section->dataRaw = $this->getPostValue('data');
-        $section->setData(HTMLTools::cleanSimpleHtml($section->dataRaw, []));
+        /** @var TextEditorial $sectionType */
+        $sectionType = $section->getSectionType();
+        $sectionType->setEditorialData(
+            $this->getPostValue('data'),
+            $this->getPostValue('author'),
+            $this->getPostValue('updateDate') ? new \DateTime() : $sectionType->getSectionMetadata()['lastUpdate']
+        );
         $section->save();
 
         return new JsonResponse([
             'success' => true,
             'html' => $section->getData(),
+            'metadataFormatted' => $sectionType->getFormattedSectionMetadata(),
         ]);
     }
 }

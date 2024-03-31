@@ -909,10 +909,38 @@ iframe.pdfViewer {
   .editCaller {
     float: right;
     font-weight: normal;
-    margin-top: -10px;
   }
   .textHolder {
     clear: both;
+  }
+  .toolbarBelowTitle {
+    margin-top: -22px; // Cancel margin from header
+  }
+  .editorialHeader {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: 47px;
+    overflow: auto;
+  }
+  .metadataView {
+    vertical-align: middle;
+    font-style: italic;
+  }
+  .metadataEdit {
+    display: flex;
+    width: 100%;
+    label > * {
+      display: inline-block;
+      width: auto;
+    }
+    label {
+      margin: 0;
+      flex-grow: 1;
+      font-weight: normal;
+    }
+    label:last-child {
+      text-align: right;
+    }
   }
 }
 

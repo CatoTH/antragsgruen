@@ -6,7 +6,7 @@ export class LineNumberHighlighting {
         window.addEventListener('keypress', (ev) => {
             if (!panelIsOpen && ev.charCode >= 48 && ev.charCode <= 57) {
                 let $target = $(ev.target);
-                if ($target.is('input, textarea, div.texteditor') || $target.parents('input, textarea, div.texteditor').length > 0) {
+                if ($target.is('input, textarea, div.texteditor, .cke_editable') || $target.parents('input, textarea, div.texteditor, .cke_editable').length > 0) {
                     // Typing in an input field, like comments
                     return;
                 }

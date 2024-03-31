@@ -133,7 +133,7 @@ class MotionEditForm
             if (isset($values['sections'][$section->sectionId])) {
                 $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
             }
-            if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
+            if (isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->sectionId])) {
                     $data = [];
                     foreach ($files['sections'] as $key => $vals) {

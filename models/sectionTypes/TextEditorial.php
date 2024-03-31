@@ -19,6 +19,36 @@ use CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class TextEditorial extends TextSimpleCommon
 {
+    /**
+     * @return array{author: string|null, lastUpdate: \DateTime|null}
+     */
+    public function getSectionMetadata(): array
+    {
+        if ($this->section->metadata === null || $this->section->metadata === '') {
+            return ['author' => null, 'lastUpdate' => null];
+        }
+        $data = json_decode($this->section->metadata, true);
+        $author = (isset($data['autor']) ? (string)$data['autor'] : null);
+        if (isset($data['lastUpdate'])) {
+            $lastUpdate = \DateTime::createFromFormat('Y-m-d H:i:s', $data['lastUpdate']);
+            if (!$lastUpdate) {
+                $lastUpdate = null;
+            }
+        } else {
+            $lastUpdate = null;
+        }
+
+        return ['author' => $author, 'lastUpdate' => $lastUpdate];
+    }
+
+    private function setSectionMetadata(?string $author, ?\DateTimeInterface $lastUpdate): void
+    {
+        $data = ($this->section->metadata ? json_decode($this->section->metadata, true) : []);
+        $data['autor'] = $author;
+        $data['lastUpdate'] = $lastUpdate?->format('Y-m-d H:i:s');
+        $this->section->metadata = json_encode($data, JSON_THROW_ON_ERROR);
+    }
+
     public function showIfEmpty(): bool
     {
         if (is_a($this->section, AmendmentSection::class)) {
@@ -45,6 +75,19 @@ class TextEditorial extends TextSimpleCommon
         );
     }
 
+    public function getFormattedSectionMetadata(): string
+    {
+        $metadata = $this->getSectionMetadata();
+        $data = [];
+        if ($metadata['author']) {
+            $data[] = Html::encode($metadata['author']);
+        }
+        if ($metadata['lastUpdate']) {
+            $data[] = Html::encode(\app\components\Tools::formatMysqlDateTime($metadata['lastUpdate']->format('Y-m-d H:i:s')));
+        }
+        return implode(', ', $data);
+    }
+
     public function getMotionFormField(): string
     {
         return $this->getTextMotionFormField(false, false);
@@ -59,6 +102,12 @@ class TextEditorial extends TextSimpleCommon
     {
         $this->section->dataRaw = $data;
         $this->section->setData(HTMLTools::cleanSimpleHtml($data, []));
+    }
+
+    public function setEditorialData(string $data, ?string $author, ?\DateTimeInterface $lastUpdate): void
+    {
+        $this->setMotionData($data);
+        $this->setSectionMetadata($author, $lastUpdate);
     }
 
     public function deleteMotionData(): void

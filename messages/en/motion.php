@@ -180,6 +180,8 @@ return [
     'pdf_delete'                => 'Delete PDF',
     'pdf_current'               => 'Current PDF',
     'editorial_edit'            => 'Edit %TYPE%',
+    'editorial_author'          => 'Author',
+    'editorial_update_date'     => 'Set date to now',
     'image_current'             => 'Current image',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
