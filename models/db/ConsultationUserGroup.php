@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
-use app\models\settings\{AntragsgruenApp, Site as SiteSettings, UserGroupPermissions};
+use app\models\settings\{AntragsgruenApp, Privileges, Site as SiteSettings, UserGroupPermissions};
 use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
@@ -28,6 +28,7 @@ class ConsultationUserGroup extends ActiveRecord
     public const TEMPLATE_CONSULTATION_ADMIN = 2;
     public const TEMPLATE_PROPOSED_PROCEDURE = 3;
     public const TEMPLATE_PARTICIPANT = 4;
+    public const TEMPLATE_PROGRESS = 5;
 
     public static function tableName(): string
     {
@@ -182,10 +183,11 @@ class ConsultationUserGroup extends ActiveRecord
     public function getNormalizedTitle(): string
     {
         return match ($this->templateId) {
-            static::TEMPLATE_SITE_ADMIN => \Yii::t('user', 'group_template_siteadmin'),
-            static::TEMPLATE_CONSULTATION_ADMIN => \Yii::t('user', 'group_template_consultationadmin'),
-            static::TEMPLATE_PROPOSED_PROCEDURE => \Yii::t('user', 'group_template_proposed'),
-            static::TEMPLATE_PARTICIPANT => \Yii::t('user', 'group_template_participant'),
+            self::TEMPLATE_SITE_ADMIN => \Yii::t('user', 'group_template_siteadmin'),
+            self::TEMPLATE_CONSULTATION_ADMIN => \Yii::t('user', 'group_template_consultationadmin'),
+            self::TEMPLATE_PROPOSED_PROCEDURE => \Yii::t('user', 'group_template_proposed'),
+            self::TEMPLATE_PROGRESS => \Yii::t('user', 'group_template_progress'),
+            self::TEMPLATE_PARTICIPANT => \Yii::t('user', 'group_template_participant'),
             default => $this->title,
         };
     }
@@ -193,10 +195,11 @@ class ConsultationUserGroup extends ActiveRecord
     public function getNormalizedDescription(): ?string
     {
         return match ($this->templateId) {
-            static::TEMPLATE_SITE_ADMIN => \Yii::t('user', 'group_template_siteadmin_h'),
-            static::TEMPLATE_CONSULTATION_ADMIN => \Yii::t('user', 'group_template_consultationadmin_h'),
-            static::TEMPLATE_PROPOSED_PROCEDURE => \Yii::t('user', 'group_template_proposed_h'),
-            static::TEMPLATE_PARTICIPANT => \Yii::t('user', 'group_template_participant_h'),
+            self::TEMPLATE_SITE_ADMIN => \Yii::t('user', 'group_template_siteadmin_h'),
+            self::TEMPLATE_CONSULTATION_ADMIN => \Yii::t('user', 'group_template_consultationadmin_h'),
+            self::TEMPLATE_PROPOSED_PROCEDURE => \Yii::t('user', 'group_template_proposed_h'),
+            self::TEMPLATE_PROGRESS => \Yii::t('user', 'group_template_progress_h'),
+            self::TEMPLATE_PARTICIPANT => \Yii::t('user', 'group_template_participant_h'),
             default => null,
         };
     }
@@ -305,7 +308,7 @@ class ConsultationUserGroup extends ActiveRecord
         $group->siteId = $site->id;
         $group->consultationId = null;
         $group->externalId = null;
-        $group->templateId = static::TEMPLATE_SITE_ADMIN;
+        $group->templateId = self::TEMPLATE_SITE_ADMIN;
         $group->title = \Yii::t('user', 'group_template_siteadmin');
         $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(UserGroupPermissions::PERMISSION_ADMIN_ALL, true));
         $group->selectable = 1;
@@ -320,7 +323,7 @@ class ConsultationUserGroup extends ActiveRecord
         $group->siteId = $consultation->siteId;
         $group->consultationId = $consultation->id;
         $group->externalId = null;
-        $group->templateId = static::TEMPLATE_CONSULTATION_ADMIN;
+        $group->templateId = self::TEMPLATE_CONSULTATION_ADMIN;
         $group->title = \Yii::t('user', 'group_template_consultationadmin');
         $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(UserGroupPermissions::PERMISSION_ADMIN_ALL, false));
         $group->selectable = 1;
@@ -335,9 +338,27 @@ class ConsultationUserGroup extends ActiveRecord
         $group->siteId = $consultation->siteId;
         $group->consultationId = $consultation->id;
         $group->externalId = null;
-        $group->templateId = static::TEMPLATE_PROPOSED_PROCEDURE;
+        $group->templateId = self::TEMPLATE_PROPOSED_PROCEDURE;
         $group->title = \Yii::t('user', 'group_template_proposed');
         $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(UserGroupPermissions::PERMISSION_PROPOSED_PROCEDURE, false));
+        $group->selectable = 1;
+        $group->save();
+
+        return $group;
+    }
+
+    public static function createDefaultGroupProgressReport(Consultation $consultation): self
+    {
+        $group = new ConsultationUserGroup();
+        $group->siteId = $consultation->siteId;
+        $group->consultationId = $consultation->id;
+        $group->externalId = null;
+        $group->templateId = self::TEMPLATE_PROGRESS;
+        $group->title = \Yii::t('user', 'group_template_progress');
+        $groupPrivileges = '{"privileges":[
+                {"motionTypeId":null,"agendaItemId":null,"tagId":null,"privileges":[' . Privileges::PRIVILEGE_CHANGE_EDITORIAL . ']}
+            ]}';
+        $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString($groupPrivileges, false));
         $group->selectable = 1;
         $group->save();
 
@@ -350,7 +371,7 @@ class ConsultationUserGroup extends ActiveRecord
         $group->siteId = $consultation->siteId;
         $group->consultationId = $consultation->id;
         $group->externalId = null;
-        $group->templateId = static::TEMPLATE_PARTICIPANT;
+        $group->templateId = self::TEMPLATE_PARTICIPANT;
         $group->title = \Yii::t('user', 'group_template_participant');
         $group->setGroupPermissions(UserGroupPermissions::fromDatabaseString(null, false));
         $group->selectable = 1;

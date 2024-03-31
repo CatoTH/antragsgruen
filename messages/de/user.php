@@ -177,6 +177,8 @@ return [
     'group_template_consultationadmin_h' => 'Kann nur diese eine Veranstaltung verwalten.',
     'group_template_proposed' => 'Antragskommission',
     'group_template_proposed_h' => 'Kann die Verfahrensvorschläge bearbeiten, aber nicht die Anträge selbst.',
+    'group_template_progress' => 'Sachstände bearbeiten',
+    'group_template_progress_h' => 'Können die Sachstände der Beschlüsse bearbeiten, aber nicht die Beschlüsse selbst.',
     'group_template_participant' => 'Teilnehmer*in',
     'group_template_participant_h' => 'Keine besonderen Berechtigungen. Nur relevant, falls der Zugriff auf diese Veranstaltung eingeschränkt ist.',
 ];

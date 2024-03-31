@@ -451,7 +451,7 @@ class Consultation extends ActiveRecord
         return $this->settingsObject;
     }
 
-    public function setSettings(?\app\models\settings\Consultation $settings)
+    public function setSettings(?\app\models\settings\Consultation $settings): void
     {
         $this->settingsObject = $settings;
         $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
@@ -490,6 +490,7 @@ class Consultation extends ActiveRecord
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupConsultationAdmin($this));
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupProposedProcedure($this));
         $this->link('userGroups', ConsultationUserGroup::createDefaultGroupParticipant($this));
+        $this->link('userGroups', ConsultationUserGroup::createDefaultGroupProgressReport($this));
 
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $plugin::createDefaultUserGroups($this);

@@ -64,7 +64,7 @@ ob_start();
                             {{ group.title }}
                         </div>
                         <div class="additional" v-if="group.description">{{ group.description }}</div>
-                        <div class="additional" v-for="formatted in formattedGroupPrivileges(group)">
+                        <div class="additional" v-if="!group.description" v-for="formatted in formattedGroupPrivileges(group)">
                             {{ formatted }}
                         </div>
                     </div>

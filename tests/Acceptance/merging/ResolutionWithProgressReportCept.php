@@ -70,18 +70,21 @@ $I->dontSee('Sachstand', 'h3');
 
 
 $I->wantTo('edit the progress report as admin');
-$I->loginAsStdAdmin();
+$I->loginAsProgressAdmin();
 $I->see('Sachstand', 'h3');
 $I->clickJS('.editorialEditForm .editCaller');
 $I->wait(0.5);
 
-$sectionId = 'section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 2) . '_content';
-$I->executeJS('CKEDITOR.instances.' . $sectionId . '.setData("<p>Famous quote</p><blockquote>So Long, and Thanks for All the Fish</blockquote>")');
+$sectionId = 'section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 2);
+$I->executeJS('CKEDITOR.instances.' . $sectionId . '_content.setData("<p>Famous quote</p><blockquote>So Long, and Thanks for All the Fish</blockquote>")');
+$I->fillField('#' . $sectionId . ' .metadataEdit input.author', 'You know who');
 $I->clickJS('.saveRow .submitBtn');
 $I->wait(0.5);
+$I->see('You know who, Heute');
 
 
 $I->wantTo('see the progress report as user');
 $I->logout();
 $I->see('So Long, and Thanks for All the Fish', 'blockquote');
+$I->see('You know who, Heute');
 $I->dontSeeElement('.editorialEditForm .editCaller');
