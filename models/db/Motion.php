@@ -194,11 +194,15 @@ class Motion extends IMotion implements IRSSItem
     {
         $sections = [];
         $hadNonPublicSections = false;
+        $foundSectionTypes = [];
         foreach ($this->sections as $section) {
             if (!$section->getSettings()) {
                 // Internal problem - maybe an accidentally deleted motion type
                 continue;
             }
+
+            $foundSectionTypes[] = $section->getSettings()->id;
+
             if ($filterType !== null && $section->getSettings()->type !== $filterType) {
                 continue;
             }
@@ -208,6 +212,15 @@ class Motion extends IMotion implements IRSSItem
             }
 
             $sections[] = $section;
+        }
+
+        foreach ($this->getTypeSections() as $typeSection) {
+            if (!in_array($typeSection->id, $foundSectionTypes) && $typeSection->requiresAutoCreationWhenMission()) {
+                $emptySection = MotionSection::createEmpty($typeSection->id, $typeSection->getSettingsObj()->public, $this->id);
+                $emptySection->save();
+
+                $sections[] = $emptySection;
+            }
         }
 
         if ($showAdminSections && $hadNonPublicSections && !$this->iAmInitiator() &&
@@ -1048,24 +1061,26 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param array<int|string, int> $sectionMapping
      * @throws FormError
      */
-    public function setMotionType(ConsultationMotionType $motionType): void
+    public function setMotionType(ConsultationMotionType $motionType, array $sectionMapping): void
     {
-        if (!$this->getMyMotionType()->isCompatibleTo($motionType)) {
-            throw new FormError('This motion cannot be changed to the type ' . $motionType->titleSingular);
-        }
-        if (count($this->getSortedSections(false)) !== count($this->getMyMotionType()->motionSections)) {
-            throw new FormError('This motion cannot be changed as it seems to be inconsistent');
+        foreach ($this->sections as $section) {
+            if (!isset($sectionMapping[$section->sectionId])) {
+                throw new FormError($motionType->titleSingular . ': no complete section mapping found. Missing: ' . $section->sectionId);
+            }
         }
 
         foreach ($this->amendments as $amendment) {
-            $amendment->setMotionType($motionType);
+            $amendment->setMotionType($motionType, $sectionMapping);
         }
 
         $mySections = $this->getSortedSections(false);
         for ($i = 0; $i < count($mySections); $i++) {
-            if (!$mySections[$i]->overrideSectionId($motionType->motionSections[$i])) {
+            /** @var ConsultationSettingsMotionSection $newSection */
+            $newSection = $motionType->getSectionById($sectionMapping[$mySections[$i]->sectionId]);
+            if (!$mySections[$i]->overrideSectionId($newSection)) {
                 $err = print_r($mySections[$i]->getErrors(), true);
                 throw new FormError('Something terrible happened while changing the motion type: ' . $err);
             }

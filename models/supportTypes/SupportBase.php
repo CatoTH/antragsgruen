@@ -92,7 +92,7 @@ abstract class SupportBase
         $this->fixSettings();
     }
 
-    protected function fixSettings()
+    protected function fixSettings(): void
     {
     }
 
@@ -350,7 +350,7 @@ abstract class SupportBase
         $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, null);
         $isForOther      = false;
         if ($othersPrivilege) {
-            $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
+            $isForOther = (!User::getCurrentUser() || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
             '@app/views/shared/create_initiator',

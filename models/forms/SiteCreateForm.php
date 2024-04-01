@@ -87,7 +87,7 @@ class SiteCreateForm extends Model
      * @param bool $safeOnly
      * @throws \app\models\exceptions\Internal
      */
-    public function setAttributes($values, $safeOnly = true)
+    public function setAttributes($values, $safeOnly = true): void
     {
         parent::setAttributes($values, $safeOnly);
 

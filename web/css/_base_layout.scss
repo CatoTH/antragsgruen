@@ -202,9 +202,8 @@ body > footer {
   }
 }
 
-.toolbarBelowTitle {
+.toolbarBelowTitle, .toolbarAtBottom {
   padding: 10px 19px;
-  border-bottom: solid 1px #aaa;
   background: #f7f7f7;
   display: table;
   margin-left: -1px;
@@ -213,10 +212,13 @@ body > footer {
   > * {
     display: table-cell;
   }
-  &:last-child {
-    border-bottom: none;
-    border-top: solid 1px #aaa;
-  }
+}
+.toolbarBelowTitle {
+  border-bottom: solid 1px #aaa;
+}
+.toolbarAtBottom {
+  border-top: solid 1px #aaa;
+
 }
 
 .motionPrevNextLinks {

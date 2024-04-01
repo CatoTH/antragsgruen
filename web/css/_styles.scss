@@ -321,6 +321,20 @@
   }
 }
 
+#supporterFullTextHolder {
+  margin-top: 30px;
+  display: flex;
+  width: 100%;
+
+  .textHolder {
+    width: 70%;
+  }
+  .btnHolder {
+    width: 30%;
+    text-align: right;
+  }
+}
+
 .supporterFormStd {
 
   .supporterData {
@@ -328,20 +342,6 @@
       float: right;
       button {
         font-weight: normal;
-      }
-    }
-
-    #fullTextHolder {
-      margin-top: 30px;
-      display: flex;
-      width: 100%;
-
-      .textHolder {
-        width: 70%;
-      }
-      .btnHolder {
-        width: 30%;
-        text-align: right;
       }
     }
   }

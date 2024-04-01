@@ -3,6 +3,7 @@ return [
     'section_title'           => 'Titel',
     'section_text'            => 'Text',
     'section_html'            => 'Text (erweitert)',
+    'section_editorial'       => 'Redaktionell bearbeitbarer Text',
     'section_image'           => 'Bild',
     'section_tabular'         => 'Tabellarische Angaben',
     'section_pdf_attachment'  => 'PDF-Anhang',
@@ -73,6 +74,7 @@ return [
     'privilege_motionusers'   => 'Antragstellende ändern',
     'privilege_motiondelete'  => 'Löschen',
     'privilege_proposals'     => 'Verfahrensvorschläge bearbeiten',
+    'privilege_progress'      => 'Redaktionelle Antragsabschnitte / Sachstände bearbeiten',
 
     'preset_bdk_name'           => 'BDK-ähnlich',
     'preset_bdk_desc'           => 'Benutzer*innen mit Grüne,-Netz-Zugang können Anträge und Änderungsanträge stellen, die zunächst von der Antragskommission auf Zulässigkeit geprüft werden. Neben der Antragsteller*in müssen 19 Unterstützer*innen angegegeb werden. Das Grüne CI ist standardmäßig voreingestellt.',
@@ -106,7 +108,6 @@ return [
     'preset_app_data'      => 'Angaben',
     'preset_app_signature' => 'Unterschrift (eingescannt)',
     'preset_app_age'       => 'Alter',
-    'preset_app_gender'    => 'Geschlecht',
     'preset_app_birthcity' => 'Geburtsort',
     'preset_app_intro'     => 'Selbstvorstellung',
     'preset_app_title_int' => 'Bewerbung: ',
@@ -123,6 +124,13 @@ return [
     'preset_statutes_call'     => 'Satzungsänderungsantrag',
     'preset_statutes_title'    => 'Titel',
     'preset_statutes_text'     => 'Satzungstext',
+
+    'preset_progress_singular' => 'Sachstandsbericht',
+    'preset_progress_plural'   => 'Sachstandsberichte',
+    'preset_progress_call'     => 'Sachstandsbericht',
+    'preset_progress_title'    => 'Titel',
+    'preset_progress_text'     => 'Beschlusstext',
+    'preset_progress_report'   => 'Sachstand',
 
     'role_initiator' => 'Initiator*in',
     'role_supporter' => 'Unterstützer*in',

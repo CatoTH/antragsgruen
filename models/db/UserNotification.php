@@ -73,15 +73,13 @@ class UserNotification extends ActiveRecord
             $settings = json_decode($this->settings, true);
         }
         $settings[$key] = $value;
-        $this->settings = json_encode($settings);
+        $this->settings = json_encode($settings, JSON_THROW_ON_ERROR);
     }
 
     /**
-     * @param Consultation $consultation
-     * @param null|int $notiType
      * @return UserNotification[]
      */
-    public static function getConsultationNotifications(Consultation $consultation, $notiType = null)
+    public static function getConsultationNotifications(Consultation $consultation, ?int $notiType = null): array
     {
         if ($notiType) {
             $notifications = [];
@@ -97,11 +95,9 @@ class UserNotification extends ActiveRecord
     }
 
     /**
-     * @param User $user
-     * @param Consultation $consultation
      * @return static[]
      */
-    public static function getUserConsultationNotis(User $user, Consultation $consultation)
+    public static function getUserConsultationNotis(User $user, Consultation $consultation): array
     {
         return static::findAll([
             'userId'         => $user->id,
@@ -112,11 +108,7 @@ class UserNotification extends ActiveRecord
     /** @var UserNotification[] */
     protected static array $noticache = [];
 
-    /**
-     * @param int $type
-     * @param int|null $refId
-     */
-    public static function getNotification(User $user, Consultation $consultation, $type, $refId = null): ?UserNotification
+    public static function getNotification(User $user, Consultation $consultation, int $type, ?int $refId = null): ?UserNotification
     {
         $key = $user->id . '-' . $consultation->id . '-' . $type . '-' . $refId;
         if (!array_key_exists($key, static::$noticache)) {
@@ -130,10 +122,7 @@ class UserNotification extends ActiveRecord
         return static::$noticache[$key];
     }
 
-    /**
-     * @param int|null $refId
-     */
-    public static function addNotification(User $user, Consultation $consultation, $type, $refId = null): UserNotification
+    public static function addNotification(User $user, Consultation $consultation, int $type, ?int $refId = null): UserNotification
     {
         $noti = static::getNotification($user, $consultation, $type, $refId);
         if (!$noti) {
@@ -150,10 +139,7 @@ class UserNotification extends ActiveRecord
         return $noti;
     }
 
-    /**
-     * @param int $commentSetting
-     */
-    public static function addCommentNotification(User $user, Consultation $consultation, $commentSetting): void
+    public static function addCommentNotification(User $user, Consultation $consultation, int $commentSetting): void
     {
         if (!in_array($commentSetting, static::COMMENT_SETTINGS)) {
             return;
@@ -163,11 +149,7 @@ class UserNotification extends ActiveRecord
         $noti->save();
     }
 
-    /**
-     * @param int $type
-     * @param int|null $refId
-     */
-    public static function removeNotification(User $user, Consultation $consultation, $type, $refId = null): void
+    public static function removeNotification(User $user, Consultation $consultation, int $type, ?int $refId = null): void
     {
         $noti = static::getNotification($user, $consultation, $type, $refId);
         if ($noti) {

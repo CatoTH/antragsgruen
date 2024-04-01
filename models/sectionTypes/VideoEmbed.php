@@ -72,6 +72,9 @@ class VideoEmbed extends ISectionType
         return $this->getMotionFormField();
     }
 
+    /**
+     * @param string $data
+     */
     public function setMotionData($data): void
     {
         $this->section->setData($data);
@@ -84,8 +87,7 @@ class VideoEmbed extends ISectionType
     }
 
     /**
-     * @param array $data
-     * @throws FormError
+     * @param string $data
      */
     public function setAmendmentData($data): void
     {
@@ -126,11 +128,15 @@ class VideoEmbed extends ISectionType
         return ($this->section->getData() === '');
     }
 
-    public function isFileUploadType(): bool
+    public function showIfEmpty(): bool
     {
         return false;
     }
 
+    public function isFileUploadType(): bool
+    {
+        return false;
+    }
 
     public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {

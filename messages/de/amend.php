@@ -125,6 +125,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_new_substatus'               => 'Neuer Antragsstatus',
     'merge_new_orga'                    => 'Beschlussfassendes Gremium',
     'merge_new_resolution_date'         => 'Beschlussdatum',
+    'merge_new_motion_type'             => 'Antragstyp des Beschlusses',
     'merge_new_votes_enter'             => 'Abstimmung',
     'merge_new_votes_yes'               => '„Ja”-Stimmen',
     'merge_new_votes_no'                => '„Nein”-Stimmen',

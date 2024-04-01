@@ -14,7 +14,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $consultation = UrlHelper::getCurrentConsultation();
-$site         = ($consultation ? $consultation->site : null);
+$site         = $consultation?->site;
 $pageData     = ConsultationText::getPageData($site, $consultation, $pageKey);
 $saveUrl      = $pageData->getSaveUrl();
 
@@ -61,22 +61,16 @@ if ($admin) {
 
     if (!in_array($pageData->textId, array_keys(ConsultationText::getDefaultPages()))) {
         ?>
-        <section class="contentSettingsToolbar toolbarBelowTitle row form-inline hidden">
-            <div class="col-md-4 textfield">
-                <div class="form-group">
-                    <label for="contentUrl"><?= Yii::t('pages', 'settings_url') ?>:</label>
-                    <input type="text" class="form-control" name="url" value="<?= Html::encode($pageData->textId) ?>"
-                           required id="contentUrl">
-                </div>
+        <section class="contentSettingsToolbar toolbarBelowTitle hidden">
+            <div class="textfield">
+                <label for="contentUrl"><?= Yii::t('pages', 'settings_url') ?>:</label>
+                <input type="text" class="form-control" name="url" value="<?= Html::encode($pageData->textId) ?>" required id="contentUrl">
             </div>
-            <div class="col-md-4 textfield">
-                <div class="form-group">
-                    <label for="contentTitle"><?= Yii::t('pages', 'settings_title') ?>:</label>
-                    <input type="text" class="form-control" name="title" value="<?= Html::encode($pageData->title) ?>"
-                           required id="contentTitle" maxlength="30">
-                </div>
+            <div class="textfield">
+                <label for="contentTitle"><?= Yii::t('pages', 'settings_title') ?>:</label>
+                <input type="text" class="form-control" name="title" value="<?= Html::encode($pageData->title) ?>" required id="contentTitle" maxlength="30">
             </div>
-            <div class="col-md-4 options">
+            <div class="options">
                 <label>
                     <?= Html::checkbox('allConsultations', ($pageData->consultationId === null)) ?>
                     <?= Yii::t('pages', 'settings_allcons') ?>

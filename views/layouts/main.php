@@ -13,7 +13,9 @@ $layout = $controller->layoutParams;
 $params = \app\models\settings\AntragsgruenApp::getInstance();
 
 $layout->registerPluginAssets($this, $controller);
-if (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
+if ($layout->mainCssFile === null) {
+    $mainCssFile = $layout->resourceUrl('css/layout-classic.css');
+} elseif (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
     $mainCssHash = str_replace('layout-custom', '', $layout->mainCssFile);
     $mainCssFile = \app\components\UrlHelper::createUrl(['/pages/css', 'hash' => $mainCssHash]);
 } elseif (str_starts_with($layout->mainCssFile, 'layout-plugin-')) {

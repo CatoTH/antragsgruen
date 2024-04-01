@@ -81,13 +81,13 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
         <?= Yii::t('admin', 'motion_edit_supporters_add') ?>
     </button>
 
-    <div class="form-group hidden" id="fullTextHolder">
-        <div class="col-md-9">
+    <div class="hidden" id="supporterFullTextHolder">
+        <div class="textHolder">
             <label for="fullTextHolderTextarea" class="sr-only"><?= Html::encode(Yii::t('initiator', 'fullTextSyntax')) ?></label>
             <textarea class="form-control" placeholder="<?= Html::encode(Yii::t('initiator', 'fullTextSyntax')) ?>"
                       id="fullTextHolderTextarea" rows="10"></textarea>
         </div>
-        <div class="col-md-3">
+        <div class="btnHolder">
             <button type="button" class="btn btn-success fullTextAdd">
                 <span class="glyphicon glyphicon-plus"></span>
                 <?= Yii::t('initiator', 'fullTextAdd') ?>

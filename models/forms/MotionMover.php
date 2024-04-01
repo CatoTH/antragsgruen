@@ -50,7 +50,7 @@ class MotionMover
     {
         $types = [];
         foreach ($consultation->motionTypes as $motionType) {
-            if ($this->motion->motionType->isCompatibleTo($motionType)) {
+            if ($this->motion->getMyMotionType()->isCompatibleTo($motionType, [])) {
                 $types[] = $motionType;
             }
         }
@@ -158,7 +158,7 @@ class MotionMover
         return $newMotion;
     }
 
-    private function moveToAgendaItem(ConsultationAgendaItem $agendaItem, $titlePrefix): Motion
+    private function moveToAgendaItem(ConsultationAgendaItem $agendaItem, string $titlePrefix): Motion
     {
         $this->motion->agendaItemId = $agendaItem->id;
         $this->motion->titlePrefix  = $titlePrefix;
@@ -182,12 +182,14 @@ class MotionMover
 
     private function moveToConsultation(ConsultationMotionType $motionType, string $titlePrefix): Motion
     {
-        $oldConsultation              = $this->motion->getMyConsultation();
-        $newConsultation              = $motionType->getConsultation();
+        $oldConsultation = $this->motion->getMyConsultation();
+        $newConsultation = $motionType->getConsultation();
+        $sectionMapping  = MotionDeepCopy::getMotionSectionMapping($this->motion->getMyMotionType(), $motionType, []);
+
         $this->motion->agendaItemId   = null;
         $this->motion->titlePrefix    = $titlePrefix;
         $this->motion->consultationId = $newConsultation->id;
-        $this->motion->setMotionType($motionType);
+        $this->motion->setMotionType($motionType, $sectionMapping);
 
         $oldConsultation->flushMotionCache();
         $newConsultation->flushMotionCache();

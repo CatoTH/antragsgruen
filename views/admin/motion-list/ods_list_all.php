@@ -37,12 +37,12 @@ $COL_LINK      = $currCol++;
 
 $colLimit = $currCol;
 
-$doc->setCell(0, $COL_PREFIX, Spreadsheet::TYPE_HTML, 'Kürzel');
-$doc->setCell(0, $COL_TITLE, Spreadsheet::TYPE_HTML, 'Titel');
-$doc->setCell(0, $COL_INITIATOR, Spreadsheet::TYPE_HTML, 'Antragsteller*in');
-$doc->setCell(0, $COL_EMAIL, Spreadsheet::TYPE_HTML, 'Email-Adresse');
-$doc->setCell(0, $COL_PHONE, Spreadsheet::TYPE_HTML, 'Telefonnummer');
-$doc->setCell(0, $COL_LINK, Spreadsheet::TYPE_HTML, 'Antrag');
+$doc->setCell(0, $COL_PREFIX, Spreadsheet::TYPE_HTML, Yii::t('export', 'prefix_short'));
+$doc->setCell(0, $COL_TITLE, Spreadsheet::TYPE_HTML, Yii::t('export', 'title'));
+$doc->setCell(0, $COL_INITIATOR, Spreadsheet::TYPE_HTML, Yii::t('export', 'InitiatorSingle'));
+$doc->setCell(0, $COL_EMAIL, Spreadsheet::TYPE_HTML, Yii::t('export', 'email'));
+$doc->setCell(0, $COL_PHONE, Spreadsheet::TYPE_HTML, Yii::t('export', 'phone'));
+$doc->setCell(0, $COL_LINK, Spreadsheet::TYPE_HTML, Yii::t('export', 'motion'));
 
 $doc->setColumnWidth($COL_PREFIX, 2);
 $doc->setColumnWidth($COL_TITLE, 6);
@@ -96,7 +96,7 @@ foreach ($items as $item) {
             $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $name);
             $mailbody = str_replace(['%MOTION%', '%NAME%'], [$body, $firstName], Yii::t('export', 'mail_body'));
             $href     = 'mailto:' . $email . '?subject=' . $prefix . ': ' . $title . '&body=' . rawurlencode($mailbody);
-            $doc->setCell($row, $COL_EMAIL, Spreadsheet::TYPE_LINK, ['href' => $href, 'text' => $email]);
+            $doc->setCell($row, $COL_EMAIL, Spreadsheet::TYPE_LINK, ['href' => $href, 'text' => $email ?? 'e-mail']);
             if ($phone) {
                 $phoneLink = 'tel:' . StringSplitter::first(['//', ','], $phone);
                 $doc->setCell($row, $COL_PHONE, Spreadsheet::TYPE_LINK, ['href' => $phoneLink, 'text' => $phone]);

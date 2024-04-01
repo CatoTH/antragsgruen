@@ -21,6 +21,8 @@ return [
     'amendment'             => 'Amendment',
     'amendments'            => 'Amendments',
     'amendments_none'       => 'none',
+    'email'                 => 'E-mail-address',
+    'phone'                 => 'Phone number',
     'line'                  => 'Line',
     'status'                => 'Status',
     'amend_change'          => 'Change',

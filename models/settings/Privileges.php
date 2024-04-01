@@ -36,6 +36,9 @@ class Privileges
     // Editing the proposed procedure
     public const PRIVILEGE_CHANGE_PROPOSALS = 7;
 
+    // Editing the editorial texts / progress reports
+    public const PRIVILEGE_CHANGE_EDITORIAL = 14;
+
     /** @var Privileges[] */
     private static array $cachedPrivileges = [];
 
@@ -116,6 +119,12 @@ class Privileges
             self::PRIVILEGE_CHANGE_PROPOSALS => new Privilege(
                 self::PRIVILEGE_CHANGE_PROPOSALS,
                 \Yii::t('structure', 'privilege_proposals'),
+                true,
+                null
+            ),
+            self::PRIVILEGE_CHANGE_EDITORIAL => new Privilege(
+                self::PRIVILEGE_CHANGE_EDITORIAL,
+                \Yii::t('structure', 'privilege_progress'),
                 true,
                 null
             ),

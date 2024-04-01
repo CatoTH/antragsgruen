@@ -45,17 +45,17 @@ $I->click('.sidebarActions .amendmentCreate a');
 
 $I->seeElement('.supporterData');
 $I->seeElement('.fullTextAdder');
-$I->dontSeeElement('#fullTextHolder');
+$I->dontSeeElement('#supporterFullTextHolder');
 
 $I->click('.fullTextAdder button');
-$I->seeElement('#fullTextHolder');
+$I->seeElement('#supporterFullTextHolder');
 
 $supporters = [];
 for ($s = 0; $s < 19; $s++) {
     $supporters[] = 'Person '  . $s . ', KV ' . $s;
 }
-$I->fillField('#fullTextHolder textarea', implode('; ', $supporters));
-$I->click('#fullTextHolder .fullTextAdd');
+$I->fillField('#supporterFullTextHolder textarea', implode('; ', $supporters));
+$I->click('#supporterFullTextHolder .fullTextAdd');
 
 $I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->fillField('#initiatorEmail', 'test@example.org');

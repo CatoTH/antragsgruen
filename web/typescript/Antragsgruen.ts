@@ -3,21 +3,22 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
 
 (function ($: JQueryStatic) {
     const $myScriptTag = $("#antragsgruenScript");
-    let reqOne = requirejs.config({
+    const reqOne = requirejs.config({
         baseUrl: $myScriptTag.data("resource-base") + "js/build/"
     });
 
     $("[data-antragsgruen-load-class]").each(function () {
-        let loadModule = $(this).data("antragsgruen-load-class");
+        const loadModule = $(this).data("antragsgruen-load-class");
         reqOne([loadModule]);
     });
 
     $("[data-antragsgruen-widget]").each(function () {
-        let $element = $(this),
+        const $element = $(this),
+            element = this,
             loadModule = $element.data("antragsgruen-widget");
         reqOne([loadModule], function (imports) {
-            let className = loadModule.split('/');
-            new imports[className[className.length - 1]]($element);
+            const className = loadModule.split('/');
+            new imports[className[className.length - 1]]($element, element);
         });
     });
 

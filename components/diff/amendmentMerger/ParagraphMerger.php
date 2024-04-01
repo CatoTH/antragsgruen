@@ -200,9 +200,9 @@ class ParagraphMerger
                         $currCollisionIds[] = $this->paraData->words[$i]->modifiedBy;
                     }
                     if ($currGroupFirstCollision === null) {
-                        $currGroupFirstCollision = $i;
+                        $currGroupFirstCollision = (int) $i;
                     }
-                    $currGroupLastCollision = $i;
+                    $currGroupLastCollision = (int) $i;
                 }
             } else {
                 if ($currTokens !== null) {

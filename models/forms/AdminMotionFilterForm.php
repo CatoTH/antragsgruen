@@ -23,6 +23,7 @@ class AdminMotionFilterForm
     public const SORT_RESPONSIBILITY = 9;
     public const SORT_DATE = 10;
 
+    public ?int $motionType = null;
     public ?int $status = null;
     public ?string $version = null;
     public ?int $tag = null;
@@ -78,26 +79,28 @@ class AdminMotionFilterForm
         }
     }
 
+    private function getNullableIntVal(array $values, string $key): ?int
+    {
+        if (isset($values[$key])) {
+            return ($values[$key] === '' ? null : intval($values[$key]));
+        } else {
+            return null;
+        }
+    }
+
     public function setAttributes(array $values): void
     {
+        $this->motionType = $this->getNullableIntVal($values, 'motionType');
         $this->title = $values['title'] ?? null;
         $this->initiator = $values['initiator'] ?? null;
         $this->prefix = $values['prefix'] ?? null;
-        if (isset($values['status'])) {
-            $this->status = ($values['status'] === '' ? null : intval($values['status']));
-        }
+        $this->status = $this->getNullableIntVal($values, 'status');
         if (isset($values['version'])) {
             $this->version = ($values['version'] === '' ? null : $values['version']);
         }
-        if (isset($values['tag'])) {
-            $this->tag = ($values['tag'] === '' ? null : intval($values['tag']));
-        }
-        if (isset($values['responsibility'])) {
-            $this->responsibility = ($values['responsibility'] === '' ? null : intval($values['responsibility']));
-        }
-        if (isset($values['agendaItem'])) {
-            $this->agendaItem = ($values['agendaItem'] === '' ? null : intval($values['agendaItem']));
-        }
+        $this->tag = $this->getNullableIntVal($values, 'tag');
+        $this->responsibility = $this->getNullableIntVal($values, 'responsibility');
+        $this->agendaItem = $this->getNullableIntVal($values, 'agendaItem');
 
         if (isset($values['proposalStatus']) && $values['proposalStatus'] != '') {
             $this->proposalStatus = $values['proposalStatus'];
@@ -116,6 +119,7 @@ class AdminMotionFilterForm
     public function getAttributes(): array
     {
         return [
+            'motionType' => $this->motionType,
             'title' => $this->title,
             'initiator' => $this->initiator,
             'prefix' => $this->prefix,
@@ -133,7 +137,8 @@ class AdminMotionFilterForm
 
     public function isFilterSet(): bool
     {
-        return $this->title !== null ||
+        return $this->motionType !== null ||
+               $this->title !== null ||
                $this->initiator !== null ||
                $this->prefix !== null ||
                $this->status !== null ||
@@ -569,6 +574,10 @@ class AdminMotionFilterForm
         foreach ($this->allMotions as $motion) {
             $matches = true;
 
+            if ($this->motionType !== null && $motion->motionTypeId !== $this->motionType) {
+                $matches = false;
+            }
+
             if ($this->status !== null && $this->status !== '' && $motion->status !== $this->status) {
                 $matches = false;
             }
@@ -704,6 +713,10 @@ class AdminMotionFilterForm
                 $matches = false;
             }
 
+            if ($this->motionType !== null && $amend->getMyMotion()->motionTypeId !== $this->motionType) {
+                $matches = false;
+            }
+
             if ($this->status !== null && $this->status !== "" && $amend->status !== $this->status) {
                 $matches = false;
             }
@@ -795,6 +808,19 @@ class AdminMotionFilterForm
                 $versions[$versionId] = $versionName;
             }
             $str .= Html::dropDownList('Search[version]', (string)$this->version, $versions, ['class' => 'stdDropdown']);
+            $str .= '</label>';
+        }
+
+        // Motion Type
+
+        $motionTypeList = $this->getMotionTypeList();
+        if (count($motionTypeList) > 0) {
+            $str .= '<label class="filterMotionType">' . \Yii::t('admin', 'filter_motiontype') . ':<br>';
+            $types = ['' => \Yii::t('admin', 'filter_na')];
+            foreach ($motionTypeList as $typeId => $typeName) {
+                $types[$typeId] = $typeName;
+            }
+            $str .= Html::dropDownList('Search[motionType]', (string)$this->motionType, $types, ['class' => 'stdDropdown']);
             $str .= '</label>';
         }
 
@@ -903,7 +929,7 @@ class AdminMotionFilterForm
             <input id="initiatorSelect" class="typeahead form-control" type="text"
                 placeholder="' . \Yii::t('admin', 'filter_initiator_name') . '"
                 name="Search[initiator]" value="' . Html::encode($this->initiator ?: '') . '"
-                data-values="' . Html::encode(json_encode($values)) . '"></div>';
+                data-values="' . Html::encode(json_encode($values, JSON_THROW_ON_ERROR)) . '"></div>';
         $str .= '</div>';
 
 
@@ -1042,7 +1068,7 @@ class AdminMotionFilterForm
         return self::resolveTagList($tagStruct, '');
     }
 
-    public function getAgendaItemList($skipNumbers = false): array
+    public function getAgendaItemList(bool $skipNumbers = false): array
     {
         $agendaItems = [];
         foreach ($this->consultation->agendaItems as $agendaItem) {
@@ -1129,6 +1155,39 @@ class AdminMotionFilterForm
         asort($out);
 
         return $out;
+    }
+
+    private function getMotionTypeList(): array
+    {
+        $types = [];
+        $numMotions = [];
+        $numAmendments = [];
+        foreach ($this->allMotions as $motion) {
+            if (!isset($numMotions[$motion->motionTypeId])) {
+                $numMotions[$motion->motionTypeId] = 1;
+            } else {
+                $numMotions[$motion->motionTypeId]++;
+            }
+            foreach ($this->allAmendments as $amendment) {
+                if ($amendment->motionId === $motion->id) {
+                    if (!isset($numAmendments[$motion->motionTypeId])) {
+                        $numAmendments[$motion->motionTypeId] = 1;
+                    } else {
+                        $numAmendments[$motion->motionTypeId]++;
+                    }
+                }
+            }
+        }
+        foreach ($this->allMotions as $motion) {
+            if (!isset($types[$motion->motionTypeId])) {
+                $nums = $numMotions[$motion->motionTypeId];
+                if (isset($numAmendments[$motion->motionTypeId])) {
+                    $nums .= ' / ' . $numAmendments[$motion->motionTypeId];
+                }
+                $types[$motion->motionTypeId] = $motion->getMyMotionType()->titleSingular . ' (' . $nums . ')';
+            }
+        }
+        return $types;
     }
 
     public function getVersionList(): array

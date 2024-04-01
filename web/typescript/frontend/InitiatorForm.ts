@@ -42,7 +42,7 @@ export class InitiatorForm {
         this.$editforms = $widget.parents('form').first();
         this.$supporterData = $widget.find('.supporterData');
         this.$initiatorData = $widget.find('.initiatorData');
-        this.$fullTextHolder = $('#fullTextHolder');
+        this.$fullTextHolder = $('#supporterFullTextHolder');
         this.$supporterAdderRow = this.$supporterData.find('.adderRow');
 
         this.userData = $widget.data('user-data');
@@ -225,7 +225,7 @@ export class InitiatorForm {
     private fullTextAdderOpen(ev) {
         ev.preventDefault();
         $(ev.target).parent().addClass("hidden");
-        $('#fullTextHolder').removeClass("hidden");
+        $('#supporterFullTextHolder').removeClass("hidden");
     }
 
     private fullTextAdd() {

@@ -43,9 +43,9 @@ class AcceptanceTester extends Actor
     public const FIRST_FREE_CONSULTATION_ID        = 11;
     public const FIRST_FREE_VOTING_BLOCK_ID        = 3;
     public const FIRST_FREE_CONTENT_ID             = 4;
-    public const FIRST_FREE_USER_ID                = 9;
+    public const FIRST_FREE_USER_ID                = 10;
     public const FIRST_FREE_TAG_ID                 = 14;
-    public const FIRST_FREE_USERGROUP_ID           = 39;
+    public const FIRST_FREE_USERGROUP_ID           = 40;
 
     public const ABSOLUTE_URL_DOMAIN = 'test.antragsgruen.test';
     public const ABSOLUTE_URL_TEMPLATE_SITE = 'http://test.antragsgruen.test/{SUBDOMAIN}/{PATH}';
@@ -189,6 +189,11 @@ class AcceptanceTester extends Actor
     public function loginAsProposalAdmin(): self
     {
         return $this->loginWithData('proposaladmin@example.org', 'proposaladmin');
+    }
+
+    public function loginAsProgressAdmin(): self
+    {
+        return $this->loginWithData('progress@example.org', 'proposaladmin');
     }
 
     public function loginAsGlobalAdmin(): self

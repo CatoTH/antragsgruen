@@ -169,6 +169,8 @@ return [
     'group_template_consultationadmin_h' => 'All privileges to this one consultation.',
     'group_template_proposed' => 'Proposed procedure',
     'group_template_proposed_h' => 'Can edit the proposed procedure, but not the motions and amendments themselves.',
+    'group_template_progress' => 'Progress reports',
+    'group_template_progress_h' => 'Can edit progress reports of resolutions, but not the resolutions themselves.',
     'group_template_participant' => 'Participant',
     'group_template_participant_h' => 'No special privileges. Only relevant if access to this site is restricted.',
 ];

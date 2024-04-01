@@ -12,7 +12,7 @@ $I->loginAsStdUser();
 $I->click('.createMotion');
 $I->seeElement('.supporterData');
 $I->dontSeeElementInDOM('.fullTextAdder');
-$I->dontSeeElementInDOM('#fullTextHolder');
+$I->dontSeeElementInDOM('#supporterFullTextHolder');
 
 $I->wantTo('check that the field is visible for admins');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
@@ -21,13 +21,13 @@ $I->loginAsStdAdmin();
 $I->click('.createMotion');
 $I->seeElement('.supporterData');
 $I->seeElement('.fullTextAdder');
-$I->dontSeeElement('#fullTextHolder');
+$I->dontSeeElement('#supporterFullTextHolder');
 $I->click('.fullTextAdder button');
-$I->seeElement('#fullTextHolder');
+$I->seeElement('#supporterFullTextHolder');
 
 $I->wantTo('check that the function actually works');
-$I->fillField('#fullTextHolder textarea', 'Tobias Hößl, KV München; Test 2');
-$I->click('#fullTextHolder .fullTextAdd');
+$I->fillField('#supporterFullTextHolder textarea', 'Tobias Hößl, KV München; Test 2');
+$I->click('#supporterFullTextHolder .fullTextAdd');
 $name1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.name").val()');
 $orga1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.organization").val()');
 $name2 = $I->executeJS('return $(".supporterRow").eq(1).find("input.name").val()');

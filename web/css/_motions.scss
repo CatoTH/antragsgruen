@@ -374,6 +374,15 @@
     padding-bottom: 22px;
   }
 
+  .stdPadding {
+    @media screen and (min-width: $screenMinWith) {
+      padding: 15px 10px 15px $fixedWidthTextStdPadding;
+    }
+    @media (max-width: $screenMinWith - 1) {
+      padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
+    }
+  }
+
   .amendmentTextModeSelector {
     float: right;
   }
@@ -893,6 +902,45 @@ iframe.pdfViewer {
     width: 100%;
     position: absolute;
     border: none;
+  }
+}
+
+.sectionType8 { // Editorials / Progress reports
+  .editCaller {
+    float: right;
+    font-weight: normal;
+  }
+  .textHolder {
+    clear: both;
+  }
+  .toolbarBelowTitle {
+    margin-top: -22px; // Cancel margin from header
+  }
+  .editorialHeader {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: 47px;
+    overflow: auto;
+  }
+  .metadataView {
+    vertical-align: middle;
+    font-style: italic;
+  }
+  .metadataEdit {
+    display: flex;
+    width: 100%;
+    label > * {
+      display: inline-block;
+      width: auto;
+    }
+    label {
+      margin: 0;
+      flex-grow: 1;
+      font-weight: normal;
+    }
+    label:last-child {
+      text-align: right;
+    }
   }
 }
 

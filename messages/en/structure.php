@@ -3,6 +3,7 @@ return [
     'section_title'           => 'Title',
     'section_text'            => 'Text',
     'section_html'            => 'Text (enhanced)',
+    'section_editorial'       => 'Editorial text',
     'section_image'           => 'Image',
     'section_tabular'         => 'Tabular data',
     'section_pdf_attachment'  => 'PDF attachment',
@@ -73,6 +74,7 @@ return [
     'privilege_motionusers'   => 'Manage initiators',
     'privilege_motiondelete'  => 'Delete',
     'privilege_proposals'     => 'Manage proposed procedure',
+    'privilege_progress'      => 'Manage editorial sections / Progress reports',
 
     'preset_bdk_name'           => 'German federal convention',
     'preset_bdk_desc'           => 'Presets similar to the federal convention of the German Green Party. This setting does not make sense outside of Germany.',
@@ -106,7 +108,6 @@ return [
     'preset_app_data'      => 'Data',
     'preset_app_signature' => 'Signature (scanned)',
     'preset_app_age'       => 'Age',
-    'preset_app_gender'    => 'Gender',
     'preset_app_birthcity' => 'Place of birth',
     'preset_app_intro'     => 'Introduction',
     'preset_app_title_int' => 'Application: ',
@@ -123,6 +124,13 @@ return [
     'preset_statutes_call'     => 'Statutes amendment',
     'preset_statutes_title'    => 'Title',
     'preset_statutes_text'     => 'Statutes',
+
+    'preset_progress_singular' => 'Progress report',
+    'preset_progress_plural'   => 'Progress reports',
+    'preset_progress_call'     => 'Progress report',
+    'preset_progress_title'    => 'Title',
+    'preset_progress_text'     => 'Resolution',
+    'preset_progress_report'   => 'Progress',
 
     'role_initiator' => 'Proposer',
     'role_supporter' => 'Supporter',

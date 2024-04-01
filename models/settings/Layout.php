@@ -8,7 +8,8 @@ use app\controllers\Base;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
-use app\models\layoutHooks\StdHooks;
+use app\models\layoutHooks\{Hooks, StdHooks};
+use app\plugins\ModuleBase;
 use yii\base\Action;
 use yii\helpers\Html;
 use yii\web\{AssetBundle, Controller, View};
@@ -80,6 +81,9 @@ class Layout
         ], $pluginLayouts);
     }
 
+    /**
+     * @return array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}|null
+     */
     public static function getLayoutPluginDef(string $layout): ?array
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $plugin) {

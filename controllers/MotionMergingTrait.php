@@ -316,6 +316,7 @@ trait MotionMergingTrait
                 $this->getHttpRequest()->post('newStatus'),
                 $this->getHttpRequest()->post('newSubstatus'),
                 $this->getHttpRequest()->post('newInitiator', ''),
+                $this->getHttpRequest()->post('newMotionType'),
                 $this->getHttpRequest()->post('votes', []),
                 $this->getHttpRequest()->post('amendVotes', [])
             );

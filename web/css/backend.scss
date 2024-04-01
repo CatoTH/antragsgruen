@@ -34,10 +34,6 @@
     display: block;
   }
 
-  .saveRow {
-    text-align: center;
-  }
-
   .selectRow {
     legend {
       font-weight: bold;
@@ -861,7 +857,7 @@ label.legend {
       }
     }
 
-    .lineLengthSoft {
+    .maxLenSoft {
       padding-left: 15px;
       font-size: 12px;
     }
@@ -871,7 +867,7 @@ label.legend {
     }
 
     &.no-maxLenSet {
-      .maxLenInput, .lineLengthSoft {
+      .maxLenInput, .maxLenSoft {
         display: none;
       }
     }
@@ -885,7 +881,7 @@ label.legend {
         display: none;
       }
 
-      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .lineLength {
+      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .maxLength {
         display: none;
       }
     }
@@ -922,12 +918,29 @@ label.legend {
       }
     }
 
+    &.textEditorial {
+      .lineNumbersLabel, .fixedWidthLabel {
+        display: none;
+      }
+
+      .commentParagraph {
+        display: none;
+      }
+
+      .amendmentRow {
+        display: none;
+      }
+      .commentRow {
+        display: none;
+      }
+    }
+
     &.tabularData {
       .commentRow {
         display: none;
       }
 
-      .lineNumbersLabel, .fixedWidthLabel, .lineLength {
+      .lineNumbersLabel, .fixedWidthLabel, .maxLength {
         display: none;
       }
 
@@ -945,7 +958,7 @@ label.legend {
         display: none;
       }
 
-      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .lineLength {
+      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .maxLength {
         display: none;
       }
 
@@ -961,7 +974,7 @@ label.legend {
         display: block;
       }
 
-      .maxLenInput, .lineLengthSoft {
+      .maxLenInput, .maxLenSoft {
         display: none;
       }
     }
@@ -975,11 +988,11 @@ label.legend {
         display: none;
       }
 
-      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .lineLength {
+      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .maxLength {
         display: none;
       }
 
-      .maxLenInput, .lineLengthSoft {
+      .maxLenInput, .maxLenSoft {
         display: none;
       }
     }
@@ -993,11 +1006,11 @@ label.legend {
         display: none;
       }
 
-      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .lineLength {
+      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .maxLength {
         display: none;
       }
 
-      .maxLenInput, .lineLengthSoft {
+      .maxLenInput, .maxLenSoft {
         display: none;
       }
     }

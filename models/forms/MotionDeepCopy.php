@@ -4,8 +4,20 @@ declare(strict_types=1);
 
 namespace app\models\forms;
 
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSection, AmendmentSupporter, ConsultationAgendaItem, ConsultationMotionType, Motion, MotionAdminComment, MotionComment, MotionSection, MotionSupporter};
+use app\models\db\{Amendment,
+    AmendmentAdminComment,
+    AmendmentComment,
+    AmendmentSection,
+    AmendmentSupporter,
+    ConsultationAgendaItem,
+    ConsultationMotionType,
+    Motion,
+    MotionAdminComment,
+    MotionComment,
+    MotionSection,
+    MotionSupporter};
 use app\components\UrlHelper;
+use app\models\exceptions\FormError;
 
 class MotionDeepCopy
 {
@@ -15,6 +27,9 @@ class MotionDeepCopy
     public const SKIP_AMENDMENTS = 'amendments';
     public const SKIP_PROPOSED_PROCEDURE = 'proposed_procedure';
 
+    /**
+     * @throws FormError
+     */
     public static function copyMotion(
         Motion $motion,
         ConsultationMotionType $motionType,
@@ -23,9 +38,13 @@ class MotionDeepCopy
         string $newVersion,
         bool $linkMotions,
         array $skip = []
-    ): Motion
-    {
+    ): Motion {
         $newConsultation = $motionType->getConsultation();
+        $sectionMapping = self::getMotionSectionMapping($motion->getMyMotionType(), $motionType, $skip);
+        if (!$sectionMapping) {
+            throw new FormError('No possible way to map the motion sections was found');
+        }
+
         $slug = $motion->slug;
 
         if ($motion->consultationId === $newConsultation->id) {
@@ -61,11 +80,11 @@ class MotionDeepCopy
             self::copyMotionComments($motion, $newMotion);
         }
         if (!in_array(self::SKIP_AMENDMENTS, $skip)) {
-            self::copyAmendments($motion, $newMotion);
+            self::copyAmendments($motion, $newMotion, $skip);
         }
 
         if ($newMotion->motionTypeId !== $motionType->id) {
-            $newMotion->setMotionType($motionType);
+            $newMotion->setMotionType($motionType, $sectionMapping);
         }
 
         $motion->getMyConsultation()->refresh();
@@ -104,15 +123,17 @@ class MotionDeepCopy
 
     private static function copyMotionSections(Motion $oldMotion, Motion $newMotion, array $skip): void
     {
+        $sectionMapping = self::getMotionSectionMapping($oldMotion->getMyMotionType(), $newMotion->getMyMotionType(), $skip);
+
         foreach ($oldMotion->sections as $section) {
-            if (!$section->getSettings()->hasAmendments && in_array(self::SKIP_NON_AMENDABLE, $skip)) {
+            if (!isset($sectionMapping[$section->sectionId])) {
                 continue;
             }
             $newSection = new MotionSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->setData($section->getData());
             $newSection->motionId = $newMotion->id;
-            $newSection->cache    = '';
+            $newSection->cache = '';
             $newSection->save();
         }
     }
@@ -122,7 +143,7 @@ class MotionDeepCopy
         foreach ($oldMotion->motionSupporters as $supporter) {
             $newSupporter = new MotionSupporter();
             $newSupporter->setAttributes($supporter->getAttributes(), false);
-            $newSupporter->id       = null;
+            $newSupporter->id = null;
             $newSupporter->motionId = $newMotion->id;
             $newSupporter->save();
         }
@@ -133,7 +154,7 @@ class MotionDeepCopy
         foreach ($oldMotion->getAllAdminComments() as $comment) {
             $newComment = new MotionAdminComment();
             $newComment->setAttributes($comment->getAttributes(), false);
-            $newComment->id       = null;
+            $newComment->id = null;
             $newComment->motionId = $newMotion->id;
             $newComment->save();
         }
@@ -144,16 +165,16 @@ class MotionDeepCopy
         foreach ($oldMotion->comments as $comment) {
             $newComment = new MotionComment();
             $newComment->setAttributes($comment->getAttributes(), false);
-            $newComment->id       = null;
+            $newComment->id = null;
             $newComment->motionId = $newMotion->id;
             $newComment->save();
         }
     }
 
-    private static function copyAmendments(Motion $oldMotion, Motion $newMotion): void
+    private static function copyAmendments(Motion $oldMotion, Motion $newMotion, array $skip): void
     {
         $amendmentIdMapping = [];
-        $newAmendments      = [];
+        $newAmendments = [];
 
         foreach ($oldMotion->amendments as $amendment) {
             $newAmendment = new Amendment();
@@ -173,9 +194,9 @@ class MotionDeepCopy
 
             $newAmendment->save();
             $amendmentIdMapping[$amendment->id] = $newAmendment->id;
-            $newAmendments[]                    = $newAmendment;
+            $newAmendments[] = $newAmendment;
 
-            self::copyAmendmentSections($amendment, $newAmendment);
+            self::copyAmendmentSections($amendment, $newAmendment, $skip);
             self::copyAmendmentSupporters($amendment, $newAmendment);
             self::copyAmendmentComments($amendment, $newAmendment);
             self::copyAmendmentAdminComments($amendment, $newAmendment);
@@ -193,13 +214,18 @@ class MotionDeepCopy
         }
     }
 
-    private static function copyAmendmentSections(Amendment $oldAmendment, Amendment $newAmendment): void
+    private static function copyAmendmentSections(Amendment $oldAmendment, Amendment $newAmendment, array $skip): void
     {
+        $sectionMapping = self::getMotionSectionMapping($oldAmendment->getMyMotionType(), $newAmendment->getMyMotionType(), []);
+
         foreach ($oldAmendment->sections as $section) {
+            if (!isset($sectionMapping[$section->sectionId])) {
+                continue;
+            }
             $newSection = new AmendmentSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->amendmentId = $newAmendment->id;
-            $newSection->cache       = '';
+            $newSection->cache = '';
             $newSection->save();
         }
     }
@@ -209,7 +235,7 @@ class MotionDeepCopy
         foreach ($oldAmendment->amendmentSupporters as $supporter) {
             $newSupporter = new AmendmentSupporter();
             $newSupporter->setAttributes($supporter->getAttributes(), false);
-            $newSupporter->id          = null;
+            $newSupporter->id = null;
             $newSupporter->amendmentId = $newAmendment->id;
             $newSupporter->save();
         }
@@ -220,7 +246,7 @@ class MotionDeepCopy
         foreach ($oldAmendment->comments as $comment) {
             $newComment = new AmendmentComment();
             $newComment->setAttributes($comment->getAttributes(), false);
-            $newComment->id          = null;
+            $newComment->id = null;
             $newComment->amendmentId = $newAmendment->id;
             $newComment->save();
         }
@@ -231,9 +257,48 @@ class MotionDeepCopy
         foreach ($oldAmendment->getAllAdminComments() as $comment) {
             $newComment = new AmendmentAdminComment();
             $newComment->setAttributes($comment->getAttributes(), false);
-            $newComment->id          = null;
+            $newComment->id = null;
             $newComment->amendmentId = $newAmendment->id;
             $newComment->save();
         }
+    }
+
+    /**
+     * @param string[] $skip
+     * @return array<int|string, int>|null
+     */
+    public static function getMotionSectionMapping(ConsultationMotionType $typeFrom, ConsultationMotionType $typeTo, array $skip): ?array
+    {
+        $mappings = [];
+        $toIdx = 0;
+
+        for ($fromIdx = 0; $fromIdx < count($typeFrom->motionSections); $fromIdx++) {
+            $fromSection = $typeFrom->motionSections[$fromIdx];
+            if (!$fromSection->hasAmendments && in_array(self::SKIP_NON_AMENDABLE, $skip)) {
+                continue;
+            }
+            if (!isset($typeTo->motionSections[$toIdx])) {
+                return null;
+            }
+
+            $foundTo = null;
+
+            do {
+                $toSection = $typeTo->motionSections[$toIdx];
+
+                if ($fromSection->type === $toSection->type) {
+                    $foundTo = $toSection->id;
+                }
+                $toIdx++;
+            } while (!$foundTo && isset($typeTo->motionSections[$toIdx]));
+
+            if ($foundTo) {
+                $mappings[$fromSection->id] = $foundTo;
+            } else {
+                return null; // No mapping found -> not mappable
+            }
+        }
+
+        return $mappings;
     }
 }

@@ -59,14 +59,7 @@ class MotionEditForm
             if (isset($motionSections[$sectionType->id])) {
                 $this->sections[] = $motionSections[$sectionType->id];
             } else {
-                $section = new MotionSection();
-                $section->sectionId = $sectionType->id;
-                $section->setData('');
-                $section->dataRaw  = '';
-                $section->public = $sectionType->getSettingsObj()->public;
-                $section->cache = '';
-                $section->refresh();
-                $this->sections[] = $section;
+                $this->sections[] = MotionSection::createEmpty($sectionType->id, $sectionType->getSettingsObj()->public);
             }
         }
     }
@@ -140,7 +133,7 @@ class MotionEditForm
             if (isset($values['sections'][$section->sectionId])) {
                 $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
             }
-            if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
+            if (isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->sectionId])) {
                     $data = [];
                     foreach ($files['sections'] as $key => $vals) {

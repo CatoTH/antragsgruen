@@ -1081,21 +1081,20 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param array<int|string, int> $sectionMapping
      * @throws FormError
      */
-    public function setMotionType(ConsultationMotionType $motionType): void
+    public function setMotionType(ConsultationMotionType $motionType, array $sectionMapping): void
     {
-        if (!$this->getMyMotionType()->isCompatibleTo($motionType)) {
-            throw new FormError('This amendment cannot be changed to the type ' . $motionType->titleSingular);
+        foreach ($this->sections as $section) {
+            if (!isset($sectionMapping[$section->sectionId])) {
+                throw new FormError('This amendment cannot be changed to the type ' . $motionType->titleSingular . ': no complete section mapping found');
+            }
         }
 
-        $typeMapping = $this->getMyMotionType()->getSectionCompatibilityMapping($motionType);
         $mySections  = $this->getSortedSections(false);
         for ($i = 0; $i < count($mySections); $i++) {
-            if (!isset($typeMapping[$mySections[$i]->sectionId])) {
-                continue;
-            }
-            $mySections[$i]->sectionId = $typeMapping[$mySections[$i]->sectionId];
+            $mySections[$i]->sectionId = $sectionMapping[$mySections[$i]->sectionId];
             if (!$mySections[$i]->save()) {
                 $err = print_r($mySections[$i]->getErrors(), true);
                 throw new FormError('Something terrible happened while changing the motion type: ' . $err);

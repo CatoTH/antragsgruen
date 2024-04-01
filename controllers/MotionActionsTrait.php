@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\forms\ProposedChangeForm;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, InitiatorForm};
+use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TextEditorial;
 use app\models\http\{HtmlErrorResponse,
     HtmlResponse,
     JsonResponse,
@@ -12,7 +14,7 @@ use app\models\http\{HtmlErrorResponse,
     ResponseInterface,
     RestApiExceptionResponse};
 use app\models\notifications\MotionProposedProcedure;
-use app\components\{Tools, UrlHelper};
+use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment,
     ConsultationLog,
     ConsultationSettingsTag,
@@ -20,6 +22,7 @@ use app\models\db\{Amendment,
     Motion,
     MotionAdminComment,
     MotionComment,
+    MotionSection,
     MotionSupporter,
     User,
     Consultation};
@@ -665,5 +668,40 @@ trait MotionActionsTrait
             'motion'     => $motion,
             'form'       => $form,
         ]));
+    }
+
+    public function actionSaveEditorial(string $motionSlug, int $sectionId): ResponseInterface
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return new RestApiExceptionResponse(404, 'Motion not found');
+        }
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
+            return new RestApiExceptionResponse(403, 'Not permitted to change the editorial');
+        }
+
+        $section = null;
+        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_EDITORIAL) as $searchSection) {
+            if ($searchSection->sectionId === $sectionId) {
+                $section = $searchSection;
+            }
+        }
+        if (!$section) {
+            return new RestApiExceptionResponse(404, 'Section not found');
+        }
+        /** @var TextEditorial $sectionType */
+        $sectionType = $section->getSectionType();
+        $sectionType->setEditorialData(
+            $this->getPostValue('data'),
+            $this->getPostValue('author'),
+            $this->getPostValue('updateDate') ? new \DateTime() : $sectionType->getSectionMetadata()['lastUpdate']
+        );
+        $section->save();
+
+        return new JsonResponse([
+            'success' => true,
+            'html' => $section->getData(),
+            'metadataFormatted' => $sectionType->getFormattedSectionMetadata(true),
+        ]);
     }
 }

@@ -108,14 +108,14 @@ class Image extends ISectionType
     {
         $app = AntragsgruenApp::getInstance();
         if ($app->imageMagickPath === null) {
-            return file_get_contents($filename);
+            return (file_exists($filename) ? (string)file_get_contents($filename) : '');
         } elseif (!file_exists($app->imageMagickPath)) {
             throw new Internal('ImageMagick not correctly set up');
         }
 
         $tmpfile = $app->getTmpDir() . uniqid('image-conv-') . "." . $targetType;
         exec($app->imageMagickPath . ' -strip ' . escapeshellarg($filename) . ' ' . escapeshellarg($tmpfile));
-        $converted = (file_exists($tmpfile) ? file_get_contents($tmpfile) : '');
+        $converted = (file_exists($tmpfile) ? (string)file_get_contents($tmpfile) : '');
         unlink($tmpfile);
         return $converted;
     }
@@ -149,7 +149,7 @@ class Image extends ISectionType
         exec($app->imageMagickPath . ' -strip -geometry ' . IntVal($width) . 'x' . IntVal($height) . ' '
             . escapeshellarg($tmpfile1) . ' ' . escapeshellarg($tmpfile2));
 
-        $converted = (file_exists($tmpfile2) ? file_get_contents($tmpfile2) : '');
+        $converted = (file_exists($tmpfile2) ? (string)file_get_contents($tmpfile2) : '');
         unlink($tmpfile1);
         unlink($tmpfile2);
 
@@ -171,7 +171,7 @@ class Image extends ISectionType
         $pngFilename = $app->getTmpDir() . uniqid('pdf-') . '.png';
         file_put_contents($gifFilename, $gifData);
         exec($app->imageMagickPath . ' ' . escapeshellarg($gifFilename . '[0]') . ' ' . escapeshellarg($pngFilename));
-        $data = file_get_contents($pngFilename);
+        $data = (string)file_get_contents($pngFilename);
         unlink($pngFilename);
         unlink($gifFilename);
         return $data;
@@ -259,6 +259,11 @@ class Image extends ISectionType
         return ($this->section->getData() === '' || $invalidAmendmentImageWorkaround);
     }
 
+    public function showIfEmpty(): bool
+    {
+        return false;
+    }
+
     public function isFileUploadType(): bool
     {
         return true;
@@ -315,7 +320,7 @@ class Image extends ISectionType
             'image/gif' => 'GIF',
             default => '',
         };
-        $pdf->Image($img, '', '', $size[0], $size[1], $type, '', '', true, 300, 'C');
+        $pdf->Image($img, null, null, $size[0], $size[1], $type, '', '', true, 300, 'C');
         $pdf->Ln($size[1] + 7);
     }
 

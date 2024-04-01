@@ -141,6 +141,7 @@ class UserGroupPermissions
             case Privileges::PRIVILEGE_MOTION_DELETE:
             case Privileges::PRIVILEGE_MOTION_INITIATORS:
             case Privileges::PRIVILEGE_VOTINGS:
+            case Privileges::PRIVILEGE_CHANGE_EDITORIAL:
                 return in_array(self::PERMISSION_ADMIN_ALL, $this->defaultPermissions, true);
             case Privileges::PRIVILEGE_CHANGE_PROPOSALS:
                 return in_array(self::PERMISSION_PROPOSED_PROCEDURE, $this->defaultPermissions, true) ||

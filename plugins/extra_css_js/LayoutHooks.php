@@ -48,11 +48,11 @@ class LayoutHooks extends StdHooks
     public function endPage(string $before): string
     {
         if (file_exists($this->getSiteAssetPath() . '.js')) {
-            $this->layout->addOnLoadJS(file_get_contents($this->getSiteAssetPath() . '.js'));
+            $this->layout->addOnLoadJS((string)file_get_contents($this->getSiteAssetPath() . '.js'));
         }
 
         if (file_exists($this->getConsultationAssetPath() . '.js')) {
-            $this->layout->addOnLoadJS(file_get_contents($this->getConsultationAssetPath() . '.js'));
+            $this->layout->addOnLoadJS((string)file_get_contents($this->getConsultationAssetPath() . '.js'));
         }
 
         return $before;

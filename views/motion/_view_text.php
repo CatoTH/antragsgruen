@@ -1,6 +1,6 @@
 <?php
 
-use app\models\db\{ConsultationSettingsMotionSection, Motion};
+use app\models\db\{ConsultationSettingsMotionSection, Motion, User};
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
@@ -17,6 +17,11 @@ use yii\helpers\Html;
 $sections  = $motion->getSortedSections(false, true);
 
 $useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections() && $procedureToken === null);
+if (User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion)) &&
+    count($motion->getActiveSections(ISectionType::TYPE_TEXT_EDITORIAL)) > 0
+) {
+    $useCache = false;
+}
 if (!\app\models\settings\AntragsgruenApp::getInstance()->viewCacheFilePath) {
     $useCache = false;
 }
@@ -56,7 +61,9 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $proce
         }
 
         $sectionType = $section->getSettings()->type;
-        if ($section->getSectionType()->isEmpty() && count($section->getAmendmentSectionsToBeShownInMotionView()) === 0) {
+        if ($section->getSectionType()->isEmpty() && !$section->getSectionType()->showIfEmpty()
+            && count($section->getAmendmentSectionsToBeShownInMotionView()) === 0
+        ) {
             continue;
         }
 

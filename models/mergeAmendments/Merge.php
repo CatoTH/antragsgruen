@@ -2,6 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
+use app\models\forms\MotionDeepCopy;
 use app\components\{MotionNumbering, RequestContext, Tools};
 use app\models\sectionTypes\TextSimple;
 use app\models\db\{IMotion, Motion, MotionSection, MotionSupporter};
@@ -81,15 +82,7 @@ class Merge
         $newMotion = $this->createMotion();
 
         foreach ($this->origMotion->getActiveSections() as $origSection) {
-            $section = new MotionSection();
-            $section->sectionId = $origSection->sectionId;
-            $section->motionId  = $newMotion->id;
-            $section->refresh();
-
-            $section->cache = '';
-            $section->setData('');
-            $section->dataRaw = '';
-            $section->public = $origSection->public;
+            $section = MotionSection::createEmpty($origSection->sectionId, $origSection->public, $newMotion->id);
 
             if (!in_array($origSection->sectionId, $draft->removedSections)) {
                 if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
@@ -119,7 +112,7 @@ class Merge
     /**
      * @param int[] $amendmentStatuses
      */
-    public function confirm(Motion $newMotion, array $amendmentStatuses, ?string $resolutionMode, ?string $resolutionSubstatus, string $resolutionBody, array $votes, ?array $amendmentVotes): Motion
+    public function confirm(Motion $newMotion, array $amendmentStatuses, ?string $resolutionMode, ?string $resolutionSubstatus, string $resolutionBody, ?string $newMotionTypeId, array $votes, ?array $amendmentVotes): Motion
     {
         $oldMotion    = $this->origMotion;
         $consultation = $oldMotion->getMyConsultation();
@@ -209,6 +202,20 @@ class Merge
 
         foreach ($oldMotion->getPublicTopicTags() as $tag) {
             $newMotion->link('tags', $tag);
+        }
+
+        if ($newMotionTypeId) {
+            $newMotionType = $newMotion->getMyConsultation()->getMotionType((int) $newMotionTypeId);
+            $sectionMapping = MotionDeepCopy::getMotionSectionMapping($newMotion->getMyMotionType(), $newMotionType, [MotionDeepCopy::SKIP_NON_AMENDABLE]);
+            if ($sectionMapping) {
+                foreach ($newMotion->sections as $section) {
+                    if (!$section->getSettings()->hasAmendments && !isset($sectionMapping[$section->sectionId])) {
+                        $section->delete();
+                    }
+                }
+                $newMotion->refresh();
+                $newMotion->setMotionType($newMotionType, $sectionMapping);
+            }
         }
 
         $mergingDraft = $oldMotion->getMergingDraft(false);

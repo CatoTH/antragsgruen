@@ -113,6 +113,11 @@ class TabularData extends ISectionType
         return !(isset($data['rows']) && count($data['rows']) > 0);
     }
 
+    public function showIfEmpty(): bool
+    {
+        return false;
+    }
+
     public function isFileUploadType(): bool
     {
         return false;
