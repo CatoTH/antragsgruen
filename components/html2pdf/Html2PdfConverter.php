@@ -28,8 +28,8 @@ class Html2PdfConverter
      */
     public function createPDF(Content $content): string
     {
-        if (!$this->app->xelatexPath && !$this->app->lualatexPath) {
-            throw new Internal('LaTeX/XeTeX-Export is not enabled');
+        if (!$this->app->weasyprintPath) {
+            throw new Internal('Weasyprint is not enabled');
         }
 
         $filenameBase = $this->app->getTmpDir() . uniqid('motion-html');
