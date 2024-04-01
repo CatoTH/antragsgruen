@@ -98,6 +98,9 @@ class TextEditorial extends TextSimpleCommon
         return $this->getMotionFormField();
     }
 
+    /**
+     * @param string $data
+     */
     public function setMotionData($data): void
     {
         $this->section->dataRaw = $data;
@@ -116,6 +119,9 @@ class TextEditorial extends TextSimpleCommon
         $this->section->dataRaw = null;
     }
 
+    /**
+     * @param array $data
+     */
     public function setAmendmentData($data): void
     {
         /** @var AmendmentSection $section */

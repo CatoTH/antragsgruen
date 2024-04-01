@@ -67,7 +67,7 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
         if ($this->amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
             $emailText  = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email');
             $min        = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
-            $emailText  = str_replace('%MIN%', $min, $emailText);
+            $emailText  = str_replace('%MIN%', (string)$min, $emailText);
             $emailTitle = $motionType->getConsultationTextWithFallback('motion', 'submitted_supp_phase_email_subject');
         } else {
             $emailText  = $motionType->getConsultationTextWithFallback('amend', 'submitted_screening_email');

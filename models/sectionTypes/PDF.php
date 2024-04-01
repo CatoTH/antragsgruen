@@ -58,9 +58,9 @@ class PDF extends ISectionType
             $required = ($type->required ? 'required' : '');
         }
 
-        $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
+        $maxSize = (int)floor(Tools::getMaxUploadSize() / 1024 / 1024);
         $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign" aria-hidden="true"></span> ';
-        $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
+        $str     .= str_replace('%MB%', (string)$maxSize, \Yii::t('motion', 'max_size_hint'));
         $str     .= '</div>';
 
         $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
@@ -101,8 +101,8 @@ class PDF extends ISectionType
         $metadata                = [
             'filesize' => filesize($data['tmp_name']),
         ];
-        $this->section->setData(file_get_contents($data['tmp_name']));
-        $this->section->metadata = json_encode($metadata);
+        $this->section->setData((string)file_get_contents($data['tmp_name']));
+        $this->section->metadata = json_encode($metadata, JSON_THROW_ON_ERROR);
     }
 
     public function deleteMotionData(): void
@@ -210,6 +210,8 @@ class PDF extends ISectionType
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $page = $pdf->ImportPage($pageNo);
+
+            /** @var array{width: float, height: float, orientation: string} $dim */
             $dim  = $pdf->getTemplatesize($page);
             if ($params->pdfExportConcat) {
                 $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
@@ -217,12 +219,12 @@ class PDF extends ISectionType
             } else {
                 $scale = min([
                     1,
-                    $printArea['w'] / $dim['w'],
-                    $printArea['h'] / $dim['h'],
+                    $printArea['w'] / $dim['width'],
+                    $printArea['h'] / $dim['height'],
                 ]);
                 $print = [
-                    'w' => $scale * $dim['w'],
-                    'h' => $scale * $dim['h'],
+                    'w' => $scale * $dim['width'],
+                    'h' => $scale * $dim['height'],
                 ];
                 $curX  = $pdf->getX();
                 if ($curX > $pdim['lm'] and $print['w'] < $pdim['wk'] - ($curX + $pdim['rm'])) {
@@ -263,12 +265,10 @@ class PDF extends ISectionType
                             if (in_array(substr($key, -1), ['u', 'l'])) {
                                 $length = -$length;
                             }
-                            if (!$abs) {
-                                if (in_array(substr($key, -1), ['r', 'l'])) {
-                                    $length = $length * $print['w'];
-                                } else {
-                                    $length = $length * $print['h'];
-                                }
+                            if (in_array(substr($key, -1), ['r', 'l'])) {
+                                $length = $length * $print['w'];
+                            } else {
+                                $length = $length * $print['h'];
                             }
                             $larr = [];
                             if (in_array(substr($key, -1), ['u', 'd'])) {
@@ -278,7 +278,7 @@ class PDF extends ISectionType
                                 $larr['x'] = $length;
                                 $larr['y'] = 0;
                             }
-                            if (substr($key, 0, 1) == 't') {
+                            if (str_starts_with($key, 't')) {
                                 $line['y'] = $print['y'];
                             } else {
                                 $line['y'] = $print['y'] + $print['h'];

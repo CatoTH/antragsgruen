@@ -176,13 +176,6 @@ class Engine
         return $diff;
     }
 
-    public function compareStrings(string $string1, string $string2): array
-    {
-        $sequence1 = preg_split('/\R/', $string1);
-        $sequence2 = preg_split('/\R/', $string2);
-        return $this->compareArrays($sequence1, $sequence2, false);
-    }
-
     /**
      * @return InsDelGroup[]
      */
@@ -306,7 +299,7 @@ class Engine
             $words[$fromIdx - $cnt - 1][1] === Engine::UNMODIFIED &&
             $this->strCmp($words[$fromIdx - $cnt - 1][0], $words[$toIdx - $cnt][0], false) &&
             !str_contains($words[$toIdx - $cnt][0], '<')   && !str_contains($words[$toIdx - $cnt][0], '>')   &&
-            !str_contains($words[$toIdx - $cnt][0], '.')  
+            !str_contains($words[$toIdx - $cnt][0], '.')
         ) {
             $words[$fromIdx - $cnt - 1][1] = $mode;
             $words[$toIdx - $cnt][1]       = Engine::UNMODIFIED;

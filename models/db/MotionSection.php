@@ -276,7 +276,7 @@ class MotionSection extends IMotionSection
      */
     public function getTextParagraphLines(bool $minOnePara = false): array
     {
-        if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
+        if (!in_array($this->getSettings()->type, [ISectionType::TYPE_TEXT_SIMPLE, ISectionType::TYPE_TEXT_EDITORIAL])) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
 

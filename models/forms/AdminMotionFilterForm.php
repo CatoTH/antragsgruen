@@ -929,7 +929,7 @@ class AdminMotionFilterForm
             <input id="initiatorSelect" class="typeahead form-control" type="text"
                 placeholder="' . \Yii::t('admin', 'filter_initiator_name') . '"
                 name="Search[initiator]" value="' . Html::encode($this->initiator ?: '') . '"
-                data-values="' . Html::encode(json_encode($values)) . '"></div>';
+                data-values="' . Html::encode(json_encode($values, JSON_THROW_ON_ERROR)) . '"></div>';
         $str .= '</div>';
 
 
@@ -1068,7 +1068,7 @@ class AdminMotionFilterForm
         return self::resolveTagList($tagStruct, '');
     }
 
-    public function getAgendaItemList($skipNumbers = false): array
+    public function getAgendaItemList(bool $skipNumbers = false): array
     {
         $agendaItems = [];
         foreach ($this->consultation->agendaItems as $agendaItem) {

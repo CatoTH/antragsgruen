@@ -158,7 +158,7 @@ class MotionMover
         return $newMotion;
     }
 
-    private function moveToAgendaItem(ConsultationAgendaItem $agendaItem, $titlePrefix): Motion
+    private function moveToAgendaItem(ConsultationAgendaItem $agendaItem, string $titlePrefix): Motion
     {
         $this->motion->agendaItemId = $agendaItem->id;
         $this->motion->titlePrefix  = $titlePrefix;

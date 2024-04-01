@@ -115,7 +115,8 @@ class Application
                         ]
                     ),
                 ],
-            ]
+            ],
+            JSON_THROW_ON_ERROR
         );
         $section->save();
 
