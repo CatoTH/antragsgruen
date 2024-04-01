@@ -42,6 +42,9 @@ class Stylesheet implements \JsonSerializable
     public string $headingTertiaryText;
     public string $headingTertiaryBackground;
     public int $headingTertiarySize;
+    public bool $headingFontUppercase;
+    public bool $headingFontBold;
+    public bool $headingTextShadow;
     public bool $linkTextDecoration;
     public bool $useBoxShadow;
     public int $contentBorderRadius;
@@ -74,6 +77,9 @@ class Stylesheet implements \JsonSerializable
         'headingTertiaryText'         => '#000000',
         'headingTertiaryBackground'   => '#1b4afb',
         'headingTertiarySize'         => 15,
+        'headingFontUppercase'        => true,
+        'headingFontBold'             => true,
+        'headingTextShadow'           => true,
         'menuFont'                    => '"Open Sans", sans-serif',
         'menuLink'                    => '#4b7000',
         'menuActive'                  => '#646464',
@@ -114,6 +120,9 @@ class Stylesheet implements \JsonSerializable
         'headingTertiaryText'         => '#000000',
         'headingTertiaryBackground'   => '#dcdcdc',
         'headingTertiarySize'         => 15,
+        'headingFontUppercase'        => true,
+        'headingFontBold'             => true,
+        'headingTextShadow'           => true,
         'menuFont'                    => '"FiraSans", sans-serif',
         'menuLink'                    => '#646464',
         'menuActive'                  => '#333333',
@@ -139,187 +148,202 @@ class Stylesheet implements \JsonSerializable
         $settings = [
             'useBoxShadow'                => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_CHECKBOX,
+                'type'     => self::TYPE_CHECKBOX,
                 'scssName' => 'use-box-shadow',
             ],
             'containerSize'               => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'container-md',
             ],
             'contentBorderRadius'         => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'contentBorderRadius',
             ],
             'sidebarBackground'           => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'sidebarBackground',
             ],
             'sidebarWidth'                => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'sidebarWidth',
             ],
             'sidebarActionFont'           => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_FONT,
+                'type'     => self::TYPE_FONT,
                 'scssName' => 'sidebarActionFont',
             ],
             'createMotionBtnColor'        => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'createMotionBtnColor',
             ],
             'bookmarkAmendmentBackground' => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'bookmarkAmendmentBackground',
             ],
             'bookmarkCommentColor'        => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'bookmarkCommentColor',
             ],
             'headingFont'                 => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_FONT,
+                'type'     => self::TYPE_FONT,
                 'scssName' => 'headingFont',
             ],
             'headingPrimaryText'          => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'headingPrimaryText',
             ],
             'headingPrimaryBackground'    => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'headingPrimaryBackground',
             ],
             'headingPrimarySize'          => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'headingPrimarySize',
             ],
             'headingSecondaryText'        => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'headingSecondaryText',
             ],
             'headingSecondaryBackground'  => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'headingSecondaryBackground',
             ],
             'headingSecondarySize'        => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'headingSecondarySize',
             ],
             'headingTertiaryText'         => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'headingTertiaryText',
             ],
             'headingTertiaryBackground'   => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'headingTertiaryBackground',
             ],
             'headingTertiarySize'         => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'headingTertiarySize',
+            ],
+            'headingFontUppercase'        => [
+                'group'    => 'headings',
+                'type'     => self::TYPE_CHECKBOX,
+                'scssName' => 'headingFontUppercase',
+            ],
+            'headingFontBold'             => [
+                'group'    => 'headings',
+                'type'     => self::TYPE_CHECKBOX,
+                'scssName' => 'headingFontBold',
+            ],
+            'headingTextShadow'           => [
+                'group'    => 'headings',
+                'type'     => self::TYPE_CHECKBOX,
+                'scssName' => 'headingTextShadow',
             ],
             'uppercaseTitles'             => [
                 'group'    => 'headings',
-                'type'     => static::TYPE_CHECKBOX,
+                'type'     => self::TYPE_CHECKBOX,
                 'scssName' => 'uppercaseTitles',
             ],
             'menuFont'                    => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_FONT,
+                'type'     => self::TYPE_FONT,
                 'scssName' => 'menuFont',
             ],
             'menuLink'                    => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'menuLink',
             ],
             'menuActive'                  => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'menuActive',
             ],
             'backgroundImage'             => [
                 'group'    => 'layout',
-                'type'     => static::TYPE_IMAGE,
+                'type'     => self::TYPE_IMAGE,
                 'scssName' => 'backgroundImage',
             ],
             'bodyFont'                    => [
                 'group'    => 'text',
-                'type'     => static::TYPE_FONT,
+                'type'     => self::TYPE_FONT,
                 'scssName' => 'bodyFont',
             ],
             'bodyFontSize'                => [
                 'group'    => 'text',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'font-size-base',
             ],
             'textColor'                   => [
                 'group'    => 'text',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'textColor',
             ],
             'colorLinks'                  => [
                 'group'    => 'text',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'colorLinks',
             ],
             'colorLinksLight'             => [
                 'group'    => 'text',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'colorLinksLight',
             ],
             'colorDelLink'                => [
                 'group'    => 'text',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'colorDelLink',
             ],
             'linkTextDecoration'          => [
                 'group'    => 'text',
-                'type'     => static::TYPE_CHECKBOX,
+                'type'     => self::TYPE_CHECKBOX,
                 'scssName' => 'linkTextDecoration',
             ],
             'motionFixedFont'             => [
                 'group'    => 'text',
-                'type'     => static::TYPE_FONT,
+                'type'     => self::TYPE_FONT,
                 'scssName' => 'motionFixedFont',
             ],
             'motionFixedFontColor'        => [
                 'group'    => 'text',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'motionFixedFontColor',
             ],
             'motionStdFontSize'           => [
                 'group'    => 'text',
-                'type'     => static::TYPE_PIXEL,
+                'type'     => self::TYPE_PIXEL,
                 'scssName' => 'motionStdFontSize',
             ],
             'brandPrimary'                => [
                 'group'    => 'buttons',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'brand-primary',
             ],
             'buttonSuccessBackground'     => [
                 'group'    => 'buttons',
-                'type'     => static::TYPE_COLOR,
+                'type'     => self::TYPE_COLOR,
                 'scssName' => 'btn-success-bg',
             ],
             'buttonFont'                  => [
                 'group'    => 'buttons',
-                'type'     => static::TYPE_FONT,
+                'type'     => self::TYPE_FONT,
                 'scssName' => 'buttonFont',
             ],
         ];
@@ -347,32 +371,32 @@ class Stylesheet implements \JsonSerializable
 
         if ($type === 'string' && (!isset($this->$field) || trim($this->$field) === '') && $field !== 'backgroundImage') {
             // Empty strings are only allowed for backgroundImage
-            return (string)static::getAllSettings($defaults)[$field]['default'];
+            return (string)self::getAllSettings($defaults)[$field]['default'];
         } elseif (isset($this->$field)) {
             return (string)$this->$field;
         } else {
-            return (string)static::getAllSettings($defaults)[$field]['default'];
+            return (string)self::getAllSettings($defaults)[$field]['default'];
         }
     }
 
     public function toScssVariables(string $defaults): string
     {
         $scss = '';
-        foreach (static::getAllSettings() as $key => $data) {
+        foreach (self::getAllSettings() as $key => $data) {
             switch ($data['type']) {
-                case static::TYPE_PIXEL:
+                case self::TYPE_PIXEL:
                     $scss .= '$' . $data['scssName'] . ': ' . $this->getValue($key, $defaults) . "px;\n";
                     break;
-                case static::TYPE_CHECKBOX:
+                case self::TYPE_CHECKBOX:
                     if ($key === 'linkTextDecoration') {
                         $scss .= '$linkTextDecoration: ' . ($this->getValue($key, $defaults) ? 'underline' : 'none') . ";\n";
                     } else {
                         $scss .= '$' . $data['scssName'] . ': ' . ($this->getValue($key, $defaults) ? 'true' : 'false') . ";\n";
                     }
                     break;
-                case static::TYPE_NUMBER:
-                case static::TYPE_COLOR:
-                case static::TYPE_FONT:
+                case self::TYPE_NUMBER:
+                case self::TYPE_COLOR:
+                case self::TYPE_FONT:
                     $scss .= '$' . $data['scssName'] . ': ' . $this->getValue($key, $defaults) . ";\n";
                     break;
             }
