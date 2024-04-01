@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace app\models\sectionTypes;
 
-use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, Diff, DiffRenderer};
-use app\models\SectionedParagraph;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LineSplitter, RequestContext, UrlHelper};
@@ -75,7 +73,7 @@ class TextEditorial extends TextSimpleCommon
         );
     }
 
-    public function getFormattedSectionMetadata(): string
+    public function getFormattedSectionMetadata(bool $allowRelativeDates): string
     {
         $metadata = $this->getSectionMetadata();
         $data = [];
@@ -83,7 +81,7 @@ class TextEditorial extends TextSimpleCommon
             $data[] = Html::encode($metadata['author']);
         }
         if ($metadata['lastUpdate']) {
-            $data[] = Html::encode(\app\components\Tools::formatMysqlDateTime($metadata['lastUpdate']->format('Y-m-d H:i:s')));
+            $data[] = Html::encode(\app\components\Tools::formatMysqlDateTime($metadata['lastUpdate']->format('Y-m-d H:i:s'), $allowRelativeDates));
         }
         return implode(', ', $data);
     }
@@ -96,6 +94,88 @@ class TextEditorial extends TextSimpleCommon
     public function getAmendmentFormField(): string
     {
         return $this->getMotionFormField();
+    }
+
+    public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
+    {
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        /** @var MotionSection $section */
+        $section = $this->section;
+        $settings = $section->getSettings();
+
+        $html = '<section class="motionSection">';
+        if ($settings->printTitle) {
+            $html .= '<h2>' . Html::encode($this->getTitle()) . "</h2>\n";
+        }
+        $html .= '<div class="editorialMetadata">';
+        $html .= $this->getFormattedSectionMetadata(false);
+        $html .= '</div>';
+        $html .= '<div class="text motionTextFormattings">';
+        $html .= $this->section->data;
+        $html .= '</div></section>';
+
+        if ($section->isLayoutRight()) {
+            $content->textRight .= $html;
+        } else {
+            $content->textMain .= $html;
+        }
+    }
+
+    public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
+    {
+        $content->textMain .= '<h2>Amendments not supported for editorial texts</h2>';
+    }
+
+    public function printMotionToODT(ODTText $odt): void
+    {
+        if ($this->isEmpty()) {
+            return;
+        }
+        /** @var MotionSection $section */
+        $section = $this->section;
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
+        $odt->addHtmlTextBlock('<p><em>' . Html::encode($this->getFormattedSectionMetadata(false)) . '</em></p>', false);
+        $paras = $section->getTextParagraphLines();
+        foreach ($paras as $para) {
+            $html = str_replace('###LINENUMBER###', '', implode('', $para->lines));
+            $html = HTMLTools::correctHtmlErrors($html);
+            $odt->addHtmlTextBlock($html, false);
+        }
+    }
+
+    public function printAmendmentToODT(ODTText $odt): void
+    {
+        $odt->addHtmlTextBlock('<h2>Amendments not supported for editorial texts</h2>', false);
+    }
+
+    public function getMotionPlainHtml(): string
+    {
+        $html = $this->section->getData();
+        $html = str_replace('<span class="underline">', '<span style="text-decoration: underline;">', $html);
+        $html = str_replace('<span class="strike">', '<span style="text-decoration: line-through;">', $html);
+
+        return '<p><em>' . $this->getFormattedSectionMetadata(false) . '</em></p>' . $html;
+    }
+
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
+    {
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        /** @var MotionSection $section */
+        $section = $this->section;
+
+        if ($section->getSettings()->printTitle) {
+            $pdfLayout->printSectionHeading($this->getTitle());
+        }
+
+        $pdf->writeHTML('<p><em>' . $this->getFormattedSectionMetadata(false) . '</em></p>');
+
+        $pdf->printMotionSection($section);
     }
 
     /**

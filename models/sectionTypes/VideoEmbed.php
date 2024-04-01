@@ -72,6 +72,9 @@ class VideoEmbed extends ISectionType
         return $this->getMotionFormField();
     }
 
+    /**
+     * @param string $data
+     */
     public function setMotionData($data): void
     {
         $this->section->setData($data);
@@ -84,8 +87,7 @@ class VideoEmbed extends ISectionType
     }
 
     /**
-     * @param array $data
-     * @throws FormError
+     * @param string $data
      */
     public function setAmendmentData($data): void
     {

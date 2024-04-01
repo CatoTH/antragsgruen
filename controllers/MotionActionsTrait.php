@@ -701,7 +701,7 @@ trait MotionActionsTrait
         return new JsonResponse([
             'success' => true,
             'html' => $section->getData(),
-            'metadataFormatted' => $sectionType->getFormattedSectionMetadata(),
+            'metadataFormatted' => $sectionType->getFormattedSectionMetadata(true),
         ]);
     }
 }

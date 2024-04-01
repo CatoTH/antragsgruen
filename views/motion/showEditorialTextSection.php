@@ -14,7 +14,7 @@ $motion = $section->getMotion();
 $sectionType = $section->getSectionType();
 
 $metadataView = '<div class="metadataView">';
-$metadataView .= $sectionType->getFormattedSectionMetadata();
+$metadataView .= $sectionType->getFormattedSectionMetadata(true);
 $metadataView .= '</div>';
 
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {

@@ -21,6 +21,8 @@ return [
     'amendment'             => 'Änderungsantrag',
     'amendments'            => 'Änderungsanträge',
     'amendments_none'       => 'keine',
+    'email'                 => 'E-Mail-Adresse',
+    'phone'                 => 'Telefonnummer',
     'line'                  => 'Zeile',
     'status'                => 'Status',
     'amend_change'          => 'Änderung',

@@ -4,8 +4,10 @@ namespace app\models\sectionTypes;
 
 use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
 use app\models\SectionedParagraph;
-use app\components\{HashedStaticCache, HTMLTools, LineSplitter, RequestContext};
-use app\models\db\{AmendmentSection, ConsultationMotionType, MotionSection};
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
+use CatoTH\HTML2OpenDocument\Text as ODTText;
+use app\components\{HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LineSplitter, RequestContext};
+use app\models\db\{AmendmentSection, Consultation, ConsultationMotionType, MotionSection};
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
 use yii\web\View;
@@ -119,6 +121,138 @@ class TextSimple extends TextSimpleCommon
         return $str;
     }
 
+    public function printMotionHtml2Pdf(bool $isRight, HtmlToPdfContent $content, Consultation $consultation): void
+    {
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        /** @var MotionSection $section */
+        $section = $this->section;
+        $settings = $section->getSettings();
+
+        $html = '<section class="motionSection">';
+
+        $paragraphs = $section->getTextParagraphObjects(!!$section->getSettings()->lineNumbers);
+        $lineNo = $section->getFirstLineNumber();
+
+        foreach ($paragraphs as $i => $paragraph) {
+            $html .= '<div class="text motionTextFormattings textOrig';
+            if ($section->getSettings()->fixedWidth) {
+                $html .= ' fixedWidthFont';
+            }
+            if ($i === 0 && $settings->printTitle) {
+                $html .= ' paragraphWithHeader';
+            }
+            $html .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
+
+            if ($i === 0 && $settings->printTitle) {
+                $html .= '<h2>' . Html::encode($this->getTitle()) . "</h2>\n";
+            }
+
+            if ($section->getSettings()->fixedWidth || $section->getSettings()->lineNumbers) {
+                foreach ($paragraph->lines as $j => $line) {
+                    if ($section->getSettings()->lineNumbers) {
+                        $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
+                        $line = str_replace('###LINENUMBER###', $lineNoStr, $line);
+                    } else {
+                        $line = str_replace('###LINENUMBER###', '', $line);
+                    }
+                    $line = str_replace('<br>', '', $line);
+                    $first3 = substr($line, 0, 3);
+                    if ($j > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
+                        $html .= '<br>';
+                    }
+                    $html .= $line;
+                }
+            } else {
+                $html .= $paragraph->origStr;
+            }
+            $html .= '</div>';
+        }
+
+        $html .= '</section>';
+
+        if ($section->isLayoutRight()) {
+            $content->textRight .= $html;
+        } else {
+            $content->textMain .= $html;
+        }
+    }
+
+    public function printAmendmentHtml2Pdf(bool $isRight, HtmlToPdfContent $content): void
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+
+        $title = $this->getTitle();
+        if ($title == \Yii::t('motion', 'motion_text')) {
+            $titPattern = \Yii::t('amend', 'amendment_for_prefix');
+            $title = str_replace('%PREFIX%', $section->getMotion()->getFormattedTitlePrefix(), $titPattern);
+        }
+        $str = '<h3 class="green">' . Html::encode($title) . '</h3>';
+
+        if ($section->getAmendment()->globalAlternative) {
+            $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+
+            $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
+            foreach ($htmlSections as $htmlSection) {
+                $str .= '<div class="paragraph"><div class="text motionTextFormattings';
+                if ($this->section->getSettings()->fixedWidth) {
+                    $str .= ' fixedWidthFont';
+                }
+                $str .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">' . $htmlSection->html . '</div></div>';
+            }
+
+            $str .= '</div>';
+            $content->textMain .= $str;
+
+            return;
+        }
+
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+        $firstLine  = $section->getFirstLineNumber();
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+
+        $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
+        if ($section->getSettings()->fixedWidth) {
+            $wrapStart .= ' fixedWidthFont';
+        }
+        $wrapStart .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
+        $wrapEnd   = '</div></section>';
+
+        if ($this->defaultOnlyDiff) {
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+            if (count($diffGroups) === 0) {
+                return;
+            }
+
+            $str .= '<div class="paragraph lineNumbers">';
+            $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine, null);
+            $str .= '</div>';
+        } else {
+            $str .= '<div class="paragraph lineNumbers">';
+
+            $diffs = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+            $lineNo = $firstLine;
+            foreach ($diffs as $diffSection) {
+                $lineNumbers = substr_count($diffSection, '###LINENUMBER###');
+                $html = LineSplitter::replaceLinebreakPlaceholdersByMarkup($diffSection, !!$section->getSettings()->lineNumbers, $lineNo);
+                $lineNo += $lineNumbers;
+                $str .= $wrapStart . $html . $wrapEnd;
+            }
+
+            $str .= '</div>';
+        }
+
+        $content->textMain .= $str;
+    }
+
     /**
      * @param string $data
      */
@@ -177,6 +311,22 @@ class TextSimple extends TextSimpleCommon
         $html = str_replace('<span class="underline">', '<span style="text-decoration: underline;">', $html);
         $html = str_replace('<span class="strike">', '<span style="text-decoration: line-through;">', $html);
         return $html;
+    }
+
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
+    {
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        /** @var MotionSection $section */
+        $section = $this->section;
+
+        if ($section->getSettings()->printTitle) {
+            $pdfLayout->printSectionHeading($this->getTitle());
+        }
+
+        $pdf->printMotionSection($section);
     }
 
     public function getMotionPlainHtmlWithLineNumbers(): string
@@ -301,6 +451,94 @@ class TextSimple extends TextSimpleCommon
         }
 
         return implode('<br><br>', $unchanged);
+    }
+
+    public function printMotionToODT(ODTText $odt): void
+    {
+        if ($this->isEmpty()) {
+            return;
+        }
+        $section = $this->section;
+        /** @var MotionSection $section */
+        $lineNumbers = $section->getMotion()->getMyConsultation()->getSettings()->odtExportHasLineNumers;
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
+        if ($section->getSettings()->lineNumbers && $lineNumbers) {
+            $paragraphs = $section->getTextParagraphObjects(true, false, false);
+            foreach ($paragraphs as $paragraph) {
+                $lines = [];
+                foreach ($paragraph->lines as $line) {
+                    $lines[] = preg_replace('/<br> ?\n?$/', '', $line);
+                }
+                $html = implode('<br>', $lines);
+                $html = str_replace('###LINENUMBER###', '', $html);
+                if (grapheme_substr($html, 0, 1) != '<') {
+                    $html = '<p>' . $html . '</p>';
+                }
+
+                $html = str_replace('<br><ul>', '<ul>', $html);
+                $html = str_replace('<br><ol>', '<ol>', $html);
+                $html = str_replace('<br><li>', '<li>', $html);
+
+                $html = HTMLTools::correctHtmlErrors($html);
+                $odt->addHtmlTextBlock($html, true);
+            }
+        } else {
+            $paras = $section->getTextParagraphLines();
+            foreach ($paras as $para) {
+                $html = str_replace('###LINENUMBER###', '', implode('', $para->lines));
+                $html = HTMLTools::correctHtmlErrors($html);
+                $odt->addHtmlTextBlock($html, false);
+            }
+        }
+    }
+
+    public function printAmendmentToODT(ODTText $odt): void
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+
+        if ($section->getAmendment()->globalAlternative) {
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
+
+            $html = HTMLTools::correctHtmlErrors($section->data);
+            $odt->addHtmlTextBlock($html, false);
+        } else {
+            $firstLine  = $section->getFirstLineNumber();
+            $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+            $formatter->setTextNew($section->data);
+            $formatter->setFirstLineNo($firstLine);
+
+            if ($this->defaultOnlyDiff) {
+                $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+                if (count($diffGroups) === 0) {
+                    return;
+                }
+
+                $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
+
+                $firstLine = $section->getFirstLineNumber();
+                $html = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+            } else {
+                $odt->addHtmlTextBlock('<h2>' . Html::encode($this->getTitle()) . '</h2>', false);
+
+                $diffs = $formatter->getDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
+                $html = '';
+                $lineNo = $firstLine;
+                foreach ($diffs as $diffSection) {
+                    $lineNumbers = substr_count($diffSection, '###LINENUMBER###');
+                    $html .= LineSplitter::replaceLinebreakPlaceholdersByMarkup($diffSection, !!$section->getSettings()->lineNumbers, $lineNo);
+                    $lineNo += $lineNumbers;
+                }
+            }
+
+            $html = HTMLTools::correctHtmlErrors($html);
+            $odt->addHtmlTextBlock($html, false);
+
+        }
     }
 
     public function showIfEmpty(): bool
