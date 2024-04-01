@@ -8,6 +8,7 @@
 - Optionally, "previous motion" and "next motion" links can be activated on motions, to enable browsing through the motions without having to go back to the home page.
 - The admin motion list can now be filtered by motion type.
 - Exporting "Inactive" motions and amendments from the admin motion list now also includes unpublished items.
+- The custom theme editor now also allows to (un)set the boldess, upper-casing and text shadows of headings.
 - For newly created application motion types, the signature is now optional and the gender field is not automatically generated anymore.
 - LaTeX will be deprecated for rendering PDFs. Instead, a new rendering based on Weasyprint is introduced, that should handle several edge cases better and will make it easier to customize PDF layouts. The default PHP-based PDF renderer will remain unchanged.
 - The internal caching system has been optimized, preventing parallel processes generating the same cache, which might overload systems with a high number of users after cache invalidation.
