@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace app\models\policies;
 
-use app\models\db\{ConsultationUserGroup, User};
+use app\models\db\{Consultation, ConsultationUserGroup, User};
 
 class EligibilityByGroup implements \JsonSerializable
 {
     public int $groupId;
     public string $groupTitle;
 
-    /** @var array - keys: user_id, user_name */
+    /** @var array<array{user_id: int, user_name: string, weight: int}> */
     public array $users;
 
-    public static function fromUserGroup(ConsultationUserGroup $group): self
+    public static function fromUserGroup(ConsultationUserGroup $group, Consultation $consultation): self
     {
         $eligibility = new EligibilityByGroup();
         $eligibility->groupId = $group->id;
         $eligibility->groupTitle = $group->getNormalizedTitle();
-        $eligibility->users = array_map(function (User $user): array {
+        $eligibility->users = array_map(function (User $user) use ($consultation): array {
             return [
                 'user_id' => $user->id,
                 'user_name' => $user->getAuthUsername(),
+                'weight' => $user->getSettingsObj()->getVoteWeight($consultation),
             ];
         }, $group->users);
 

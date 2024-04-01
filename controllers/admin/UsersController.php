@@ -255,6 +255,12 @@ class UsersController extends AdminBase
                             $this->getPostValue('newAuth')
                         );
                     }
+                    if ($this->getPostValue('voteWeight') !== null) {
+                        $this->userGroupAdminMethods->setUserVoteWeight(
+                            intval($this->getPostValue('userId')),
+                            intval($this->getPostValue('voteWeight'))
+                        );
+                    }
                     break;
                 case 'remove-user':
                     $this->userGroupAdminMethods->removeUser(intval($this->getPostValue('userId')));

@@ -103,19 +103,19 @@ class AgendaVoting
 
     private function getApiObject(?string $title, ?User $user, string $context): array
     {
-        $answers = ($this->voting ? $this->voting->getAnswers() : null);
+        $answers = $this->voting?->getAnswers();
         $votingBlockJson = [
             'id' => ($this->getId() === 'new' ? null : $this->getId()),
             'title' => $title,
-            'status' => ($this->voting ? $this->voting->votingStatus : null),
-            'votes_public' => ($this->voting ? $this->voting->votesPublic : null),
-            'results_public' => ($this->voting ? $this->voting->resultsPublic : null),
-            'assigned_motion' => ($this->voting ? $this->voting->assignedToMotionId : null),
-            'majority_type' => ($this->voting ? $this->voting->majorityType : null),
-            'quorum_type' => ($this->voting ? $this->voting->quorumType : null),
+            'status' => $this->voting?->votingStatus,
+            'votes_public' => $this->voting?->votesPublic,
+            'results_public' => $this->voting?->resultsPublic,
+            'assigned_motion' => $this->voting?->assignedToMotionId,
+            'majority_type' => $this->voting?->majorityType,
+            'quorum_type' => $this->voting?->quorumType,
             'user_groups' => [],
             'answers' => $answers,
-            'answers_template' => ($this->voting ? $this->voting->getAnswerTemplate() : null),
+            'answers_template' => $this->voting?->getAnswerTemplate(),
             'items' => [],
         ];
 
@@ -139,7 +139,7 @@ class AgendaVoting
 
         if ($context === static::API_CONTEXT_ADMIN) {
             $votingBlockJson['log'] = ($this->voting ? $this->voting->getActivityLogForApi() : []);
-            $votingBlockJson['max_votes_by_group'] = ($this->voting ? $this->voting->getSettings()->maxVotesByGroup : null);
+            $votingBlockJson['max_votes_by_group'] = $this->voting?->getSettings()->maxVotesByGroup;
         }
         if ($this->voting) {
             list($total, $users) = $this->voting->getVoteStatistics();
@@ -159,6 +159,7 @@ class AgendaVoting
 
         if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
             $votingBlockJson['votes_remaining'] = $this->voting->getUserRemainingVotes($user);
+            $votingBlockJson['vote_weight'] = $user->getSettingsObj()->getVoteWeight($this->voting->getMyConsultation());
         }
 
         foreach ($this->items as $item) {
@@ -166,7 +167,7 @@ class AgendaVoting
 
             if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
                 $vote = $this->voting->getUserSingleItemVote($user, $item);
-                $data['voted'] = ($vote ? $vote->getVoteForApi($answers) : null);
+                $data['voted'] = $vote?->getVoteForApi($answers);
                 $data['can_vote'] = $this->voting->userIsCurrentlyAllowedToVoteFor($user, $item, $vote);
             }
 

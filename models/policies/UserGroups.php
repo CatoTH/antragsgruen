@@ -122,7 +122,7 @@ class UserGroups extends IPolicy
         $groups = [];
 
         foreach ($this->groups as $group) {
-            $groups[] = EligibilityByGroup::fromUserGroup($group);
+            $groups[] = EligibilityByGroup::fromUserGroup($group, $this->consultation);
         }
 
         return $groups;
