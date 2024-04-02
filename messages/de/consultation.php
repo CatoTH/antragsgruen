@@ -61,7 +61,7 @@ return [
     'collecting_intro'   => 'Die folgenden Anträge und / oder Änderungsanträge sind auf der Suche nach Unterstützer*innen:',
     'collecting_motions' => 'Sammelnde Anträge',
     'collecting_motion'  => 'Antrag von %INITIATOR%. Aktueller Stand: %CURR%',
-    'collecting_amend'   => 'Änderungsantrag von %INITIATOR%, ab Zeile %LINE%. Aktueller Stand: %CURR%',
+    'collecting_amend'   => 'ÄA von %INITIATOR%, ab Zeile %LINE%. Aktueller Stand: %CURR%',
     'collecting_amends'  => 'Sammelnde Änderungsanträge',
 
     'noti_title'            => 'Benachrichtigungen',
