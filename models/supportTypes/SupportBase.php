@@ -47,18 +47,13 @@ abstract class SupportBase
      */
     public static function getImplementation(InitiatorForm $settings, ConsultationMotionType $motionType): SupportBase
     {
-        switch ($settings->type) {
-            case static::ONLY_INITIATOR:
-                return new OnlyInitiator($motionType, $settings);
-            case static::GIVEN_BY_INITIATOR:
-                return new GivenByInitiator($motionType, $settings);
-            case static::COLLECTING_SUPPORTERS:
-                return new CollectBeforePublish($motionType, $settings);
-            case static::NO_INITIATOR:
-                return new NoInitiator($motionType, $settings);
-            default:
-                throw new Internal('Supporter form type not found');
-        }
+        return match ($settings->type) {
+            static::ONLY_INITIATOR => new OnlyInitiator($motionType, $settings),
+            static::GIVEN_BY_INITIATOR => new GivenByInitiator($motionType, $settings),
+            static::COLLECTING_SUPPORTERS => new CollectBeforePublish($motionType, $settings),
+            static::NO_INITIATOR => new NoInitiator($motionType, $settings),
+            default => throw new Internal('Supporter form type not found'),
+        };
     }
 
     /**
@@ -144,7 +139,7 @@ abstract class SupportBase
                 $sup->userId     = null;
                 $sup->personType = ISupporter::PERSON_NATURAL;
                 $sup->position   = $i;
-                if (isset($post['supporters']['organization']) && isset($post['supporters']['organization'][$i])) {
+                if (isset($post['supporters']['organization'][$i])) {
                     $sup->organization = trim($post['supporters']['organization'][$i]);
                 }
                 $ret[] = $sup;

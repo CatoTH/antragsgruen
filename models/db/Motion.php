@@ -542,6 +542,9 @@ class Motion extends IMotion implements IRSSItem
                 // If it's activated explicitly, then supporting is allowed in every status, also after the deadline
                 return true;
             }
+            if ($this->hasEnoughSupporters($this->getMyMotionType()->getMotionSupportTypeClass()) && !$supportSettings->allowMoreSupporters) {
+                return false;
+            }
 
             if ($this->status !== IMotion::STATUS_COLLECTING_SUPPORTERS) {
                 return false;

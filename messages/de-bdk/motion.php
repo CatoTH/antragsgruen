@@ -22,6 +22,7 @@ Bitte beachte, dass sich die weiteren Antragsteller*innen deines Antrags mit ihr
     'support_done'                    => 'Du bist nun eine Antragsteller*in dieses Antrags.',
     'support_collection_hint'         => 'Dieser Antrag ist noch nicht eingereicht. Nötig sind <strong>mindestens %MIN% weitere Antragsteller*innen (aktueller Stand: %CURR%)</strong>. Wenn du die Antragstellung erklären willst, kannst du das unten auf dieser Seite tun.',
     'support_collection_reached_hint' => 'Dieser Antrag ist noch nicht eingereicht. <strong>Die Mindestzahl an Antragsteller*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die Antragsteller*in die Einreichung bestätigen, die den Antrag in Antragsgrün angelegt hat.',
+    'support_collection_reached_hint_m' => 'Eine Unterstützung des Antrags ist weiterhin möglich.',
     'support_reached_email_subject'   => 'Dein Antrag: Die notwendige Anzahl von Antragsteller*innen ist erreicht',
     'support_reached_email_body'      => 'Hallo,<br><br>Gute Nachrichten! Dein Antrag \"%TITLE%\" hat die Mindestzahl an weiteren Antragsteller*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht.<br><br>Viele Grüße,<br> Das Antragsgrün-Team',
     'support_question'                => 'Willst du diesen Antrag gemeinschaftlich stellen?',

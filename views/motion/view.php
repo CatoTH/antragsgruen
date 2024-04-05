@@ -114,6 +114,9 @@ if ($supportCollectingStatus) {
     $curr          = count($motion->getSupporters(true));
     if ($motion->hasEnoughSupporters($supportType)) {
         $textTmpl = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'support_collection_reached_hint');
+        if ($supportType->getSettingsObj()->allowMoreSupporters) {
+            $textTmpl .= ' ' . $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'support_collection_reached_hint_m');
+        }
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
     } else {
         $minAll        = $min + 1;
