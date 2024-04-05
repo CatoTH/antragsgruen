@@ -56,14 +56,10 @@ abstract class IPolicy
         return $names;
     }
 
-    protected Consultation $consultation;
-    protected IHasPolicies $baseObject;
     protected array $data;
 
-    public function __construct(Consultation $consultation, IHasPolicies $baseObject, ?array $data)
+    public function __construct(protected Consultation $consultation, protected IHasPolicies $baseObject, ?array $data)
     {
-        $this->consultation = $consultation;
-        $this->baseObject = $baseObject;
         $this->data = $data ?: [];
     }
 

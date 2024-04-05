@@ -230,6 +230,7 @@ return [
     'support_collection_hint'           => 'Aquesta esmena encara no ha estat oficialment presentada. <strong>Cal almenys %MIN% suports (actualment: %CURR%)</strong> per donar-li suport. Podeu donar suport a aquesta esmena en aquesta pàgina.',
     'support_collection_hint_female'    => 'Aquesta esmena encara no ha estat oficialment presentada. <strong>Cal almenys %MIN% suports, incloent %MIN_F% dones (actualment: %CURR% / %CURR_F%)</strong> per donar-li suport. Podeu donar suport a aquesta esmena en aquesta pàgina.',
     'support_collection_reached_hint'   => 'Aquesta esmena compta amb el nombre necessari de suports, però encara no ha estat oficialment presentada. Això depèn del proponent de l\'esmena.',
+    'support_collection_reached_hint_m' => '',
     'support_reached_email_subject'     => 'La teva esmena té prou suports',
     'support_reached_email_body'        => 'Hola,<br><br>la teva esmena a "%TITLE%" compta amb el nombre necessari de suports. Pots presentar-la oficialment aquí:<br><br><strong>%LINK%</strong><br><br>Tingues en compte que aquest pas és obligatori per presentar l\'esmena.',
     'support_finish_btn'                => 'Presenta oficialment l\'esmena',

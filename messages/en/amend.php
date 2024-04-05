@@ -231,6 +231,7 @@ return [
     'support_collection_hint'           => 'This amendment is not yet officially submitted. <strong>At least %MIN% supporters (currently: %CURR%)</strong> need to support it. You can support this amendment on this page.',
     'support_collection_hint_female'    => 'This amendment is not yet officially submitted. <strong>At least %MIN% supporters, including %MIN_F% women (currently: %CURR% / %CURR_F%)</strong> need to support it. You can support this amendment on this page.',
     'support_collection_reached_hint'   => 'This amendment has the necessary number of supporters, but is not yet officially submitted. This is up to the amendment proposer.',
+    'support_collection_reached_hint_m' => 'It is still possible to support this amendment.',
     'support_reached_email_subject'     => 'Your amendment has enough supporters',
     'support_reached_email_body'        => "Hi,<br><br>your amendment to \"%TITLE%\" has the necessary number of supporters. You can officially submit it here:<br><br><strong>%LINK%</strong><br><br>Please note that this step is mandatory to submit the amendment.",
     'support_finish_btn'                => 'Officially submit the amendment',
