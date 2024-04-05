@@ -66,7 +66,7 @@ $I->dontSee('Eingereicht (ungeprüft)', '.myAmendmentList');
 
 $I->click('#sidebar .collecting a');
 
-$I->see('Änderungsantrag von Testuser, ab Zeile 1', '.motionList');
+$I->see('ÄA von Testuser, ab Zeile 1', '.motionList');
 $I->see('Aktueller Stand: 0 / 1', '.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 
