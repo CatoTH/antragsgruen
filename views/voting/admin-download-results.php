@@ -77,9 +77,14 @@ function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answ
     $startRow++;
 
     $votedUserIds = [];
+    $votedUserWeights = [];
     foreach ($votes as $vote) {
         if ($vote->vote === $answer->dbId) {
             $votedUserIds[$vote->userId] = ($vote->getUser() ? $vote->getUser()->getAuthUsername() : Yii::t('export', 'voting_unknown_user'));
+            $votedUserWeights[$vote->userId] = $vote->weight;
+            if ($vote->weight > 1) {
+                $votedUserIds[$vote->userId] .= ' (×' . $vote->weight . ')';
+            }
         }
     }
 
@@ -92,10 +97,15 @@ function printVoteResults(Worksheet $worksheet, string $col, int $startRow, Answ
 
         $foundOne = false;
         foreach ($eligibility->users as $user) {
-            if (isset($votedUserIds[$user['user_id']])) {
+            if (isset($votedUserWeights[$user['user_id']])) {
                 $foundOne = true;
                 $shownUsers[] = $user['user_id'];
-                $worksheet->setCellValue($col . $startRow, $user['user_name']);
+                $toShowName = $user['user_name'];
+                $weight = $votedUserWeights[$user['user_id']];
+                if ($weight > 1) {
+                    $toShowName .= ' (×' . $weight . ')';
+                }
+                $worksheet->setCellValue($col . $startRow, $toShowName);
                 $startRow++;
             }
         }
@@ -137,7 +147,12 @@ function printEligibilityList(Worksheet $worksheet, string $col, int $startRow, 
         $startRow++;
 
         foreach ($group->users as $user) {
-            $worksheet->setCellValue($col . $startRow, $user['user_name']);
+            $toShowName = $user['user_name'];
+            $weight = $user['weight'] ?? 1;
+            if ($weight > 1) {
+                $toShowName .= ' (×' . $weight . ')';
+            }
+            $worksheet->setCellValue($col . $startRow, $toShowName);
             $startRow++;
         }
         if (count($group->users) === 0) {

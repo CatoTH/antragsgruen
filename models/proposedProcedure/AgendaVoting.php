@@ -239,6 +239,7 @@ class AgendaVoting
             $data['votes'] = array_map(function (Vote $vote) use ($answers, $voting): array {
                 return [
                     'vote' => $vote->getVoteForApi($answers),
+                    'weight' => $vote->weight,
                     'user_id' => $vote->userId,
                     'user_name' => ($vote->getUser() ? $vote->getUser()->getAuthUsername() : null),
                     'user_groups' => ($vote->getUser() ? $vote->getUser()->getConsultationUserGroupIds($voting->getMyConsultation()) : null),

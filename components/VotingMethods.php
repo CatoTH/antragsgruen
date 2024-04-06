@@ -241,6 +241,7 @@ class VotingMethods
         $vote->motionId = (is_a($item, Motion::class) ? $item->id : null);
         $vote->amendmentId = (is_a($item, Amendment::class) ? $item->id : null);
         $vote->questionId = (is_a($item, VotingQuestion::class) ? $item->id : null);
+        $vote->weight = $user->getSettingsObj()->getVoteWeight($votingBlock->getMyConsultation());
 
         // $public should be the same as votesPublic, as it was cached in the frontend and is sent from it as-is.
         // This is just a safeguard so that an accidental change in the value in the database does not lead to

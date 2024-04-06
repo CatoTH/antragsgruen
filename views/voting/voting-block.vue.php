@@ -181,7 +181,7 @@ ob_start();
                 <span v-if="voting.votes_users > 1 && voting.votes_users === voting.votes_total"><?= str_replace(['%VOTES%'], ['{{ voting.votes_total }}'],
                         Yii::t('voting', 'voting_presence_x_same')) ?></span>
             </div>
-            <div class="voting.vote_weight > 1">
+            <div v-if="voting.vote_weight > 1">
                 <?= Yii::t('voting', 'voting_weight') ?>:
                 {{ voting.vote_weight }}
             </div>

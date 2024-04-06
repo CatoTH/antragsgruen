@@ -414,7 +414,7 @@
 
   .regularVoteList {
     flex-basis: 25%;
-    flex-grow: 0;
+    flex-grow: 1;
 
     &.notVotedList {
       color: gray;

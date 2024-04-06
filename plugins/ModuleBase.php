@@ -252,6 +252,8 @@ class ModuleBase extends Module
 
     /**
      * @param Vote[] $votes
+     *
+     * @return array<int|string, array<string, int>>|null
      */
     public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array
     {
