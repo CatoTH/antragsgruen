@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * @var Site[] $site
  */
 
-$this->title = 'Antragsgrün - Motion.Tools - Managing motions and amendments online';
+$this->title = 'Antragsgrün - Motion.Tools - Managing resolutions, motions and amendments online';
 /** @var \app\controllers\Base $controller */
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
@@ -42,12 +42,12 @@ $controller->layoutParams->addInlineCss('
 
 ?>
 <h1>Antragsgrün / Motion.Tools<br>
-    <small>The Online Motion Administration for Political Conventions and General Assemblies</small>
+    <small>Manage Resolutions and Amendments on Conventions and Congresses.</small>
 </h1>
 
 <div class="content infoSite">
-    <p>Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments, and
-        candidacies: from submission to administration and print template.</p>
+    <p>Antragsgrün offers a clear and efficient tool for the effective administration of resolutions, motions, amendments, and
+        candidacies: from the submission of motions to the vote and the drafting of the resolution.</p>
 
     <p>Many organizations are already using the tool successfully such as the
         <a href="https://www.youthforum.org/">European Youth Forum</a>, the <a href="https://www.gruene.de/">German</a> and
@@ -58,7 +58,7 @@ $controller->layoutParams->addInlineCss('
 
 
 <section aria-labelledby="motions">
-    <h2 id="motions" class="green">Motions, amendments, candidacies</h2>
+    <h2 id="motions" class="green">Motions, amendments, resolutions, candidacies</h2>
 
     <div class="content infoSite">
         <p>Antragsgrün allows you to implement your whole motion process, including amendments and candidacies.</p>
@@ -190,7 +190,7 @@ $controller->layoutParams->addInlineCss('
 
         <p style="margin-top: 25px;"><strong>Free testing</strong></p>
         <p>If you want to test the system to see if it suits your purpose, you can do so easily by creating your own test
-            version without the need to provide contact details. The version is available for three days:
+            version without the need to provide contact details. The version is available for at least three days:
         </p>
         <p style="text-align: right;">
             <a href="https://sandbox.motion.tools/createsite?language=en" class="btn btn-default">Create test version</a>

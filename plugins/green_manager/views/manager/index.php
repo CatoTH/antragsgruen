@@ -11,7 +11,7 @@ use yii\helpers\Html;
 
 $assets = \app\plugins\green_manager\Assets::register($this);
 
-$this->title = 'Discuss.green - Managing motions and amendments online';
+$this->title = 'Discuss.green - Managing resolutions, motions and amendments online';
 /** @var \app\controllers\Base $controller */
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
@@ -22,19 +22,17 @@ $layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manager_index';
 $layout->fullWidth        = true;
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = \app\models\settings\AntragsgruenApp::getInstance();
 
 ?>
 <h1>Discuss.green<br>
-    <small>The Online Motion Administration for Party Conventions and Congresses.
-    </small>
+    <small>Manage Resolutions and Amendments on Conventions and Congresses.</small>
 </h1>
 
 <div class="content infoSite">
     <p>
-        Discuss.green offers a clear and efficient tool for the administration of motions, amendments and candidacies,
-        specifically designed for party conventions and congresses.
+        Discuss.green offers a clear and efficient tool for the administration of motions, resolutions, amendments and candidacies,
+        specifically designed for conventions and congresses of parties, social initiatives and organizations.
     </p>
 
     <p>
@@ -43,7 +41,7 @@ $params = \Yii::$app->params;
     </p>
 
     <p>
-        It's available as open source and we provide free hosting for all green parties in Europe.
+        It's available as open source and we provide free hosting for all green parties.
     </p>
 </div>
 
@@ -51,34 +49,31 @@ $params = \Yii::$app->params;
 <h2 id="who_uses_it" class="green">Who is already using it?</h2>
 <div class="content contentWhoUsesIt">
     <div class="list">
-        <a href="https://antraege.gruene.de/43bdk" target="_blank">
+        <a href="https://motiontool.europeangreens.eu/" target="_blank">
+            <img src="<?= $assets->baseUrl ?>/logo-egp.svg" alt="European Greens">
+            <div class="name">European Greens</div>
+            <div class="hint">EGP Online Congress</div>
+        </a>
+        <a href="https://antraege.gruene.de/" target="_blank">
             <img src="<?= $assets->baseUrl ?>/logo-b90.svg" alt="Bündnis 90 / Die GRÜNEN">
             <div class="name">Bündnis 90 / Die GRÜNEN</div>
             <div class="hint">Federal Convention</div>
         </a>
-        <a href="http://amend.fyeg.org/web/" target="_blank">
-            <img src="<?= $assets->baseUrl ?>/logo-fyeg.png" alt="Federation of Young European Greens">
-            <div class="name">Federation of Young European Greens</div>
-            <div class="hint">General Assembly</div>
-        </a>
     </div>
     <p>
-        ... as well as dozens of other green organizations (like the
-        <a href="https://convention.younggreens.org.uk/democracy/web/" target="_blank">Young Greens of England and
-            Wales</a> and the
-        <a href="https://bayern.antragsgruen.de/" target="_blank">Bavarian Greens</a>),
-        non-green parties like the austrian NEOS or the
-        <a href="https://mitmachen.spd-heidelberg.de/web/" target="_blank">german SPD</a>,
-        and civil organizations like the
+        ... as well as dozens of other green organizations (like the Greens in
+        <a href="https://gruene-wien.antragsgruen.de/" target="_blank">Vienna</a> and
+        <a href="https://edinburghgreens.discuss.green/" target="_blank">Edinburgh</a>,
+        non-green parties like the Austrian NEOS or the Dutch Volt,
+        and civil organizations like the <a href="https://yfj-votes.motion.tools/" target="_blank">European Youth Forum</a> or the
         <a href="https://tooldoku.dbjr.de/category/antragsgruen/" target="_blank">German Federal Youth Council</a>.
-
     </p>
 </div>
 
 <h2 id="funktionen" class="green">Core functionality</h2>
 <div class="content infoSite">
     <ul>
-        <li><strong>Submit motions, discussion papers and applications online</strong><br>
+        <li><strong>Submit motions, resolutions, discussion papers and applications online</strong><br>
             Flexible and user-friendly submission of motions and applications<br>
             Intuitive creation of amendments<br>
             Creating final resolutions based on the motions and amendments to them.<br>
