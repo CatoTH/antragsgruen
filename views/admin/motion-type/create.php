@@ -158,36 +158,6 @@ echo Html::beginForm('', 'post', [
     </div>
 </div>
 
-<div class="stdTwoCols">
-    <label class="leftColumn">
-        <?= Yii::t('admin', 'motion_type_pdf_layout') ?>:
-    </label>
-    <div class="rightColumn thumbnailedLayoutSelector">
-        <?php
-        $pdfTemplates = IPDFLayout::getSelectablePdfLayouts();
-        $hasTex = isset($pdfTemplates[1]);
-        foreach ($pdfTemplates as $lId => $layout) {
-            if ($hasTex) {
-                $checked = ($lId === 1);
-            } else {
-                $checked = ($lId === 'php0');
-            }
-            echo '<label class="layout">';
-            echo Html::radio('type[pdfLayout]', $checked, ['value' => $lId, 'required' => 'required']);
-            echo '<span>';
-            if ($layout->preview) {
-                echo '<img src="' . Html::encode($layout->preview) . '" ' .
-                    'alt="' . Html::encode($layout->title) . '" ' .
-                    'title="' . Html::encode($layout->title) . '"></span>';
-            } else {
-                echo '<span class="placeholder">' . Html::encode($layout->title) . '</span>';
-            }
-            echo '</label>';
-        }
-        ?>
-    </div>
-</div>
-
 <div class="saveholder">
     <button type="submit" name="create" class="btn btn-primary">
         <?= Yii::t('admin', 'motion_type_create_submit') ?>

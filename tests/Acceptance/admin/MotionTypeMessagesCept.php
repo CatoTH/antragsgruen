@@ -13,7 +13,6 @@ $I->click('.motionTypeCreate a');
 $I->fillField('#typeTitleSingular', 'Bewerbung');
 $I->fillField('#typeTitlePlural', 'Bewerbungen');
 $I->fillField('#typeCreateTitle', 'Bewirb dich!');
-$I->executeJS('$("input[name=\'type[pdfLayout]\'][value=\'php0\']").prop("checked", true)');
 $I->fillField('#typeMotionPrefix', 'B');
 $I->checkOption('.presetApplication');
 $I->submitForm('.motionTypeCreateForm', [], 'create');

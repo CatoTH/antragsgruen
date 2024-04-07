@@ -332,13 +332,6 @@ class MotionTypeController extends AdminBase
             $motionType->createTitle   = $type['createTitle'];
             $motionType->motionPrefix  = substr($type['motionPrefix'], 0, 10);
 
-            if (str_starts_with($type['pdfLayout'], 'php')) {
-                $motionType->pdfLayout     = intval(str_replace('php', '', $type['pdfLayout']));
-                $motionType->texTemplateId = null;
-            } elseif ($type['pdfLayout']) {
-                $motionType->texTemplateId = intval($type['pdfLayout']);
-            }
-
             if (!$motionType->save()) {
                 var_dump($motionType->getErrors());
                 die();
