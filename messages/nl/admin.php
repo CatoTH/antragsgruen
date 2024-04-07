@@ -232,7 +232,6 @@ return [
     'con_url_change'          => 'Change',
     'con_url_path'            => 'Directory',
     'con_pdf_intro'           => 'PDF introduction',
-    'con_pdf_intro_place'     => 'Name, photo, age, gender, place of birth, self-introduction, signature',
     'con_prefix_hide'         => '<strong>Hide title signatures</strong>',
     'con_speech_lists'        => '<strong>Speaking lists</strong>',
     'con_speech_quotas'       => 'Multiple sub-queues per speaking list',

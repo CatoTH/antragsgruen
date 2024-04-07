@@ -232,7 +232,6 @@ return [
     'con_url_change'          => 'Canviar',
     'con_url_path'            => 'Directori',
     'con_pdf_intro'           => 'Introducció PDF',
-    'con_pdf_intro_place'     => 'Nom, foto, edat, gènere, lloc de naixement, autointroducció, signatura',
     'con_prefix_hide'         => '<strong>Ocultar signatures del títol</strong>',
     'con_speech_lists'        => '<strong>Llistes de parlants</strong>',
     'con_speech_quotas'       => 'Múltiples sub-queues per llista de parlants',

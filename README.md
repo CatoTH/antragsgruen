@@ -1,17 +1,18 @@
 Antragsgrün
 ===========
 
-Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments and candidacies: from submission to administration and print template.
+Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments, resolutions and candidacies: from submission to administration and print template.
 
 A number of organisations are using the tool successfully such as the federal association of the European and German Green Party, the German Federal Youth Council, the European Youth Forum or the National Council of German Women's Organizations.
 It can be easily adapted to a variety of scenarios.
 
 Core functions:
 - Submit motions, proposals and discussion papers online
-- Clear amendment
-- Submitted amendments are displayed directly in the relevant text section.
+- Clear amendming process for users and administrators
 - Discuss motions
-- Sophisticated administration tools
+- Draft resolutions
+- Votings
+- Speaking lists
 - Diverse export options
 - Great flexibility - it adapts to a lot of different use cases
 - Technically mature, data privacy-friendly
@@ -22,7 +23,7 @@ Using the hosted version / testing it
 
 - German: [https://antragsgruen.de](https://antragsgruen.de/)
 - English: [https://motion.tools](https://motion.tools/), [https://discuss.green](https://discuss.green/)
-- French: [https://discuss.green](https://discuss.green/)
+- French, Dutch, Catalan: [https://discuss.green](https://discuss.green/)
 
 Installation
 ------------------------------------------
