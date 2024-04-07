@@ -183,7 +183,7 @@ ob_start();
             </div>
             <div v-if="voting.vote_weight > 1">
                 <?= Yii::t('voting', 'voting_weight') ?>:
-                {{ voting.vote_weight }}
+                <span class="votingWeight">{{ voting.vote_weight }}</span>
             </div>
         </footer>
         <div class="votingExplanation" v-if="isOpen">
