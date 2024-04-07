@@ -838,18 +838,16 @@ class User extends ActiveRecord implements IdentityInterface
         return $selectableGroups;
     }
 
-    public function getUserAdminApiObject(?Consultation $consultation): array
+    public function getUserAdminApiObject(Consultation $consultation): array
     {
         $data = $this->getUserdataExportObject();
         $data['id'] = $this->id;
-        $data['selectable_groups'] = ($consultation ? $this->getSelectableUserGroups($consultation) : null);
+        $data['selectable_groups'] = $this->getSelectableUserGroups($consultation);
+        $data['vote_weight'] = $this->getSettingsObj()->getVoteWeight($consultation);
 
-        $groups = $this->userGroups;
-        if ($consultation) {
-            $groups = array_values(array_filter($groups, function (ConsultationUserGroup $group) use ($consultation): bool {
-                return $group->isSpecificallyRelevantForConsultationOrSite($consultation);
-            }));
-        }
+        $groups = array_values(array_filter($this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
+            return $group->isSpecificallyRelevantForConsultationOrSite($consultation);
+        }));
         $data['groups'] = array_map(function (ConsultationUserGroup $group): int {
             return $group->id;
         }, $groups);

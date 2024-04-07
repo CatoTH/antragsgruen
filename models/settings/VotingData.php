@@ -102,17 +102,13 @@ class VotingData implements \JsonSerializable
 
     public function getTotalVotesForAnswer(Answer $answer): ?int
     {
-        switch ($answer->dbId) {
-            case AnswerTemplates::VOTE_YES:
-                return $this->votesYes;
-            case AnswerTemplates::VOTE_NO:
-                return $this->votesNo;
-            case AnswerTemplates::VOTE_ABSTENTION:
-                return $this->votesAbstention;
-            case AnswerTemplates::VOTE_PRESENT:
-                return $this->votesPresent;
-        }
-        return null;
+        return match ($answer->dbId) {
+            AnswerTemplates::VOTE_YES => $this->votesYes,
+            AnswerTemplates::VOTE_NO => $this->votesNo,
+            AnswerTemplates::VOTE_ABSTENTION => $this->votesAbstention,
+            AnswerTemplates::VOTE_PRESENT => $this->votesPresent,
+            default => null,
+        };
     }
 
     public function mapToApiResults(VotingBlock $voting): array

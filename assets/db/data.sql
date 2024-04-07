@@ -98,7 +98,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m221224_151157_remove_site_admins', '1671894884'),
   ('m230218_110905_motion_proposal_reference', '1676720198'),
   ('m230219_132917_motion_versions', '1676813921'),
-  ('m230318_132711_hierarchical_tags_with_settings', '1679146742')
+  ('m230318_132711_hierarchical_tags_with_settings', '1679146742'),
+  ('m240406_155022_vote_weight', '1712418888')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

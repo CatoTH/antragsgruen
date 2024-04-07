@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property int|null $amendmentId
  * @property int|null $questionId
  * @property int $vote
+ * @property int $weight
  * @property int $public
  * @property string $dateVote
  *
@@ -100,6 +101,8 @@ class Vote extends ActiveRecord
 
     /**
      * @param Vote[] $votes
+     *
+     * @return array<int|string, array<string, int>>
      */
     public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): array
     {
@@ -119,7 +122,7 @@ class Vote extends ActiveRecord
         }
         foreach ($votes as $vote) {
             $voteType = $vote->getVoteForApi($answers);
-            $results[VotingData::ORGANIZATION_DEFAULT][$voteType]++;
+            $results[VotingData::ORGANIZATION_DEFAULT][$voteType] += $vote->weight;
         }
         return $results;
     }

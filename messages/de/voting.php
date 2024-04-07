@@ -144,6 +144,7 @@ return [
     'voting_presence_1_x' => '%VOTES% Anwesenheiten von 1 Mitglied gemeldet',
     'voting_presence_x' => '%VOTES% Anwesenheiten von %USERS% Mitgliedern gemeldet',
     'voting_presence_x_same' => '%VOTES% Anwesenheiten gemeldet',
+    'voting_weight' => 'Stimmgewicht',
     'voting_show_votes' => 'Einzelstimmen anzeigen',
     'voting_hide_votes' => 'Einzelstimmen ausblenden',
 

@@ -86,6 +86,14 @@ ob_start();
                 </div>
                 <div class="stdTwoCols">
                     <div class="leftColumn">
+                        <?= Yii::t('admin', 'siteacc_admins_vote_weight' ) ?>
+                    </div>
+                    <div class="rightColumn">
+                        <input type="text" class="form-control inputVoteWeight" v-model="voteweight">
+                    </div>
+                </div>
+                <div class="stdTwoCols">
+                    <div class="leftColumn">
                         <?= Yii::t('admin', 'siteacc_admins_pp_replyto' ) ?>
                     </div>
                     <div class="rightColumn" v-if="!permissionGlobalEdit">
@@ -145,6 +153,7 @@ $html = ob_get_clean();
                 name_family: null,
                 organization: null,
                 ppreplyto: null,
+                voteweight: null,
                 userGroups: null,
                 settingPassword: false,
                 settingAuth: false,
@@ -187,6 +196,7 @@ $html = ob_get_clean();
                 this.name_family = user.name_family;
                 this.organization = user.organization;
                 this.ppreplyto = user.ppreplyto;
+                this.voteweight = user.vote_weight;
                 this.userGroups = user.groups;
                 this.settingPassword = false;
                 this.settingAuth = false;
@@ -198,7 +208,7 @@ $html = ob_get_clean();
             save: function ($event) {
                 const password = (this.settingPassword ? this.newPassword : null);
                 const auth = (this.settingAuth ? this.newAuth : null);
-                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, password, auth);
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth);
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {

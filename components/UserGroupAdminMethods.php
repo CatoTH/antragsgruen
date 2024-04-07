@@ -173,6 +173,16 @@ class UserGroupAdminMethods
         }
     }
 
+    public function setUserVoteWeight(int $userId, int $voteWeight): void
+    {
+        $user = User::findOne(['id' => $userId]);
+
+        $settings = $user->getSettingsObj();
+        $settings->setVoteWeight($this->consultation, $voteWeight);
+        $user->setSettingsObj($settings);
+        $user->save();
+    }
+
     private function getUserGroup(int $userGroupId): ?ConsultationUserGroup
     {
         foreach ($this->consultation->getAllAvailableUserGroups() as $userGroup) {

@@ -144,6 +144,7 @@ return [
     'voting_presence_1_x' => '%VOTES% presences have been marked by 1 user',
     'voting_presence_x' => '%VOTES% presences have been marked by %USERS% users',
     'voting_presence_x_same' => '%VOTES% presences have been marked',
+    'voting_weight' => 'Voting weight',
     'voting_show_votes' => 'Show vote list',
     'voting_hide_votes' => 'Hide vote list',
 

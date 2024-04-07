@@ -118,7 +118,7 @@ export class UserAdmin {
                         alert(err.responseText);
                     })
                 },
-                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, newPassword, newAuth) {
+                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth) {
                     this._performOperation({
                         op: 'save-user',
                         userId,
@@ -127,6 +127,7 @@ export class UserAdmin {
                         organization,
                         groups,
                         ppReplyTo,
+                        voteWeight,
                         newPassword,
                         newAuth
                     });

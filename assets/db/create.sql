@@ -769,6 +769,7 @@ CREATE TABLE `###TABLE_PREFIX###vote` (
   `motionId` int(11) DEFAULT NULL,
   `amendmentId` int(11) DEFAULT NULL,
   `questionId` int(11) DEFAULT NULL,
+  `weight` int(11) NOT NULL DEFAULT '1',
   `vote` tinyint(4) NOT NULL,
   `public` tinyint(4) NOT NULL,
   `dateVote` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP

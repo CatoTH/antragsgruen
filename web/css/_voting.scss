@@ -241,6 +241,13 @@
     border-bottom: solid 1px #ccc;
   }
 
+  .votingVisibility {
+    span {
+      margin-left:5px;
+      display: inline-block;
+    }
+  }
+
   .prepActions {
     .removeBtn {
       color: $colorDelLink;
@@ -406,11 +413,16 @@
   margin-top: 20px;
 
   .regularVoteList {
-    flex-basis: 33%;
+    flex-basis: 25%;
     flex-grow: 1;
 
     &.notVotedList {
       color: gray;
+    }
+
+    .voteWeight {
+      font-weight: bold;
+      white-space: nowrap;
     }
 
     ul {
@@ -434,6 +446,9 @@
     }
   }
 
+  .userGroupSetterOpener {
+    white-space: normal; // Breaks the layout with 4+ columns with default "nowrap"
+  }
   .userGroupSetter {
     display: flex;
     flex-direction: row;
