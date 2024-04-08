@@ -167,7 +167,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_title_changes'             => 'Titel-Änderungen',
     'unsaved_drafts'                  => 'Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:',
     'confirm_amendment'               => 'Änderungsantrag bestätigen',
-    'confirm_hint'                    => 'Bitte kontrolliere, ob du den Änderungsantrag wie dargestellt einreichen willst und <strong>bestätige</strong> dies dann unten auf dieser Seite.',
+    'confirm_hint'                    => 'Bitte kontrolliere, ob du den Änderungsantrag wie dargestellt einreichen willst, und <strong>bestätige</strong> dies dann unten auf dieser Seite.',
     'amendment_submitted'             => 'Änderungsantrag eingereicht',
     'amendment_create'                => 'Änderungsantrag stellen',
     'amendment_edit'                  => 'Änderungsantrag bearbeiten',

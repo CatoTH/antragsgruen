@@ -38,7 +38,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsvorschlags mit
     'merge_colliding'                   => 'Kollidierender Änderungsvorschlag',
     'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsvorschläge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsvorschläge</strong> - ist es notwendig, diese Änderungvorschläge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsvorschlag, indem du den Abschnitt zuerst markierst und mit der Del/Backspace-Taste anschließend löschst.',
     'confirm_amendment'               => 'Änderungsvorschlag bestätigen',
-    'confirm_hint'                    => 'Bitte kontrolliere, ob du den Änderungsvorschlag wie dargestellt einreichen willst und <strong>bestätige</strong> dies dann unten auf dieser Seite.',
+    'confirm_hint'                    => 'Bitte kontrolliere, ob du den Änderungsvorschlag wie dargestellt einreichen willst, und <strong>bestätige</strong> dies dann unten auf dieser Seite.',
     'amendment_submitted'             => 'Änderungsvorschlag eingereicht',
     'amendment_create'                => 'Änderungsvorschlag stellen',
     'amendment_edit'                  => 'Änderungsvorschlag bearbeiten',
