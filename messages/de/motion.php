@@ -7,7 +7,7 @@ return [
     'confirm_bread'                      => 'Bestätigen',
     'confirm_view_web'                   => 'Web-Fassung',
     'confirm_view_pdf'                   => 'Druckfassung',
-    'confirm_hint'                       => 'Bitte kontrolliere, ob du den Antrag wie dargestellt einreichen willst und <strong>bestätige</strong> dies dann unten auf dieser Seite.',
+    'confirm_hint'                       => 'Bitte kontrolliere, ob du den Antrag wie dargestellt einreichen willst, und <strong>bestätige</strong> dies dann unten auf dieser Seite.',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'sidebar_title_aria'                 => 'Funktionen und Links zum Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',

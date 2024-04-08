@@ -169,6 +169,8 @@ export class UserAdminCreate {
             form.querySelectorAll('.showIfNew').forEach(el => {
                 el.classList.add('hidden');
             });
+
+            (form.querySelector('#addUserPassword') as HTMLInputElement).removeAttribute('required');
         } else {
             form.querySelectorAll('.showIfExists').forEach(el => {
                 el.classList.add('hidden');
