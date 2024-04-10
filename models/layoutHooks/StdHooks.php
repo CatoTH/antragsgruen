@@ -303,7 +303,7 @@ class StdHooks extends Hooks
                 $pages = ConsultationText::getMenuEntries(Consultation::getCurrent()->site, $consultation);
                 foreach ($pages as $page) {
                     $options = ['class' => 'page' . $page->id, 'aria-label' => $page->title];
-                    $out     .= '<li>' . Html::a($page->title, $page->getUrl(), $options) . '</li>';
+                    $out     .= '<li>' . Html::a(Html::encode($page->title), $page->getUrl(), $options) . '</li>';
                 }
             }
 

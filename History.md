@@ -13,6 +13,7 @@
 - For newly created application motion types, the signature is now optional and the gender field is not automatically generated anymore.
 - LaTeX will be deprecated for rendering PDFs. Instead, a new rendering based on Weasyprint is introduced, that should handle several edge cases better and will make it easier to customize PDF layouts. The default PHP-based PDF renderer will remain unchanged.
 - The internal caching system has been optimized, preventing parallel processes generating the same cache, which might overload systems with a high number of users after cache invalidation.
+- Bugfix: Some texts were not properly escaped, allowing XSS by consultation admins.
 - Bugfix: The "Allow more supporters than required" could not be deactivated for support collection phases before publication.
 - Bugfix: Several issues with the predefined organisation list for user administration were fixed.
 - Bugfix: CAPTCHAs were sometimes hardly readable.
