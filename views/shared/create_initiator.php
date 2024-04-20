@@ -21,13 +21,15 @@ use yii\helpers\Html;
 
 /** @var app\controllers\Base $controller */
 $controller = $this->context;
-$layout     = $controller->layoutParams;
+$consultation = $controller->consultation;
 
+$layout     = $controller->layoutParams;
 $layout->loadDatepicker();
-$locale        = Tools::getCurrentDateLocale();
+
+$locale = Tools::getCurrentDateLocale();
 $selectOrganisations = [];
-if ($controller->consultation->getSettings()->organisations) {
-    $sorted = $controller->consultation->getSettings()->organisations;
+if ($consultation->getSettings()->organisations) {
+    $sorted = $consultation->getSettings()->organisations;
     usort($sorted, fn(ConsultationUserOrganisation $orga1, ConsultationUserOrganisation $orga2): int => strnatcasecmp($orga1->name, $orga2->name));
     foreach ($sorted as $orga) {
         $selectOrganisations[$orga->name] = $orga->name;
@@ -42,6 +44,9 @@ if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
 $preContactName = $initiator->contactName;
 
 $currentUser = \app\models\db\User::getCurrentUser();
+
+$canSupportAsPerson = $settings->canSupportAsPerson($consultation);
+$canSupportAsOrganization = $settings->canSupportAsOrganization($consultation);
 
 echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/InitiatorForm"
                 data-settings="' . Html::encode(json_encode($settings)) . '"
@@ -69,7 +74,7 @@ if ($allowOther) {
     }
 }
 
-if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
+if ($canSupportAsPerson && $canSupportAsOrganization) {
     ?>
     <div class="personTypeSelector stdTwoCols">
         <div class="leftColumn"><?= Yii::t('initiator', 'iAmA') ?></div>
@@ -98,10 +103,10 @@ if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
     </div>
     <?php
 }
-if ($settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
+if ($canSupportAsPerson && !$canSupportAsOrganization) {
     echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_NATURAL, ['id' => 'personTypeHidden']);
 }
-if (!$settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
+if (!$canSupportAsPerson && $canSupportAsOrganization) {
     echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_ORGANIZATION, ['id' => 'personTypeHidden']);
 }
 
@@ -172,7 +177,7 @@ if ($adminMode) {
     </div>
 <?php
 
-if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
+if ($settings->hasOrganizations && $canSupportAsPerson) {
     $preOrga = $initiator->organization;
     ?>
     <div class="stdTwoCols organizationRow">
@@ -199,7 +204,7 @@ if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
     <?php
 }
 
-if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBeOrganization) {
+if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $canSupportAsOrganization) {
     $preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
     ?>
     <div class="stdTwoCols resolutionRow">
@@ -217,7 +222,7 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->i
     <?php
 }
 
-if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBePerson) {
+if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $canSupportAsPerson) {
     $genderChoices = array_merge(['' => ''], SupportBase::getGenderSelection());
     ?>
     <div class="stdTwoCols genderRow">

@@ -365,7 +365,7 @@ class MotionController extends Base
 
 
         if (count($form->supporters) === 0) {
-            $form->supporters[] = MotionSupporter::createInitiator($supportType, $iAmAdmin);
+            $form->supporters[] = MotionSupporter::createInitiator($this->consultation, $supportType, $iAmAdmin);
         }
 
         return new HtmlResponse($this->render(

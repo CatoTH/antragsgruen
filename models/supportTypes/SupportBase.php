@@ -181,10 +181,10 @@ abstract class SupportBase
         }
 
         $personType = IntVal($initiator['personType']);
-        if ($personType === ISupporter::PERSON_NATURAL && !$settings->initiatorCanBePerson) {
+        if ($personType === ISupporter::PERSON_NATURAL && !$settings->canSupportAsPerson($this->motionType->getConsultation())) {
             $errors[] = 'Invalid person type.';
         }
-        if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->initiatorCanBeOrganization) {
+        if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->canSupportAsOrganization($this->motionType->getConsultation())) {
             $errors[] = 'Invalid person type.';
         }
         if ($personType === ISupporter::PERSON_ORGANIZATION &&
