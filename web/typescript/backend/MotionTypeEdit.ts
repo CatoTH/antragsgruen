@@ -110,6 +110,7 @@ class MotionTypeEdit {
         const $supportAllowMore = $form.find(".formGroupAllowMore input");
         const $initiatorCanBePerson = $form.find(".contactDetails .initiatorCanBePerson input");
         const $initiatorCanBeOrga = $form.find(".contactDetails .initiatorCanBeOrganization input");
+        const $initiatorSetPermissions= $form.find(".contactDetails .initiatorSetPermissions input");
 
         let currentType = parseInt($supportType.find('input').val() as string, 10);
 
@@ -130,6 +131,8 @@ class MotionTypeEdit {
             ),
             initiatorCanBePerson: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorCanBePerson.prop("checked")),
             initiatorCanBeOrga: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorCanBeOrga.prop("checked")),
+            initiatorSetPersonPermissions: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorSetPermissions.prop("checked") && $initiatorCanBePerson.prop("checked")),
+            initiatorSetOrgaPermissions: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorSetPermissions.prop("checked") && $initiatorCanBeOrga.prop("checked")),
         };
 
         const recalcVisibilities = () => {
@@ -171,9 +174,8 @@ class MotionTypeEdit {
             }
             recalcVisibilities();
         });
-        $initiatorGender.on("change", () => {
-            recalcVisibilities();
-        }).trigger("change");
+        $initiatorSetPermissions.on("change", recalcVisibilities).trigger("change");
+        $initiatorGender.on("change", recalcVisibilities).trigger("change");
     }
 
     private setMaxPdfSupporters() {
