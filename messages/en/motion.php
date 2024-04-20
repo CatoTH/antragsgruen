@@ -163,6 +163,8 @@ return [
     'err_invalid_name'          => 'No valid name entered.',
     'err_invalid_email'         => 'No valid e-mail-address given.',
     'err_invalid_phone'         => 'No valid phone number given given.',
+    'err_neither_person_orga'   => 'You can submit motions neither as person nor as organization. This might be a configuration error.',
+    'err_not_as_person_info'    => 'You can only create %TYPE% in the name of an organization. The option to create %TYPE% as single person is only available to the following groups: %GROUPS%',
     'info_draft_admin'          => 'Draft - only visible for admins',
     'withdraw_done'             => 'The motion has been withdrawn.',
     'withdraw_bread'            => 'Withdraw',

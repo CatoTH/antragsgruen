@@ -1,7 +1,7 @@
 <?php
 
 use app\components\Tools;
-use app\models\db\ISupporter;
+use app\models\db\{ConsultationMotionType, ISupporter};
 use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, InitiatorForm};
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
@@ -17,6 +17,8 @@ use yii\helpers\Html;
  * @var bool $hasSupporters
  * @var bool $supporterFulltext
  * @var bool $adminMode
+ * @var bool $isAmendment
+ * @var ConsultationMotionType $motionType
  */
 
 /** @var app\controllers\Base $controller */
@@ -103,11 +105,24 @@ if ($canSupportAsPerson && $canSupportAsOrganization) {
     </div>
     <?php
 }
+
+if (!$canSupportAsPerson && !$canSupportAsOrganization) {
+    echo '<div class="alert alert-danger noProposerTypeFoundError"><p>' . Yii::t('motion', 'err_neither_person_orga') . '</p></div>';
+}
 if ($canSupportAsPerson && !$canSupportAsOrganization) {
     echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_NATURAL, ['id' => 'personTypeHidden']);
 }
 if (!$canSupportAsPerson && $canSupportAsOrganization) {
     echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_ORGANIZATION, ['id' => 'personTypeHidden']);
+    $policy = $settings->getInitiatorPersonPolicy($consultation);
+    if ($settings->initiatorCanBePerson && is_a($policy, \app\models\policies\UserGroups::class)) {
+        // If submitting as person (delegate) is restricted by group, let's show an information for others.
+        $allowedGroups = array_map(fn(\app\models\db\ConsultationUserGroup $group) => $group->getNormalizedTitle(), $policy->getAllowedUserGroups());
+        $typeName = ($isAmendment ? Yii::t('amend', 'amendments') : $motionType->titlePlural);
+        echo '<div class="alert alert-info noPersonInitiatorPossible"><p>';
+        echo str_replace(["%GROUPS%", "%TYPE%"], [implode(", ", $allowedGroups), $typeName], Yii::t('motion', 'err_not_as_person_info'));
+        echo '</p></div>';
+    }
 }
 
 if ($adminMode) {
