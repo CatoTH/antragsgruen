@@ -69,6 +69,7 @@ rm -R vendor/symfony/http-client-contracts/Test
 rm -R vendor/symfony/service-contracts/Test
 rm -R vendor/scssphp/scssphp/bin
 rm -R vendor/cebe/markdown/bin
+rm -R vendor/predis/predis/docker
 rm -R vendor/yiisoft/yii2/i18n/migrations
 rm -R vendor/yiisoft/yii2/log/migrations
 rm -R vendor/bower-asset

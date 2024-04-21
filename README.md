@@ -33,16 +33,16 @@ Installation
 #### Requirements:
 
 - A MySQL-database
-- PHP >= 8.0. Recommended: 8.2+. Required packages for Debian Linux:
+- PHP >= 8.0. Recommended: 8.3+. Required packages for Debian / Ubuntu Linux:
 
 ```bash
 # Using PHP8-packages from [deb.sury.org](https://deb.sury.org/):
-apt-get install php8.2 php8.2-cli php8.2-fpm php8.2-intl php8.2-gd php8.2-mysql \
-                php8.2-opcache php8.2-curl php8.2-xml php8.2-mbstring php8.2-zip php8.2-iconv
+apt-get install php8.3 php8.3-cli php8.3-fpm php8.3-intl php8.3-gd php8.3-mysql \
+                php8.3-opcache php8.3-curl php8.3-xml php8.3-mbstring php8.3-zip php8.3-iconv
 ```
 
 - Apache or nginx. Example files are provided here:
-  - Example configuration for [nginx](docs/nginx.sample_single_site.conf)
+  - Example configuration for [nginx](docs/nginx.sample.conf)
   - Example configuration for [apache](docs/apache.sample.conf)
 
 #### Installation:
@@ -229,12 +229,9 @@ For command line commands, you can set this variable like this:
 Instead of "antragsgruen_sites", a custom plugin managing the authentication and authorization process and providing the custom home page is necessary for this use case. The default manager [antragsgruen_sites](plugins/antragsgruen_sites/) can be used as an example for this
 
 
-### Using Redis
+### Increasing performance by caching in Redis
 
-Install the Yii2-Redis-package:
-```bash
-./composer.phar require composer require yiisoft/yii2-redis
-```
+Redis can be used to cache the changes in amendments, user sessions, and many other aspects of the site. To enable redis, simply add a `redis` configuration key to the `config.json` and point it to your setup:
 
 Add the following settings to your config.json (and adapt them to your needs):
 ```json
@@ -242,14 +239,15 @@ Add the following settings to your config.json (and adapt them to your needs):
     "redis": {
         "hostname": "localhost",
         "port": 6379,
-        "database": 0
+        "database": 0,
+        "password": "mysecret" // optional
     }
 }
 ```
 
-### View Caching
+### File-based View Caching
 
-Antragsgrün already does a decent amount of caching by default. a more aggressive caching mode that caches some fully rendered HTML pages and PDFs can be enabled by enabling the following option in the `config.json`:
+Antragsgrün already does a decent amount of caching by default, and even more when enabling Redis. An even more aggressive caching mode that caches some fully rendered HTML pages and PDFs can be enabled by enabling the following option in the `config.json`:
 
 ```json
 {

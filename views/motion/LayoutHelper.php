@@ -799,9 +799,10 @@ class LayoutHelper
             if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
                 /** @var array<array{title: string, section: TextSimple}> $ppSections */
                 foreach ($ppSections as $ppSection) {
+                    /** @var array{title: string, section: TextSimple} $ppSection */
                     if ($ppSection['section']->getSectionId() === $section->sectionId) {
                         $ppSection['section']->setDefaultToOnlyDiff(false);
-                        $ppSection['section']->getSectionType()->printAmendmentHtml2Pdf($section->isLayoutRight(), $content);
+                        $ppSection['section']->printAmendmentHtml2Pdf($section->isLayoutRight(), $content);
                         $shownPp = true;
                     }
                 }
