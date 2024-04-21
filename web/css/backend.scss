@@ -1106,6 +1106,29 @@ label.legend {
     }
   }
 
+  label.initiatorSetPermissions {
+    margin: 0;
+    float: right;
+
+    .btn {
+      font-weight: normal;
+      padding: 0;
+      font-size: 0.8em;
+    }
+
+    .active {
+      display: none;
+    }
+    &:has(input:checked) {
+      .active {
+        display: inline;
+      }
+      .inactive {
+        display: none;
+      }
+    }
+  }
+
   .initiatorsCanMergeRow {
     label {
       display: block;

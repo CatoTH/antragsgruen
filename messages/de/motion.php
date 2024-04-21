@@ -186,6 +186,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'err_invalid_name'                   => 'Bitte gib deinen Namen ein.',
     'err_invalid_email'                  => 'Die eingegebene E-Mail-Adresse ist ungültig.',
     'err_invalid_phone'                  => 'Die eingegebene Telefonnummer ist ungültig.',
+    'err_neither_person_orga'            => 'Es ist aktuell so eingerichtet, dass Anträge weder als natürliche Person noch als Organisation eingereicht werden können. Möglicherweise ist das ein Einrichtungsfehler.',
+    'err_not_as_person_info'             => 'Du kannst %TYPE% nur stellvertretend für eine Organisation / ein Gremium einreichen. Die Möglichkeit, %TYPE% als Einzelperson einzureichen, steht nur folgenden Gruppen offen: %GROUPS%',
     'info_draft_admin'                   => 'Entwurf - nur für Admins sichtbar',
     'withdraw_done'                      => 'Der Antrag wurde zurückgezogen.',
     'withdraw_bread'                     => 'Zurückziehen',

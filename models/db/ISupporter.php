@@ -3,8 +3,7 @@
 namespace app\models\db;
 
 use app\models\supportTypes\SupportBase;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -156,21 +155,26 @@ abstract class ISupporter extends ActiveRecord
 
     abstract public function getIMotion(): IMotion;
 
-    public static function createInitiator(SupportBase $supportType, bool $iAmAdmin): static {
+    public static function createInitiator(Consultation $consultation, SupportBase $supportType, bool $iAmAdmin): static {
         $supporter = new static();
         $supporter->role = static::ROLE_INITIATOR;
         $supporter->dateCreation = date('Y-m-d H:i:s');
         if (User::getCurrentUser() && !$iAmAdmin) {
+            $settings = $supportType->getSettingsObj();
             $user = User::getCurrentUser();
+
             $supporter->userId = $user->id;
             $supporter->name = trim($user->name);
             $supporter->organization = $user->organization !== null ? trim($user->organization) : null;
             $supporter->contactEmail = $user->email !== null ? trim($user->email) : null;
-            if ($supportType->getSettingsObj()->initiatorCanBePerson) {
+            if ($settings->initiatorCanBePerson && $settings->canSupportAsPerson($consultation)) {
                 $supporter->personType = static::PERSON_NATURAL;
-            } else {
+            } elseif ($settings->initiatorCanBeOrganization && $settings->canSupportAsOrganization($consultation)) {
                 $supporter->personType = static::PERSON_ORGANIZATION;
                 $supporter->contactName = $user->name;
+            } else {
+                // This is likely a misconfiguration by the admin, setting the restrictions too tight.
+                $supporter->personType = static::PERSON_NATURAL;
             }
         }
         return $supporter;

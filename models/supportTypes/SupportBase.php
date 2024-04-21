@@ -180,11 +180,16 @@ abstract class SupportBase
             $errors[] = \Yii::t('motion', 'err_invalid_phone');
         }
 
-        $personType = IntVal($initiator['personType']);
-        if ($personType === ISupporter::PERSON_NATURAL && !$settings->initiatorCanBePerson) {
+        if (!isset($initiator['personType'])) {
+            $errors[] = 'Invalid person type.';
+            $personType = null;
+        } else {
+            $personType = intval($initiator['personType']);
+        }
+        if ($personType === ISupporter::PERSON_NATURAL && !$settings->canSupportAsPerson($this->motionType->getConsultation())) {
             $errors[] = 'Invalid person type.';
         }
-        if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->initiatorCanBeOrganization) {
+        if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->canSupportAsOrganization($this->motionType->getConsultation())) {
             $errors[] = 'Invalid person type.';
         }
         if ($personType === ISupporter::PERSON_ORGANIZATION &&
@@ -359,6 +364,8 @@ abstract class SupportBase
                 'hasSupporters'     => $this->hasInitiatorGivenSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
                 'adminMode'         => $this->adminMode,
+                'isAmendment'       => false,
+                'motionType'        => $motionType,
             ],
             $controller
         );
@@ -402,6 +409,8 @@ abstract class SupportBase
                 'hasSupporters'     => $this->hasInitiatorGivenSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
                 'adminMode'         => $this->adminMode,
+                'isAmendment'       => true,
+                'motionType'        => $motionType,
             ],
             $controller
         );

@@ -2,7 +2,10 @@
 
 namespace app\models\settings;
 
-class InitiatorForm implements \JsonSerializable
+use app\models\db\IHasPolicies;
+use app\models\policies\{All, IPolicy};
+
+class InitiatorForm implements \JsonSerializable, IHasPolicies
 {
     use JsonConfigTrait;
 
@@ -14,6 +17,8 @@ class InitiatorForm implements \JsonSerializable
 
     public bool $initiatorCanBePerson = true;
     public bool $initiatorCanBeOrganization = true;
+    private ?string $initiatorPersonPolicy = null;
+    private ?string $initiatorOrganizationPolicy = null;
 
     public int $minSupporters = 1;
     public ?int $minSupportersFemale = null;
@@ -48,5 +53,53 @@ class InitiatorForm implements \JsonSerializable
             $formdata['minSupportersFemale'] = null;
         }
         $this->saveForm($formdata, $affectedFields);
+    }
+
+    public function getInitiatorPersonPolicy(\app\models\db\Consultation $consultation): IPolicy
+    {
+        if ($this->initiatorPersonPolicy !== null) {
+            return IPolicy::getInstanceFromDb($this->initiatorPersonPolicy, $consultation, $this);
+        } else {
+            return new All($consultation, $this, null);
+        }
+    }
+
+    public function setInitiatorPersonPolicyObject(IPolicy $policy): void
+    {
+        $this->initiatorPersonPolicy = $policy->serializeInstanceForDb();
+    }
+
+    public function canSupportAsPerson(\app\models\db\Consultation $consultation): bool
+    {
+        return $this->initiatorCanBePerson && $this->getInitiatorPersonPolicy($consultation)->checkCurrUser(false);
+    }
+
+    public function getInitiatorOrganizationPolicy(\app\models\db\Consultation $consultation): IPolicy
+    {
+        if ($this->initiatorOrganizationPolicy !== null) {
+            return IPolicy::getInstanceFromDb($this->initiatorOrganizationPolicy, $consultation, $this);
+        } else {
+            return new All($consultation, $this, null);
+        }
+    }
+
+    public function setInitiatorOrganizationPolicyObject(IPolicy $policy): void
+    {
+        $this->initiatorOrganizationPolicy = $policy->serializeInstanceForDb();
+    }
+
+    public function canSupportAsOrganization(\app\models\db\Consultation $consultation): bool
+    {
+        return $this->initiatorCanBeOrganization && $this->getInitiatorOrganizationPolicy($consultation)->checkCurrUser(false);
+    }
+
+    public function isInDeadline(string $type): bool
+    {
+        return true;
+    }
+
+    public function getDeadlinesByType(string $type): array
+    {
+        return [];
     }
 }

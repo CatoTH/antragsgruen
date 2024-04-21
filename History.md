@@ -9,6 +9,7 @@
 - The admin motion list can now be filtered by motion type.
 - Exporting "Inactive" motions and amendments from the admin motion list now also includes unpublished items.
 - Users can be assigned a voting weights, for example if they represent multiple delegates. If so, their vote counts as multiple votes.
+- For creating motions and/or amendments, the two options to create it as single delegate or organization can new each be restricted to specific user groups.
 - The custom theme editor now also allows to (un)set the boldess, upper-casing and text shadows of headings.
 - For newly created application motion types, the signature is now optional and the gender field is not automatically generated anymore.
 - LaTeX will be deprecated for rendering PDFs. Instead, a new rendering based on Weasyprint is introduced, that should handle several edge cases better and will make it easier to customize PDF layouts. The default PHP-based PDF renderer will remain unchanged.

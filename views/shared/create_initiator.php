@@ -1,7 +1,7 @@
 <?php
 
 use app\components\Tools;
-use app\models\db\ISupporter;
+use app\models\db\{ConsultationMotionType, ISupporter};
 use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, InitiatorForm};
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
@@ -17,17 +17,21 @@ use yii\helpers\Html;
  * @var bool $hasSupporters
  * @var bool $supporterFulltext
  * @var bool $adminMode
+ * @var bool $isAmendment
+ * @var ConsultationMotionType $motionType
  */
 
 /** @var app\controllers\Base $controller */
 $controller = $this->context;
-$layout     = $controller->layoutParams;
+$consultation = $controller->consultation;
 
+$layout     = $controller->layoutParams;
 $layout->loadDatepicker();
-$locale        = Tools::getCurrentDateLocale();
+
+$locale = Tools::getCurrentDateLocale();
 $selectOrganisations = [];
-if ($controller->consultation->getSettings()->organisations) {
-    $sorted = $controller->consultation->getSettings()->organisations;
+if ($consultation->getSettings()->organisations) {
+    $sorted = $consultation->getSettings()->organisations;
     usort($sorted, fn(ConsultationUserOrganisation $orga1, ConsultationUserOrganisation $orga2): int => strnatcasecmp($orga1->name, $orga2->name));
     foreach ($sorted as $orga) {
         $selectOrganisations[$orga->name] = $orga->name;
@@ -42,6 +46,9 @@ if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
 $preContactName = $initiator->contactName;
 
 $currentUser = \app\models\db\User::getCurrentUser();
+
+$canSupportAsPerson = $settings->canSupportAsPerson($consultation);
+$canSupportAsOrganization = $settings->canSupportAsOrganization($consultation);
 
 echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/InitiatorForm"
                 data-settings="' . Html::encode(json_encode($settings)) . '"
@@ -69,7 +76,7 @@ if ($allowOther) {
     }
 }
 
-if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
+if ($canSupportAsPerson && $canSupportAsOrganization) {
     ?>
     <div class="personTypeSelector stdTwoCols">
         <div class="leftColumn"><?= Yii::t('initiator', 'iAmA') ?></div>
@@ -98,11 +105,24 @@ if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
     </div>
     <?php
 }
-if ($settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
+
+if (!$canSupportAsPerson && !$canSupportAsOrganization) {
+    echo '<div class="alert alert-danger noProposerTypeFoundError"><p>' . Yii::t('motion', 'err_neither_person_orga') . '</p></div>';
+}
+if ($canSupportAsPerson && !$canSupportAsOrganization) {
     echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_NATURAL, ['id' => 'personTypeHidden']);
 }
-if (!$settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
+if (!$canSupportAsPerson && $canSupportAsOrganization) {
     echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_ORGANIZATION, ['id' => 'personTypeHidden']);
+    $policy = $settings->getInitiatorPersonPolicy($consultation);
+    if ($settings->initiatorCanBePerson && is_a($policy, \app\models\policies\UserGroups::class)) {
+        // If submitting as person (delegate) is restricted by group, let's show an information for others.
+        $allowedGroups = array_map(fn(\app\models\db\ConsultationUserGroup $group) => $group->getNormalizedTitle(), $policy->getAllowedUserGroups());
+        $typeName = ($isAmendment ? Yii::t('amend', 'amendments') : $motionType->titlePlural);
+        echo '<div class="alert alert-info noPersonInitiatorPossible"><p>';
+        echo str_replace(["%GROUPS%", "%TYPE%"], [implode(", ", $allowedGroups), $typeName], Yii::t('motion', 'err_not_as_person_info'));
+        echo '</p></div>';
+    }
 }
 
 if ($adminMode) {
@@ -172,7 +192,7 @@ if ($adminMode) {
     </div>
 <?php
 
-if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
+if ($settings->hasOrganizations && $canSupportAsPerson) {
     $preOrga = $initiator->organization;
     ?>
     <div class="stdTwoCols organizationRow">
@@ -199,7 +219,7 @@ if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
     <?php
 }
 
-if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBeOrganization) {
+if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $canSupportAsOrganization) {
     $preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
     ?>
     <div class="stdTwoCols resolutionRow">
@@ -217,7 +237,7 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->i
     <?php
 }
 
-if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBePerson) {
+if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $canSupportAsPerson) {
     $genderChoices = array_merge(['' => ''], SupportBase::getGenderSelection());
     ?>
     <div class="stdTwoCols genderRow">

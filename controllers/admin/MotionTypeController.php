@@ -170,6 +170,13 @@ class MotionTypeController extends AdminBase
                 $settings->initiatorCanBeOrganization = true;
                 $settings->initiatorCanBePerson       = true;
             }
+            if (isset($input['initiatorSetPermissions'])) {
+                $settings->setInitiatorPersonPolicyObject($this->getPolicyFromUpdateData($motionType, $input['initiatorPersonPolicy']));
+                $settings->setInitiatorOrganizationPolicyObject($this->getPolicyFromUpdateData($motionType, $input['initiatorOrgaPolicy']));
+            } else {
+                $settings->setInitiatorPersonPolicyObject(new All($this->consultation, $settings, null));
+                $settings->setInitiatorOrganizationPolicyObject(new All($this->consultation, $settings, null));
+            }
             $motionType->supportTypeMotions = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
 
             if ($this->isPostSet('sameInitiatorSettingsForAmendments')) {
@@ -187,6 +194,13 @@ class MotionTypeController extends AdminBase
                     // Probably a mistake
                     $settings->initiatorCanBeOrganization = true;
                     $settings->initiatorCanBePerson       = true;
+                }
+                if (isset($input['amendmentInitiatorSetPermissions'])) {
+                    $settings->setInitiatorPersonPolicyObject($this->getPolicyFromUpdateData($motionType, $input['amendmentInitiatorPersonPolicy']));
+                    $settings->setInitiatorOrganizationPolicyObject($this->getPolicyFromUpdateData($motionType, $input['amendmentInitiatorOrgaPolicy']));
+                } else {
+                    $settings->setInitiatorPersonPolicyObject(new All($this->consultation, $settings, null));
+                    $settings->setInitiatorOrganizationPolicyObject(new All($this->consultation, $settings, null));
                 }
                 if (is_numeric($this->getHttpRequest()->post('maxPdfSupporters'))) {
                     $settings->maxPdfSupporters = intval($this->getPostValue('maxPdfSupporters'));

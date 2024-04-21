@@ -410,7 +410,7 @@ class AmendmentController extends Base
         }
 
         if (count($form->supporters) == 0) {
-            $form->supporters[] = AmendmentSupporter::createInitiator($supportType, $iAmAdmin);
+            $form->supporters[] = AmendmentSupporter::createInitiator($this->consultation, $supportType, $iAmAdmin);
         }
 
         return new HtmlResponse($this->render(
