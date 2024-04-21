@@ -510,7 +510,13 @@ class Consultation extends ActiveRecord
             return $tag->type === $type;
         });
         usort($tags, function (ConsultationSettingsTag $tag1, ConsultationSettingsTag $tag2): int {
-            return $tag1->position <=> $tag2->position;
+            if ($tag1->position < $tag2->position) {
+                return -1;
+            }
+            if ($tag1->position > $tag2->position) {
+                return 1;
+            }
+            return strnatcasecmp($tag1->getNormalizedName(), $tag2->getNormalizedName());
         });
         return $tags;
     }
