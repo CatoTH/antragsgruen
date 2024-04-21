@@ -12,6 +12,7 @@
 - For creating motions and/or amendments, the two options to create it as single delegate or organization can new each be restricted to specific user groups.
 - The custom theme editor now also allows to (un)set the boldess, upper-casing and text shadows of headings.
 - For newly created application motion types, the signature is now optional and the gender field is not automatically generated anymore.
+- Redis support for caching is now bundled in the default Antragsgrün distribution, so no need to manually install packages anymore. The setup can be done in the config.json.
 - LaTeX will be deprecated for rendering PDFs. Instead, a new rendering based on Weasyprint is introduced, that should handle several edge cases better and will make it easier to customize PDF layouts. The default PHP-based PDF renderer will remain unchanged.
 - The internal caching system has been optimized, preventing parallel processes generating the same cache, which might overload systems with a high number of users after cache invalidation.
 - Bugfix: Some texts were not properly escaped, allowing XSS by consultation admins.
