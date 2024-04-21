@@ -120,7 +120,6 @@ class MotionController extends AdminBase
     {
         $consultation = $this->consultation;
 
-        /** @var Motion $motion */
         $motion = $consultation->getMotion($motionId);
         if (!$motion) {
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
@@ -214,7 +213,6 @@ class MotionController extends AdminBase
 
             if (intval($modat['motionType']) !== $motion->motionTypeId) {
                 try {
-                    /** @var ConsultationMotionType $newType */
                     $newType = ConsultationMotionType::findOne($modat['motionType']);
                     if (!$newType || $newType->consultationId !== $motion->consultationId) {
                         throw new FormError('The new motion type was not found');
@@ -316,7 +314,6 @@ class MotionController extends AdminBase
 
     public function actionMove(string $motionId): ResponseInterface
     {
-        /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));
@@ -348,7 +345,6 @@ class MotionController extends AdminBase
 
     public function actionMoveCheck(string $motionId, string $checkType): ResponseInterface
     {
-        /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
             return new RedirectResponse(UrlHelper::createUrl('admin/motion-list/index'));

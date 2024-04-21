@@ -62,7 +62,7 @@ class SpeechQueueItem extends ActiveRecord
     public function getDateApplied(): ?\DateTime
     {
         if ($this->dateApplied) {
-            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateApplied);
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateApplied) ?: null;
         } else {
             return null;
         }
@@ -71,7 +71,7 @@ class SpeechQueueItem extends ActiveRecord
     public function getDateStarted(): ?\DateTime
     {
         if ($this->dateStarted) {
-            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateStarted);
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateStarted) ?: null;
         } else {
             return null;
         }
@@ -80,7 +80,7 @@ class SpeechQueueItem extends ActiveRecord
     public function getDateStopped(): ?\DateTime
     {
         if ($this->dateStopped) {
-            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateStopped);
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateStopped) ?: null;
         } else {
             return null;
         }

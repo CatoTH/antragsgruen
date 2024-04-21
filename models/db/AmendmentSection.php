@@ -68,13 +68,9 @@ class AmendmentSection extends IMotionSection
                 return $current;
             }
         }
-        /** @var Amendment $amendment */
         $amendment = Amendment::findOne($this->amendmentId);
-        if ($amendment) {
-            return $amendment->getMyConsultation();
-        } else {
-            return null;
-        }
+
+        return $amendment?->getMyConsultation();
     }
 
     public function rules(): array

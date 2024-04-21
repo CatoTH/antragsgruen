@@ -121,7 +121,7 @@ if (isset($_REQUEST['check_migrations'])) {
 if (isset($_POST['perform_migrations'])) {
     require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
     $yiiConfig = require(__DIR__ . '/../../config/console.php');
-    $config    = json_decode(file_get_contents($configFile), true);
+    $config    = json_decode((string) file_get_contents($configFile), true);
     new yii\console\Application($yiiConfig);
     ob_start();
     \app\components\updater\MigrateHelper::performMigrations();

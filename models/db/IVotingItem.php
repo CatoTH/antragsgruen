@@ -14,5 +14,6 @@ interface IVotingItem
     public function setVotingData(VotingData $data): void;
     public function setVotingResult(int $votingResult): void;
     public function removeFromVotingBlock(VotingBlock $votingBlock, bool $save): void;
+    /** @phpstan-ignore-next-line - method by Yii */
     public function save($runValidation = true, $attributeNames = null);
 }

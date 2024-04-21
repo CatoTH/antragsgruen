@@ -140,13 +140,13 @@ class MotionSection extends IMotionSection
         if ($current && $current->getMotion($this->motionId)) {
             return $current;
         } else {
-            /** @var Motion $motion */
             $motion = Motion::findOne($this->motionId);
             if ($motion) {
                 return Consultation::findOne($motion->consultationId);
             } else {
-                /** @var ConsultationSettingsMotionSection $section */
+                /** @var Motion $motion */
                 $section = ConsultationSettingsMotionSection::findOne($this->sectionId);
+                /** @var ConsultationSettingsMotionSection $section */
                 return $section->motionType->getConsultation();
             }
         }
@@ -226,7 +226,7 @@ class MotionSection extends IMotionSection
             }
             $filepath = $this->getExternallySavedFile();
             if (file_exists($filepath)) {
-                return file_get_contents($filepath);
+                return (string) file_get_contents($filepath);
             } else {
                 return '';
             }

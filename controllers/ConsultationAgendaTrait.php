@@ -24,7 +24,6 @@ trait ConsultationAgendaTrait
         $items = [];
         foreach ($arr as $i => $jsitem) {
             if ($jsitem['id'] > 0) {
-                /** @var ConsultationAgendaItem $item */
                 $item = ConsultationAgendaItem::findOne(['id' => $jsitem['id'], 'consultationId' => $this->consultation->id]);
                 if (!$item) {
                     throw new FormError('Inconsistency - did not find given agenda item: ' . $jsitem['id']);
@@ -66,7 +65,6 @@ trait ConsultationAgendaTrait
                 }
             }
         } else {
-            /** @var ConsultationAgendaItem $item */
             $item = ConsultationAgendaItem::findOne(['id' => $itemId, 'consultationId' => $this->consultation->id]);
             if (!$item) {
                 return new JsonResponse(['success' => false, 'message' => 'Item not found']);
@@ -143,7 +141,6 @@ trait ConsultationAgendaTrait
             return new RestApiExceptionResponse(403, 'No access');
         }
 
-        /** @var ConsultationAgendaItem $item */
         $item = ConsultationAgendaItem::findOne(['id' => $itemId, 'consultationId' => $this->consultation->id]);
         if (!$item) {
             return new JsonResponse(['success' => false, 'message' => 'Item not found']);

@@ -22,7 +22,7 @@ if (User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CHAN
 ) {
     $useCache = false;
 }
-if (!\app\models\settings\AntragsgruenApp::getInstance()->viewCacheFilePath) {
+if (!\app\models\settings\AntragsgruenApp::getInstance()->) {
     $useCache = false;
 }
 foreach ($sections as $section) {

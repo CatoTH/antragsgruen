@@ -631,6 +631,7 @@ class Motion extends IMotion implements IRSSItem
 
         $num = 0;
         foreach ($this->getSortedSections() as $section) {
+            /** @var MotionSection $section */
             $num += $section->getNumberOfCountableLines();
         }
 
@@ -1079,6 +1080,7 @@ class Motion extends IMotion implements IRSSItem
             $amendment->setMotionType($motionType, $sectionMapping);
         }
 
+        /** @var MotionSection[] $mySections */
         $mySections = $this->getSortedSections(false);
         for ($i = 0; $i < count($mySections); $i++) {
             /** @var ConsultationSettingsMotionSection $newSection */

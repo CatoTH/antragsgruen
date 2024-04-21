@@ -48,9 +48,11 @@ class Base extends Controller
      */
     public function beforeAction($action): bool
     {
-        Yii::$app->response->headers->add('X-Xss-Protection', '1');
-        Yii::$app->response->headers->add('X-Content-Type-Options', 'nosniff');
-        Yii::$app->response->headers->add('X-Frame-Options', 'sameorigin');
+        /** @var Response $response */
+        $response = Yii::$app->response;
+        $response->headers->add('X-Xss-Protection', '1');
+        $response->headers->add('X-Content-Type-Options', 'nosniff');
+        $response->headers->add('X-Frame-Options', 'sameorigin');
 
         if (!parent::beforeAction($action)) {
             return false;
@@ -287,14 +289,16 @@ class Base extends Controller
             }
         }
 
+        /** @var Response $response */
+        $response = Yii::$app->response;
         if ($this->site->getSettings()->apiCorsOrigins) {
             if (in_array('*', $this->site->getSettings()->apiCorsOrigins)) {
-                Yii::$app->response->headers->add('Access-Control-Allow-Origin', '*');
+                $response->headers->add('Access-Control-Allow-Origin', '*');
             } elseif ($this->getHttpRequest()->origin && in_array($this->getHttpRequest()->origin, $this->site->getSettings()->apiCorsOrigins)) {
-                Yii::$app->response->headers->add('Access-Control-Allow-Origin', $this->getHttpRequest()->origin);
+                $response->headers->add('Access-Control-Allow-Origin', $this->getHttpRequest()->origin);
             }
         }
-        Yii::$app->response->headers->add('Access-Control-Allow-Methods', implode(', ', $allowedMethods));
+        $response->headers->add('Access-Control-Allow-Methods', implode(', ', $allowedMethods));
 
         if ($this->getHttpMethod() === 'OPTIONS') {
             Yii::$app->end();
@@ -451,10 +455,13 @@ class Base extends Controller
 
     protected function showErrorpage(int $status, ?string $message): void
     {
+        /** @var Response $response */
+        $response = Yii::$app->response;
+
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
-        Yii::$app->response->statusCode    = $status;
-        Yii::$app->response->content       = $this->render(
+        $response->statusCode    = $status;
+        $response->content       = $this->render(
             '@app/views/errors/error',
             [
                 'httpStatus' => $status,

@@ -45,7 +45,6 @@ trait MotionActionsTrait
      */
     private function getComment(Motion $motion, int $commentId, bool $needsScreeningRights): MotionComment
     {
-        /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
@@ -132,7 +131,6 @@ trait MotionActionsTrait
      */
     private function screenCommentAccept(Motion $motion, int $commentId): void
     {
-        /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
@@ -160,7 +158,6 @@ trait MotionActionsTrait
      */
     private function screenCommentReject(Motion $motion, int $commentId): void
     {
-        /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));

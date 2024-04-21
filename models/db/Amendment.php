@@ -353,7 +353,6 @@ class Amendment extends IMotion implements IRSSItem
         if ($current && $current->isMyAmendment($this->id)) {
             return $current;
         } else {
-            /** @var Motion $motion */
             $motion = Motion::findOne($this->motionId);
             if (!$motion) {
                 return null;
