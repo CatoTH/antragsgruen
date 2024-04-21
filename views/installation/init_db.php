@@ -97,9 +97,9 @@ echo Html::beginForm('', 'post', [
     <input type="hidden" name="prettyUrls" value="<?= ($prettyBefore ? 1 : 0) ?>">
     <h2 class="green"><?= Yii::t('manager', 'config_lang') ?></h2>
     <div class="content">
-        <div class="form-group language">
-            <label class="col-sm-4 control-label" for="language"><?= Yii::t('manager', 'config_lang') ?>:</label>
-            <div class="col-sm-8"><?php
+        <div class="stdTwoCols language">
+            <label class="leftColumn control-label" for="language"><?= Yii::t('manager', 'config_lang') ?>:</label>
+            <div class="rightColumn"><?php
                 echo Html::dropDownList(
                     'language',
                     $form->language,
@@ -116,9 +116,9 @@ if (!$form->databaseParamsComeFromEnv()) {
     <h2 class="green"><?= Yii::t('manager', 'config_db') ?></h2>
     <div class="content">
 
-        <div class="form-group sqlType">
-            <label class="col-sm-4 control-label" for="sqlType"><?= Yii::t('manager', 'config_db_type') ?>:</label>
-            <div class="col-sm-8"><?php
+        <div class="stdTwoCols sqlType">
+            <label class="leftColumn control-label" for="sqlType"><?= Yii::t('manager', 'config_db_type') ?>:</label>
+            <div class="rightColumn"><?php
                 echo Html::dropDownList(
                     'sqlType',
                     $form->sqlType,
@@ -128,27 +128,27 @@ if (!$form->databaseParamsComeFromEnv()) {
                 ?></div>
         </div>
 
-        <div class="form-group sqlOption mysqlOption">
-            <label class="col-sm-4 control-label" for="sqlHost"><?= Yii::t('manager', 'config_db_host') ?>:</label>
-            <div class="col-sm-8">
+        <div class="stdTwoCols sqlOption mysqlOption">
+            <label class="leftColumn control-label" for="sqlHost"><?= Yii::t('manager', 'config_db_host') ?>:</label>
+            <div class="rightColumn">
                 <input type="text" name="sqlHost" placeholder="localhost"
                        value="<?= Html::encode($form->sqlHost) ?>" class="form-control" id="sqlHost">
             </div>
         </div>
 
-        <div class="form-group sqlOption mysqlOption">
-            <label class="col-sm-4 control-label" for="sqlUsername"><?= Yii::t('manager', 'config_db_username')
+        <div class="stdTwoCols sqlOption mysqlOption">
+            <label class="leftColumn control-label" for="sqlUsername"><?= Yii::t('manager', 'config_db_username')
                 ?>:</label>
-            <div class="col-sm-8">
+            <div class="rightColumn">
                 <input type="text" name="sqlUsername"
                        value="<?= Html::encode($form->sqlUsername) ?>" class="form-control" id="sqlUsername">
             </div>
         </div>
 
-        <div class="form-group sqlOption mysqlOption">
-            <label class="col-sm-4 control-label" for="sqlPassword"><?= Yii::t('manager', 'config_db_password')
+        <div class="stdTwoCols sqlOption mysqlOption">
+            <label class="leftColumn control-label" for="sqlPassword"><?= Yii::t('manager', 'config_db_password')
                 ?>:</label>
-            <div class="col-sm-8">
+            <div class="rightColumn">
                 <input type="password" name="sqlPassword" value="" class="form-control" id="sqlPassword"<?php
                 if ($form->sqlPassword != '') {
                     echo ' placeholder="' . Yii::t('manager', 'config_db_password_unch') . '"';
@@ -161,9 +161,9 @@ if (!$form->databaseParamsComeFromEnv()) {
             </div>
         </div>
 
-        <div class="form-group sqlOption mysqlOption">
-            <label class="col-sm-4 control-label" for="sqlDB"><?= Yii::t('manager', 'config_db_dbname') ?>:</label>
-            <div class="col-sm-8">
+        <div class="stdTwoCols sqlOption mysqlOption">
+            <label class="leftColumn control-label" for="sqlDB"><?= Yii::t('manager', 'config_db_dbname') ?>:</label>
+            <div class="rightColumn">
                 <input type="text" name="sqlDB"
                        value="<?= Html::encode($form->sqlDB) ?>" class="form-control" id="sqlDB">
             </div>
@@ -206,17 +206,17 @@ if (!$form->databaseParamsComeFromEnv()) {
             echo '<strong>' . Yii::t('manager', 'config_admin_already') . '</strong><br>';
             echo Yii::t('manager', 'config_admin_alreadyh');
         } else {
-            echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="adminUsername">' . Yii::t('manager', 'config_admin_email') . ':</label>
-    <div class="col-sm-8">
+            echo '<div class="stdTwoCols">
+    <label class="leftColumn control-label" for="adminUsername">' . Yii::t('manager', 'config_admin_email') . ':</label>
+    <div class="rightColumn">
         <input type="email" required name="adminUsername"
         value="' . Html::encode($form->adminUsername) . '" class="form-control" id="adminUsername">
     </div>
 </div>';
 
-            echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="adminPassword">' . Yii::t('manager', 'config_admin_pwd') . ':</label>
-    <div class="col-sm-8">
+            echo '<div class="stdTwoCols">
+    <label class="leftColumn control-label" for="adminPassword">' . Yii::t('manager', 'config_admin_pwd') . ':</label>
+    <div class="rightColumn">
         <input type="password" required name="adminPassword" value="" class="form-control" id="adminPassword">
     </div>
 </div>';

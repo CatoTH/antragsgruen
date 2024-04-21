@@ -123,7 +123,7 @@ class ConsultationFile extends ActiveRecord
     {
         $file = AntragsgruenApp::getInstance()->getTmpDir() . 'mime-' . uniqid();
         file_put_contents($file, $data);
-        $mime = mime_content_type($file);
+        $mime = (string) mime_content_type($file);
         unlink($file);
 
         return $mime;

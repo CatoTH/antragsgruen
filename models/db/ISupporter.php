@@ -156,6 +156,7 @@ abstract class ISupporter extends ActiveRecord
     abstract public function getIMotion(): IMotion;
 
     public static function createInitiator(Consultation $consultation, SupportBase $supportType, bool $iAmAdmin): static {
+        /** @phpstan-ignore-next-line - "unsafe usage of new static()" is intended here, static refers to the class implementing ISupporter */
         $supporter = new static();
         $supporter->role = static::ROLE_INITIATOR;
         $supporter->dateCreation = date('Y-m-d H:i:s');

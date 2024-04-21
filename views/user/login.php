@@ -176,7 +176,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
             <div class="form-group hidden checkbox" id="regConfirmation">
                 <label>
                     <input type="checkbox" name="confirmation" id="confirmation">
-                    <?= Yii::t('user', 'login_confirm_registration') ?>:
+                    <?= Yii::t('user', 'login_confirm_registration') ?>
                 </label>
             </div>
             <?php

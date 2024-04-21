@@ -13,8 +13,8 @@ $start = Tools::dateSql2bootstraptime($data['start']);
 $end = Tools::dateSql2bootstraptime($data['end']);
 
 ?>
-<div class="row deadlineEntry">
-    <div class="col-md-4 col">
+<div class="deadlineEntry">
+    <div class="col">
         <div class="input-group date datetimepickerFrom">
             <span class="input-group-addon">
                 <?= Yii::t('admin', 'motion_deadline_from') ?>
@@ -27,7 +27,7 @@ $end = Tools::dateSql2bootstraptime($data['end']);
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
     </div>
-    <div class="col-md-4 col">
+    <div class="col">
         <div class="input-group date datetimepickerTo">
             <span class="input-group-addon">
                 <?= Yii::t('admin', 'motion_deadline_to') ?>
@@ -40,12 +40,12 @@ $end = Tools::dateSql2bootstraptime($data['end']);
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
     </div>
-    <div class="col-md-3 col">
+    <div class="col">
         <input type="text" class="form-control phaseTitle" placeholder="<?= Yii::t('admin', 'motion_deadline_name') ?>"
                name="deadlines[<?= $type ?>][title][]"
                value="<?= Html::encode($data['title'] ? $data['title'] : '') ?>">
     </div>
-    <div class="col-md-1">
+    <div class="delCol">
         <button type="button" class="btn btn-link btn-danger delRow">
             <span class="glyphicon glyphicon-remove-circle"></span>
         </button>

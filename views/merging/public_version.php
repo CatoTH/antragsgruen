@@ -52,11 +52,11 @@ if ($consultation->getSettings()->hasSpeechLists) {
              data-antragsgruen-widget="frontend/MotionMergeAmendmentsPublic">
         <h2 class="green"><?= Yii::t('amend', 'merge_new_text') ?></h2>
         <div class="content">
-            <div class="row">
-                <div class="col-md-8">
+            <div class="header">
+                <div class="motionUpdateInfo">
                     <div class="alert alert-info" role="alert"><?= Yii::t('motion', 'merging_draft_warning') ?></div>
                 </div>
-                <div class="col-md-4 motionUpdateWidget">
+                <div class="motionUpdateWidget">
                     <div>
                         <button class="btn btn-sm btn-default" type="button" title="<?= Yii::t('amend', 'merge_draft_fullscreen') ?>"
                                 data-antragsgruen-widget="frontend/FullscreenToggle">

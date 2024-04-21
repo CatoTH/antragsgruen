@@ -29,7 +29,7 @@
   }
 }
 
-#usernamePasswordForm {
+#usernamePasswordForm, #confirmAccountForm {
   @media (min-width: $screenMinWith) {
     width: 400px;
   }

@@ -34,7 +34,7 @@ class MotionSupporter extends ISupporter
     public const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
     private static bool $handlersAttached = false;
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 

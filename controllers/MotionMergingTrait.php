@@ -2,8 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
+use app\models\db\{Motion, MotionSection, Consultation};
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -11,7 +10,6 @@ use app\models\http\{BinaryFileResponse,
     RedirectResponse,
     ResponseInterface};
 use app\components\{MotionSorter, UrlHelper};
-use app\models\db\Consultation;
 use app\models\exceptions\Inconsistency;
 use app\models\mergeAmendments\{Draft, Merge, Init};
 use app\models\MotionSectionChanges;
@@ -158,7 +156,8 @@ trait MotionMergingTrait
             $form = Init::fromInitForm($motion, [], []);
 
             foreach ($motion->getSortedSections(false) as $section) {
-                $type                               = $section->getSettings();
+                /** @var MotionSection $section */
+                $type = $section->getSettings();
                 $newAmendmentsParagraphs[$type->id] = [];
                 // @TODO Support titles?
                 if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
