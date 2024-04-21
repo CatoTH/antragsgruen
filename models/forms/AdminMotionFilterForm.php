@@ -1217,9 +1217,9 @@ class AdminMotionFilterForm
         return false;
     }
 
-    protected function showAdditionalActions(): string
+    protected function showAdditionalActions(string $pre): string
     {
-        return '';
+        return $pre;
     }
 
     public static function performAdditionalListActions(Consultation $consultation): void
@@ -1243,19 +1243,21 @@ class AdminMotionFilterForm
         </div>
 
         <div class="actionButtons">' . \Yii::t('admin', 'list_marked') . ': &nbsp;';
+        $actions = '';
             if ($privilegeDelete) {
-                $str .= '<button type="submit" class="btn btn-danger deleteMarkedBtn" name="delete">' . \Yii::t('admin', 'list_delete') . '</button> &nbsp;';
+                $actions .= '<button type="submit" class="btn btn-danger deleteMarkedBtn" name="delete">' . \Yii::t('admin', 'list_delete') . '</button> &nbsp;';
             }
             if ($privilegeScreening) {
-                $str .= '<button type="submit" class="btn btn-info unscreenMarkedBtn" name="unscreen">' . \Yii::t('admin', 'list_unscreen') . '</button> &nbsp;';
-                $str .= '<button type="submit" class="btn btn-success screenMarkedBtn" name="screen">' . \Yii::t('admin', 'list_screen') . '</button> &nbsp;';
+                $actions .= '<button type="submit" class="btn btn-info unscreenMarkedBtn" name="unscreen">' . \Yii::t('admin', 'list_unscreen') . '</button> &nbsp;';
+                $actions .= '<button type="submit" class="btn btn-success screenMarkedBtn" name="screen">' . \Yii::t('admin', 'list_screen') . '</button> &nbsp;';
             }
             if ($privilegeProposals) {
-                $str .= '<button type="submit" class="btn btn-success" name="proposalVisible">' . \Yii::t('admin', 'list_proposal_visible') . '</button>';
+                $actions .= '<button type="submit" class="btn btn-success" name="proposalVisible">' . \Yii::t('admin', 'list_proposal_visible') . '</button>';
             }
             if ($this->hasAdditionalActions()) {
-                $str .= $this->showAdditionalActions();
+                $actions = $this->showAdditionalActions($str);
             }
+            $str .= $actions;
             $str .= '</div>
         </section>';
 
