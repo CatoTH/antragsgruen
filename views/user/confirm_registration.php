@@ -32,23 +32,23 @@ if ($email) {
 }
 echo Html::beginForm(UrlHelper::createUrl($params), 'post', ['id' => 'confirmAccountForm']);
 
-echo '<div class="row"><div class="form-group col-md-6">
+echo '<div class="form-group">
     <label for="username">' . Yii::t('user', 'confirm_username') . ':</label>
     <input type="text" value="' . Html::encode($email) . '" id="username" name="email" class="form-control" ';
 if ($email != '') {
     echo "disabled";
 }
 echo '>
-        </div></div>
+        </div>
 
-    <div class="row"><div class="form-group col-md-6">
+    <div class="form-group">
         <label for="code">' . Yii::t('user', 'confirm_code') . ':</label>
         <input type="text" name="code" value="" id="code" class="form-control">
-    </div></div>
+    </div>
 
-    <div class="row"><div class="col-md-6">
+    <div>
         <input type="submit" value="' . Yii::t('user', 'confirm_btn_do') . '" class="btn btn-primary">
-    </div></div>
+    </div>
     ';
 
 echo Html::endForm();

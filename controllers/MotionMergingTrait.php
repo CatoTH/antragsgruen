@@ -2,9 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
+use app\models\db\{Motion, MotionSection, Consultation};
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -12,7 +10,6 @@ use app\models\http\{BinaryFileResponse,
     RedirectResponse,
     ResponseInterface};
 use app\components\{MotionSorter, UrlHelper};
-use app\models\db\Consultation;
 use app\models\exceptions\Inconsistency;
 use app\models\mergeAmendments\{Draft, Merge, Init};
 use app\models\MotionSectionChanges;
