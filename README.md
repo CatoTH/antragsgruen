@@ -127,7 +127,7 @@ In some cases, nicer and easier to customize PDFs can be generated though by usi
 
 ### PHP-Based PDF-Rendering
 
-The PHP-processes need writing permissions to the folder
+The PHP-processes need writing permissions to the folder.
 If this is not possible, you need to specify an alternative writable folder by hand by adding the following line to the beginning of `web/index.php`:
 ```php
 define("K_PATH_FONTS", "/path/to/writable/directory/");
@@ -143,9 +143,19 @@ After that, newer PDF files should be able to be parsed as well.
 
 ### Weasyprint-based PDF-rendering
 
+Variant 1, for a distribution with a reasonably recent version of Weasyprint (60+):
 ```bash
 apt-get install weasyprint
 ```
+
+Variant 2, installation using pip (requires Python 3 including VirtualEnv support):
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install weasyprint
+weasyprint --info
+```
+(Refer to: https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#linux)
 
 Add the following settings to your config.json (and adapt them to your needs):
 
@@ -300,7 +310,7 @@ Developing
 
 ### Technical considerations
 
-- PHP version support: Antragsgrün supports PHP versions for one year after its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.0 is supported until end 2023, the first major version of Antragsgrün after end 2024 will drop support for PHP 8.0).
+- PHP version support: Antragsgrün supports PHP versions for one year after its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.0 is supported until end 2023, the first major version of Antragsgrün by end 2024 will drop support for PHP 8.0).
 - PHP Framework: [Yii2](https://www.yiiframework.com/) is used. While it would not be the framework of choice for a fresh start anymore, it works sufficiently well since its introduction in 2015 and is still supported, so there is no plan to migrate to Symfony of Laravel yet.
 - JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though written in TypeScript and loaded via [RequireJS](https://requirejs.org/). For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
 - REST API: The API is documented below. There will be more development regarding the REST API, including authorized endpoints using JWT based authentication.
