@@ -84,12 +84,13 @@ trait ConsultationAgendaTrait
                 $item->time = null;
             }
             try {
-                if ($data['motionType'] > 0 && $this->consultation->getMotionType($data['motionType'])) {
+                if ($data['motionType'] > 0) {
+                    $this->consultation->getMotionType($data['motionType']); // Throws an exception if not existent
                     $item->motionTypeId = intval($data['motionType']);
                 } else {
                     $item->motionTypeId = null;
                 }
-            } catch (NotFound $e) {
+            } catch (NotFound) {
                 $item->motionTypeId = null;
             }
             $settings                       = $item->getSettingsObj();

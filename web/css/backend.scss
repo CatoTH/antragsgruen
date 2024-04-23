@@ -1441,6 +1441,14 @@ label.legend {
   .addUsersByLogin {
     margin-top: 15px;
   }
+  .namesEmailsHolder {
+    display: flex;
+    width: 100%;
+    > * {
+      flex-grow: 1;
+      padding: 10px;
+    }
+  }
   .mailExplanation {
     font-size: 12px;
 

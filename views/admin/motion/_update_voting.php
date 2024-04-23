@@ -142,33 +142,33 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
                        value="<?= Html::encode($voting->comment ?: '') ?>">
             </div>
         </div>
-        <div class="contentVotingResult row">
-            <div class="col-md-3">
+        <div class="contentVotingResult">
+            <div>
                 <label for="votesYes"><?= Yii::t('amend', 'merge_new_votes_yes') ?></label>
                 <input class="form-control" name="votes[yes]" type="number" id="votesYes"
                        value="<?= Html::encode($voting->votesYes !== null ? $voting->votesYes : '') ?>">
             </div>
-            <div class="col-md-3">
+            <div>
                 <label for="votesNo"><?= Yii::t('amend', 'merge_new_votes_no') ?></label>
                 <input class="form-control" name="votes[no]" type="number" id="votesNo"
                        value="<?= Html::encode($voting->votesNo !== null ? $voting->votesNo : '') ?>">
             </div>
-            <div class="col-md-3">
+            <div>
                 <label for="votesAbstention"><?= Yii::t('amend', 'merge_new_votes_abstention') ?></label>
                 <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention"
                        value="<?= Html::encode($voting->votesAbstention !== null ? $voting->votesAbstention : '') ?>">
             </div>
-            <div class="col-md-3">
+            <div>
                 <label for="votesInvalid"><?= Yii::t('amend', 'merge_new_votes_invalid') ?></label>
                 <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
                        value="<?= Html::encode($voting->votesInvalid !== null ? $voting->votesInvalid : '') ?>">
             </div>
-            <?php
-            $detailed = $voting->renderDetailedResults();
-            if ($detailed) {
-                echo '<div class="col-md-12">' . $detailed . '</div>';
-            }
-            ?>
         </div>
+        <?php
+        $detailed = $voting->renderDetailedResults();
+        if ($detailed) {
+            echo '<div>' . $detailed . '</div>';
+        }
+        ?>
     </div>
 </section>

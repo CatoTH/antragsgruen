@@ -197,21 +197,21 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
             <div class="mailExplanation alert alert-info">
                 <?= Yii::t('admin', 'siteacc_acc_expl_mail') ?>
             </div>
-            <div class="row">
-                <label class="col-md-6">
+            <div class="namesEmailsHolder">
+                <label>
                     <?= Yii::t('admin', 'siteacc_new_emails') ?>
-                    <textarea id="emailAddresses" name="emailAddresses"
+                    <textarea class="form-control" id="emailAddresses" name="emailAddresses"
                               rows="15"><?= Html::encode($preEmails) ?></textarea>
                 </label>
 
-                <label class="col-md-6">
+                <label>
                     <?= Yii::t('admin', 'siteacc_new_names') ?>
-                    <textarea id="names" name="names" rows="15"><?= Html::encode($preNames) ?></textarea>
+                    <textarea class="form-control" id="names" name="names" rows="15"><?= Html::encode($preNames) ?></textarea>
                 </label>
             </div>
 
             <label for="emailText"><?= Yii::t('admin', 'siteacc_new_text') ?>:</label>
-            <textarea id="emailText" name="emailText" rows="15" cols="80"><?= Html::encode($preText) ?></textarea>
+            <textarea id="emailText" class="form-control" name="emailText" rows="15" cols="80"><?= Html::encode($preText) ?></textarea>
 
             <br><br>
             <div class="saveholder">
@@ -229,20 +229,20 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
             <div class="mailExplanation alert alert-info">
                 <?= Yii::t('admin', 'siteacc_acc_expl_nomail') ?>
             </div>
-            <div class="row">
-                <label class="col-md-4">
+            <div class="namesEmailsHolder">
+                <label>
                     <?= Yii::t('admin', 'siteacc_new_emails') ?>
-                    <textarea id="emailAddresses" name="emailAddresses"
+                    <textarea class="form-control" id="emailAddresses" name="emailAddresses"
                               rows="15"><?= Html::encode($preEmails) ?></textarea>
                 </label>
 
-                <label class="col-md-4">
+                <label>
                     <?= Yii::t('admin', 'siteacc_new_pass') ?>
-                    <textarea id="passwords" name="passwords" rows="15"><?= Html::encode($prePasswords) ?></textarea>
+                    <textarea class="form-control" id="passwords" name="passwords" rows="15"><?= Html::encode($prePasswords) ?></textarea>
                 </label>
 
-                <label class="col-md-4"><?= Yii::t('admin', 'siteacc_new_names') ?>
-                    <textarea id="names" name="names" rows="15"><?= Html::encode($preNames) ?></textarea>
+                <label><?= Yii::t('admin', 'siteacc_new_names') ?>
+                    <textarea class="form-control" id="names" name="names" rows="15"><?= Html::encode($preNames) ?></textarea>
                 </label>
             </div>
             <br><br>

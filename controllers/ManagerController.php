@@ -106,8 +106,7 @@ class ManagerController extends Base
 
         $editable = is_writable($configfile);
 
-        if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
-            $myUsername         = posix_getpwuid(posix_geteuid());
+        if (function_exists('posix_getpwuid') && function_exists('posix_geteuid') && ($myUsername = posix_getpwuid(posix_geteuid()))) {
             $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configfile;
         } else {
             $makeEditabeCommand = 'not available';

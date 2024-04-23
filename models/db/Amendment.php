@@ -751,16 +751,11 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return true;
         } elseif ($this->getMyMotion()->iAmInitiator()) {
-            $policy = $this->getMyMotionType()->initiatorsCanMergeAmendments;
-            if ($policy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {
-                return true;
-            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION && $ignoreCollisionProblems) {
-                return true;
-            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION && !$ignoreCollisionProblems) {
-                return (count($this->getCollidingAmendments()) == 0);
-            } else {
-                return false;
-            }
+            return match ($this->getMyMotionType()->initiatorsCanMergeAmendments) {
+                ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION => true,
+                ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION => $ignoreCollisionProblems || count($this->getCollidingAmendments()) === 0,
+                default => false,
+            };
         } else {
             return false;
         }

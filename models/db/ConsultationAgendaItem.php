@@ -20,7 +20,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property Consultation $consultation
  * @property ConsultationAgendaItem|null $parentItem
  * @property ConsultationAgendaItem[] $childItems
- * @property ConsultationMotionType $motionType
+ * @property ConsultationMotionType|null $motionType
  * @property Motion[] $motions
  * @property SpeechQueue[] $speechQueues
  */

@@ -228,8 +228,6 @@
       }
     }
     .contactRow {
-      margin: 20px -15px;
-
       > label {
         width: 100%;
       }
@@ -239,6 +237,21 @@
     }
     .fakeurl .form-group {
       margin-bottom: 0;
+    }
+  }
+
+  .textform {
+    margin-top: 10px;
+
+    > div {
+      margin-top: 10px;
+    }
+  }
+  @media screen and (min-width: 700px) {
+    .textform {
+      width: 400px;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
