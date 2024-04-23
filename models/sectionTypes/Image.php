@@ -76,7 +76,7 @@ class Image extends ISectionType
         $str .= '<div class="form-group">';
         $str .= $this->getFormLabel();
 
-        $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
+        $maxSize = (string) floor(Tools::getMaxUploadSize() / 1024 / 1024);
         $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign" aria-hidden="true"></span> ';
         $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
         $str     .= '</div>';
@@ -196,7 +196,7 @@ class Image extends ISectionType
         }
 
         $imagedata = getimagesize($data['tmp_name']);
-        if (!$imagedata) {
+        if (!$imagedata || !$mime) {
             throw new FormError('Could not read image.');
         }
 
@@ -206,14 +206,14 @@ class Image extends ISectionType
         }
         $optimized = static::getOptimizedImage($data['tmp_name'], $fileExt);
 
-        $metadata                = [
+        $metadata = [
             'width'    => $imagedata[0],
             'height'   => $imagedata[1],
             'filesize' => strlen($optimized),
             'mime'     => $mime
         ];
         $this->section->setData($optimized);
-        $this->section->metadata = json_encode($metadata);
+        $this->section->metadata = json_encode($metadata, JSON_THROW_ON_ERROR);
 
         foreach ($toDeleteTmpFiles as $deleteTmpFile) {
             unlink($deleteTmpFile);

@@ -12,50 +12,47 @@ use yii\helpers\Html;
         <legend><?= $t('sitedate_title') ?></legend>
         <div class="description"><?= $t('sitedate_desc') ?></div>
 
-        <div class="row firstrow">
-            <div class="col-md-6 col-md-offset-3">
+        <div class="textform">
+            <div class="has-feedback">
+                <label class="name" for="siteTitle"><?= $t('sitedata_sitetitle') ?>:</label>
+                <?= Html::input(
+                    'text',
+                    'SiteCreateForm[title]',
+                    $model->title,
+                    ['id' => 'siteTitle', 'class' => 'form-control', 'required' => 'required']
+                ); ?>
+                <span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                <span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+            </div>
 
-                <div class="form-group has-feedback">
-                    <label class="name" for="siteTitle"><?= $t('sitedata_sitetitle') ?>:</label>
-                    <?= Html::input(
-                        'text',
-                        'SiteCreateForm[title]',
-                        $model->title,
-                        ['id' => 'siteTitle', 'class' => 'form-control', 'required' => 'required']
-                    ); ?>
-                    <span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                    <span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                </div>
+            <div>
+                <label class="name" for="siteTitle"><?= $t('sitedata_system_email') ?>:</label>
+                <?= Html::input(
+                    'email',
+                    'SiteCreateForm[siteEmail]',
+                    $model->siteEmail,
+                    ['id' => 'siteEmail', 'class' => 'form-control']
+                ); ?>
+            </div>
 
-                <div class="form-group">
-                    <label class="name" for="siteTitle"><?= $t('sitedata_system_email') ?>:</label>
-                    <?= Html::input(
-                        'email',
-                        'SiteCreateForm[siteEmail]',
-                        $model->siteEmail,
-                        ['id' => 'siteEmail', 'class' => 'form-control']
-                    ); ?>
-                </div>
+            <div>
+                <label>
+                    <?= Html::checkbox('SiteCreateForm[prettyUrls]', $model->prettyUrls, ['id' => 'prettyUrls']) ?>
+                    <?= $t('sitedata_prettyurl') ?>
+                </label>
+            </div>
 
-                <div class="form-group">
-                    <label>
-                        <?= Html::checkbox('SiteCreateForm[prettyUrls]', $model->prettyUrls, ['id' => 'prettyUrls']) ?>
-                        <?= $t('sitedata_prettyurl') ?>
-                    </label>
-                </div>
+            <div class="contactRow">
+                <label>
+                    <strong><?= $t('sitedata_contact') ?>:</strong><br>
+                    <small><?= $t('sitedata_contact_hint') ?></small>
+                    <?= Html::textarea(
+                        'SiteCreateForm[contact]',
+                        $model->contact,
+                        ['rows' => 5, 'required' => 'required', 'id' => 'siteContact', 'class' => 'form-control']
+                    ) ?>
+                </label>
 
-                <div class="contactRow">
-                    <label>
-                        <strong><?= $t('sitedata_contact') ?>:</strong><br>
-                        <small><?= $t('sitedata_contact_hint') ?></small>
-                        <?= Html::textarea(
-                            'SiteCreateForm[contact]',
-                            $model->contact,
-                            ['rows' => 5, 'required' => 'required', 'id' => 'siteContact', 'class' => 'form-control']
-                        ) ?>
-                    </label>
-
-                </div>
             </div>
         </div>
     </fieldset>

@@ -430,7 +430,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     }
 
     /**
-     * @return MotionSection[]|AmendmentSection[]
+     * @return IMotionSection[]
      */
     public function getSortedSections(bool $withoutTitle = false, bool $includeNonPublicIfPossible = false): array
     {
@@ -490,7 +490,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function getDateTime(): ?\DateTime
     {
         if ($this->dateCreation) {
-            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateCreation);
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateCreation) ?: null;
         } else {
             return null;
         }
@@ -499,7 +499,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function getPublicationDateTime(): ?\DateTime
     {
         if ($this->datePublication) {
-            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->datePublication);
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->datePublication) ?: null;
         } else {
             return null;
         }
@@ -889,7 +889,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
     }
 
-    public function getExtraDataKey(string $key)
+    public function getExtraDataKey(string $key): mixed
     {
         $data = $this->getExtraData();
         return $data[$key] ?? null;
@@ -899,6 +899,6 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     {
         $data = $this->getExtraData();
         $data[$key] = $value;
-        $this->extraData = json_encode($data);
+        $this->extraData = json_encode($data, JSON_THROW_ON_ERROR);
     }
 }
