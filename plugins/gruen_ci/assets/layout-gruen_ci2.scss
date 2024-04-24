@@ -3,7 +3,7 @@
 $icon-font-path: "../../fonts/";
 $container-md: 1044px; // Should be enough space for 92 characters
 
-@import "../../../web/css/variables";
+@import "css/variables";
 
 $arvoFontPath: "./";
 @import "arvo";
@@ -60,23 +60,23 @@ $mainContentWidth: $container-md - $sidebarWidth !default;
 $content-max-width: $mainContentWidth - 2px !default;
 $grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
 
-@import "../../../web/css/bootstrap";
-@import "../../../web/css/fontello";
-@import "../../../web/css/wizard";
-@import "../../../web/css/helpers";
-@import "../../../web/css/elements";
-@import "../../../web/css/bootstrap_overwrites";
-@import "../../../web/css/base_layout";
-@import "../../../web/css/contentpage";
-@import "../../../web/css/consultation_motion_list";
-@import "../../../web/css/speech_lists";
-@import "../../../web/css/voting";
-@import "../../../web/css/motions";
-@import "../../../web/css/proposed_procedure";
-@import "../../../web/css/styles";
-@import "../../../web/css/merging";
-@import "../../../web/css/projector";
-@import "../../../web/css/user_pages";
+@import "css/bootstrap";
+@import "css/fontello";
+@import "css/wizard";
+@import "css/helpers";
+@import "css/elements";
+@import "css/bootstrap_overwrites";
+@import "css/base_layout";
+@import "css/contentpage";
+@import "css/consultation_motion_list";
+@import "css/speech_lists";
+@import "css/voting";
+@import "css/motions";
+@import "css/proposed_procedure";
+@import "css/styles";
+@import "css/merging";
+@import "css/projector";
+@import "css/user_pages";
 
 body {
   background-image: url(gruenes_ci2_background.jpg);

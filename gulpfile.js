@@ -118,10 +118,12 @@ function taskBuildJsEnGb() {
 
 const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsFr, taskBuildJsNl, taskBuildJsCa, taskBuildJsEn, taskBuildJsEnGb, taskBuildDatetimepicker);
 
+const sassOptions = {outputStyle: 'compressed', includePaths: ["web/"]};
+
 function taskBuildCss() {
     return gulp.src("web/css/*.scss")
         .pipe(sourcemaps.init())
-        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass.sync(sassOptions).on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/css/'));
@@ -130,7 +132,7 @@ function taskBuildCss() {
 function taskBuildPluginCss() {
     return gulp.src("plugins/**/*.scss")
         .pipe(sourcemaps.init())
-        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass.sync(sassOptions).on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('plugins/'));
@@ -139,7 +141,7 @@ function taskBuildPluginCss() {
 function taskBuildHtml2PdfCss() {
     return gulp.src("assets/html2pdf/*.scss")
         .pipe(sourcemaps.init())
-        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass.sync(sassOptions).on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('assets/html2pdf/'));
