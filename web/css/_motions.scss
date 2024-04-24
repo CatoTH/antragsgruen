@@ -670,6 +670,7 @@
   background: $commentBackground;
   border-radius: 3px;
   margin: 15px 20px 30px;
+  padding: $commentPadding;
 
   &.replyComment {
     margin-top: -15px;
@@ -684,14 +685,11 @@
     line-height: 18px;
     margin: 0;
     text-transform: none;
-    padding: $commentPadding;
   }
 
   .commentName {
     @media (min-width: $screenMinWith) {
       float: right;
-      padding-top: $commentPadding;
-      padding-right: $commentPadding;
     }
   }
 
@@ -700,24 +698,16 @@
     font-size: 1.2em;
   }
 
-  .commentText {
-    padding: 0 $commentPadding $commentPadding $commentPadding;
-  }
-
-  .commentFullTextarea {
-    padding: 0 $commentPadding $commentPadding $commentPadding;
-  }
-
   .date {
     color: #757676;
     float: right;
-    padding: $commentPadding;
     margin-left: 20px;
   }
 
   .commentBottom {
     height: 23px;
     position: relative;
+    margin: $commentPadding calc(-1 * $commentPadding) calc(-1 * $commentPadding) calc(-1 * $commentPadding);
 
     .entry {
       position: absolute;
@@ -812,7 +802,7 @@
   }
 
   .submitrow {
-    padding: $commentPadding;
+    padding-top: $commentPadding;
     text-align: center;
   }
 }

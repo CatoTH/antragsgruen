@@ -93,11 +93,11 @@ if ($right === '') {
     echo $main;
 } else {
     ?>
-    <div class="webVersion row" style="margin-top: 2px;">
-        <div class="col-md-8 motionMainCol">
+    <div class="webVersion motionTwoCols">
+        <div class="motionMainCol">
             <?= $main ?>
         </div>
-        <div class="col-md-4 motionRightCol">
+        <div class="motionRightCol">
             <?= $right ?>
         </div>
     </div>

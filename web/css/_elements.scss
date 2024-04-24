@@ -122,10 +122,31 @@ button.link {
   }
 }
 
+.stdEqualCols {
+  display: flex;
+  width: 100%;
+  > * {
+    flex-grow: 1;
+    flex-basis: 10%; // Exact base doesn't matter, it just needs to be set to the same for all columns
+  }
+  &.stdPadding {
+    > * {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    > *:first-child {
+      padding-left: 0;
+    }
+    > *:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
 .stdTwoCols {
   display: block;
   width: 100%;
-  .leftColumn, .rightColumn {
+  .leftColumn, .leftColumnUnstyled, .rightColumn {
     text-align: left;
     display: block;
   }
@@ -133,13 +154,13 @@ button.link {
     font-weight: bold;
   }
   @media screen and (max-width: $screenMinWith - 1) {
-    .leftColumn {
+    .leftColumn, .leftColumnUnstyled {
       padding-top: 7px;
     }
     .rightColumn {
       padding-bottom: 7px;
     }
-    &:first-child .leftColumn {
+    &:first-child .leftColumn, &:first-child .leftColumnUnstyled {
       padding-top: 0; // Padding comes from .content here
     }
     &:last-child .rightColumn {
@@ -150,7 +171,7 @@ button.link {
     display: flex;
     flex-direction: row;
     width: 100%;
-    .leftColumn, .rightColumn, .middleColumn {
+    .leftColumn, .leftColumnUnstyled, .rightColumn, .middleColumn {
       flex-grow: 0;
       min-height: 40px;
       padding-top: 12px;
@@ -158,6 +179,10 @@ button.link {
     .leftColumn {
       flex-basis: 30%;
       text-align: right;
+      padding-right: 15px;
+    }
+    .leftColumnUnstyled {
+      flex-basis: 30%;
       padding-right: 15px;
     }
     .middleColumn {
@@ -177,7 +202,7 @@ button.link {
     }
 
     .modal-body & {
-      .leftColumn {
+      .leftColumn, .leftColumnUnstyled {
         flex-basis: 35%;
       }
       .middleColumn {

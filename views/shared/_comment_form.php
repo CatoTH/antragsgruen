@@ -69,12 +69,12 @@ if ($user && $user->name && $user->email) {
 } else {
     if (!$user || !$user->name) {
         ?>
-        <div class="form-group">
-            <label for="<?= $formIdPre ?>_name" class="control-label col-sm-3">
+        <div class="stdTwoCols">
+            <label for="<?= $formIdPre ?>_name" class="control-label leftColumn">
                 <?= Yii::t('comment', 'name') ?>:
             </label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control col-sm-9" id="<?= $formIdPre ?>_name"
+            <div class="rightColumn">
+                <input type="text" class="form-control" id="<?= $formIdPre ?>_name"
                        name="comment[name]" value="<?= Html::encode($form->name ?: '') ?>" required autocomplete="name">
             </div>
         </div>
@@ -82,11 +82,11 @@ if ($user && $user->name && $user->email) {
     }
     if (!$user || !$user->email) {
         ?>
-        <div class="form-group">
-            <label for="<?= $formIdPre ?>_email" class="control-label col-sm-3">
+        <div class="stdTwoCols">
+            <label for="<?= $formIdPre ?>_email" class="control-label leftColumn">
                 <?= Yii::t('comment', 'email') ?>:
             </label>
-            <div class="col-sm-9">
+            <div class="rightColumn">
                 <input type="email" class="form-control" id="<?= $formIdPre ?>_email"
                        autocomplete="email" name="comment[email]"
                        value="<?= Html::encode($form->email ?: '') ?>"
@@ -96,10 +96,10 @@ if ($user && $user->name && $user->email) {
         <?php
     }
     ?>
-    <div class="form-group">
-        <label for="<?= $formIdPre ?>_text" class="control-label col-sm-3"><?= Yii::t('comment', 'text') ?>
+    <div class="stdTwoCols">
+        <label for="<?= $formIdPre ?>_text" class="control-label leftColumn"><?= Yii::t('comment', 'text') ?>
             :</label>
-        <div class="col-sm-9">
+        <div class="rightColumn">
             <textarea name="comment[text]" title="Text" class="form-control" rows="5"
                       id="<?= $formIdPre ?>_text"><?= Html::encode($form->text ?: '') ?></textarea>
         </div>

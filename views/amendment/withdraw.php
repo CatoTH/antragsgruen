@@ -24,10 +24,10 @@ echo '<h1>' . Yii::t('amend', 'withdraw') . ': ' . Html::encode($amendment->getT
 echo Html::beginForm('', 'post', ['class' => 'content withdrawForm']);
 
 echo '<div class="ask">' . Yii::t('amend', 'withdraw_confirm') . '</div>';
-echo '<div class="row">';
-echo '<div class="cancel col-md-6"><button class="btn" name="cancel">' .
+echo '<div class="stdEqualCols">';
+echo '<div class="cancel"><button class="btn" name="cancel">' .
     Yii::t('amend', 'withdraw_no') . '</button></div>';
-echo '<div class="withdraw col-md-6"><button class="btn btn-danger" name="withdraw">' .
+echo '<div class="withdraw"><button class="btn btn-danger" name="withdraw">' .
     Yii::t('amend', 'withdraw_yes') . '</button></div>';
 echo '</div></div>';
 

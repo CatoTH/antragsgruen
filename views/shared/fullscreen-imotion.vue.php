@@ -8,14 +8,14 @@ ob_start();
         <div v-html="section.html"></div>
     </section>
 </main>
-<main v-if="isTwoColumnLayout" class="motionTextHolder row" :class="{'isAmendment': isAmendment}">
-    <div class="col-md-8">
+<main v-if="isTwoColumnLayout" class="motionTextHolder motionTwoCols" :class="{'isAmendment': isAmendment}">
+    <div class="motionMainCol">
         <section v-for="section in nonEmptyLeftSections" class="paragraph lineNumbers" :class="[section.type]">
             <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
             <div v-html="section.html"></div>
         </section>
     </div>
-    <div class="col-md-4">
+    <div class="motionRightCol">
         <fullscreen-imotion-header :imotion="imotion"></fullscreen-imotion-header>
         <section v-for="section in nonEmptyRightSections" class="paragraph lineNumbers" :class="[section.type]">
             <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>

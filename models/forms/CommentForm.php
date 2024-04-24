@@ -229,7 +229,7 @@ class CommentForm
         }
 
         if ($this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
-            return \Yii::$app->controller->renderPartial('@app/views/motion/_comment_form', [
+            return \Yii::$app->controller->renderPartial('@app/views/shared/_comment_form', [
                 'form'         => $this,
                 'consultation' => $this->motionType->getConsultation(),
                 'paragraphNo'  => $this->paragraphNo,

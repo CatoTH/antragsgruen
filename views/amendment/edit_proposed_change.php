@@ -60,11 +60,11 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
         ]);
         ?>
 
-        <div class="row">
-            <section class="col-md-6">
+        <div class="stdEqualCols stdPadding">
+            <section>
                 <h2><?= Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
             </section>
-            <section class="col-md-6">
+            <section>
                 <h2><?= Yii::t('amend', 'proposal_edit_title_orig') ?></h2>
             </section>
         </div>
@@ -83,8 +83,8 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
             $htmlId   = 'sections_' . $type->id;
 
             ?>
-            <div class="row">
-                <section class="col-md-6 motionTextHolder proposedVersion" data-section-id="<?= $type->id ?>">
+            <div class="stdEqualCols stdPadding">
+                <section class="motionTextHolder proposedVersion" data-section-id="<?= $type->id ?>">
                     <?php
                     $type = $section->getSectionType();
                     if ($amendSection->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
@@ -94,7 +94,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
                     echo $type->getAmendmentFormField();
                     ?>
                 </section>
-                <section class="col-md-6 motionTextHolder originalVersion">
+                <section class="motionTextHolder originalVersion">
                     <div class="title"><?= Html::encode($amendSection->getSettings()->title) ?></div>
                     <?php
                     switch ($amendSection->getSettings()->type) {
