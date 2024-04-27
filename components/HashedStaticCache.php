@@ -41,6 +41,11 @@ class HashedStaticCache
         return $this;
     }
 
+    public function isSkipCache(): bool
+    {
+        return $this->skipCache;
+    }
+
     public function setIsBulky(bool $isBulky): self
     {
         $this->isBulky = $isBulky;
@@ -95,6 +100,7 @@ class HashedStaticCache
             // Check if the cache item has been generated in the meantime
             $cached = $this->getCache();
             if ($cached !== false) {
+                ResourceLock::unlockCache($this);
                 return $cached;
             }
 
