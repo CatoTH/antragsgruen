@@ -7,7 +7,7 @@ use app\models\api\SpeechQueue as SpeechQueueApi;
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
-use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
+use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, repostory\TagsRepository, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 
@@ -277,7 +277,7 @@ class IndexController extends AdminBase
         }
 
         foreach ($existingTagsById as $tag) {
-            $tag->deleteIncludeRelations();
+            TagsRepository::deleteIncludeRelations($tag);
         }
 
         $consultation->refresh();

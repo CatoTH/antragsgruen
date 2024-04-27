@@ -70,14 +70,15 @@ foreach ($imotions as $imotion) {
     if (!MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses)) {
         continue;
     }
-    if (count($imotion->getPublicTopicTags()) === 0) {
+    $publicTopicTags = $imotion->getPublicTopicTags();
+    if (count($publicTopicTags) === 0) {
         $hasNoTagMotions = true;
         if (!isset($tags[0])) {
             $tags[0] = ['name' => Yii::t('motion', 'tag_none'), 'motions' => []];
         }
         $tags[0]['motions'][] = $imotion;
     } else {
-        foreach ($imotion->getPublicTopicTags() as $tag) {
+        foreach ($publicTopicTags as $tag) {
             if (!isset($tags[$tag->id])) {
                 $tags[$tag->id] = ['name' => $tag->title, 'motions' => []];
             }

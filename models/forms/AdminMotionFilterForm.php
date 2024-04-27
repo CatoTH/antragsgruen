@@ -7,7 +7,16 @@ namespace app\models\forms;
 use app\models\AdminTodoItem;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter, User};
+use app\models\db\{Amendment,
+    AmendmentSupporter,
+    Consultation,
+    ConsultationSettingsTag,
+    IMotion,
+    ISupporter,
+    Motion,
+    MotionSupporter,
+    repostory\TagsRepository,
+    User};
 use yii\helpers\Html;
 
 class AdminMotionFilterForm
@@ -1057,8 +1066,8 @@ class AdminMotionFilterForm
 
         $motionIds = array_map(fn(Motion $motion): int => $motion->id, $this->allMotions);
         $amendmentIds = array_map(fn(Amendment $amendment): int => $amendment->id, $this->allAmendments);
-        $stats = ConsultationSettingsTag::getIMotionStats($tagIds, $motionIds, $amendmentIds);
-        $tagStruct = ConsultationSettingsTag::getTagStructure(
+        $stats = TagsRepository::getIMotionStats($tagIds, $motionIds, $amendmentIds);
+        $tagStruct = TagsRepository::getTagStructure(
             $this->consultation,
             [ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, ConsultationSettingsTag::TYPE_PUBLIC_TOPIC],
             null,

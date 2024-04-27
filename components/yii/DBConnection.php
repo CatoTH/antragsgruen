@@ -53,6 +53,17 @@ class DBConnection extends \yii\db\Connection
     {
         $sql = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $sql);
         $command = \Yii::$app->db->createCommand($sql);
-        return $command->queryAll(\PDO::FETCH_NUM);
+        return $command->queryAll();
+    }
+
+    /**
+     * @return int[]
+     */
+    public static function executePlainFetchIntArray(string $sql): array
+    {
+        $sql = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $sql);
+        $arr = self::executePlainFetchArray($sql);
+        $firstCol = array_map(fn(array $arr2) => $arr2[array_keys($arr2)[0]], $arr);
+        return array_map('intval', $firstCol);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\db\repostory\TagsRepository;
 use app\models\layoutHooks\Layout;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\consultationLog\ProposedProcedureChange;
@@ -185,13 +186,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
      */
     public function getPublicTopicTags(): array
     {
-        $tags = [];
-        foreach ($this->tags as $tag) {
-            if ($tag->type === ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) {
-                $tags[] = $tag;
-            }
-        }
-        return $tags;
+        return array_values(array_filter((array)TagsRepository::getTagsForIMotion($this), function (ConsultationSettingsTag $tag) {
+            return $tag->type === ConsultationSettingsTag::TYPE_PUBLIC_TOPIC;
+        }));
     }
 
     /**
@@ -199,13 +196,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
      */
     public function getProposedProcedureTags(): array
     {
-        $tags = [];
-        foreach ($this->tags as $tag) {
-            if ($tag->type === ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) {
-                $tags[$tag->getNormalizedName()] = $tag;
-            }
-        }
-        return $tags;
+        return array_values(array_filter((array)TagsRepository::getTagsForIMotion($this), function (ConsultationSettingsTag $tag) {
+            return $tag->type === ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE;
+        }));
     }
 
     /**
