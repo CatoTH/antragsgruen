@@ -44,10 +44,11 @@ class MotionNumbering
     {
         $roots = [];
 
-        if ($motion->parentMotionId && $motion->replacedMotion) {
-            if (!in_array($motion->replacedMotion->id, $alreadySeenIds)) {
-                $alreadySeenIds[] = $motion->replacedMotion->id;
-                $roots = array_merge($roots, self::getHistoryRootMotion($motion->replacedMotion, $includeObsoletedByMotions, $alreadySeenIds));
+        $replacedMotion = MotionRepository::getReplacedByMotion($motion);
+        if ($replacedMotion) {
+            if (!in_array($replacedMotion->id, $alreadySeenIds)) {
+                $alreadySeenIds[] = $replacedMotion->id;
+                $roots = array_merge($roots, self::getHistoryRootMotion($replacedMotion, $includeObsoletedByMotions, $alreadySeenIds));
             }
         } else {
             // Hint: this motion is considered a root motion even if below there is another motion found that is obsoleted by this motion
