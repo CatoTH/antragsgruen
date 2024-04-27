@@ -214,7 +214,7 @@ class AdminTodoItem
     /**
      * @return AdminTodoItem[]
      */
-    public static function getConsultationTodos(?Consultation $consultation): array
+    public static function getConsultationTodos(?Consultation $consultation, bool $setCache): array
     {
         if (!$consultation) {
             return [];
@@ -239,12 +239,14 @@ class AdminTodoItem
 
         self::$todoCache[$consultation->id] = $todo;
 
-        // Only set the cache
-        $cache = self::getTodoCache($consultation);
-        $cache->setTimeout(30);
-        $cache->getCached(function () use ($todo) {
-            return count($todo);
-        });
+        if ($setCache) {
+            // Only set the cache
+            $cache = self::getTodoCache($consultation);
+            $cache->setTimeout(30);
+            $cache->getCached(function () use ($todo) {
+                return count($todo);
+            });
+        }
 
         return $todo;
     }
@@ -261,7 +263,7 @@ class AdminTodoItem
         }
 
         return $cache->getCached(function () use ($consultation) {
-            return count(static::getConsultationTodos($consultation));
+            return count(static::getConsultationTodos($consultation, false));
         });
     }
 
@@ -279,7 +281,7 @@ class AdminTodoItem
     public static function getTodosForIMotion(IMotion $IMotion): array
     {
         return array_values(array_filter(
-            self::getConsultationTodos($IMotion->getMyConsultation()),
+            self::getConsultationTodos($IMotion->getMyConsultation(), true),
             fn(AdminTodoItem $item): bool => $item->isForIMotion($IMotion)
         ));
     }

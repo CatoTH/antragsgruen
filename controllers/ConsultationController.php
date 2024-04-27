@@ -4,9 +4,7 @@ namespace app\controllers;
 
 use app\models\AdminTodoItem;
 use app\models\exceptions\ResponseException;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -19,7 +17,6 @@ use app\models\db\{Amendment,
     AmendmentComment,
     IComment,
     IRSSItem,
-    Motion,
     Consultation,
     MotionComment,
     repostory\MotionRepository,
@@ -483,7 +480,7 @@ class ConsultationController extends Base
             throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
         }
 
-        $todo = AdminTodoItem::getConsultationTodos($this->consultation);
+        $todo = AdminTodoItem::getConsultationTodos($this->consultation, true);
 
         return new HtmlResponse($this->render('todo', ['todo' => $todo]));
     }
