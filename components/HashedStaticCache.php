@@ -132,6 +132,16 @@ class HashedStaticCache
         }
     }
 
+    public function cacheIsFilled(): bool
+    {
+        if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $directory = self::getDirectory($this->cacheKey);
+            return file_exists($directory . '/' . $this->cacheKey);
+        } else {
+            return \Yii::$app->cache->exists($this->cacheKey);
+        }
+    }
+
     private function setCache(mixed $data): void
     {
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {

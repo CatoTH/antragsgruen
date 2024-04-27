@@ -488,6 +488,17 @@ class ConsultationController extends Base
         return new HtmlResponse($this->render('todo', ['todo' => $todo]));
     }
 
+    public function actionTodoCount(): JsonResponse
+    {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
+            throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
+        }
+
+        $todo = AdminTodoItem::getConsultationTodoCount($this->consultation, false);
+
+        return new JsonResponse(['count' => $todo]);
+    }
+
     private function getUnassignedQueueOrCreate(): SpeechQueue
     {
         foreach ($this->consultation->speechQueues as $queue) {

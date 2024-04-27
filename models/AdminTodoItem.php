@@ -203,7 +203,12 @@ class AdminTodoItem
 
     private static function getTodoCache(?Consultation $consultation): HashedStaticCache
     {
-        return HashedStaticCache::getInstance('getConsultationTodoCount', [User::getCurrentUser()?->id, $consultation?->id]);;
+        $cache = HashedStaticCache::getInstance('getConsultationTodoCount', [User::getCurrentUser()?->id, $consultation?->id]);
+        if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $cache->setIsSynchronized(true);
+        }
+
+        return $cache;
     }
 
     /**
@@ -244,10 +249,16 @@ class AdminTodoItem
         return $todo;
     }
 
-    public static function getConsultationTodoCount(?Consultation $consultation): int
+    public static function getConsultationTodoCount(?Consultation $consultation, bool $onlyIfExists): ?int
     {
         $cache = self::getTodoCache($consultation);
         $cache->setTimeout(30);
+
+        // For large consultations (identified by having a view cache), load the list asynchronously.
+        // Downside: a bit shaky layout when loading. For smaller consultations, it's not worth the tradeoff.
+        if ($onlyIfExists && AntragsgruenApp::getInstance()->viewCacheFilePath && !$cache->cacheIsFilled()) {
+            return null;
+        }
 
         return $cache->getCached(function () use ($consultation) {
             return count(static::getConsultationTodos($consultation));
