@@ -27,6 +27,7 @@ class AntragsgruenApp implements \JsonSerializable
     public bool $dataPrivacyCheckbox = false;
     public string $mailFromName = 'Antragsgrün';
     public string $mailFromEmail = '';
+    public ?string $mailDefaultReplyTo = null;
     /** @var int[] */
     public array $adminUserIds = [];
     /** @var string[] */

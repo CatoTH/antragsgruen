@@ -741,7 +741,7 @@ class Consultation extends ActiveRecord
         $mails        = preg_split('/[,;]/', $this->adminEmail);
         $filtered     = [];
         foreach ($mails as $mail) {
-            if (trim($mail) !== '') {
+            if (filter_var(trim($mail), FILTER_VALIDATE_EMAIL)) {
                 $filtered[] = trim($mail);
             }
         }

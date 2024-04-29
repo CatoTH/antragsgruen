@@ -43,6 +43,11 @@ class Tools
                 }
             }
         }
+        
+        if ($replyTo === null) {
+            $replyTo = AntragsgruenApp::getInstance()->mailDefaultReplyTo;
+        }
+
         return $replyTo;
     }
 
