@@ -7,9 +7,18 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class Sendmail extends Base
 {
+    private string $dsn = 'sendmail://default';
+
+    public function __construct(?array $params)
+    {
+        if (isset($params['dsn'])) {
+            $this->dsn = $params['dsn'];
+        }
+    }
+
     protected function getTransport(): ?TransportInterface
     {
-        return Transport::fromDsn('sendmail://default');
+        return Transport::fromDsn($this->dsn);
 
     }
 

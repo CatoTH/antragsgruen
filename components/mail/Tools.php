@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components\mail;
 
 use app\components\RequestContext;
@@ -43,7 +45,7 @@ class Tools
                 }
             }
         }
-        
+
         if ($replyTo === null) {
             $replyTo = AntragsgruenApp::getInstance()->mailDefaultReplyTo;
         }
