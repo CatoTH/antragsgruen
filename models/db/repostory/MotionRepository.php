@@ -16,10 +16,38 @@ class MotionRepository
     /** @var array<int, array<Motion>> */
     private static array $getObsoletedByMotions_cache = [];
 
+    /** @var array<int|string, Motion|null> */
+    private static array $motionsById = [];
+
     public static function flushCaches(): void
     {
         self::$getObsoletedByMotions_cache = [];
         self::$getReplacedByMotions_cache = [];
+    }
+
+    public static function getReplacedByMotion(Motion $motion): ?Motion
+    {
+        if (!$motion->parentMotionId) {
+            return null;
+        }
+
+        if (in_array($motion->parentMotionId, array_keys(self::$motionsById))) {
+            return self::$motionsById[$motion->parentMotionId];
+        }
+
+        $consultationMotion = $motion->getMyConsultation()->getMotion($motion->parentMotionId);
+        if ($consultationMotion) {
+            return $consultationMotion;
+        }
+
+        /** @var Motion|null $parentMotion */
+        $parentMotion = Motion::find()
+                        ->where('id = ' . intval($motion->parentMotionId))
+                        ->andWhere('status != ' . Motion::STATUS_DELETED)
+                        ->one();
+        self::$motionsById[$motion->parentMotionId] = $parentMotion;
+
+        return self::$motionsById[$motion->parentMotionId];
     }
 
     /**
@@ -36,7 +64,7 @@ class MotionRepository
 
         $query = Motion::find()
                        ->where('motion.status = ' . intval(IMotion::STATUS_OBSOLETED_BY_MOTION))
-                       ->andWhere('motion.statusString = ' . intval($motion->id))
+                       ->andWhere('motion.statusString = "' . intval($motion->id) . '"') // hint: in SQL, it neds to be a string, for the index to work
                        ->andWhere('motion.consultationId != ' . intval($consultation->id));
         /** @var Motion[] $motionsFromOtherConsultations */
         $motionsFromOtherConsultations = $query->all();

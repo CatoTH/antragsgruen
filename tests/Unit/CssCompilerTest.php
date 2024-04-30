@@ -17,6 +17,6 @@ class CssCompilerTest extends TestBase
         $css = ob_get_clean();
 
         $this->assertStringNotContainsString('@if', $css);
-        $this->assertStringContainsString('.col-md-push-3{left:25%}', $css);
+        $this->assertStringContainsString('.nav-tabs.nav-justified{border-bottom:0}', $css);
     }
 }

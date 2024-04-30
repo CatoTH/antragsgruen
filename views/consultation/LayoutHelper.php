@@ -1,23 +1,77 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\views\consultation;
 
+use app\components\{HashedStaticCache, HTMLTools, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\IMotionList;
-use app\components\{HTMLTools, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
-use app\models\db\{Amendment,
-    AmendmentComment,
-    Consultation,
-    ConsultationAgendaItem,
-    IComment,
-    IMotion,
-    Motion,
-    MotionComment,
-    User};
-use app\models\settings\Consultation as ConsultationSettings;
+use app\models\settings\{AntragsgruenApp, Consultation as ConsultationSettings, Privileges};
+use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationAgendaItem, ConsultationSettingsTag, IComment, IMotion, Motion, MotionComment, User};
 use yii\helpers\Html;
 
 class LayoutHelper
 {
+    public static function getHomePageCache(Consultation $consultation): HashedStaticCache
+    {
+        $cache = HashedStaticCache::getInstance('getHomePage', [
+            $consultation->id,
+            $consultation->getSettings()->getStartLayoutView(),
+            $consultation->getSettings()->startLayoutResolutions,
+        ]);
+        if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $cache->setIsSynchronized(true);
+            $cache->setIsBulky(true);
+        } else {
+            $cache->setSkipCache(true);
+        }
+
+        if (in_array($consultation->getSettings()->getStartLayoutView(), [
+                ConsultationSettings::START_LAYOUT_AGENDA_LONG, ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND, ConsultationSettings::START_LAYOUT_AGENDA
+            ]) && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+            $cache->setSkipCache(true);
+        }
+
+        return $cache;
+    }
+
+    public static function getTagMotionListCache(Consultation $consultation, ConsultationSettingsTag $tag): HashedStaticCache
+    {
+        $cache = HashedStaticCache::getInstance('tagMotionListCache', [
+            $consultation->id,
+            $tag->id,
+        ]);
+        if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $cache->setIsSynchronized(true);
+            $cache->setIsBulky(true);
+        } else {
+            $cache->setSkipCache(true);
+        }
+
+        return $cache;
+    }
+
+    public static function getSidebarPdfCache(Consultation $consultation): HashedStaticCache
+    {
+        $cache = HashedStaticCache::getInstance('sidebarPdf', [$consultation->id]);
+        if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $cache->setIsSynchronized(true);
+        } else {
+            $cache->setSkipCache(true);
+        }
+
+        return $cache;
+    }
+
+    public static function flushViewCaches(Consultation $consultation): void
+    {
+        self::getHomePageCache($consultation)->flushCache();
+        self::getSidebarPdfCache($consultation)->flushCache();
+        foreach ($consultation->tags as $tag) {
+            self::getTagMotionListCache($consultation, $tag)->flushCache();
+        }
+    }
+
     private static function getMotionLineContent(Motion $motion, Consultation $consultation): string
     {
         $return = '<p class="title">' . "\n";

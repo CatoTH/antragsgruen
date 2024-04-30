@@ -4,9 +4,8 @@ namespace app\controllers;
 
 use app\models\AdminTodoItem;
 use app\models\exceptions\ResponseException;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\views\consultation\LayoutHelper;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
     HtmlResponse,
@@ -19,7 +18,6 @@ use app\models\db\{Amendment,
     AmendmentComment,
     IComment,
     IRSSItem,
-    Motion,
     Consultation,
     MotionComment,
     repostory\MotionRepository,
@@ -309,7 +307,10 @@ class ConsultationController extends Base
             return new RedirectResponse(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
 
-        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+        $cache = LayoutHelper::getHomePageCache($this->consultation);
+        if ($cache->isSkipCache() || !$cache->cacheIsFilled()) {
+            $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+        }
 
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
@@ -324,6 +325,7 @@ class ConsultationController extends Base
         }
 
         return new HtmlResponse($this->render('index', [
+            'cache' => $cache,
             'consultation' => $this->consultation,
             'myself' => $myself,
             'myMotions' => $myMotions,
@@ -483,9 +485,20 @@ class ConsultationController extends Base
             throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
         }
 
-        $todo = AdminTodoItem::getConsultationTodos($this->consultation);
+        $todo = AdminTodoItem::getConsultationTodos($this->consultation, true);
 
         return new HtmlResponse($this->render('todo', ['todo' => $todo]));
+    }
+
+    public function actionTodoCount(): JsonResponse
+    {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
+            throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
+        }
+
+        $todo = AdminTodoItem::getConsultationTodoCount($this->consultation, false);
+
+        return new JsonResponse(['count' => $todo]);
     }
 
     private function getUnassignedQueueOrCreate(): SpeechQueue
@@ -584,6 +597,9 @@ class ConsultationController extends Base
             return new HtmlErrorResponse(404, 'Tag not found');
         }
 
-        return new HtmlResponse($this->render('tag_motion_list', ['tag' => $tag]));
+        return new HtmlResponse($this->render('tag_motion_list', [
+            'tag' => $tag,
+            'cache' => LayoutHelper::getTagMotionListCache($this->consultation, $tag),
+        ]));
     }
 }

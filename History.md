@@ -15,6 +15,7 @@
 - Redis support for caching is now bundled in the default Antragsgrün distribution, so no need to manually install packages anymore. The setup can be done in the config.json.
 - LaTeX will be deprecated for rendering PDFs. Instead, a new rendering based on Weasyprint is introduced, that should handle several edge cases better and will make it easier to customize PDF layouts. The default PHP-based PDF renderer will remain unchanged.
 - The internal caching system has been optimized, preventing parallel processes generating the same cache, which might overload systems with a high number of users after cache invalidation.
+- For very large consultations (1.000 motions/amendments or more), setting the viewCacheFilePath option in config.json now optimizes several aspects and is an officially recommended setting.
 - Bugfix: Some texts were not properly escaped, allowing XSS by consultation admins.
 - Bugfix: The "Allow more supporters than required" could not be deactivated for support collection phases before publication.
 - Bugfix: Several issues with the predefined organisation list for user administration were fixed.

@@ -136,6 +136,21 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         });
     });
 
+    // Hint: this is only executed for high-load consultations (with enabled viewCacheFilePath)
+    const todoLoader = document.querySelector("#adminTodoLoader");
+    if (todoLoader) {
+        return fetch(todoLoader.getAttribute("data-url"))
+            .then(response => response.json())
+            .then(json => {
+                const todoEl = document.querySelector("#adminTodo");
+                const label = todoEl.innerHTML.replace(/###COUNT###/, json['count']);
+                todoEl.innerHTML = label;
+                todoEl.setAttribute("aria-label", label);
+                if (json['count'] > 0) {
+                    todoLoader.classList.remove("hidden");
+                }
+            });
+    }
 
     window['__t'] = function (category, str) {
         if (typeof(ANTRAGSGRUEN_STRINGS) == "undefined") {

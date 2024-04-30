@@ -826,7 +826,8 @@ ALTER TABLE `###TABLE_PREFIX###amendment`
   ADD KEY `ix_amendment_voting_block` (`votingBlockId`),
   ADD KEY `fk_amendment_responsibility` (`responsibilityId`),
   ADD KEY `fk_amendment_agenda` (`agendaItemId`),
-  ADD KEY `fk_amendment_amending` (`amendingAmendmentId`);
+  ADD KEY `fk_amendment_amending` (`amendingAmendmentId`),
+  ADD KEY `amendment_status_string` (`statusString`);
 
 --
 -- Indexes for table `amendmentAdminComment`
@@ -995,7 +996,8 @@ ALTER TABLE `###TABLE_PREFIX###motion`
   ADD KEY `motion_reference_am` (`proposalReferenceId`),
   ADD KEY `agendaItemId` (`agendaItemId`),
   ADD KEY `ix_motion_voting_block` (`votingBlockId`),
-  ADD KEY `fk_motion_responsibility` (`responsibilityId`);
+  ADD KEY `fk_motion_responsibility` (`responsibilityId`),
+  ADD KEY `motion_status_string` (`statusString`);
 
 --
 -- Indexes for table `motionAdminComment`

@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\models\db\repostory\MotionRepository;
 use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
+use app\views\consultation\LayoutHelper;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp, MotionSection as MotionSectionSettings};
 use app\models\notifications\{MotionProposedProcedure,
     MotionPublished,
@@ -109,6 +110,18 @@ class Motion extends IMotion implements IRSSItem
         $this->flushViewCache();
 
         return $result;
+    }
+
+    public function link($name, $model, $extraColumns = []): void
+    {
+        parent::link($name, $model, $extraColumns);
+        $this->flushViewCache();
+    }
+
+    public function unlink($name, $model, $delete = false): void
+    {
+        parent::unlink($name, $model, $delete);
+        $this->flushViewCache();
     }
 
     public function getComments(): ActiveQuery
@@ -936,6 +949,7 @@ class Motion extends IMotion implements IRSSItem
         HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this), null)->setIsBulky(true)->flushCache();
         HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
         MotionRepository::flushCaches();
+        LayoutHelper::flushViewCaches($this->getMyConsultation());
     }
 
     public function getPdfCacheKey(): string

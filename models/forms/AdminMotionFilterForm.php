@@ -538,7 +538,7 @@ class AdminMotionFilterForm
     {
         $todoMotionIds = [];
         $todoAmendmentIds = [];
-        foreach (AdminTodoItem::getConsultationTodos($this->consultation) as $item) {
+        foreach (AdminTodoItem::getConsultationTodos($this->consultation, true) as $item) {
             if ($item->targetType === AdminTodoItem::TARGET_MOTION) {
                 $todoMotionIds[] = $item->targetId;
             }

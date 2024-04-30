@@ -255,7 +255,7 @@ Add the following settings to your config.json (and adapt them to your needs):
 }
 ```
 
-### File-based View Caching
+### File-based View Caching (very large consultations)
 
 Antragsgrün already does a decent amount of caching by default, and even more when enabling Redis. An even more aggressive caching mode that caches some fully rendered HTML pages and PDFs can be enabled by enabling the following option in the `config.json`:
 
@@ -266,6 +266,8 @@ Antragsgrün already does a decent amount of caching by default, and even more w
 ```
 
 Note that this might in some edge case lead to old information being shown and is only meant as a last resort if hundreds to thousands of users are accessing large motions in parallel.
+
+As a rule of thumb, this setting should be considered if you expect close to 1.000 motions and amendments or more in one consultation.
 
 ### JWT Key Signing
 

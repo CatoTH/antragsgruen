@@ -41,6 +41,11 @@ class HashedStaticCache
         return $this;
     }
 
+    public function isSkipCache(): bool
+    {
+        return $this->skipCache;
+    }
+
     public function setIsBulky(bool $isBulky): self
     {
         $this->isBulky = $isBulky;
@@ -95,6 +100,7 @@ class HashedStaticCache
             // Check if the cache item has been generated in the meantime
             $cached = $this->getCache();
             if ($cached !== false) {
+                ResourceLock::unlockCache($this);
                 return $cached;
             }
 
@@ -129,6 +135,16 @@ class HashedStaticCache
             }
         } else {
             return \Yii::$app->cache->get($this->cacheKey);
+        }
+    }
+
+    public function cacheIsFilled(): bool
+    {
+        if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $directory = self::getDirectory($this->cacheKey);
+            return file_exists($directory . '/' . $this->cacheKey);
+        } else {
+            return \Yii::$app->cache->exists($this->cacheKey);
         }
     }
 

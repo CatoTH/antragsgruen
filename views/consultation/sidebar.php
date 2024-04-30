@@ -219,77 +219,87 @@ if ($hasComments) {
 }
 
 if ($hasPDF) {
-    $opts = ['class' => 'motionPdfCompilation'];
-    $html = '<section class="sidebar-box" aria-labelledby="sidebarPdfsTitle"><ul class="nav nav-list"><li class="nav-header" id="sidebarPdfsTitle">PDFs</li>';
+    $cache = \app\views\consultation\LayoutHelper::getSidebarPdfCache($consultation);
+    list($menusStd, $menusSmall) = $cache->getCached(function () use ($consultation, $hasAmendments) {
+        $menusStd = [];
+        $menusSmall = [];
 
-    $hasResolutions = false;
-    foreach ($consultation->motions as $motion) {
-        if ($motion->isResolution() && $motion->getMyMotionType()->hasPdfLayout()) {
-            $hasResolutions = $motion->motionTypeId;
+        $opts = ['class' => 'motionPdfCompilation'];
+        $html = '<section class="sidebar-box" aria-labelledby="sidebarPdfsTitle"><ul class="nav nav-list"><li class="nav-header" id="sidebarPdfsTitle">PDFs</li>';
+
+        $hasResolutions = false;
+        foreach ($consultation->motions as $motion) {
+            if ($motion->isResolution() && $motion->getMyMotionType()->hasPdfLayout()) {
+                $hasResolutions = $motion->motionTypeId;
+            }
         }
-    }
-    if ($hasResolutions) {
-        $pdfLink = UrlHelper::createUrl([
-            '/motion/pdfcollection',
-            'motionTypeId' => $hasResolutions,
-            'resolutions' => 1,
-            'filename'    => 'resolutions.pdf',
-        ]);
-        $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_resolutions');
-        $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'resolutionPdfCompilation']) . '</li>';
-
-        $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
-        $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
-    }
-
-    if (count($consultation->motionTypes) > 1) {
-        foreach ($consultation->motionTypes as $motionType) {
-            if (count($motionType->getVisibleMotions(false)) === 0) {
-                continue;
-            }
-            if (!$motionType->hasPdfLayout()) {
-                continue;
-            }
+        if ($hasResolutions) {
             $pdfLink = UrlHelper::createUrl([
                 '/motion/pdfcollection',
-                'motionTypeId' => $motionType->id,
-                'filename'     => $motionType->titlePlural . '.pdf',
+                'motionTypeId' => $hasResolutions,
+                'resolutions' => 1,
+                'filename'    => 'resolutions.pdf',
             ]);
-            $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all_short');
-            $name    .= ': ' . Html::encode($motionType->titlePlural);
+            $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_resolutions');
+            $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'resolutionPdfCompilation']) . '</li>';
+
+            $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
+            $menusSmall[] = '<li>' . $link . '</li>';
+        }
+
+        if (count($consultation->motionTypes) > 1) {
+            foreach ($consultation->motionTypes as $motionType) {
+                if (count($motionType->getVisibleMotions(false)) === 0) {
+                    continue;
+                }
+                if (!$motionType->hasPdfLayout()) {
+                    continue;
+                }
+                $pdfLink = UrlHelper::createUrl([
+                    '/motion/pdfcollection',
+                    'motionTypeId' => $motionType->id,
+                    'filename'     => $motionType->titlePlural . '.pdf',
+                ]);
+                $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all_short');
+                $name    .= ': ' . Html::encode($motionType->titlePlural);
+                $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
+
+                $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
+                $menusSmall[] = '<li>' . $link . '</li>';
+            }
+        } elseif (count($consultation->motionTypes) === 1) {
+            $pdfLink = UrlHelper::createUrl([
+                '/motion/pdfcollection',
+                'motionTypeId' => $consultation->motionTypes[0]->id,
+                'filename'     => $consultation->motionTypes[0]->titlePlural . '.pdf',
+            ]);
+            $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all');
             $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
             $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
-            $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
+            $menusSmall[] = '<li>' . $link . '</li>';
         }
-    } elseif (count($consultation->motionTypes) === 1) {
-        $pdfLink = UrlHelper::createUrl([
-            '/motion/pdfcollection',
-            'motionTypeId' => $consultation->motionTypes[0]->id,
-            'filename'     => $consultation->motionTypes[0]->titlePlural . '.pdf',
-        ]);
-        $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all');
-        $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
-        $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
-        $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
-    }
+        if ($hasAmendments) {
+            $amendPdfLink = UrlHelper::createUrl([
+                'amendment/pdfcollection',
+                'filename' => Yii::t('con', 'feed_amendments') . '.pdf',
+            ]);
+            $linkTitle    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>';
+            $linkTitle    .= Yii::t('con', 'pdf_amendments');
+            $html         .= '<li>' . HtmlTools::createExternalLink($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
+            $link         = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendPdfLink, ['class' => 'amendmentPdfs']);
 
-    if ($hasAmendments) {
-        $amendPdfLink = UrlHelper::createUrl([
-            'amendment/pdfcollection',
-            'filename' => Yii::t('con', 'feed_amendments') . '.pdf',
-        ]);
-        $linkTitle    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>';
-        $linkTitle    .= Yii::t('con', 'pdf_amendments');
-        $html         .= '<li>' . HtmlTools::createExternalLink($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
-        $link         = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendPdfLink, ['class' => 'amendmentPdfs']);
+            $menusSmall[] = '<li>' . $link . '</li>';
+        }
 
-        $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
-    }
+        $html                .= '</ul></section>';
+        $menusStd[] = $html;
 
-    $html                .= '</ul></section>';
-    $layout->menusHtml[] = $html;
+        return [$menusStd, $menusSmall];
+    });
+    $layout->menusHtml = array_merge($layout->menusHtml, $menusStd);
+    $layout->menusHtmlSmall = array_merge($layout->menusHtmlSmall, $menusSmall);
 }
 
 if ($consultation->site->getSettings()->showAntragsgruenAd) {

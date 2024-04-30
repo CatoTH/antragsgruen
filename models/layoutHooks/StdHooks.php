@@ -312,9 +312,15 @@ class StdHooks extends Hooks
             }
 
             if (User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
-                $todo = AdminTodoItem::getConsultationTodoCount($consultation);
-                if ($todo > 0) {
-                    $adminUrl   = UrlHelper::createUrl('/consultation/todo');
+                $todo = AdminTodoItem::getConsultationTodoCount($consultation, true);
+                $adminUrl = UrlHelper::createUrl('/consultation/todo');
+                if ($todo === null) {
+                    $asyncLoad = UrlHelper::createUrl('/consultation/todo-count');
+                    $adminTitle = \Yii::t('base', 'menu_todo') . ' (###COUNT###)';
+                    $out .= '<li data-url="' . Html::encode($asyncLoad) . '" class="hidden" id="adminTodoLoader">';
+                    $out .= Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo', 'aria-label' => $adminTitle]);
+                    $out .= '</li>';
+                } elseif ($todo > 0) {
                     $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . $todo . ')';
                     $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo', 'aria-label' => $adminTitle]) . '</li>';
                 }

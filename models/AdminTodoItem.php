@@ -203,13 +203,18 @@ class AdminTodoItem
 
     private static function getTodoCache(?Consultation $consultation): HashedStaticCache
     {
-        return HashedStaticCache::getInstance('getConsultationTodoCount', [User::getCurrentUser()?->id, $consultation?->id]);;
+        $cache = HashedStaticCache::getInstance('getConsultationTodoCount', [User::getCurrentUser()?->id, $consultation?->id]);
+        if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $cache->setIsSynchronized(true);
+        }
+
+        return $cache;
     }
 
     /**
      * @return AdminTodoItem[]
      */
-    public static function getConsultationTodos(?Consultation $consultation): array
+    public static function getConsultationTodos(?Consultation $consultation, bool $setCache): array
     {
         if (!$consultation) {
             return [];
@@ -234,23 +239,31 @@ class AdminTodoItem
 
         self::$todoCache[$consultation->id] = $todo;
 
-        // Only set the cache
-        $cache = self::getTodoCache($consultation);
-        $cache->setTimeout(30);
-        $cache->getCached(function () use ($todo) {
-            return count($todo);
-        });
+        if ($setCache) {
+            // Only set the cache
+            $cache = self::getTodoCache($consultation);
+            $cache->setTimeout(30);
+            $cache->getCached(function () use ($todo) {
+                return count($todo);
+            });
+        }
 
         return $todo;
     }
 
-    public static function getConsultationTodoCount(?Consultation $consultation): int
+    public static function getConsultationTodoCount(?Consultation $consultation, bool $onlyIfExists): ?int
     {
         $cache = self::getTodoCache($consultation);
         $cache->setTimeout(30);
 
+        // For large consultations (identified by having a view cache), load the list asynchronously.
+        // Downside: a bit shaky layout when loading. For smaller consultations, it's not worth the tradeoff.
+        if ($onlyIfExists && AntragsgruenApp::getInstance()->viewCacheFilePath && !$cache->cacheIsFilled()) {
+            return null;
+        }
+
         return $cache->getCached(function () use ($consultation) {
-            return count(static::getConsultationTodos($consultation));
+            return count(static::getConsultationTodos($consultation, false));
         });
     }
 
@@ -268,7 +281,7 @@ class AdminTodoItem
     public static function getTodosForIMotion(IMotion $IMotion): array
     {
         return array_values(array_filter(
-            self::getConsultationTodos($IMotion->getMyConsultation()),
+            self::getConsultationTodos($IMotion->getMyConsultation(), true),
             fn(AdminTodoItem $item): bool => $item->isForIMotion($IMotion)
         ));
     }
