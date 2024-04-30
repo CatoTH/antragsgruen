@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components\mail;
 
 use app\models\exceptions\ServerConfiguration;
@@ -12,6 +14,7 @@ class SMTP extends Base
     private int $port = 25;
     private ?string $username = null;
     private ?string $password = null;
+    /** @phpstan-ignore-next-line  */
     private ?string $encryption = null;
 
     /**

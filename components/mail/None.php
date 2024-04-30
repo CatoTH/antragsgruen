@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components\mail;
 
 use app\models\db\EMailLog;
@@ -13,7 +15,7 @@ class None extends Base
         return null;
     }
 
-    public function send(Email $message, string $toEmail)
+    public function send(Email $message, string $toEmail): int
     {
         return EMailLog::STATUS_SKIPPED_OTHER;
     }

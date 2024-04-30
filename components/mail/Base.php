@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components\mail;
 
 use app\components\HTMLTools;
@@ -24,20 +26,15 @@ abstract class Base
         if (!isset($params['transport'])) {
             throw new ServerConfiguration('Invalid E-Mail configuration');
         }
-        switch ($params['transport']) {
-            case 'sendmail':
-                return new Sendmail();
-            case 'mailjet':
-                return new Mailjet($params);
-            case 'smtp':
-                return new SMTP($params);
-            case 'ses':
-                return new AmazonSES($params);
-            case 'none':
-                return new None();
-            default:
-                throw new ServerConfiguration('Invalid E-Mail-Transport: ' . $params['transport']);
-        }
+
+        return match ($params['transport']) {
+            'sendmail' => new Sendmail($params),
+            'mailjet' => new Mailjet($params),
+            'smtp' => new SMTP($params),
+            'ses' => new AmazonSES($params),
+            'none' => new None(),
+            default => throw new ServerConfiguration('Invalid E-Mail-Transport: ' . $params['transport']),
+        };
     }
 
     abstract protected function getTransport(): ?TransportInterface;
@@ -63,7 +60,7 @@ abstract class Base
         return \Yii::$app->controller->renderPartial($template, [
             'title'  => $subject,
             'html'   => $html,
-            'styles' => ($consultation ? $consultation->site->getSettings()->getStylesheet() : null),
+            'styles' => $consultation?->site->getSettings()->getStylesheet(),
         ]);
     }
 
@@ -101,13 +98,12 @@ abstract class Base
     }
 
     /**
-     * @return int|string
      * - int for error codes
      * - string: messageId if successful
      *
      * @throws TransportExceptionInterface
      */
-    public function send(Email $message, string $toEmail)
+    public function send(Email $message, string $toEmail): string|int
     {
         if (YII_ENV === 'test' || str_contains($toEmail, '@example.org')) {
             return EMailLog::STATUS_SKIPPED_OTHER;
