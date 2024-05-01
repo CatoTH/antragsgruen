@@ -41,7 +41,7 @@ final class RequestContext
                 $user = RequestContext::getYiiUser()->identity;
                 return $user;
             }
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\yii\base\UnknownPropertyException $e) {
+        } catch (\Throwable) {
             // Can happen with console commands
             return null;
         }
