@@ -24,4 +24,9 @@ class ConsultationRepository
 
         return self::$knownConsultations[$consultationId];
     }
+
+    public static function flushCache(): void
+    {
+        self::$knownConsultations = [];
+    }
 }

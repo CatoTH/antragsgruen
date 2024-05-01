@@ -6,6 +6,7 @@ use app\models\amendmentNumbering\GlobalCompact;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
+use app\models\db\repostory\ConsultationRepository;
 use Codeception\Attribute\Group;
 use Tests\Support\Helper\DBTestBase;
 
@@ -35,12 +36,11 @@ class ConsultationFindMotionTest extends DBTestBase
 
 
 
-
-
         $consultation->amendmentNumbering = GlobalCompact::getID();
         $consultation->save();
         $motion->refresh();
 
+        ConsultationRepository::flushCache();
         $this->assertEquals($amendA2, $motion->findAmendmentWithPrefix('Ä2'));
         $this->assertEquals($amendA2, $motion->findAmendmentWithPrefix('ä2'));
         $this->assertEquals($amendA2OtherMotion, $motion->findAmendmentWithPrefix('Ä2', $amendA2));
