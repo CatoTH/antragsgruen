@@ -36,6 +36,9 @@ class MotionSectionChanges
         $sectionsNew = $newMotion->getSortedSections(false);
         $changes = [];
         for ($i = 0; $i < count($sectionsOld); $i++) {
+            if (!isset($sectionsNew[$i])) {
+                continue;
+            }
             if (!$sectionsOld[$i]->getSettings()->hasAmendments && $sectionsNew[$i]->getSectionType()->isEmpty()) {
                 // In resolutions, the reasons are usually deleted.
                 // However, they should not be displayed as being deleted.
