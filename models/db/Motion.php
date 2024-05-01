@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\db\repostory\ConsultationRepository;
 use app\models\db\repostory\MotionRepository;
 use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
@@ -300,12 +301,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function getMyConsultation(): ?Consultation
     {
-        $current = Consultation::getCurrent();
-        if ($current && $current->getMotion($this->id)) {
-            return $current;
-        } else {
-            return Consultation::findOne($this->consultationId);
-        }
+        return ConsultationRepository::getConsultationById($this->consultationId);
     }
 
     public function getMyAgendaItem(): ?ConsultationAgendaItem
