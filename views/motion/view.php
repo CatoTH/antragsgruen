@@ -38,7 +38,17 @@ if (
     $consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_TAGS && $consultation->getSettings()->homepageByTag &&
     count($motion->tags) > 0
 ) {
-    $layout->addBreadcrumb(Yii::t('admin', 'bread_tag'), UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $motion->tags[0]->id]));
+    if ($motion->isResolution()) {
+        if ($consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_SEPARATE) {
+            $layout->addBreadcrumb(Yii::t('con', 'resolutions'), UrlHelper::createUrl(['/consultation/resolutions']));
+        }
+        $layout->addBreadcrumb(Yii::t('admin', 'bread_tag'), UrlHelper::createUrl(['/consultation/tags-resolutions', 'tagId' => $motion->tags[0]->id]));
+    } else {
+        if ($consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+            $layout->addBreadcrumb(Yii::t('con', 'All Motions'), UrlHelper::createUrl(['/consultation/motions']));
+        }
+        $layout->addBreadcrumb(Yii::t('admin', 'bread_tag'), UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $motion->tags[0]->id]));
+    }
 }
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));

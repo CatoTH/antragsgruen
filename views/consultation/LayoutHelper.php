@@ -35,11 +35,12 @@ class LayoutHelper
         return $cache;
     }
 
-    public static function getTagMotionListCache(Consultation $consultation, ConsultationSettingsTag $tag): HashedStaticCache
+    public static function getTagMotionListCache(Consultation $consultation, ConsultationSettingsTag $tag, bool $isResolutionList): HashedStaticCache
     {
         $cache = HashedStaticCache::getInstance('tagMotionListCache', [
             $consultation->id,
             $tag->id,
+            $isResolutionList,
         ]);
         if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $cache->setIsSynchronized(true);
@@ -68,7 +69,8 @@ class LayoutHelper
         self::getHomePageCache($consultation)->flushCache();
         self::getSidebarPdfCache($consultation)->flushCache();
         foreach ($consultation->tags as $tag) {
-            self::getTagMotionListCache($consultation, $tag)->flushCache();
+            self::getTagMotionListCache($consultation, $tag, true)->flushCache();
+            self::getTagMotionListCache($consultation, $tag, false)->flushCache();
         }
     }
 

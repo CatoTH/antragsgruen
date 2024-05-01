@@ -67,6 +67,7 @@ $urlRules = [
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
     $domv . 'consultationaccesserror'         => 'user/consultationaccesserror',
     $domv . 'tags/<tagId:\d+>/motions'        => 'consultation/tags-motions',
+    $domv . 'tags/<tagId:\d+>/resolutions'    => 'consultation/tags-resolutions',
     $domv . 'page'                            => 'pages/list-pages',
     $domv . 'documents'                       => 'pages/documents',
     $domv . 'documents/<groupId:[^\/]+>.zip'  => 'pages/documents-zip',

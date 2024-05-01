@@ -9,6 +9,7 @@ use app\models\settings\{Consultation as ConsultationSettings};
  * @var yii\web\View $this
  * @var ConsultationSettingsTag $tag
  * @var \app\components\HashedStaticCache $cache
+ * @var bool $isResolutionList
  */
 
 /** @var \app\controllers\Base $controller */
@@ -18,8 +19,13 @@ $consultation = UrlHelper::getCurrentConsultation();
 
 $this->title = Html::encode($tag->title);
 $layout->addCSS('css/backend.css');
+if ($isResolutionList && $consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_SEPARATE) {
+    $layout->addBreadcrumb(Yii::t('con', 'resolutions'), UrlHelper::createUrl(['/consultation/resolutions']));
+}
+if (!$isResolutionList && $consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+    $layout->addBreadcrumb(Yii::t('con', 'All Motions'), UrlHelper::createUrl(['/consultation/motions']));
+}
 $layout->addBreadcrumb(Yii::t('admin', 'bread_tag'));
-
 
 echo '<h1>' . Html::encode($tag->title) . '</h1>';
 $layout->addOnLoadJS('document.querySelector(".tagSelectToolbar select").addEventListener("change", (ev) => {
@@ -27,19 +33,16 @@ $layout->addOnLoadJS('document.querySelector(".tagSelectToolbar select").addEven
 });');
 
 
-echo $cache->getCached(function () use ($consultation, $layout, $tag) {
+echo $cache->getCached(function () use ($consultation, $layout, $tag, $isResolutionList) {
     $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
 
     $output = '<div class="tagSelectToolbar toolbarBelowTitle">';
     $output .= '<div class="selectHolder">';
     $output .= '<select class="stdDropdown">';
+
     foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $selectTag) {
         list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->getMotionsOfTag($selectTag));
-        if ($consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
-            $toShowImotions = $resolutions;
-        } else {
-            $toShowImotions = $imotions;
-        }
+        $toShowImotions = ($isResolutionList ? $resolutions : $imotions);
         $toShowImotions = array_values(array_filter($toShowImotions, function (IMotion $imotion) use ($invisibleStatuses): bool {
             return MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses);
         }));
@@ -48,7 +51,11 @@ echo $cache->getCached(function () use ($consultation, $layout, $tag) {
             continue;
         }
 
-        $url = UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $selectTag->id]);
+        if ($isResolutionList) {
+            $url = UrlHelper::createUrl(['/consultation/tags-resolutions', 'tagId' => $selectTag->id]);
+        } else {
+            $url = UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $selectTag->id]);
+        }
         $output .= '<option value="' . Html::encode($selectTag->id) . '" data-url="' . Html::encode($url) . '"';
         if ($selectTag->id === $tag->id) {
             $output .= ' selected';
@@ -58,20 +65,15 @@ echo $cache->getCached(function () use ($consultation, $layout, $tag) {
     $output .= '</select>';
     $output .= '</div></div>';
 
-    $resolutionMode = $consultation->getSettings()->startLayoutResolutions;
     list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->getMotionsOfTag($tag));
 
     if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getStartLayoutView()) {
-        if ($resolutionMode === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
-            $toShowImotions = $resolutions;
-        } else {
-            $toShowImotions = $imotions;
-        }
+        $toShowImotions = ($isResolutionList ? $resolutions : $imotions);
         $output .= $this->render($consultation->getSettings()->getStartLayoutView(), [
             'consultation' => $consultation,
             'layout' => $layout,
             'imotions' => $toShowImotions,
-            'isResolutionList' => ($resolutionMode === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT),
+            'isResolutionList' => $isResolutionList,
             'selectedTag' => $tag,
         ]);
     }

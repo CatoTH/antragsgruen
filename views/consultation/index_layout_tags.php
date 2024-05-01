@@ -22,7 +22,7 @@ if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
     $sortedTags = $consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
 
     echo '<section aria-labelledby="tagOverviewTitle" class="homeTagList">';
-    echo '<h2 class="green" id="tagOverviewTitle">' . Yii::t('con', 'All Motions') . '</h2>';
+    echo '<h2 class="green" id="tagOverviewTitle">' . ($isResolutionList ? Yii::t('con', 'resolutions') : Yii::t('con', 'All Motions')) . '</h2>';
     echo '<div class="content">';
 
     $list = '';
@@ -41,8 +41,12 @@ if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
             continue;
         }
 
-        $list .= '<li><a class="tagLink" href="';
-        $list .= UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $tag->id]);
+        $list .= '<li><a class="tagLink tagLink' . $tag->id . '" href="';
+        if ($isResolutionList) {
+            $list .= UrlHelper::createUrl(['/consultation/tags-resolutions', 'tagId' => $tag->id]);
+        } else {
+            $list .= UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $tag->id]);
+        }
         $list .= '"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
         $list .= Html::encode($tag->title) . '</a>';
         $list .= '<div class="info">';
