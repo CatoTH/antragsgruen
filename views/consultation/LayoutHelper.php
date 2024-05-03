@@ -26,7 +26,7 @@ class LayoutHelper
             $cache->setSkipCache(true);
         }
 
-        if (in_array($consultation->getSettings()->getStartLayoutView(), [
+        if (in_array($consultation->getSettings()->startLayoutType, [
                 ConsultationSettings::START_LAYOUT_AGENDA_LONG, ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND, ConsultationSettings::START_LAYOUT_AGENDA
             ]) && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             $cache->setSkipCache(true);

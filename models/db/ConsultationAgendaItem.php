@@ -3,7 +3,8 @@
 namespace app\models\db;
 
 use app\models\settings\{AgendaItem, AntragsgruenApp};
-use app\components\{IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
+use app\components\{IMotionStatusFilter, Tools, UrlHelper};
+use app\views\consultation\LayoutHelper;
 use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
@@ -31,6 +32,13 @@ class ConsultationAgendaItem extends ActiveRecord
     public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationAgendaItem';
+    }
+
+    public function save($runValidation = true, $attributeNames = null): bool
+    {
+        $ret = parent::save($runValidation, $attributeNames);
+        LayoutHelper::flushViewCaches($this->getMyConsultation());
+        return $ret;
     }
 
     public function getConsultation(): ActiveQuery
