@@ -19,10 +19,17 @@ export class EditorialEdit {
 
         this.editCaller.addEventListener('click', this.editCalled.bind(this));
         this.saveRow.querySelector('button').addEventListener('click', this.save.bind(this));
+
+        if (location.href.indexOf('edit_editorial=1') !== -1) {
+            this.editCalled();
+            $(this.textHolder).scrollintoview({top_offset: -150});
+        }
     }
 
-    private editCalled(ev) {
-        ev.preventDefault();
+    private editCalled(ev = null) {
+        if (ev) {
+            ev.preventDefault();
+        }
         this.textHolder.setAttribute('contenteditable', "true");
         this.editor = new AntragsgruenEditor(this.textHolder.getAttribute("id"));
         this.textHolder.focus();
