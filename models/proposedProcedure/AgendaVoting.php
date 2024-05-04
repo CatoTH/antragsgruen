@@ -159,6 +159,7 @@ class AgendaVoting
 
         if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
             $votingBlockJson['votes_remaining'] = $this->voting->getUserRemainingVotes($user);
+            $votingBlockJson['has_abstained'] = $this->voting->userHasAbstained($user);
         }
 
         $votingBlockJson['has_general_abstention'] = false;
