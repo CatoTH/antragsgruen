@@ -19,10 +19,58 @@ class MotionRepository
     /** @var array<int|string, Motion|null> */
     private static array $motionsById = [];
 
+    private static bool $siteWideCachesInitialized = false;
+
     public static function flushCaches(): void
     {
         self::$getObsoletedByMotions_cache = [];
         self::$getReplacedByMotions_cache = [];
+        self::$siteWideCachesInitialized = false;
+    }
+
+    public static function initSiteWideCaches(): void
+    {
+        if (self::$siteWideCachesInitialized) {
+            return;
+        }
+
+        self::$getObsoletedByMotions_cache = [];
+        self::$getReplacedByMotions_cache = [];
+
+        foreach (UrlHelper::getCurrentSite()->consultations as $consultation) {
+            if ($consultation->id === UrlHelper::getCurrentConsultation()->id) {
+                $consultation = UrlHelper::getCurrentConsultation();
+            }
+
+            foreach ($consultation->motions as $motion) {
+                if (!isset(self::$getObsoletedByMotions_cache[$motion->id])) {
+                    self::$getObsoletedByMotions_cache[$motion->id] = [];
+                }
+                if (!isset(self::$getReplacedByMotions_cache[$motion->id])) {
+                    self::$getReplacedByMotions_cache[$motion->id] = [];
+                }
+                if (!isset(self::$motionsById[$motion->id])) {
+                    self::$motionsById[$motion->id] = $motion;
+                }
+
+                if ($motion->status === IMotion::STATUS_OBSOLETED_BY_MOTION && $motion->statusString > 0) {
+                    $replacedBy = intval($motion->statusString);
+                    if (!isset(self::$getObsoletedByMotions_cache[$replacedBy])) {
+                        self::$getObsoletedByMotions_cache[$replacedBy] = [];
+                    }
+                    self::$getObsoletedByMotions_cache[$replacedBy][] = $motion;
+                }
+
+                if ($motion->parentMotionId > 0) {
+                    if (!isset(self::$getReplacedByMotions_cache[$motion->parentMotionId])) {
+                        self::$getReplacedByMotions_cache[$motion->parentMotionId] = [];
+                    }
+                    self::$getReplacedByMotions_cache[$motion->parentMotionId][] = $motion;
+                }
+            }
+        }
+
+        self::$siteWideCachesInitialized = true;
     }
 
     public static function getReplacedByMotion(Motion $motion): ?Motion
@@ -55,7 +103,7 @@ class MotionRepository
      */
     public static function getObsoletedByMotionsInAllConsultations(Motion $motion): array
     {
-        if (isset(self::$getObsoletedByMotions_cache[(int) $motion->id])) {
+        if (in_array($motion->id, array_keys(self::$getObsoletedByMotions_cache))) {
             return self::$getObsoletedByMotions_cache[(int) $motion->id];
         }
 
@@ -105,7 +153,7 @@ class MotionRepository
      */
     public static function getReplacedByMotionsInAllConsultations(Motion $motion): array
     {
-        if (isset(self::$getReplacedByMotions_cache[(int) $motion->id])) {
+        if (in_array($motion->id, array_keys(self::$getReplacedByMotions_cache))) {
             return self::$getReplacedByMotions_cache[(int) $motion->id];
         }
 
