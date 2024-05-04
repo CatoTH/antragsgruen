@@ -142,9 +142,10 @@ class AgendaVoting
             $votingBlockJson['max_votes_by_group'] = ($this->voting ? $this->voting->getSettings()->maxVotesByGroup : null);
         }
         if ($this->voting) {
-            list($total, $users) = $this->voting->getVoteStatistics();
-            $votingBlockJson['votes_total'] = $total;
-            $votingBlockJson['votes_users'] = $users;
+            $stats = $this->voting->getVoteStatistics();
+            $votingBlockJson['votes_total'] = $stats['votes'];
+            $votingBlockJson['votes_users'] = $stats['users'];
+            $votingBlockJson['abstentions'] = $stats['abstentions'];
             $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
 
             $quorumType = $this->voting->getQuorumType();
@@ -227,21 +228,6 @@ class AgendaVoting
             }
         }
         if ($canSeeVotes) {
-            // Extra safeguard to prevent accidental exposure of votes, even if this case should not be triggerable through the interface
-            $singleVotes = array_filter($votes, function (Vote $vote) use ($isAdmin): bool {
-                if ($vote->public === VotingBlock::VOTES_PUBLIC_ALL) {
-                    return true;
-                } elseif ($vote->public === VotingBlock::VOTES_PUBLIC_ADMIN) {
-                    return $isAdmin;
-                } else {
-                    return false;
-                }
-            });
-            // Filter out deleted users
-            $singleVotes = array_filter($singleVotes, function (Vote $vote): bool {
-                return !!$vote->getUser();
-            });
-            $singleVotes = array_values($singleVotes);
             $data['votes'] = array_map(function (Vote $vote) use ($answers, $voting): array {
                 return [
                     'vote' => $vote->getVoteForApi($answers),
@@ -249,8 +235,30 @@ class AgendaVoting
                     'user_name' => ($vote->getUser() ? $vote->getUser()->getAuthUsername() : null),
                     'user_groups' => ($vote->getUser() ? $vote->getUser()->getConsultationUserGroupIds($voting->getMyConsultation()) : null),
                 ];
-            }, $singleVotes);
+            }, $this->getFilteredVotesList($votes, $isAdmin));
         }
+    }
+
+    /**
+     * @return Vote[]
+     */
+    private function getFilteredVotesList(array $votes, bool $isAdmin): array
+    {
+        // Extra safeguard to prevent accidental exposure of votes, even if this case should not be triggerable through the interface
+        $singleVotes = array_filter($votes, function (Vote $vote) use ($isAdmin): bool {
+            if ($vote->public === VotingBlock::VOTES_PUBLIC_ALL) {
+                return true;
+            } elseif ($vote->public === VotingBlock::VOTES_PUBLIC_ADMIN) {
+                return $isAdmin;
+            } else {
+                return false;
+            }
+        });
+        // Filter out deleted users
+        $singleVotes = array_filter($singleVotes, function (Vote $vote): bool {
+            return !!$vote->getUser();
+        });
+        return array_values($singleVotes);
     }
 
     public function getProposedProcedureApiObject(bool $hasMultipleVotingBlocks): array

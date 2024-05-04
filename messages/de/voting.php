@@ -148,6 +148,8 @@ return [
     'voting_presence_x_same' => '%VOTES% Anwesenheiten gemeldet',
     'voting_show_votes' => 'Einzelstimmen anzeigen',
     'voting_hide_votes' => 'Einzelstimmen ausblenden',
+    'voting_abstentions_1' => '1 Enthaltung',
+    'voting_abstentions_x' => '%NUM% Enthaltungen',
 
     'majority_simple' => 'Einfache Mehrheit',
     'majority_simple_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen abgegeben werden. Enthaltungen werden nicht gezählt.',

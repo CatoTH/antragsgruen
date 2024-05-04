@@ -660,10 +660,14 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return array_values($groups);
     }
 
+    /**
+     * @return array{votes: int, users: int, abstentions: int}
+     */
     public function getVoteStatistics(): array
     {
         $total = 0;
         $voteUserIds = [];
+        $abstainedUserIds = [];
 
         $groupsMyMotionIds = [];
         $groupsMyAmendmentIds = [];
@@ -682,10 +686,19 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
         }
 
+        $abstentionId = $this->getGeneralAbstentionItem()?->id;
+
         // If three motions are in a voting group, there will be three votes in the database.
         // For the statistics, we should only count them once.
         $countedItemGroups = [];
         foreach ($this->votes as $vote) {
+            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
+                $abstainedUserIds[] = $vote->userId;
+                if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
+                    $voteUserIds[] = $vote->userId;
+                }
+            }
+
             $groupId = null;
             if ($vote->motionId !== null && isset($groupsMyMotionIds[$vote->motionId])) {
                 $groupId = $groupsMyMotionIds[$vote->motionId];
@@ -711,7 +724,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             }
         }
 
-        return [$total, count($voteUserIds)];
+        return ['votes' => $total, 'users' => count($voteUserIds), 'abstentions' => count($abstainedUserIds)];
     }
 
     /**

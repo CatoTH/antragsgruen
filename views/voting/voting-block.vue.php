@@ -183,7 +183,7 @@ ob_start();
             </li>
         </ul>
         <footer class="votingFooter">
-            <div class="votedCounter" v-if="!votingIsPresenceCall">
+            <div class="votedCounter" v-if="!votingIsPresenceCall && !abstained">
                 <strong><?= Yii::t('voting', 'voting_votes_status') ?>:&nbsp;</strong>
                 <span v-if="voting.votes_total === 0"><?= Yii::t('voting', 'voting_votes_0') ?></span>
                 <span v-if="voting.votes_total === 1"><?= Yii::t('voting', 'voting_votes_1_1') ?></span>
