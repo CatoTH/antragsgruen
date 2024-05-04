@@ -35,6 +35,15 @@
         padding-bottom: 0;
       }
 
+      &.abstentions {
+        > div {
+          width: 100%;
+          font-style: italic;
+          font-weight: bold;
+          text-align: right;
+        }
+      }
+
       // Always shown
       .titleLink {
         flex-grow: 1;

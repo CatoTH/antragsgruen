@@ -129,6 +129,7 @@ ob_start();
             </p></div>
         </div>
         <ul class="votingListAdmin votingListCommon" v-if="groupedVotings.length > 0">
+            <li v-if="voting.abstentions_total > 0" class="abstentions"><div>{{ abstentionsStr }}</div></li>
             <template v-for="groupedVoting in groupedVotings">
             <li :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
@@ -480,6 +481,8 @@ $html = ob_get_clean();
     const quorumIndicator = <?= json_encode(Yii::t('voting', 'quorum_limit')) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
+    const abstentions1 = <?= json_encode(Yii::t('voting', 'voting_abstentions_1')) ?>;
+    const abstentionsx = <?= json_encode(Yii::t('voting', 'voting_abstentions_x')) ?>;
 
     const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
     const amendmentEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000'])) ?>;
@@ -674,6 +677,13 @@ $html = ob_get_clean();
                     return this.voting.quorum_custom_target;
                 } else {
                     return quorumIndicator.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
+                }
+            },
+            abstentionsStr: function () {
+                if (this.voting.abstentions_total === 1) {
+                    return abstentions1;
+                } else {
+                    return abstentionsx.replace(/%NUM%/, this.voting.abstentions_total);
                 }
             }
         },

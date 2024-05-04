@@ -53,6 +53,16 @@ ob_start();
         </ul>
     </div>
 
+    <div v-if="voting.has_general_abstention" class="regularVoteList">
+        <strong><?= Yii::t('voting', 'vote_abstain') ?>:</strong>
+        <ul>
+            <li v-for="user in voting.abstention_users">{{ user.user_name }}</li>
+            <li v-if="voting.abstention_users.length === 0" class="none">
+                <?= Yii::t('voting', 'voting_notvoted_0') ?>
+            </li>
+        </ul>
+    </div>
+
     <div v-if="showNotVotedList && hasVoteEligibilityList" class="regularVoteList notVotedList">
         <strong v-if="voting.status === STATUS_CLOSED_PUBLISHED || voting.status === STATUS_CLOSED_UNPUBLISHED"><?= Yii::t('voting', 'voting_notvoted') ?></strong>
         <strong v-if="voting.status !== STATUS_CLOSED_PUBLISHED && voting.status !== STATUS_CLOSED_UNPUBLISHED"><?= Yii::t('voting', 'voting_notvoted_yet') ?></strong>

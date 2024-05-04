@@ -18,7 +18,7 @@ return [
     'vote_abstention' => 'Abstention',
     'vote_present' => 'Present',
     'vote_undo' => 'Undo vote',
-    'vote_abstain' => 'Abstain',
+    'vote_abstain' => 'General Abstention',
 
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
@@ -149,6 +149,8 @@ return [
     'voting_weight' => 'Voting weight',
     'voting_show_votes' => 'Show vote list',
     'voting_hide_votes' => 'Hide vote list',
+    'voting_abstentions_1' => '1 General Abstention',
+    'voting_abstentions_x' => '%NUM% General Abstentions',
 
     'majority_simple' => 'Simple majority',
     'majority_simple_h' => 'A motion or amendment is adopted, if more yes- than no-votes are cast. Abstentions are not counted.',
