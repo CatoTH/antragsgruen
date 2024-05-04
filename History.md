@@ -7,6 +7,7 @@
 - If the home page layout "Tags" is used, it is now possible to show only the list of tags, and the actual motions on tag-specific sub-pages. This is mostly aimed towards consultations with hundreds of motions.
 - Optionally, "previous motion" and "next motion" links can be activated on motions, to enable browsing through the motions without having to go back to the home page.
 - The admin motion list can now be filtered by motion type.
+- For list votings where a number of options are presented to vote on and delegates can choose which one to vote for, there is now also an option to allow an explicit "General Abstention" to explicitly vote for none of the given options.
 - Exporting "Inactive" motions and amendments from the admin motion list now also includes unpublished items.
 - Users can be assigned a voting weights, for example if they represent multiple delegates. If so, their vote counts as multiple votes.
 - For creating motions and/or amendments, the two options to create it as single delegate or organization can new each be restricted to specific user groups.

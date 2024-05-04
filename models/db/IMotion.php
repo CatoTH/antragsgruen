@@ -901,4 +901,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         $data[$key] = $value;
         $this->extraData = json_encode($data, JSON_THROW_ON_ERROR);
     }
+
+    public function isGeneralAbstention(): bool
+    {
+        return false;
+    }
 }

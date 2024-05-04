@@ -16,4 +16,5 @@ interface IVotingItem
     public function removeFromVotingBlock(VotingBlock $votingBlock, bool $save): void;
     /** @phpstan-ignore-next-line - method by Yii */
     public function save($runValidation = true, $attributeNames = null);
+    public function isGeneralAbstention(): bool;
 }

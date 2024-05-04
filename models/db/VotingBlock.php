@@ -723,6 +723,16 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $items;
     }
 
+    public function getGeneralAbstentionItem(): ?VotingQuestion
+    {
+        foreach ($this->questions as $question) {
+            if ($question->isGeneralAbstention()) {
+                return $question;
+            }
+        }
+        return null;
+    }
+
     /**
      * @return VotingBlock[]
      */

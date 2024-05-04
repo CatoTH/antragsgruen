@@ -162,7 +162,13 @@ class AgendaVoting
             $votingBlockJson['vote_weight'] = $user->getSettingsObj()->getVoteWeight($this->voting->getMyConsultation());
         }
 
+        $votingBlockJson['has_general_abstention'] = false;
         foreach ($this->items as $item) {
+            if ($item->isGeneralAbstention()) {
+                $votingBlockJson['has_general_abstention'] = true;
+                continue;
+            }
+
             $data = $item->getAgendaApiBaseObject();
 
             if ($user && $this->voting && $context === static::API_CONTEXT_VOTING) {
