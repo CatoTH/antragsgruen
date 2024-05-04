@@ -15,4 +15,5 @@ interface IVotingItem
     public function setVotingResult(int $votingResult): void;
     public function removeFromVotingBlock(VotingBlock $votingBlock, bool $save): void;
     public function save($runValidation = true, $attributeNames = null);
+    public function isGeneralAbstention(): bool;
 }

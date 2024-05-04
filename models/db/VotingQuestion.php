@@ -22,6 +22,8 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
 {
     use VotingItemTrait;
 
+    private const TITLE_GENERAL_ABSTENTION = '{GENERAL ABSTENTION}';
+
     public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'votingQuestion';
@@ -74,5 +76,20 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
         if ($votingResult === IMotion::STATUS_REJECTED) {
             ConsultationLog::log($this->getMyConsultation(), null, ConsultationLog::VOTING_QUESTION_REJECTED, $this->id);
         }
+    }
+
+    public static function createGeneralAbstentionItem(VotingBlock $votingBlock): VotingQuestion
+    {
+        $question = new VotingQuestion();
+        $question->title = self::TITLE_GENERAL_ABSTENTION;
+        $question->consultationId = $votingBlock->consultationId;
+        $question->votingBlockId = $votingBlock->id;
+        $question->save();
+        return $question;
+    }
+
+    public function isGeneralAbstention(): bool
+    {
+        return $this->title === self::TITLE_GENERAL_ABSTENTION;
     }
 }

@@ -123,8 +123,18 @@ class VotingMethods
             }
         }
         $votingBlock->setSettings($settings);
-
         $votingBlock->save();
+
+        if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
+            $existingAbstention = $votingBlock->getGeneralAbstentionItem();
+            if ($this->request->post('hasGeneralAbstention', false)) {
+                if (!$existingAbstention) {
+                    VotingQuestion::createGeneralAbstentionItem($votingBlock);
+                }
+            } else {
+                $existingAbstention?->delete();
+            }
+        }
     }
 
     public function voteAddIMotion(VotingBlock $votingBlock): void

@@ -90,6 +90,7 @@ return [
     'settings_answers_presenth' => 'Für Abfragen, welche Mitglieder anwesend sind.',
     'settings_majoritytype' => 'Art der Mehrheit',
     'settings_quorumtype' => 'Quorum',
+    'settings_generalabstention' => 'Explizite Enthaltung ermöglichen',
     'settings_votepolicy' => 'Wer darf abstimmen',
     'settings_resultspublic' => 'Wer darf die Abstimmungsergebnisse in Zahlen sehen',
     'settings_resultspublic_admins' => 'Admins',
