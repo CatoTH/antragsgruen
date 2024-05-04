@@ -295,11 +295,48 @@ class VotingMethods
         }
     }
 
+    public function userSetAbstention(VotingBlock $votingBlock, User $user): void
+    {
+        $votes = $votingBlock->getVotesForUser($user);
+        if (count($votes) > 0) {
+            throw new FormError('Already voted - not possible to abstain anymore');
+        }
+        $abstentionItem = $votingBlock->getGeneralAbstentionItem();
+        if (!$abstentionItem) {
+            throw new FormError('Abstaining is not possible');
+        }
+
+        $hasAbstained = $votingBlock->userHasAbstained($user);
+
+        ResourceLock::lockVotingItemForVoting($abstentionItem);
+        try {
+            $abstentionData = $this->request->post('abstention');
+            if ($abstentionData['abstain']) {
+                if (!$hasAbstained) {
+                    $vote = $this->voteForSingleItem($user, $votingBlock, $abstentionItem, $abstentionData['public'], 'yes');
+                    $vote->save();
+                }
+            } else {
+                if ($hasAbstained) {
+                    $this->undoVoteForSingleItem($user, $votingBlock, $abstentionItem);
+                }
+            }
+            ResourceLock::unlockVotingItemForVoting($abstentionItem);
+        } catch (FormError $e) {
+            ResourceLock::unlockVotingItemForVoting($abstentionItem);
+            throw $e;
+        }
+    }
+
     /**
      * @throws FormError
      */
     public function userVote(VotingBlock $votingBlock, User $user): void
     {
+        if ($votingBlock->userHasAbstained($user)) {
+            throw new FormError('Voting is not possible after abstaining');
+        }
+
         foreach ($this->request->post('votes', []) as $voteData) {
             $public = isset($voteData['public']) ? intval($voteData['public']) : VotingBlock::VOTES_PUBLIC_NO;
             if (isset($voteData['itemGroupSameVote']) && trim($voteData['itemGroupSameVote']) !== '') {

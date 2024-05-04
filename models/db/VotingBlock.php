@@ -259,13 +259,29 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
      */
     public function getVotesForUser(User $user): array
     {
+        $abstentionId = $this->getGeneralAbstentionItem()?->id;
+
         $votes = [];
         foreach ($this->votes as $vote) {
+            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
+                continue;
+            }
             if ($vote->userId === $user->id) {
                 $votes[] = $vote;
             }
         }
         return $votes;
+    }
+
+    public function userHasAbstained(User $user): bool
+    {
+        $abstentionId = $this->getGeneralAbstentionItem()?->id;
+        foreach ($this->votes as $vote) {
+            if ($vote->questionId !== null && $vote->questionId === $abstentionId && $vote->userId === $user->id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

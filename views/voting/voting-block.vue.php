@@ -76,7 +76,7 @@ ob_start();
                 </div>
 
                 <template v-if="isOpen">
-                    <div class="votingOptions" v-if="groupedVoting[0].can_vote">
+                    <div class="votingOptions" v-if="groupedVoting[0].can_vote && !abstained">
                         <button v-for="option in votingOptionButtons"
                             type="button" :class="['btn', 'btn-sm', option.btnClass]" @click="vote(groupedVoting, option)">
                             <span v-if="option.icon === 'yes'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -153,6 +153,34 @@ ob_start();
                 <voting-vote-list :voting="voting" :groupedVoting="groupedVoting" :showNotVotedList="false"></voting-vote-list>
             </li>
             </template>
+
+            <li :class="[
+                'answer_template_general_abstention',
+                (isClosed ? 'showResults' : ''),
+                (isClosed && resultsPublic ? 'showDetailedResults' : 'noDetailedResults')
+            ]" v-if="hasGeneralAbstention && canAbstain">
+                <div class="titleLink"></div>
+
+                <template v-if="isOpen">
+                    <div class="votingOptions" v-if="!abstained">
+                        <button type="button" :class="['btn', 'btn-sm', 'btn-default']" @click="abstain()">
+                            <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                            <?= Yii::t('voting', 'vote_abstain') ?>
+                        </button>
+                    </div>
+                    <div class="voted abstained" v-if="abstained">
+                        <span>
+                            <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                            <?= Yii::t('voting', 'vote_abstain') ?>
+                        </span>
+
+                        <button type="button" class="btn btn-link btn-sm btnUndo" @click="undoAbstention()"
+                                title="<?= Yii::t('voting', 'vote_undo') ?>" aria-label="<?= Yii::t('voting', 'vote_undo') ?>">
+                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </template>
+            </li>
         </ul>
         <footer class="votingFooter">
             <div class="votedCounter" v-if="!votingIsPresenceCall">
@@ -245,13 +273,25 @@ $html = ob_get_clean();
             resultsPublic: function () {
                 return this.voting.results_public === RESULTS_PUBLIC_YES;
             },
+            canAbstain: function () {
+                return this.voting.items.filter(item => item.voted !== null).length === 0;
+            },
+            abstained: function () {
+                return this.voting.has_abstained;
+            },
         },
         methods: {
             vote: function (groupedVoting, voteOption) {
                 this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, voteOption.id, this.voting.votes_public);
             },
-            voteUndo: function(groupedVoting) {
+            voteUndo: function (groupedVoting) {
                 this.$emit('vote', this.voting.id, groupedVoting[0].item_group_same_vote, groupedVoting[0].type, groupedVoting[0].id, 'undo', this.voting.votes_public);
+            },
+            abstain: function () {
+                this.$emit('abstain', this.voting.id, true, this.voting.votes_public);
+            },
+            undoAbstention: function () {
+                this.$emit('abstain', this.voting.id, false, this.voting.votes_public);
             },
             voteAnswerToCss: function (answer) {
                 const data = {

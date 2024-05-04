@@ -18,6 +18,7 @@ return [
     'vote_abstention' => 'Enthaltung',
     'vote_present' => 'Anwesend',
     'vote_undo' => 'Stimme zurücknehmen',
+    'vote_abstain' => 'Enthalten',
 
     'status_accepted' => 'Angenommen',
     'status_rejected' => 'Abgelehnt',
