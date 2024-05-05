@@ -240,10 +240,6 @@ class UsersController extends AdminBase
         try {
             switch ($this->getHttpRequest()->post('op')) {
                 case 'save-user':
-                    $this->userGroupAdminMethods->setUserGroupsToUser(
-                        intval($this->getPostValue('userId')),
-                        array_map('intval', $this->getPostValue('groups', []))
-                    );
                     if (User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN, null)) {
                         $this->userGroupAdminMethods->setUserData(
                             intval($this->getPostValue('userId')),
@@ -255,6 +251,10 @@ class UsersController extends AdminBase
                             $this->getPostValue('newAuth')
                         );
                     }
+                    $this->userGroupAdminMethods->setUserGroupsToUser(
+                        intval($this->getPostValue('userId')),
+                        array_map('intval', $this->getPostValue('groups', []))
+                    );
                     break;
                 case 'remove-user':
                     $this->userGroupAdminMethods->removeUser(intval($this->getPostValue('userId')));
