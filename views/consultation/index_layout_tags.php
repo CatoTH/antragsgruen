@@ -50,13 +50,17 @@ if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
         $list .= '"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
         $list .= Html::encode($tag->title) . '</a>';
         $list .= '<div class="info">';
-        $list .= (count($toShowImotions) === 1 ? Yii::t('motion', 'motion_1') : str_replace('%x%', count($toShowImotions), Yii::t('motion', 'motion_x')));
+        if ($isResolutionList) {
+            $list .= (count($toShowImotions) === 1 ? Yii::t('motion', 'resolution_1') : str_replace('%x%', count($toShowImotions), Yii::t('motion', 'resolution_x')));
+        } else {
+            $list .= (count($toShowImotions) === 1 ? Yii::t('motion', 'motion_1') : str_replace('%x%', count($toShowImotions), Yii::t('motion', 'motion_x')));
+        }
         $list .= '</div></li>' . "\n";
     }
     if ($list !== '') {
         echo '<ol class="tagList">' . $list . '</ol>';
     } else {
-        echo '<div class="noMotionsYet">' . Yii::t('con', 'no_motions_yet') . '</div>';
+        echo '<div class="noMotionsYet">' . ($isResolutionList ? Yii::t('con', 'no_resolutions_yet') : Yii::t('con', 'no_motions_yet')) . '</div>';
     }
     echo '</div></section>';
 

@@ -29,6 +29,6 @@ foreach ($motions as $name => $motns) {
 }
 
 if (count($motions) === 0) {
-    echo '<div class="content noMotionsYet">' . Yii::t('con', 'no_motions_yet') . '</div>';
+    echo '<div class="content noMotionsYet">' . ($isResolutionList ? Yii::t('con', 'no_resolutions_yet') : Yii::t('con', 'no_motions_yet')) . '</div>';
 }
 echo '</section>';

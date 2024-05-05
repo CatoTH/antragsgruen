@@ -33,6 +33,8 @@ return [
     'Motion'                        => 'Motion',
     'motion_1'                      => '1 Motion',
     'motion_x'                      => '%x% Motions',
+    'resolution_1'                  => '1 Resolution',
+    'resolution_x'                  => '%x% Resolutions',
     'Initiator'                     => 'Proposer',
     'initiators_1'                  => 'Proposer',
     'initiators_x'                  => 'Proposers',

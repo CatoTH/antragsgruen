@@ -33,6 +33,8 @@ return [
     'Motion'                             => 'Antrag',
     'motion_1'                           => '1 Antrag',
     'motion_x'                           => '%x% Anträge',
+    'resolution_1'                       => '1 Beschluss',
+    'resolution_x'                       => '%x% Beschlüsse',
     'Initiator'                          => 'Antragsteller*in',
     'initiators_1'                       => 'Antragsteller*in',
     'initiators_x'                       => 'Antragsteller*innen',
