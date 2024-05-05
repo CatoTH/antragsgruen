@@ -18,7 +18,7 @@ return [
     'vote_abstention' => 'Abstention',
     'vote_present' => 'Present',
     'vote_undo' => 'Undo vote',
-    'vote_abstain' => 'Abstain',
+    'vote_abstain' => 'General Abstention',
 
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
