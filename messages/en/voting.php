@@ -18,6 +18,7 @@ return [
     'vote_abstention' => 'Abstention',
     'vote_present' => 'Present',
     'vote_undo' => 'Undo vote',
+    'vote_abstain' => 'General Abstention',
 
     'status_accepted' => 'Accepted',
     'status_rejected' => 'Rejected',
@@ -90,6 +91,7 @@ return [
     'settings_answers_presenth' => 'For „votings” meant to ask which members are present, like roll calls.',
     'settings_majoritytype' => 'Majority type',
     'settings_quorumtype' => 'Quorum',
+    'settings_generalabstention' => 'Allow explicit general abstention',
     'settings_votepolicy' => 'Who may vote',
     'settings_resultspublic' => 'Who may see the voting results',
     'settings_resultspublic_admins' => 'Admins',
@@ -147,6 +149,8 @@ return [
     'voting_weight' => 'Voting weight',
     'voting_show_votes' => 'Show vote list',
     'voting_hide_votes' => 'Hide vote list',
+    'voting_abstentions_1' => '1 General Abstention',
+    'voting_abstentions_x' => '%NUM% General Abstentions',
 
     'majority_simple' => 'Simple majority',
     'majority_simple_h' => 'A motion or amendment is adopted, if more yes- than no-votes are cast. Abstentions are not counted.',

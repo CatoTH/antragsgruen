@@ -15,7 +15,7 @@ export class VotingBlock {
         this.widget = Vue.createApp({
             template: `
                 <div class="currentVotings">
-                <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote" :showAdminLink="showAdminLink"></voting-block-widget>
+                <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote" @abstain="abstain" :showAdminLink="showAdminLink"></voting-block-widget>
                 </div>`,
             data() {
                 return {
@@ -26,9 +26,30 @@ export class VotingBlock {
                 };
             },
             methods: {
+                _votePost: function (votingBlockId, postData) {
+                    const widget = this;
+                    $.ajax({
+                        url: voteUrl.replace(/VOTINGBLOCKID/, votingBlockId),
+                        type: "POST",
+                        data: JSON.stringify(postData),
+                        processData: false,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        headers: {"X-CSRF-Token": document.querySelector('head meta[name=csrf-token]').getAttribute('content')},
+                        success: data => {
+                            if (data.success !== undefined && !data.success) {
+                                alert(data.message);
+                                return;
+                            }
+                            widget.votings = data;
+                            widget.onReloadedCbs.forEach(cb => {
+                                cb(widget.votings);
+                            });
+                        }
+                    });
+                },
                 vote: function (votingBlockId, itemGroupSameVote, itemType, itemId, vote, votePublic) {
-                    const postData = {
-                        _csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
+                    this._votePost(votingBlockId, {
                         votes: [{
                             itemGroupSameVote,
                             itemType,
@@ -36,20 +57,14 @@ export class VotingBlock {
                             vote,
                             "public": votePublic
                         }]
-                    };
-                    const widget = this;
-                    const url = voteUrl.replace(/VOTINGBLOCKID/, votingBlockId);
-                    $.post(url, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
+                    });
+                },
+                abstain: function (votingBlockId, setAbstention, votePublic) {
+                    this._votePost(votingBlockId, {
+                        abstention: {
+                            abstain: setAbstention,
+                            "public": votePublic,
                         }
-                        widget.votings = data;
-                        widget.onReloadedCbs.forEach(cb => {
-                            cb(widget.votings);
-                        });
-                    }).catch(function (err) {
-                        alert(err.responseText);
                     });
                 },
                 addReloadedCb: function (cb) {

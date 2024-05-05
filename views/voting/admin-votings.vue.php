@@ -129,6 +129,7 @@ ob_start();
             </p></div>
         </div>
         <ul class="votingListAdmin votingListCommon" v-if="groupedVotings.length > 0">
+            <li v-if="voting.abstentions_total > 0" class="abstentions"><div>{{ abstentionsStr }}</div></li>
             <template v-for="groupedVoting in groupedVotings">
             <li :class="[
                 'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
@@ -395,8 +396,14 @@ ob_start();
                       :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
             </label>
         </fieldset>
+        <fieldset class="generalAbstention" v-if="generalAbstentionIsPossible">
+            <label>
+                <input type="checkbox" v-model="hasGeneralAbstention">
+                <?= Yii::t('voting', 'settings_generalabstention') ?>
+            </label>
+        </fieldset>
         <fieldset class="quorumTypeSettings" v-if="votePolicy.id === VOTE_POLICY_USERGROUPS">
-            <legend><?= Yii::t('voting', 'settings_quorumtype') ?></legend>
+            <legend><?= Yii::t('voting', 'settings_quorumtype') ?>:</legend>
             <label v-for="quorumTypeDef in QUORUM_TYPES">
                 <input type="radio" :value="quorumTypeDef.id" v-model="quorumType" :disabled="isOpen || isClosed">
                 {{ quorumTypeDef.name }}
@@ -474,6 +481,8 @@ $html = ob_get_clean();
     const quorumIndicator = <?= json_encode(Yii::t('voting', 'quorum_limit')) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('voting', 'admin_btn_reset_bb')) ?>;
     const deleteConfirmation = <?= json_encode(Yii::t('voting', 'settings_delete_bb')) ?>;
+    const abstentions1 = <?= json_encode(Yii::t('voting', 'voting_abstentions_1')) ?>;
+    const abstentionsx = <?= json_encode(Yii::t('voting', 'voting_abstentions_x')) ?>;
 
     const motionEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000'])) ?>;
     const amendmentEditUrl = <?= json_encode(UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000'])) ?>;
@@ -511,6 +520,7 @@ $html = ob_get_clean();
                     quorumType: null,
                     votesPublic: null,
                     resultsPublic: null,
+                    hasGeneralAbstention: null,
                     votePolicy: null,
                     votingTime: null
                 },
@@ -536,6 +546,10 @@ $html = ob_get_clean();
             selectedAnswersHaveMajority: function () {
                 // Used by the settings form
                 return this.answerTemplate === this.ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.answerTemplate === this.ANSWER_TEMPLATE_YES_NO;
+            },
+            generalAbstentionIsPossible: function () {
+                // Used by the settings form
+                return this.answerTemplate === this.ANSWER_TEMPLATE_YES;
             },
             settingsTitle: {
                 get: function () {
@@ -627,6 +641,14 @@ $html = ob_get_clean();
                     this.changedSettings.resultsPublic = value;
                 }
             },
+            hasGeneralAbstention: {
+                get: function () {
+                    return (this.changedSettings.hasGeneralAbstention !== null ? this.changedSettings.hasGeneralAbstention : this.voting.has_general_abstention);
+                },
+                set: function (value) {
+                    this.changedSettings.hasGeneralAbstention = value;
+                }
+            },
             votingTime: {
                 get: function () {
                     return (this.changedSettings.votingTime !== null ? this.changedSettings.votingTime : this.voting.voting_time);
@@ -655,6 +677,13 @@ $html = ob_get_clean();
                     return this.voting.quorum_custom_target;
                 } else {
                     return quorumIndicator.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
+                }
+            },
+            abstentionsStr: function () {
+                if (this.voting.abstentions_total === 1) {
+                    return abstentions1;
+                } else {
+                    return abstentionsx.replace(/%NUM%/, this.voting.abstentions_total);
                 }
             }
         },
@@ -866,10 +895,11 @@ $html = ob_get_clean();
                     });
                 }
 
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.votePolicy, maxVotesSettings, this.resultsPublic, this.votesPublic, this.votingTime, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.hasGeneralAbstention, this.votePolicy, maxVotesSettings, this.resultsPublic, this.votesPublic, this.votingTime, this.settingsAssignedMotion);
                 this.changedSettings.votesPublic = null;
                 this.changedSettings.majorityType = null;
                 this.changedSettings.quorumType = null;
+                this.changedSettings.hasGeneralAbstention = null;
                 this.changedSettings.answerTemplate = null;
                 this.changedSettings.votePolicy = null;
                 this.changedSettings.votingTime = null;

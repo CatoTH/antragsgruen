@@ -18,6 +18,7 @@ return [
     'vote_abstention' => 'Enthaltung',
     'vote_present' => 'Anwesend',
     'vote_undo' => 'Stimme zurücknehmen',
+    'vote_abstain' => 'Enthalten',
 
     'status_accepted' => 'Angenommen',
     'status_rejected' => 'Abgelehnt',
@@ -90,6 +91,7 @@ return [
     'settings_answers_presenth' => 'Für Abfragen, welche Mitglieder anwesend sind.',
     'settings_majoritytype' => 'Art der Mehrheit',
     'settings_quorumtype' => 'Quorum',
+    'settings_generalabstention' => 'Explizite Enthaltung ermöglichen',
     'settings_votepolicy' => 'Wer darf abstimmen',
     'settings_resultspublic' => 'Wer darf die Abstimmungsergebnisse in Zahlen sehen',
     'settings_resultspublic_admins' => 'Admins',
@@ -147,6 +149,8 @@ return [
     'voting_weight' => 'Stimmgewicht',
     'voting_show_votes' => 'Einzelstimmen anzeigen',
     'voting_hide_votes' => 'Einzelstimmen ausblenden',
+    'voting_abstentions_1' => '1 Enthaltung',
+    'voting_abstentions_x' => '%NUM% Enthaltungen',
 
     'majority_simple' => 'Einfache Mehrheit',
     'majority_simple_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen abgegeben werden. Enthaltungen werden nicht gezählt.',

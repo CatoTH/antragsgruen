@@ -251,11 +251,18 @@ class VotingController extends Base
     }
 
     /**
-     * votes[0][itemGroupSameVote]=[empty]|123abcderf
-     * votes[0][itemType]=amendment
-     * votes[0][itemId]=3
-     * votes[0][vote]=yes
-     * [optional] votes[0][public]=1
+     * votes: [{
+     *     itemGroupSameVote: [empty]|"123abcderf",
+     *     itemType: "amendment",
+     *     itemId: 3,
+     *     vote: "yes",
+     *     public: 2 (optional)
+     * }]
+     * --
+     * abstention: {
+     *     abstain: true|false,
+     *     public: 2 (optional)
+     * }
      */
     public function actionPostVote(int $votingBlockId, ?int $assignedToMotionId): RestApiResponse
     {
@@ -282,7 +289,11 @@ class VotingController extends Base
         }
 
         try {
-            $this->votingMethods->userVote($votingBlock, $user);
+            if ($this->getPostValue('abstention')) {
+                $this->votingMethods->userSetAbstention($votingBlock, $user);
+            } else {
+                $this->votingMethods->userVote($votingBlock, $user);
+            }
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
         }

@@ -140,6 +140,9 @@ use app\models\policies\UserGroups;
                 }
 
                 return minutes + ":" + seconds;
+            },
+            hasGeneralAbstention: function () {
+                return this.voting.has_general_abstention;
             }
         },
         methods: {
