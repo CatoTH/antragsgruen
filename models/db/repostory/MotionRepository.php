@@ -10,10 +10,10 @@ use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion};
 
 class MotionRepository
 {
-    /** @var array<int, array<Motion>> */
+    /** @var array<int|string, array<Motion>> */
     private static array $getReplacedByMotions_cache = [];
 
-    /** @var array<int, array<Motion>> */
+    /** @var array<int|string, array<Motion>> */
     private static array $getObsoletedByMotions_cache = [];
 
     /** @var array<int|string, Motion|null> */

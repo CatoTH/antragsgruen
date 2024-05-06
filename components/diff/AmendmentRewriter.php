@@ -174,7 +174,7 @@ class AmendmentRewriter
 
     /**
      * @param null|int[] $lineNumbers
-     * @return string[]
+     * @return array<array{text: string, amendmentDiff: string, motionNewDiff: string, lineFrom?: int, lineTo?: int}>
      */
     public static function getCollidingParagraphs(
         string $motionOldHtml,
