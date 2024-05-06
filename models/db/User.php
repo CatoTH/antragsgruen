@@ -568,7 +568,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getUserByUnsubscribeCode(string $code): ?User
     {
         $parts = explode('-', $code);
-        /** @var User $user */
         $user = User::findOne($parts[0]);
         if (!$user) {
             return null;

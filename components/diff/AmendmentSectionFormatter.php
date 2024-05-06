@@ -16,6 +16,7 @@ class AmendmentSectionFormatter
     private array $paragraphsNew;
 
     private int $firstLine = 0;
+    /** @phpstan-ignore-next-line */
     private bool $debug = false;
 
     public function setTextOriginal(string $text): void

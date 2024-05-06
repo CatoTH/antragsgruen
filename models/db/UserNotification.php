@@ -17,7 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $lastNotification
  *
  * @property Consultation $consultation
- * @property User $user
+ * @property User|null $user
  */
 class UserNotification extends ActiveRecord
 {

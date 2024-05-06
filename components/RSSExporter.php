@@ -8,7 +8,6 @@ class RSSExporter
 {
     private ?string $image       = null;
     private ?string $title       = null;
-    private ?string $language    = null;
     private ?string $baseLink    = null;
     private ?string $feedLink    = null;
     private ?string $description = null;
@@ -24,11 +23,6 @@ class RSSExporter
     public function setTitle(string $title): void
     {
         $this->title = $title;
-    }
-
-    public function setLanguage(string $language): void
-    {
-        $this->language = $language;
     }
 
     public function setBaseLink(string $baseLink): void

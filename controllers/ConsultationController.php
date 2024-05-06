@@ -98,7 +98,6 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_motions'));
-        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedmotions')));
         foreach ($newest as $motion) {
@@ -125,7 +124,6 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_amendments'));
-        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedamendments')));
         foreach ($newest as $amend) {
@@ -152,7 +150,6 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_comments'));
-        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedcomments')));
         foreach ($newest as $comm) {
@@ -188,7 +185,6 @@ class ConsultationController extends Base
             $feed->setImage('/img/logo.png');
         }
         $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_all'));
-        $feed->setLanguage(\Yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedall')));
 
