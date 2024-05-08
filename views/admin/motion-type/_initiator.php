@@ -21,9 +21,9 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_encode($amendmentSettings));
 ?>
-<section class="motionSupporters hideForAmendmentsOnly" id="motionSupportersForm">
-    <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator') ?></h2>
-
+<section class="motionSupporters hideForAmendmentsOnly" id="motionSupportersForm" aria-labelledby="motionSupportersFormTitle">
+    <h2 class="green" id="motionSupportersFormTitle"><?= Yii::t('admin', 'motion_type_initiator') ?></h2>
+    <div class="content">
     <div class="stdTwoCols">
         <label class="leftColumn" for="typeSupportType">
             <?= Yii::t('admin', 'motion_type_supp_form') ?>:
@@ -318,12 +318,13 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             ?>
         </div>
     </div>
+    </div>
 </section>
 
 
 <section class="amendmentSupporters" id="amendmentSupportersForm">
-    <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator_amend') ?></h2>
-
+    <h2 class="green"><?= Yii::t('admin', 'motion_type_initiator_amend') ?></h2>
+    <div class="content">
     <div class="stdTwoCols">
         <label class="leftColumn" for="typeSupportTypeAmendment">
             <?= Yii::t('admin', 'motion_type_supp_form') ?>:
@@ -603,5 +604,6 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
+    </div>
     </div>
 </section>

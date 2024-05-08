@@ -17,7 +17,9 @@ foreach (IPolicy::getPolicies() as $policy) {
 }
 
 ?>
-<h2 class="h3"><?= Yii::t('admin', 'motion_type_perm') ?></h2>
+<section aria-labelledby="motionTypePermissionTitle">
+<h2 class="green" id="motionTypePermissionTitle"><?= Yii::t('admin', 'motion_type_perm') ?></h2>
+<div class="content">
 
 <!-- Policy for creating motions -->
 
@@ -295,5 +297,5 @@ foreach (IPolicy::getPolicies() as $policy) {
     </div>
 </div>
 
-<?php
-?>
+</div>
+</section>

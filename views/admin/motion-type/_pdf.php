@@ -13,8 +13,8 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 ?>
 <section id="typePdfForm" aria-labelledby="typePdfFormLabel">
-    <h2 class="h3" id="typePdfFormLabel"><?= Yii::t('admin', 'motion_type_pdf_layout') ?></h2>
-
+    <h2 class="green" id="typePdfFormLabel"><?= Yii::t('admin', 'motion_type_pdf_layout') ?></h2>
+    <div class="content">
     <div class="stdTwoCols">
         <label class="leftColumn" for="pdfIntroduction">
             <?= Yii::t('admin', 'con_pdf_intro') ?>:
@@ -72,13 +72,15 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             if ($layout->preview) {
                 echo '<img src="' . Html::encode($layout->preview) . '" ' .
                     'alt="' . Html::encode($layout->title) . '" ' .
-                    'title="' . Html::encode($layout->title) . '"></span>';
+                    'title="' . Html::encode($layout->title) . '">';
                 echo '<span class="sr-only">' . Html::encode($layout->title) . '</span>';
             } else {
                 echo '<span class="placeholder">' . Html::encode($layout->title) . '</span>';
             }
+            echo '</span>';
             echo '</label>';
         }
         ?>
     </fieldset>
+    </div>
 </section>

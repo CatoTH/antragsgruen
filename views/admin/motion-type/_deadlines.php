@@ -16,7 +16,9 @@ $simpleDeadlineMotions    = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpleAmendmentsDeadline());
 
 ?>
-<h2 class="h3"><?= Yii::t('admin', 'motion_deadlines_head') ?></h2>
+<section aria-labelledby="motionDeadlinesTitle">
+<h2 class="green" id="motionDeadlinesTitle"><?= Yii::t('admin', 'motion_deadlines_head') ?></h2>
+<div class="content">
 
 <div>
     <?= HTMLTools::labeledCheckbox(
@@ -142,3 +144,6 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
         'deadlineDebugMode'
     ) ?>
 </div>
+
+</div>
+</section>

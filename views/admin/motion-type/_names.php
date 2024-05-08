@@ -9,7 +9,9 @@ use yii\helpers\Html;
  */
 
 ?>
-    <h2 class="h3"><?= Yii::t('admin', 'motion_type_names') ?></h2>
+<section aria-labelledby="motionTypeNamesTitle">
+<h2 class="green" id="motionTypeNamesTitle"><?= Yii::t('admin', 'motion_type_names') ?></h2>
+<div class="content">
     <div class="stdTwoCols">
         <label class="leftColumn" for="typeTitleSingular">
             <?= Yii::t('admin', 'motion_type_singular') ?>
@@ -132,3 +134,7 @@ echo Html::a(
     $furtherTranslation,
     ['class' => 'motionTypeTranslations']
 );
+
+?>
+</div>
+</section>

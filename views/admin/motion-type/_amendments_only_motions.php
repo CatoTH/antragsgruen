@@ -11,8 +11,9 @@ use yii\helpers\Html;
 $statutes = $motionType->getAmendableOnlyMotions(true, true);
 
 ?>
-<h2 class="h3"><?= Yii::t('admin', 'motion_type_amendonly_title') ?></h2>
-
+<section aria-labelledby="motionTypeAmendmentOnlyTitle">
+<h2 class="green" id="motionTypeAmendmentOnlyTitle"><?= Yii::t('admin', 'motion_type_amendonly_title') ?></h2>
+<div class="content">
 <div class="alert alert-info">
     <p>
         <?= Yii::t('admin', 'motion_type_amendonly_hint') ?>
@@ -40,3 +41,5 @@ $cssType = (count($statutes) === 0 ? 'btn-primary' : 'btn-default');
     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
     <?= Yii::t('admin', 'motion_type_amendonly_new') ?>
 </a>
+</div>
+</section>

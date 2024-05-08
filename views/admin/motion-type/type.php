@@ -52,8 +52,6 @@ if ($motionType->amendmentsOnly) {
 }
 echo Html::beginForm($myUrl, 'post', ['class' => implode(' ', $formClasses)]);
 
-echo '<div class="content">';
-
 echo $controller->showErrors();
 
 if ($motionType->amendmentsOnly) {
@@ -66,18 +64,17 @@ echo $this->render('_initiator', ['motionType' => $motionType]);
 echo $this->render('_pdf', ['motionType' => $motionType]);
 
 ?>
-    <div class="submitRow">
-        <button type="submit" name="save" class="btn btn-primary">
-            <?= Yii::t('admin', 'save') ?>
-        </button>
+    <div class="content">
+        <div class="submitRow">
+            <button type="submit" name="save" class="btn btn-primary">
+                <?= Yii::t('admin', 'save') ?>
+            </button>
+        </div>
     </div>
-<?php
 
+    <br><br>
 
-echo '</div>';
-
-?>
-    <h2 class="green"><?= Yii::t('admin', 'motion_section_title') ?></h2>
+    <h1 class="green"><?= Yii::t('admin', 'motion_section_title') ?></h1>
     <div class="content">
 
         <ul id="sectionsList">
