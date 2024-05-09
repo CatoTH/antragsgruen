@@ -26,6 +26,12 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <ul class="toc">
         <li>
+            <strong>Instructions for specific use cases</strong>
+            <ul>
+                <li><a href="/help/member-motion">Allowing members to submit motions</a></li>
+            </ul>
+        </li>
+        <li>
             <a href="#basic_structure"
                onClick="$('#basic_structure').scrollintoview({top_offset: -30}); return false;">Basic structure of an
                 Antragsgrün-Site</a>

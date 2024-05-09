@@ -193,6 +193,15 @@ class ManagerController extends Base
         }
     }
 
+    public function actionMemberMotion(): HtmlResponse
+    {
+        if (\Yii::$app->language === 'de') {
+            return new HtmlResponse($this->render('help_motions_de'));
+        } else {
+            return new HtmlResponse($this->render('help_motions_en'));
+        }
+    }
+
     /**
      * @return Site[]
      */
