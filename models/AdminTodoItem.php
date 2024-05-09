@@ -242,6 +242,7 @@ class AdminTodoItem
         if ($setCache) {
             // Only set the cache
             $cache = self::getTodoCache($consultation);
+            $cache->flushCache();
             $cache->setTimeout(30);
             $cache->getCached(function () use ($todo) {
                 return count($todo);

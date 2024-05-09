@@ -70,8 +70,8 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                     echo Html::checkbox('type[initiatorSetPermissions]', $isPermSet, ['class' => 'hidden']);
                     ?>
                     <span class="btn btn-link">
-                        <span class="glyphicon glyphicon-chevron-down active" aria-hidden="true"></span>
-                        <span class="glyphicon glyphicon-chevron-up inactive" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-chevron-up active" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-chevron-down inactive" aria-hidden="true"></span>
                         <?= Yii::t('admin', 'motion_type_person_restrict') ?>
                     </span>
                 </label>
@@ -371,8 +371,8 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                     echo Html::checkbox('type[amendmentInitiatorSetPermissions]', $isPermSet, ['class' => 'hidden']);
                     ?>
                     <span class="btn btn-link">
-                        <span class="glyphicon glyphicon-chevron-down active" aria-hidden="true"></span>
-                        <span class="glyphicon glyphicon-chevron-up inactive" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-chevron-up active" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-chevron-down inactive" aria-hidden="true"></span>
                         <?= Yii::t('admin', 'motion_type_person_restrict') ?>
                     </span>
                 </label>
