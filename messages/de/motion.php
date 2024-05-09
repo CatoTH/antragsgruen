@@ -287,4 +287,5 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'goto_line_err' => 'Zeile nicht gefunden',
 
     'statutes_base_head' => 'Basistext',
+    'last_update' => 'Stand',
 ];

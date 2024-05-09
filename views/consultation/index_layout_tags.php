@@ -1,5 +1,6 @@
 <?php
 
+use app\models\sectionTypes\ISectionType;
 use app\views\consultation\LayoutHelper;
 use app\components\{MotionSorter, UrlHelper};
 use app\models\layoutHooks\Layout as LayoutHooks;
@@ -129,6 +130,19 @@ if (count($sortedTags) > 0 && $consultation->getSettings()->homepageTagsList) {
 
 foreach ($tagIds as $tagId) {
     $tag = $tags[$tagId];
+    $sortedIMotions = MotionSorter::getSortedIMotionsFlat($consultation, $tag['motions']);
+
+    $hasDateColumn = false;
+    foreach ($sortedIMotions as $imotion) {
+        if (is_a($imotion, Motion::class)) {
+            foreach ($imotion->getMyMotionType()->motionSections as $sectionType) {
+                if ($sectionType->type === ISectionType::TYPE_TEXT_EDITORIAL) {
+                    $hasDateColumn = true;
+                }
+            }
+        }
+    }
+
     $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
     if (!$consultation->getSettings()->homepageByTag) {
         echo '<h3 class="green" id="tag_' . $tagId . '">' . $prefix . Html::encode($tag['name']) . '</h3>';
@@ -144,8 +158,10 @@ foreach ($tagIds as $tagId) {
     if (!$isResolutionList) {
         echo '<th class="initiatorCol">' . Yii::t('motion', 'Initiator') . '</th>';
     }
+    if ($hasDateColumn) {
+        echo '<th class="dateCol">' . Yii::t('motion', 'last_update') . '</th>';
+    }
     echo '</tr></thead>';
-    $sortedIMotions = MotionSorter::getSortedIMotionsFlat($consultation, $tag['motions']);
     foreach ($sortedIMotions as $imotion) {
         /** @var IMotion $imotion */
         $classes = ['motion'];
@@ -184,25 +200,9 @@ foreach ($tagIds as $tagId) {
                 ['class' => 'motionLink' . $imotion->id]
             );
         }
-        echo '</div><div class="pdflink">';
-        if ($imotion->getMyMotionType()->hasPdfLayout() && $imotion->isVisible()) {
-            if (is_a($imotion, Amendment::class)) {
-                echo Html::a(
-                    Yii::t('motion', 'as_pdf'),
-                    UrlHelper::createAmendmentUrl($imotion, 'pdf'),
-                    ['class' => 'pdfLink']
-                );
-            } elseif (is_a($imotion, Motion::class)) {
-                echo Html::a(
-                    Yii::t('motion', 'as_pdf'),
-                    UrlHelper::createMotionUrl($imotion, 'pdf'),
-                    ['class' => 'pdfLink']
-                );
-            }
-        }
         echo '</div></td>';
         if (!$isResolutionList) {
-            echo '<td class="initiatorRow">';
+            echo '<td class="initiatorCol">';
             $initiators = [];
             foreach ($imotion->getInitiators() as $init) {
                 if ($init->personType === ISupporter::PERSON_NATURAL) {
@@ -212,6 +212,20 @@ foreach ($tagIds as $tagId) {
                 }
             }
             echo Html::encode(implode(', ', $initiators));
+            echo '</td>';
+        }
+        if ($hasDateColumn) {
+            echo '<td class="dateCol">';
+            foreach ((is_a($imotion, Motion::class) ? $imotion->sections : []) as $section) {
+                if ($section->getSettings()->type === ISectionType::TYPE_TEXT_EDITORIAL) {
+                    /** @var \app\models\sectionTypes\TextEditorial $type */
+                    $type = $section->getSectionType();
+                    $metadata = $type->getSectionMetadata();
+                    if ($metadata['lastUpdate']) {
+                        echo Html::encode(\app\components\Tools::formatMysqlDate($metadata['lastUpdate']->format('Y-m-d')));
+                    }
+                }
+            }
             echo '</td>';
         }
         echo '</tr>';

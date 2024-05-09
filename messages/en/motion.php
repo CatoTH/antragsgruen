@@ -275,4 +275,5 @@ return [
     'goto_line_err' => 'Line not found',
 
     'statutes_base_head' => 'Base text',
+    'last_update' => 'Update',
 ];
