@@ -4,7 +4,6 @@ use app\views\consultation\LayoutHelper;
 use app\components\{MotionSorter, UrlHelper};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionComment, User};
-use app\models\settings\{Consultation as ConsultationSettings};
 use yii\helpers\Html;
 
 /**
@@ -13,6 +12,7 @@ use yii\helpers\Html;
  * @var \app\models\settings\Layout $layout
  * @var IMotion[] $imotions
  * @var bool $isResolutionList
+ * @var bool $skipTitle
  * @var ConsultationSettingsTag $selectedTag
  */
 
@@ -22,13 +22,13 @@ if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
     $sortedTags = $consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
 
     echo '<section aria-labelledby="tagOverviewTitle" class="homeTagList">';
-    echo '<h2 class="green" id="tagOverviewTitle">' . ($isResolutionList ? Yii::t('con', 'resolutions') : Yii::t('con', 'All Motions')) . '</h2>';
+    echo '<h2 class="green' . ($skipTitle ? ' hidden' : '') . '" id="tagOverviewTitle">' . ($isResolutionList ? Yii::t('con', 'resolutions') : Yii::t('con', 'All Motions')) . '</h2>';
     echo '<div class="content">';
 
     $list = '';
     foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
         list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->getMotionsOfTag($tag));
-        if ($consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+        if ($isResolutionList) {
             $toShowImotions = $resolutions;
         } else {
             $toShowImotions = $imotions;
@@ -67,7 +67,10 @@ if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
     return;
 }
 
-$tags = $tagIds = [];
+/** @var array<int, array{name: string, motions: IMotion[]}> $tags */
+$tags = [];
+/** @var int[] $tagIds */
+$tagIds = [];
 $hasNoTagMotions = false;
 $privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), MotionComment::STATUS_PRIVATE);
 $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
@@ -75,7 +78,10 @@ $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMoti
 $layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
 
 foreach ($imotions as $imotion) {
-    if (!MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses)) {
+    if (
+        ($imotion->isResolution() && !MotionSorter::resolutionIsVisibleOnHomePage($imotion)) ||
+        (!$imotion->isResolution() && !MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses))
+    ){
         continue;
     }
     if (count($imotion->getPublicTopicTags()) === 0) {

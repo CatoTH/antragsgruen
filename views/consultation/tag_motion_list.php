@@ -74,6 +74,7 @@ echo $cache->getCached(function () use ($consultation, $layout, $tag, $isResolut
             'layout' => $layout,
             'imotions' => $toShowImotions,
             'isResolutionList' => $isResolutionList,
+            'skipTitle' => false,
             'selectedTag' => $tag,
         ]);
     }
