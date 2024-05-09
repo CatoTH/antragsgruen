@@ -130,6 +130,16 @@ class MotionSorter
         return true;
     }
 
+    public static function resolutionIsVisibleOnHomePage(IMotion $motion): bool
+    {
+        if (!is_a($motion, Motion::class)) {
+            return false;
+        }
+        if (count(MotionRepository::getReplacedByMotionsWithinConsultation($motion)) > 0) {
+            return false;
+        }
+        return $motion->isResolution();
+    }
 
     /**
      * @param IMotion[] $motions
@@ -294,7 +304,7 @@ class MotionSorter
                     $motions[] = $amendment;
                 }
             } elseif ($mot->isResolution()) {
-                if (count($mot->getVisibleReplacedByMotions()) === 0) {
+                if (count(MotionRepository::getReplacedByMotionsWithinConsultation($mot)) === 0) {
                     $resolutions[] = $mot;
                 }
             } else {

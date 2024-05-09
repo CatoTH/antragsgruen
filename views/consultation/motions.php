@@ -21,6 +21,7 @@ if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getSt
         'admin' => false,
         'imotions' => $imotions,
         'isResolutionList' => false,
+        'skipTitle' => true,
     ]);
 }
 

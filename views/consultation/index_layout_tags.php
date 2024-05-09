@@ -1,10 +1,10 @@
 <?php
 
+use app\models\sectionTypes\ISectionType;
 use app\views\consultation\LayoutHelper;
 use app\components\{MotionSorter, UrlHelper};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionComment, User};
-use app\models\settings\{Consultation as ConsultationSettings};
 use yii\helpers\Html;
 
 /**
@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * @var \app\models\settings\Layout $layout
  * @var IMotion[] $imotions
  * @var bool $isResolutionList
+ * @var bool $skipTitle
  * @var ConsultationSettingsTag $selectedTag
  */
 
@@ -22,13 +23,13 @@ if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
     $sortedTags = $consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
 
     echo '<section aria-labelledby="tagOverviewTitle" class="homeTagList">';
-    echo '<h2 class="green" id="tagOverviewTitle">' . ($isResolutionList ? Yii::t('con', 'resolutions') : Yii::t('con', 'All Motions')) . '</h2>';
+    echo '<h2 class="green' . ($skipTitle ? ' hidden' : '') . '" id="tagOverviewTitle">' . ($isResolutionList ? Yii::t('con', 'resolutions') : Yii::t('con', 'All Motions')) . '</h2>';
     echo '<div class="content">';
 
     $list = '';
     foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
         list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->getMotionsOfTag($tag));
-        if ($consultation->getSettings()->startLayoutResolutions === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+        if ($isResolutionList) {
             $toShowImotions = $resolutions;
         } else {
             $toShowImotions = $imotions;
@@ -67,7 +68,10 @@ if ($consultation->getSettings()->homepageByTag && !isset($selectedTag)) {
     return;
 }
 
-$tags = $tagIds = [];
+/** @var array<int, array{name: string, motions: IMotion[]}> $tags */
+$tags = [];
+/** @var int[] $tagIds */
+$tagIds = [];
 $hasNoTagMotions = false;
 $privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), MotionComment::STATUS_PRIVATE);
 $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
@@ -75,7 +79,10 @@ $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMoti
 $layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
 
 foreach ($imotions as $imotion) {
-    if (!MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses)) {
+    if (
+        ($imotion->isResolution() && !MotionSorter::resolutionIsVisibleOnHomePage($imotion)) ||
+        (!$imotion->isResolution() && !MotionSorter::imotionIsVisibleOnHomePage($imotion, $invisibleStatuses))
+    ){
         continue;
     }
     if (count($imotion->getPublicTopicTags()) === 0) {
@@ -123,6 +130,19 @@ if (count($sortedTags) > 0 && $consultation->getSettings()->homepageTagsList) {
 
 foreach ($tagIds as $tagId) {
     $tag = $tags[$tagId];
+    $sortedIMotions = MotionSorter::getSortedIMotionsFlat($consultation, $tag['motions']);
+
+    $hasDateColumn = false;
+    foreach ($sortedIMotions as $imotion) {
+        if (is_a($imotion, Motion::class)) {
+            foreach ($imotion->getMyMotionType()->motionSections as $sectionType) {
+                if ($sectionType->type === ISectionType::TYPE_TEXT_EDITORIAL) {
+                    $hasDateColumn = true;
+                }
+            }
+        }
+    }
+
     $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
     if (!$consultation->getSettings()->homepageByTag) {
         echo '<h3 class="green" id="tag_' . $tagId . '">' . $prefix . Html::encode($tag['name']) . '</h3>';
@@ -138,8 +158,10 @@ foreach ($tagIds as $tagId) {
     if (!$isResolutionList) {
         echo '<th class="initiatorCol">' . Yii::t('motion', 'Initiator') . '</th>';
     }
+    if ($hasDateColumn) {
+        echo '<th class="dateCol">' . Yii::t('motion', 'last_update') . '</th>';
+    }
     echo '</tr></thead>';
-    $sortedIMotions = MotionSorter::getSortedIMotionsFlat($consultation, $tag['motions']);
     foreach ($sortedIMotions as $imotion) {
         /** @var IMotion $imotion */
         $classes = ['motion'];
@@ -178,25 +200,9 @@ foreach ($tagIds as $tagId) {
                 ['class' => 'motionLink' . $imotion->id]
             );
         }
-        echo '</div><div class="pdflink">';
-        if ($imotion->getMyMotionType()->hasPdfLayout() && $imotion->isVisible()) {
-            if (is_a($imotion, Amendment::class)) {
-                echo Html::a(
-                    Yii::t('motion', 'as_pdf'),
-                    UrlHelper::createAmendmentUrl($imotion, 'pdf'),
-                    ['class' => 'pdfLink']
-                );
-            } elseif (is_a($imotion, Motion::class)) {
-                echo Html::a(
-                    Yii::t('motion', 'as_pdf'),
-                    UrlHelper::createMotionUrl($imotion, 'pdf'),
-                    ['class' => 'pdfLink']
-                );
-            }
-        }
         echo '</div></td>';
         if (!$isResolutionList) {
-            echo '<td class="initiatorRow">';
+            echo '<td class="initiatorCol">';
             $initiators = [];
             foreach ($imotion->getInitiators() as $init) {
                 if ($init->personType === ISupporter::PERSON_NATURAL) {
@@ -206,6 +212,20 @@ foreach ($tagIds as $tagId) {
                 }
             }
             echo Html::encode(implode(', ', $initiators));
+            echo '</td>';
+        }
+        if ($hasDateColumn) {
+            echo '<td class="dateCol">';
+            foreach ((is_a($imotion, Motion::class) ? $imotion->sections : []) as $section) {
+                if ($section->getSettings()->type === ISectionType::TYPE_TEXT_EDITORIAL) {
+                    /** @var \app\models\sectionTypes\TextEditorial $type */
+                    $type = $section->getSectionType();
+                    $metadata = $type->getSectionMetadata();
+                    if ($metadata['lastUpdate']) {
+                        echo Html::encode(\app\components\Tools::formatMysqlDate($metadata['lastUpdate']->format('Y-m-d')));
+                    }
+                }
+            }
             echo '</td>';
         }
         echo '</tr>';

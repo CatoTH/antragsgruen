@@ -161,6 +161,7 @@ echo $cache->getCached(function () use ($consultation, $layout, $contentAdmin) {
             'admin' => $contentAdmin,
             'imotions' => $toShowImotions,
             'isResolutionList' => ($resolutionMode === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT),
+            'skipTitle' => false,
         ]);
     }
     return $output;
