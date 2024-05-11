@@ -251,15 +251,15 @@ class MotionListController extends AdminBase
         /** @var AdminMotionFilterForm $search */
         $search = new $motionListClass($consultation, $motions, $privilegeScreening);
         if ($this->isRequestSet('reset')) {
-            RequestContext::getSession()->set('motionListSearch', null);
+            RequestContext::getSession()->set('motionListSearch' . $consultation->id, null);
             return new RedirectResponse(UrlHelper::createUrl('/admin/motion-list/index'));
         }
         if ($this->getRequestValue('Search')) {
             $attributes = $this->getRequestValue('Search');
-            RequestContext::getSession()->set('motionListSearch', $attributes);
+            RequestContext::getSession()->set('motionListSearch' . $consultation->id, $attributes);
             $search->setAttributes($attributes);
-        } elseif (RequestContext::getSession()->get('motionListSearch')) {
-            $search->setAttributes(RequestContext::getSession()->get('motionListSearch'));
+        } elseif (RequestContext::getSession()->get('motionListSearch' . $consultation->id)) {
+            $search->setAttributes(RequestContext::getSession()->get('motionListSearch' . $consultation->id));
         }
 
         /** @var AdminMotionFilterForm $search */
