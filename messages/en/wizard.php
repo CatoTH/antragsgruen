@@ -56,10 +56,10 @@ return [
     'amenddead_no'    => 'No',
     'amenddead_yes'   => 'Yes:',
 
-    'screening_mot_title'   => 'Pre-screening of new motions?',
-    'screening_man_title'   => 'Pre-screening of new chapters?',
-    'screening_amend_title' => 'Pre-screening of new amendments?',
-    'screening_desc'        => 'Is a screening process needed before public publishing?',
+    'screening_mot_title'   => 'Reviewing of new motions?',
+    'screening_man_title'   => 'Reviewing of new chapters?',
+    'screening_amend_title' => 'Reviewing of new amendments?',
+    'screening_desc'        => 'Is a review by an admin necessary before publication?',
     'screening_yes'         => 'Yes',
     'screening_no'          => 'No',
 

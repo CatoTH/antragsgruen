@@ -102,6 +102,36 @@
       font-weight: bold;
     }
   }
+  .tocFlat {
+    margin: 30px 20px 30px;
+    padding: 0;
+  }
+  .helpFigure {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    img {
+      max-width: 100%;
+    }
+    figcaption {
+      margin-top: -20px;
+      margin-bottom: 20px;
+      font-size: 0.8em;
+      font-style: italic;
+    }
+    &.center {
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    &.right {
+      width: 50%;
+      float: right;
+      margin-left: 20px;
+    }
+    &.bordered {
+      border: solid 1px grey;
+    }
+  }
 }
 
 .infoSite {

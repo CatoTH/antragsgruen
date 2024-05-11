@@ -24,6 +24,12 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <ul class="toc">
         <li>
+            <strong>Anleitungen für konkrete Anwendungsfälle</strong>
+            <ul>
+                <li><a href="/help/member-motion">Mitglieder reichen Anträge ein</a></li>
+            </ul>
+        </li>
+        <li>
             <a href="#grundlegender_aufbau"
                onClick="$('#grundlegender_aufbau').scrollintoview({top_offset: -30}); return false;">Grundlegender
                 Aufbau einer Antragsgrün-Seite</a>
@@ -34,8 +40,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
                        onClick="$('#veranstaltungen').scrollintoview({top_offset: -30}); return false;">Veranstaltungen</a>
                 </li>
                 <li><a href="#antragstypen"
-                       onClick="$('#antragstypen').scrollintoview({top_offset: -30}); return false;">Antragstypen /
-                        Motion Type</a></li>
+                       onClick="$('#antragstypen').scrollintoview({top_offset: -30}); return false;">Antragstypen</a></li>
                 <li><a href="#tagesordnung"
                        onClick="$('#tagesordnung').scrollintoview({top_offset: -30}); return false;">Tagesordnungspunkte</a>
                 </li>
