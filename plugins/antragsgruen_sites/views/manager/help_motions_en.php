@@ -18,210 +18,110 @@ $controller->layoutParams->addBreadcrumb('Help', '/help');
 $params = \app\models\settings\AntragsgruenApp::getInstance();
 
 ?>
-<h1>Mitglieder reichen Anträge ein</h1>
+<h1>Members submitting motions</h1>
 
 <div class="content managerHelpPage">
 
     <p><a href="/help"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Back to the main help</a></p>
     <ul class="tocFlat">
         <li>
-            <a href="#berechtigungen" onClick="$('#berechtigungen').scrollintoview({top_offset: -30}); return false;">
-                Berechtigungen & Freischaltung</a>
+            <a href="#permissions" onClick="$('#permissions').scrollintoview({top_offset: -30}); return false;">Permissions & Publication</a>
         </li>
         <li>
-            <a href="#antragsschluss" onClick="$('#antragsschluss').scrollintoview({top_offset: -30}); return false;">Antragsschluss</a>
+            <a href="#deadlines" onClick="$('#deadlines').scrollintoview({top_offset: -30}); return false;">Submission Deadlines</a>
         </li>
         <li>
-            <a href="#kommentare" onClick="$('#kommentare').scrollintoview({top_offset: -30}); return false;">Kommentare</a>
+            <a href="#comments" onClick="$('#comments').scrollintoview({top_offset: -30}); return false;">Comments</a>
         </li>
         <li>
-            <a href="#zustimmung" onClick="$('#zustimmung').scrollintoview({top_offset: -30}); return false;">Zustimmung</a>
+            <a href="#likes" onClick="$('#likes').scrollintoview({top_offset: -30}); return false;">Likes</a>
         </li>
         <li>
-            <a href="#unterstuetzung" onClick="$('#unterstuetzung').scrollintoview({top_offset: -30}); return false;">Unterstützer*innen sammeln</a>
+            <a href="#support" onClick="$('#support').scrollintoview({top_offset: -30}); return false;">Collecting supporters before submission</a>
         </li>
     </ul>
 
-    <p><strong>Einleitung</strong></p>
+    <p><strong>Introduction</strong></p>
 
-    <p>Es ist sehr leicht, mit Antragsgrün Mitgliedern die Möglichkeit zu geben, Anträge einzureichen - beispielsweise für eine Mitgliederversammlung oder im
-        Rahmen eines Ideen-Wettbewerbs. Nachdem man sich durch den anfänglichen Einrichtungs-Dialog geklickt hat, bei dem bereits die wichtigsten Entscheidungen
-        abgefragt werden, ist man im Allgemeinen bereits weitgehend fertig und kann loslegen. Es gibt aber darüber hinaus noch weitere Details, die man anpassen
-        kann. Im Folgenden werden die wichtigsten davon vorgestellt.</p>
+    <p>It is fairly straightforward to allow the members of your organization (or the general public) to submit motions or resolutions using Antragsgrün. This could be in preparation for a general meeting of an association, part of a public online participation process or similar other consultations. When installing Antragsgrün for the first time, a setup assistant will ask some questions regarding your usage scenario. Once you’re done with it, you are good to go. However, beyond those baseline questions, you can still configure many more details if necessary. The following page explains some important ones.</p>
 
-    <p>Wir gehen davon aus, dass es bereits eine eingerichtete Antragsgrün-Seite und einen Antragstypen „Anträge“ gibt (falls letzteres noch fehlt, lässt sich
-        das nachholen, indem man in den Einstellungen die „Neuen Antragstyp anlegen“-Funktion nutzt und die Standard-Vorlage „Antrag“ nutzt). Anträge haben
-        einen Titel, einen Antragstext und eine optionale Begründung. Falls andere Abschnitte gewünscht sind (zusätzliche Text-Abschnitte, Foto-Anhänge etc.),
-        lässt sich das auch anpassen - unter [Bewerbungen] werden die Möglichkeiten hierfür genauer beschrieben.</p>
+    <p>For this tutorial, we assume that the initial setup of Antragsgrün is completed and there already is a motion type called „Motion“. If the latter is missing, you can create it by going to „Create new motion type“ and then choosing the „Standard template: Motion“.</p>
 
-    <h2 id="berechtigungen">Berechtigungen & Freischaltung</h2>
+    <p>A preface about the Terminology: Mind that we are not one hundred percent consistent in when we are using the term „Motion“ or „Resolution“, as we have seen different organizations using Antragsgrün using different terms (we have also seen organizations calling it „Petition“, „Draft Resolution“ or „Proposal“). For the purpose of this help section and as a default, we will call documents submitted by members that have not yet been decided upon „Motions“, and once it has been adopted a „Resolution“. However, being aware that whatever terminology we choose, there is a good chance it’d be not the same one your organization is using: all terms used in the frontend of Antragsgrün can be adjusted by you as an administrator, to align the wording with your statutes.</p>
 
-    <p>Zwei wichtige Entscheidungen betreffen die Voraussetzungen, unter denen Mitglieder Anträge einreichen können: ist ein Login (und damit eine verifizierte
-        E-Mail-Adresse) nötig, um Anträge zu stellen, oder soll dies auch ohne Login möglich sein? Und: wenn ein Mitglied einen Antrag einreicht, soll dieser
-        dann automatisch für alle anderen sichtbar werden, oder soll zunächst ein Admin die Zulässigkeit des Antrags prüfen?</p>
+    <h2 id="permissions">Permissions & Publication</h2>
 
-    <p>Die Entscheidung hängt vom Anwendungsfall ab, wir können aber einige Hinweise und Erfahrungswerte geben:</p>
+
+    <p>There are two major decisions to make regarding the conditions for publishing a motion: 1) Do users need to create a login to bring forward a motion (and, for that matter, verify their e-mail address), or should that not be necessary? And 2) Once a user submits a motion, should they be visible to other users right away, or should there rather be a reviewing process by admins checking each submission for admissibility?</p>
+
+    <p>What the best decision is depends a lot on the scenario in which the system will be used in. We can give some hints and considerations, though:</p>
     <ul>
-        <li>Die Antragstellung an ein (E-Mail-)Login zu koppeln stellt eine gewisse Hürde dar, da Mitglieder zunächst einmalig einen Zugang anlegen, eine
-            Bestätigungs-E-Mail erhalten und diese bestätigen müssen. Bei kleineren, informelleren Veranstaltungen kann dies eine unnötige Hürde darstellen.
-        </li>
-        <li>Falls auf ein Login verzichtet wird, sollte allerdings auf alle Fälle eine Prüfung durch Admins erfolgen, da dann nicht verhindert werden kann, dass
-            jede beliebige Person inkl. Spam-Bots Inhalte einstellen kann.
-        </li>
-        <li>Wenn auf ein Login verzichtet wird, können Mitglieder zwar Anträge einreichen, diese später aber nicht mehr selbst zurückziehen oder bearbeiten (nur
-            noch Admins können das dann). Falls dies möglich sein soll, müssen sich Mitglieder vor dem Einreichen eines Antrags einloggen.
-        </li>
+        <li>Requiring members to log in before submitting a motion does set a barrier. Not a huge one for most, but a barrier nonetheless, as for first-time users it requires users to choose a password, go to their e-mail program and confirm a registration e-mail. In small and informal settings with a decent amount of trust, this barrier might not be worth it.</li>
+        <li>If you skip requiring a login, it is advisable, though, to have an admin review the submissions before publishing them. Skipping a login, after all, means that technically really everyone can submit content, including potential spam-bots.</li>
+        <li>If users submit motions without logging in, they can only submit them - nothing else. It will not be possible for users to withdraw a submitted motion, or modify its content (only admins will be able to do that then).</li>
     </ul>
 
-    <p>Die Entscheidung, ob ein Login nötig ist oder nicht, wird in der Einstellung „Anträge“ -> „Berechtigungen“ -> „Antäge stellen“ getroffen:</p>
+    <p>You can choose whether to require a login in the Settings at „Edit motion types“ -> „Motions“ -> „Permissions“ -> „Submit Motions“. The following options are available:</p>
     <figure class="helpFigure center">
-        <img src="/img/help/Berechtigungen.png" alt="Screenshot der Berechtigungen">
+        <img src="/img/help/Permissions.png" alt="Screenshot of the permission settings">
     </figure>
     <ul>
-        <li>„Eingeloggte“ heißt, dass Mitglieder zunächst einen Zugang anlegen und bestätigen müssen, um Anträge anlegen zu müssen.</li>
-        <li>„Alle“ heißt hingegen, dass ein Zugang nicht nötig ist. (Es ist aber dennoch möglich, sich vorher einzuloggen).</li>
-        <li>„Admins“ beschränkt die Berechtigung zum Anlegen von Anträgen auf Mitglieder mit speziellen Administrator*innen-Rechten. Diese Auswahlmöglichkeit
-            ist vor allem relevant, wenn Textentwürfe zur Diskussion gestellt werden, Mitglieder aber keine eigenständige Texte mehr vorschlagen können sollen -
-            siehe [LINK].
-        </li>
-        <li>„Niemand“: niemand kann mehr Texte anlegen - dem Titel nach. Tatsächlich können es Admins immer noch, über den Umweg der Antragsliste. Der
-            Unterschied zwischen „Admins“ und „Niemand“ ist daher marginal.
-        </li>
-        <li>„Ausgewählte Gruppen“: bei größeren Organisationen ist es möglich, das Recht zum Einreichen eines Antrags auf bestimmte Mitglieder einzuschränken
-            (beispielsweise Delegierte), während Lesezugriff bekommen. Die Verwaltung dieser Gruppen erfolgt in den Einstellungen unter „Registrierte
-            Benutzer*innen“. (Falls sowohl das Recht zum stellen und lesen von Anträgen auf eine Gruppe eingeschränkt werden soll, ist es möglich, den
-            allgemeinen Zugang zur Seite unter „Diese Veranstaltung“ -> „Zugang zur Veranstaltung“ zu beschränken.)
-        </li>
+        <li>„Registered Users“ requires users to create an account and log in before submitting a motion.</li>
+        <li>„Everyone“, on the other side, will not require a login. (Though users may still choose to do so)</li>
+        <li>„Admins“ restricts the submissions of motions to admins. This is mainly relevant for scenarios where a draft document is to be presented to members, potentially giving them the possibility to comment or amend them. This process will be explained more in detail in [we’re working on it :)]</li>
+        <li>„Nobody“: nobody can submit motions - through the regular way. Mind that admins will still be able to do so through the backend document list. The difference between „Admins“ and „Nobody“ is therefore rather marginal in this case.</li>
+        <li>„Selected groups“: larger organizations sometimes want to restrict the possibility of submitting motions to a subset of their members (e.g. delegates), while still giving all others read access. To achieve this, you can define user groups in the settings at „Registered users“ -> „Groups“ and then choose one or multiple of these groups when setting the permissions for the motion type. (Mind that if you want to restrict access to the whole site to specific users, including read access, you can do so under „This consultation“ -> „Access to this consultation“.)</li>
     </ul>
-    <p>Ob Anträge vor der Veröffentlichung zunächst durch einen Admin freigeschaltet werden müssen, lässt sich über folgende Einstellung festlegen: „Diese
-        Veranstaltung“ -> „Anträge“ -> „Freischaltung von Anträgen“. (Für Änderungsanträge gibt es eine separate Einstellung - zu finden unter „Diese
-        Veranstaltung“ -> „Änderungsanträge“ -> „Freischaltung von Änderungsanträgen“)</p>
-    <p>Wird die Freischaltung aktiviert, wird beim Einreichen eines freizuschaltenden Antrags eine E-Mail an die Admins verschickt, mit einem Link zum
-        betreffenden Antrag. Welche E-Mail-Adressen das sind, lässt sich unter „Diese Veranstaltung“ -> „E-Mails“ -> „Admins“ festlegen. Sollen mehrere Admins
-        benachrichtigt werden, kann man mehrere E-Mail-Adressen kommagetrennt eingeben (also z.B. „test1@example.org, test2@example.org").</p>
+
+    <p>To choose if admins need to review motions before they become visible, refer to the setting „Admins need to review motions before publication“ under „This consultation“ -> „Motions“. For amendments, the same can be set up independently, one section below at „Amendments“. If this is active, admins will receive a notification e-mail whenever a motion to review is submitted. You can specify who receives that e-mail at „This consultation“ -> „E-Mails“ -> „Admins“. In case multiple admins are to be notified, you can enter multiple e-mail addresses, separating them by a comma (for example „test1@example.org, test2@example.org").</p>
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Freischaltung.png" alt="Screenshot der Freischaltung">
+        <img src="/img/help/Reviewing.png" alt="Screenshot of the reviewing process">
     </figure>
 
-    <p>Admins gelangen dann entweder über den Link in der E-Mail, die Antragsliste oder den dann erscheinenden „To Do“ Link im Menü zur Administrations-Seite
-        des Antrags. Ganz oben erscheint dann ein markanter Button, mit dem der Antrag freigeschaltet werden kann. Beim Freischalten passiert folgendes:</p>
+    <p>Admins can then review and publish a motion in its respective admin view. The link to that is in the e-mail, but it is also possible to get there either by the then-visible „To Do“ link in the menu or through the admin’s motion list. On the top of this page will be a prominently placed „Publish“ button. Clicking it performs the following actions:</p>
     <ul>
-        <li>Der Status des Antrags wird von „Eingereicht (ungeprüft)“ auf „Eingereicht“ gesetzt.</li>
-        <li>Ein automatisch gewähltes Antragskürzel wird gesetzt.</li>
-        <li>Falls in den Einstellungen unter „Diese Veranstaltung“ -> „E-Mails“ die Option „Bestätigungs-E-Mail an die Antragsteller*in schicken“ gesetzt ist
-            und die Antragstellerin eine E-Mail hinterlegt hat, bekommt er/sie eine Benachrichtigung über die Freischaltung.
-        </li>
+        <li>The status of the motion will be changed from „Submitted (unpublished)“ to „Published“.</li>
+        <li>An automatically generated signature will be assigned.</li>
+        <li>In case the checkbox „Send a confirmation e-mail to the proposer of a motion when it is published“ in „This consultation“ -> „E-Mails“ has been selected, a notification will be sent.</li>
     </ul>
 
-    <p>Hinweise hierzu:</p>
+    <p>Some hints regarding this:</p>
     <ul>
-        <li>Will man ein anderes Antragskürzel festlegen als das automatisch Vorgeschlagene, kann man entweder statt dem Freischalten-Button den Status und das
-            Kürzel händisch festlegen. Oder man kann den Button nutzen, und das Kürzel anschließend nachträglich ändern.
-        </li>
-        <li>Ein Kürzel muss eindeutig sein, und darf auch nicht leer sein. Die Anzeige der Kürzel gegenüber Mitgliedern lässt sich aber unterdrücken, unter
-            „Aussehen und Bestandteile der Seite“ -> „Antragskürzel verstecken“.
-        </li>
-        <li>Man kann das Freischalten auch rückgängig machen. Hierzu ändert man einfach händisch den Status wieder zurück auf „Eingereicht (ungeprüft)“.</li>
-        <li>Hat man einen Antrag geprüft, will ihn aber doch noch nicht veröffentlichen (z.B. um alle Anträge zunächst unsichtbar zu sammeln und dann zu einem
-            festgelegten Zeitraum veröffentlichen), kann man den Status „Eingereicht (geprüft, unveröffentlicht)“ wählen.
-        </li>
+        <li>If you want to assign a different signature than the automatically generated one, you can either just change it before or after using the „Publish“ button, or just skip the button entirely and set both the signature and the new status by hand.</li>
+        <li>The signature needs to be unique and must not be empty. If you do not want the signature to be visible to users, it is possible to suppress it at „Appearance and components of this site“ -> „Hide title signatures“</li>
+        <li>It is possible to un-publish motions afterward. To do so, you can change the status back to „Submitted (unpublished)“.</li>
+        <li>If you have reviewed a motion but do not yet want to publish it (e.g. to publish all submitted motions at the very same time), you can set the status to „Submitted (reviewed, not yet published)“.</li>
     </ul>
 
+    <h2 id="deadlines">Submission Deadlines</h2>
 
-    <h2 id="antragsschluss">Antragsschluss</h2>
+    <p>In many cases, there is a fixed time frame in which members can submit motions. To enforce this with Antragsgrün, you can set a specific deadline for each motion type, in the settings at „Motions“ -> „Deadlines“. If the field is empty, there is no deadline, submission will always be possible. It is also possible to set separate deadlines for motions and amendments.</p>
 
-    <p>Oft gibt es ein festes Zeitfenster, innerhalb dessen Anträge gestellt werden können. Dazu lässt sich pro Antragstyp ein Antragsschluss festlegen, auf die
-        Minute genau. Unter „Anträge“ -> „Antragsschluss / Zeiträume“ lässt sich dieser leicht auswählen. Ist das Feld leer, heißt das, dass es keine zeitliche
-        Beschränkung gibt. Für Änderungsanträge lässt sich ein separater Zeitpunkt festlegen.</p>
+    <p>However, there might be scenarios, where there are multiple deadlines. For example, some organizations set the deadline for regular motions to be x days before the general assembly, but still want members to be able to submit motions for urgent resolutions. There are two general approaches to how to handle that with Antragsgrün. One would be to consider such urgent resolutions to be absolute exceptions that involve admin intervention: as admins always can create motions, independent of the deadline, members would talk to admins to have them submit these urgent resolutions on their behalf. The second approach would be to explicitly support them through the system by creating a separate motion type called „Urgent resolution“ (or similar). As each motion type can have its own deadline, the regular motion type would have a dead line set, while the new one would not. The urgent resolution type would typically not have the option „Call to create as big, colored button“ set, as to promote this option less prominently.</p>
 
-    <p>Es gibt allerdings Situationen, in denen es mehrere relevante Zeitpunkte gibt. Beispielsweise könnten reguläre Anträge nur bis wenige Tage vor einer
-        Mitgliederversammlung gestellt werden können, es darüber hinaus aber immer noch die Möglichkeit geben, Dringlichkeitsanträge zu stellen. Hierfür gibt es
-        zwei Herangehensweisen: eine Möglichkeit ist, Dringlichkeitsanträge als absolute Ausnahme zu betrachten, die dann von den Admins eingetragen werden
-        müssen (Admins können über die Antragsliste immer Anträge anlegen). Die zweite Möglichkeit ist, einen separaten Antragstypen „Dringlichkeitsanträge“
-        anzulegen. Da sich ein Antragsschluss immer nur auf einen bestimmten Antragstypen bezieht, ist es darüber möglich, unterschiedliche Antragsschlüsse
-        abzubilden. In diesem Fall können Mitglieder den Dringlichkeitsantrag selbst eintragen. Da die Möglichkeit zu Dringlichkeitsanträgen aber vermutlich
-        weniger prominent beworben werden soll, empfiehlt es sich hier, die Option „Aufruf als großer, farbiger Button“ nicht zu aktivieren - der Link zum
-        Anlegen erscheint dann etwas kleiner, dezenter auf der Startseite in der Seitenleiste.</p>
+    <p>Using deadlines, it is only possible to set the end of the submission time frame, and for most use cases, this will be enough. In case it is necessary to set a start time for submission, there are again two ways to achieve that, one manual way and one using dedicated functionality. The manual way to achieve this would be to initially set the submission policy to „Nobody“ (or „Admins“), and at the given time change it to „Everyone“ / „Registered Users“. The more sophisticated way would be to enable the „Complex schedule / phases“ functionality in the Deadline section of the motion type. Using a complex schedule, it is possible to define one or multiple time frames for different actions in the system, including the submission of motions. This enables some more complex workflows, but is, as the name suggests, more complex. From our experience, in most cases, it is more advisable to keep things simple.</p>
 
-    <p>Antragsschlüsse bezeichnen immer nur das Ende des Zeitraums, in dem Mitglieder Anträge einreichen können. Falls es benötigt ist, auch einen Anfang
-        festzulegen (das Einreichen soll nicht vor einem bestimmten Zeitpunkt möglich sein), gibt es hierzu zwei Möglichkeiten: entweder händisch als Admin,
-        indem man bei der Berechtigung zum Anlegen zunächst „Niemand“ einstellt, und dies dann zum richtigen Zeitpunkt auf „Eingeloggte“ bzw. „Alle“ umstellt.
-        Oder indem man die „Komplexe Zeitsteuerung“ aktiviert, über die man für verschiedene Aktivitäten (wie eben Anträge einzureichen) einen oder mehrere
-        konkrete Zeiträume festlegen kann.<br>
-        Unserer Erfahrung nach ist es hier oft zweckmäßiger, Sachen einfach zu halten.</p>
+    <h2 id="comments">Comments</h2>
 
-    <h2 id="kommentare">Kommentare</h2>
-
-    <p>Anträge (und auch Änderungsanträge) können von anderen Mitgliedern kommentiert werden - falls dies von den Administrierenden so eingestellt wird. Bei der
-        Ersteinrichtung der Seite wird bereits abgefragt, ob dies möglich sein soll oder nicht. Bei den Einstellungen zum Antragstypen kann dies nachträglich
-        aber noch verändert bzw. genauer eingestellt werden.</p>
-
-    <p>Die Kommentar-Funktion wird über die selbe Berechtigungs-Auswahl gesteuert wie das Einreichen von Anträgen, unter „Berechtigungen“ -> „Kommentieren“.
-        Auch hier gibt es die Möglichkeit, es ganz zu deaktivieren („Niemand“), nur Mitglieder mit registrierter E-Mail-Adresse kommentieren zu lassen
-        („Eingeloggte“), oder auf die Registrierung komplett zu verzichten („Alle“). (Die Auswahlmöglichkeiten „Admin“ und „Ausgewählte Gruppen“ sind bei
-        Kommentaren zwar auswählbar, aber selten relevant. Genauso wie die Möglichkeit, Kommentare erst durch einen Admin freischalten zu lassen - es gibt diese
-        Möglichkeit, ist aber nur in ganz wenigen Fällen relevant.)</p>
+    ...
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Kommentare.png" alt="Screenshot eines absatzbasierten Kommentars">
+        <img src="/img/help/Comments.png" alt="Screenshot of paragraph-based comments">
     </figure>
 
-    <p>Standardmäßig befindet sich die Kommentarfunktion unterhalb eines Antrags, Kommentare beziehen sich dabei auf den kompletten Antrag. Es ist aber auch
-        möglich, Kommentare auf Absatzbasis zu ermöglichen, wenn sich Kommentare eher auf konkretere Textstellen beziehen sollen. Ist dies gewünscht, wählt man
-        im Antragstyp ganz unten unter „Antrags-Abschnitte“ -> „Antragstext“ die Option „Kommentare: Pro Absatz“. Ab dann gib es für jeden Absatz eine separate
-        Kommentarfunktion, die Anzahl der bereits existierenden Kommentare wird mit einem Lesezeichen rechts vom Antragstext angezeigt.</p>
+    ...
 
-    <h2 id="zustimmung">Zustimmungen</h2>
+    <h2 id="likes">Likes</h2>
 
-    <p>Man kann Mitgliedern die Möglichkeit geben, ihre Zustimmung zu Anträgen durch einen entsprechenden Button auszudrücken, um dadurch vor einer
-        Veranstaltung schon ein ungefähres Stimmungsbild zu erhalten. Diese Funktion ist standardmäßig nicht aktiviert, kann aber für einen bestimmten
-        Antragstypen folgendermaßen aktiviert werden:</p>
-    <ul>
-        <li>Unter „Berechtigungen“ -> „Anträge unterstützen“ zunächst auswählen, wem diese Funktion offen stehen soll.</li>
-        <li>Dann direkt darunter das Häkchen bei „Zustimmung“ setzen.</li>
-        <li>Soll es neben einer Zustimmungs-Funktion auch eine Möglichkeit geben, die Ablehnung explizit auszudrücken, kann man außerdem das Häkchen bei
-            „Ablehnung“ setzen.
-        </li>
-        <li>Das dritte Häkchen, „Offiziell unterstützen“, sollte hier nicht gesetzt werden - dieses ist in einem anderen Zusammenhang relevant (siehe
-            „Unterstützer*innen sammeln“).
-        </li>
-    </ul>
+    ...
 
-    <h2 id="unterstuetzung">Unterstützer*innen sammeln</h2>
+    <h2 id="support">Collecting supporters before submission</h2>
 
-    <p>Größere Veranstaltungen mit vielen Antragsberechtigungen haben oft strengere Bestimmungen, unter denen Anträge eingereicht werden können - insbesondere
-        ist es oft nötig, dass mehrere Mitglieder einen Antrag gemeinsam stellen bzw. unterstützen müssen, um diesen einzureichen.</p>
-
-    <p>Hier unterstützt Antragsgrün grob gesagt zwei Herangehensweisen: entweder gibt die Haupt-Antragsteller*in selbst alle Personen an, die den Antrag
-        unterstützen (Vertrauensbasis), oder aber die Haupt-Antragsteller*in legt den Antrag zunächst an, kann den Antrag aber erst dann final einreichen, wenn
-        genügend Unterstützer*innen auch explizit ihre Unterstützung ausgedrückt haben (sicherer, aber aufwendiger für alle Beteiligten).</p>
-
-    <p><strong>Einfacherer Fall - die Antragsteller*in gibt die weiteren Personen an:</strong></p>
-    <p>Um diese Variante zu wählen, wählt man beim Antragstypen unter „Antragsteller*in / Unterstützer*innen: Anträge“ zunächst das Formular „Von der
-        Antragsteller*in angegeben“ aus. Es erscheint daraufhin ein neues Feld, „Unterstützer*innen“. Hier kann angegeben werden, wie viele Personen angegeben
-        werden müssen, und auch ob die Antragsteller*in darüber hinaus noch weitere Personen angeben kann.</p>
-
-    <p><strong>Komplexerer Fall: eine explizite Unterstützungs-Sammel-Phase</strong></p>
-    <p>Soll die sicherere (aber auch aufwändigere) Variante zum Einsatz kommen, dass jede beteiligte Person auch tatsächlich einmal die Seite aufrufen und dort
-        explizit ihre Unterstützung ausdrücken muss, sind ein paar mehr Einstellungen vorzunehmen:</p>
-    <ul>
-        <li>Beim Unterstützungs-Formular ist die Variante „Unterstützungs-Phase vor Veröffentlichung (außer bei Gremien)“ zu wählen</li>
-        <li>Die Mindestzahl an Unterstützer*innen einige Felder muss ausgefüllt werden</li>
-        <li>Weiter oben, unter „Berechtigungen“ -> „Anträge Unterstützen“, sollte mindestens „Eingeloggte“ ausgewählt werden (andere Möglichkeiten sind auch
-            möglich, zweckmäßig ist es aber, mindestens ein Login anzufordern)
-        </li>
-        <li>Unter „Anträge Unterstützen“ ist das Häkchen bei „Offiziell unterstützen“ zu setzen.</li>
-        <li>Empfehlenswert ist es außerdem, die E-Mail-Bestätigung beim Einreichen für Mitglieder zu aktivieren, unter „Diese Veranstaltung“ -> „E-Mail“
-            unten.
-        </li>
-    </ul>
+    ...
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Unterstuetzung.png" alt="Screenshot eines absatzbasierten Kommentars">
+        <img src="/img/help/SupportCollection.png" alt="Screenshot eines absatzbasierten Kommentars">
     </figure>
-    <p>Will ein Mitglied nun einen Antrag einreichen, kommt nun im Anschluss ein Bestätigungsbildschirm, in dem das Mitglied den Link auf den Antrag angezeigt
-        bekommt. Dieser Link kann nun an weitere Personen weitergeleitet werden. Öffnen diese den Link, bekommen sie neben dem Antrag die Möglichkeit, den
-        Antrag zu unterstützen. Haben dies ausreichend viele Mitglieder getan, erhält die ursprüngliche Antragsteller*in eine E-Mail-Benachrichtigung, dass der
-        Antrag nun tatsächlich eingereicht werden kann / soll.</p>
+    ...
 </div>

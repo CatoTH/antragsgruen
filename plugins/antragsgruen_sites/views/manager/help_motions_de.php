@@ -82,7 +82,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         <li>„Alle“ heißt hingegen, dass ein Zugang nicht nötig ist. (Es ist aber dennoch möglich, sich vorher einzuloggen).</li>
         <li>„Admins“ beschränkt die Berechtigung zum Anlegen von Anträgen auf Mitglieder mit speziellen Administrator*innen-Rechten. Diese Auswahlmöglichkeit
             ist vor allem relevant, wenn Textentwürfe zur Diskussion gestellt werden, Mitglieder aber keine eigenständige Texte mehr vorschlagen können sollen -
-            siehe [LINK].
+            siehe [folgt noch, wir arbeiten daran :)].
         </li>
         <li>„Niemand“: niemand kann mehr Texte anlegen - dem Titel nach. Tatsächlich können es Admins immer noch, über den Umweg der Antragsliste. Der
             Unterschied zwischen „Admins“ und „Niemand“ ist daher marginal.

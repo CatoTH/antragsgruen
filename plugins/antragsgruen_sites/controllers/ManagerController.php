@@ -96,7 +96,7 @@ class ManagerController extends Base
     {
         $this->layout = '@app/views/layouts/column2';
         $this->addSidebar($this->canSeeAllSites());
-        if (\Yii::$app->language == 'de') {
+        if (\Yii::$app->language === 'de') {
             return new HtmlResponse($this->render('index_de'));
         } else {
             return new HtmlResponse($this->render('index_en'));
@@ -128,7 +128,7 @@ class ManagerController extends Base
 
     private function requireEligibleToCreateUser(): void
     {
-        if ($this->getParams()->mode == 'sandbox') {
+        if ($this->getParams()->mode === 'sandbox') {
             // In sandbox mode, everyone is allowed to create a site
             return;
         }
