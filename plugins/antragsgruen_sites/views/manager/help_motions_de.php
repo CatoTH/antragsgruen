@@ -190,7 +190,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <h2 id="unterstuetzung">Unterstützer*innen sammeln</h2>
 
-    <p>Größere Veranstaltungen mit vielen Antragsberechtigungen haben oft strengere Bestimmungen, unter denen Anträge eingereicht werden können - insbesondere
+    <p>Größere Veranstaltungen mit vielen Antragsberechtigten haben oft strengere Bestimmungen, unter denen Anträge eingereicht werden können - insbesondere
         ist es oft nötig, dass mehrere Mitglieder einen Antrag gemeinsam stellen bzw. unterstützen müssen, um diesen einzureichen.</p>
 
     <p>Hier unterstützt Antragsgrün grob gesagt zwei Herangehensweisen: entweder gibt die Haupt-Antragsteller*in selbst alle Personen an, die den Antrag

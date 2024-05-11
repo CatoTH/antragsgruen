@@ -104,24 +104,49 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <h2 id="comments">Comments</h2>
 
-    ...
+    <p>Users can comment on motions (and amendments) - if this is set up by the administrators. The installation assistant already asks if this should be enabled or not. After the initial setup, this can be changed at the motion type settings.</p>
+
+    <p>Enabling or disabling comments is done at the same place as setting the permissions for submitting motions - that is, at „Permissions“ -> „Comments“. To deactivate it, select „Nobody“, to activate it, „Registered users“ or „Everyone“. (The options „Admins“ and „Selected groups“ do exist here, too, but hardly ever relevant. There is also an option to require each comment being screened before publication, though this is not a frequently used option.)</p>
 
     <figure class="helpFigure right bordered">
         <img src="/img/help/Comments.png" alt="Screenshot of paragraph-based comments">
     </figure>
 
-    ...
+    <p>By default, comments to a motion are shown below the motion text. Comments refer to the motion as a whole. If you would prefer comments to refer to specific paragraphs, you can set that up by choosing „Comments: Paragraph-based“ in the motion type settings at „Motion Sections“ (bottom) -> „Motion text“. Once selected, each paragraph of the motion will have its own comment section; comments are not visible by default (to avoid interrupting the reading flow of the motion text), but the number of comments is visible as an annotation next to each paragraph, including the option to show the comments.</p>
 
     <h2 id="likes">Likes</h2>
 
-    ...
+    <p>It is possible to allow users to express their agreement (or disagreement) with a specific motion, to get an initial overview on controversial topics before a meeting. This function is not enabled by default and has to be enabled for a particular motion type by following these steps:</p>
+    <ul>
+        <li>At „Permissions“ -> „Supporting motions“, choose which users should be allowed to use this function.</li>
+        <li>Right below this, choose „Likes“.</li>
+        <li>In case an explicit „dislike“ is to be offered, too, select that too.</li>
+        <li>The third option, „Official support“, is not relevant in this scenario - we will come back to this option further down at „ Collecting supporters before submission“.</li>
+    </ul>
 
     <h2 id="support">Collecting supporters before submission</h2>
 
-    ...
+    <p>Larger organizations with many members sometimes have more regulations on who may submit motions. One regulation that we encountered several times and facilitate with Antragsgrün is to require multiple eligible members to support a motion before it can officially be submitted.</p>
+
+    <p>To facilitate this, Antragsgrün supports two approaches: either the person submitting a motion names all persons supporting it (trust-based), or the person can create the motion, but all supporting members need to explicitly express their support through the system before the initiator can formally submit it. The latter approach is more secure, but also significantly more effortful for all involved parties.</p>
+
+    <p><strong>Simple case: The initiator names all supporting persons:</strong><br>
+        To go with this variant, go to „Proposer / Supporters: Motions“ in the motion type settings and select the form „Supporters given by proposer“. A new field „Supporters“ will appear, where the minimum number of supporters can be entered, and whether the initiator can name more supporters than this number or not.</p>
+
+    <p><strong>Complex case: An explicit support collection phase:</strong><br>
+        If you want to go with the more secure, but also more complex variant, where each supporting person actually needs to visit the page and explicitly express their support, some more adjustments have to be made:</p>
+    <ul>
+        <li>At the mentioned supporter Form, choose the option „Collection phase before publication (not for organizations)“.</li>
+        <li>Here, too, enter the number of required supporters.</li>
+        <li>Further up on the page, under „Permissions“ -> „Supporting motions“, choose at least „Registered users“ (or, if applicable, specify the user eligible groups).</li>
+        <li>Right next to the permission field, check the „Official support“ option.</li>
+        <li>Furthermore, it is advisable (though not strictly necessary), to enable „Send a confirmation e-mail to the proposer of a motion“ in the consultation settings at the very bottom.</li>
+    </ul>
 
     <figure class="helpFigure right bordered">
         <img src="/img/help/SupportCollection.png" alt="Screenshot eines absatzbasierten Kommentars">
     </figure>
-    ...
+
+    <p>Now, if a member creates a motion, a confirmation will appear that gives more instructions on how to tell the supporting members to express their support - in particular, a copy-pastable URL to the not-yet-submitted motion will be presented. Eligible members opening that page will be given the option to express their support. Once the minimum number of supports has been reached, the original proposer of the motion will receive a notification e-mail, asking them to now formally submit the motion.<</p>
+
 </div>
