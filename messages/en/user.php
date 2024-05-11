@@ -89,7 +89,7 @@ return [
     'login_forgot_pw'         => 'Forgot your password?',
     'login_openid'            => 'OpenID login',
     'login_openid_url'        => 'OpenID URL',
-    'login_managed_hint'      => '<strong>Hint:</strong> new accounts have to be screened by an admin before they can access this site.',
+    'login_managed_hint'      => '<strong>Hint:</strong> new accounts have to be reviewed by an admin before they can access this site.',
     'managed_account_ask_btn' => 'Ask for permission',
     'managed_account_asked'   => 'Asked for permission.',
 
