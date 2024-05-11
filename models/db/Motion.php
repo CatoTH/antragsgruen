@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\AdminTodoItem;
 use app\models\db\repostory\{ConsultationRepository, MotionRepository};
 use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
@@ -945,6 +946,7 @@ class Motion extends IMotion implements IRSSItem
         HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
         MotionRepository::flushCaches();
         LayoutHelper::flushViewCaches($this->getMyConsultation());
+        AdminTodoItem::flushConsultationTodoCount($this->getMyConsultation());
     }
 
     public function getPdfCacheKey(): string

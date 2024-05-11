@@ -83,7 +83,7 @@ class MotionController extends AdminBase
         }
 
         foreach ($motion->getInitiators() as $initiator) {
-            $initiator->userId = ($user ? $user->id : null);
+            $initiator->userId = $user?->id;
             $initiator->save();
             $initiator->refresh();
         }

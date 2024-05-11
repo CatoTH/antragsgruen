@@ -148,7 +148,7 @@ class HashedStaticCache
         }
     }
 
-    private function setCache(mixed $data): void
+    public function setCache(mixed $data): void
     {
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $directory = self::getDirectory($this->cacheKey);

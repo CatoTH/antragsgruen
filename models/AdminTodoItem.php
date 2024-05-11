@@ -201,9 +201,24 @@ class AdminTodoItem
         return $todo;
     }
 
-    private static function getTodoCache(?Consultation $consultation): HashedStaticCache
+    private static function getTodoUsersCache(?Consultation $consultation): HashedStaticCache
     {
-        $cache = HashedStaticCache::getInstance('getConsultationTodoCount', [User::getCurrentUser()?->id, $consultation?->id]);
+        return HashedStaticCache::getInstance('getTodoUsersCache', [$consultation?->id]);
+    }
+
+    private static function addUserToTodoCache(?Consultation $consultation, ?User $user): void
+    {
+        $cache = self::getTodoUsersCache($consultation);
+        $users = $cache->getCached(function() { return []; });
+        if (!in_array($user?->id, $users)) {
+            $users[] = $user?->id;
+            $cache->setCache($users);
+        }
+    }
+
+    private static function getTodoCache(?Consultation $consultation, ?int $userId): HashedStaticCache
+    {
+        $cache = HashedStaticCache::getInstance('getConsultationTodoCount', [$userId, $consultation?->id]);
         if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $cache->setIsSynchronized(true);
         }
@@ -241,7 +256,7 @@ class AdminTodoItem
 
         if ($setCache) {
             // Only set the cache
-            $cache = self::getTodoCache($consultation);
+            $cache = self::getTodoCache($consultation, User::getCurrentUser()?->id);
             $cache->flushCache();
             $cache->setTimeout(30);
             $cache->getCached(function () use ($todo) {
@@ -254,8 +269,8 @@ class AdminTodoItem
 
     public static function getConsultationTodoCount(?Consultation $consultation, bool $onlyIfExists): ?int
     {
-        $cache = self::getTodoCache($consultation);
-        $cache->setTimeout(30);
+        $cache = self::getTodoCache($consultation, User::getCurrentUser()?->id);
+        $cache->setTimeout(5 * 60);
 
         // For large consultations (identified by having a view cache), load the list asynchronously.
         // Downside: a bit shaky layout when loading. For smaller consultations, it's not worth the tradeoff.
@@ -264,13 +279,27 @@ class AdminTodoItem
         }
 
         return $cache->getCached(function () use ($consultation) {
-            return count(static::getConsultationTodos($consultation, false));
+            self::addUserToTodoCache($consultation, User::getCurrentUser());
+            return count(self::getConsultationTodos($consultation, false));
         });
     }
 
     public static function flushConsultationTodoCount(?Consultation $consultation): void
     {
-        $cache = self::getTodoCache($consultation);
+        $cache = self::getTodoUsersCache($consultation);
+        $users = $cache->getCached(function() { return []; });
+        $cache->setCache([]);
+        if (!in_array(User::getCurrentUser()?->id, $users)) {
+            $users[] = User::getCurrentUser()?->id;
+        }
+        foreach ($users as $userId) {
+            self::flushUserTodoCount($consultation, $userId);
+        }
+    }
+
+    public static function flushUserTodoCount(?Consultation $consultation, ?int $userId): void
+    {
+        $cache = self::getTodoCache($consultation, $userId);
         $cache->flushCache();
     }
 

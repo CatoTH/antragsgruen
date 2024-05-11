@@ -4,6 +4,7 @@ namespace app\components;
 
 use app\components\mail\Tools as MailTools;
 use app\models\exceptions\{AlreadyExists, FormError, MailNotSent, UserEditFailed};
+use app\models\AdminTodoItem;
 use app\models\consultationLog\UserGroupChange;
 use app\models\settings\{AntragsgruenApp, Privileges, UserGroupPermissions};
 use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
@@ -134,6 +135,7 @@ class UserGroupAdminMethods
         }
 
         $this->consultation->refresh();
+        AdminTodoItem::flushUserTodoCount($this->consultation, $userId);
     }
 
     public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail): void
@@ -212,6 +214,8 @@ class UserGroupAdminMethods
                     $user->link('userGroups', $defaultGroup);
                     $this->logUserGroupAdd($user, $userGroup);
                 }
+
+                AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
             } else {
                 $existingUserIds[] = $user->id;
             }
@@ -224,6 +228,7 @@ class UserGroupAdminMethods
             $user = User::findOne(['id' => $userId]);
             $user->link('userGroups', $userGroup);
             $this->logUserGroupAdd($user, $userGroup);
+            AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
         }
 
         $userGroup->refresh();
@@ -253,6 +258,7 @@ class UserGroupAdminMethods
         }
 
         $this->consultation->refresh();
+        AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
     }
 
     public function createUserGroup(string $groupName): void
