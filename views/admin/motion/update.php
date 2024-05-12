@@ -182,7 +182,7 @@ if (count($consultation->agendaItems) > 0) {
     echo Yii::t('admin', 'motion_agenda_item');
     echo ':</label><div class="rightColumn">';
     $options    = ['id' => 'agendaItemId', 'class' => 'stdDropdown fullsize'];
-    $selections = [];
+    $selections = ['-'];
     foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
         $selections[$item->id] = $item->title;
     }
