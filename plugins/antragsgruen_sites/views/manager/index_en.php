@@ -95,11 +95,19 @@ $controller->layoutParams->addInlineCss('
             <li>... and much more.</li>
         </ul>
 
-        <p style="text-align: center; font-weight: bold;">
-            <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>">
+        <p>
+            <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>" style="font-weight: bold;">
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 Get a more exhaustive list of features
-            </a>
+            </a><br><br>
+            <a href="/help/member-motion">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                Tutorial: Submission of motions and resolutions
+            </a><br>
+            <a href="/help/amendments">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                Tutorial: Submission of amendments
+            </a><br>
         </p>
 
         <br style="clear: both;">

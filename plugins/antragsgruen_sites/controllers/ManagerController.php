@@ -202,6 +202,15 @@ class ManagerController extends Base
         }
     }
 
+    public function actionAmendments(): HtmlResponse
+    {
+        if (\Yii::$app->language === 'de') {
+            return new HtmlResponse($this->render('help_amendments_de'));
+        } else {
+            return new HtmlResponse($this->render('help_amendments_en'));
+        }
+    }
+
     /**
      * @return Site[]
      */

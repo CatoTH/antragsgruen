@@ -13,9 +13,9 @@ $controller = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl = 'https://motion.tools/help/member-motion';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help/member-motion'];
+$controller->layoutParams->addBreadcrumb('Home', '/');
 $controller->layoutParams->addBreadcrumb('Help', '/help');
-
-$params = \app\models\settings\AntragsgruenApp::getInstance();
+$controller->layoutParams->addBreadcrumb('Motions');
 
 ?>
 <h1>Members submitting motions</h1>

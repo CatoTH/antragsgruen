@@ -104,11 +104,19 @@ $controller->layoutParams->addInlineCss('
             <li>... und viel mehr.</li>
         </ul>
 
-        <p style="text-align: center; font-weight: bold;">
-            <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>">
+        <p>
+            <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>" style="font-weight: bold;">
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 Zur ausführlichen Funktionsbeschreibung und Hilfe
-            </a>
+            </a><br><br>
+            <a href="/help/member-motion">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                Tutorial: Anträge einreichen
+            </a><br>
+            <a href="/help/amendments">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                Tutorial: Änderungsanträge einreichen
+            </a><br>
         </p>
 
         <br style="clear: both;">

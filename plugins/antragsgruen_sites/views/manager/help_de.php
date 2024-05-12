@@ -12,8 +12,8 @@ $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/help';
 $controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help'];
-
-$params = \app\models\settings\AntragsgruenApp::getInstance();
+$controller->layoutParams->addBreadcrumb('Start', '/');
+$controller->layoutParams->addBreadcrumb('Hilfe');
 
 ?>
 <h1>Antragsgrün - das grüne Antragstool</h1>
@@ -27,6 +27,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
             <strong>Anleitungen für konkrete Anwendungsfälle</strong>
             <ul>
                 <li><a href="/help/member-motion">Mitglieder reichen Anträge ein</a></li>
+                <li><a href="/help/amendments">Änderungsanträge einreichen</a></li>
             </ul>
         </li>
         <li>
