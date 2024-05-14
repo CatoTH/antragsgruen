@@ -146,6 +146,8 @@ class AgendaVoting
             $votingBlockJson['votes_total'] = $stats['votes'];
             $votingBlockJson['votes_users'] = $stats['users'];
             $votingBlockJson['abstentions'] = $stats['abstentions'];
+            $votingBlockJson['abstentions_nyc'] = $stats['abstentions_nyc'];
+            $votingBlockJson['abstentions_ingyo'] = $stats['abstentions_ingyo'];
             $votingBlockJson['vote_policy'] = $this->voting->getVotingPolicy()->getApiObject();
 
             $quorumType = $this->voting->getQuorumType();
