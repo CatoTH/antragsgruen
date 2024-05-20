@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.14.0 [not released yet]
+## Version 4.14.0 (2024-05-20)
 
 - A new default motion type template exists, "progress report". It includes a resolution and a progress section. The latter can be edited inline from the document view by administrative users. An editorial group of user can be defined that has permissions to edit these progress report section without having any other addition administrative privileges.
 - Super-admins can now change the e-mail-address / logins of registered users, not only their passwords.
