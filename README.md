@@ -33,7 +33,7 @@ Installation
 #### Requirements:
 
 - A MySQL-database
-- PHP >= 8.0. Recommended: 8.3+. Required packages for Debian / Ubuntu Linux:
+- PHP >= 8.1. Recommended: 8.3+. Required packages for Debian / Ubuntu Linux:
 
 ```bash
 # Using PHP8-packages from [deb.sury.org](https://deb.sury.org/):
