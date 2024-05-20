@@ -293,7 +293,7 @@ $I->dontSee('To Do (1)', '#adminTodo');
 $I->gotoConsultationHome(true, 'std', 'hv');
 $I->click('.tagLink55');
 $I->see('Testantrag', '.titleCol');
-$I->see('Landesversammlung Süddeutschland', '.initiatorRow');
+$I->see('Landesversammlung Süddeutschland', '.initiatorCol');
 $I->click('.motionLink6');
 $I->logout();
 
@@ -333,4 +333,5 @@ $I->click('.tagLink55');
 $I->see('Testantrag', '.motionListTags .motionLink7');
 $I->gotoConsultationHome(true, 'std', 'hv');
 $I->click('#sidebarResolutions');
+$I->click('.tagLink55');
 $I->see('Testantrag', '.motionLink8');

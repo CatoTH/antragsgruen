@@ -158,6 +158,9 @@ $I->assertJsonStringEqualsJsonString('[
     "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "voting_time": null,
     "opened_ts": ' . $jsonParsed[0]['opened_ts'] . ',
+    "abstentions_total": 0,
+    "has_abstained": false,
+    "has_general_abstention": false,
     "votes_total": 1,
     "votes_users": 1,
     "vote_policy": {
@@ -241,6 +244,8 @@ $I->assertJsonStringEqualsJsonString('[
     "opened_ts": ' . $jsonParsed[0]['opened_ts'] . ',
     "log": [ { "type": 1, "date": "' . $jsonParsed[0]['log'][0]['date'] . '" } ],
     "max_votes_by_group": null,
+    "abstentions_total": 0,
+    "has_general_abstention": false,
     "votes_total": 1,
     "votes_users": 1,
     "vote_policy": {
@@ -317,6 +322,8 @@ $I->assertJsonStringEqualsJsonString('[
     "opened_ts": null,
     "log": [],
     "max_votes_by_group": null,
+    "abstentions_total": 0,
+    "has_general_abstention": false,
     "votes_total": 0,
     "votes_users": 0,
     "vote_policy": { "id": 2, "description": "Eingeloggte" }
@@ -376,6 +383,8 @@ $I->assertJsonStringEqualsJsonString('[
     "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "voting_time": null,
     "opened_ts": null,
+    "abstentions_total": 0,
+    "has_general_abstention": false,
     "votes_total": 1,
     "votes_users": 1,
     "vote_policy": { "id": 6, "user_groups": [ ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ' ], "description": "Voting group" }

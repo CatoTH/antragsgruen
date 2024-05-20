@@ -161,6 +161,8 @@ $I->assertJsonStringEqualsJsonString('[
     "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "voting_time": null,
     "opened_ts": null,
+    "abstentions_total": 0,
+    "has_general_abstention": false,
     "votes_total": 1,
     "votes_users": 1,
     "vote_policy": { "id": 2, "description": "Eingeloggte" }
