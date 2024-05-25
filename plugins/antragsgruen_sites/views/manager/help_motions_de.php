@@ -7,7 +7,7 @@ use app\models\db\Site;
  * @var Site[] $site
  */
 
-$this->title = 'Antragsgrün Dokumentation: Mitglieder reichen Anträge ein';
+$this->title = 'Antragsgrün: Mitglieder reichen Anträge ein';
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');

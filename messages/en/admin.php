@@ -545,7 +545,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_templ_statute'   => 'Statutes amendments',
     'motion_type_templ_statuteh'  => 'Admins define the statutes, users can create amendments for them',
     'motion_type_templ_progress'  => 'Progress reports',
-    'motion_type_templ_progressh' => 'Resolution text plus a simple to edit text field for describing the progress made',
+    'motion_type_templ_progressh' => 'Resolution text plus a simple to edit text field for describing the progress made. <a href="https://motion.tools/help/progress-reports" target="_blank"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> More information</a>',
     'motion_type_templ_none'      => '- no template -',
     'motion_type_singular'        => 'Title (singular)',
     'motion_type_singular_pl'     => 'Motion',

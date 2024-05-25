@@ -32,6 +32,7 @@ $controller->layoutParams->addBreadcrumb('Help');
                 <li><a href="/help/amendments">Allow members to amend motions</a></li>
                 <li>Tutorial coming soon: Support for applications</li>
                 <li>Tutorial coming soon: Consolidate submitted amendments into a final resolution</li>
+                <li><a href="/help/progress-reports">Progress reports</a></li>
                 <li>Tutorial coming soon: Proposed procedures</li>
                 <li>Tutorial coming soon: Votings</li>
             </ul>

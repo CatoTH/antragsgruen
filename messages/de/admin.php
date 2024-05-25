@@ -551,7 +551,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_templ_statute'   => 'Satzungsänderungsanträge',
     'motion_type_templ_statuteh'  => 'Admins geben eine Satzung vor, für die Änderungsanträge gestellt werden können',
     'motion_type_templ_progress'  => 'Standard-Vorlage: Sachstandsbericht',
-    'motion_type_templ_progressh' => 'Beschlusstext mit einfach und dynamisch änderbarem Sachstands-Text. Neben Admins können bei Bedarf auch berechtigte Benutzer*innen mit der Pflege des Sachstands beauftragt werden.',
+    'motion_type_templ_progressh' => 'Beschlusstext mit einfach und dynamisch änderbarem Sachstands-Text. Neben Admins können bei Bedarf auch berechtigte Benutzer*innen mit der Pflege des Sachstands beauftragt werden. <a href="https://antragsgruen.de/help/progress-reports" target="_blank"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Genauere Informationen</a>',
     'motion_type_templ_none'      => '- keine Vorlage -',
     'motion_type_singular'        => 'Titel (Einzahl)',
     'motion_type_singular_pl'     => 'Antrag',

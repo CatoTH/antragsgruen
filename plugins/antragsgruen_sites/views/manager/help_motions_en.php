@@ -7,7 +7,7 @@ use app\models\db\Site;
  * @var Site[] $site
  */
 
-$this->title = 'Antragsgrün Documentation: Submitting motions';
+$this->title = 'Antragsgrün: Submitting motions';
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');

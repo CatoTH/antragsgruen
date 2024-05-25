@@ -211,6 +211,15 @@ class ManagerController extends Base
         }
     }
 
+    public function actionProgressReports(): HtmlResponse
+    {
+        if (\Yii::$app->language === 'de') {
+            return new HtmlResponse($this->render('help_progressreports_de'));
+        } else {
+            return new HtmlResponse($this->render('help_progressreports_en'));
+        }
+    }
+
     /**
      * @return Site[]
      */

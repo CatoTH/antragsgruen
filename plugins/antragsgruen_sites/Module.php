@@ -11,7 +11,7 @@ class Module extends ModuleBase
     public static function getManagerUrlRoutes(string $domainPlain): array
     {
         $domPlainPaths = 'help|password|createsite|check-subdomain|legal|privacy|allsites';
-        $helpPaths = 'member-motion|amendments';
+        $helpPaths = 'member-motion|amendments|progress-reports';
         return [
             $domainPlain                                     => 'antragsgruen_sites/manager/index',
             $domainPlain . '/help/<_a:(' . $helpPaths . ')>' => 'antragsgruen_sites/manager/<_a>',

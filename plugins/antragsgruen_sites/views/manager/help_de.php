@@ -28,6 +28,7 @@ $controller->layoutParams->addBreadcrumb('Hilfe');
             <ul>
                 <li><a href="/help/member-motion">Mitglieder reichen Anträge ein</a></li>
                 <li><a href="/help/amendments">Änderungsanträge einreichen</a></li>
+                <li><a href="/help/progress-reports">Sachstandsberichte</a></li>
             </ul>
         </li>
         <li>
