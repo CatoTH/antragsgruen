@@ -38,17 +38,12 @@ $controller->layoutParams->addBreadcrumb('Help');
         </li>
         <li>
             <a href="#basic_structure"
-               onClick="$('#basic_structure').scrollintoview({top_offset: -30}); return false;">Basic structure of an
-                Antragsgrün-Site</a>
+               onClick="$('#basic_structure').scrollintoview({top_offset: -30}); return false;">Basic structure of an Antragsgrün-Site</a>
             <ul>
-                <li><a href="#motions" onClick="$('#motions').scrollintoview({top_offset: -30}); return false;">Motions
-                        / Amendments</a></li>
-                <li><a href="#consultations"
-                       onClick="$('#consultations').scrollintoview({top_offset: -30}); return false;">Consultations</a>
-                </li>
-                <li><a href="#motion_types"
-                       onClick="$('#motion_types').scrollintoview({top_offset: -30}); return false;">Motion types</a>
-                </li>
+                <li><a href="#motions" onClick="$('#motions').scrollintoview({top_offset: -30}); return false;">Motions / Amendments</a></li>
+                <li><a href="#consultations" onClick="$('#consultations').scrollintoview({top_offset: -30}); return false;">Consultations</a></li>
+                <li><a href="#motion_types" onClick="$('#motion_types').scrollintoview({top_offset: -30}); return false;">Motion Types</a></li>
+                <li><a href="#section_types" onClick="$('#section_types').scrollintoview({top_offset: -30}); return false;">Section Types</a></li>
                 <li><a href="#agenda" onClick="$('#agenda').scrollintoview({top_offset: -30}); return false;">Agenda</a>
                 </li>
             </ul>
@@ -158,7 +153,7 @@ $controller->layoutParams->addBreadcrumb('Help');
     <p>New consultations can be created at &ldquo;Settings&rdquo; → &ldquo;Manage more consultations on this subdomain&rdquo;. Here, you can
         also specify which one should be treated as the default consultation.</p>
 
-    <h3 id="motion_types">Motion types</h3>
+    <h3 id="motion_types">Motion Types</h3>
     <p>There can be different kinds of documents published in one consultation – different both in structure or name and
         in terms of permissions, requirements or deadlines. For example, applications for an election usually need
         different input fields (name, biography, a photo) than motion (title, text, reason). Or some assemblies allow
@@ -167,6 +162,23 @@ $controller->layoutParams->addBreadcrumb('Help');
         types can be created for every consultation, each of them having its own name, structure and permissions. Every
         motion is of exactly one motion type.</p>
     <p>The motion types can be managed in the &ldquo;Settings&rdquo; at &ldquo;Edit motion types&rdquo;.</p>
+
+    <h3 id="section_types">Section Types</h3>
+
+    <p>Every motion type defines a structure that each document of this type will have. In the most simple case, it would be „Title + Text“ (e.g. for resolutions), but there can be as many sections as one wants, and other formats than text are supported, too: a submitted document may contain images, embedded videos, PDFs or structured tabular data.</p>
+
+    <p>The following types of sections are supported:</p>
+    <ul>
+        <li><strong>Title:</strong> a one-line text field. The title of the document (or the name of an applicant) would typically use this. Or, if used for petitions, this might contain the addressee of the submitted petition.</li>
+        <li><strong>Text:</strong> A text field allowing a number of formats. Typically, one or multiple sections of this type are the „heart“ of a document, like the text of a petition or resolution, or the self-introduction of an application.</li>
+        <li><strong>Text (enhanced):</strong> A text field allowing even more text formats (like centered or colored text). This comes with a price, though: text entered using the section type are not exported in all available formats, and cannot be amended.</li>
+        <li><strong>Editorial text:</strong> A text field that represents more dynamic content, typically not entered by the submitter of a motion, but by an administrator or editorial person. A typical use case are progress reports, where a page will first show the decided resolution text (section type: „Text“), then the current status that may change frequently (section type: „Editorial Text“). Besides admins, sections of these type can be edited by all users either in the user group „Progress Report“ or the individual privilege „Manage editorial sections / Progress reports“, directly from within the motion view.</li>
+        <li><strong>Image:</strong> Submitters of a motion or application can upload images, either in the PNG, JPEG or GIF format.</li>
+        <li><strong>Tabular Data:</strong> Submitters of documents are presented with a pre-defined table that they can fill out. The table supports multiple data types: text, numbers, dates, and choices between a set of pre-defined values.</li>
+        <li><strong>PDF Attachment:</strong> A PDF file can be uploaded along with the document. This document will be shown on the page as part of the document. This type could be used to upload more complex tables (like financial reports), or to upload a pre-formatted application PDF as part of an application.</li>
+        <li><strong>PDF Alternative:</strong> This is a PDF-Upload, too, but with a different goal: files uploaded for this type are not shown as part of the document, but entirely replace the PDF that would otherwise be automatically generated for each submitted document. This can be used if the downloaded version of a motion or resolution is to be designed individually or follow a particular corporate identity.</li>
+        <li><strong>Embedded Video:</strong> A link to a video can be entered, for example as part of an application. If the link points to Vimeo or Youtube, the video will be directly embedded.</li>
+    </ul>
 
     <h3 id="agenda">Agenda</h3>
     <p>Setting up an agenda for a consultation is a purely optional feature of Antragsgrün and targets assemblies and

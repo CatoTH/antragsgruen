@@ -35,16 +35,11 @@ $controller->layoutParams->addBreadcrumb('Hilfe');
                onClick="$('#grundlegender_aufbau').scrollintoview({top_offset: -30}); return false;">Grundlegender
                 Aufbau einer Antragsgrün-Seite</a>
             <ul>
-                <li><a href="#antraege" onClick="$('#antraege').scrollintoview({top_offset: -30}); return false;">Anträge
-                        / Änderungsanträge</a></li>
-                <li><a href="#veranstaltungen"
-                       onClick="$('#veranstaltungen').scrollintoview({top_offset: -30}); return false;">Veranstaltungen</a>
-                </li>
-                <li><a href="#antragstypen"
-                       onClick="$('#antragstypen').scrollintoview({top_offset: -30}); return false;">Antragstypen</a></li>
-                <li><a href="#tagesordnung"
-                       onClick="$('#tagesordnung').scrollintoview({top_offset: -30}); return false;">Tagesordnungspunkte</a>
-                </li>
+                <li><a href="#antraege" onClick="$('#antraege').scrollintoview({top_offset: -30}); return false;">Anträge / Änderungsanträge</a></li>
+                <li><a href="#veranstaltungen" onClick="$('#veranstaltungen').scrollintoview({top_offset: -30}); return false;">Veranstaltungen</a></li>
+                <li><a href="#antragstypen" onClick="$('#antragstypen').scrollintoview({top_offset: -30}); return false;">Antragstypen</a></li>
+                <li><a href="#abschnittstypen" onClick="$('#abschnittstypen').scrollintoview({top_offset: -30}); return false;">Antrags-Abschnitte</a></li>
+                <li><a href="#tagesordnung" onClick="$('#tagesordnung').scrollintoview({top_offset: -30}); return false;">Tagesordnungspunkte</a></li>
             </ul>
         </li>
         <li>
@@ -165,7 +160,6 @@ $controller->layoutParams->addBreadcrumb('Hilfe');
     <p>Neue Veranstaltungen innerhalb der selben Seite können unter „Einstellungen“ unter „Weitere Veranstaltungen
         anlegen / verwalten“ eingerichtet werden, hier kann auch festgelegt werden, welche standardmäßig angezeigt
         werden soll.</p>
-    <!-- @TODO: Verzeichnis -->
 
     <h3 id="antragstypen">Antragstypen</h3>
     <p>Innerhalb einer Veranstaltung kann es verschieden strukturierte Dokumente geben – oder Dokumente, die
@@ -179,6 +173,23 @@ $controller->layoutParams->addBreadcrumb('Hilfe');
         genau einem Antragstypen.</p>
     <p>Die verschiedenen Antragstypen können direkt unter „Einstellungen“ bei „Antragstypen bearbeiten“ verwaltet
         werden.</p>
+
+    <h3 id="abschnittstypen">Antrags-Abschnitte</h3>
+
+    <p>Jeder Antragstyp gibt eine Struktur vor, in der Dokumente dieses Types eingereicht werden. Im einfachsten Fall kann dies ein Titel und ein Textfeld sein, es werden aber auch angehängte Bilder, PDFs, tabellarische Angaben, eingebettete Videos und mehr unterstützt. Dadurch lassen sich auch etwas komplexere Eingabeformulare gestalten.</p>
+
+    <p>Konkret stehen folgende Antrags-Abschnitte zur Auswahl:</p>
+    <ul>
+        <li><strong>Titel:</strong> ein einzeiliges Textfeld. Üblicherweise der erste Abschnitt eines Dokuments, eben um den Titel desselben festzulegen (oder auch den Namen der Bewerberin bei Bewerbungen). Es kann aber auch mehrere Titel-Felder geben - beispielsweise die Adressatin bei Petitionen.</li>
+        <li><strong>Text:</strong> Freitext mit einer Reihe an Formatierungsmöglichkeiten. Dieser Abschnitts-Typ wird in der Regel das „Herz“ eines Antrags darstellen, da zu diesem Abschnittstyp auch Änderungsanträge gestellt werden können.</li>
+        <li><strong>Text (erweitert):</strong> Ein Freitextfeld mit erweiterten Formatierungsmöglichkeiten. Diese erweiterten Möglichkeiten kommen mit einem Preis: der eingegebene Text kann nicht auf alle Weisen exportiert werden, auch Änderungsanträge darauf sind nicht möglich.</li>
+        <li><strong>Redaktionell bearbeitbarer Text:</strong> Ein Freitextfeld, dessen Inhalt einen eher dynamischen Kommentar darstellt, der seltener von einer Antragsteller*in bereitgestellt wird, sondern eher von redaktioneller Seite. Ein typischer Anwendungsfall sind Sachstandsberichte, bei dem unter einem offiziellen Beschlusstext (Typ: „Text“) ein Sachstand dargestellt wird. Neben Administrator*innen können dieses Textfeld alle Benutzer*innen der Gruppe „Sachstände bearbeiten“ bzw. mit dem Recht „Redaktionelle Antragsabschnitte / Sachstände bearbeiten“ direkt in der Antrags-Ansicht bearbeiten.</li>
+        <li><strong>Bild:</strong> Die Antragsteller*in kann hier ein Bild im PNG, JPEG oder GIF-Format hochladen.</li>
+        <li><strong>Tabellarische Angaben:</strong> Hier kann eine Tabelle mit verschiedenen anzugebenden Daten vorgegeben werden. Als Datentypen können Freitext, Numerische Werte, Datum und ein Auswahlfeld mit vorgegebenen Auswahlmöglichkeiten festgelegt werden.</li>
+        <li><strong>PDF-Anhang:</strong> Die Antragsteller*in kann ein PDF hochladen, das innerhalb des Antrags bzw. dargestellt werden. Dies kann beispielsweise genutzt werden, um bei Geschäftsberichten komplexere Tabellen anzuhängen, bzw. um Bewerber*innen die Möglichkeit zu geben, ein vorformatiertes PDF hochzuladen.</li>
+        <li><strong>Alternatives PDF:</strong> Auch hier kann ein PDF hochgeladen werden, allerdings mit einem anderen Zweck: hier ersetzt das hochgeladene das von Antragsgrün sonst automatisch erzeugte PDF des Antrags. Dies kann dazu genutzt werden, wenn die heruntergeladene Version des Antrags speziell gelayoutet werden soll.</li>
+        <li><strong>Eingebettetes Video:</strong> Hier können Links zu Videos auf Videoseiten eingestellt werden. Dies kann beispielsweise bei Bewerbungen genutzt werden, um Antragsteller*innen die Möglichkeit zu geben, der Bewerbung eine Selbstvorstellung in Videoform beizufügen. Der Video-Upload muss erfolgt allerdings auf einer separaten Seite erfolgen. Im Falle von Vimeo oder Youtube wird das Video direkt im Antrag eingebettet, ansonsten wird es verlinkt.</li>
+    </ul>
 
     <h3 id="tagesordnung">Tagesordnungspunkte</h3>
     <p>Tagesordnungen sind eine Funktion von Antragsgrün, die auf Wunsch aktiviert werden kann, aber nicht obligatorisch
