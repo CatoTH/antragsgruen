@@ -25,12 +25,6 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 <div class="content managerHelpPage">
 
     <p><a href="/help"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Zurück zur Hilfe</a></p>
-    <ul class="tocFlat">
-        <li>
-            <a href="#userview" onClick="$('#userview').scrollintoview({top_offset: -30}); return false;">
-                Änderungsanträge aus Nutzer*innen-Sicht</a>
-        </li>
-    </ul>
 
     <h2 id="intro">Einleitung</h2>
 

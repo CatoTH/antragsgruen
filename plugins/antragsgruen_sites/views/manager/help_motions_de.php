@@ -25,6 +25,10 @@ $controller->layoutParams->addBreadcrumb('Anträge');
     <p><a href="/help"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Zurück zur Hilfe</a></p>
     <ul class="tocFlat">
         <li>
+            <a href="#introduction" onClick="$('#introduction').scrollintoview({top_offset: -30}); return false;">
+                Einleitung</a>
+        </li>
+        <li>
             <a href="#berechtigungen" onClick="$('#berechtigungen').scrollintoview({top_offset: -30}); return false;">
                 Berechtigungen & Freischaltung</a>
         </li>
@@ -42,7 +46,7 @@ $controller->layoutParams->addBreadcrumb('Anträge');
         </li>
     </ul>
 
-    <p><strong>Einleitung</strong></p>
+    <h2 id="introduction">Einleitung</h2>
 
     <p>Es ist sehr leicht, mit Antragsgrün Mitgliedern die Möglichkeit zu geben, Anträge einzureichen - beispielsweise für eine Mitgliederversammlung oder im
         Rahmen eines Ideen-Wettbewerbs. Nachdem man sich durch den anfänglichen Einrichtungs-Dialog geklickt hat, bei dem bereits die wichtigsten Entscheidungen
