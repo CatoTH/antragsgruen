@@ -25,6 +25,10 @@ class CleanTranslationStringsTest extends DBTestBase
      */
     public function testUnchangingTranslationStrings(): void
     {
+        $skipIds = [
+            'motion_type_templ_progressh' // aria-hidden
+        ];
+
         $changedStrings = [];
         foreach (array_keys(MessageSource::getTranslatableCategories()) as $catId) {
             /** @var I18N $i18n */
@@ -33,6 +37,10 @@ class CleanTranslationStringsTest extends DBTestBase
             $messageSource = $i18n->getMessageSource($catId);
             $strings       = $messageSource->getBaseMessages($catId, 'de');
             foreach ($strings as $strId => $strContent) {
+                if (in_array($strId, $skipIds)) {
+                    continue;
+                }
+
                 $cleaned = HTMLTools::cleanHtmlTranslationString($strContent);
                 if ($this->normalizeStr($cleaned)!==$this->normalizeStr($strContent)) {
                     $changedStrings[] = $strId . ': ' . $strContent . ' => ' . $cleaned;

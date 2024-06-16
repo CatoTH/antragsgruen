@@ -30,7 +30,7 @@ $controller->layoutParams->addBreadcrumb('Progress Reports');
 
     <p>Progress reports therefore add an additional text section to the resolution, the one that holds the protocol of the progress made since its publication. This section behaves differently from regular text sections in the following aspects:</p>
     <ul>
-        <li>There is a separate permission to allow users to create and edit progress reports, independently from the main resolution text. Typically, only special admins will be allowed to modify the text of a resolution itself under very special circumstances, while the permission to change the progress report will be given out to a wider user group, like to the secretary of the organization or dedicated working groups.</li>
+        <li>There is a separate permission to allow users to create and edit progress reports, independently from the main resolution text. Typically, only special admins will be allowed to modify the text of a resolution itself under very special circumstances, while the permission to change the progress report will be given out to a wider user group, like to the secretariat of the organization or dedicated working groups.</li>
         <li>Editing the progress report is way quicker and informal than editing the resolution text. It is possible to edit it directly from within the main motion view, without having to go to the admin view first.</li>
         <li>The progress report has a &ldquo;last changed on&rdquo; and &ldquo;author&rdquo; field that is independent of the resolution itself.</li>
     </ul>

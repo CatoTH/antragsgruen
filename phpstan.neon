@@ -7,7 +7,8 @@ parameters:
     phpVersion: 80000
     level: 7
     reportUnmatchedIgnoredErrors: false
-    checkMissingIterableValueType: false # Issues because Yii's ActiveRecords are recognized as Iterables
+    ignoreErrors:
+      - identifier: missingType.iterableValue # Issues because Yii's ActiveRecords are recognized as Iterables
     scanDirectories:
       - vendor
     scanFiles:
