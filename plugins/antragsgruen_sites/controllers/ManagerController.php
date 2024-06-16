@@ -171,7 +171,7 @@ class ManagerController extends Base
                 $errors[] = $e->getMessage();
             }
         }
-        if ($this->getParams()->mode == 'sandbox') {
+        if ($this->getParams()->mode === 'sandbox') {
             $model->setSandboxParams();
         }
 
@@ -225,7 +225,7 @@ class ManagerController extends Base
      */
     public static function getSidebarSites(): array
     {
-        if (AntragsgruenApp::getInstance()->mode == 'sandbox') {
+        if (AntragsgruenApp::getInstance()->mode === 'sandbox') {
             return [];
         }
 
