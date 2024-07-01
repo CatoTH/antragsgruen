@@ -19,7 +19,7 @@ jobs:
           php_extensions: zip intl gd
           command: require yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
       - name: Download artifact
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: .github/workflows/phpstan-generate-baseline.yml
           workflow_conclusion: success
