@@ -3,6 +3,7 @@
 ## Version 4.14.1 [not released yet]
 
 - Bugfix: The PDF export with included proposed procedures was sometimes broken.
+- Bugfix: When multiple versions of a motion exist, the ODT / PDF export list showed all versions, instead of only the newest one.
 
 ## Version 4.14.0 (2024-05-20)
 

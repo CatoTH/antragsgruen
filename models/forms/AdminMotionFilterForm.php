@@ -6,7 +6,9 @@ namespace app\models\forms;
 
 use app\models\AdminTodoItem;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{Tools, UrlHelper};
+use app\models\exceptions\{ExceptionBase, ResponseException};
+use app\models\http\HtmlErrorResponse;
+use app\components\{IMotionStatusFilter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
@@ -47,6 +49,19 @@ class AdminMotionFilterForm
 
     /** @var string[] */
     protected array $route;
+
+    /**
+     * @return class-string<AdminMotionFilterForm>
+     */
+    public static function getClassToUse(): string
+    {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($plugin::getFullMotionListClassOverride()) {
+                return $plugin::getFullMotionListClassOverride();
+            }
+        }
+        return AdminMotionFilterForm::class;
+    }
 
     /**
      * @param Motion[] $allMotions
@@ -1262,5 +1277,53 @@ class AdminMotionFilterForm
         </section>';
 
         return $str;
+    }
+
+    /**
+     * Returns motions and statute amendments
+     *
+     * @return IMotion[]
+     */
+    public static function getMotionsForExport(Consultation $consultation, ?int $motionTypeId, bool $inactive): array
+    {
+        if ($motionTypeId) {
+            try {
+                $consultation->getMotionType($motionTypeId);
+            } catch (ExceptionBase $e) {
+                throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
+            }
+        }
+
+        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
+
+        $motionListClass = AdminMotionFilterForm::getClassToUse();
+        $search = new $motionListClass($consultation, $consultation->motions, $privilegeScreening);
+        if ($motionTypeId > 0) {
+            $search->motionType = $motionTypeId;
+        }
+
+        $imotions = $search->getSorted();
+
+        try {
+            $filter = IMotionStatusFilter::adminExport($consultation, $inactive);
+            $allIMotions = $filter->filterIMotions($imotions);
+            if (count($allIMotions) === 0) {
+                throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet')));
+            }
+            /** @var IMotion[] $imotions */
+            $imotions = [];
+            foreach ($allIMotions as $imotion) {
+                if ($imotion->getMyMotionType()->amendmentsOnly && is_a($imotion, Amendment::class)) {
+                    $imotions[] = $imotion;
+                }
+                if (!$imotion->getMyMotionType()->amendmentsOnly && is_a($imotion, Motion::class)) {
+                    $imotions[] = $imotion;
+                }
+            }
+        } catch (ExceptionBase $e) {
+            throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
+        }
+
+        return $imotions;
     }
 }

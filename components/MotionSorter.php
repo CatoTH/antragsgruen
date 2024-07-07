@@ -203,7 +203,7 @@ class MotionSorter
             // @TODO A differenciation between motions and amendments will be necessary
         }
 
-        $statuses = $consultation->getStatuses()->getInvisibleMotionStatuses(false);
+        $statuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
         $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
         foreach ($items as $agendaItem) {
             $agendaMotions = $agendaItem->getMyIMotions(IMotionStatusFilter::onlyUserVisible($consultation, true));

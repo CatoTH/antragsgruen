@@ -315,10 +315,6 @@ class IMotionStatusEngine
         }
         if (!$withdrawnAreVisible) {
             $invisible[] = IMotion::STATUS_WITHDRAWN;
-            //$invisible[] = IMotion::STATUS_MOVED;
-            $invisible[] = IMotion::STATUS_MODIFIED;
-            $invisible[] = IMotion::STATUS_MODIFIED_ACCEPTED;
-            $invisible[] = IMotion::STATUS_PROCESSED;
         }
         return $invisible;
     }

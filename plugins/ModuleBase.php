@@ -100,6 +100,9 @@ class ModuleBase extends Module
         return [];
     }
 
+    /**
+     * @return class-string<\app\models\forms\AdminMotionFilterForm>|null
+     */
     public static function getFullMotionListClassOverride(): ?string
     {
         return null;
