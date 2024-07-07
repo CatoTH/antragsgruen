@@ -116,7 +116,7 @@ class InstallationController extends Base
             $editable = is_writable($configFile);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername = posix_getpwuid(posix_geteuid());
-                if (!$myUsername || !isset($myUsername['name'])) {
+                if (!$myUsername) {
                     return new HtmlErrorResponse(500, 'Could not determine username');
                 }
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile . "\n";
@@ -128,7 +128,7 @@ class InstallationController extends Base
             $editable = is_writable($configDir);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername = posix_getpwuid(posix_geteuid());
-                if (!$myUsername || !isset($myUsername['name'])) {
+                if (!$myUsername) {
                     return new HtmlErrorResponse(500, 'Could not determine username');
                 }
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir . "\n";
