@@ -13,11 +13,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: php-actions/composer@v6
         with:
-          php_version: "8.0"
+          php_version: "8.1"
           php_extensions: zip intl gd
       - uses: php-actions/composer@v6
         with:
-          php_version: "8.0"
+          php_version: "8.1"
           php_extensions: zip intl gd
           command: require yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
       - name: Generate baseline
