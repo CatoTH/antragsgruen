@@ -123,10 +123,12 @@
       margin-left: auto;
       margin-right: auto;
     }
-    &.right {
-      width: 50%;
-      float: right;
-      margin-left: 20px;
+    @media screen and (min-width: 800px) {
+      &.right {
+        width: 50%;
+        float: right;
+        margin-left: 20px;
+      }
     }
     &.bordered {
       border: solid 1px grey;
