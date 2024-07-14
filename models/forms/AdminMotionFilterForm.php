@@ -1356,4 +1356,40 @@ class AdminMotionFilterForm
 
         return $imotions;
     }
+
+    /**
+     * Returns amendments
+     * If a filter is set via the motion filter, then this will return exactly what the motion list will show (only filtered by type).
+     * Otherwise, the inactive-flag will be considered.
+     *
+     * @return array<array{motion: Motion, amendments: Amendment[]}>
+     */
+    public function getAmendmentsForExport(Consultation $consultation, bool $inactive): array
+    {
+        if ($this->isDefaultSettings()) {
+            $imotions = $this->getSorted();
+            $filter = IMotionStatusFilter::adminExport($consultation, $inactive);
+
+            $amendments = $filter->filterAmendments($imotions);
+        } else {
+            $allIMotions = $this->getSorted();
+            $amendments = array_filter($allIMotions, fn(IMotion $IMotion) => is_a($IMotion, Amendment::class));
+        }
+
+        $filtered = [];
+        foreach ($amendments as $amendment) {
+            if (!$amendment->getMyMotion()) {
+                continue;
+            }
+            if (!isset($filtered[$amendment->motionId])) {
+                $filtered[$amendment->motionId] = [
+                    'motion' => $amendment->getMyMotion(),
+                    'amendments' => [],
+                ];
+            }
+            $filtered[$amendment->motionId]['amendments'][] = $amendment;
+        }
+
+        return array_values($filtered);
+    }
 }

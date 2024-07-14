@@ -1,7 +1,7 @@
 <?php
 
-use app\components\{HTMLTools, IMotionStatusFilter};
-use app\models\db\{AmendmentSection, Motion};
+use app\components\HTMLTools;
+use app\models\db\{Amendment, AmendmentSection, Motion};
 use app\models\sectionTypes\{ISectionType, TextSimpleCommon};
 use app\models\supportTypes\SupportBase;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -9,9 +9,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
- * @var Motion[] $motions
- * @var IMotionStatusFilter $filter
+ * @var yii\web\View $this
+ * @var array<array{motion: Motion, amendments: Amendment[]}> $amendments
  */
 
 /** @var \app\controllers\Base $controller */
@@ -35,7 +34,8 @@ $hasAgendaItems = false;
 $hasResponsibilities = false;
 $hasLikes = false;
 $hasDislikes = false;
-foreach ($motions as $motion) {
+foreach ($amendments as $amendmentGroup) {
+    $motion = $amendmentGroup['motion'];
     if ($motion->getMyMotionType()->amendmentsOnly) {
         continue;
     }
@@ -150,7 +150,8 @@ $sheet->getStyle('A1:' . $LAST_COL . '2')->applyFromArray([
 $row = 3;
 $htmlHelper = new PhpOffice\PhpSpreadsheet\Helper\Html();
 
-foreach ($motions as $motion) {
+foreach ($amendments as $amendmentGroup) {
+    $motion = $amendmentGroup['motion'];
     if ($motion->getMyMotionType()->amendmentsOnly) {
         continue;
     }
@@ -184,8 +185,7 @@ foreach ($motions as $motion) {
         $sheet->setCellValue($COL_RESPONSIBILITY . $row, implode(', ', $responsibility));
     }
 
-    $amendments = $motion->getFilteredAndSortedAmendments($filter);
-    foreach ($amendments as $amendment) {
+    foreach ($amendmentGroup['amendments'] as $amendment) {
         $row++;
 
         // $sheet->getRowDimension($row)->setRowHeight(5, 'cm');
