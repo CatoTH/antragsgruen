@@ -2,6 +2,7 @@
 
 ## Version 4.14.1 [not released yet]
 
+- If a filter is set in the motion list, this will also filter the motions to be exported in the export row above (PDFs, ODTs, ODS etc.).
 - Bugfix: The PDF export with included proposed procedures was sometimes broken.
 - Bugfix: When multiple versions of a motion exist, the ODT / PDF export list showed all versions, instead of only the newest one.
 

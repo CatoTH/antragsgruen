@@ -193,6 +193,17 @@ class MotionListController extends AdminBase
         }
     }
 
+    /**
+     * @param Motion[] $motions
+     */
+    private function getSearchForm(array $motions): AdminMotionFilterForm
+    {
+        return AdminMotionFilterForm::getForConsultationFromRequest(
+            $this->consultation,
+            $motions,
+            $this->getRequestValue('Search')
+        );
+    }
 
     public function actionIndex(?string $motionId = null): ResponseInterface
     {
@@ -243,21 +254,12 @@ class MotionListController extends AdminBase
             $motions = $consultation->motions;
         }
 
-        /** @var AdminMotionFilterForm $search */
-        $search = new $motionListClass($consultation, $motions, $privilegeScreening);
         if ($this->isRequestSet('reset')) {
             RequestContext::getSession()->set('motionListSearch' . $consultation->id, null);
             return new RedirectResponse(UrlHelper::createUrl('/admin/motion-list/index'));
         }
-        if ($this->getRequestValue('Search')) {
-            $attributes = $this->getRequestValue('Search');
-            RequestContext::getSession()->set('motionListSearch' . $consultation->id, $attributes);
-            $search->setAttributes($attributes);
-        } elseif (RequestContext::getSession()->get('motionListSearch' . $consultation->id)) {
-            $search->setAttributes(RequestContext::getSession()->get('motionListSearch' . $consultation->id));
-        }
+        $search = $this->getSearchForm($motions);
 
-        /** @var AdminMotionFilterForm $search */
         return new HtmlResponse($this->render('list_all', [
             'motionId'           => $motionId,
             'entries'            => $search->getSorted(),
@@ -312,7 +314,8 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $inactive = 0): ResponseInterface
     {
-        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search = $this->getSearchForm($this->consultation->motions);
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
@@ -326,7 +329,8 @@ class MotionListController extends AdminBase
 
     public function actionMotionOpenslides(int $motionTypeId, int $version = 1): ResponseInterface
     {
-        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, false);
+        $search = $this->getSearchForm($this->consultation->motions);
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, false);
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
@@ -345,7 +349,8 @@ class MotionListController extends AdminBase
 
     public function actionMotionCommentsXlsx(int $motionTypeId, int $inactive = 0): ResponseInterface
     {
-        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search = $this->getSearchForm($this->consultation->motions);
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename(\Yii::t('export', 'Kommentare') . '-' . $motionType->titlePlural, false);
@@ -358,7 +363,8 @@ class MotionListController extends AdminBase
 
     public function actionMotionPdfziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search = $this->getSearchForm($this->consultation->motions);
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -394,7 +400,8 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search = $this->getSearchForm($this->consultation->motions);
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -415,7 +422,8 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtall(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search = $this->getSearchForm($this->consultation->motions);
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
 
         $doc = $imotions[0]->getMyMotionType()->createOdtTextHandler();
 
