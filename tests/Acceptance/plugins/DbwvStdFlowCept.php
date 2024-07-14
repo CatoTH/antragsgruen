@@ -323,7 +323,7 @@ $I->see('To Do (1)', '#adminTodo');
 $I->click('#adminTodo');
 $I->see('Beschluss veröffentlichen');
 $I->click('.todoDbwvPublishResolution7 a');
-$I->seeInField('#dbwv_step7_prefix', 'B/01');
+$I->seeInField('#dbwv_step7_prefix', 'III/1');
 $I->submitForm('#dbwv_step7_publish_resolution', [], '');
 $I->dontSee('To Do (1)', '#adminTodo');
 $I->dontSee('Begründung');
