@@ -4,6 +4,7 @@
 
 - Bugfix: The PDF export with included proposed procedures was sometimes broken.
 - Bugfix: When multiple versions of a motion exist, the ODT / PDF export list showed all versions, instead of only the newest one.
+- Bugfix: If a motion replaces one of a different consultation, editing as an admin removed the connection between these two motion versions.
 
 ## Version 4.14.0 (2024-05-20)
 
