@@ -159,8 +159,8 @@ class MotionController extends AdminBase
             $modat = $post['motion'];
 
             $sectionTypes = [];
-            foreach ($motion->getActiveSections() as $section) {
-                $sectionTypes[$section->sectionId] = $section->getSettings()->type;
+            foreach ($motion->getMyMotionType()->motionSections as $section) {
+                $sectionTypes[$section->id] = $section->type;
             }
 
             try {
