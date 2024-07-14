@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\forms\AdminMotionFilterForm;
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
 use app\components\{IMotionStatusFilter, RequestContext, Tools, UrlHelper};
@@ -167,8 +168,8 @@ trait MotionExportTraits
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
-        $imotions = IMotionStatusFilter::adminExport($this->consultation, $inactive)
-                                       ->getFilteredConsultationIMotionsSorted();
+        // @TODO Maybe support multiple motion types
+        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, (int) $motionTypeId, $inactive);
 
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
             $motionTypeIds = explode(',', $motionTypeId);

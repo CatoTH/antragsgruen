@@ -86,12 +86,13 @@ final class IMotionStatusFilter
     }
 
     /**
-     * @param Motion[] $motions
+     * @param IMotion[] $imotions
      *
      * @return Motion[]
      */
-    public function filterMotions(array $motions): array
+    public function filterMotions(array $imotions): array
     {
+        $motions = array_filter($imotions, fn(IMotion $imotion) => is_a($imotion, Motion::class));
         return array_values(array_filter($motions, fn(Motion $motion) => !in_array($motion->status, $this->disallowedMotionStatuses)));
     }
 
@@ -112,12 +113,13 @@ final class IMotionStatusFilter
     }
 
     /**
-     * @param Amendment[] $amendments
+     * @param IMotion[] $imotions
      *
      * @return Amendment[]
      */
-    public function filterAmendments(array $amendments): array
+    public function filterAmendments(array $imotions): array
     {
+        $amendments = array_filter($imotions, fn(IMotion $imotion) => is_a($imotion, Amendment::class));
         return array_values(array_filter($amendments, fn(Amendment $amendment) => $this->filterAmendment($amendment)));
     }
 

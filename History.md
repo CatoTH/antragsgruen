@@ -1,5 +1,10 @@
 # Version history
 
+## Version 4.14.1 [not released yet]
+
+- Bugfix: The PDF export with included proposed procedures was sometimes broken.
+- Bugfix: When multiple versions of a motion exist, the ODT / PDF export list showed all versions, instead of only the newest one.
+
 ## Version 4.14.0 (2024-05-20)
 
 - A new default motion type template exists, "progress report". It includes a resolution and a progress section. The latter can be edited inline from the document view by administrative users. An editorial group of user can be defined that has permissions to edit these progress report section without having any other addition administrative privileges.

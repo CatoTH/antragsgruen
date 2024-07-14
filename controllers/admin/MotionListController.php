@@ -5,7 +5,7 @@ namespace app\controllers\admin;
 use app\models\exceptions\{Access, NotFound, ExceptionBase, ResponseException};
 use app\views\pdfLayouts\IPDFLayout;
 use app\components\{IMotionStatusFilter, MotionSorter, RequestContext, Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, repostory\MotionRepository, User};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
@@ -211,12 +211,7 @@ class MotionListController extends AdminBase
             $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         }
 
-        $motionListClass = AdminMotionFilterForm::class;
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            if ($plugin::getFullMotionListClassOverride()) {
-                $motionListClass = $plugin::getFullMotionListClassOverride();
-            }
-        }
+        $motionListClass = AdminMotionFilterForm::getClassToUse();
 
         try {
             if ($privilegeScreening || $privilegeDelete) {
@@ -315,32 +310,9 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'motions');
     }
 
-    /**
-     * @return IMotion[]
-     */
-    private function getSortedIMotionsByType(int $motionTypeId, bool $inactive): array
-    {
-        try {
-            $this->consultation->getMotionType($motionTypeId);
-        } catch (ExceptionBase $e) {
-            throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
-        }
-
-        $filter = IMotionStatusFilter::adminExport($this->consultation, $inactive);
-
-        $imotions = [];
-        foreach ($filter->getFilteredConsultationIMotionsSorted() as $imotion) {
-            if ($imotion->getMyMotionType()->id === $motionTypeId) {
-                $imotions[] = $imotion;
-            }
-        }
-
-        return $imotions;
-    }
-
     public function actionMotionOdslist(int $motionTypeId, bool $textCombined = false, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($inactive === 1));
+        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
@@ -354,7 +326,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionOpenslides(int $motionTypeId, int $version = 1): ResponseInterface
     {
-        $imotions = $this->getSortedIMotionsByType($motionTypeId, false);
+        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, false);
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
@@ -373,7 +345,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionCommentsXlsx(int $motionTypeId, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getSortedIMotionsByType($motionTypeId, ($inactive === 1));
+        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
         $filename = Tools::sanitizeFilename(\Yii::t('export', 'Kommentare') . '-' . $motionType->titlePlural, false);
@@ -384,42 +356,9 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_XLSX, $xlsx, true, $filename);
     }
 
-    /**
-     * @return IMotion[]
-     */
-    private function getMotionsForExport(int $motionTypeId, bool $inactive): array
-    {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, $inactive);
-
-        try {
-            if ($motionTypeId > 0) {
-                $motionType = $this->consultation->getMotionType($motionTypeId);
-                $motions = MotionRepository::getMotionsForType($motionType, $filter);
-            } else {
-                $motions = $filter->getFilteredConsultationMotions();
-            }
-            if (count($motions) === 0) {
-                throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet')));
-            }
-            /** @var IMotion[] $imotions */
-            $imotions = [];
-            foreach ($motions as $motion) {
-                if ($motion->getMyMotionType()->amendmentsOnly) {
-                    $imotions = array_merge($imotions, $motion->getFilteredAndSortedAmendments($filter));
-                } else {
-                    $imotions[] = $motion;
-                }
-            }
-        } catch (ExceptionBase $e) {
-            throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
-        }
-
-        return $imotions;
-    }
-
     public function actionMotionPdfziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getMotionsForExport($motionTypeId, ($inactive === 1));
+        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -455,7 +394,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtziplist(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getMotionsForExport($motionTypeId, ($inactive === 1));
+        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -476,7 +415,7 @@ class MotionListController extends AdminBase
 
     public function actionMotionOdtall(int $motionTypeId = 0, int $inactive = 0): ResponseInterface
     {
-        $imotions = $this->getMotionsForExport($motionTypeId, ($inactive === 1));
+        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
 
         $doc = $imotions[0]->getMyMotionType()->createOdtTextHandler();
 
