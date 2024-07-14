@@ -17,7 +17,7 @@ use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, ISupporter, Motion, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
-use app\models\forms\{AmendmentEditForm, ProposedChangeForm};
+use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
@@ -67,29 +67,26 @@ class AmendmentController extends Base
 
     public function actionPdfcollection(int $inactive = 0): ResponseInterface
     {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
-        $motions = $filter->getFilteredConsultationIMotionsSorted();
-        if (count($motions) === 0) {
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+
+        if (count($amendments) === 0) {
             return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
         }
-        $amendments = [];
-        $motion = null;
         $texTemplate = null;
-        foreach ($motions as $motion) {
-            if (!is_a($motion, Motion::class) || $motion->getMyMotionType()->amendmentsOnly) {
+        $toShowAmendments = [];
+        foreach ($amendments as $amendmentGroups) {
+            if ($amendmentGroups['motion']->getMyMotionType()->amendmentsOnly) {
                 continue;
             }
             // If we have multiple motion types, we just take the template from the first one.
             if ($texTemplate === null) {
-                $texTemplate = $motion->getMyMotionType()->texTemplate;
+                $texTemplate = $amendmentGroups['motion']->getMyMotionType()->texTemplate;
             }
-            $amendments = array_merge($amendments, $motion->getFilteredAmendments($filter));
-        }
-        if (count($amendments) === 0) {
-            return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
+            $toShowAmendments = array_merge($toShowAmendments, $amendmentGroups['amendments']);
         }
 
-        $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($motion->getMyMotionType());
+        $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendments[0]['motion']->getMyMotionType());
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if (!($hasLaTeX && $selectedPdfLayout->latexId !== null) && $selectedPdfLayout->id === null) {
@@ -100,7 +97,7 @@ class AmendmentController extends Base
             $pdf = $this->renderPartial('pdf_collection_html2pdf', ['amendments' => $amendments]);
         } elseif ($selectedPdfLayout->latexId !== null) {
             $pdf = $this->renderPartial('pdf_collection_tex', [
-                'amendments'  => $amendments,
+                'amendments'  => $toShowAmendments,
                 'texTemplate' => $texTemplate,
             ]);
         } else {

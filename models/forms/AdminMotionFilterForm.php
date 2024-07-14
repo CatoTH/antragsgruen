@@ -8,7 +8,7 @@ use app\models\AdminTodoItem;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\exceptions\{ExceptionBase, ResponseException};
 use app\models\http\HtmlErrorResponse;
-use app\components\{IMotionStatusFilter, Tools, UrlHelper};
+use app\components\{IMotionStatusFilter, RequestContext, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
@@ -61,6 +61,25 @@ class AdminMotionFilterForm
             }
         }
         return AdminMotionFilterForm::class;
+    }
+
+    /**
+     * @param Motion[] $motions
+     */
+    public static function getForConsultationFromRequest(Consultation $consultation, array $motions, ?array $searchParams): AdminMotionFilterForm
+    {
+        $motionListClass = AdminMotionFilterForm::getClassToUse();
+        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
+
+        $search = new $motionListClass($consultation, $motions, $privilegeScreening);
+        if ($searchParams) {
+            RequestContext::getSession()->set('motionListSearch' . $consultation->id, $searchParams);
+            $search->setAttributes($searchParams);
+        } elseif (RequestContext::getSession()->get('motionListSearch' . $consultation->id)) {
+            $search->setAttributes(RequestContext::getSession()->get('motionListSearch' . $consultation->id));
+        }
+
+        return $search;
     }
 
     /**
@@ -177,13 +196,18 @@ class AdminMotionFilterForm
         $this->route = $route;
     }
 
-    public function getCurrentUrl(array $add = []): string
+    public function getSearchUrlParams(): array
     {
         $attributes = [];
         foreach ($this->getAttributes() as $key => $val) {
             $attributes['Search[' . $key . ']'] = $val;
         }
-        return UrlHelper::createUrl(array_merge($this->route, $attributes, $add));
+        return $attributes;
+    }
+
+    public function getCurrentUrl(array $add = []): string
+    {
+        return UrlHelper::createUrl(array_merge($this->route, $this->getSearchUrlParams(), $add));
     }
 
     private ?array $versionNames = null;
@@ -1281,10 +1305,12 @@ class AdminMotionFilterForm
 
     /**
      * Returns motions and statute amendments
+     * If a filter is set via the motion filter, then this will return exactly what the motion list will show (only filtered by type).
+     * Otherwise, the inactive-flag will be considered.
      *
      * @return IMotion[]
      */
-    public static function getMotionsForExport(Consultation $consultation, ?int $motionTypeId, bool $inactive): array
+    public function getMotionsForExport(Consultation $consultation, ?int $motionTypeId, bool $inactive): array
     {
         if ($motionTypeId) {
             try {
@@ -1294,19 +1320,23 @@ class AdminMotionFilterForm
             }
         }
 
-        $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
+        if ($this->isDefaultSettings()) {
+            if ($motionTypeId > 0) {
+                $this->motionType = $motionTypeId;
+            }
 
-        $motionListClass = AdminMotionFilterForm::getClassToUse();
-        $search = new $motionListClass($consultation, $consultation->motions, $privilegeScreening);
-        if ($motionTypeId > 0) {
-            $search->motionType = $motionTypeId;
-        }
-
-        $imotions = $search->getSorted();
-
-        try {
+            $imotions = $this->getSorted();
             $filter = IMotionStatusFilter::adminExport($consultation, $inactive);
             $allIMotions = $filter->filterIMotions($imotions);
+        } else {
+            if ($motionTypeId > 0) {
+                $this->motionType = $motionTypeId;
+            }
+
+            $allIMotions = $this->getSorted();
+        }
+
+        try {
             if (count($allIMotions) === 0) {
                 throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet')));
             }
@@ -1325,5 +1355,41 @@ class AdminMotionFilterForm
         }
 
         return $imotions;
+    }
+
+    /**
+     * Returns amendments
+     * If a filter is set via the motion filter, then this will return exactly what the motion list will show (only filtered by type).
+     * Otherwise, the inactive-flag will be considered.
+     *
+     * @return array<array{motion: Motion, amendments: Amendment[]}>
+     */
+    public function getAmendmentsForExport(Consultation $consultation, bool $inactive): array
+    {
+        if ($this->isDefaultSettings()) {
+            $imotions = $this->getSorted();
+            $filter = IMotionStatusFilter::adminExport($consultation, $inactive);
+
+            $amendments = $filter->filterAmendments($imotions);
+        } else {
+            $allIMotions = $this->getSorted();
+            $amendments = array_filter($allIMotions, fn(IMotion $IMotion) => is_a($IMotion, Amendment::class));
+        }
+
+        $filtered = [];
+        foreach ($amendments as $amendment) {
+            if (!$amendment->getMyMotion()) {
+                continue;
+            }
+            if (!isset($filtered[$amendment->motionId])) {
+                $filtered[$amendment->motionId] = [
+                    'motion' => $amendment->getMyMotion(),
+                    'amendments' => [],
+                ];
+            }
+            $filtered[$amendment->motionId]['amendments'][] = $amendment;
+        }
+
+        return array_values($filtered);
     }
 }

@@ -168,8 +168,13 @@ trait MotionExportTraits
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
-        // @TODO Maybe support multiple motion types
-        $imotions = AdminMotionFilterForm::getMotionsForExport($this->consultation, (int) $motionTypeId, $inactive);
+
+        $search = AdminMotionFilterForm::getForConsultationFromRequest(
+            $this->consultation,
+            $this->consultation->motions,
+            $this->getRequestValue('Search')
+        );
+        $imotions = $search->getMotionsForExport($this->consultation, (int) $motionTypeId, $inactive);
 
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
             $motionTypeIds = explode(',', $motionTypeId);

@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\models\consultationLog\ProposedProcedureChange;
+use app\models\forms\AdminMotionFilterForm;
 use app\views\amendment\LayoutHelper as AmendmentLayoutHelper;
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
@@ -24,12 +25,12 @@ class AmendmentController extends AdminBase
 
     public function actionOdslist(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
     {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
 
         $ods = $this->renderPartial('ods_list', [
-            'motions'      => $filter->getFilteredConsultationIMotionsSorted(),
+            'amendments'   => $amendments,
             'textCombined' => $textCombined,
-            'filter'       => $filter,
         ]);
 
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true,'amendments');
@@ -37,12 +38,12 @@ class AmendmentController extends AdminBase
 
     public function actionXlsxList(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
     {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
 
         $ods = $this->renderPartial('xlsx_list', [
-            'motions'      => $filter->getFilteredConsultationIMotionsSorted(),
+            'amendments'   => $amendments,
             'textCombined' => $textCombined,
-            'filter'       => $filter,
         ]);
 
         return new BinaryFileResponse(BinaryFileResponse::TYPE_XLSX, $ods, true,'amendments');
@@ -50,36 +51,38 @@ class AmendmentController extends AdminBase
 
     public function actionOdslistShort(int $textCombined = 0, int $inactive = 0, int $maxLen = 2000): BinaryFileResponse
     {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
 
         $ods = $this->renderPartial('ods_list_short', [
-            'motions'      => $filter->getFilteredConsultationIMotionsSorted(),
+            'amendments'   => $amendments,
             'textCombined' => ($textCombined === 1),
             'maxLen'       => $maxLen,
-            'filter'       => $filter,
         ]);
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'amendments');
     }
 
     public function actionPdflist(int $inactive = 0): HtmlResponse
     {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
 
         return new HtmlResponse(
-            $this->render('pdf_list', ['consultation' => $this->consultation, 'filter' => $filter])
+            $this->render('pdf_list', ['consultation' => $this->consultation, 'amendments' => $amendments])
         );
     }
 
     public function actionPdfziplist(int $inactive = 0): BinaryFileResponse
     {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
 
         $zip = new ZipWriter();
-        foreach ($filter->getFilteredConsultationMotionsSorted() as $motion) {
-            if ($motion->getMyMotionType()->amendmentsOnly || !$motion->getMyMotionType()->hasPdfLayout()) {
+        foreach ($amendments as $amendmentGroup) {
+            if ($amendmentGroup['motion']->getMyMotionType()->amendmentsOnly || !$amendmentGroup['motion']->getMyMotionType()->hasPdfLayout()) {
                 continue;
             }
-            foreach ($motion->getFilteredAmendments($filter) as $amendment) {
+            foreach ($amendmentGroup['amendments'] as $amendment) {
                 $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
                 if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
                     $file = AmendmentLayoutHelper::createPdfFromHtml($amendment);
@@ -97,14 +100,15 @@ class AmendmentController extends AdminBase
 
     public function actionOdtziplist(int $inactive = 0): BinaryFileResponse
     {
-        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
 
         $zip       = new ZipWriter();
-        foreach ($filter->getFilteredConsultationMotionsSorted() as $motion) {
-            if ($motion->getMyMotionType()->amendmentsOnly) {
+        foreach ($amendments as $amendmentGroup) {
+            if ($amendmentGroup['motion']->getMyMotionType()->amendmentsOnly) {
                 continue;
             }
-            foreach ($motion->getFilteredAmendments($filter) as $amendment) {
+            foreach ($amendmentGroup['amendments'] as $amendment) {
                 $doc = $amendment->getMyMotionType()->createOdtTextHandler();
                 LayoutHelper::printAmendmentToOdt($amendment, $doc);
                 $zip->addFile($amendment->getFilenameBase(false) . '.odt', $doc->finishAndGetDocument());
