@@ -276,7 +276,9 @@ class MotionController extends AdminBase
                 $motion->datePublication = null;
             }
 
-            if ($modat['parentMotionId'] && intval($modat['parentMotionId']) !== $motion->id &&
+            if ($modat['parentMotionId'] && intval($modat['parentMotionId']) === $motion->parentMotionId) {
+                // Just leave it untouched - skip check in case it's from a different consultation
+            } elseif ($modat['parentMotionId'] && intval($modat['parentMotionId']) !== $motion->id &&
                 $consultation->getMotion($modat['parentMotionId'])) {
                 $motion->parentMotionId = intval($modat['parentMotionId']);
             } else {

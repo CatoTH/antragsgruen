@@ -117,7 +117,11 @@ echo '<div class="content form-horizontal">';
         <div class="rightColumn">
             <?php
             $options = ['-'];
-            foreach ($consultation->motions as $otherMotion) {
+            $selectableMotions = $consultation->motions;
+            if ($motion->replacedMotion && $motion->replacedMotion->consultationId !== $consultation->id) {
+                array_unshift($selectableMotions, $motion->replacedMotion);
+            }
+            foreach ($selectableMotions as $otherMotion) {
                 $title = $otherMotion->getTitleWithPrefix() .
                     ' (' . Yii::t('motion', 'version') . ' ' . $otherMotion->version . ')';
                 $options[$otherMotion->id] = $title;
