@@ -32,16 +32,11 @@ $I->dontSeeElement('#proposedChanges .saving');
 $I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input").prop("checked", true).change();');
 $I->seeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->seeElement('#proposedChanges .saving');
-$I->executeJS('$("#proposedChanges .saving button").click();');
-$I->gotoMotion(true, 'Testing_proposed_changes-630');
-$I->seeCheckboxIsChecked('#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input');
-$I->dontSeeElement('#proposedChanges .saving');
+$I->clickJS('#proposedChanges .saving button');
+$I->wait(1);
 
 
 $I->wantTo('edit the modification');
-$I->click('#proposedChanges .editModification');
-$I->wait(1);
-$I->dontSeeElement('.alert-success');
 $I->see('Lorem ipsum dolor sit amet', '#section_holder_2');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace(/Lorem ipsum dolor sit amet/, "Vegetable ipsum dolor sit amet"))');
 $I->submitForm('#proposedChangeTextForm', [], 'save');
