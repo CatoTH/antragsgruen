@@ -203,7 +203,7 @@ if ($externalAuthenticator === null) {
 
 if ($controller->site) {
     ?>
-    <section aria-labelledby="notificationsTitle">
+    <section aria-labelledby="notificationsTitle" id="notificationsSection">
         <h2 class="green" id="notificationsTitle"><?= Yii::t('user', 'notification_title') ?></h2>
         <div class="content">
             <?= Yii::t('user', 'notification_intro') ?>
@@ -246,7 +246,7 @@ if ($externalAuthenticator === null) {
     ?>
     <br><br>
 
-    <section aria-labelledby="delAccountTitle">
+    <section aria-labelledby="delAccountTitle" id="deleteAccountSection">
         <h2 class="green" id="delAccountTitle"><?= Yii::t('user', 'del_title') ?></h2>
         <?= Html::beginForm($formUrl, 'post', ['class' => 'accountDeleteForm content']) ?>
         <div class="alert alert-info">
