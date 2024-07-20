@@ -38,7 +38,7 @@ if ($form->agendaItem) {
     echo '<h1>' . Html::encode($this->title) . '</h1>';
 }
 
-echo '<div class="form content hideIfEmpty">';
+echo '<div class="form content hideIfEmpty motionEditPreface">';
 
 echo $controller->showErrors();
 

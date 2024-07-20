@@ -14,7 +14,7 @@ use app\models\http\{BinaryFileResponse,
     RestApiExceptionResponse,
     RestApiResponse};
 use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, ISupporter, Motion, User};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, ISupporter, Motion, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
@@ -463,6 +463,8 @@ class AmendmentController extends Base
         $ppChanges = new ProposedProcedureChange(null);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
+            $originalProposalStatus = $amendment->proposalStatus;
+
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 /** @var Amendment $amendment */
                 $amendment = $plugin::onBeforeProposedProcedureStatusSave($amendment);
@@ -519,6 +521,10 @@ class AmendmentController extends Base
                     true,
                     $ppChanges
                 );
+
+                if ($amendment->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $amendment->proposalStatus) {
+                    $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change');
+                }
             } catch (FormError $e) {
                 $response['success'] = false;
                 $response['error'] = $e->getMessage();
@@ -641,14 +647,16 @@ class AmendmentController extends Base
 
         if ($this->getHttpRequest()->post('save', null) !== null) {
             $form->save($this->getHttpRequest()->post(), $_FILES);
-            $msgSuccess = \Yii::t('base', 'saved');
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
             if ($amendment->proposalUserStatus !== null) {
-                $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                $this->getHttpSession()->setFlash('info', \Yii::t('amend', 'proposal_user_change_reset'));
             }
             $amendment->proposalUserStatus = null;
             $amendment->save();
             $amendment->flushCacheItems(['procedure']);
+
+            return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment, 'view'));
         }
 
         return new HtmlResponse($this->render('edit_proposed_change', [
