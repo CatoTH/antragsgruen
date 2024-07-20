@@ -181,33 +181,33 @@ abstract class SupportBase
         }
 
         if (!isset($initiator['personType'])) {
-            $errors[] = 'Invalid person type.';
+            $errors[] = \Yii::t('motion', 'err_invalid_person_type');
             $personType = null;
         } else {
             $personType = intval($initiator['personType']);
         }
         if ($personType === ISupporter::PERSON_NATURAL && !$settings->canSupportAsPerson($this->motionType->getConsultation())) {
-            $errors[] = 'Invalid person type.';
+            $errors[] = \Yii::t('motion', 'err_invalid_person_type');
         }
         if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->canSupportAsOrganization($this->motionType->getConsultation())) {
-            $errors[] = 'Invalid person type.';
+            $errors[] = \Yii::t('motion', 'err_invalid_person_type');
         }
         if ($personType === ISupporter::PERSON_ORGANIZATION &&
             $settings->hasResolutionDate === InitiatorForm::CONTACT_REQUIRED &&
             empty($initiator['resolutionDate'])) {
-            $errors[] = 'No resolution date entered.';
+            $errors[] = \Yii::t('motion', 'err_no_resolution_date');
         }
         if ($personType === ISupporter::PERSON_NATURAL) {
             $validGenderValues = array_keys(static::getGenderSelection());
             if ($settings->contactGender === InitiatorForm::CONTACT_REQUIRED) {
                 if (!isset($initiator['gender']) || !in_array($initiator['gender'], $validGenderValues)) {
-                    $errors[] = 'Please enter a valid value in the field Gender';
+                    $errors[] = \Yii::t('motion', 'err_invalid_gender');
                 }
             }
             if ($settings->contactGender === InitiatorForm::CONTACT_OPTIONAL) {
                 $validGenderValues[] = '';
                 if (isset($initiator['gender']) && !in_array($initiator['gender'], $validGenderValues)) {
-                    $errors[] = 'Please enter a valid value in the field Gender';
+                    $errors[] = \Yii::t('motion', 'err_invalid_gender');
                 }
             }
         }
@@ -217,10 +217,10 @@ abstract class SupportBase
             $num        = count($supporters);
             if ($personType !== ISupporter::PERSON_ORGANIZATION) {
                 if ($num < $settings->minSupporters) {
-                    $errors[] = 'Not enough supporters.';
+                    $errors[] = \Yii::t('motion', 'err_not_enough_supporters');
                 }
                 if (!$settings->allowMoreSupporters && $num > $settings->minSupporters) {
-                    $errors[] = 'Too many supporters.';
+                    $errors[] = \Yii::t('motion', 'err_too_many_supporters');
                 }
             }
         }
