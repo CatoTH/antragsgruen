@@ -853,7 +853,7 @@ class AdminMotionFilterForm
         // Motion Type
 
         $motionTypeList = $this->getMotionTypeList();
-        if (count($motionTypeList) > 0) {
+        if (count($motionTypeList) > 1 || $this->motionType !== null) {
             $str .= '<label class="filterMotionType">' . \Yii::t('admin', 'filter_motiontype') . ':<br>';
             $types = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($motionTypeList as $typeId => $typeName) {
