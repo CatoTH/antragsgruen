@@ -251,6 +251,8 @@ class UserController extends Base
         $user     = User::getCurrentUser();
         $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
+        $params = AntragsgruenApp::getInstance();
+
         if ($this->isPostSet('resendEmailChange')) {
             $changeRequested = $user->getChangeRequestedEmailAddress();
             if ($changeRequested) {
@@ -305,7 +307,6 @@ class UserController extends Base
             }
 
             if ($post['email'] != '' && $post['email'] != $user->email) {
-                $params = AntragsgruenApp::getInstance();
                 if ($params->confirmEmailAddresses) {
                     $changeRequested = $user->getChangeRequestedEmailAddress();
                     if ($changeRequested && $changeRequested == $post['email']) {
@@ -330,7 +331,7 @@ class UserController extends Base
             }
         }
 
-        if ($this->isPostSet('accountDeleteConfirm') && $this->isPostSet('accountDelete')) {
+        if ($this->isPostSet('accountDeleteConfirm') && $this->isPostSet('accountDelete') && $params->allowAccountDeletion) {
             $user->deleteAccount();
             RequestContext::getYiiUser()->logout(true);
             return new HtmlResponse($this->render('account_deleted'));

@@ -242,7 +242,7 @@ if ($controller->site) {
     </section>
 
 <?php
-if ($externalAuthenticator === null) {
+if ($externalAuthenticator === null && \app\models\settings\AntragsgruenApp::getInstance()->allowAccountDeletion) {
     ?>
     <br><br>
 
