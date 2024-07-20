@@ -85,6 +85,18 @@ final class IMotionStatusFilter
         return $this;
     }
 
+    public function filterMotion(Motion $motion): bool
+    {
+        if (in_array($motion->status, $this->disallowedMotionStatuses)) {
+            return false;
+        }
+        if (!$motion->isReadable()) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @param IMotion[] $imotions
      *
@@ -93,7 +105,7 @@ final class IMotionStatusFilter
     public function filterMotions(array $imotions): array
     {
         $motions = array_filter($imotions, fn(IMotion $imotion) => is_a($imotion, Motion::class));
-        return array_values(array_filter($motions, fn(Motion $motion) => !in_array($motion->status, $this->disallowedMotionStatuses)));
+        return array_values(array_filter($motions, fn(Motion $motion) => $this->filterMotion($motion)));
     }
 
     public function getFilteredConsultationMotions(): array
@@ -107,6 +119,9 @@ final class IMotionStatusFilter
             return false;
         }
         if ($this->filterNoAmendmentsIfMotionIsMoved && $amendment->getMyMotion()->status === Motion::STATUS_MOVED) {
+            return false;
+        }
+        if (!$amendment->isReadable()) {
             return false;
         }
         return true;

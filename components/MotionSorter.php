@@ -110,7 +110,7 @@ class MotionSorter
 
     public static function imotionIsVisibleOnHomePage(IMotion $imotion, array $invisibleStatuses): bool
     {
-        if (in_array($imotion->status, $invisibleStatuses)) {
+        if (in_array($imotion->status, $invisibleStatuses) || !$imotion->isReadable()) {
             return false;
         }
 
