@@ -35,7 +35,7 @@ echo '<tr class="amendment amendment' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
-echo '<td>' . Yii::t('admin', 'list_amend_short') . '</td>';
+echo '<td class="typeCol">' . Yii::t('admin', 'list_amend_short') . '</td>';
 echo '<td class="prefixCol">';
 echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
 echo '<a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> ';
