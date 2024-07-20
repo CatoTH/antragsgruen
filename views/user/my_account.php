@@ -149,7 +149,7 @@ if ($externalAuthenticator === null) {
             echo '</div>';
         }
 
-        echo '<div class="checkbox">
+        echo '<div class="checkbox emailBlocklistCheckbox">
         <label>' . Html::checkbox('emailBlocklist', $emailBlocked) . Yii::t('user', 'email_blocklist') . '</label>
       </div>';
 
