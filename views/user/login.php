@@ -33,6 +33,7 @@ if ($controller->site) {
 $params = AntragsgruenApp::getInstance();
 
 $externalAuthenticator = User::getExternalAuthenticator();
+$hasNonUsernamePwdLogin = false;
 
 echo '<h1>' . Yii::t('user', 'login_title') . '</h1>';
 
@@ -45,6 +46,7 @@ if (trim($loginText->text) !== '') {
 
 $shownAccessPwdForm = false;
 if ($controller->consultation && $controller->consultation->getSettings()->accessPwd) {
+    $hasNonUsernamePwdLogin = true;
     $conPwd = new \app\components\ConsultationAccessPassword($controller->consultation);
     if (!$conPwd->isCookieLoggedIn()) {
         $shownAccessPwdForm = true;
@@ -97,6 +99,7 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
 
 foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
     if ($login = $plugins::getDedicatedLoginProvider()) {
+        $hasNonUsernamePwdLogin = true;
         echo $login->renderLoginForm($backUrl, in_array($login->getId(), $loginMethods));
     }
 }
@@ -111,7 +114,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     }
 
     echo '<section class="' . implode(' ', $classes) . '">
-    <h2 class="green">' . Yii::t('user', 'login_username_title') . '</h2>
+    <h2 class="green' . ($hasNonUsernamePwdLogin ? '' : ' hidden') . '">' . Yii::t('user', 'login_username_title') . '</h2>
     <div class="content">';
 
     if ($usernamePasswordForm->error) {
