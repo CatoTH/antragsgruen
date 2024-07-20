@@ -14,15 +14,15 @@ use app\models\http\{HtmlErrorResponse,
     ResponseInterface,
     RestApiExceptionResponse};
 use app\models\notifications\MotionProposedProcedure;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Tools, UrlHelper};
 use app\models\db\{Amendment,
     ConsultationLog,
     ConsultationSettingsTag,
     IComment,
+    IMotion,
     Motion,
     MotionAdminComment,
     MotionComment,
-    MotionSection,
     MotionSupporter,
     User,
     Consultation};
@@ -477,6 +477,7 @@ trait MotionActionsTrait
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
             $originalMotionId = $motion->id;
+            $originalProposalStatus = $motion->proposalStatus;
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 /** @var Motion $motion */
                 $motion = $plugin::onBeforeProposedProcedureStatusSave($motion);
@@ -533,6 +534,10 @@ trait MotionActionsTrait
                     true,
                     $ppChanges
                 );
+
+                if ($motion->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $motion->proposalStatus) {
+                    $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
+                }
             } catch (FormError $e) {
                 return new RestApiExceptionResponse(400, $e->getMessage());
             }
@@ -649,14 +654,16 @@ trait MotionActionsTrait
 
         if ($this->getHttpRequest()->post('save', null) !== null) {
             $form->save($this->getHttpRequest()->post(), $_FILES);
-            $msgSuccess = \Yii::t('base', 'saved');
+            $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
             if ($motion->proposalUserStatus !== null) {
-                $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                $this->getHttpSession()->setFlash('info', \Yii::t('amend', 'proposal_user_change_reset'));
             }
             $motion->proposalUserStatus = null;
             $motion->save();
             $motion->flushCacheItems(['procedure']);
+
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'view'));
         }
 
         return new HtmlResponse($this->render('edit_proposed_change', [
