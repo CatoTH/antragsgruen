@@ -187,7 +187,13 @@ class MotionListController extends AdminBase
                 try {
                     $amendment = $this->getAmendmentWithPrivilege($amendmentId, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
                     $amendment->setProposalPublished();
-                } catch (ExceptionBase $e) {} // The user probably just accidentally selected an invalid amendment, so let's just continue
+                } catch (ExceptionBase) {} // The user probably just accidentally selected an invalid amendment, so let's just continue
+            }
+            foreach ($this->getRequestValue('motions', []) as $motionId) {
+                try {
+                    $motionId = $this->getMotionWithPrivilege($motionId, Privileges::PRIVILEGE_CHANGE_PROPOSALS);
+                    $motionId->setProposalPublished();
+                } catch (ExceptionBase) {} // The user probably just accidentally selected an invalid motion, so let's just continue
             }
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_proposal_published_pl'));
         }
