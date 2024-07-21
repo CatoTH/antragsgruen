@@ -38,9 +38,9 @@ if ($form->agendaItem) {
     echo '<h1>' . Html::encode($this->title) . '</h1>';
 }
 
-echo '<div class="form content hideIfEmpty motionEditPreface">';
-
 echo $controller->showErrors();
+
+echo '<div class="form content hideIfEmpty motionEditPreface">';
 
 $publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_GRUENES_NETZ];
 if (!$isAmendmentsOnly) {

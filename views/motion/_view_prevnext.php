@@ -29,6 +29,10 @@ foreach ($motions as $idx => $itMotion) {
     }
 }
 
+if (!$nextMotion && !$prevMotion) {
+    return;
+}
+
 ?>
 <nav class="motionPrevNextLinks <?= ($top ? 'toolbarBelowTitle' : 'toolbarAtBottom') ?>">
     <?php
