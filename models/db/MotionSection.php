@@ -194,7 +194,10 @@ class MotionSection extends IMotionSection
             $excludedStatuses = $this->getConsultation()->getStatuses()->getAmendmentStatusesUnselectableForMerging();
         }
         foreach ($motion->amendments as $amend) {
-            $allowedProposedChange = in_array($amend->status, [Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT, Amendment::STATUS_PROPOSED_MODIFIED_MOTION]);
+            $allowedProposedChange = ($amend->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
+            if ($motion->proposalStatus === Motion::STATUS_MODIFIED_ACCEPTED && $amend->status === Motion::STATUS_PROPOSED_MODIFIED_MOTION) {
+                $allowedProposedChange = true;
+            }
             if (in_array($amend->status, $excludedStatuses) && !$allowedProposedChange) {
                 continue;
             }
