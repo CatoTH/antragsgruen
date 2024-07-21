@@ -28,8 +28,8 @@ echo '</div>';
 
 
 echo Html::beginForm(UrlHelper::createMotionUrl($newMotion), 'post', ['id' => 'motionConfirmedForm']);
-echo '<p class="btnRow"><button type="submit" class="btn btn-success">' .
-    Yii::t('amend', 'merge_submitted_to_motion') . '</button></p>';
+$msg = ($newMotion->isResolution() ? Yii::t('amend', 'merge_submitted_to_resolu') : Yii::t('amend', 'merge_submitted_to_motion'));
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . $msg . '</button></p>';
 echo Html::endForm();
 
 echo '</div>';
