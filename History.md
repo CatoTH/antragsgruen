@@ -8,6 +8,7 @@
 - Bugfix: Publishing proposed procedures from the admin list only worked for amendments, not for motions.
 - Bugfix: When multiple versions of a motion exist, the ODT / PDF export list showed all versions, instead of only the newest one.
 - Bugfix: If a motion replaces one of a different consultation, editing as an admin removed the connection between these two motion versions.
+- Bugfix: Merging amendments into a motion was broken if the motion's proposed status had a proposed change but then changed to another proposed status.
 
 ## Version 4.14.0 (2024-05-20)
 
