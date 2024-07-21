@@ -123,6 +123,7 @@ return [
     'merge_submitted_title'        => '%TITLE% revised',
     'merge_submitted_str'          => 'The new version of this motion has been saved',
     'merge_submitted_to_motion'    => 'Go to the motion',
+    'merge_submitted_to_resolu'    => 'Go to the resolution',
     'merge_colliding'              => 'Colliding amendment',
     'merge_colliding_hint'         => 'The following changes could not be merged automatically. Please merge them manually.',
     'merge_colliding_hide'         => 'Resolved / Hide',

@@ -145,6 +145,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_submitted_title'             => '%TITLE% überarbeitet',
     'merge_submitted_str'               => 'Der Antrag wurde überarbeitet',
     'merge_submitted_to_motion'         => 'Zum neuen Antrag',
+    'merge_submitted_to_resolu'         => 'Zum Beschluss',
     'merge_colliding'                   => 'Kollidierender Änderungsantrag',
     'merge_colliding_hint'              => 'Die folgenden Änderungen konnten nicht automatisch eingebettet werden. Bitte füge die Änderungen von Hand ein.',
     'merge_colliding_hide'              => 'Bearbeitet / Ausblenden',
