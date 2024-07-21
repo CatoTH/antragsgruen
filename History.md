@@ -5,6 +5,7 @@
 - If a filter is set in the motion list, this will also filter the motions to be exported in the export row above (PDFs, ODTs, ODS etc.).
 - Setting a modified proposed procedure is now more streamlined, as changing the proposed status to "Accepted (modified)" now directly brings one to entering the modified text, and saving it will lead back to the motion / amendment.
 - Bugfix: The PDF export with included proposed procedures was sometimes broken.
+- Bugfix: Publishing proposed procedures from the admin list only worked for amendments, not for motions.
 - Bugfix: When multiple versions of a motion exist, the ODT / PDF export list showed all versions, instead of only the newest one.
 - Bugfix: If a motion replaces one of a different consultation, editing as an admin removed the connection between these two motion versions.
 
