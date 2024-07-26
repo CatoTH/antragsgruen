@@ -27,6 +27,49 @@ $formUrl = UrlHelper::createUrl('user/myaccount');
 echo '<h1>' . Yii::t('user', 'my_acc_title') . '</h1>';
 
 
+use OTPHP\TOTP;
+
+// A random secret will be generated from this.
+// You should store the secret with the user for verification.
+$otp = TOTP::generate();
+//echo "The OTP secret is: {$otp->getSecret()}\n";
+$secret = 'MA2GFBC636V3PKWNREB655MMVLX4APNKZYJQWZVQNURGPWGYAOFTC7QGMVMGYD3QN2ACWXC7NPP57RNSW7V5L3GBNAJSVY7U63VKSPI';
+
+// Note: use your own way to load the user secret.
+// The function "load_user_secret" is simply a placeholder.
+$otp = TOTP::createFromSecret($secret);
+echo "The current OTP is: {$otp->now()}\n";
+
+// Note: You must set label before generating the QR code
+$otp->setLabel('Label of your web');
+$url = $otp->getProvisioningUri();
+
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+
+$result = Builder::create()
+                 ->writer(new PngWriter())
+                 ->writerOptions([])
+                 ->data($url)
+                 ->encoding(new Encoding('UTF-8'))
+                 ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+                 ->size(300)
+                 ->margin(10)
+                 ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+                 ->logoPath(__DIR__.'/../../web/favicons/apple-touch-icon.png')
+                 ->logoResizeToWidth(50)
+                 ->logoResizeToHeight(50)
+                 ->logoPunchoutBackground(true)
+                 ->validateResult(false)
+                 ->build();
+
+echo "<img src='" . $result->getDataUri() . "'>";
+
 if ($externalAuthenticator === null) {
     echo Html::beginForm($formUrl, 'post', ['class' => 'userAccountForm content']);
 
