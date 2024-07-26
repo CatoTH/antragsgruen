@@ -30,6 +30,24 @@ ob_start();
                         </div>
                     </div>
                 </div>
+                <div class="stdTwoCols">
+                    <div class="leftColumn">
+                        2-Faktoren-Anmeldung
+                    </div>
+                    <div class="rightColumn">
+                        <span v-if="user.has_2fa">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Eingerichtet
+                            <label v-if="canModifyAuth">
+                                <input type="checkbox" v-model="remove2Fa" value="1">
+                                2-Faktoren-Anmeldung deaktivieren
+                            </label>
+                        </span>
+                        <span v-if="!user.has_2fa">Nicht eingerichtet</span>
+                    </div>
+                    <div class="rightColumn" v-if="!canModifyAuth">
+
+                    </div>
+                </div>
                 <div class="stdTwoCols" v-if="permissionGlobalEdit">
                     <div class="leftColumn">
                         <?= Yii::t('admin', 'siteacc_usermodal_pass' ) ?>
@@ -157,6 +175,7 @@ $html = ob_get_clean();
                 userGroups: null,
                 settingPassword: false,
                 settingAuth: false,
+                remove2Fa: false,
                 newPassword: '',
                 newAuth: '',
             }
@@ -201,6 +220,7 @@ $html = ob_get_clean();
                 this.settingPassword = false;
                 this.settingAuth = false;
                 this.newPassword = '';
+                this.remove2Fa = false;
                 this.newAuth = '';
 
                 $(this.$refs['user-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
@@ -208,7 +228,7 @@ $html = ob_get_clean();
             save: function ($event) {
                 const password = (this.settingPassword ? this.newPassword : null);
                 const auth = (this.settingAuth ? this.newAuth : null);
-                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth);
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth, this.remove2Fa);
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {

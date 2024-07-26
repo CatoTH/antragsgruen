@@ -8,6 +8,10 @@ class User implements \JsonSerializable
 
     public string $ppReplyTo = '';
     public ?array $voteWeightByConsultation = null;
+    public bool $enforceTwoFactorAuthentication = false;
+
+    /** @var array<array{type: string, secret: string}>|null */
+    public ?array $secondFactorKeys = null;
 
     public function getVoteWeight(\app\models\db\Consultation $consultation): int
     {

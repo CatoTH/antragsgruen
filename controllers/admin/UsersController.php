@@ -248,7 +248,8 @@ class UsersController extends AdminBase
                             $this->getPostValue('organization', ''),
                             $this->getPostValue('ppReplyTo', ''),
                             $this->getPostValue('newPassword'),
-                            $this->getPostValue('newAuth')
+                            $this->getPostValue('newAuth'),
+                            $this->getPostValue('remove2Fa')
                         );
                     }
                     if ($this->getPostValue('voteWeight') !== null) {

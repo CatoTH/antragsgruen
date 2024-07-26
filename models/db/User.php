@@ -839,10 +839,14 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserAdminApiObject(Consultation $consultation): array
     {
+        $settings = $this->getSettingsObj();
+
         $data = $this->getUserdataExportObject();
         $data['id'] = $this->id;
         $data['selectable_groups'] = $this->getSelectableUserGroups($consultation);
-        $data['vote_weight'] = $this->getSettingsObj()->getVoteWeight($consultation);
+        $data['vote_weight'] = $settings->getVoteWeight($consultation);
+        $data['has_2fa'] = $settings->secondFactorKeys && count($settings->secondFactorKeys) > 0;
+        $data['2fa_enforced'] = $settings->enforceTwoFactorAuthentication;
 
         $groups = array_values(array_filter($this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
             return $group->isSpecificallyRelevantForConsultationOrSite($consultation);

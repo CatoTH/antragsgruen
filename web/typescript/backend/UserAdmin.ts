@@ -118,7 +118,7 @@ export class UserAdmin {
                         alert(err.responseText);
                     })
                 },
-                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth) {
+                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa) {
                     this._performOperation({
                         op: 'save-user',
                         userId,
@@ -129,7 +129,8 @@ export class UserAdmin {
                         ppReplyTo,
                         voteWeight,
                         newPassword,
-                        newAuth
+                        newAuth,
+                        remove2Fa
                     });
                 },
                 removeUser(user) {

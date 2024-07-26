@@ -2,6 +2,12 @@
 
 use app\components\UrlHelper;
 use app\models\db\User;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+use OTPHP\TOTP;
 use yii\helpers\Html;
 
 /**
@@ -9,6 +15,9 @@ use yii\helpers\Html;
  * @var User $user
  * @var bool $emailBlocked
  * @var int $pwMinLen
+ * @var bool $hasSecondFactor
+ * @var bool $canRemoveSecondFactor
+ * @var TOTP|null $addSecondFactorKey
  */
 
 /** @var \app\controllers\UserController $controller */
@@ -58,6 +67,52 @@ if ($externalAuthenticator === null) {
         <label class="leftColumn control-label" for="userPwd2"><?= Yii::t('user', 'pwd_confirm') ?>:</label>
         <div class="rightColumn">
             <input type="password" name="pwd2" value="" class="form-control" id="userPwd2">
+        </div>
+    </div>
+    <div class="stdTwoCols">
+        <div class="leftColumn">
+            Zwei-Faktor-Anemdlung
+        </div>
+        <div class="rightColumn">
+            <?php
+            if ($canRemoveSecondFactor) {
+                ?>
+                <div class="secondFactorAdderBody">
+                    <label>
+                        Code eingeben um zweiten Faktor zu entfernen:
+                        <input type="text" name="remove2fa" class="form-control">
+                    </label>
+                </div>
+                <?php
+            }
+            if ($addSecondFactorKey) {
+                $url = $addSecondFactorKey->getProvisioningUri();
+                $result = Builder::create()
+                                 ->writer(new PngWriter())
+                                 ->writerOptions([])
+                                 ->data($url)
+                                 ->encoding(new Encoding('UTF-8'))
+                                 ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+                                 ->size(300)
+                                 ->margin(10)
+                                 ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+                                 ->logoPath(__DIR__.'/../../web/favicons/apple-touch-icon.png')
+                                 ->logoResizeToWidth(50)
+                                 ->logoResizeToHeight(50)
+                                 ->logoPunchoutBackground(true)
+                                 ->validateResult(false)
+                                 ->build();
+                ?>
+                <div class="secondFactorAdderBody">
+                    <img src="<?= $result->getDataUri() ?>" alt="QR-Code für TOTP">
+                    <label>
+                        Code eingeben:
+                        <input type="text" name="set2fa" class="form-control">
+                    </label>
+                </div>
+                <?php
+            }
+            ?>
         </div>
     </div>
     <?php
