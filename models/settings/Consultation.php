@@ -167,15 +167,20 @@ class Consultation implements \JsonSerializable
         ];
     }
 
-    public function getStartLayoutView(): string
+    public function getStartLayoutViewFromId(int $id): string
     {
-        return match ($this->startLayoutType) {
+        return match ($id) {
             Consultation::START_LAYOUT_STD => 'index_layout_std',
             Consultation::START_LAYOUT_TAGS => 'index_layout_tags',
             Consultation::START_LAYOUT_AGENDA_LONG, Consultation::START_LAYOUT_AGENDA_HIDE_AMEND, Consultation::START_LAYOUT_AGENDA => 'index_layout_agenda',
             Consultation::START_LAYOUT_DISCUSSION_TAGS => 'index_layout_discussion_tags',
-            default => throw new Internal('Unknown layout: ' . $this->startLayoutType),
+            default => throw new Internal('Unknown layout: ' . $id),
         };
+    }
+
+    public function getStartLayoutView(): string
+    {
+        return $this->getStartLayoutViewFromId($this->startLayoutType);
     }
 
     public function getConsultationSidebar(): ?string
