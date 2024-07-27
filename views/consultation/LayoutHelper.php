@@ -12,11 +12,11 @@ use yii\helpers\Html;
 
 class LayoutHelper
 {
-    public static function getHomePageCache(Consultation $consultation): HashedStaticCache
+    private static function getHomePageCacheForType(Consultation $consultation, string $type): HashedStaticCache
     {
         $cache = HashedStaticCache::getInstance('getHomePage', [
             $consultation->id,
-            $consultation->getSettings()->getStartLayoutView(),
+            $type,
             $consultation->getSettings()->startLayoutResolutions,
         ]);
         if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
@@ -26,13 +26,30 @@ class LayoutHelper
             $cache->setSkipCache(true);
         }
 
-        if (in_array($consultation->getSettings()->startLayoutType, [
+        if (in_array($type, [
                 ConsultationSettings::START_LAYOUT_AGENDA_LONG, ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND, ConsultationSettings::START_LAYOUT_AGENDA
             ]) && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             $cache->setSkipCache(true);
         }
 
         return $cache;
+    }
+
+    /**
+     * @return HashedStaticCache[]
+     */
+    public static function getAllHomePageCaches(Consultation $consultation): array
+    {
+        $settings = $consultation->getSettings();
+        $views = array_map(fn(int $type) => $settings->getStartLayoutViewFromId($type), array_keys($settings::getStartLayouts()));
+        $views = array_unique($views);
+
+        return array_values(array_filter(array_map(fn(string $view) => self::getHomePageCacheForType($consultation, $view), $views)));
+    }
+
+    public static function getHomePageCache(Consultation $consultation): HashedStaticCache
+    {
+        return self::getHomePageCacheForType($consultation, $consultation->getSettings()->getStartLayoutView());
     }
 
     public static function getTagMotionListCache(Consultation $consultation, ConsultationSettingsTag $tag, bool $isResolutionList): HashedStaticCache
@@ -66,7 +83,9 @@ class LayoutHelper
 
     public static function flushViewCaches(Consultation $consultation): void
     {
-        self::getHomePageCache($consultation)->flushCache();
+        foreach (self::getAllHomePageCaches($consultation) as $homePageCache) {
+            $homePageCache->flushCache();
+        }
         self::getSidebarPdfCache($consultation)->flushCache();
         foreach ($consultation->tags as $tag) {
             self::getTagMotionListCache($consultation, $tag, true)->flushCache();
