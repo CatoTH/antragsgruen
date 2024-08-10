@@ -4,7 +4,6 @@
 #  - phpstan-baseline.neon
 
 parameters:
-    phpVersion: 80000
     level: 7
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
@@ -24,4 +23,4 @@ parameters:
       - components
       - commands
       - plugins
-      - views\pdfLayouts
+      - views/pdfLayouts

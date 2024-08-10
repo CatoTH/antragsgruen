@@ -30,13 +30,13 @@ class SecondFactorAuthentication
     {
         $settings = $user->getSettingsObj();
 
-        return $settings->secondFactorKeys && count($settings->secondFactorKeys) > 0;
+        return $settings->secondFactorKeys !== null && count($settings->secondFactorKeys) > 0;
     }
 
     public function createSecondFactorKey(User $user): TOTP
     {
         $otp = TOTP::generate();
-        $otp->setLabel(AntragsgruenApp::getInstance()->mailFromName);
+        $otp->setLabel(AntragsgruenApp::getInstance()->mailFromName ?: 'Antragsgrün');
 
         $this->session->set(self::SESSION_KEY_2FA_SETUP_KEY, [
             'user' => $user->id,
@@ -49,7 +49,10 @@ class SecondFactorAuthentication
 
     private function checkOtp(TOTP $totp, string $code): bool
     {
-        return $totp->now() === $code || $totp->at(time() - 15) === $code;
+        /** @var int<1, max> $shortInThePast */
+        $shortInThePast = time() - 15;
+
+        return $totp->now() === $code || $totp->at($shortInThePast) === $code;
     }
 
     public function attemptRegisteringSecondFactor(User $user, string $secondFactor): ?string
@@ -85,7 +88,7 @@ class SecondFactorAuthentication
     public function attemptRemovingSecondFactor(User $user, string $secondFactor): ?string
     {
         $userSettings = $user->getSettingsObj();
-        if (!$userSettings->secondFactorKeys || count($userSettings->secondFactorKeys) === 0) {
+        if ($userSettings->secondFactorKeys === null || count($userSettings->secondFactorKeys) === 0) {
             return 'No second factor registered';
         }
 
