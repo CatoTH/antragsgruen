@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components\html2pdf;
 
+use app\models\db\Site;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\Image;
 use app\models\settings\AntragsgruenApp;
@@ -26,7 +27,7 @@ class Html2PdfConverter
     /**
      * @throws Internal
      */
-    public function createPDF(Content $content): string
+    public function createPDF(Content $content, Site $site): string
     {
         if (!$this->app->weasyprintPath) {
             throw new Internal('Weasyprint is not enabled');
@@ -65,7 +66,12 @@ class Html2PdfConverter
         $cmd = $this->app->weasyprintPath;
         $cmd .= ' ' . escapeshellarg($filenameBase . '.html');
         $cmd .= ' ' . escapeshellarg($filenameBase . '.pdf');
-        $cmd .= ' -s ' . escapeshellarg(__DIR__ . '/../../assets/html2pdf/application.css');
+
+        if ($site->subdomain === 'lavoldk18') {
+            $cmd .= ' -s ' . escapeshellarg(__DIR__ . '/../../assets/html2pdf/application_bw.css');
+        } else {
+            $cmd .= ' -s ' . escapeshellarg(__DIR__ . '/../../assets/html2pdf/application.css');
+        }
 
         shell_exec($cmd);
 

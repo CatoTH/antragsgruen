@@ -315,7 +315,7 @@ class LayoutHelper
             $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());
             $content = static::renderPdfContentFromHtml($amendment);
 
-            return $exporter->createPDF($content);
+            return $exporter->createPDF($content, $amendment->getMyConsultation()->site);
         });
     }
 
