@@ -22,7 +22,7 @@ class AccountEdit {
             });
         }
 
-        $('.userAccountForm').submit(function (ev) {
+        $('.userAccountForm').on('submit', function (ev) {
             let pwd = $("#userPwd").val() as string,
                 pwd2 = $("#userPwd2").val() as string;
             if (pwd != '' || pwd2 != '') {
@@ -34,6 +34,11 @@ class AccountEdit {
                     bootbox.alert(__t("std", "pw_no_match"));
                 }
             }
+        });
+
+        $('.btn2FaAdderOpen').on('click', () => {
+            $('.secondFactorAdderOpener').addClass('hidden');
+            $('.secondFactorAdderBody').removeClass('hidden');
         });
     }
 }

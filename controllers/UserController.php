@@ -25,7 +25,7 @@ class UserController extends Base
     {
         $result = parent::beforeAction($action);
 
-        $this->secondFactorAuthentication = new SecondFactorAuthentication($this->site, RequestContext::getSession());
+        $this->secondFactorAuthentication = new SecondFactorAuthentication(RequestContext::getSession());
 
         return $result;
     }
@@ -146,6 +146,31 @@ class UserController extends Base
         // @TODO CAPTCHA
 
         return new HtmlResponse($this->render('login-2fa', ['error' => $error]));
+    }
+
+    public function actionLogin2faForceRegistration(string $backUrl = ''): ResponseInterface
+    {
+        if ($backUrl === '') {
+            $backUrl = '/';
+        }
+
+        $error = null;
+        if ($this->isPostSet('set2fa') && trim($this->getPostValue('set2fa'))) {
+            try {
+                $successUser = $this->secondFactorAuthentication->attemptForcedRegisteringSecondFactor(trim($this->getPostValue('set2fa')));
+                $this->loginUser($successUser);
+                $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
+
+                return new RedirectResponse($backUrl);
+            } catch (\RuntimeException $e) {
+                $error = $e->getMessage();
+            }
+        }
+        // @TODO CAPTCHA
+
+        $addSecondFactorKey = $this->secondFactorAuthentication->createForcedRegistrationSecondFactor();
+
+        return new HtmlResponse($this->render('login-2fa-force-registration', ['error' => $error, 'addSecondFactorKey' => $addSecondFactorKey]));
     }
 
     public function actionToken(): JsonResponse
@@ -340,9 +365,10 @@ class UserController extends Base
             }
 
             if (isset($post['set2fa']) && trim($post['set2fa'])) {
-                $error = $this->secondFactorAuthentication->attemptRegisteringSecondFactor($user, $post['set2fa']);
-                if ($error) {
-                    $this->getHttpSession()->setFlash('error', $error);
+                try {
+                    $this->secondFactorAuthentication->attemptRegisteringSecondFactor($user, $post['set2fa']);
+                } catch (\RuntimeException $e) {
+                    $this->getHttpSession()->setFlash('error', $e->getMessage());
                 }
             }
 

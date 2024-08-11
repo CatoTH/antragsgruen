@@ -2,11 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\db\User;
-use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel;
-use Endroid\QrCode\RoundBlockSizeMode;
-use Endroid\QrCode\Writer\PngWriter;
 use OTPHP\TOTP;
 use yii\helpers\Html;
 
@@ -71,46 +66,51 @@ if ($externalAuthenticator === null) {
     </div>
     <div class="stdTwoCols">
         <div class="leftColumn">
-            Zwei-Faktor-Anemdlung
+            <?= Yii::t('user', '2fa_title') ?>
         </div>
         <div class="rightColumn">
             <?php
             if ($canRemoveSecondFactor) {
                 ?>
-                <div class="secondFactorAdderBody">
+                <div class="secondFactorRemovedBody">
                     <label>
                         Code eingeben um zweiten Faktor zu entfernen:
                         <input type="text" name="remove2fa" class="form-control">
                     </label>
                 </div>
                 <?php
-            }
-            if ($addSecondFactorKey) {
-                $url = $addSecondFactorKey->getProvisioningUri();
-                $result = Builder::create()
-                                 ->writer(new PngWriter())
-                                 ->writerOptions([])
-                                 ->data($url)
-                                 ->encoding(new Encoding('UTF-8'))
-                                 ->errorCorrectionLevel(ErrorCorrectionLevel::High)
-                                 ->size(300)
-                                 ->margin(10)
-                                 ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
-                                 ->logoPath(__DIR__.'/../../web/favicons/apple-touch-icon.png')
-                                 ->logoResizeToWidth(50)
-                                 ->logoResizeToHeight(50)
-                                 ->logoPunchoutBackground(true)
-                                 ->validateResult(false)
-                                 ->build();
+            } elseif ($addSecondFactorKey) {
+                $result = \app\components\SecondFactorAuthentication::createQrCode($addSecondFactorKey);
                 ?>
-                <div class="secondFactorAdderBody">
-                    <img src="<?= $result->getDataUri() ?>" alt="QR-Code für TOTP">
+                <div class="secondFactorAdderOpener">
+                    <span class=""><?= Yii::t('user', '2fa_off') ?></span>
+                    <button type="button" class="btn btn-link btn2FaAdderOpen">
+                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        <?= Yii::t('user', '2fa_activate_opener') ?>
+                    </button>
+                </div>
+                <div class="secondFactorAdderBody hidden">
+                    <div class="alert alert-info">
+                        <p>
+                            <?= Yii::t('user', '2fa_add_explanation') ?><br><br>
+                            <?= Yii::t('user', '2fa_general_explanation') ?>
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3><?= Yii::t('user', '2fa_add_step1') ?></h3>
+                        <img src="<?= $result->getDataUri() ?>" alt="<?= Yii::t('user', '2fa_img_alt') ?>">
+                    </div>
+                    <h3><?= Yii::t('user', '2fa_add_step2') ?></h3>
                     <label>
-                        Code eingeben:
+                        <?= Yii::t('user', '2fa_enter_code') ?>:
                         <input type="text" name="set2fa" class="form-control">
                     </label>
                 </div>
                 <?php
+            } else {
+                echo '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> ';
+                echo Yii::t('user', '2fa_activated');
             }
             ?>
         </div>

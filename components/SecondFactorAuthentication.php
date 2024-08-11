@@ -4,25 +4,30 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use Endroid\QrCode\Writer\Result\ResultInterface;
 use app\models\db\{Site, User};
 use app\models\http\{RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
 use OTPHP\TOTP;
 use yii\web\Session;
 
 class SecondFactorAuthentication
 {
-    private ?Site $site;
     private Session $session;
 
     private const TYPE_TOTP = 'totp';
 
     private const SESSION_KEY_2FA_SETUP_KEY = 'settingUp2FAKey';
-    private const SESSION_KEY_2FA_ONGOING = 'loggedInWithMissing2FA';
+    private const SESSION_KEY_2FA_ONGOING = 'loggedIn2FAInProgress';
+    private const SESSION_KEY_2FA_REGISTRATION_ONGOING = 'loggedInForced2FARegistrationInProgress';
     private const TIMEOUT_2FA_SESSION = 300;
 
-    public function __construct(?Site $site, Session $session) {
-        $this->site = $site;
+    public function __construct(Session $session) {
         $this->session = $session;
     }
 
@@ -55,34 +60,48 @@ class SecondFactorAuthentication
         return $totp->now() === $code || $totp->at($shortInThePast) === $code;
     }
 
-    public function attemptRegisteringSecondFactor(User $user, string $secondFactor): ?string
+    /**
+     * @param non-empty-string $secret
+     */
+    private function setOtpToUser(User $user, string $secret): void
     {
-        $data = $this->session->get(self::SESSION_KEY_2FA_SETUP_KEY);
-        if (!$data || $data['user'] !== $user->id) {
-            return 'No ongoing TOTP registration for the current user found';
-        }
-        if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
-            return str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, 'Please confirm the second factor within %seconds% seconds.');
-        }
-
-        $otp = TOTP::createFromSecret($data['secret']);
-        if (!$this->checkOtp($otp, $secondFactor)) {
-            return 'Incorrect code provided';
-        }
-
         $userSettings = $user->getSettingsObj();
         if (!$userSettings->secondFactorKeys) {
             $userSettings->secondFactorKeys = [];
         }
         $userSettings->secondFactorKeys[] = [
             'type' => self::TYPE_TOTP,
-            'secret' => $data['secret'],
+            'secret' => $secret,
         ];
         $user->setSettingsObj($userSettings);
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    public function attemptRegisteringSecondFactor(User $user, string $secondFactor): User
+    {
+        $data = $this->session->get(self::SESSION_KEY_2FA_SETUP_KEY);
+        if (!$data || $data['user'] !== $user->id) {
+            throw new \RuntimeException('No ongoing TOTP registration for the current user found');
+        }
+        if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
+            throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, 'Please confirm the second factor within %seconds% seconds.'));
+        }
+        if (!$secondFactor) {
+            throw new \RuntimeException('Empty code given');
+        }
+
+        $otp = TOTP::createFromSecret($data['secret']);
+        if (!$this->checkOtp($otp, $secondFactor)) {
+            throw new \RuntimeException('Incorrect code provided');
+        }
+
+        $this->setOtpToUser($user, $secondFactor);
 
         $this->session->remove(self::SESSION_KEY_2FA_SETUP_KEY);
 
-        return null;
+        return $user;
     }
 
     public function attemptRemovingSecondFactor(User $user, string $secondFactor): ?string
@@ -141,7 +160,11 @@ class SecondFactorAuthentication
 
     private function initForcedSecondFactorSetting(User $user): ResponseInterface
     {
-
+        $this->session->set(self::SESSION_KEY_2FA_REGISTRATION_ONGOING, [
+            'time' => time(),
+            'user_id' => $user->id,
+        ]);
+        return new RedirectResponse(UrlHelper::createUrl('/user/login2fa-force-registration'));
     }
 
     public function hasOngoingSession(): bool
@@ -179,5 +202,81 @@ class SecondFactorAuthentication
         }
 
         return null;
+    }
+
+    private function getForcedRegistrationUser(): User
+    {
+        $data = $this->session->get(self::SESSION_KEY_2FA_REGISTRATION_ONGOING);
+        if (!$data) {
+            throw new \RuntimeException('No login session ongoing');
+        }
+
+        $user = User::findOne(['id' => $data['user_id']]);
+        if (!$user) {
+            throw new \RuntimeException('Invalid login session ongoing');
+        }
+
+        return $user;
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    public function createForcedRegistrationSecondFactor(): TOTP
+    {
+        $user = $this->getForcedRegistrationUser();
+
+        return $this->createSecondFactorKey($user);
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    public function attemptForcedRegisteringSecondFactor(string $secondFactor): User
+    {
+        $user = $this->getForcedRegistrationUser();
+
+        $data = $this->session->get(self::SESSION_KEY_2FA_SETUP_KEY);
+        if (!$data || $data['user'] !== $user->id) {
+            throw new \RuntimeException('No ongoing TOTP registration for the current user found');
+        }
+        if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
+            throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, 'Please confirm the second factor within %seconds% seconds.'));
+        }
+        if (!$secondFactor) {
+            throw new \RuntimeException('Empty code given');
+        }
+
+        $otp = TOTP::createFromSecret($data['secret']);
+        if (!$this->checkOtp($otp, $secondFactor)) {
+            throw new \RuntimeException('Incorrect code provided');
+        }
+
+        $this->setOtpToUser($user, $secondFactor);
+
+        $this->session->remove(self::SESSION_KEY_2FA_SETUP_KEY);
+        $this->session->remove(self::SESSION_KEY_2FA_REGISTRATION_ONGOING);
+
+        return $user;
+    }
+
+    public static function createQrCode(TOTP $totp): ResultInterface
+    {
+        $url = $totp->getProvisioningUri();
+        return Builder::create()
+                         ->writer(new PngWriter())
+                         ->writerOptions([])
+                         ->data($url)
+                         ->encoding(new Encoding('UTF-8'))
+                         ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+                         ->size(300)
+                         ->margin(10)
+                         ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+                         ->logoPath(__DIR__.'/../web/favicons/apple-touch-icon.png')
+                         ->logoResizeToWidth(50)
+                         ->logoResizeToHeight(50)
+                         ->logoPunchoutBackground(true)
+                         ->validateResult(false)
+                         ->build();
     }
 }
