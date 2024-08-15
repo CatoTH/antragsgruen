@@ -167,6 +167,11 @@ class Hooks
         return $before;
     }
 
+    public function getConsultationWelcomeReplacer(?string $before): ?string
+    {
+        return $before;
+    }
+
     public function getConsultationMotionLineContent(string $before, Motion $motion): string
     {
         return $before;

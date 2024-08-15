@@ -9,6 +9,17 @@ use yii\helpers\Html;
  * @var \app\models\db\Consultation $consultation
  */
 
+$welcomeReplace = \app\models\layoutHooks\Layout::getConsultationWelcomeReplacer();
+if ($welcomeReplace !== null) {
+    echo '<div class="content contentPage contentPageWelcome">';
+    echo '<article class="textHolder" id="stdTextHolder">';
+    echo $welcomeReplace;
+    echo '</article>';
+    echo '</div>';
+    return;
+}
+
+
 $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
 
 $preWelcome = \app\models\layoutHooks\Layout::getConsultationPreWelcome();
