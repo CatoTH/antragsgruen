@@ -121,6 +121,7 @@ class Html2PdfConverter
             $replaces['%APP_TOP_LABEL%'] = '';
             $replaces['%APP_TOP%']       = '';
         }
+        $replaces['%TEMPLATE_PATH%'] = dirname($templatePath);
         if ($content->logoData && in_array($content->logoData[0], self::SUPPORTED_IMAGE_FORMATS)) {
             $fileExt = Image::getFileExtensionFromMimeType($content->logoData[0]);
             $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;
