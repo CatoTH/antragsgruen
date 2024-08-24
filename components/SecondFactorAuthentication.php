@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\models\layoutHooks\Layout;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 use app\models\db\{Site, User};
 use app\models\http\{RedirectResponse, ResponseInterface};
@@ -262,6 +263,11 @@ class SecondFactorAuthentication
 
     public static function createQrCode(TOTP $totp): ResultInterface
     {
+        $logo = Layout::squareLogoPath();
+        if (!$logo) {
+            $logo = __DIR__.'/../web/favicons/apple-touch-icon.png';
+        }
+
         $url = $totp->getProvisioningUri();
         return Builder::create()
                          ->writer(new PngWriter())
@@ -272,7 +278,7 @@ class SecondFactorAuthentication
                          ->size(300)
                          ->margin(10)
                          ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
-                         ->logoPath(__DIR__.'/../web/favicons/apple-touch-icon.png')
+                         ->logoPath($logo)
                          ->logoResizeToWidth(50)
                          ->logoResizeToHeight(50)
                          ->logoPunchoutBackground(true)

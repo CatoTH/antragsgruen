@@ -39,6 +39,11 @@ class Hooks
         return $before;
     }
 
+    public function squareLogoPath(?string $before): ?string
+    {
+        return $before;
+    }
+
     public function beforeContent(string $before): string
     {
         return $before;
