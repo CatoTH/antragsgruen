@@ -18,7 +18,7 @@ abstract class IPDFLayout
     {
         $params = AntragsgruenApp::getInstance();
 
-        return new PdfLayoutDescription(0, null, 'LDK Bayern', $params->resourceBase . 'img/pdf_preview_byldk.png', ByLDK::class);
+        return new PdfLayoutDescription(0, PdfLayoutDescription::RENDERER_PHP, null, 'LDK Bayern', $params->resourceBase . 'img/pdf_preview_byldk.png', ByLDK::class);
     }
 
     public static function getWeasyprintDefaultLayout(): PdfLayoutDescription
@@ -27,6 +27,7 @@ abstract class IPDFLayout
 
         return new PdfLayoutDescription(
             self::LAYOUT_WEASYPRINT_DEFAULT,
+            PdfLayoutDescription::RENDERER_WEASYPRINT,
             null,
             'Default',
             $params->resourceBase . 'img/pdf_preview_latex_bdk.png',
@@ -42,10 +43,10 @@ abstract class IPDFLayout
         $params = AntragsgruenApp::getInstance();
 
         $pdfClasses = [
-            new PdfLayoutDescription(-1, null, '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -', null, null),
+            new PdfLayoutDescription(-1, PdfLayoutDescription::RENDERER_NONE, null, '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -', null, null),
             self::getTcpdfDefaultLayout(),
-            new PdfLayoutDescription(1, null, 'BDK', $params->resourceBase . 'img/pdf_preview_bdk.png', BDK::class),
-            new PdfLayoutDescription(2, null, 'DBJR', $params->resourceBase . 'img/pdf_preview_dbjr.png', DBJR::class),
+            new PdfLayoutDescription(1, PdfLayoutDescription::RENDERER_PHP, null, 'BDK', $params->resourceBase . 'img/pdf_preview_bdk.png', BDK::class),
+            new PdfLayoutDescription(2, PdfLayoutDescription::RENDERER_PHP, null, 'DBJR', $params->resourceBase . 'img/pdf_preview_dbjr.png', DBJR::class),
         ];
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $pdfClasses = $plugin::getProvidedPdfLayouts($pdfClasses);
@@ -83,7 +84,7 @@ abstract class IPDFLayout
                 } else {
                     $preview = null;
                 }
-                $return[] = new PdfLayoutDescription(null, $layout->id,  $layout->title, $preview, null);
+                $return[] = new PdfLayoutDescription(null, PdfLayoutDescription::RENDERER_LATEX, $layout->id,  $layout->title, $preview, null);
             }
         }
 
@@ -97,9 +98,9 @@ abstract class IPDFLayout
         $weasyPrintActive = AntragsgruenApp::getInstance()->weasyprintPath !== null;
 
         foreach (self::getSelectablePdfLayouts() as $layout) {
-            $isWeasyprintDefault = ($layout->id === self::LAYOUT_WEASYPRINT_DEFAULT);
+            $isWeasyprint = $layout->isHtmlToPdfLayout();
             if ($weasyPrintActive) {
-                if ($isWeasyprintDefault && $motionType->texTemplateId !== null) {
+                if ($isWeasyprint && $motionType->texTemplateId !== null) {
                     return $layout;
                 }
             } else {

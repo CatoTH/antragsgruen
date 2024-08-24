@@ -108,7 +108,7 @@ trait MotionExportTraits
 
         if ($motion->getAlternativePdfSection()) {
             $pdfData = $motion->getAlternativePdfSection()->getData();
-        } elseif ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+        } elseif ($selectedPdfLayout->isHtmlToPdfLayout()) {
             $pdfData = LayoutHelper::createPdfFromHtml($motion);
         } elseif ($selectedPdfLayout->latexId !== null) {
             $pdfData = LayoutHelper::createPdfLatex($motion);
@@ -141,7 +141,7 @@ trait MotionExportTraits
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
-        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+        if ($selectedPdfLayout->isHtmlToPdfLayout()) {
             $pdfData = $this->renderPartial('pdf_amend_collection_html2pdf', [
                 'motion' => $motion, 'amendments' => $amendments
             ]);
@@ -224,7 +224,7 @@ trait MotionExportTraits
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
-        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+        if ($selectedPdfLayout->isHtmlToPdfLayout()) {
             $pdfData = $this->renderPartial('pdf_full_html2pdf', ['imotions' => $imotions]);
         } elseif ($selectedPdfLayout->latexId !== null) {
             $pdfData = $this->renderPartial('pdf_full_tex', ['imotions' => $imotions, 'texTemplate' => $texTemplate]);
@@ -273,7 +273,7 @@ trait MotionExportTraits
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
-        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+        if ($selectedPdfLayout->isHtmlToPdfLayout()) {
             $pdfData = $this->renderPartial('pdf_collection_html2pdf', ['imotions' => $imotions]);
         } elseif ($selectedPdfLayout->latexId !== null) {
             $pdfData = $this->renderPartial('pdf_collection_tex', ['imotions' => $imotions, 'texTemplate' => $texTemplate]);

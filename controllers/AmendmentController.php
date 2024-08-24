@@ -48,7 +48,7 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
 
-        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+        if ($selectedPdfLayout->isHtmlToPdfLayout()) {
             $pdf = LayoutHelper::createPdfFromHtml($amendment);
         } elseif ($selectedPdfLayout->latexId !== null) {
             $pdf = LayoutHelper::createPdfLatex($amendment);
@@ -93,7 +93,7 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
         }
 
-        if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+        if ($selectedPdfLayout->isHtmlToPdfLayout()) {
             $pdf = $this->renderPartial('pdf_collection_html2pdf', ['amendments' => $toShowAmendments]);
         } elseif ($selectedPdfLayout->latexId !== null) {
             $pdf = $this->renderPartial('pdf_collection_tex', [

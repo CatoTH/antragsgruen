@@ -84,7 +84,7 @@ class AmendmentController extends AdminBase
             }
             foreach ($amendmentGroup['amendments'] as $amendment) {
                 $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
-                if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+                if ($selectedPdfLayout->isHtmlToPdfLayout()) {
                     $file = AmendmentLayoutHelper::createPdfFromHtml($amendment);
                 } elseif ($selectedPdfLayout->latexId !== null) {
                     $file = AmendmentLayoutHelper::createPdfLatex($amendment);
