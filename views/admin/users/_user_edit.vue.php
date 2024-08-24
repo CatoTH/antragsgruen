@@ -30,22 +30,19 @@ ob_start();
                         </div>
                     </div>
                 </div>
-                <div class="stdTwoCols">
+                <div class="stdTwoCols 2faRow">
                     <div class="leftColumn">
-                        2-Faktoren-Anmeldung
+                        <?= Yii::t('admin', 'siteacc_usermodal_2fa') ?>
                     </div>
                     <div class="rightColumn">
                         <span v-if="user.has_2fa">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Eingerichtet
-                            <label v-if="canModifyAuth">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <?= Yii::t('admin', 'siteacc_usermodal_2fa_set') ?>
+                            <label v-if="canModifyAuth" class="remove2FaHolder">
                                 <input type="checkbox" v-model="remove2Fa" value="1">
-                                2-Faktoren-Anmeldung deaktivieren
+                                <?= Yii::t('admin', 'siteacc_usermodal_2fa_del') ?>
                             </label>
                         </span>
-                        <span v-if="!user.has_2fa">Nicht eingerichtet</span>
-                    </div>
-                    <div class="rightColumn" v-if="!canModifyAuth">
-
+                        <span v-if="!user.has_2fa"><?= Yii::t('admin', 'siteacc_usermodal_2fa_nset') ?></span>
                     </div>
                 </div>
                 <div class="stdTwoCols" v-if="permissionGlobalEdit">

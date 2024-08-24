@@ -51,12 +51,14 @@ echo Html::beginForm();
                 <img src="<?= $result->getDataUri() ?>" alt="<?= Yii::t('user', '2fa_img_alt') ?>">
             </div>
             <h3><?= Yii::t('user', '2fa_add_step2') ?></h3>
-            <label>
+            <label class="setFaField">
                 <?= Yii::t('user', '2fa_enter_code') ?>:
                 <input type="text" name="set2fa" class="form-control">
             </label>
         </div>
-        <button type="submit" class="btn btn-success"><?= Yii::t('user', 'login_btn_login') ?></button>
+        <div class="saveRow">
+            <button type="submit" class="btn btn-success"><?= Yii::t('user', 'login_btn_login') ?></button>
+        </div>
     </div>
 
 

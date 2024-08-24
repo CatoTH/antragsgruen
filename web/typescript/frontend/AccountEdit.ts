@@ -37,8 +37,8 @@ class AccountEdit {
         });
 
         $('.btn2FaAdderOpen').on('click', () => {
-            $('.secondFactorAdderOpener').addClass('hidden');
-            $('.secondFactorAdderBody').removeClass('hidden');
+            document.querySelector('.secondFactorAdderOpener').classList.add('hidden');
+            document.querySelector('.secondFactorAdderBody').classList.remove('hidden');
         });
     }
 }

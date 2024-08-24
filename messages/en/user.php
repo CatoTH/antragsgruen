@@ -44,6 +44,12 @@ return [
     'err_unknown_ww_repeat'     => 'An unknown error occurred.',
     'err_no_recovery'           => 'No recovery request was sent within the last 24 hours.',
     'err_change_toolong'        => 'The request is too old; please request another change request and confirm the e-mail within 24 hours',
+    'err_2fa_nosession_user'    => 'No ongoing TOTP registration for the current user found',
+    'err_2fa_nosession'         => 'No login session ongoing',
+    'err_2fa_timeout'           => 'Please confirm the second factor within %seconds% seconds.',
+    'err_2fa_empty'             => 'Empty code given',
+    'err_2fa_incorrect'         => 'Incorrect code provided',
+    'err_2fa_nocode'            => 'No second factor registered',
     'recover_mail_title'        => 'Antragsgrün: Password recovery',
     'recover_mail_body'         => "Hi!\n\nYou requested a password recovery. " .
         "To proceed, please open the following page and enter the new password:\n\n%URL%\n\n" .

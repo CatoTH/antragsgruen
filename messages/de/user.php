@@ -48,6 +48,12 @@ return [
     'err_no_recovery'           => 'Es wurde kein Wiederherstellungs-Antrag innerhalb der letzten 24 Stunden gestellt.',
     'err_change_toolong'        => 'Die Änderungsanfrage ist schon zu lange her; ' .
         'bitte fordere eine neue Änderung an und rufe den Link innerhalb von 24 Stunden auf',
+    'err_2fa_nosession_user'    => 'Keine aktiver Zwei-Faktoren-Anmeldungs-Vorgang für diese Benutzer*in gefunden',
+    'err_2fa_nosession'         => 'Kein aktiver Anmeldungsvorgang',
+    'err_2fa_timeout'           => 'Bitte bestätige die Anmeldung innerhalb von %seconds% Sekunden.',
+    'err_2fa_empty'             => 'Kein Code eingegeben',
+    'err_2fa_incorrect'         => 'Ungültiger Code eingegeben',
+    'err_2fa_nocode'            => 'Keine Zwei-Faktoren-Anmeldung eingerichtet',
     'recover_mail_title'        => 'Antragsgrün: Passwort-Wiederherstellung',
     'recover_mail_body'         => "Hallo!\n\nDu hast eine Passwort-Wiederherstellung angefordert. " .
         "Um diese durchzuführen, rufe bitte folgenden Link auf und gib dort das neue Passwort ein:\n\n%URL%\n\n" .

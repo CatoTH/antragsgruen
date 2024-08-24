@@ -84,18 +84,19 @@ class SecondFactorAuthentication
     {
         $data = $this->session->get(self::SESSION_KEY_2FA_SETUP_KEY);
         if (!$data || $data['user'] !== $user->id) {
-            throw new \RuntimeException('No ongoing TOTP registration for the current user found');
+            throw new \RuntimeException(\Yii::t('user', 'err_2fa_nosession_user'));
         }
         if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
-            throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, 'Please confirm the second factor within %seconds% seconds.'));
+            $msg = \Yii::t('user', 'err_2fa_timeout');
+            throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, $msg));
         }
         if (!$secondFactor) {
-            throw new \RuntimeException('Empty code given');
+            throw new \RuntimeException(\Yii::t('user', 'err_2fa_empty'));
         }
 
         $otp = TOTP::createFromSecret($data['secret']);
         if (!$this->checkOtp($otp, $secondFactor)) {
-            throw new \RuntimeException('Incorrect code provided');
+            throw new \RuntimeException(\Yii::t('user', 'err_2fa_incorrect'));
         }
 
         $this->setOtpToUser($user, $data['secret']);
@@ -109,7 +110,7 @@ class SecondFactorAuthentication
     {
         $userSettings = $user->getSettingsObj();
         if ($userSettings->secondFactorKeys === null || count($userSettings->secondFactorKeys) === 0) {
-            return 'No second factor registered';
+            return \Yii::t('user', 'err_2fa_nocode');
         }
 
         foreach ($userSettings->secondFactorKeys as $index => $key) {
@@ -209,7 +210,7 @@ class SecondFactorAuthentication
     {
         $data = $this->session->get(self::SESSION_KEY_2FA_REGISTRATION_ONGOING);
         if (!$data) {
-            throw new \RuntimeException('No login session ongoing');
+            throw new \RuntimeException(\Yii::t('user', 'err_2fa_nosession'));
         }
 
         $user = User::findOne(['id' => $data['user_id']]);
@@ -239,18 +240,19 @@ class SecondFactorAuthentication
 
         $data = $this->session->get(self::SESSION_KEY_2FA_SETUP_KEY);
         if (!$data || $data['user'] !== $user->id) {
-            throw new \RuntimeException('No ongoing TOTP registration for the current user found');
+            throw new \RuntimeException(\Yii::t('user', 'err_2fa_nosession_user'));
         }
         if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
-            throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, 'Please confirm the second factor within %seconds% seconds.'));
+            $msg = \Yii::t('user', 'err_2fa_timeout');
+            throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, $msg));
         }
         if (!$secondFactor) {
-            throw new \RuntimeException('Empty code given');
+            throw new \RuntimeException(\Yii::t('user', 'err_2fa_empty'));
         }
 
         $otp = TOTP::createFromSecret($data['secret']);
         if (!$this->checkOtp($otp, $secondFactor)) {
-            throw new \RuntimeException('Incorrect code provided');
+            throw new \RuntimeException(\Yii::t('user', 'err_2fa_incorrect'));
         }
 
         $this->setOtpToUser($user, $data['secret']);
