@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.15.0 [not released yet]
+
+- When going to the Terms and Conditions and/or the Privacy page and back, you will end up in the same consultation than before now.
+
 ## Version 4.14.1 [not released yet]
 
 - If a filter is set in the motion list, this will also filter the motions to be exported in the export row above (PDFs, ODTs, ODS etc.).

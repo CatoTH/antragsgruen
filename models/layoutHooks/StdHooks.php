@@ -404,8 +404,13 @@ class StdHooks extends Hooks
         $out = '<footer class="footer" aria-label="' . \Yii::t('base', 'aria_footer') . '">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
-            $legalLink   = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'legal']);
-            $privacyLink = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'privacy']);
+            if ($this->consultation) {
+                $legalLink   = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'legal', 'consultationPath' => $this->consultation->urlPath]);
+                $privacyLink = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'privacy', 'consultationPath' => $this->consultation->urlPath]);
+            } else {
+                $legalLink   = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'legal']);
+                $privacyLink = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'privacy']);
+            }
 
             $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
                     \Yii::t('base', 'imprint') . '</a>
