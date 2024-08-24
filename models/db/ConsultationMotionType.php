@@ -224,7 +224,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     public function getPDFLayoutClass(): ?IPDFLayout
     {
         $layout = IPDFLayout::getClassById($this->pdfLayout);
-        if ($layout === null || $layout->className === null) {
+        if ($layout === null || $layout->className === null || !is_subclass_of($layout->className, IPDFLayout::class)) {
             return null;
         }
         return new $layout->className($this);

@@ -17,11 +17,11 @@ class PdfLayoutDescription
     public string $title;
     public ?string $preview;
 
-    /** @var class-string<IPDFLayout>|null */
+    /** @var class-string<IPDFLayout|IHtmlToPdfLayout>|null */
     public ?string $className;
 
     /**
-     * @param class-string<IPDFLayout>|null $className
+     * @param class-string<IPDFLayout|IHtmlToPdfLayout>|null $className
      */
     public function __construct(?int $id, int $renderer, ?int $latexId, string $title, ?string $preview, ?string $className)
     {
@@ -35,12 +35,14 @@ class PdfLayoutDescription
 
     public function isHtmlToPdfLayout(): bool
     {
-        return $this->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT;
+        return $this->renderer === self::RENDERER_WEASYPRINT;
     }
 
     public function getHtmlId(): string
     {
-        if ($this->id !== null) {
+        if ($this->isHtmlToPdfLayout()) {
+            return 'html2pdf' . $this->id;
+        } elseif ($this->id !== null) {
             return 'php' . $this->id;
         } else {
             return 'latex' . $this->latexId;
