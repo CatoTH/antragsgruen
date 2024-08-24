@@ -22,11 +22,17 @@ $layout->addBreadcrumb(Yii::t('user', 'login_title'));
 $layout->robotsNoindex = true;
 $layout->addAMDModule('frontend/LoginForm');
 
+$layout->addOnLoadJS('document.getElementById("2facode").focus()');
+
 echo '<h1>Login</h1>';
 echo Html::beginForm();
 ?>
 
 <div class="content">
+
+    <div class="alert alert-info">
+        <p>Du hast deinen Account mit Zwei-Faktor-Anmeldung abgesichert. Bitte öffne die App, die du bei der Einrichtung verwendet hast, und gib den dort angezeigten Code hier ein:</p>
+    </div>
 
     <?php
     if ($error) {
@@ -34,8 +40,11 @@ echo Html::beginForm();
     }
     ?>
 
-    Code:
-    <input type="text" name="2fa">
+    <div class="form-group">
+        <label for="2facode"><?= Yii::t('user', '2fa_enter_code') ?>:</label>
+        <input type="text" name="2fa" class="form-control" id="2facode">
+    </div>
+
     <button type="submit" class="btn btn-success">Login</button>
 </div>
 

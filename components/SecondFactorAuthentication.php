@@ -97,7 +97,7 @@ class SecondFactorAuthentication
             throw new \RuntimeException('Incorrect code provided');
         }
 
-        $this->setOtpToUser($user, $secondFactor);
+        $this->setOtpToUser($user, $data['secret']);
 
         $this->session->remove(self::SESSION_KEY_2FA_SETUP_KEY);
 
@@ -252,7 +252,7 @@ class SecondFactorAuthentication
             throw new \RuntimeException('Incorrect code provided');
         }
 
-        $this->setOtpToUser($user, $secondFactor);
+        $this->setOtpToUser($user, $data['secret']);
 
         $this->session->remove(self::SESSION_KEY_2FA_SETUP_KEY);
         $this->session->remove(self::SESSION_KEY_2FA_REGISTRATION_ONGOING);
