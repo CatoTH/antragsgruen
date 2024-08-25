@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\models\layoutHooks\Layout;
-use Endroid\QrCode\Writer\Result\ResultInterface;
 use app\models\db\User;
 use app\models\http\{RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
@@ -14,6 +13,7 @@ use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\Result\ResultInterface;
 use OTPHP\TOTP;
 use yii\web\Session;
 
@@ -41,7 +41,13 @@ class SecondFactorAuthentication
 
     public function createSecondFactorKey(User $user): TOTP
     {
-        $otp = TOTP::generate();
+        if (YII_ENV === 'test') {
+            /** @var non-empty-string $secret */
+            $secret = trim((string) file_get_contents(__DIR__ . '/../tests/config/2fa.secret'));
+            $otp = TOTP::createFromSecret($secret);
+        } else {
+            $otp = TOTP::generate();
+        }
         $otp->setLabel(AntragsgruenApp::getInstance()->mailFromName ?: 'Antragsgrün');
 
         $this->session->set(self::SESSION_KEY_2FA_SETUP_KEY, [

@@ -31,6 +31,7 @@ return [
     '2fa_register_title'        => 'Zwei-Faktoren-Anmeldung einrichten',
     '2fa_register_explanation'  => 'Es ist notwendig, deinen Zugang mit einem zweiten Faktor abzusichern, um ihn zu benutzen.',
     '2fa_general_explanation'   => 'Benutze dafür Apps wie beispielsweise <a href="https://authy.com/download/">Authy</a>, <a href="https://freeotp.github.io">FreeOTP</a> (OpenSource), <a href="https://www.microsoft.com/de-de/security/mobile-authenticator-app">Microsoft Authenticator</a> oder Google Authenticator.<br><br>Scanne den unten angezeigten Code, speichere den Zugang auf deinem Mobiltelefon, und gib hier auf der Seite anschließend den angezeigten Code ein.',
+    '2fa_login_intro'           => 'Du hast deinen Account mit Zwei-Faktor-Anmeldung abgesichert. Bitte öffne die App, die du bei der Einrichtung verwendet hast, und gib den dort angezeigten Code hier ein:',
     'username_deleted'          => 'Abgemeldet',
     'err_pwd_different'         => 'Die beiden Passwörter stimmen nicht überein.',
     'err_pwd_length'            => 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.',

@@ -64,7 +64,7 @@ if ($externalAuthenticator === null) {
             <input type="password" name="pwd2" value="" class="form-control" id="userPwd2">
         </div>
     </div>
-    <div class="stdTwoCols 2faRow">
+    <div class="stdTwoCols tfaRow">
         <div class="leftColumn">
             <?= Yii::t('user', '2fa_title') ?>
         </div>
@@ -72,7 +72,7 @@ if ($externalAuthenticator === null) {
             <?php
             if ($canRemoveSecondFactor) {
                 ?>
-                <div class="2faActive">
+                <div class="tfaActive">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                     <?= Yii::t('user', '2fa_activated') ?>
                 </div>
@@ -92,7 +92,7 @@ if ($externalAuthenticator === null) {
                 $result = \app\components\SecondFactorAuthentication::createQrCode($addSecondFactorKey);
                 ?>
                 <div class="secondFactorAdderOpener">
-                    <span class="2faNotActive"><?= Yii::t('user', '2fa_off') ?></span>
+                    <span class="tfaNotActive"><?= Yii::t('user', '2fa_off') ?></span>
                     <button type="button" class="btn btn-link btn2FaAdderOpen">
                         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         <?= Yii::t('user', '2fa_activate_opener') ?>
@@ -108,7 +108,7 @@ if ($externalAuthenticator === null) {
 
                     <div>
                         <h3><?= Yii::t('user', '2fa_add_step1') ?></h3>
-                        <img src="<?= $result->getDataUri() ?>" alt="<?= Yii::t('user', '2fa_img_alt') ?>">
+                        <img src="<?= $result->getDataUri() ?>" alt="<?= Yii::t('user', '2fa_img_alt') ?>" class="tfaqr">
                     </div>
                     <h3><?= Yii::t('user', '2fa_add_step2') ?></h3>
                     <label>

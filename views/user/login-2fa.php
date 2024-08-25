@@ -25,18 +25,18 @@ $layout->addAMDModule('frontend/LoginForm');
 $layout->addOnLoadJS('document.getElementById("2facode").focus()');
 
 echo '<h1>Login</h1>';
-echo Html::beginForm();
+echo Html::beginForm('', 'post', ['class' => 'tfaForm']);
 ?>
 
 <div class="content">
 
-    <div class="alert alert-info">
-        <p>Du hast deinen Account mit Zwei-Faktor-Anmeldung abgesichert. Bitte öffne die App, die du bei der Einrichtung verwendet hast, und gib den dort angezeigten Code hier ein:</p>
+    <div class="alert alert-info tfaIntro">
+        <p><?= Yii::t('user', '2fa_login_intro') ?></p>
     </div>
 
     <?php
     if ($error) {
-        echo '<div class="alert alert-danger"><p>' . $error . '</p></div>';
+        echo '<div class="alert alert-danger tfaError"><p>' . $error . '</p></div>';
     }
     ?>
 
@@ -45,7 +45,7 @@ echo Html::beginForm();
         <input type="text" name="2fa" class="form-control" id="2facode">
     </div>
 
-    <button type="submit" class="btn btn-success">Login</button>
+    <button type="submit" class="btn btn-success"><?= Yii::t('user', 'login_btn_login') ?></button>
 </div>
 
 
