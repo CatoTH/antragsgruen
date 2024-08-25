@@ -1,6 +1,5 @@
 # Version history
 
-<<<<<<< HEAD
 ## Version 4.15.0 [not released yet]
 
 - User accounts can now be protected using Two-Factor-Authentication through TOTP. For dedicated installations, this can be enforced.
