@@ -97,6 +97,16 @@
     color: $colorLinks;
     font-style: italic;
   }
+  .btn2FaRemoveOpen {
+    padding: 0;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 0.8em;
+    margin-left: 16px;
+  }
+  .secondFactorRemoveBody {
+    margin-top: 10px;
+  }
 }
 
 .notificationForm {

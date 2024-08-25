@@ -64,7 +64,7 @@ if ($externalAuthenticator === null) {
             <input type="password" name="pwd2" value="" class="form-control" id="userPwd2">
         </div>
     </div>
-    <div class="stdTwoCols">
+    <div class="stdTwoCols 2faRow">
         <div class="leftColumn">
             <?= Yii::t('user', '2fa_title') ?>
         </div>
@@ -72,9 +72,18 @@ if ($externalAuthenticator === null) {
             <?php
             if ($canRemoveSecondFactor) {
                 ?>
-                <div class="secondFactorRemovedBody">
+                <div class="2faActive">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    <?= Yii::t('user', '2fa_activated') ?>
+                </div>
+                <div class="secondFactorRemoveOpener">
+                    <button type="button" class="btn btn-link btn2FaRemoveOpen">
+                        <?= Yii::t('user', '2fa_remove_open') ?>
+                    </button>
+                </div>
+                <div class="secondFactorRemoveBody hidden">
                     <label>
-                        Code eingeben um zweiten Faktor zu entfernen:
+                        <?= Yii::t('user', '2fa_remove_code') ?>:
                         <input type="text" name="remove2fa" class="form-control">
                     </label>
                 </div>
@@ -83,7 +92,7 @@ if ($externalAuthenticator === null) {
                 $result = \app\components\SecondFactorAuthentication::createQrCode($addSecondFactorKey);
                 ?>
                 <div class="secondFactorAdderOpener">
-                    <span class=""><?= Yii::t('user', '2fa_off') ?></span>
+                    <span class="2faNotActive"><?= Yii::t('user', '2fa_off') ?></span>
                     <button type="button" class="btn btn-link btn2FaAdderOpen">
                         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         <?= Yii::t('user', '2fa_activate_opener') ?>

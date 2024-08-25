@@ -6,7 +6,7 @@ namespace app\components;
 
 use app\models\layoutHooks\Layout;
 use Endroid\QrCode\Writer\Result\ResultInterface;
-use app\models\db\{Site, User};
+use app\models\db\User;
 use app\models\http\{RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
 use Endroid\QrCode\Builder\Builder;
@@ -125,7 +125,7 @@ class SecondFactorAuthentication
             }
         }
 
-        return 'Invalid code entered';
+        return \Yii::t('user', 'err_2fa_incorrect');
     }
 
     public function onUsernamePwdLoginSuccess(User $user): ?ResponseInterface

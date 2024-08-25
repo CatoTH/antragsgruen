@@ -21,6 +21,8 @@ return [
     '2fa_off'                   => 'Not active',
     '2fa_activate_opener'       => 'Activate',
     '2fa_activated'             => 'Set up',
+    '2fa_remove_open'           => 'Deactivate Two-Factor-Authentication',
+    '2fa_remove_code'           => 'Enter current code to deactiva',
     '2fa_add_explanation'       => 'You can secure your account by adding a second factor on top of your password.',
     '2fa_add_step1'             => '1. Scan the QR-Code with the app',
     '2fa_add_step2'             => '2. Enter the generated code',

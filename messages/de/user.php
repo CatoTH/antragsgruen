@@ -21,6 +21,8 @@ return [
     '2fa_off'                   => 'Nicht aktiv',
     '2fa_activate_opener'       => 'Aktivieren',
     '2fa_activated'             => 'Eingerichtet',
+    '2fa_remove_open'           => 'Zwei-Faktor-Anmeldung deaktivieren',
+    '2fa_remove_code'           => 'Aktuellen Code eingeben um zweiten Faktor zu entfernen',
     '2fa_add_explanation'       => 'Hiermit kannst du deinen Zugang zusätzlich zum Passwort noch mit einem zweiten Faktor absichern.',
     '2fa_add_step1'             => '1. QR-Code mit App scannen',
     '2fa_add_step2'             => '2. Erzeugten Code eingeben',
