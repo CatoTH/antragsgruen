@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.14.1 [not released yet]
+### Version 4.14.1 (2024-08-25)
 
 - If a filter is set in the motion list, this will also filter the motions to be exported in the export row above (PDFs, ODTs, ODS etc.).
 - Setting a modified proposed procedure is now more streamlined, as changing the proposed status to "Accepted (modified)" now directly brings one to entering the modified text, and saving it will lead back to the motion / amendment.
