@@ -2,6 +2,7 @@
 
 ## Version 4.15.0 [not released yet]
 
+- User accounts can now be protected using Two-Factor-Authentication through TOTP. For dedicated installations, this can be enforced.
 - When going to the Terms and Conditions and/or the Privacy page and back, you will end up in the same consultation than before now.
 
 ## Version 4.14.1 [not released yet]

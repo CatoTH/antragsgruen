@@ -30,6 +30,21 @@ ob_start();
                         </div>
                     </div>
                 </div>
+                <div class="stdTwoCols 2faRow">
+                    <div class="leftColumn">
+                        <?= Yii::t('admin', 'siteacc_usermodal_2fa') ?>
+                    </div>
+                    <div class="rightColumn">
+                        <span v-if="user.has_2fa">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <?= Yii::t('admin', 'siteacc_usermodal_2fa_set') ?>
+                            <label v-if="canModifyAuth" class="remove2FaHolder">
+                                <input type="checkbox" v-model="remove2Fa" value="1">
+                                <?= Yii::t('admin', 'siteacc_usermodal_2fa_del') ?>
+                            </label>
+                        </span>
+                        <span v-if="!user.has_2fa"><?= Yii::t('admin', 'siteacc_usermodal_2fa_nset') ?></span>
+                    </div>
+                </div>
                 <div class="stdTwoCols" v-if="permissionGlobalEdit">
                     <div class="leftColumn">
                         <?= Yii::t('admin', 'siteacc_usermodal_pass' ) ?>
@@ -157,6 +172,7 @@ $html = ob_get_clean();
                 userGroups: null,
                 settingPassword: false,
                 settingAuth: false,
+                remove2Fa: false,
                 newPassword: '',
                 newAuth: '',
             }
@@ -201,6 +217,7 @@ $html = ob_get_clean();
                 this.settingPassword = false;
                 this.settingAuth = false;
                 this.newPassword = '';
+                this.remove2Fa = false;
                 this.newAuth = '';
 
                 $(this.$refs['user-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
@@ -208,7 +225,7 @@ $html = ob_get_clean();
             save: function ($event) {
                 const password = (this.settingPassword ? this.newPassword : null);
                 const auth = (this.settingAuth ? this.newAuth : null);
-                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth);
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth, this.remove2Fa);
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {

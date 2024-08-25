@@ -25,6 +25,7 @@ class AntragsgruenApp implements \JsonSerializable
     public bool $allowRegistration = true;
     public bool $allowAccountDeletion = true;
     public bool $confirmEmailAddresses = true;
+    public bool $enforceTwoFactorAuthentication = false;
     public bool $dataPrivacyCheckbox = false;
     public string $mailFromName = 'Antragsgrün';
     public string $mailFromEmail = '';

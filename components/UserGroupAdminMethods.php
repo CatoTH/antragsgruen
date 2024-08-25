@@ -138,7 +138,7 @@ class UserGroupAdminMethods
         AdminTodoItem::flushUserTodoCount($this->consultation, $userId);
     }
 
-    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail): void
+    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa): void
     {
         $user = User::findOne(['id' => $userId]);
 
@@ -166,6 +166,12 @@ class UserGroupAdminMethods
 
             $user->auth = $newAuth;
             $user->email = $newEmail;
+        }
+
+        if ($remove2Fa) {
+            $settings = $user->getSettingsObj();
+            $settings->secondFactorKeys = [];
+            $user->setSettingsObj($settings);
         }
 
         $user->save();

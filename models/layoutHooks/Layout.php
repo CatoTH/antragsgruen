@@ -66,6 +66,11 @@ class Layout
         return self::callHook('logoRow');
     }
 
+    public static function squareLogoPath(): ?string
+    {
+        return self::callHook('squareLogoPath', [], null);
+    }
+
     public static function beforeContent(): string
     {
         return self::callHook('beforeContent');

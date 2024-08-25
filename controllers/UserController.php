@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
-use app\components\{Captcha, ConsultationAccessPassword, JwtCreator, RequestContext, Tools, UrlHelper};
+use app\components\{Captcha, ConsultationAccessPassword, JwtCreator, RequestContext, SecondFactorAuthentication, Tools, UrlHelper};
 use app\models\db\{AmendmentSupporter, EMailBlocklist, FailedLoginAttempt, MotionSupporter, User, UserConsultationScreening, UserNotification};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
@@ -18,6 +18,17 @@ class UserController extends Base
 
     // Login and Mainainance mode is always allowed
     public ?bool $allowNotLoggedIn = true;
+
+    private SecondFactorAuthentication $secondFactorAuthentication;
+
+    public function beforeAction($action): bool
+    {
+        $result = parent::beforeAction($action);
+
+        $this->secondFactorAuthentication = new SecondFactorAuthentication(RequestContext::getSession());
+
+        return $result;
+    }
 
     protected function loginUser(User $user): void
     {
@@ -55,6 +66,9 @@ class UserController extends Base
             $usernamePasswordForm->setAttributes($this->getHttpRequest()->post());
             try {
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
+                if ($return = $this->secondFactorAuthentication->onUsernamePwdLoginSuccess($user)) {
+                    return $return;
+                }
                 $this->loginUser($user);
 
                 $unconfirmed = ($user->status === User::STATUS_UNCONFIRMED);
@@ -103,6 +117,60 @@ class UserController extends Base
                 'conPwdErr'            => $conPwdErr,
             ]
         ));
+    }
+
+    public function actionLogin2fa(string $backUrl = ''): ResponseInterface
+    {
+        if (!$this->secondFactorAuthentication->hasOngoingSession()) {
+            $this->getHttpSession()->setFlash('error', 'Die Zeit für die Eingabe des Codes ist abgelaufen');
+
+            return new RedirectResponse(UrlHelper::createUrl('/user/login'));
+        }
+
+        if ($backUrl === '') {
+            $backUrl = '/';
+        }
+
+        $error = null;
+        if ($this->isPostSet('2fa') && trim($this->getPostValue('2fa'))) {
+            $successUser = $this->secondFactorAuthentication->confirmLoginWithSecondFactor($this->getPostValue('2fa'));
+            if ($successUser) {
+                $this->loginUser($successUser);
+                $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
+
+                return new RedirectResponse($backUrl);
+            } else {
+                $error = 'Ungültiger Code.';
+            }
+        }
+        // @TODO CAPTCHA
+
+        return new HtmlResponse($this->render('login-2fa', ['error' => $error]));
+    }
+
+    public function actionLogin2faForceRegistration(string $backUrl = ''): ResponseInterface
+    {
+        if ($backUrl === '') {
+            $backUrl = '/';
+        }
+
+        $error = null;
+        if ($this->isPostSet('set2fa') && trim($this->getPostValue('set2fa'))) {
+            try {
+                $successUser = $this->secondFactorAuthentication->attemptForcedRegisteringSecondFactor(trim($this->getPostValue('set2fa')));
+                $this->loginUser($successUser);
+                $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
+
+                return new RedirectResponse($backUrl);
+            } catch (\RuntimeException $e) {
+                $error = $e->getMessage();
+            }
+        }
+        // @TODO CAPTCHA
+
+        $addSecondFactorKey = $this->secondFactorAuthentication->createForcedRegistrationSecondFactor();
+
+        return new HtmlResponse($this->render('login-2fa-force-registration', ['error' => $error, 'addSecondFactorKey' => $addSecondFactorKey]));
     }
 
     public function actionToken(): JsonResponse
@@ -296,6 +364,21 @@ class UserController extends Base
                 }
             }
 
+            if (isset($post['set2fa']) && trim($post['set2fa'])) {
+                try {
+                    $this->secondFactorAuthentication->attemptRegisteringSecondFactor($user, $post['set2fa']);
+                } catch (\RuntimeException $e) {
+                    $this->getHttpSession()->setFlash('error', $e->getMessage());
+                }
+            }
+
+            if (isset($post['remove2fa']) && trim($post['remove2fa'])) {
+                $error = $this->secondFactorAuthentication->attemptRemovingSecondFactor($user, $post['remove2fa']);
+                if ($error) {
+                    $this->getHttpSession()->setFlash('error', $error);
+                }
+            }
+
             $user->save();
 
             if ($user->email && $user->emailConfirmed) {
@@ -343,10 +426,23 @@ class UserController extends Base
             $emailBlocked = false;
         }
 
+        if ($this->secondFactorAuthentication->userHasSecondFactorSetUp($user)) {
+            $hasSecondFactor = true;
+            $canRemoveSecondFactor = !$this->secondFactorAuthentication->isForcedToSetupSecondFactor($user);
+            $addSecondFactorKey = null;
+        } else {
+            $hasSecondFactor = false;
+            $canRemoveSecondFactor = false;
+            $addSecondFactorKey = $this->secondFactorAuthentication->createSecondFactorKey($user);
+        }
+
         return new HtmlResponse($this->render('my_account', [
             'user' => $user,
             'emailBlocked' => $emailBlocked,
             'pwMinLen' => $pwMinLen,
+            'hasSecondFactor' => $hasSecondFactor,
+            'canRemoveSecondFactor' => $canRemoveSecondFactor,
+            'addSecondFactorKey' => $addSecondFactorKey,
         ]));
     }
 
