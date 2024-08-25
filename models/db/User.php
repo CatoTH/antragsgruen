@@ -846,7 +846,7 @@ class User extends ActiveRecord implements IdentityInterface
         $data['selectable_groups'] = $this->getSelectableUserGroups($consultation);
         $data['vote_weight'] = $settings->getVoteWeight($consultation);
         $data['has_2fa'] = $settings->secondFactorKeys !== null && count($settings->secondFactorKeys) > 0;
-        $data['2fa_enforced'] = $settings->enforceTwoFactorAuthentication;
+        $data['force_2fa'] = $settings->enforceTwoFactorAuthentication;
 
         $groups = array_values(array_filter($this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
             return $group->isSpecificallyRelevantForConsultationOrSite($consultation);

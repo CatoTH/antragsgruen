@@ -138,7 +138,7 @@ class UserGroupAdminMethods
         AdminTodoItem::flushUserTodoCount($this->consultation, $userId);
     }
 
-    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa): void
+    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa, bool $force2Fa): void
     {
         $user = User::findOne(['id' => $userId]);
 
@@ -168,11 +168,12 @@ class UserGroupAdminMethods
             $user->email = $newEmail;
         }
 
+        $settings = $user->getSettingsObj();
         if ($remove2Fa) {
-            $settings = $user->getSettingsObj();
             $settings->secondFactorKeys = [];
-            $user->setSettingsObj($settings);
         }
+        $settings->enforceTwoFactorAuthentication = $force2Fa;
+        $user->setSettingsObj($settings);
 
         $user->save();
 
