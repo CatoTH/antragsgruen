@@ -249,7 +249,8 @@ class UsersController extends AdminBase
                             $this->getPostValue('ppReplyTo', ''),
                             $this->getPostValue('newPassword'),
                             $this->getPostValue('newAuth'),
-                            $this->getPostValue('remove2Fa')
+                            $this->getPostValue('remove2Fa'),
+                            $this->getPostValue('force2Fa')
                         );
                     }
                     if ($this->getPostValue('voteWeight') !== null) {
