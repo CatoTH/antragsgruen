@@ -26,7 +26,8 @@ use yii\web\IdentityInterface;
  * @property string|null $dateLastLogin
  * @property int $status
  * @property string|null $pwdEnc
- * @property string|null $authKey
+ * @property string $authKey
+ * @property string|null $secretKey
  * @property string|null $recoveryToken
  * @property string|null $recoveryAt
  * @property string|null $emailChange
@@ -366,6 +367,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->authKey      = \Yii::$app->getSecurity()->generateRandomString();
+                $this->secretKey    = \Yii::$app->getSecurity()->generateRandomString();
                 $this->dateCreation = new Expression("NOW()");
             }
             return true;
@@ -389,6 +391,16 @@ class User extends ActiveRecord implements IdentityInterface
         $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
+    public function getSecretKey(): string
+    {
+        if (!$this->secretKey) {
+            // for older accounts, this property was not generated during account creation, so we generate it on demand here.
+            $this->secretKey = \Yii::$app->getSecurity()->generateRandomString(32);
+            $this->save();
+        }
+        return $this->secretKey;
+    }
+
     /**
      * @throws \Yii\base\Exception
      */
@@ -403,11 +415,13 @@ class User extends ActiveRecord implements IdentityInterface
             return 'testCode';
         }
 
-        if ($date == '') {
+        if ($date === '') {
             $date = date('Ymd');
         }
-        $binaryCode = md5($this->id . $date . AntragsgruenApp::getInstance()->randomSeed, true);
-        return substr(base64_encode($binaryCode), 0, 10);
+
+        $key = $date . $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed;
+        file_put_contents('/tmp/key.log', 'createEmailConfirmationCode: ' . $key . "\n", FILE_APPEND);
+        return substr(base64_encode(md5($key, true)), 0, 16);
     }
 
     public function checkEmailConfirmationCode(string $code): bool
@@ -562,7 +576,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getNotificationUnsubscribeCode(): string
     {
-        return $this->id . '-' . substr(md5($this->id . 'unsubscribe' . AntragsgruenApp::getInstance()->randomSeed), 0, 8);
+        return $this->id . '-' . substr(md5('unsubscribe' . $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed), 0, 16);
     }
 
     public static function getUserByUnsubscribeCode(string $code): ?User
@@ -746,8 +760,9 @@ class User extends ActiveRecord implements IdentityInterface
             return 'testCode';
         }
 
-        $key = $newEmail . $timestamp . $this->id . $this->authKey;
-        return substr(sha1($key), 0, 10);
+        $key = $newEmail . $timestamp . $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed;
+        file_put_contents('/tmp/key.log', 'createEmailChangeToken: ' . $key . "\n", FILE_APPEND);
+        return substr(sha1($key), 0, 16);
     }
 
     /**
@@ -891,6 +906,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->status          = static::STATUS_DELETED;
         $this->pwdEnc          = null;
         $this->authKey         = '';
+        $this->secretKey       = null;
         $this->recoveryToken   = null;
         $this->recoveryAt      = null;
         $this->save(false);

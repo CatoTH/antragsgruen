@@ -144,7 +144,7 @@ if ($externalAuthenticator === null) {
         if ($changeRequested) {
             echo '<div class="changeRequested">' . Yii::t('user', 'emailchange_requested') . ': ';
             echo Html::encode($changeRequested);
-            echo '<button type="submit" name="resendEmailChange" class="link resendButton">' .
+            echo '<br><button type="submit" name="resendEmailChange" class="link resendButton">' .
                  Yii::t('user', 'emailchange_resend') . '</button>';
             echo '</div>';
         }
