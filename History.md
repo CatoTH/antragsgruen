@@ -5,6 +5,10 @@
 - User accounts can now be protected using Two-Factor-Authentication through TOTP. For individual users or all users of dedicated installations, this can be enforced.
 - When going to the Terms and Conditions and/or the Privacy page and back, you will end up in the same consultation than before now.
 
+### Version 4.14.2 [not released yet]
+
+- Bugfix: The PDF-export of all amendments was not working.
+
 ### Version 4.14.1 (2024-08-25)
 
 - If a filter is set in the motion list, this will also filter the motions to be exported in the export row above (PDFs, ODTs, ODS etc.).
