@@ -94,14 +94,14 @@ class AmendmentController extends Base
         }
 
         if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
-            $pdf = $this->renderPartial('pdf_collection_html2pdf', ['amendments' => $amendments]);
+            $pdf = $this->renderPartial('pdf_collection_html2pdf', ['amendments' => $toShowAmendments]);
         } elseif ($selectedPdfLayout->latexId !== null) {
             $pdf = $this->renderPartial('pdf_collection_tex', [
                 'amendments'  => $toShowAmendments,
                 'texTemplate' => $texTemplate,
             ]);
         } else {
-            $pdf = $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]);
+            $pdf = $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $toShowAmendments]);
         }
 
         return new BinaryFileResponse(
