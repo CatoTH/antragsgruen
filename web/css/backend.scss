@@ -80,11 +80,11 @@
 
   .adderRow {
     width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
     @media screen and (min-width: $screenMinWith) {
       width: 50%;
     }
-    text-align: center;
-    margin-bottom: 20px;
   }
   .tagAdderBtn {
     font-weight: normal;
@@ -694,12 +694,11 @@ label.legend {
     > .sectionContent {
       margin-left: 50px;
       border-left: 1px solid #afa;
+      background-color: #f4fFf4;
 
       label {
         font-weight: normal;
       }
-
-      background-color: #f4fFf4;
     }
 
     .sectionTitle {
@@ -1636,8 +1635,8 @@ label.legend {
   }
 
   #fullTextHolder {
-    @include clearfix();
     padding-left: 25px;
+    @include clearfix();
   }
 
   .fullTextCopy {

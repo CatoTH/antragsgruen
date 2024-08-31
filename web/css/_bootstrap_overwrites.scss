@@ -205,12 +205,12 @@
 }
 
 .btn {
+  font-family: $buttonFont;
+  font-weight: bold;
   @include outlineOnFocusHasBorder();
   .span9 & {
     margin: 10px 0 0 200px;
   }
-  font-family: $buttonFont;
-  font-weight: bold;
 }
 
 .btn-primary {

@@ -344,6 +344,9 @@
       }
     }
     .votingResult {
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-bottom: 8px;
       label {
         font-weight: normal;
         margin-bottom: 0;
@@ -354,9 +357,6 @@
         font-size: 12px;
         height: 24px;
       }
-      padding-left: 8px;
-      padding-right: 8px;
-      padding-bottom: 8px;
     }
     .votingData {
       display: flex;

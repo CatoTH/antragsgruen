@@ -22,14 +22,14 @@
   .date {
     color: #757676;
     display: block;
+    position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
+    margin: 0;
     @media (min-width: $screenMinWith) {
       margin-left: 20px;
     }
     @media (max-width: $screenMinWith - 1) {
       margin-left: 12px;
     }
-    position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
-    margin: 0;
     @media (max-width: $screen-sm-max) {
       position: relative;
       top: 0;
@@ -283,20 +283,20 @@
     }
   }
   h4.amendments {
-    @media screen and (min-width: 600px) {
-      margin-left: $homeAgendaTitlePrefixWidth + 5px;
-    }
     margin-top: 10px;
     margin-bottom: 5px;
     font-family: $headingFont;
+    font-weight: bold;
+    color: $motionListAmendmentColor;
     @if ($font-size-base < 16) {
       font-size: 14px;
     } @else {
       font-size: inherit;
       line-height: inherit;
     }
-    font-weight: bold;
-    color: $motionListAmendmentColor;
+    @media screen and (min-width: 600px) {
+      margin-left: $homeAgendaTitlePrefixWidth + 5px;
+    }
   }
 
   .privateCommentsIndicator {
@@ -400,13 +400,13 @@ $agendaMarginPerLevel: 50px;
 
   li.agendaItem {
     border: solid 1px transparent; // Otherwise: strange behavior when moving items
+    position: relative;
     @media (min-width: $screenMinWith) {
       padding-left: 20px;
     }
     @media (max-width: $screenMinWith - 1) {
       padding-left: 16px;
     }
-    position: relative;
 
     .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
       color: $colorDelLink;
@@ -743,12 +743,11 @@ $agendaMarginPerLevel: 50px;
 .motionListFilter {
   .tagList {
     text-align: center;
+    margin-bottom: 15px;
 
     .btn {
       margin: 2px 4px;
     }
-
-    margin-bottom: 15px;
   }
 
   .searchBar {
