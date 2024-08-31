@@ -69,6 +69,11 @@ $sName = 'sections[' . $sectionId . ']';
                     <?= Html::checkbox($sName . '[showInHtml]', $settings->showInHtml) ?>
                     <?= Yii::t('admin', 'motion_type_show_in_html') ?>
                 </label>
+
+                <label class="hasExplanation">
+                    <?= Html::checkbox($sName . '[hasExplanation]', $section->getSettingsObj()->explanationHtml) ?>
+                    <?= Yii::t('admin', 'motion_type_has_explanation') ?>
+                </label>
             </div>
             <div class="optionsCol">
                 <label class="fixedWidthLabel">
@@ -201,6 +206,13 @@ $sName = 'sections[' . $sectionId . ']';
                         <?= Yii::t('admin', 'motion_section_required_yes') ?>
                     </label>
             </div>
+        </div>
+
+        <div class="explanationRow">
+            <textarea placeholder="<?= Yii::t('admin', 'motion_type_has_explanation') ?>"
+                      name="<?= $sName ?>[explanationHtml]" class="form-control" rows="2"><?php
+                echo Html::encode($section->getSettingsObj()->explanationHtml ?? '');
+            ?></textarea>
         </div>
 
         <?php
