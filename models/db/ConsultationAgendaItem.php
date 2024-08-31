@@ -238,8 +238,8 @@ class ConsultationAgendaItem extends ActiveRecord
                     $currParts[0] = chr(ord($currParts[0]) + 1);
                 } else {  // Numbers or mixtures of alphabetical characters and numbers
                     preg_match('/^(?<non_numeric>.*[^0-9])?(?<numeric>[0-9]*)$/su', $currParts[0], $matches);
-                    $nonNumeric   = $matches['non_numeric'];
-                    $numeric      = ($matches['numeric'] === '' ? 1 : $matches['numeric']);
+                    $nonNumeric   = $matches['non_numeric'] ?? '';
+                    $numeric      = (!isset($matches['numeric']) || $matches['numeric'] === '' ? 1 : $matches['numeric']);
                     $currParts[0] = $nonNumeric . ++$numeric;
                 }
 
