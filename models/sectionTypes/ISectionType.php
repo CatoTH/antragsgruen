@@ -5,7 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\latex\Content as LatexContent;
 use app\components\html2pdf\Content as HtmlToPdfContent;
 use app\models\settings\MotionSection;
-use app\models\db\{Consultation, IMotionSection, Motion};
+use app\models\db\{Consultation, ConsultationSettingsMotionSection, IMotionSection, Motion};
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -121,8 +121,10 @@ abstract class ISectionType
     {
         $type = $this->section->getSettings();
         $str  = '<label for="sections_' . $type->id . '"';
-        if ($type->required) {
+        if ($type->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
             $str .= ' class="required" data-required-str="' . Html::encode(\Yii::t('motion', 'field_required')) . '"';
+        } elseif ($type->required === ConsultationSettingsMotionSection::REQUIRED_ENCOURAGED) {
+            $str .= ' class="encouraged" data-encouraged-str="' . Html::encode(\Yii::t('motion', 'field_encouraged')) . '"';
         } else {
             $str .= ' class="optional" data-optional-str="' . Html::encode(\Yii::t('motion', 'field_optional')) . '"';
         }

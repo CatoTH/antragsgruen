@@ -182,6 +182,7 @@ return [
     'withdrawn_adminnoti_title' => 'A motion has meen withdrawn',
     'withdrawn_adminnoti_body'  => "The following motion has been withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'field_optional'            => 'optional',
+    'field_encouraged'          => 'encouraged',
     'field_required'            => 'required',
     'field_unpublic'            => 'The data entered here is only visible for you and admins of this site, not for regular visitors.',
     'max_size_hint'             => 'Max. %MB% MB',

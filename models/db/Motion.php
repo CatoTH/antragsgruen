@@ -229,7 +229,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         foreach ($this->getTypeSections() as $typeSection) {
-            if (!in_array($typeSection->id, $foundSectionTypes) && $typeSection->requiresAutoCreationWhenMission()) {
+            if (!in_array($typeSection->id, $foundSectionTypes) && $typeSection->requiresAutoCreationWhenMissing()) {
                 $emptySection = MotionSection::createEmpty($typeSection->id, $typeSection->getSettingsObj()->public, $this->id);
                 $emptySection->save();
 

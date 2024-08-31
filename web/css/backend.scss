@@ -766,16 +766,24 @@ label.legend {
       display: table-cell;
       padding: 10px;
       vertical-align: top;
+    }
+
+    .leftCol, .optionsCol {
       width: 210px;
+    }
+
+    .commAmendCol {
+      width: 220px;
     }
 
     .commAmendCol, .optionsCol {
       border-left: 1px solid #afa;
     }
 
+
     .imageMaxSize {
       display: none;
-      margin-top: 10px;
+      margin-bottom: 10px;
 
       .form-control {
         display: inline-block;

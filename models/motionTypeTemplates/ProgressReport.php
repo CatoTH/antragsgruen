@@ -57,7 +57,7 @@ class ProgressReport
         $section->position      = 0;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_progress_title');
-        $section->required      = 1;
+        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
@@ -73,7 +73,7 @@ class ProgressReport
         $section->position      = 1;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_progress_text');
-        $section->required      = 1;
+        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
         $section->maxLen        = 0;
         $section->fixedWidth    = 1;
         $section->lineNumbers   = 1;
@@ -89,7 +89,7 @@ class ProgressReport
         $section->position      = 2;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_progress_report');
-        $section->required      = 0;
+        $section->required      = ConsultationSettingsMotionSection::REQUIRED_NO;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;

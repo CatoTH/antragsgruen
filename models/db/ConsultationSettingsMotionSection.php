@@ -36,6 +36,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public const STATUS_VISIBLE = 0;
     public const STATUS_DELETED = -1;
 
+    public const REQUIRED_NO = 0;
+    public const REQUIRED_YES = 1;
+    public const REQUIRED_ENCOURAGED = 2;
+
     public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationSettingsMotionSection';
@@ -83,7 +87,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     {
         $this->setAttributes($data);
 
-        $this->required      = (isset($data['required']) ? 1 : 0);
+        $this->required      = (isset($data['required']) ? intval($data['required']) : 0);
         $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
         $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
         $this->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
@@ -160,7 +164,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         return $forbidden;
     }
 
-    public function requiresAutoCreationWhenMission(): bool
+    public function requiresAutoCreationWhenMissing(): bool
     {
         return $this->type === ISectionType::TYPE_TEXT_EDITORIAL; // Required for editing the text in the frontend
     }

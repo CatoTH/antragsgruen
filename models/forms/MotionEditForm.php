@@ -7,6 +7,7 @@ use app\components\RequestContext;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{ConsultationAgendaItem,
     ConsultationMotionType,
+    ConsultationSettingsMotionSection,
     ConsultationSettingsTag,
     Motion,
     MotionSection,
@@ -127,7 +128,7 @@ class MotionEditForm
                 $section->getSectionType()->setMotionData($values['motion']['title']);
             }
             if (isset($values['sectionDelete']) && isset($values['sectionDelete'][$section->sectionId])) {
-                if (!$section->getSettings()->required) {
+                if ($section->getSettings()->required !== ConsultationSettingsMotionSection::REQUIRED_YES) {
                     $section->getSectionType()->deleteMotionData();
                 }
             }
@@ -167,7 +168,7 @@ class MotionEditForm
 
         foreach ($this->sections as $section) {
             $type = $section->getSettings();
-            if ($section->getData() === '' && $type->required) {
+            if ($section->getData() === '' && $type->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
@@ -310,7 +311,7 @@ class MotionEditForm
                 // Updating the text is done separately, including amendment rewriting
                 continue;
             }
-            if ($section->getData() === '' && $type->required) {
+            if ($section->getData() === '' && $type->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {

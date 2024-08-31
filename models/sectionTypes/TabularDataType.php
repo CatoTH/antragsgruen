@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\Tools;
+use app\models\db\ConsultationSettingsMotionSection;
 use app\models\exceptions\Internal;
 use yii\helpers\Html;
 
@@ -52,30 +53,24 @@ class TabularDataType implements \JsonSerializable
         ];
     }
 
-    public function getFormField(string $nameId, string $value, bool $required): string
+    public function getFormField(string $nameId, string $value, int $required): string
     {
+        $requiredHtml = match($required) {
+            ConsultationSettingsMotionSection::REQUIRED_YES => ' required',
+            ConsultationSettingsMotionSection::REQUIRED_ENCOURAGED => ' data-encouraged="true"',
+            default => '',
+        };
+
         $str = '';
         switch ($this->type) {
             case TabularDataType::TYPE_STRING:
-                $str .= '<input type="text" ' . $nameId . ' value="' . Html::encode($value) . '"';
-                if ($required) {
-                    $str .= ' required';
-                }
-                $str .= ' class="form-control">';
+                $str .= '<input type="text" ' . $nameId . ' value="' . Html::encode($value) . '"' . $requiredHtml . ' class="form-control">';
                 break;
             case TabularDataType::TYPE_INTEGER:
-                $str .= '<input type="number" ' . $nameId . ' value="' . Html::encode($value) . '"';
-                if ($required) {
-                    $str .= ' required';
-                }
-                $str .= ' class="form-control">';
+                $str .= '<input type="number" ' . $nameId . ' value="' . Html::encode($value) . '"' . $requiredHtml . ' class="form-control">';
                 break;
             case TabularDataType::TYPE_SELECT:
-                $str .= '<select ' . $nameId . ' ';
-                if ($required) {
-                    $str .= ' required';
-                }
-                $str .= ' class="stdDropdown"><option></option>';
+                $str .= '<select ' . $nameId . $requiredHtml . ' class="stdDropdown"><option></option>';
                 foreach ($this->options as $option) {
                     $str .= '<option value="' . Html::encode($option) . '"';
                     if ($value === $option) {
@@ -89,11 +84,8 @@ class TabularDataType implements \JsonSerializable
                 $locale = Tools::getCurrentDateLocale();
                 $date   = ($value ? Tools::dateSql2bootstrapdate($value, $locale) : '');
                 $str .= '<div class="input-group date">
-                        <input type="text" class="form-control" ' . $nameId . ' value="' . Html::encode($date) . '" ';
-                if ($required) {
-                    $str .= ' required';
-                }
-                $str .= 'data-locale="' . Html::encode($locale) . '">
+                        <input type="text" class="form-control" ' . $nameId . ' value="' . Html::encode($date) . '"';
+                $str .= $requiredHtml . ' data-locale="' . Html::encode($locale) . '">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                       </div>';
                 break;
