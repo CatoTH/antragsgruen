@@ -56,7 +56,9 @@ class VideoEmbed extends ISectionType
     {
         $type = $this->section->getSettings();
         $str  = '<section class="form-group section' . $this->section->sectionId . ' type' . static::TYPE_VIDEO_EMBED . '">';
+
         $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         $str .= '<input type="text" class="form-control" id="sections_' . $type->id . '"' .
             ' name="sections[' . $type->id . ']" value="' . Html::encode($this->getVideoUrl()) . '"' .

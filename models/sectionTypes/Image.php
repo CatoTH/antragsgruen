@@ -78,7 +78,9 @@ class Image extends ISectionType
             };
         }
         $str .= '<div class="form-group">';
+
         $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         $maxSize = (string) floor(Tools::getMaxUploadSize() / 1024 / 1024);
         $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign" aria-hidden="true"></span> ';

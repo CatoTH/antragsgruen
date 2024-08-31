@@ -50,7 +50,9 @@ class PDF extends ISectionType
         $url  = $this->getPdfUrl();
         $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_PDF_ATTACHMENT . '">';
         $str .= '<div class="form-group">';
+
         $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         if ($url) {
             $required = '';

@@ -18,18 +18,9 @@ abstract class Text extends ISectionType
         $str .= ' data-max-len="' . IntVal($type->maxLen) . '"';
         $str .= ' data-full-html="' . ($fullHtml ? '1' : '0') . '"';
         $str .= '>';
-        $str .= $this->getFormLabel();
 
-        if ($type->maxLen != 0) {
-            $len = abs($type->maxLen);
-            $str .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
-            $str .= str_replace(
-                ['%LEN%', '%COUNT%'],
-                [$len, '<span class="counter"></span>'],
-                \Yii::t('motion', 'max_len_hint')
-            );
-            $str .= '</div>';
-        }
+        $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         $str .= '<textarea name="sections[' . $formId . ']"  id="sections_' . $formId . '" ';
         $str .= 'title="' . Html::encode($type->title) . '">';
