@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace app\components\html2pdf;
 
+use app\views\pdfLayouts\IHtmlToPdfLayout;
+
 class Content
 {
-    public string $template;
+    public ?IHtmlToPdfLayout $layout;
     public string $author;
     public string $title;
     public string $titlePrefix = '';

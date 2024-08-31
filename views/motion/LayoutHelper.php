@@ -15,7 +15,7 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\{ISectionType, TextSimple};
 use app\models\settings\{AntragsgruenApp, Consultation, PrivilegeQueryContext, Privileges, VotingData};
 use app\models\supportTypes\SupportBase;
-use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
+use app\views\pdfLayouts\{IHtmlToPdfLayout, IPDFLayout, IPdfWriter};
 use setasign\Fpdi\PdfParser\PdfParserException;
 use yii\helpers\Html;
 
@@ -740,8 +740,9 @@ class LayoutHelper
     public static function renderPdfContentFromHtml(Motion $motion): HtmlToPdfContent
     {
         $content = new HtmlToPdfContent();
+        $pdfLayoutDescription = IPDFLayout::getPdfLayoutForMotionType($motion->getMyMotionType());
 
-        $content->template        = file_get_contents(__DIR__ . '/../../assets/html2pdf/application.html');
+        $content->layout = (is_subclass_of($pdfLayoutDescription->className, IHtmlToPdfLayout::class) ? new $pdfLayoutDescription->className() : null);
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
         $content->logoData        = $motion->getMyConsultation()->getPdfLogoData();
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);

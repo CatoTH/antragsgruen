@@ -62,10 +62,16 @@ class Html2PdfConverter
             data-str-page="' . Html::encode(\Yii::t('export', 'pdf_page_label')) . '"
         >' . $html . '</body></html>');
 
+        if ($content->layout && $content->layout->getAbsoluteCssLocation()) {
+            $cssPath = $content->layout->getAbsoluteCssLocation();
+        } else {
+            $cssPath = __DIR__ . '/../../assets/html2pdf/application.css';
+        }
+
         $cmd = $this->app->weasyprintPath;
         $cmd .= ' ' . escapeshellarg($filenameBase . '.html');
         $cmd .= ' ' . escapeshellarg($filenameBase . '.pdf');
-        $cmd .= ' -s ' . escapeshellarg(__DIR__ . '/../../assets/html2pdf/application.css');
+        $cmd .= ' -s ' . escapeshellarg($cssPath);
 
         shell_exec($cmd);
 
@@ -84,7 +90,12 @@ class Html2PdfConverter
 
     public static function createContentString(Content $content): string
     {
-        $template                         = $content->template;
+        if ($content->layout && $content->layout->getAbsoluteHtmlTemplateLocation()) {
+            $templatePath = $content->layout->getAbsoluteHtmlTemplateLocation();
+        } else {
+            $templatePath = __DIR__ . '/../../assets/html2pdf/application.html';
+        }
+        $template = (string)file_get_contents($templatePath);
 
         $replaces                         = [];
         $replaces['%TITLE%']              = Html::encode($content->title);
@@ -110,6 +121,7 @@ class Html2PdfConverter
             $replaces['%APP_TOP_LABEL%'] = '';
             $replaces['%APP_TOP%']       = '';
         }
+        $replaces['%TEMPLATE_PATH%'] = dirname($templatePath);
         if ($content->logoData && in_array($content->logoData[0], self::SUPPORTED_IMAGE_FORMATS)) {
             $fileExt = Image::getFileExtensionFromMimeType($content->logoData[0]);
             $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;

@@ -380,7 +380,7 @@ class MotionListController extends AdminBase
 
             $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($imotion->getMyMotionType());
             if (is_a($imotion, Motion::class)) {
-                if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+                if ($selectedPdfLayout->isHtmlToPdfLayout()) {
                     $file = MotionLayoutHelper::createPdfFromHtml($imotion);
                 } elseif ($selectedPdfLayout->latexId !== null) {
                     $file = MotionLayoutHelper::createPdfLatex($imotion);
@@ -388,7 +388,7 @@ class MotionListController extends AdminBase
                     $file = MotionLayoutHelper::createPdfTcpdf($imotion);
                 }
             } elseif (is_a($imotion, Amendment::class))  {
-                if ($selectedPdfLayout->id === IPDFLayout::LAYOUT_WEASYPRINT_DEFAULT) {
+                if ($selectedPdfLayout->isHtmlToPdfLayout()) {
                     $file = AmendmentLayoutHelper::createPdfFromHtml($imotion);
                 } elseif ($selectedPdfLayout->latexId !== null) {
                     $file = AmendmentLayoutHelper::createPdfLatex($imotion);

@@ -6,7 +6,7 @@ use app\components\{HashedStaticCache, HTMLTools, Tools};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout};
 use app\models\sectionTypes\ISectionType;
-use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
+use app\views\pdfLayouts\{IHtmlToPdfLayout, IPdfWriter, IPDFLayout};
 use app\models\db\{Amendment, AmendmentSection, ISupporter, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
@@ -222,9 +222,10 @@ class LayoutHelper
     public static function renderPdfContentFromHtml(Amendment $amendment): HtmlToPdfContent
     {
         $content = new HtmlToPdfContent();
+        $pdfLayoutDescription = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
 
-        $content->template        = file_get_contents(__DIR__ . '/../../assets/html2pdf/application.html');
-        $content->lineLength      = $amendment->getMyConsultation()->getSettings()->lineLength;
+        $content->layout = (is_subclass_of($pdfLayoutDescription->className, IHtmlToPdfLayout::class) ? new $pdfLayoutDescription->className() : null);
+        $content->lineLength = $amendment->getMyConsultation()->getSettings()->lineLength;
         $intro                    = explode("\n", $amendment->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         if (count($intro) > 1) {
