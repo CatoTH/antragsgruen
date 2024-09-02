@@ -141,6 +141,10 @@ if ($consultation->getSettings()->hasSpeechLists) {
 echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
 
 
+if ($contentAdmin && in_array($consultation->getSettings()->startLayoutType, [ConsultationSettings::START_LAYOUT_AGENDA_LONG, ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND, ConsultationSettings::START_LAYOUT_AGENDA])) {
+    $cache->setSkipCache(true);
+}
+
 echo $cache->getCached(function () use ($consultation, $layout, $contentAdmin) {
     $output = '';
     $resolutionMode = $consultation->getSettings()->startLayoutResolutions;
