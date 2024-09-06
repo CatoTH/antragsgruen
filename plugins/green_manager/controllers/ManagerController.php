@@ -85,7 +85,7 @@ class ManagerController extends Base
                 if (User::getCurrentUser()) {
                     $user = User::getCurrentUser();
                 } else {
-                    $userForm = new LoginUsernamePasswordForm(null);
+                    $userForm = new LoginUsernamePasswordForm(RequestContext::getSession(), null);
                     $userForm->setAttributes([
                         'username'        => $post['SiteCreateForm']['user_email'],
                         'password'        => $post['SiteCreateForm']['user_pwd'],
