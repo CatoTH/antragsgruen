@@ -391,7 +391,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
-    public function getSecretKey(): string
+    private function getSecretKey(): string
     {
         if (!$this->secretKey) {
             // for older accounts, this property was not generated during account creation, so we generate it on demand here.
@@ -399,6 +399,13 @@ class User extends ActiveRecord implements IdentityInterface
             $this->save();
         }
         return $this->secretKey;
+    }
+
+    private function createConfirmationCode(string $base): string
+    {
+        $key = $base . $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed;
+
+        return substr(base64_encode(sha1($key, true)), 0, 16);
     }
 
     /**
@@ -419,9 +426,7 @@ class User extends ActiveRecord implements IdentityInterface
             $date = date('Ymd');
         }
 
-        $key = $date . $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed;
-        file_put_contents('/tmp/key.log', 'createEmailConfirmationCode: ' . $key . "\n", FILE_APPEND);
-        return substr(base64_encode(md5($key, true)), 0, 16);
+        return $this->createConfirmationCode($this->email . $date);
     }
 
     public function checkEmailConfirmationCode(string $code): bool
@@ -576,7 +581,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getNotificationUnsubscribeCode(): string
     {
-        return $this->id . '-' . substr(md5('unsubscribe' . $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed), 0, 16);
+        return $this->id . '-' . $this->createConfirmationCode('unsubscribe');
     }
 
     public static function getUserByUnsubscribeCode(string $code): ?User
@@ -760,9 +765,7 @@ class User extends ActiveRecord implements IdentityInterface
             return 'testCode';
         }
 
-        $key = $newEmail . $timestamp . $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed;
-        file_put_contents('/tmp/key.log', 'createEmailChangeToken: ' . $key . "\n", FILE_APPEND);
-        return substr(sha1($key), 0, 16);
+        return $this->createConfirmationCode($newEmail . $timestamp);
     }
 
     /**
