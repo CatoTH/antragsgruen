@@ -38,6 +38,9 @@ class RedirectResponse implements ResponseInterface
     private function sanitizeRedirect(string $url): string
     {
         $filtered = filter_var($url, FILTER_SANITIZE_URL);
+        if (!$filtered) {
+            return '/';
+        }
         $app = AntragsgruenApp::getInstance();
         if ($app->domainSubdomain && $this->urlStartsWithVariableHost($filtered, $app->domainSubdomain)) {
             return $filtered;
