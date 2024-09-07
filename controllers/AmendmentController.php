@@ -71,7 +71,7 @@ class AmendmentController extends Base
         $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
 
         if (count($amendments) === 0) {
-            return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
         }
         $texTemplate = null;
         $toShowAmendments = [];
@@ -84,6 +84,9 @@ class AmendmentController extends Base
                 $texTemplate = $amendmentGroups['motion']->getMyMotionType()->texTemplate;
             }
             $toShowAmendments = array_merge($toShowAmendments, $amendmentGroups['amendments']);
+        }
+        if (count($toShowAmendments) === 0) {
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
         }
 
         $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendments[0]['motion']->getMyMotionType());
