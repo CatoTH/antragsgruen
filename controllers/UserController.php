@@ -40,7 +40,7 @@ class UserController extends Base
             $backUrl = '/';
         }
 
-        $usernamePasswordForm = new LoginUsernamePasswordForm(User::getExternalAuthenticator());
+        $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
 
         $conPwdConsultation = $this->consultation;
         if ($this->getHttpRequest()->get('passConId')) {
@@ -55,16 +55,16 @@ class UserController extends Base
             $usernamePasswordForm->setAttributes($this->getHttpRequest()->post());
             try {
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
-                $this->loginUser($user);
 
-                $unconfirmed = ($user->status === User::STATUS_UNCONFIRMED);
-                if ($unconfirmed && $this->getParams()->confirmEmailAddresses) {
+                if ($user->status === User::STATUS_UNCONFIRMED && $this->getParams()->confirmEmailAddresses) {
+                    $usernamePasswordForm->setLoggedInAwaitingEmailConfirmation($user);
                     $backUrl = UrlHelper::createUrl([
-                        'user/confirmregistration',
+                        '/user/confirmregistration',
                         'backUrl' => $backUrl,
                         'email'   => $user->email,
                     ]);
                 } else {
+                    $this->loginUser($user);
                     $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
                 }
 
@@ -85,7 +85,7 @@ class UserController extends Base
                 $conPwd->setCorrectCookie();
                 return new RedirectResponse($backUrl);
             } else {
-                $conPwdErr = 'Invalid password';
+                $conPwdErr = \Yii::t('user', 'login_err_password');
             }
         }
 
@@ -113,6 +113,8 @@ class UserController extends Base
     public function actionConfirmregistration(string $backUrl = '', string $email = ''): HtmlResponse
     {
         $msgError = '';
+        $prefillCode = '';
+        $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
 
         if ($this->isRequestSet('email') && $this->isRequestSet('code')) {
             /** @var User|null $user */
@@ -121,12 +123,17 @@ class UserController extends Base
                 $msgError = \Yii::t('user', 'err_email_acc_notfound');
             } elseif ($user->emailConfirmed === 1) {
                 $msgError = \Yii::t('user', 'err_email_acc_confirmed');
+            } elseif (Captcha::needsCaptcha($user->email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
+                $msgError = \Yii::t('user', 'login_err_captcha');
+                $prefillCode = trim($this->getRequestValue('code', '')); // When coming from an e-mail, only ask for captcha
             } elseif ($user->checkEmailConfirmationCode(trim($this->getRequestValue('code')))) {
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;
                 if ($user->save()) {
                     $user->trigger(User::EVENT_ACCOUNT_CONFIRMED, new UserEvent($user));
-                    $this->loginUser($user);
+                    if ($usernamePasswordForm->hasOngoingEmailConfirmationSession($user)) {
+                        $this->loginUser($user);
+                    }
 
                     if ($this->consultation && $this->consultation->getSettings()->managedUserAccounts) {
                         UserConsultationScreening::askForConsultationPermission($user, $this->consultation);
@@ -139,15 +146,17 @@ class UserController extends Base
                 }
             } else {
                 $msgError = \Yii::t('user', 'err_code_wrong');
+                FailedLoginAttempt::logFailedAttempt($user->email);
             }
         }
 
         return new HtmlResponse($this->render(
             'confirm_registration',
             [
-                'email'   => $email,
-                'errors'  => $msgError,
-                'backUrl' => $backUrl
+                'email' => $email,
+                'prefillCode' => $prefillCode,
+                'errors' => $msgError,
+                'backUrl' => $backUrl,
             ]
         ));
     }
