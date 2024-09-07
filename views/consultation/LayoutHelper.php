@@ -568,7 +568,7 @@ class LayoutHelper
             if ($comment->paragraph === -1) {
                 $texts[] = $comment->text;
             } else {
-                $texts[] = str_replace('%NO%', $comment->paragraph, \Yii::t('motion', 'private_notes_para')) .
+                $texts[] = str_replace('%NO%', (string) $comment->paragraph, \Yii::t('motion', 'private_notes_para')) .
                     ': ' . $comment->text;
             }
         }
