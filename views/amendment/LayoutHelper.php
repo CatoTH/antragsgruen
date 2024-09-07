@@ -276,7 +276,7 @@ class LayoutHelper
             $ppSections = self::getVisibleProposedProcedureSections($amendment, null);
             foreach ($ppSections as $ppSection) {
                 $ppSection['section']->setTitlePrefix($ppSection['title']);
-                $ppSection['section']->getSectionType()->printAmendmentHtml2Pdf($ppSection['section']->isLayoutRight(), $content);
+                $ppSection['section']->printAmendmentHtml2Pdf(false, $content);
             }
         }
 

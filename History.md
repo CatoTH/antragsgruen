@@ -8,6 +8,7 @@
 ### Version 4.14.2 [not released yet]
 
 - Bugfix: The PDF-export of all amendments was not working.
+- Bugfix: The PDF-export of amendments with proposed procedure was not working when using Weasyprint.
 
 ### Version 4.14.1 (2024-08-25)
 
