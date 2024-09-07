@@ -704,6 +704,7 @@ CREATE TABLE `###TABLE_PREFIX###user` (
   `status`          TINYINT(4)  NOT NULL,
   `pwdEnc`          VARCHAR(100)         DEFAULT NULL,
   `authKey`         BINARY(100) NOT NULL,
+  `secretKey`       VARCHAR(100)         DEFAULT NULL,
   `recoveryToken`   VARCHAR(100)         DEFAULT NULL,
   `recoveryAt`      TIMESTAMP   NULL     DEFAULT NULL,
   `emailChange`     VARCHAR(255)         DEFAULT NULL,

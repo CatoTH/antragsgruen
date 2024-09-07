@@ -10,6 +10,7 @@ use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUs
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
 use yii\base\Model;
+use yii\web\Session;
 
 class LoginUsernamePasswordForm extends Model
 {
@@ -24,8 +25,12 @@ class LoginUsernamePasswordForm extends Model
 
     public bool $createAccount = false;
 
-    public function __construct(private ?ExternalPasswordAuthenticatorInterface $externalAuthenticator)
-    {
+    private const SESSION_KEY_EMAIL_CONFIRMATION = 'emailConfirmationUser';
+
+    public function __construct(
+        private Session $session,
+        private ?ExternalPasswordAuthenticatorInterface $externalAuthenticator
+    ) {
         parent::__construct();
     }
 
@@ -269,5 +274,22 @@ class LoginUsernamePasswordForm extends Model
         } else {
             return $this->checkLogin($site);
         }
+    }
+
+    public function setLoggedInAwaitingEmailConfirmation(User $user): void
+    {
+        $this->session->set(self::SESSION_KEY_EMAIL_CONFIRMATION, [
+            'time' => time(),
+            'user_id' => $user->id,
+        ]);
+    }
+
+    public function hasOngoingEmailConfirmationSession(User $user): bool
+    {
+        $data = $this->session->get(self::SESSION_KEY_EMAIL_CONFIRMATION);
+        if (!$data) {
+            return false;
+        }
+        return $data['user_id'] === $user->id;
     }
 }

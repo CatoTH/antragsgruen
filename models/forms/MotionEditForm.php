@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\components\HTMLTools;
 use app\components\RequestContext;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{ConsultationAgendaItem,
@@ -194,6 +195,11 @@ class MotionEditForm
      */
     public function updateTextRewritingAmendments(Motion $motion, array $newHtmls, array $overrides = []): bool
     {
+        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $forbiddenFormattings = $section->getSettings()->getForbiddenMotionFormattings();
+            $newHtmls[$section->sectionId] = HTMLTools::cleanSimpleHtml($newHtmls[$section->sectionId], $forbiddenFormattings);
+        }
+
         foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
