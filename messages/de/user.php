@@ -53,7 +53,7 @@ return [
         'bitte fordere eine neue Änderung an und rufe den Link innerhalb von 24 Stunden auf',
     'err_2fa_nosession_user'    => 'Keine aktiver Zwei-Faktoren-Anmeldungs-Vorgang für diese Benutzer*in gefunden',
     'err_2fa_nosession'         => 'Kein aktiver Anmeldungsvorgang',
-    'err_2fa_timeout'           => 'Bitte bestätige die Anmeldung innerhalb von %seconds% Sekunden.',
+    'err_2fa_timeout'           => 'Bitte bestätige die Anmeldung innerhalb von %minutes% Minuten.',
     'err_2fa_empty'             => 'Kein Code eingegeben',
     'err_2fa_incorrect'         => 'Ungültiger Code eingegeben',
     'err_2fa_nocode'            => 'Keine Zwei-Faktoren-Anmeldung eingerichtet',

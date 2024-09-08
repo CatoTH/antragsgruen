@@ -49,7 +49,7 @@ return [
     'err_change_toolong'        => 'The request is too old; please request another change request and confirm the e-mail within 24 hours',
     'err_2fa_nosession_user'    => 'No ongoing TOTP registration for the current user found',
     'err_2fa_nosession'         => 'No login session ongoing',
-    'err_2fa_timeout'           => 'Please confirm the second factor within %seconds% seconds.',
+    'err_2fa_timeout'           => 'Please confirm the second factor within %minutes% minutes.',
     'err_2fa_empty'             => 'Empty code given',
     'err_2fa_incorrect'         => 'Incorrect code provided',
     'err_2fa_nocode'            => 'No second factor registered',

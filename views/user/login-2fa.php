@@ -1,16 +1,12 @@
 <?php
 
-use app\models\db\ConsultationText;
-use app\models\settings\AntragsgruenApp;
-use app\components\{Captcha, UrlHelper};
-use app\models\db\User;
-use app\models\forms\LoginUsernamePasswordForm;
+use app\components\Captcha;
 use yii\helpers\Html;
-use app\models\settings\Site as SiteSettings;
 
 /**
  * @var yii\web\View $this
  * @var string|null $error
+ * @var string $captchaUsername
  */
 
 /** @var \app\controllers\UserController $controller */
@@ -44,6 +40,20 @@ echo Html::beginForm('', 'post', ['class' => 'tfaForm']);
         <label for="2facode"><?= Yii::t('user', '2fa_enter_code') ?>:</label>
         <input type="text" name="2fa" class="form-control" id="2facode">
     </div>
+
+    <?php
+    if (Captcha::needsCaptcha($captchaUsername)) {
+        $image = Captcha::createInlineCaptcha();
+        ?>
+        <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label><br>
+        <div class="captchaHolder">
+            <img src="<?= $image ?>" alt="" width="150">
+            <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
+        </div>
+        <br><br>
+        <?php
+    }
+    ?>
 
     <button type="submit" class="btn btn-success"><?= Yii::t('user', 'login_btn_login') ?></button>
 </div>
