@@ -1,18 +1,14 @@
 <?php
 
-use app\models\db\ConsultationText;
-use app\models\settings\AntragsgruenApp;
-use app\components\{Captcha, UrlHelper};
-use app\models\db\User;
-use app\models\forms\LoginUsernamePasswordForm;
+use app\components\Captcha;
 use OTPHP\TOTP;
 use yii\helpers\Html;
-use app\models\settings\Site as SiteSettings;
 
 /**
  * @var yii\web\View $this
  * @var string|null $error
  * @var TOTP|null $addSecondFactorKey
+ * @var string $captchaUsername
  */
 
 /** @var \app\controllers\UserController $controller */
@@ -56,6 +52,21 @@ echo Html::beginForm();
                 <input type="text" name="set2fa" class="form-control">
             </label>
         </div>
+
+        <?php
+        if (Captcha::needsCaptcha($captchaUsername)) {
+            $image = Captcha::createInlineCaptcha();
+            ?>
+            <label for="captchaInput"><?= Yii::t('user', 'login_captcha') ?>:</label><br>
+            <div class="captchaHolder">
+                <img src="<?= $image ?>" alt="" width="150">
+                <input type="text" value="" autocomplete="off" name="captcha" id="captchaInput" class="form-control" required>
+            </div>
+            <br><br>
+            <?php
+        }
+        ?>
+
         <div class="saveRow">
             <button type="submit" class="btn btn-success"><?= Yii::t('user', 'login_btn_login') ?></button>
         </div>

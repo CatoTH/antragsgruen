@@ -121,8 +121,11 @@ class UserController extends Base
 
     public function actionLogin2fa(string $backUrl = ''): ResponseInterface
     {
-        if (!$this->secondFactorAuthentication->hasOngoingSession()) {
-            $this->getHttpSession()->setFlash('error', 'Die Zeit für die Eingabe des Codes ist abgelaufen');
+        $loggingInUser = $this->secondFactorAuthentication->getOngoingSessionUser();
+        if (!$loggingInUser) {
+            $minutes = SecondFactorAuthentication::TIMEOUT_2FA_SESSION / 60;
+            $msg = str_replace('%minutes%', (string) $minutes, \Yii::t('user', 'err_2fa_timeout'));
+            $this->getHttpSession()->setFlash('error', $msg);
 
             return new RedirectResponse(UrlHelper::createUrl('/user/login'));
         }
@@ -133,29 +136,58 @@ class UserController extends Base
 
         $error = null;
         if ($this->isPostSet('2fa') && trim($this->getPostValue('2fa'))) {
-            $successUser = $this->secondFactorAuthentication->confirmLoginWithSecondFactor($this->getPostValue('2fa'));
-            if ($successUser) {
-                $this->loginUser($successUser);
-                $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
-
-                return new RedirectResponse($backUrl);
-            } else {
-                $error = 'Ungültiger Code.';
+            if (Captcha::needsCaptcha($loggingInUser->email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
+                $error = \Yii::t('user', 'login_err_captcha');
+                goto loginForm;
             }
-        }
-        // @TODO CAPTCHA
 
-        return new HtmlResponse($this->render('login-2fa', ['error' => $error]));
+            $successUser = $this->secondFactorAuthentication->confirmLoginWithSecondFactor($this->getPostValue('2fa'));
+            if (!$successUser) {
+                FailedLoginAttempt::logFailedAttempt($loggingInUser->email);
+                $error = \Yii::t('user', 'err_2fa_incorrect');
+                goto loginForm;
+            }
+
+            $this->loginUser($successUser);
+            $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
+
+            return new RedirectResponse($backUrl);
+        }
+
+        $this->secondFactorAuthentication->getOngoingSessionUser();
+
+        loginForm:
+        $resp =  new HtmlResponse($this->render('login-2fa', [
+            'captchaUsername' => $loggingInUser->email,
+            'error' => $error,
+        ]));
+
+        $this->secondFactorAuthentication->getOngoingSessionUser();
+
+        return $resp;
     }
 
     public function actionLogin2faForceRegistration(string $backUrl = ''): ResponseInterface
     {
+        try {
+            $loggingInUser = $this->secondFactorAuthentication->getForcedRegistrationUser();
+        } catch (\Exception $e) {
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
+
+            return new RedirectResponse(UrlHelper::createUrl('/user/login'));
+        }
+
         if ($backUrl === '') {
             $backUrl = '/';
         }
 
         $error = null;
         if ($this->isPostSet('set2fa') && trim($this->getPostValue('set2fa'))) {
+            if (Captcha::needsCaptcha($loggingInUser->email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
+                $error = \Yii::t('user', 'login_err_captcha');
+                goto loginForm;
+            }
+
             try {
                 $successUser = $this->secondFactorAuthentication->attemptForcedRegisteringSecondFactor(trim($this->getPostValue('set2fa')));
                 $this->loginUser($successUser);
@@ -166,11 +198,13 @@ class UserController extends Base
                 $error = $e->getMessage();
             }
         }
-        // @TODO CAPTCHA
 
-        $addSecondFactorKey = $this->secondFactorAuthentication->createForcedRegistrationSecondFactor();
-
-        return new HtmlResponse($this->render('login-2fa-force-registration', ['error' => $error, 'addSecondFactorKey' => $addSecondFactorKey]));
+        loginForm:
+        return new HtmlResponse($this->render('login-2fa-force-registration', [
+            'error' => $error,
+            'captchaUsername' => $loggingInUser->email,
+            'addSecondFactorKey' => $this->secondFactorAuthentication->createForcedRegistrationSecondFactor(),
+        ]));
     }
 
     public function actionToken(): JsonResponse

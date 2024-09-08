@@ -26,7 +26,7 @@ class SecondFactorAuthentication
     private const SESSION_KEY_2FA_SETUP_KEY = 'settingUp2FAKey';
     private const SESSION_KEY_2FA_ONGOING = 'loggedIn2FAInProgress';
     private const SESSION_KEY_2FA_REGISTRATION_ONGOING = 'loggedInForced2FARegistrationInProgress';
-    private const TIMEOUT_2FA_SESSION = 300;
+    public const TIMEOUT_2FA_SESSION = 300;
 
     public function __construct(Session $session) {
         $this->session = $session;
@@ -93,7 +93,8 @@ class SecondFactorAuthentication
             throw new \RuntimeException(\Yii::t('user', 'err_2fa_nosession_user'));
         }
         if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
-            $msg = \Yii::t('user', 'err_2fa_timeout');
+            $minutes = SecondFactorAuthentication::TIMEOUT_2FA_SESSION / 60;
+            $msg = str_replace('%minutes%', (string) $minutes, \Yii::t('user', 'err_2fa_timeout'));
             throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, $msg));
         }
         if (!$secondFactor) {
@@ -175,25 +176,22 @@ class SecondFactorAuthentication
         return new RedirectResponse(UrlHelper::createUrl('/user/login2fa-force-registration'));
     }
 
-    public function hasOngoingSession(): bool
+    public function getOngoingSessionUser(): ?User
     {
         $data = $this->session->get(self::SESSION_KEY_2FA_ONGOING);
         if (!$data) {
-            return false;
+            return null;
         }
         if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
-            return false;
+            return null;
         }
-        return true;
+
+        return User::findOne(['id' => $data['user_id']]);
     }
 
     public function confirmLoginWithSecondFactor(string $secondFactor): ?User
     {
-        if (!$this->hasOngoingSession()) {
-            return null;
-        }
-        $data = $this->session->get(self::SESSION_KEY_2FA_ONGOING);
-        $user = User::findOne(['id' => $data['user_id']]);
+        $user = $this->getOngoingSessionUser();
         if (!$user) {
             return null;
         }
@@ -202,7 +200,7 @@ class SecondFactorAuthentication
         if (!$userSettings->secondFactorKeys) {
             return null;
         }
-        foreach ($userSettings->secondFactorKeys as $index => $key) {
+        foreach ($userSettings->secondFactorKeys as $key) {
             $totp = TOTP::createFromSecret($key['secret']);
             if ($this->checkOtp($totp, $secondFactor)) {
                 return $user;
@@ -212,7 +210,7 @@ class SecondFactorAuthentication
         return null;
     }
 
-    private function getForcedRegistrationUser(): User
+    public function getForcedRegistrationUser(): User
     {
         $data = $this->session->get(self::SESSION_KEY_2FA_REGISTRATION_ONGOING);
         if (!$data) {
@@ -249,7 +247,8 @@ class SecondFactorAuthentication
             throw new \RuntimeException(\Yii::t('user', 'err_2fa_nosession_user'));
         }
         if ($data['time'] < time() - self::TIMEOUT_2FA_SESSION) {
-            $msg = \Yii::t('user', 'err_2fa_timeout');
+            $minutes = SecondFactorAuthentication::TIMEOUT_2FA_SESSION / 60;
+            $msg = str_replace('%minutes%', (string) $minutes, \Yii::t('user', 'err_2fa_timeout'));
             throw new \RuntimeException(str_replace('%seconds%', (string)self::TIMEOUT_2FA_SESSION, $msg));
         }
         if (!$secondFactor) {
