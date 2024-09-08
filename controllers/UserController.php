@@ -362,7 +362,7 @@ class UserController extends Base
                 }
             }
 
-            if ($post['pwd'] !== '' || $post['pwd2'] !== '') {
+            if (!$user->getSettingsObj()->preventPasswordChange && ($post['pwd'] !== '' || $post['pwd2'] !== '')) {
                 if ($post['pwd'] !== $post['pwd2']) {
                     $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_pwd_different'));
                 } elseif (grapheme_strlen($post['pwd']) < $pwMinLen) {

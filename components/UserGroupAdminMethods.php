@@ -138,7 +138,7 @@ class UserGroupAdminMethods
         AdminTodoItem::flushUserTodoCount($this->consultation, $userId);
     }
 
-    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa, bool $force2Fa): void
+    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa, bool $force2Fa, bool $preventPwdChange): void
     {
         $user = User::findOne(['id' => $userId]);
 
@@ -173,6 +173,7 @@ class UserGroupAdminMethods
             $settings->secondFactorKeys = [];
         }
         $settings->enforceTwoFactorAuthentication = $force2Fa;
+        $settings->preventPasswordChange = $preventPwdChange;
         $user->setSettingsObj($settings);
 
         $user->save();
@@ -488,7 +489,7 @@ class UserGroupAdminMethods
             $user->auth = $auth;
             $user->email = $email;
             $user->name = $name;
-            $user->pwdEnc = (string)password_hash($plainPassword, PASSWORD_DEFAULT);
+            $user->pwdEnc = password_hash($plainPassword, PASSWORD_DEFAULT);
             $user->status = User::STATUS_CONFIRMED;
             $user->emailConfirmed = 1;
             $user->organizationIds = '';
@@ -550,7 +551,7 @@ class UserGroupAdminMethods
         $user->nameGiven = $nameGiven;
         $user->name = $nameGiven . ' ' . $nameFamily;
         $user->organization = $organization;
-        $user->pwdEnc = (string)password_hash($password, PASSWORD_DEFAULT);
+        $user->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
         $user->status = User::STATUS_CONFIRMED;
         $user->emailConfirmed = 1;
         $user->organizationIds = '';

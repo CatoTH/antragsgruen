@@ -3,6 +3,7 @@
 ## Version 4.15.0 [not released yet]
 
 - User accounts can now be protected using Two-Factor-Authentication through TOTP. For individual users or all users of dedicated installations, this can be enforced.
+- Admins can now prevent specific user accounts from changing their password, e.g. if it is supposed to be a shared user account where admins manage the password.
 - When going to the Terms and Conditions and/or the Privacy page and back, you will end up in the same consultation than before now.
 
 ### Version 4.14.2 [not released yet]

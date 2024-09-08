@@ -88,7 +88,7 @@ class AutoupdateSyncService
             $userObj                  = new InternalUser();
             $userObj->auth            = $auth;
             $userObj->emailConfirmed  = 1;
-            $userObj->pwdEnc          = '';
+            $userObj->pwdEnc          = null;
             $userObj->organizationIds = '';
             $userObj->status          = InternalUser::STATUS_CONFIRMED;
         }

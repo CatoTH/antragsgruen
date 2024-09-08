@@ -118,7 +118,7 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
             $userObj                  = new User();
             $userObj->auth            = $auth;
             $userObj->emailConfirmed  = 1;
-            $userObj->pwdEnc          = '';
+            $userObj->pwdEnc          = null;
             $userObj->organizationIds = '';
             $userObj->status          = User::STATUS_CONFIRMED;
         }
