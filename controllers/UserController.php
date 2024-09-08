@@ -196,6 +196,7 @@ class UserController extends Base
                 return new RedirectResponse($backUrl);
             } catch (\RuntimeException $e) {
                 $error = $e->getMessage();
+                FailedLoginAttempt::logFailedAttempt($loggingInUser->email);
             }
         }
 
