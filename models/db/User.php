@@ -495,6 +495,11 @@ class User extends ActiveRecord implements IdentityInterface
         return ($authParts[0] === self::AUTH_EMAIL);
     }
 
+    public function supportsSecondFactorAuth(): bool
+    {
+        return $this->isEmailAuthUser();
+    }
+
     /**
      * @return ConsultationUserGroup[]|null
      */

@@ -408,7 +408,7 @@ class UserController extends Base
                 }
             }
 
-            if (isset($post['set2fa']) && trim($post['set2fa'])) {
+            if ($user->supportsSecondFactorAuth() && isset($post['set2fa']) && trim($post['set2fa'])) {
                 try {
                     $this->secondFactorAuthentication->attemptRegisteringSecondFactor($user, $post['set2fa']);
                 } catch (\RuntimeException $e) {
@@ -416,7 +416,7 @@ class UserController extends Base
                 }
             }
 
-            if (isset($post['remove2fa']) && trim($post['remove2fa'])) {
+            if ($user->supportsSecondFactorAuth() && isset($post['remove2fa']) && trim($post['remove2fa'])) {
                 $error = $this->secondFactorAuthentication->attemptRemovingSecondFactor($user, $post['remove2fa']);
                 if ($error) {
                     $this->getHttpSession()->setFlash('error', $error);

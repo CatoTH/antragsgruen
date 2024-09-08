@@ -69,6 +69,8 @@ if ($externalAuthenticator === null) {
     </div>
     <?php
     }
+
+    if ($user->supportsSecondFactorAuth()) {
     ?>
     <div class="stdTwoCols tfaRow">
         <div class="leftColumn">
@@ -131,6 +133,7 @@ if ($externalAuthenticator === null) {
         </div>
     </div>
     <?php
+    }
 
     $selectableUserOrgas = $user->getSelectableUserOrganizations();
     if ($selectableUserOrgas) {
