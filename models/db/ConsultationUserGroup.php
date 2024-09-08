@@ -286,13 +286,13 @@ class ConsultationUserGroup extends ActiveRecord
         return false;
     }
 
-    public static function getOrCreateUserGroup(Consultation $consultation, string $title): ConsultationUserGroup
+    public static function getOrCreateUserGroup(?Consultation $consultation, Site $site, string $title): ConsultationUserGroup
     {
-        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation->id, 'title' => $title]);
+        $group = ConsultationUserGroup::findOne(['consultationId' => $consultation?->id, 'siteId' => $site->id, 'title' => $title]);
         if (!$group) {
             $group = new ConsultationUserGroup();
-            $group->consultationId = $consultation->id;
-            $group->siteId = $consultation->siteId;
+            $group->consultationId = $consultation?->id;
+            $group->siteId = $site->id;
             $group->title = $title;
             $group->position = 0;
             $group->selectable = 1;
