@@ -105,7 +105,7 @@ class UserController extends Controller
         $user->nameFamily = $familyName;
         $user->name = $givenName . ' ' . $familyName;
         $user->emailConfirmed = 1;
-        $user->pwdEnc = (string)password_hash($password, PASSWORD_DEFAULT);
+        $user->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
         $user->status = User::STATUS_CONFIRMED;
         $user->organizationIds = '';
         $user->organization = $this->organization;

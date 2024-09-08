@@ -51,6 +51,9 @@ if ($externalAuthenticator === null) {
                    class="form-control" id="nameFamily">
         </div>
     </div>
+    <?php
+    if (!$user->getSettingsObj()->preventPasswordChange) {
+    ?>
     <div class="stdTwoCols">
         <label class="leftColumn control-label" for="userPwd"><?= Yii::t('user', 'pwd_change') ?>:</label>
         <div class="rightColumn">
@@ -64,6 +67,9 @@ if ($externalAuthenticator === null) {
             <input type="password" name="pwd2" value="" class="form-control" id="userPwd2">
         </div>
     </div>
+    <?php
+    }
+    ?>
     <div class="stdTwoCols tfaRow">
         <div class="leftColumn">
             <?= Yii::t('user', '2fa_title') ?>

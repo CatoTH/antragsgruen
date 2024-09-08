@@ -120,7 +120,7 @@ class DatabaseController extends Controller
         $user->dateCreation = date('Y-m-d H:i:s');
         $user->fixedData = User::FIXED_NAME | User::FIXED_ORGA;
         $user->status = User::STATUS_CONFIRMED;
-        $user->pwdEnc = (string)password_hash($password, PASSWORD_DEFAULT);
+        $user->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
         $user->save();
 
         return $user;

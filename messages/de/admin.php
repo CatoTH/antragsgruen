@@ -393,6 +393,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_usermodal_2fa_nset' => 'Nicht eingerichtet',
     'siteacc_usermodal_2fa_del'  => '2. Faktor entfernen',
     'siteacc_usermodal_2fa_force' => 'Verwendung eines Zweiten Faktors erzwingen',
+    'siteacc_usermodal_prevent_pwd' => 'Passwort-Änderung durch die Nutzer*in verhindern',
     'siteacc_usermodal_superh'   => 'Hinweis: Super-Admins können die Angaben oben bearbeiten und neue Passwörter setzen. In der <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins">technischen Dokumentation</a> steht, wie Super-Admins verwaltet werden.',
     'siteacc_groupmodal_title'   => '%GROUPNAME% bearbeiten',
     'siteacc_groupmodal_system'  => 'Dies ist eine nicht veränderbare Standard-Gruppe.',

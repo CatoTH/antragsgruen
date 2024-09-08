@@ -392,6 +392,7 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_usermodal_2fa_nset' => 'Not set up',
     'siteacc_usermodal_2fa_del'  => 'Remove second factor',
     'siteacc_usermodal_2fa_force' => 'Enforce two-factor-authentication',
+    'siteacc_usermodal_prevent_pwd' => 'Prevent password change by user',
     'siteacc_usermodal_superh'   => 'Hint: Super-admins can change the user data mentioned above and set a new password. Please refer to the <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technical documentation</a> on how to set up the list of super-admins.',
     'siteacc_groupmodal_title'   => 'Edit %GROUPNAME%',
     'siteacc_groupmodal_system'  => 'This is a default group that cannot be changed.',
