@@ -6,8 +6,13 @@
 - Admins can now prevent specific user accounts from changing their password, e.g. if it is supposed to be a shared user account where admins manage the password.
 - When going to the Terms and Conditions and/or the Privacy page and back, you will end up in the same consultation than before now.
 
-### Version 4.14.2 [not released yet]
+### Version 4.14.2 (2024-09-08)
 
+- Security advisory x41-2024-002:
+  - Illegitimate content could be stored in the motion reason. (Credit: X41 D-Sec GmbH, Eric Sesterhenn)
+  - Redirects to external pages could be injected. (Credit: X41 D-Sec GmbH, Eric Sesterhenn)
+  - E-Mail verification after signup could be bypassed. (Credit: X41 D-Sec GmbH, Yassine El Baaj)
+  - E-Mail verification after e-mail change could be bypassed. (Credit: X41 D-Sec GmbH, Yassine El Baaj, JM)
 - Bugfix: The PDF-export of all amendments was not working.
 - Bugfix: The PDF-export of amendments with proposed procedure was not working when using Weasyprint.
 
