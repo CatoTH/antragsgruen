@@ -154,6 +154,22 @@ aside {
   ul, ol {
     margin-top: 1em;
   }
+
+  dl {
+    dt, dd {
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    dt {
+      font-weight: bold;
+    }
+
+    dd {
+      margin-bottom: 10px;
+    }
+  }
 }
 
 

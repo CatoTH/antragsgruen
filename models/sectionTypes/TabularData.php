@@ -19,7 +19,7 @@ class TabularData extends ISectionType
         $rows = static::getTabularDataRowsFromData($type->data);
         $data = json_decode($this->section->getData(), true);
 
-        $str = '<div class="form-horizontal tabularData">';
+        $str = '<div class="tabularData">';
         $str .= $this->getFormLabel();
 
         foreach ($rows as $row) {
@@ -145,7 +145,7 @@ class TabularData extends ISectionType
             }
             $y     = $pdf->getY();
             $text1 = '<strong>' . Html::encode($rows[$rowId]->title) . ':</strong>';
-            $text2 = Exporter::encodeHTMLString($rows[$rowId]->formatRow($rowData));
+            $text2 = Html::encode($rows[$rowId]->formatRow($rowData));
 
             $pdf->writeHTMLCell(45, 0, 25, $y, $text1, 0, 0, false, true, '', true);
             $pdf->writeHTMLCell(111, 0, 75, null, $text2, 0, 1, false, true, '', true);

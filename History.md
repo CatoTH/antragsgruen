@@ -5,6 +5,7 @@
 - User accounts can now be protected using Two-Factor-Authentication through TOTP. For individual users or all users of dedicated installations, this can be enforced.
 - Admins can now prevent specific user accounts from changing their password, e.g. if it is supposed to be a shared user account where admins manage the password.
 - When going to the Terms and Conditions and/or the Privacy page and back, you will end up in the same consultation than before now.
+- Bugfix: Tabular data was not encoded correctly in the PHP-based PDF export.
 
 ### Version 4.14.2 (2024-09-08)
 
