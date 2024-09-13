@@ -17,7 +17,7 @@ class UserController extends Controller
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create', 'createOrUpdate' => ['groupIds', 'organization', 'welcomeFile'],
+            'create', 'create-or-update' => ['groupIds', 'organization', 'welcomeFile'],
             'update' => ['groupIds', 'organization', 'password'],
             default => [],
         };
@@ -184,8 +184,15 @@ class UserController extends Controller
             $user->changePassword($password);
         }
 
+        $existingGroups = [];
+        foreach ($user->userGroups as $userGroup) {
+            $existingGroups[] = $userGroup->id;
+        }
+
         foreach ($toUserGroups as $toUserGroup) {
-            $user->link('userGroups', $toUserGroup);
+            if (!in_array($toUserGroup->id, $existingGroups)) {
+                $user->link('userGroups', $toUserGroup);
+            }
         }
 
         $this->stdout('Updated the user: ' . $user->auth);
