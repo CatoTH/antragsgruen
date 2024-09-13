@@ -17,7 +17,7 @@ class UserController extends Controller
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create' => ['groupIds', 'organization', 'welcomeFile'],
+            'create', 'createOrUpdate' => ['groupIds', 'organization', 'welcomeFile'],
             'update' => ['groupIds', 'organization', 'password'],
             default => [],
         };
@@ -69,6 +69,27 @@ class UserController extends Controller
 
         $user->changePassword($password);
         $this->stdout('The password has been changed.' . "\n");
+
+        return 0;
+    }
+
+    /**
+     * Creates a user or updates their data if already existing
+     *
+     * Example:
+     * ./yii user/create-or-update email:test@example.org test@example.org "Given Name" "Family Name" TestPassword --groupIds 1,2 --organization Antragsgrün --welcome-file welcome-email.txt
+     *
+     * "groupIds" refer to the primary IDs in "consultationUserGroup"
+     */
+    public function actionCreateOrUpdate(string $auth, string $email, string $givenName, string $familyName, string $password): int
+    {
+        /** @var User|null $user */
+        $user = $this->findUserByAuth($auth);
+        if ($user) {
+            $this->updateUser($user, $this->organization, $password);
+        } else {
+            $this->actionCreate($auth, $email, $givenName, $familyName, $password);
+        }
 
         return 0;
     }
@@ -146,22 +167,27 @@ class UserController extends Controller
             return 1;
         }
 
+        $this->updateUser($user, $this->organization, $this->password);
+
+        return 0;
+    }
+
+    public function updateUser(?User $user, ?string $organization, ?string $password): void
+    {
         $toUserGroups = $this->getToSetUserGroups();
 
-        if ($this->organization) {
-            $user->organization = $this->organization;
+        if ($organization !== null) {
+            $user->organization = $organization;
             $user->save();
         }
-        if ($this->password) {
-            $user->changePassword($this->password);
+        if ($password) {
+            $user->changePassword($password);
         }
 
         foreach ($toUserGroups as $toUserGroup) {
             $user->link('userGroups', $toUserGroup);
         }
 
-        $this->stdout('Updated the user');
-
-        return 0;
+        $this->stdout('Updated the user: ' . $user->auth);
     }
 }
