@@ -534,10 +534,6 @@ trait MotionActionsTrait
                     true,
                     $ppChanges
                 );
-
-                if ($motion->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $motion->proposalStatus) {
-                    $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
-                }
             } catch (FormError $e) {
                 return new RestApiExceptionResponse(400, $e->getMessage());
             }
@@ -559,7 +555,9 @@ trait MotionActionsTrait
             ]);
             $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
 
-            if ($motion->id !== $originalMotionId) {
+            if ($motion->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $motion->proposalStatus) {
+                $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
+            } elseif ($motion->id !== $originalMotionId) {
                 // This can happen if a plugin enforces the creation of a new motion when saving
                 $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
             }
