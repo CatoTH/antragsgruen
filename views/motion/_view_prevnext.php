@@ -1,7 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Motion;
+use app\models\db\{Motion, User};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use yii\helpers\Html;
 
 /**
@@ -16,7 +17,16 @@ if (!$consultation->getSettings()->motionPrevNextLinks) {
 
 $prevMotion = null;
 $nextMotion = null;
-$motions = \app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions);
+
+$invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
+if (in_array($motion->status, $invisibleStatuses) && User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
+    $motions = array_values(array_filter($consultation->motions, fn(Motion $motion) => in_array($motion->status, $invisibleStatuses)));
+    usort($motions, function(Motion $a, Motion $b) {
+        return $a->getTimestamp() <=> $b->getTimestamp();
+    });
+} else {
+    $motions = \app\components\MotionSorter::getSortedIMotionsFlat($consultation, $consultation->motions);
+}
 foreach ($motions as $idx => $itMotion) {
     if ($motion->id !== $itMotion->id) {
         continue;
