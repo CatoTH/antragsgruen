@@ -6,6 +6,9 @@
 
 $motionType = $form->motion->getMyMotionType();
 $pdfLayout  = $motionType->getPDFLayoutClass();
+if (!$pdfLayout) {
+    $pdfLayout = new \app\views\pdfLayouts\BDK($motionType);
+}
 $pdf        = $pdfLayout->createPDFClass();
 
 // set document information
