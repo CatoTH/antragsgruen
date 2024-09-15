@@ -268,7 +268,7 @@ class ConsultationText extends ActiveRecord
     public static function getPageData(?Site $site, ?Consultation $consultation, string $pageKey): ConsultationText
     {
         $foundText = null;
-        if (!in_array($pageKey, static::getSitewidePages())) {
+        if (!in_array($pageKey, static::getSitewidePages()) && $consultation) {
             foreach ($consultation->texts as $text) {
                 if ($text->category === self::DEFAULT_CATEGORY && mb_strtolower($text->textId) === mb_strtolower($pageKey)) {
                     $foundText = $text;

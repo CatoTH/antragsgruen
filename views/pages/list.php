@@ -54,6 +54,7 @@ $foundPageIds = [];
             foreach ($missing as $textId => $title) {
                 if ($textId === 'feeds') {
                     $url     = \app\components\UrlHelper::createUrl(['consultation/feeds']);
+                    $options = [];
                 } else {
                     $params = ['pages/show-page', 'pageSlug' => $textId];
                     if (!in_array($textId, ConsultationText::getSitewidePages())) {
