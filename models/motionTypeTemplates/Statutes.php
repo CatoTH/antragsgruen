@@ -61,7 +61,7 @@ class Statutes
         $section->position      = 0;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_statutes_title');
-        $section->required      = 1;
+        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
@@ -77,7 +77,7 @@ class Statutes
         $section->position      = 1;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_statutes_text');
-        $section->required      = 1;
+        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
         $section->maxLen        = 0;
         $section->fixedWidth    = 1;
         $section->lineNumbers   = 1;

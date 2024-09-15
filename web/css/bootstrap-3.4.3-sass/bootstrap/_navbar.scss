@@ -54,8 +54,8 @@
   overflow-x: visible;
   border-top: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-  @include clearfix;
   -webkit-overflow-scrolling: touch;
+  @include clearfix;
 
   &.in {
     overflow-y: auto;
@@ -90,6 +90,12 @@
 
 .navbar-fixed-top,
 .navbar-fixed-bottom {
+  // Fix the top/bottom navbars when screen real estate supports it
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: $zindex-navbar-fixed;
+
   .navbar-collapse {
     max-height: $navbar-collapse-max-height;
 
@@ -97,12 +103,6 @@
       max-height: 200px;
     }
   }
-
-  // Fix the top/bottom navbars when screen real estate supports it
-  position: fixed;
-  right: 0;
-  left: 0;
-  z-index: $zindex-navbar-fixed;
 
   // Undo the rounded corners
   @media (min-width: $grid-float-breakpoint) {
@@ -291,6 +291,9 @@
   $shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
   @include box-shadow($shadow);
 
+  // Vertically center in expanded, horizontal navbar
+  @include navbar-vertical-align($input-height-base);
+
   // Mixin behavior for optimum display
   @include form-inline;
 
@@ -303,9 +306,6 @@
       }
     }
   }
-
-  // Vertically center in expanded, horizontal navbar
-  @include navbar-vertical-align($input-height-base);
 
   // Undo 100% width for pull classes
   @media (min-width: $grid-float-breakpoint) {

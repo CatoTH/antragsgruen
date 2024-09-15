@@ -5,7 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\latex\Content as LatexContent;
 use app\components\html2pdf\Content as HtmlToPdfContent;
 use app\models\settings\MotionSection;
-use app\models\db\{Consultation, IMotionSection, Motion};
+use app\models\db\{Consultation, ConsultationSettingsMotionSection, IMotionSection, Motion};
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -116,13 +116,21 @@ abstract class ISectionType
         $this->motionContext = $motion;
     }
 
-
     protected function getFormLabel(): string
     {
         $type = $this->section->getSettings();
         $str  = '<label for="sections_' . $type->id . '"';
-        if ($type->required) {
+        if ($type->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
             $str .= ' class="required" data-required-str="' . Html::encode(\Yii::t('motion', 'field_required')) . '"';
+        } elseif ($type->required === ConsultationSettingsMotionSection::REQUIRED_ENCOURAGED) {
+            $msgTitle = \Yii::t('motion', 'field_encouraged_title');
+            $msgErr = str_replace('%FIELD%', $this->section->getSettings()->title, \Yii::t('motion', 'field_encouraged_msg'));
+            $msgSubmit = \Yii::t('motion', 'field_encouraged_submit');
+            $msgFill = \Yii::t('motion', 'field_encouraged_fill');
+            $str .= ' class="encouraged" data-encouraged-str="' . Html::encode($msgErr) . '"' .
+                    ' data-encouraged-title="' . Html::encode($msgTitle) . '"' .
+                    ' data-encouraged-submit="' . Html::encode($msgSubmit) . '"' .
+                    ' data-encouraged-fill="' . Html::encode($msgFill) . '"';
         } else {
             $str .= ' class="optional" data-optional-str="' . Html::encode(\Yii::t('motion', 'field_optional')) . '"';
         }
@@ -130,6 +138,28 @@ abstract class ISectionType
 
         if ($type->getSettingsObj()->public === MotionSection::PUBLIC_NO) {
             $str .= '<div class="alert alert-info"><p>' . \Yii::t('motion', 'field_unpublic') . '</p></div>';
+        }
+
+        return $str;
+    }
+
+    protected function getHintsAfterFormLabel(): string
+    {
+        $type = $this->section->getSettings();
+        $str = '';
+
+        if ($type->maxLen !== 0) {
+            $len = abs($type->maxLen);
+            $str .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign" aria-hidden="true"></span> ';
+            $str .= str_replace(
+                ['%LEN%', '%COUNT%'],
+                [$len, '<span class="counter"></span>'],
+                \Yii::t('motion', 'max_len_hint')
+            );
+            $str .= '</div>';
+        }
+        if ($type->getSettingsObj()->explanationHtml) {
+            $str .= '<div class="alert alert-info">' . $type->getSettingsObj()->explanationHtml . '</div>';
         }
 
         return $str;

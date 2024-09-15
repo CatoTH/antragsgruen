@@ -39,17 +39,17 @@
     > li {
       padding: 5px 0;
       display: block;
-      @media screen and (min-width: 1024px) {
-        float: left;
-        width: 50%;
-        height: 60px;
-      }
-
       -webkit-hyphens: auto;
       word-break: break-word;
       -moz-hyphens: auto;
       hyphens: auto;
       overflow: hidden;
+
+      @media screen and (min-width: 1024px) {
+        float: left;
+        width: 50%;
+        height: 60px;
+      }
 
       span.orga {
         font-size: 0.9em;
@@ -73,10 +73,10 @@
 }
 
 .managerHelpPage {
+  font-size: 16px;
   .well &.content {
     padding: 15px 40px 30px;
   }
-  font-size: 16px;
   h2 {
     margin-top: 40px;
   }

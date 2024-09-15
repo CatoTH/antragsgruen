@@ -15,4 +15,6 @@ class MotionSection implements \JsonSerializable
     public bool $showInHtml = false; // Used for titles and PDF-alternatives
     public int $public = MotionSection::PUBLIC_YES;
     public bool $isRtl = false; // If true, the text is to be shown in Right-to-Left direction
+
+    public ?string $explanationHtml = null; // shown above the input field
 }

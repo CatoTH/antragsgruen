@@ -367,11 +367,10 @@
 
 .motionTextHolder {
   .well & {
+    padding-bottom: 22px;
     > h3.green {
       margin-bottom: 22px;
     }
-
-    padding-bottom: 22px;
   }
 
   .stdPadding {
@@ -434,10 +433,10 @@
   }
 
   .textAmendment {
+    position: relative;
     @media (min-width: $screenMinWith) {
       width: $motionFixedWidth;
     }
-    position: relative;
 
     del, ul.deleted, ol.deleted, li.deleted, blockquote.deleted, pre.deleted {
       color: #ff0000;
@@ -515,13 +514,13 @@
 
   .onlyOneSupporter {
     list-style-type: none;
+    margin: 0;
     @media screen and (min-width: $screenMinWith) {
       padding: 15px 10px 15px $fixedWidthTextStdPadding;
     }
     @media (max-width: $screenMinWith - 1) {
       padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
     }
-    margin: 0;
     > li {
       padding: 0;
       margin: 0;

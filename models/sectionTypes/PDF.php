@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 use app\components\{latex\Content as LatexContent, html2pdf\Content as HtmlToPdfContent, Tools, UrlHelper};
-use app\models\db\{Consultation, MotionSection};
+use app\models\db\{Consultation, ConsultationSettingsMotionSection, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -50,12 +50,18 @@ class PDF extends ISectionType
         $url  = $this->getPdfUrl();
         $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_PDF_ATTACHMENT . '">';
         $str .= '<div class="form-group">';
+
         $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         if ($url) {
-            $required = false;
+            $required = '';
         } else {
-            $required = ($type->required ? 'required' : '');
+            $required = match($type->required) {
+                ConsultationSettingsMotionSection::REQUIRED_YES => 'required',
+                ConsultationSettingsMotionSection::REQUIRED_ENCOURAGED => 'data-encouraged="true"',
+                default => '',
+            };
         }
 
         $maxSize = (int)floor(Tools::getMaxUploadSize() / 1024 / 1024);
@@ -70,7 +76,7 @@ class PDF extends ISectionType
             $str .= '<a href="' . Html::encode($this->getPdfUrl()) . '" class="currentPdf">';
             $str .= \Yii::t('motion', 'pdf_current') . '</a>';
         }
-        if ($url && !$type->required) {
+        if ($url && $type->required !== ConsultationSettingsMotionSection::REQUIRED_YES) {
             $str .= '<label class="deletePdf"><input type="checkbox" name="sectionDelete[' . $type->id . ']">';
             $str .= \Yii::t('motion', 'pdf_delete');
             $str .= '</label>';

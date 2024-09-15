@@ -226,8 +226,8 @@
     }
 
     &.active {
-      @include outlineOnFocusHasBorder();
       cursor: pointer;
+      @include outlineOnFocusHasBorder();
 
       &:hover, &:focus {
         background-color: darken($backgroundInactive, 5%);
@@ -569,16 +569,15 @@
     padding-left: 1.4em;
 
     > li {
-
-      .leftIcon {
-        float: left;
-        margin-left: -50px;
-      }
-
       font-size: $font-size-base;
       line-height: 1.5em;
       @if ($font-size-base < 16) {
         font-size: 16px;
+      }
+
+      .leftIcon {
+        float: left;
+        margin-left: -50px;
       }
     }
   }

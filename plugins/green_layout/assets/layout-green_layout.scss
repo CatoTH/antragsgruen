@@ -178,10 +178,6 @@ body {
 
   .hgroup {
     display: inline-block;
-    @media screen and (max-width: 550px) {
-      display: none;
-
-    }
     width: auto!important;
     text-align: right;
     z-index: 2;
@@ -191,6 +187,9 @@ body {
     border-top: 0.2em solid #fff;
     border-bottom: 0.2em solid #fff;
     padding: 0.5em 0;
+    @media screen and (max-width: 550px) {
+      display: none;
+    }
   }
   a, a:link, a:visited {
     color: #fff;
@@ -237,10 +236,6 @@ body {
 
   .hgroup {
     display: inline-block;
-    @media screen and (max-width: 550px) {
-      display: none;
-
-    }
     width: auto!important;
     text-align: right;
     z-index: 2;
@@ -250,6 +245,9 @@ body {
     border-top: 0.2em solid #fff;
     border-bottom: 0.2em solid #fff;
     padding: 0.5em 0;
+    @media screen and (max-width: 550px) {
+      display: none;
+    }
   }
   a, a:link, a:visited {
     color: #fff;

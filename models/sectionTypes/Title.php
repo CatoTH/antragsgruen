@@ -17,7 +17,9 @@ class Title extends ISectionType
     {
         $type = $this->section->getSettings();
         $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">';
+
         $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         if ($type->maxLen != 0) {
             $len = abs($type->maxLen);

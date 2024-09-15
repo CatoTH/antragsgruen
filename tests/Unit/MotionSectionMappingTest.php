@@ -155,7 +155,7 @@ class MotionSectionMappingTest extends DBTestBase
         $section->title = $title;
         $section->type = $type;
         $section->hasAmendments = ($amendable ? 1 : 0);
-        $section->required = ($required ? 1 : 0);
+        $section->required = ($required ? ConsultationSettingsMotionSection::REQUIRED_YES : ConsultationSettingsMotionSection::REQUIRED_NO);
 
         $section->position      = 0;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;

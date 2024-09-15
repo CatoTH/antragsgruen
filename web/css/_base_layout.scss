@@ -10,10 +10,10 @@
   position: absolute;
   left: 10px;
   top: 35px;
+  @include outlineOnFocusNoBorder();
   &:link, &:visited {
     color: transparent;
   }
-  @include outlineOnFocusNoBorder();
   &:focus {
     color: $colorLinks;
   }

@@ -521,7 +521,7 @@ class Base extends Controller
     private function getConsultationUrlFromBackLink(string $backLink): string
     {
         preg_match('/\/(?<con>[\w_-]+)(\/.*)?$/siu', $this->getRequestValue('backUrl'), $matches);
-        if (!isset($matches['con']) || $matches['con'] === '') {
+        if (!isset($matches['con'])) {
             return '';
         }
         $consultation = Consultation::findOne(['urlPath' => $matches['con'], 'siteId' => $this->site->id]);

@@ -69,6 +69,11 @@ $sName = 'sections[' . $sectionId . ']';
                     <?= Html::checkbox($sName . '[showInHtml]', $settings->showInHtml) ?>
                     <?= Yii::t('admin', 'motion_type_show_in_html') ?>
                 </label>
+
+                <label class="hasExplanation">
+                    <?= Html::checkbox($sName . '[hasExplanation]', $section->getSettingsObj()->explanationHtml) ?>
+                    <?= Yii::t('admin', 'motion_type_has_explanation') ?>
+                </label>
             </div>
             <div class="optionsCol">
                 <label class="fixedWidthLabel">
@@ -79,11 +84,6 @@ $sName = 'sections[' . $sectionId . ']';
                 <label class="isRtlLabel">
                     <?= Html::checkbox($sName . '[isRtl]', $section->getSettingsObj()->isRtl, ['class' => 'isRtl']) ?>
                     <?= Yii::t('admin', 'motion_section_rtl') ?>
-                </label>
-
-                <label class="requiredLabel">
-                    <?= Html::checkbox($sName . '[required]', $section->required, ['class' => 'required']) ?>
-                    <?= Yii::t('admin', 'motion_section_required') ?>
                 </label>
 
                 <label class="lineNumbersLabel">
@@ -126,6 +126,28 @@ $sName = 'sections[' . $sectionId . ']';
                     <?= Html::checkbox($sName . '[maxLenSoft]', ($section->maxLen < 0), ['class' => 'maxLenSoftCheckbox']) ?>
                     <?= Yii::t('admin', 'motion_section_limit_soft') ?>
                 </label>
+
+                <label class="nonPublicRow">
+                    <?php
+                    $checked = ($section->getSettingsObj()->public === \app\models\settings\MotionSection::PUBLIC_NO);
+                    $options = ['class' => 'nonPublic'];
+                    if ($sectionId !== '#NEW#') {
+                        $options['disabled'] = 'disabled';
+                    }
+                    echo Html::checkbox($sName . '[nonPublic]', $checked, $options);
+                    ?>
+                    <?= Yii::t('admin', 'motion_section_nonpublic') ?>
+                    <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_section_nonpublic_h')) ?>
+                </label>
+
+                <label class="amendmentRow">
+                    <?= Html::checkbox(
+                        $sName . '[hasAmendments]',
+                        ($section->hasAmendments === 1),
+                        ['class' => 'hasAmendments']
+                    ) ?>
+                    <?= Yii::t('admin', 'motion_section_amendable') ?>
+                </label>
             </div>
             <div class="commAmendCol">
                 <fieldset class="commentRow">
@@ -154,31 +176,43 @@ $sName = 'sections[' . $sectionId . ']';
                         ?>
                         <?= Yii::t('admin', 'motion_section_comm_para') ?>
                     </label>
-
                 </fieldset>
 
-                <label class="nonPublicRow">
-                    <?php
-                    $checked = ($section->getSettingsObj()->public === \app\models\settings\MotionSection::PUBLIC_NO);
-                    $options = ['class' => 'nonPublic'];
-                    if ($sectionId !== '#NEW#') {
-                        $options['disabled'] = 'disabled';
-                    }
-                    echo Html::checkbox($sName . '[nonPublic]', $checked, $options);
-                    ?>
-                    <?= Yii::t('admin', 'motion_section_nonpublic') ?>
-                    <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_section_nonpublic_h')) ?>
-                </label>
+                <fieldset class="requiredRow">
+                    <legend><?= Yii::t('admin', 'motion_section_required') ?>:</legend>
 
-                <label class="amendmentRow">
-                    <?= Html::checkbox(
-                        $sName . '[hasAmendments]',
-                        ($section->hasAmendments === 1),
-                        ['class' => 'hasAmendments']
-                    ) ?>
-                    <?= Yii::t('admin', 'motion_section_amendable') ?>
-                </label>
+                    <label class="requiredNo">
+                        <?php
+                        $val = ConsultationSettingsMotionSection::REQUIRED_NO;
+                        echo Html::radio($sName . '[required]', ($section->required === $val), ['value' => $val])
+                        ?>
+                        <?= Yii::t('admin', 'motion_section_required_no') ?>
+                    </label>
+
+                    <label class="requiredEncouraged">
+                        <?php
+                        $val = ConsultationSettingsMotionSection::REQUIRED_ENCOURAGED;
+                        echo Html::radio($sName . '[required]', ($section->required === $val), ['value' => $val])
+                        ?>
+                        <?= Yii::t('admin', 'motion_section_required_enc') ?>
+                        <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_section_required_enc_h')) ?>
+                    </label>
+
+                    <label class="requiredYes">
+                        <?php
+                        $val = ConsultationSettingsMotionSection::REQUIRED_YES;
+                        echo Html::radio($sName . '[required]', ($section->required === $val), ['value' => $val])
+                        ?>
+                        <?= Yii::t('admin', 'motion_section_required_yes') ?>
+                    </label>
             </div>
+        </div>
+
+        <div class="explanationRow">
+            <textarea placeholder="<?= Yii::t('admin', 'motion_type_has_explanation') ?>"
+                      name="<?= $sName ?>[explanationHtml]" class="form-control" rows="2"><?php
+                echo Html::encode($section->getSettingsObj()->explanationHtml ?? '');
+            ?></textarea>
         </div>
 
         <?php

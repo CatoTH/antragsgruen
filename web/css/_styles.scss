@@ -179,6 +179,9 @@
 }
 
 .wysiwyg-textarea {
+  .alert {
+    margin-bottom: 8px;
+  }
   textarea {
     display: none;
   }

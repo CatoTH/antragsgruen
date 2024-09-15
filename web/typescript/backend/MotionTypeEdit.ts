@@ -327,6 +327,16 @@ class MotionTypeEdit {
         });
         $list.find('.nonPublic').trigger('change');
 
+        $list.on('change', '.hasExplanation input', function () {
+            let $li = $(this).parents('li').first();
+            if ($(this).prop('checked')) {
+                $li.find('.explanationRow').removeClass("hidden");
+            } else {
+                $li.find('.explanationRow').addClass("hidden");
+            }
+        });
+        $list.find('.hasExplanation input').trigger('change');
+
         $('.sectionAdder').on('click', function (ev) {
             ev.preventDefault();
             let newStr = $('#sectionTemplate').html();

@@ -1,5 +1,6 @@
 import {DraftSavingEngine} from "../shared/DraftSavingEngine";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
+import SubmitEvent = JQuery.SubmitEvent;
 
 export class MotionEditForm {
     private hasChanged: boolean = false;
@@ -20,17 +21,72 @@ export class MotionEditForm {
         new DraftSavingEngine($form, $draftHint, "motion_" + draftMotionType + "_" + draftMotionId);
 
         $form.on("submit", (ev) => {
-            let error: boolean = false;
-            if (this.checkMultipleTagsError()) {
-                error = true;
-            }
+            this.onSubmitCheck(ev, $form)
+        });
+    }
 
-            if (error) {
+    private onSubmitCheck(ev: SubmitEvent, $form: JQuery): void {
+        let error: boolean = false;
+        if (this.checkMultipleTagsError()) {
+            error = true;
+        }
+
+        if (error) {
+            ev.preventDefault();
+        } else {
+            const encouragement = this.getEncouragedFieldError($form);
+            if (encouragement) {
                 ev.preventDefault();
+
+                bootbox.dialog({
+                    title: encouragement.field.data('encouraged-title'),
+                    message: encouragement.field.data('encouraged-str'),
+                    buttons: {
+                        submit: {
+                            label: encouragement.field.data('encouraged-submit'),
+                            callback: function() {
+                                encouragement.field.data("skip-encouraged-fields", true);
+                                $form.append('<input type="hidden" name="save" value="1">');
+                                $form.trigger("submit");
+                            }
+                        },
+                        fill: {
+                            label: encouragement.field.data('encouraged-fill'),
+                            callback: function() {
+                                encouragement.field.scrollintoview({top_offset: -50});
+                            }
+                        }
+                    }
+                });
             } else {
                 $(window).off("beforeunload", MotionEditForm.onLeavePage);
             }
+        }
+    }
+
+    private getEncouragedFieldError($form: JQuery): {field: JQuery, error: string}|null {
+        let result: {field: JQuery, error: string}|null = null;
+        $form.find('.wysiwyg-textarea').each(function() {
+            const $field = $(this),
+                $label = $field.find("label.encouraged");
+
+            if ($label.length === 0) {
+                return;
+            }
+
+            const text = $field.find("textarea").val().trim();
+            if (text && text !== '<p></p>' && text !== '&nbsp;') {
+                return;
+            }
+
+            if ($label.data("skip-encouraged-fields")) {
+                return;
+            }
+
+            result = {field: $label, error: $label.data("encouraged-str")}
         });
+
+        return result;
     }
 
     private checkMultipleTagsError(): boolean {

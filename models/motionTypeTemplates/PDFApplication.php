@@ -54,7 +54,7 @@ class PDFApplication
         $section->position      = 0;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_app_name');
-        $section->required      = 1;
+        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
@@ -70,7 +70,7 @@ class PDFApplication
         $section->position      = 1;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_app_pdf');
-        $section->required      = 1;
+        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;

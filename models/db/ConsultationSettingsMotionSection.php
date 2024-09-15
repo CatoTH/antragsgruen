@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\HTMLTools;
 use app\models\sectionTypes\{ISectionType, TabularData};
 use app\models\settings\{AntragsgruenApp, MotionSection as MotionSectionSettings};
 use yii\db\ActiveRecord;
@@ -35,6 +36,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
 
     public const STATUS_VISIBLE = 0;
     public const STATUS_DELETED = -1;
+
+    public const REQUIRED_NO = 0;
+    public const REQUIRED_YES = 1;
+    public const REQUIRED_ENCOURAGED = 2;
 
     public static function tableName(): string
     {
@@ -83,7 +88,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     {
         $this->setAttributes($data);
 
-        $this->required      = (isset($data['required']) ? 1 : 0);
+        $this->required      = (isset($data['required']) ? intval($data['required']) : 0);
         $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
         $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
         $this->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
@@ -118,6 +123,11 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             $settings->imgMaxHeight = intval($data['imgMaxHeight']);
         } else {
             $settings->imgMaxHeight = 0;
+        }
+        if (isset($data['hasExplanation'])) {
+            $settings->explanationHtml = HTMLTools::cleanSimpleHtml($data['explanationHtml']);
+        } else {
+            $settings->explanationHtml = null;
         }
         $settings->showInHtml = (isset($data['showInHtml']) || !in_array($this->type, [ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_TITLE]));
         $settings->isRtl = isset($data['isRtl']);
@@ -160,7 +170,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         return $forbidden;
     }
 
-    public function requiresAutoCreationWhenMission(): bool
+    public function requiresAutoCreationWhenMissing(): bool
     {
         return $this->type === ISectionType::TYPE_TEXT_EDITORIAL; // Required for editing the text in the frontend
     }

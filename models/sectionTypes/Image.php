@@ -3,7 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\{latex\Content as LatexContent, html2pdf\Content as HtmlToPdfContent, Tools, UrlHelper};
-use app\models\db\{AmendmentSection, Consultation, MotionSection};
+use app\models\db\{AmendmentSection, Consultation, ConsultationSettingsMotionSection, MotionSection};
 use app\models\exceptions\{FormError, Internal};
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -69,12 +69,18 @@ class Image extends ISectionType
         $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_IMAGE . '">';
         if ($url) {
             $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . \Yii::t('motion', 'image_current') . '" class="currentImage">';
-            $required = false;
+            $required = '';
         } else {
-            $required = ($type->required ? 'required' : '');
+            $required = match ($type->required) {
+                ConsultationSettingsMotionSection::REQUIRED_YES => 'required',
+                ConsultationSettingsMotionSection::REQUIRED_ENCOURAGED => 'data-encouraged="true"',
+                default => '',
+            };
         }
         $str .= '<div class="form-group">';
+
         $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         $maxSize = (string) floor(Tools::getMaxUploadSize() / 1024 / 1024);
         $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign" aria-hidden="true"></span> ';
@@ -89,7 +95,7 @@ class Image extends ISectionType
         $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
                 ' accept="' . implode(', ', $inputTypes) . '"' .
                 ' name="sections[' . $type->id . ']">';
-        if ($url && !$type->required) {
+        if ($url && $type->required !== ConsultationSettingsMotionSection::REQUIRED_YES) {
             $str .= '<label class="deleteImage"><input type="checkbox" name="sectionDelete[' . $type->id . ']">';
             $str .= \Yii::t('motion', 'img_delete');
             $str .= '</label>';

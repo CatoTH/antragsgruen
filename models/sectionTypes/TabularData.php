@@ -21,6 +21,7 @@ class TabularData extends ISectionType
 
         $str = '<div class="tabularData">';
         $str .= $this->getFormLabel();
+        $str .= $this->getHintsAfterFormLabel();
 
         foreach ($rows as $row) {
             $id = 'sections_' . $type->id . '_' . $row->rowId;
