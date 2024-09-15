@@ -540,6 +540,7 @@ class Base extends Controller
     {
         if (is_null($this->site)) {
             $this->site = Site::findOne(['subdomain' => $subdomain]);
+            UrlHelper::setCurrentSite($this->site);
         }
 
         if ($this instanceof ConsultationController && $this->action->id === 'home') {
@@ -577,7 +578,6 @@ class Base extends Controller
         }
 
         UrlHelper::setCurrentConsultation($this->consultation);
-        UrlHelper::setCurrentSite($this->site);
 
         $this->layoutParams->setConsultation($this->consultation);
 
