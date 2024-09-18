@@ -91,6 +91,11 @@ body {
     margin-bottom: 0.1cm;
     margin-top: 0.3cm;
     margin-left: 5px;
+
+    &.noPrefix {
+      opacity: 0; // still keep the space for alignment
+    }
+
     .holder {
       display: inline-block;
       position: relative;
