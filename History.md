@@ -12,10 +12,10 @@
 ### Version 4.14.2 (2024-09-08)
 
 - Security advisory x41-2024-002:
-  - Illegitimate content could be stored in the motion reason. (Credit: X41 D-Sec GmbH, Eric Sesterhenn)
-  - Redirects to external pages could be injected. (Credit: X41 D-Sec GmbH, Eric Sesterhenn)
-  - E-Mail verification after signup could be bypassed. (Credit: X41 D-Sec GmbH, Yassine El Baaj)
-  - E-Mail verification after e-mail change could be bypassed. (Credit: X41 D-Sec GmbH, Yassine El Baaj, JM)
+  - Illegitimate content could be stored in the motion reason. (CVE-2024-46884. Credit: X41 D-Sec GmbH, Eric Sesterhenn)
+  - Redirects to external pages could be injected. (CVE-2024-46882. Credit: X41 D-Sec GmbH, Eric Sesterhenn)
+  - E-Mail verification after signup could be bypassed. (CVE-2024-46883. Credit: X41 D-Sec GmbH, Yassine El Baaj)
+  - E-Mail verification after e-mail change could be bypassed. (CVE-2024-46883. Credit: X41 D-Sec GmbH, Yassine El Baaj, JM)
 - Bugfix: The PDF-export of all amendments was not working.
 - Bugfix: The PDF-export of amendments with proposed procedure was not working when using Weasyprint.
 
