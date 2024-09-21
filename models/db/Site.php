@@ -134,7 +134,7 @@ class Site extends ActiveRecord
     {
         $domain = str_replace('<subdomain:[\w_-]+>', $this->subdomain, AntragsgruenApp::getInstance()->domainSubdomain);
 
-        return trim(explode("//", $domain)[1], '/');
+        return trim($domain);
     }
 
     public function createDefaultSiteAdminGroup(): ConsultationUserGroup
