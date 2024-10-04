@@ -192,6 +192,8 @@ class Permissions
                 }
             }
             $notAmendableStatuses = [
+                Motion::STATUS_WITHDRAWN,
+                Motion::STATUS_WITHDRAWN_INVISIBLE,
                 Motion::STATUS_DELETED,
                 Motion::STATUS_DRAFT,
                 Motion::STATUS_COLLECTING_SUPPORTERS,
