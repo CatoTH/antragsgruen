@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\controllers\UserController;
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
 use app\models\http\{RedirectResponse, ResponseInterface};
@@ -291,5 +292,15 @@ class SecondFactorAuthentication
                          ->logoPunchoutBackground(true)
                          ->validateResult(false)
                          ->build();
+    }
+
+    public function onPageView(string $controller, string $actionId): void
+    {
+        if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_FORCE_2FA_REGISTRATION) {
+            $this->session->remove(self::SESSION_KEY_2FA_REGISTRATION_ONGOING);
+        }
+        if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_2FA) {
+            $this->session->remove(self::SESSION_KEY_2FA_ONGOING);
+        }
     }
 }

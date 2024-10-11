@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
-use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
+use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, SecondFactorAuthentication, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, Site, User};
 use Yii;
@@ -57,6 +57,9 @@ class Base extends Controller
 
         $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
         $usernamePasswordForm->onPageView(get_class($this), $action->id);
+
+        $tfa = new SecondFactorAuthentication(RequestContext::getSession());
+        $tfa->onPageView(get_class($this), $action->id);
 
         if (!parent::beforeAction($action)) {
             return false;
