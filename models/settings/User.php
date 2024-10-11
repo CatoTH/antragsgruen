@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\settings;
 
 class User implements \JsonSerializable
@@ -10,6 +12,7 @@ class User implements \JsonSerializable
     public ?array $voteWeightByConsultation = null;
     public bool $enforceTwoFactorAuthentication = false;
     public bool $preventPasswordChange = false;
+    public bool $forcePasswordChange = false;
 
     /** @var array<array{type: non-empty-string, secret: non-empty-string}>|null */
     public ?array $secondFactorKeys = null;

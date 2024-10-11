@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\forms;
 
 use app\components\Captcha;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\components\UrlHelper;
+use app\controllers\UserController;
 use app\models\db\{EMailLog, FailedLoginAttempt, Site, User};
 use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUser, MailNotSent};
 use app\models\settings\AntragsgruenApp;
@@ -26,10 +29,11 @@ class LoginUsernamePasswordForm extends Model
     public bool $createAccount = false;
 
     private const SESSION_KEY_EMAIL_CONFIRMATION = 'emailConfirmationUser';
+    private const SESSION_KEY_PWD_CHANGE = 'passwordChangeUser';
 
     public function __construct(
-        private Session $session,
-        private ?ExternalPasswordAuthenticatorInterface $externalAuthenticator
+        private readonly Session $session,
+        private readonly ?ExternalPasswordAuthenticatorInterface $externalAuthenticator
     ) {
         parent::__construct();
     }
@@ -291,5 +295,32 @@ class LoginUsernamePasswordForm extends Model
             return false;
         }
         return $data['user_id'] === $user->id;
+    }
+
+    public function setLoggedInAwaitingPasswordChange(User $user): void
+    {
+        $this->session->set(self::SESSION_KEY_PWD_CHANGE, [
+            'time' => time(),
+            'user_id' => $user->id,
+        ]);
+    }
+
+    public function getOngoingPwdChangeSession(): ?User
+    {
+        $data = $this->session->get(self::SESSION_KEY_PWD_CHANGE);
+        if (!$data) {
+            return null;
+        }
+        return User::findOne(['id' => $data['user_id']]);
+    }
+
+    public function onPageView(string $controller, string $actionId): void
+    {
+        if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_FORCE_PWD_CHANGE) {
+            $this->session->remove(self::SESSION_KEY_PWD_CHANGE);
+        }
+        if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_FORCE_EMAIL_CONFIRM) {
+            $this->session->remove(self::SESSION_KEY_EMAIL_CONFIRMATION);
+        }
     }
 }

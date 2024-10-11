@@ -32,6 +32,8 @@ return [
     '2fa_register_explanation'  => 'It is necessary to secure your account with a second factor in order to use it.',
     '2fa_general_explanation'   => 'Use an app like <a href="https://authy.com/download/">Authy</a>, <a href="https://freeotp.github.io">FreeOTP</a> (OpenSource), <a href="https://www.microsoft.com/de-de/security/mobile-authenticator-app">Microsoft Authenticator</a> or Google Authenticator.<br><br>Scan the QR-Code below, save it on your phone and then enter the generated numeric code here on this page below.',
     '2fa_login_intro'           => 'You secured your account with a second factor. Please open the app you used to set it up and enter the code shown by the app:',
+    'force_pwd_title'           => 'Change password',
+    'force_pwd_explanation'     => 'Please set a new password to use Antragsgrün.',
     'username_deleted'          => 'Removed',
     'err_pwd_different'         => 'The two passwords are not the same.',
     'err_pwd_length'            => 'The password has to be at least %MINLEN% characters long.',

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
+use app\models\forms\LoginUsernamePasswordForm;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
@@ -53,6 +54,9 @@ class Base extends Controller
         $response->headers->add('X-Xss-Protection', '1');
         $response->headers->add('X-Content-Type-Options', 'nosniff');
         $response->headers->add('X-Frame-Options', 'sameorigin');
+
+        $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
+        $usernamePasswordForm->onPageView(get_class($this), $action->id);
 
         if (!parent::beforeAction($action)) {
             return false;

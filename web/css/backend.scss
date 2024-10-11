@@ -1473,6 +1473,9 @@ label.legend {
     margin-top: 10px;
     margin-bottom: 10px;
   }
+  .pwdRow label {
+    display: block;
+  }
 }
 
 #accountsEditForm, #accountsCreateForm {
@@ -1987,6 +1990,9 @@ label.legend {
     .restrictedTo {
       min-height: 100px;
     }
+  }
+  .preventPwdChangeHolder {
+    margin-top: 7px;
   }
 }
 

@@ -517,6 +517,8 @@ class ConsultationLog extends ActiveRecord
                 $str      = \Yii::t('structure', 'activity_MOTION_PUBLISH');
                 $fallback = ($this->motion ? $this->motion->getInitiatorsStr() : '-');
                 return $this->formatLogEntryUser($str, $fallback);
+            case self::MOTION_SUPPORT_FINISH:
+                return null;
             case self::MOTION_DELETE:
                 $str    = \Yii::t('structure', 'activity_MOTION_DELETE');
                 $prefix = self::motionId2Prefix($this->actionReferenceId);
@@ -569,6 +571,8 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
                 return $this->formatLogEntryUser($str, ($this->amendment ? $this->amendment->getInitiatorsStr() : ''));
+            case self::AMENDMENT_SUPPORT_FINISH:
+                return null;
             case self::AMENDMENT_DELETE:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_DELETE');
                 $str = $this->formatLogEntryAmendment($str);

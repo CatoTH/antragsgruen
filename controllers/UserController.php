@@ -14,6 +14,9 @@ use yii\web\Response;
 
 class UserController extends Base
 {
+    public const VIEW_ID_LOGIN_FORCE_PWD_CHANGE = 'login-force-pwd-change';
+    public const VIEW_ID_LOGIN_FORCE_EMAIL_CONFIRM = 'confirmregistration';
+
     public $enableCsrfValidation = false;
 
     // Login and Mainainance mode is always allowed
@@ -72,7 +75,14 @@ class UserController extends Base
                     $backUrl = UrlHelper::createUrl([
                         '/user/confirmregistration',
                         'backUrl' => $backUrl,
-                        'email'   => $user->email,
+                        'email' => $user->email,
+                    ]);
+                } elseif ($user->getSettingsObj()->forcePasswordChange) {
+                    // Needs to change password before actually being logged in
+                    $usernamePasswordForm->setLoggedInAwaitingPasswordChange($user);
+                    $backUrl = UrlHelper::createUrl([
+                        '/user/login-force-pwd-change',
+                        'backUrl' => $backUrl,
                     ]);
                 } elseif ($return = $this->secondFactorAuthentication->onUsernamePwdLoginSuccess($user)) {
                     // Needs to perform 2FA before actually being logged in
@@ -205,6 +215,47 @@ class UserController extends Base
             'error' => $error,
             'captchaUsername' => $loggingInUser->email,
             'addSecondFactorKey' => $this->secondFactorAuthentication->createForcedRegistrationSecondFactor(),
+        ]));
+    }
+
+    public function actionLoginForcePwdChange(string $backUrl = ''): ResponseInterface
+    {
+        if ($backUrl === '') {
+            $backUrl = '/';
+        }
+
+        $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
+        $sessionUser = $usernamePasswordForm->getOngoingPwdChangeSession();
+        if (!$sessionUser) {
+            return new RedirectResponse($backUrl);
+        }
+
+        $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+
+        $error = null;
+        if ($this->isPostSet('change') && $this->getPostValue('pwd')) {
+            if ($this->getPostValue('pwd') !== $this->getPostValue('pwd2')) {
+                $error = \Yii::t('user', 'err_pwd_different');
+            } elseif (grapheme_strlen($this->getPostValue('pwd')) < $pwMinLen) {
+                $msg = \Yii::t('user', 'err_pwd_length');
+                $error = str_replace('%MINLEN%', (string)$pwMinLen, $msg);
+            } else {
+                $sessionUser->pwdEnc = password_hash($this->getPostValue('pwd'), PASSWORD_DEFAULT);
+                $settings = $sessionUser->getSettingsObj();
+                $settings->forcePasswordChange = false;
+                $sessionUser->setSettingsObj($settings);
+
+                $this->loginUser($sessionUser);
+                $this->getHttpSession()->setFlash('success', \Yii::t('user', 'welcome'));
+
+                return new RedirectResponse($backUrl);
+            }
+        }
+
+        return new HtmlResponse($this->render('login-force-pwd-change', [
+            'pwMinLen' => $pwMinLen,
+            'user' => $sessionUser,
+            'error' => $error,
         ]));
     }
 
