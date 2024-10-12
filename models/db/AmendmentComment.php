@@ -121,45 +121,6 @@ class AmendmentComment extends IComment
         }));
     }
 
-    private static array $cachedComments = [];
-
-    /**
-     * @return AmendmentComment[][]
-     */
-    public static function getAllForUserAndConsultationByMotion(Consultation $consultation, ?User $user, int $status): array
-    {
-        if (!$user) {
-            return [];
-        }
-
-        $key = $user->id . '.' . $status;
-        if (isset(self::$cachedComments[$key])) {
-            return self::$cachedComments[$key];
-        }
-
-        $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-        /** @var AmendmentComment[] $allComments */
-        $allComments = static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
-            ->where('amendmentComment.status = ' . intval($status))
-            ->andWhere('amendmentComment.userId = ' . intval($user->id))
-            ->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
-            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
-            ->andWhere('motion.consultationId = ' . intval($consultation->id))
-            ->orderBy('amendmentComment.paragraph')
-            ->all();
-
-        $byAmendment = [];
-        foreach ($allComments as $comment) {
-            if (!isset($byAmendment[$comment->amendmentId])) {
-                $byAmendment[$comment->amendmentId] = [];
-            }
-            $byAmendment[$comment->amendmentId][] = $comment;
-        }
-
-        self::$cachedComments[$key] = $byAmendment;
-        return $byAmendment;
-    }
-
     public function getMotionTitle(): string
     {
         $amendment = $this->getIMotion();

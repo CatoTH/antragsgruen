@@ -312,20 +312,15 @@ class ConsultationController extends Base
         $this->consultationSidebar($this->consultation);
 
         $myself = User::getCurrentUser();
-        if ($myself) {
-            $myMotions    = $myself->getMySupportedMotionsByConsultation($this->consultation);
-            $myAmendments = $myself->getMySupportedAmendmentsByConsultation($this->consultation);
-        } else {
-            $myMotions    = null;
-            $myAmendments = null;
-        }
 
         return new HtmlResponse($this->render('index', [
             'cache' => $cache,
             'consultation' => $this->consultation,
             'myself' => $myself,
-            'myMotions' => $myMotions,
-            'myAmendments' => $myAmendments,
+            'myMotions' => $myself?->getMySupportedMotionsByConsultation($this->consultation),
+            'myAmendments' => $myself?->getMySupportedAmendmentsByConsultation($this->consultation),
+            'myMotionComments' => $myself?->getMyPrivatelyCommentedMotionsByConsultation($this->consultation),
+            'myAmendmentComments' => $myself?->getMyPrivatelyCommentedAmendmentsByConsultation($this->consultation),
         ]));
     }
 
@@ -593,10 +588,14 @@ class ConsultationController extends Base
             return new HtmlErrorResponse(404, 'Tag not found');
         }
 
+        $myself = User::getCurrentUser();
+
         return new HtmlResponse($this->render('tag_motion_list', [
             'tag' => $tag,
             'cache' => LayoutHelper::getTagMotionListCache($this->consultation, $tag, $isResolutionList),
             'isResolutionList' => $isResolutionList,
+            'myMotionComments' => $myself?->getMyPrivatelyCommentedMotionsByConsultation($this->consultation),
+            'myAmendmentComments' => $myself?->getMyPrivatelyCommentedAmendmentsByConsultation($this->consultation),
         ]));
     }
 
