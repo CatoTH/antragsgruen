@@ -69,6 +69,10 @@ ob_start();
                             <input type="checkbox" v-model="preventPasswordChange" value="1">
                             <?= Yii::t('admin', 'siteacc_usermodal_prevent_pwd') ?>
                         </label>
+                        <label class="forcePwdChangeHolder">
+                            <input type="checkbox" v-model="forcePasswordChange" value="1">
+                            <?= Yii::t('admin', 'siteacc_usermodal_force_pwd') ?>
+                        </label>
                     </div>
                 </div>
                 <div class="stdTwoCols">
@@ -183,6 +187,7 @@ $html = ob_get_clean();
                 remove2Fa: false,
                 force2Fa: false,
                 preventPasswordChange: false,
+                forcePasswordChange: false,
                 newPassword: '',
                 newAuth: '',
             }
@@ -230,6 +235,7 @@ $html = ob_get_clean();
                 this.remove2Fa = false;
                 this.force2Fa = user.force_2fa;
                 this.preventPasswordChange = user.prevent_password_change;
+                this.forcePasswordChange = user.force_password_change;
                 this.newAuth = '';
 
                 $(this.$refs['user-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
@@ -237,7 +243,7 @@ $html = ob_get_clean();
             save: function ($event) {
                 const password = (this.settingPassword ? this.newPassword : null);
                 const auth = (this.settingAuth ? this.newAuth : null);
-                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth, this.remove2Fa, this.force2Fa, this.preventPasswordChange);
+                this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth, this.remove2Fa, this.force2Fa, this.preventPasswordChange, this.forcePasswordChange);
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {

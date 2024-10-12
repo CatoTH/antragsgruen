@@ -108,13 +108,18 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
         }
         ?>
         <div class="stdTwoCols showIfNew">
-            <label for="addUserPassword" class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_pass') ?>:</label>
-            <div class="rightColumn">
+            <div class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_pass') ?>:</div>
+            <div class="rightColumn pwdRow">
                 <label>
                     <input type="checkbox" name="generatePassword" checked id="addSingleGeneratePassword">
                     <?= Yii::t('admin', 'siteacc_new_name_pass_auto') ?>
                 </label>
-                <input type="password" name="password" class="form-control" id="addUserPassword">
+                <input type="password" name="password" class="form-control" id="addUserPassword" title="<?= Yii::t('admin', 'siteacc_new_name_pass') ?>">
+
+                <label>
+                    <input type="checkbox" name="forcePasswordChange" id="forcePasswordChange">
+                    <?= Yii::t('admin', 'siteacc_new_force_pwd_change') ?>
+                </label>
             </div>
         </div>
 

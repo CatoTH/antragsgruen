@@ -95,6 +95,7 @@ class UserSyncService
                     User::AUTH_EMAIL,
                     $user->getEmail(),
                     null,
+                    false,
                     $user->getName(),
                     $user->getLastName(),
                     $user->getParty(),

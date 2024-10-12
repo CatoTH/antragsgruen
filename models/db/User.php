@@ -871,6 +871,7 @@ class User extends ActiveRecord implements IdentityInterface
         $data['has_2fa'] = $settings->secondFactorKeys !== null && count($settings->secondFactorKeys) > 0;
         $data['force_2fa'] = $settings->enforceTwoFactorAuthentication;
         $data['prevent_password_change'] = $settings->preventPasswordChange;
+        $data['force_password_change'] = $settings->forcePasswordChange;
 
         $groups = array_values(array_filter($this->userGroups, function (ConsultationUserGroup $group) use ($consultation): bool {
             return $group->isSpecificallyRelevantForConsultationOrSite($consultation);

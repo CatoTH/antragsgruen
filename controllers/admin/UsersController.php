@@ -113,6 +113,7 @@ class UsersController extends AdminBase
                 $this->getPostValue('authType'),
                 $this->getPostValue('authUsername'),
                 $password,
+                $this->isPostSet('forcePasswordChange'),
                 $this->getPostValue('nameGiven'),
                 $this->getPostValue('nameFamily'),
                 $this->getPostValue('organization'),
@@ -251,7 +252,8 @@ class UsersController extends AdminBase
                             $this->getPostValue('newAuth'),
                             $this->getPostValue('remove2Fa'),
                             $this->getPostValue('force2Fa'),
-                            $this->getPostValue('preventPasswordChange')
+                            $this->getPostValue('preventPasswordChange'),
+                            $this->getPostValue('forcePasswordChange')
                         );
                     }
                     if ($this->getPostValue('voteWeight') !== null) {
