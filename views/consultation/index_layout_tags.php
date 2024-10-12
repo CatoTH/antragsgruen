@@ -161,8 +161,11 @@ foreach ($tagIds as $tagId) {
     }
     echo '</tr></thead>';
     foreach ($sortedIMotions as $imotion) {
-        /** @var IMotion $imotion */
-        $classes = ['motion'];
+        if (is_a($imotion, Motion::class)) {
+            $classes = ['motion', 'motionRow' . $imotion->id];
+        } else {
+            $classes = ['motion', 'amendmentRow' . $imotion->id];
+        }
         if ($imotion->getMyMotionType()->getSettingsObj()->cssIcon) {
             $classes[] = $imotion->getMyMotionType()->getSettingsObj()->cssIcon;
         }

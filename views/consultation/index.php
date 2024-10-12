@@ -1,6 +1,6 @@
 <?php
 
-use app\models\db\{Amendment, AmendmentSupporter, Consultation, Motion, MotionSupporter, User};
+use app\models\db\{Amendment, AmendmentComment, AmendmentSupporter, Consultation, Motion, MotionComment, MotionSupporter, User};
 use app\components\{HashedStaticCache, MotionSorter, UrlHelper};
 use app\models\settings\{Privileges, Consultation as ConsultationSettings};
 use yii\helpers\Html;
@@ -12,6 +12,8 @@ use yii\helpers\Html;
  * @var User|null $myself
  * @var MotionSupporter[] $myMotions
  * @var AmendmentSupporter[] $myAmendments
+ * @var MotionComment[] $myMotionComments
+ * @var AmendmentComment[] $myAmendmentComments
  * @var HashedStaticCache $cache
  */
 
@@ -170,3 +172,8 @@ echo $cache->getCached(function () use ($consultation, $layout, $contentAdmin) {
     }
     return $output;
 });
+
+echo $this->render('_index_private_comment_list', [
+    'myMotionComments' => $myMotionComments,
+    'myAmendmentComments' => $myAmendmentComments,
+]);

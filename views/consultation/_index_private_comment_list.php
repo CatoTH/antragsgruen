@@ -38,7 +38,7 @@ foreach ($myAmendmentComments as $comment) {
     }
 }
 
-echo '<div class="hidden privateCommentList">';
+echo '<div class="hidden privateCommentList" data-antragsgruen-widget="frontend/MotionListPrivateComments">';
 foreach ($motionComments as $motionId => $commentTexts) {
     $tooltip = Html::encode(implode(" - ", $commentTexts));
 

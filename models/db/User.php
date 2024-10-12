@@ -597,7 +597,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query->andWhere('motion.consultationId = ' . intval($consultation->id));
         $query->andWhere('motionComment.userId = ' . intval($this->id));
         $query->andWhere('motionComment.status = ' . MotionComment::STATUS_PRIVATE);
-        $query->orderBy('motion.titlePrefix ASC, motion.dateCreation DESC, motion.id DESC');
+        $query->orderBy('motion.titlePrefix ASC, motion.dateCreation DESC, motion.id DESC, motionComment.paragraph ASC');
 
         return $query->all();
     }
@@ -618,7 +618,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->andWhere('amendmentComment.userId = ' . IntVal($this->id));
         $query->andWhere('amendmentComment.status = ' . AmendmentComment::STATUS_PRIVATE);
-        $query->orderBy('motion.titlePrefix ASC, amendment.titlePrefix ASC, amendment.dateCreation DESC');
+        $query->orderBy('motion.titlePrefix ASC, amendment.titlePrefix ASC, amendment.dateCreation DESC, amendmentComment.paragraph ASC');
 
         return $query->all();
     }
