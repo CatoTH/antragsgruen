@@ -319,8 +319,8 @@ class ConsultationController extends Base
             'myself' => $myself,
             'myMotions' => $myself?->getMySupportedMotionsByConsultation($this->consultation),
             'myAmendments' => $myself?->getMySupportedAmendmentsByConsultation($this->consultation),
-            'myMotionComments' => $myself?->getMyPrivatelyCommentedMotionsByConsultation($this->consultation),
-            'myAmendmentComments' => $myself?->getMyPrivatelyCommentedAmendmentsByConsultation($this->consultation),
+            'myMotionComments' => MotionComment::getPrivatelyCommentedByConsultation($myself, $this->consultation),
+            'myAmendmentComments' => AmendmentComment::getPrivatelyCommentedByConsultation($myself, $this->consultation),
         ]));
     }
 
@@ -594,8 +594,8 @@ class ConsultationController extends Base
             'tag' => $tag,
             'cache' => LayoutHelper::getTagMotionListCache($this->consultation, $tag, $isResolutionList),
             'isResolutionList' => $isResolutionList,
-            'myMotionComments' => $myself?->getMyPrivatelyCommentedMotionsByConsultation($this->consultation),
-            'myAmendmentComments' => $myself?->getMyPrivatelyCommentedAmendmentsByConsultation($this->consultation),
+            'myMotionComments' => MotionComment::getPrivatelyCommentedByConsultation($myself, $this->consultation),
+            'myAmendmentComments' => AmendmentComment::getPrivatelyCommentedByConsultation($myself, $this->consultation),
         ]));
     }
 

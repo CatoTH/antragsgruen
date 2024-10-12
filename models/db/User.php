@@ -583,46 +583,6 @@ class User extends ActiveRecord implements IdentityInterface
         return $supporters;
     }
 
-    /**
-     * @return MotionComment[]
-     */
-    public function getMyPrivatelyCommentedMotionsByConsultation(Consultation $consultation): array
-    {
-        $query = MotionComment::find();
-        $query->innerJoin(
-            'motion',
-            'motionComment.motionId = motion.id'
-        );
-        $query->where('motion.status != ' . intval(Motion::STATUS_DELETED));
-        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
-        $query->andWhere('motionComment.userId = ' . intval($this->id));
-        $query->andWhere('motionComment.status = ' . MotionComment::STATUS_PRIVATE);
-        $query->orderBy('motion.titlePrefix ASC, motion.dateCreation DESC, motion.id DESC, motionComment.paragraph ASC');
-
-        return $query->all();
-    }
-
-    /**
-     * @return AmendmentComment[]
-     */
-    public function getMyPrivatelyCommentedAmendmentsByConsultation(Consultation $consultation): array
-    {
-        $query     = AmendmentComment::find();
-        $query->innerJoin(
-            'amendment',
-            'amendmentComment.amendmentId = amendment.id'
-        );
-        $query->innerJoin('motion', 'motion.id = amendment.motionId');
-        $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->andWhere('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
-        $query->andWhere('amendmentComment.userId = ' . IntVal($this->id));
-        $query->andWhere('amendmentComment.status = ' . AmendmentComment::STATUS_PRIVATE);
-        $query->orderBy('motion.titlePrefix ASC, amendment.titlePrefix ASC, amendment.dateCreation DESC, amendmentComment.paragraph ASC');
-
-        return $query->all();
-    }
-
     public function getNotificationUnsubscribeCode(): string
     {
         return $this->id . '-' . $this->createConfirmationCode('unsubscribe');

@@ -126,6 +126,32 @@ class MotionComment extends IComment
         }));
     }
 
+    /**
+     * @return MotionComment[]
+     */
+    public static function getPrivatelyCommentedByConsultation(?User $user, Consultation $consultation): array
+    {
+        if (!$user) {
+            return [];
+        }
+
+        $query = MotionComment::find();
+        $query->innerJoin(
+            'motion',
+            'motionComment.motionId = motion.id'
+        );
+        $query->where('motion.status != ' . intval(Motion::STATUS_DELETED));
+        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
+        $query->andWhere('motionComment.userId = ' . intval($user->id));
+        $query->andWhere('motionComment.status = ' . MotionComment::STATUS_PRIVATE);
+        $query->orderBy('motion.titlePrefix ASC, motion.dateCreation DESC, motion.id DESC, motionComment.paragraph ASC');
+
+        /** @var MotionComment[] $comments */
+        $comments = $query->all();
+
+        return $comments;
+    }
+
     public function getConsultation(): ?Consultation
     {
         $motion = $this->getIMotion();

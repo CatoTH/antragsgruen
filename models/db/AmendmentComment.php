@@ -121,6 +121,34 @@ class AmendmentComment extends IComment
         }));
     }
 
+    /**
+     * @return AmendmentComment[]
+     */
+    public static function getPrivatelyCommentedByConsultation(?User $user, Consultation $consultation): array
+    {
+        if (!$user) {
+            return [];
+        }
+
+        $query     = AmendmentComment::find();
+        $query->innerJoin(
+            'amendment',
+            'amendmentComment.amendmentId = amendment.id'
+        );
+        $query->innerJoin('motion', 'motion.id = amendment.motionId');
+        $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->andWhere('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+        $query->andWhere('amendmentComment.userId = ' . IntVal($user->id));
+        $query->andWhere('amendmentComment.status = ' . AmendmentComment::STATUS_PRIVATE);
+        $query->orderBy('motion.titlePrefix ASC, amendment.titlePrefix ASC, amendment.dateCreation DESC, amendmentComment.paragraph ASC');
+
+        /** @var AmendmentComment[] $comments */
+        $comments =  $query->all();
+
+        return $comments;
+    }
+
     public function getMotionTitle(): string
     {
         $amendment = $this->getIMotion();
