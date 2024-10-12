@@ -583,7 +583,6 @@ class User extends ActiveRecord implements IdentityInterface
         return $supporters;
     }
 
-
     public function getNotificationUnsubscribeCode(): string
     {
         return $this->id . '-' . $this->createConfirmationCode('unsubscribe');

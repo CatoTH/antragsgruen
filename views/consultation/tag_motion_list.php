@@ -1,6 +1,6 @@
 <?php
 
-use app\models\db\{ConsultationSettingsTag, IMotion};
+use app\models\db\{AmendmentComment, ConsultationSettingsTag, IMotion, MotionComment};
 use app\components\{MotionSorter, UrlHelper};
 use yii\helpers\Html;
 use app\models\settings\{Consultation as ConsultationSettings};
@@ -10,6 +10,8 @@ use app\models\settings\{Consultation as ConsultationSettings};
  * @var ConsultationSettingsTag $tag
  * @var \app\components\HashedStaticCache $cache
  * @var bool $isResolutionList
+ * @var MotionComment[] $myMotionComments
+ * @var AmendmentComment[] $myAmendmentComments
  */
 
 /** @var \app\controllers\Base $controller */
@@ -80,3 +82,8 @@ echo $cache->getCached(function () use ($consultation, $layout, $tag, $isResolut
     }
     return $output;
 });
+
+echo $this->render('_index_private_comment_list', [
+    'myMotionComments' => $myMotionComments,
+    'myAmendmentComments' => $myAmendmentComments,
+]);

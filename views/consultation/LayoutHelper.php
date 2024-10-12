@@ -96,9 +96,7 @@ class LayoutHelper
     private static function getMotionLineContent(Motion $motion, Consultation $consultation): string
     {
         $return = '<p class="title">' . "\n";
-
-        $privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), MotionComment::STATUS_PRIVATE);
-        $return .= LayoutHelper::getPrivateCommentIndicator($motion, $privateMotionComments, []);
+        $return .= '<span class="privateCommentHolder"></span>';
 
         $motionUrl = UrlHelper::createMotionUrl($motion);
         $return    .= '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
@@ -157,8 +155,7 @@ class LayoutHelper
         $return = '';
 
         $consultation = $amendment->getMyConsultation();
-        $privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
-        $return .= LayoutHelper::getPrivateCommentIndicator($amendment, [], $privateAmendmentComments);
+        $return .= '<span class="privateCommentHolder"></span>';
 
         $title  = ($amendment->showTitlePrefix() ? $amendment->getFormattedTitlePrefix() : \Yii::t('amend', 'amendment'));
         $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .

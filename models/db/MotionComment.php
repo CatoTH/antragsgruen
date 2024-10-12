@@ -126,42 +126,30 @@ class MotionComment extends IComment
         }));
     }
 
-    private static array $cachedComments = [];
-
     /**
-     * @return MotionComment[][]
+     * @return MotionComment[]
      */
-    public static function getAllForUserAndConsultationByMotion(Consultation $consultation, ?User $user, int $status): array
+    public static function getPrivatelyCommentedByConsultation(?User $user, Consultation $consultation): array
     {
         if (!$user) {
             return [];
         }
 
-        $key = $user->id . '.' . $status;
-        if (isset(self::$cachedComments[$key])) {
-            return self::$cachedComments[$key];
-        }
+        $query = MotionComment::find();
+        $query->innerJoin(
+            'motion',
+            'motionComment.motionId = motion.id'
+        );
+        $query->where('motion.status != ' . intval(Motion::STATUS_DELETED));
+        $query->andWhere('motion.consultationId = ' . intval($consultation->id));
+        $query->andWhere('motionComment.userId = ' . intval($user->id));
+        $query->andWhere('motionComment.status = ' . MotionComment::STATUS_PRIVATE);
+        $query->orderBy('motion.titlePrefix ASC, motion.dateCreation DESC, motion.id DESC, motionComment.paragraph ASC');
 
-        $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-        /** @var MotionComment[] $allComments */
-        $allComments = static::find()->joinWith('motion', true)
-            ->where('motionComment.status = ' . intval($status))
-            ->andWhere('motionComment.userId = ' . intval($user->id))
-            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
-            ->andWhere('motion.consultationId = ' . intval($consultation->id))
-            ->orderBy('motionComment.paragraph')
-            ->all();
+        /** @var MotionComment[] $comments */
+        $comments = $query->all();
 
-        $byMotion = [];
-        foreach ($allComments as $comment) {
-            if (!isset($byMotion[$comment->motionId])) {
-                $byMotion[$comment->motionId] = [];
-            }
-            $byMotion[$comment->motionId][] = $comment;
-        }
-
-        self::$cachedComments[$key] = $byMotion;
-        return $byMotion;
+        return $comments;
     }
 
     public function getConsultation(): ?Consultation

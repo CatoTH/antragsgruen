@@ -73,8 +73,6 @@ $tags = [];
 /** @var int[] $tagIds */
 $tagIds = [];
 $hasNoTagMotions = false;
-$privateMotionComments = MotionComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), MotionComment::STATUS_PRIVATE);
-$privateAmendmentComments = AmendmentComment::getAllForUserAndConsultationByMotion($consultation, User::getCurrentUser(), AmendmentComment::STATUS_PRIVATE);
 
 $layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
 
@@ -163,8 +161,11 @@ foreach ($tagIds as $tagId) {
     }
     echo '</tr></thead>';
     foreach ($sortedIMotions as $imotion) {
-        /** @var IMotion $imotion */
-        $classes = ['motion'];
+        if (is_a($imotion, Motion::class)) {
+            $classes = ['motion', 'motionRow' . $imotion->id];
+        } else {
+            $classes = ['motion', 'amendmentRow' . $imotion->id];
+        }
         if ($imotion->getMyMotionType()->getSettingsObj()->cssIcon) {
             $classes[] = $imotion->getMyMotionType()->getSettingsObj()->cssIcon;
         }
@@ -177,14 +178,13 @@ foreach ($tagIds as $tagId) {
         if ($imotion->isInScreeningProcess()) {
             $classes[] = 'unscreened';
         }
-        $privateComment = LayoutHelper::getPrivateCommentIndicator($imotion, $privateMotionComments, $privateAmendmentComments);
         echo '<tr class="' . implode(' ', $classes) . '">';
         if (!$consultation->getSettings()->hideTitlePrefix) {
-            echo '<td class="prefixCol">' . $privateComment . Html::encode($imotion->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST)) . '</td>';
+            echo '<td class="prefixCol"><span class="privateCommentHolder"></span>' . Html::encode($imotion->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST)) . '</td>';
         }
         echo '<td class="titleCol">';
         if ($consultation->getSettings()->hideTitlePrefix) {
-            echo $privateComment;
+            echo '<span class="privateCommentHolder"></span>';
         }
         echo '<div class="titleLink">';
         if (is_a($imotion, Amendment::class)) {
