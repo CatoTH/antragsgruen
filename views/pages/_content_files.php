@@ -1,6 +1,6 @@
 <?php
 
-use app\models\db\{Consultation, ConsultationFile};
+use app\models\db\ConsultationFile;
 use yii\helpers\Html;
 
 /**

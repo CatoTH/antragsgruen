@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
-use app\components\{ConsultationAccessPassword, HTMLTools, RequestContext, SecondFactorAuthentication, UrlHelper};
+use app\components\{ConsultationAccessPassword, RequestContext, SecondFactorAuthentication, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, Site, User};
 use Yii;
@@ -115,9 +115,11 @@ class Base extends Controller
             return true;
         }
         if (get_class($this) === PagesController::class && $action->id === 'file' && $this->consultation) {
-            $logo = urldecode(basename($this->consultation->getSettings()->logoUrl));
-            if (isset($params[1]['filename']) && $logo && $params[1]['filename'] === $logo) {
-                return true;
+            if ($this->consultation->getSettings()->logoUrl) {
+                $logo = urldecode(basename($this->consultation->getSettings()->logoUrl));
+                if (isset($params[1]['filename']) && $logo && $params[1]['filename'] === $logo) {
+                    return true;
+                }
             }
             if (isset($this->site->getSettings()->getStylesheet()->backgroundImage)) {
                 $bg = urldecode(basename($this->site->getSettings()->getStylesheet()->backgroundImage));
@@ -262,16 +264,16 @@ class Base extends Controller
 
     /**
      * @param string $view
-     * @param array $options
+     * @param array $params
      * @return string
      */
-    public function render($view, $options = array())
+    public function render($view, $params = array())
     {
         $params = array_merge(
             [
                 'consultation' => $this->consultation,
             ],
-            $options
+            $params
         );
         return parent::render($view, $params);
     }
