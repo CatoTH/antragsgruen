@@ -125,7 +125,7 @@ cp config/.htaccess vendor/
 sed -i -e 's/repository\-source/dist/g' config/defines.php
 rm config/defines.php-e
 rm phpstan.use-baseline.neon
-rm .eslintrc.cjs
+rm eslint.config.mjs
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
