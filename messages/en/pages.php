@@ -70,4 +70,8 @@ return [
     'documents_download_all' => 'Download all',
     'documents_none_yet' => 'No documents were published yet.',
     'documents_sort' => 'Sort file groups',
+
+    'err_permission' => 'No permissions to edit this page',
+    'err_exists_site' => 'There already is a site-wide content page with this URL.',
+    'err_exists_con' => 'There already is a consultation content page with this URL.',
 ];

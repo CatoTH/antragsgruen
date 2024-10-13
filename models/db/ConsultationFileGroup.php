@@ -58,9 +58,10 @@ class ConsultationFileGroup extends ActiveRecord
     /**
      * @return ConsultationFileGroup[]
      */
-    public static function getSortedGroupsFromConsultation(Consultation $consultation): array
+    public static function getSortedRegularGroupsFromConsultation(Consultation $consultation): array
     {
         $groups = $consultation->fileGroups;
+        $groups = array_values(array_filter($groups, fn($group) => $group->consultationTextId === null));
         usort($groups, function (ConsultationFileGroup $group1, ConsultationFileGroup $group2): int {
             return $group1->position <=> $group2->position;
         });

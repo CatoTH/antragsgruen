@@ -109,11 +109,11 @@ class PagesController extends Base
 
         if ($page->siteId) {
             if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
-                throw new Access('No permissions to edit this page');
+                throw new Access(\Yii::t('pages', 'err_permission'));
             }
         } else {
             if (!User::currentUserIsSuperuser()) {
-                throw new Access('No permissions to edit this page');
+                throw new Access(\Yii::t('pages', 'err_permission'));
             }
         }
 
@@ -155,7 +155,7 @@ class PagesController extends Base
                     'textId'         => $page->textId,
                 ]);
                 if ($alreadyCreatedPage) {
-                    $message = 'There already is a site-wide content page with this URL.';
+                    $message = \Yii::t('pages', 'err_exists_site');
                 } else {
                     $page->consultationId = null;
                 }
@@ -167,7 +167,7 @@ class PagesController extends Base
                     'textId'         => $page->textId,
                 ]);
                 if ($alreadyCreatedPage) {
-                    $message = 'There already is a consultation content page with this URL.';
+                    $message = \Yii::t('pages', 'err_exists_con');
                 } else {
                     $page->consultationId = $this->consultation->id;
                 }
@@ -192,7 +192,7 @@ class PagesController extends Base
             'redirectTo'       => ($needsReload ? $page->getUrl() : null),
         ];
 
-        $downloadableResult = $this->handleDownloadableFiles($this->getHttpRequest()->post());
+        $downloadableResult = $this->handleDownloadableFiles($page, $this->getHttpRequest()->post());
         $result             = array_merge($result, $downloadableResult);
 
         $page->save();
@@ -200,17 +200,28 @@ class PagesController extends Base
         return new JsonResponse($result);
     }
 
-    private function handleDownloadableFiles(array $post): array
+    private function handleDownloadableFiles(ConsultationText $page, array $post): array
     {
         $result = [];
         if (isset($post['uploadDownloadableFile']) && strlen($post['uploadDownloadableFile']) > 0) {
-            $file                   = ConsultationFile::createDownloadableFile(
+            $group = $page->getMyFileGroup();
+            if (!$group) {
+                $group = new ConsultationFileGroup();
+                $group->consultationId = $this->consultation->id;
+                $group->consultationTextId = $page->id;
+                $group->title = $page->title;
+                $group->parentGroupId = null;
+                $group->position = 0;
+                $group->save();
+            }
+
+            $file = ConsultationFile::createDownloadableFile(
                 $this->consultation,
                 User::getCurrentUser(),
                 base64_decode($post['uploadDownloadableFile']),
                 $post['uploadDownloadableFilename'],
                 $post['uploadDownloadableTitle'],
-                null
+                $group
             );
             $result['uploadedFile'] = [
                 'title' => $file->title,
@@ -435,21 +446,10 @@ class PagesController extends Base
             }
         }
 
-        if ($iAmAdmin && $this->isPostSet('uploadFile') && ($this->getPostValue('groupId') > 0 || $this->getPostValue('textId'))) {
-            $foundText = null;
-            if ($this->getPostValue('textId')) {
-                foreach ($this->consultation->texts as $text) {
-                    if ($text->textId === $this->getPostValue('textId')) {
-                        $foundText = $text;
-                    }
-                }
-            }
-
+        if ($iAmAdmin && $this->isPostSet('uploadFile') && $this->getPostValue('groupId') > 0) {
             $group = null;
             foreach ($this->consultation->fileGroups as $fileGroup) {
                 if ($fileGroup->id === (int)$this->getPostValue('groupId')) {
-                    $group = $fileGroup;
-                } elseif ($foundText && $fileGroup->consultationTextId === $foundText->id) {
                     $group = $fileGroup;
                 }
             }

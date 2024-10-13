@@ -1,15 +1,13 @@
 <?php
 
-use app\models\db\{Consultation, ConsultationFileGroup};
+use app\models\db\{Consultation, ConsultationFile};
 use yii\helpers\Html;
 
 /**
- * @var ConsultationFileGroup|null $fileGroup
- * @var Consultation $consultation
+ * @var ConsultationFile[] $files
  * @var bool $contentAdmin
  */
 
-$files = $consultation->getDownloadableFiles($fileGroup);
 ?>
     <div class="downloadableFiles<?= (count($files) === 0 ? ' hidden' : '') ?>">
         <h2><?= Yii::t('admin', 'files_download') ?></h2>

@@ -27,6 +27,13 @@ if (!in_array($controller->action->id, ['home', 'index'])) {
     $layout->breadcrumbs = [];
 }
 
+if ($pageData->textId === ConsultationText::DEFAULT_PAGE_WELCOME) {
+    $files = $consultation->getDownloadableFiles(null); // Legacy
+} else {
+    $fileGroup = $pageData->getMyFileGroup();
+    $files = ($fileGroup ? $consultation->getDownloadableFiles($fileGroup->id) : []);
+}
+
 if (User::getCurrentUser() && $pageData->isCustomPage()) {
     $layout->loadVue();
     $layout->addFullscreenTemplates();
@@ -100,8 +107,7 @@ $contentMain .= '</article>';
 
 $contentMain .= $this->render('@app/views/pages/_content_files', [
     'contentAdmin' => $admin,
-    'consultation' => $consultation,
-    'fileGroup' => null,
+    'files' => $files,
 ]);
 
 if ($admin) {

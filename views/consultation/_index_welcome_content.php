@@ -56,8 +56,7 @@ echo '</article>';
 
 echo $this->render('@app/views/pages/_content_files', [
     'contentAdmin' => $contentAdmin,
-    'consultation' => $consultation,
-    'fileGroup' => null,
+    'files' => $consultation->getDownloadableFiles(null),
 ]);
 
 if ($contentAdmin) {
