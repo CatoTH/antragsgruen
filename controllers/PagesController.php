@@ -435,10 +435,21 @@ class PagesController extends Base
             }
         }
 
-        if ($iAmAdmin && $this->isPostSet('uploadFile') && $this->getPostValue('groupId') > 0) {
+        if ($iAmAdmin && $this->isPostSet('uploadFile') && ($this->getPostValue('groupId') > 0 || $this->getPostValue('textId'))) {
+            $foundText = null;
+            if ($this->getPostValue('textId')) {
+                foreach ($this->consultation->texts as $text) {
+                    if ($text->textId === $this->getPostValue('textId')) {
+                        $foundText = $text;
+                    }
+                }
+            }
+
             $group = null;
             foreach ($this->consultation->fileGroups as $fileGroup) {
                 if ($fileGroup->id === (int)$this->getPostValue('groupId')) {
+                    $group = $fileGroup;
+                } elseif ($foundText && $fileGroup->consultationTextId === $foundText->id) {
                     $group = $fileGroup;
                 }
             }
