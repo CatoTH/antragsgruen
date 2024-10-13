@@ -217,6 +217,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationFile` (
 CREATE TABLE `###TABLE_PREFIX###consultationFileGroup` (
     `id` int(11) NOT NULL,
     `consultationId` int(11) NOT NULL,
+    `consultationTextId` int(11) DEFAULT NULL,
     `parentGroupId` int(11) DEFAULT NULL,
     `position` int(11) NOT NULL,
     `title` varchar(250) NOT NULL
@@ -903,7 +904,8 @@ ALTER TABLE `###TABLE_PREFIX###consultationFile`
 ALTER TABLE `###TABLE_PREFIX###consultationFileGroup`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_filegroup_consultation` (`consultationId`),
-  ADD KEY `fk_filegroup_parent` (`parentGroupId`);
+  ADD KEY `fk_filegroup_parent` (`parentGroupId`),
+  ADD KEY `file_groups_fk_texts` (`consultationTextId`);
 
 --
 -- Indexes for table `consultationLog`
@@ -1407,8 +1409,9 @@ ALTER TABLE `###TABLE_PREFIX###consultationFile`
 -- Constraints for table `consultationFileGroup`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationFileGroup`
+    ADD CONSTRAINT `file_groups_fk_texts` FOREIGN KEY (`consultationTextId`) REFERENCES `###TABLE_PREFIX###consultationText` (`id`),
     ADD CONSTRAINT `fk_filegroup_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
-    ADD CONSTRAINT `fk_filegroup_parent` FOREIGN KEY (`parentGroupId`) REFERENCES `consultationFileGroup` (`id`);
+    ADD CONSTRAINT `fk_filegroup_parent` FOREIGN KEY (`parentGroupId`) REFERENCES `###TABLE_PREFIX###consultationFileGroup` (`id`);
 
 --
 -- Constraints for table `consultationLog`

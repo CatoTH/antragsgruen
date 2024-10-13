@@ -9,6 +9,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property int $id
  * @property int $consultationId
  * @property int|null $parentGroupId
+ * @property int|null $consultationTextId
  * @property int $position
  * @property string $title
  *
@@ -16,6 +17,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property Consultation $consultation
  * @property ConsultationFileGroup|null $parentGroup
  * @property ConsultationFileGroup[] $childGroups
+ * @property ConsultationText $consultationText
  */
 class ConsultationFileGroup extends ActiveRecord
 {
@@ -46,6 +48,11 @@ class ConsultationFileGroup extends ActiveRecord
     public function getChildGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationFileGroup::class, ['parentGroupId' => 'id']);
+    }
+
+    public function getConsultationText(): ActiveQuery
+    {
+        return $this->hasOne(ConsultationText::class, ['id' => 'consultationTextId']);
     }
 
     /**
