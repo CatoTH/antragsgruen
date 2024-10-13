@@ -11,6 +11,7 @@
 - Bugfix: Tabular data was not encoded correctly in the PHP-based PDF export.
 - Bugfix: The PDF with all amendments embedded into the motion text could not be generated if a Weasyprint-based PDF layout was selected.
 - Bugfix: It was possible for users to submit amendments for withdrawn motions.
+- Bugfix: When using "previous / next motion" links for pagination, motions and resolutions were not properly separated.
 
 ### Version 4.14.2 (2024-09-08)
 

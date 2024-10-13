@@ -26,6 +26,8 @@ return [
     'fullscreen'                    => 'Projector view (full screen)',
     'prevnext_links_prev'           => 'Previous %TYPE%',
     'prevnext_links_next'           => 'Next %TYPE%',
+    'prevnext_links_prev_res'       => 'Previous resolution',
+    'prevnext_links_next_res'       => 'Next Beschluss',
     'pdf_version'                   => 'PDF version',
     'table_caption'                 => 'Metadata of the motion',
     'table_description'             => 'The following table describes the status, the proposer and other metadata of this motion.',

@@ -26,6 +26,8 @@ return [
     'fullscreen'                         => 'Projektor-Ansicht (Vollbild)',
     'prevnext_links_prev'                => 'Voriger %TYPE%',
     'prevnext_links_next'                => 'Nächster %TYPE%',
+    'prevnext_links_prev_res'            => 'Voriger Beschluss',
+    'prevnext_links_next_res'            => 'Nächster Beschluss',
     'pdf_version'                        => 'PDF-Version',
     'table_caption'                      => 'Rahmendaten zum Antrag',
     'table_description'                  => 'Diese Tabelle beschreibt den Status, die Antragstellerin und verschiedene Rahmendaten zum Antrag',
