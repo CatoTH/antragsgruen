@@ -9,6 +9,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property int $id
  * @property int $consultationId
  * @property int|null $parentGroupId
+ * @property int|null $consultationTextId
  * @property int $position
  * @property string $title
  *
@@ -16,6 +17,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property Consultation $consultation
  * @property ConsultationFileGroup|null $parentGroup
  * @property ConsultationFileGroup[] $childGroups
+ * @property ConsultationText $consultationText
  */
 class ConsultationFileGroup extends ActiveRecord
 {
@@ -48,12 +50,18 @@ class ConsultationFileGroup extends ActiveRecord
         return $this->hasMany(ConsultationFileGroup::class, ['parentGroupId' => 'id']);
     }
 
+    public function getConsultationText(): ActiveQuery
+    {
+        return $this->hasOne(ConsultationText::class, ['id' => 'consultationTextId']);
+    }
+
     /**
      * @return ConsultationFileGroup[]
      */
-    public static function getSortedGroupsFromConsultation(Consultation $consultation): array
+    public static function getSortedRegularGroupsFromConsultation(Consultation $consultation): array
     {
         $groups = $consultation->fileGroups;
+        $groups = array_values(array_filter($groups, fn($group) => $group->consultationTextId === null));
         usort($groups, function (ConsultationFileGroup $group1, ConsultationFileGroup $group2): int {
             return $group1->position <=> $group2->position;
         });
@@ -70,5 +78,19 @@ class ConsultationFileGroup extends ActiveRecord
         }
 
         return $position;
+    }
+
+    public static function getGroupForText(ConsultationText $text): ?ConsultationFileGroup
+    {
+        if (!$text->getMyConsultation()) {
+            return null;
+        }
+        foreach ($text->getMyConsultation()->fileGroups as $fileGroup) {
+            if ($fileGroup->consultationTextId === $text->id) {
+                return $fileGroup;
+            }
+        }
+
+        return null;
     }
 }

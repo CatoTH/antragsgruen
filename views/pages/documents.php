@@ -26,7 +26,7 @@ if ($contentAdmin) {
     $layout->loadVueDraggable();
 }
 
-$fileGroups = ConsultationFileGroup::getSortedGroupsFromConsultation($consultation);
+$fileGroups = ConsultationFileGroup::getSortedRegularGroupsFromConsultation($consultation);
 $hasFiles = false;
 foreach ($fileGroups as $fileGroup) {
     if (count($fileGroup->files) > 0) {

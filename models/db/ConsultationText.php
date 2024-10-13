@@ -145,6 +145,16 @@ class ConsultationText extends ActiveRecord
         return UrlHelper::createUrl($saveParams);
     }
 
+    public function getMyFileGroup(): ?ConsultationFileGroup
+    {
+        foreach ($this->getMyConsultation()->fileGroups as $fileGroup) {
+            if ($fileGroup->consultationTextId === $this->id) {
+                return $fileGroup;
+            }
+        }
+        return null;
+    }
+
     public function getImageBrowseUrl(): string
     {
         return UrlHelper::createUrl(['/pages/browse-images']);

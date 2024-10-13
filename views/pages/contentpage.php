@@ -27,6 +27,13 @@ if (!in_array($controller->action->id, ['home', 'index'])) {
     $layout->breadcrumbs = [];
 }
 
+if ($pageData->textId === ConsultationText::DEFAULT_PAGE_WELCOME) {
+    $files = $consultation->getDownloadableFiles(null); // Legacy
+} else {
+    $fileGroup = $pageData->getMyFileGroup();
+    $files = ($fileGroup ? $consultation->getDownloadableFiles($fileGroup->id) : []);
+}
+
 if (User::getCurrentUser() && $pageData->isCustomPage()) {
     $layout->loadVue();
     $layout->addFullscreenTemplates();
@@ -53,6 +60,8 @@ if ($admin) {
         'class'                    => 'contentEditForm',
         'data-upload-url'          => $pageData->getUploadUrl(),
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
+        'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
+        'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
         'data-text-selector'       => '#stdTextHolder',
         'data-save-selector'       => '.textSaver',
@@ -83,8 +92,6 @@ if ($admin) {
         </section>
         <?php
     }
-
-    echo Html::endForm();
 }
 
 
@@ -97,6 +104,11 @@ if ($admin) {
 $contentMain .= '<article class="textHolder" id="stdTextHolder">';
 $contentMain .= $pageData->text;
 $contentMain .= '</article>';
+
+$contentMain .= $this->render('@app/views/pages/_content_files', [
+    'contentAdmin' => $admin,
+    'files' => $files,
+]);
 
 if ($admin) {
     $contentMain .= '<div class="textSaver hidden">';
@@ -111,6 +123,8 @@ $contentMain = \app\models\layoutHooks\Layout::getContentPageContent($pageData, 
 echo $contentMain;
 
 if ($admin) {
+    echo Html::endForm();
+
     $deleteUrl = UrlHelper::createUrl(['pages/delete-page', 'pageSlug' => $pageData->textId]);
     echo Html::beginForm($deleteUrl, 'post', ['class' => 'deletePageForm']);
     echo '<input type="hidden" name="delete" value="delete">';
