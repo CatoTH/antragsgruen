@@ -105,10 +105,12 @@ $contentMain .= '<article class="textHolder" id="stdTextHolder">';
 $contentMain .= $pageData->text;
 $contentMain .= '</article>';
 
-$contentMain .= $this->render('@app/views/pages/_content_files', [
-    'contentAdmin' => $admin,
-    'files' => $files,
-]);
+if ($pageData->getMyConsultation()) {
+    $contentMain .= $this->render('@app/views/pages/_content_files', [
+        'contentAdmin' => $admin,
+        'files' => $files,
+    ]);
+}
 
 if ($admin) {
     $contentMain .= '<div class="textSaver hidden">';
