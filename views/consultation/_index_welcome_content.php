@@ -11,11 +11,7 @@ use yii\helpers\Html;
 
 $welcomeReplace = \app\models\layoutHooks\Layout::getConsultationWelcomeReplacer();
 if ($welcomeReplace !== null) {
-    echo '<div class="content contentPage contentPageWelcome">';
-    echo '<article class="textHolder" id="stdTextHolder">';
     echo $welcomeReplace;
-    echo '</article>';
-    echo '</div>';
     return;
 }
 
