@@ -147,6 +147,9 @@ class ConsultationText extends ActiveRecord
 
     public function getMyFileGroup(): ?ConsultationFileGroup
     {
+        if (!$this->getMyConsultation()) {
+            return null;
+        }
         foreach ($this->getMyConsultation()->fileGroups as $fileGroup) {
             if ($fileGroup->consultationTextId === $this->id) {
                 return $fileGroup;
