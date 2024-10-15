@@ -37,6 +37,7 @@ return [
     'username_deleted'          => 'Removed',
     'err_pwd_different'         => 'The two passwords are not the same.',
     'err_pwd_length'            => 'The password has to be at least %MINLEN% characters long.',
+    'err_pwd_fixed'             => 'The password of this account cannot be changed and therefore not reset. Please contact the system administrator for help.',
     'err_user_acode_notfound'   => 'User not found / invalid code',
     'err_user_notfound'         => 'The user account %USER% was not found.',
     'err_code_wrong'            => 'The given code is invalid.',

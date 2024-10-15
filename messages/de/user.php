@@ -37,6 +37,7 @@ return [
     'username_deleted'          => 'Abgemeldet',
     'err_pwd_different'         => 'Die beiden Passwörter stimmen nicht überein.',
     'err_pwd_length'            => 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.',
+    'err_pwd_fixed'             => 'Das Passwort dieses Zugangs kann nicht geändert und daher auch nicht zurückgesetzt werden. Bitte melde dich bei der Administrator*in.',
     'err_user_acode_notfound'   => 'Benutzer*in nicht gefunden / Ungültiger Code',
     'err_user_notfound'         => 'Der Account %USER% wurde nicht gefunden.',
     'err_code_wrong'            => 'Der angegebene Code stimmt leider nicht.',

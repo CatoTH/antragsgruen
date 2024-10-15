@@ -354,6 +354,8 @@ class UserController extends Base
             } elseif (!$user) {
                 $msg = str_replace('%USER%', $email, \Yii::t('user', 'err_user_notfound'));
                 $this->getHttpSession()->setFlash('error', $msg);
+            } elseif ($user->getSettingsObj()->preventPasswordChange) {
+                $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_pwd_fixed'));
             } else {
                 try {
                     $user->sendRecoveryMail();
