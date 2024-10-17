@@ -18,13 +18,16 @@ class VideoEmbed extends ISectionType
 
     private function extractYoutubeUrl(string $url): ?string
     {
-        if (preg_match('/youtube\.com\/(watch)?\?v=(?<id>[a-z0-9]{11})/siu', $url, $matches)) {
+        if (preg_match('/youtube\.com\/(watch)?\?v=(?<id>[a-z0-9_-]{11})/siu', $url, $matches)) {
             return $matches['id'];
         }
-        if (preg_match('/youtu\.be\/(?<id>[a-z0-9-]{11})/siu', $url, $matches)) {
+        if (preg_match('/youtu\.be\/(?<id>[a-z0-9_-]{11})/siu', $url, $matches)) {
             return $matches['id'];
         }
-        if (preg_match('/youtube\.com\/embed\/(?<id>[a-z0-9]{11})/siu', $url, $matches)) {
+        if (preg_match('/youtube\.com\/embed\/(?<id>[a-z0-9_-]{11})/siu', $url, $matches)) {
+            return $matches['id'];
+        }
+        if (preg_match('/youtube\.com\/shorts\/(?<id>[a-z0-9_-]{11})/siu', $url, $matches)) {
             return $matches['id'];
         }
         return null;
