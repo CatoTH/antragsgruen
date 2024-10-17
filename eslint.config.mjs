@@ -1,6 +1,7 @@
-import eslint from "@eslint/js";
+import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginPromise from 'eslint-plugin-promise'
+import globals from 'globals';
 
 const config = tseslint.config(
     {
@@ -9,6 +10,10 @@ const config = tseslint.config(
             parserOptions: {
                 projectService: true,
                 tsconfigRootDir: import.meta.dirname,
+            },
+            globals: {
+                ...globals.browser,
+                ...globals.jquery,
             },
         },
         extends: [
@@ -19,6 +24,7 @@ const config = tseslint.config(
         rules: {
             'no-console': 'off',
             'no-debugger': 'off',
+            '@typescript-eslint/no-deprecated': 'warn',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-inferrable-types': 'off',
             '@typescript-eslint/no-this-alias': 'off',
