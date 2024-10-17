@@ -26,11 +26,11 @@ class MergeSingleAmendment {
             "3": this.$form.find("> .step_3")
         };
 
-        this.$checkCollisions.click((ev) => {
+        this.$checkCollisions.on("click", (ev) => {
             ev.preventDefault();
             this.loadCollisions();
         });
-        this.$steps["1"].find(".goto_2").click((ev) => {
+        this.$steps["1"].find(".goto_2").on("click", (ev) => {
             ev.preventDefault();
             this.gotoStep("2");
         });

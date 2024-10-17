@@ -97,6 +97,6 @@ export class MotionMergeAmendmentsPublic {
             }
         }).trigger('change');
 
-        this.$updateWidget.find('#updateBtn').click(this.reload.bind(this, true));
+        this.$updateWidget.find('#updateBtn').on("click", this.reload.bind(this, true));
     }
 }

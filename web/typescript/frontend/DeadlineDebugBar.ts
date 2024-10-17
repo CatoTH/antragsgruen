@@ -4,7 +4,7 @@ export class DeadlineDebugBar {
 
         $widget.on("submit", ev => ev.preventDefault());
 
-        $widget.find('.closeCol button').click(() => {
+        $widget.find('.closeCol button').on("click", () => {
             $.post($widget.attr('action'), {
                 '_csrf': csrf,
                 'action': 'close'
@@ -22,7 +22,7 @@ export class DeadlineDebugBar {
             locale: $picker.find('input').data('locale')
         });
 
-        $widget.find('.setTime').click(() => {
+        $widget.find('.setTime').on("click", () => {
             const time = $picker.find('input').val();
             $.post($widget.attr('action'), {
                 '_csrf': csrf,

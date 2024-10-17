@@ -8,7 +8,7 @@ class AdminIndex {
 
     private initDelSite() {
         let $delForm = $(".delSiteCaller");
-        $delForm.find("button").click(function (ev) {
+        $delForm.find("button").on("click", function (ev) {
             ev.preventDefault();
             let $button = $(this);
             bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
