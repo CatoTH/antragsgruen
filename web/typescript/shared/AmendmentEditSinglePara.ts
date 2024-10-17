@@ -85,7 +85,7 @@ export class AmendmentEditSinglePara {
                 $textarea.parent().find("textarea.consolidated").val(editor.getData());
             }
         });
-        $textarea.focus();
+        $textarea.trigger("focus");;
     }
 
     private setModifyable() {

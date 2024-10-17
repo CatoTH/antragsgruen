@@ -278,9 +278,9 @@ export class InitiatorForm {
             if ($row.next().hasClass('adderRow')) {
                 let $newEl = $($('#newSupporterTemplate').data('html'));
                 this.$supporterAdderRow.before($newEl);
-                $newEl.find('input[type=text]').first().focus();
+                $newEl.find('input[type=text]').first().trigger("focus");
             } else {
-                $row.next().find('input[type=text]').first().focus();
+                $row.next().find('input[type=text]').first().trigger("focus");
             }
         } else if (ev.keyCode == 8) { // Backspace
             $row = $(ev.target).parents('.supporterRow');

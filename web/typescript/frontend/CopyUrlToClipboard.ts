@@ -9,7 +9,7 @@ export class CopyUrlToClipboard {
         clipboard.on('success', () => {
             $widget.find(".form-group").addClass("has-success has-feedback");
             $widget.find(".clipboard-done").removeClass("hidden");
-            $button.focus();
+            $button.trigger("focus");
         });
 
         clipboard.on('error', () => {

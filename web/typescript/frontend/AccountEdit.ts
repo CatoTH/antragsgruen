@@ -18,7 +18,7 @@ class AccountEdit {
                 ev.preventDefault();
                 $changeRow.removeClass("hidden");
                 $emailExisting.addClass("hidden");
-                $changeRow.find("input").focus();
+                $changeRow.find("input").trigger("focus");;
             });
         }
 
