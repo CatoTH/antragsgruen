@@ -2,7 +2,7 @@ export class DeadlineDebugBar {
     constructor(private $widget: JQuery) {
         const csrf = $widget.find('> input[name=_csrf]').val();
 
-        $widget.submit(ev => ev.preventDefault());
+        $widget.on("submit", ev => ev.preventDefault());
 
         $widget.find('.closeCol button').click(() => {
             $.post($widget.attr('action'), {
@@ -21,7 +21,7 @@ export class DeadlineDebugBar {
         $picker.datetimepicker({
             locale: $picker.find('input').data('locale')
         });
-        
+
         $widget.find('.setTime').click(() => {
             const time = $picker.find('input').val();
             $.post($widget.attr('action'), {

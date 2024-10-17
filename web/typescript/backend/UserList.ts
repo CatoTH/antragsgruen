@@ -14,7 +14,7 @@ export class UserList {
                 if (result) {
                     let id = $button.data("id");
                     $form.append('<input type="hidden" name="deleteUser" value="' + id + '">');
-                    $form.submit();
+                    $form.trigger("submit");
                 }
             });
         });

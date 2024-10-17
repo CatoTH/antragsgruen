@@ -37,7 +37,7 @@ class MergeSingleAmendment {
         this.$affectedParagraphs.each((i, el) => {
             this.initAffectedParagraph(el);
         });
-        this.$form.submit(this.onSubmit.bind(this));
+        this.$form.on("submit", this.onSubmit.bind(this));
 
         this.gotoStep("1");
     }

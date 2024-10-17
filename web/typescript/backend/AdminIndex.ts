@@ -15,7 +15,7 @@ class AdminIndex {
                 if (result) {
                     let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
                     $delForm.append($input);
-                    $delForm.submit();
+                    $delForm.trigger("submit");
                 }
             });
         });

@@ -205,7 +205,7 @@ export class InitiatorForm {
     }
 
     private initMinSupporters() {
-        this.$editforms.submit((ev) => {
+        this.$editforms.on("submit", (ev) => {
             if ($('#personTypeOrga').prop('checked')) {
                 return;
             }
