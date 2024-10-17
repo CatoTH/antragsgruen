@@ -58,14 +58,14 @@ class MergeSingleAmendment {
     private initAffectedParagraph(el) {
         let $paragraph = $(el);
 
-        $paragraph.find(".versionSelector input").change(() => {
+        $paragraph.find(".versionSelector input").on("change", () => {
             if ($paragraph.find(".versionSelector input:checked").val() == "modified") {
                 $paragraph.removeClass("originalVersion").addClass("modifiedVersion");
             } else {
                 $paragraph.addClass("originalVersion").removeClass("modifiedVersion");
             }
         }).trigger("change");
-        $paragraph.find(".modifySelector input").change(() => {
+        $paragraph.find(".modifySelector input").on("change", () => {
             if ($paragraph.find(".modifySelector input").prop("checked")) {
                 $paragraph.addClass("changed").removeClass("unchanged");
             } else {

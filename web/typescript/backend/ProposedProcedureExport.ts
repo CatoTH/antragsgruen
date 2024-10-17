@@ -18,6 +18,6 @@ export class ProposedProcedureExport {
         this.$widget.find("li.checkbox").on("click", function (ev) {
             ev.stopPropagation();
         });
-        this.$widget.find("input[type=checkbox]").change(this.recalcLinks.bind(this)).trigger("change");
+        this.$widget.find("input[type=checkbox]").on("change", this.recalcLinks.bind(this)).trigger("change");
     }
 }
