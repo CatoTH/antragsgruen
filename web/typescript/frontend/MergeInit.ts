@@ -52,10 +52,10 @@ export class MergeInit {
 
     private initAllCheckbox() {
         this.recalcAllCheckbox();
-        this.$allCheckbox.change(() => {
+        this.$allCheckbox.on("change", () => {
             this.$checkboxes.prop("checked", this.$allCheckbox.prop("checked"));
         });
-        this.$checkboxes.change(() => {
+        this.$checkboxes.on("change", () => {
            this.recalcAllCheckbox();
         });
     }

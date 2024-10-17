@@ -131,7 +131,7 @@ export class ProposedProcedureOverview {
             $td = $btn.parents('td').first();
 
         $td.addClass('writing');
-        $td.find('textarea').focus();
+        $td.find('textarea').trigger("focus");;
     }
 
     private submitComment($commentTd: JQuery) {

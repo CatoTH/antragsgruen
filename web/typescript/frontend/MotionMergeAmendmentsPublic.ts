@@ -85,7 +85,7 @@ export class MotionMergeAmendmentsPublic {
                 $toggle.prop('checked', (state == '1'));
             }
         }
-        $toggle.change(() => {
+        $toggle.on("change", () => {
             let active: boolean = $toggle.prop('checked');
             if (localStorage) {
                 localStorage.setItem('merging-draft-auto-update', (active ? '1' : '0'));
@@ -97,6 +97,6 @@ export class MotionMergeAmendmentsPublic {
             }
         }).trigger('change');
 
-        this.$updateWidget.find('#updateBtn').click(this.reload.bind(this, true));
+        this.$updateWidget.find('#updateBtn').on("click", this.reload.bind(this, true));
     }
 }

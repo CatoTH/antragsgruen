@@ -12,7 +12,7 @@ export class MemberPetitionRespond {
                 ckeditor = new AntragsgruenEditor($textarea.attr("id")),
                 editor = ckeditor.getEditor();
 
-            $textarea.parents("form").submit(() => {
+            $textarea.parents("form").on("submit", () => {
                 $textarea.parent().find("textarea").val(editor.getData());
             });
         });
