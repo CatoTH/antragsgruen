@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\controllers\PagesController;
 use app\controllers\UserController;
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
@@ -296,6 +297,10 @@ class SecondFactorAuthentication
 
     public function onPageView(string $controller, string $actionId): void
     {
+        if ($controller === PagesController::class || $actionId !== PagesController::VIEW_ID_FILES) {
+            // Could be an implicit load of custom CSS or a logo
+            return;
+        }
         if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_FORCE_2FA_REGISTRATION) {
             $this->session->remove(self::SESSION_KEY_2FA_REGISTRATION_ONGOING);
         }

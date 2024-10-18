@@ -11,6 +11,8 @@ use yii\web\{NotFoundHttpException, Response};
 
 class PagesController extends Base
 {
+    public const VIEW_ID_FILES = 'file';
+
     public function actionListPages(): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {

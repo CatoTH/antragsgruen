@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace app\models\forms;
 
-use app\components\Captcha;
-use app\components\ExternalPasswordAuthenticatorInterface;
-use app\components\UrlHelper;
-use app\controllers\UserController;
+use app\components\{Captcha, ExternalPasswordAuthenticatorInterface, UrlHelper};
+use app\controllers\{PagesController, UserController};
 use app\models\db\{EMailLog, FailedLoginAttempt, Site, User};
 use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUser, MailNotSent};
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Site as SiteSettings;
+use app\models\settings\{AntragsgruenApp, Site as SiteSettings};
 use yii\base\Model;
 use yii\web\Session;
 
@@ -316,6 +313,10 @@ class LoginUsernamePasswordForm extends Model
 
     public function onPageView(string $controller, string $actionId): void
     {
+        if ($controller === PagesController::class || $actionId !== PagesController::VIEW_ID_FILES) {
+            // Could be an implicit load of custom CSS or a logo
+            return;
+        }
         if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_FORCE_PWD_CHANGE) {
             $this->session->remove(self::SESSION_KEY_PWD_CHANGE);
         }
