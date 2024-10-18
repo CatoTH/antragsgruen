@@ -212,6 +212,11 @@ class MotionDeepCopy
                 $newAmendment->save();
             }
         }
+
+        if ($newMotion->proposalReferenceId && isset($amendmentIdMapping[$newMotion->proposalReferenceId])) {
+            $newMotion->proposalReferenceId = $amendmentIdMapping[$newMotion->proposalReferenceId];
+            $newMotion->save();
+        }
     }
 
     private static function copyAmendmentSections(Amendment $oldAmendment, Amendment $newAmendment, array $skip): void
