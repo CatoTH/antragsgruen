@@ -13,7 +13,7 @@ class IMotionStatusEngine
     private array $allStatusesCache;
 
     public function __construct(
-        private \app\models\db\Consultation $consultation
+        private readonly \app\models\db\Consultation $consultation
     ) {
         $statuses = [];
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
@@ -119,8 +119,20 @@ class IMotionStatusEngine
             false,
             true
         );
-        $statuses[] = new IMotionStatus(IMotion::STATUS_OBSOLETED_BY_MOTION, \Yii::t('structure', 'STATUS_OBSOLETED_BY_MOTION'));
-        $statuses[] = new IMotionStatus(IMotion::STATUS_OBSOLETED_BY_AMENDMENT, \Yii::t('structure', 'STATUS_OBSOLETED_BY_AMEND'));
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_OBSOLETED_BY_MOTION,
+            \Yii::t('structure', 'STATUS_OBSOLETED_BY_MOTION'),
+            null,
+            false,
+            !$this->consultation->getSettings()->obsoletedByMotionsShown
+        );
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_OBSOLETED_BY_AMENDMENT,
+            \Yii::t('structure', 'STATUS_OBSOLETED_BY_AMEND'),
+            null,
+            false,
+            !$this->consultation->getSettings()->obsoletedByMotionsShown
+        );
         $statuses[] = new IMotionStatus(IMotion::STATUS_CUSTOM_STRING, \Yii::t('structure', 'STATUS_CUSTOM_STRING'));
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_INLINE_REPLY,
