@@ -159,6 +159,7 @@ return [
                             hier den Code in der E-Mail eingibst.',
     'confirm_code'      => 'Bestätigungs-Code',
     'confirm_btn_do'    => 'Bestätigen',
+    'confirm_resend'    => 'Bestätigungsmail erneut verschicken',
 
     'confirmed_title'         => 'Zugang bestätigt',
     'confirmed_msg'           => 'Alles klar! Dein Zugang ist freigeschaltet und du kannst loslegen!',

@@ -11,6 +11,7 @@ use yii\helpers\Html;
  * @var string $prefillCode
  * @var string $backUrl
  * @var string $email
+ * @var \app\models\db\User|null $allowResend
  */
 
 $this->title = Yii::t('user', 'confirm_title');
@@ -39,14 +40,14 @@ if ($email) {
 echo Html::beginForm(UrlHelper::createUrl($params), 'post', ['id' => 'confirmAccountForm']);
 ?>
 
-<div class="form-group">
-    <label for="username"><?= Yii::t('user', 'confirm_username') ?>:</label>
-    <input type="text" value="<?= Html::encode($email) ?>" id="username" name="email" class="form-control"
-        <?php if ($email != '') echo "disabled"; ?>
-    >
-</div>
+    <div class="inputHolder">
+        <label for="username"><?= Yii::t('user', 'confirm_username') ?>:</label>
+        <input type="text" value="<?= Html::encode($email) ?>" id="username" name="email" class="form-control"
+            <?php if ($email != '') echo "disabled"; ?>
+        >
+    </div>
 
-    <div class="form-group">
+    <div class="inputHolder">
         <label for="code"><?= Yii::t('user', 'confirm_code') ?>:</label>
         <input type="text" name="code" value="<?= Html::encode($prefillCode) ?>" id="code" class="form-control" autocomplete="off">
     </div>
@@ -65,8 +66,18 @@ echo Html::beginForm(UrlHelper::createUrl($params), 'post', ['id' => 'confirmAcc
     }
     ?>
 
-    <div>
-        <input type="submit" value="<?= Yii::t('user', 'confirm_btn_do') ?>" class="btn btn-primary">
+    <div class="saveResetRow">
+        <div class="save">
+            <input type="submit" value="<?= Yii::t('user', 'confirm_btn_do') ?>" class="btn btn-primary">
+        </div>
+
+        <?php if ($allowResend) { ?>
+        <div class="resend">
+            <button type="submit" class="btn btn-link" name="resend">
+                <?= Yii::t('user', 'confirm_resend') ?>
+            </button>
+        </div>
+        <?php } ?>
     </div>
 
     <?= Html::endForm() ?>

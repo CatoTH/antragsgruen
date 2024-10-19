@@ -151,6 +151,7 @@ return [
     'confirm_mail_sent' => 'An email was just sent to your address. Please confirm receiving this mail by clicking on the link in the mail or by entering the given code on this page.',
     'confirm_code'      => 'Confirmation code',
     'confirm_btn_do'    => 'Confirm',
+    'confirm_resend'    => 'Resend confirmation e-mail',
 
     'confirmed_title'         => 'Account confirmed',
     'confirmed_msg'           => 'Your\'re all set! Your account is confirmed and you are good to go.',

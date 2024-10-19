@@ -713,6 +713,16 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
+    public function hasTooRecentRecoveryEmail(): bool
+    {
+        if (!$this->recoveryAt) {
+            return false;
+        }
+        $recTs = Tools::dateSql2timestamp($this->recoveryAt);
+
+        return ($recTs + 3600) > time();
+    }
+
     /**
      * @throws MailNotSent
      * @throws FormError
@@ -720,11 +730,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function sendRecoveryMail(): void
     {
-        if ($this->recoveryAt) {
-            $recTs = Tools::dateSql2timestamp($this->recoveryAt);
-            if (time() - $recTs < 24 * 3600) {
-                throw new FormError(\Yii::t('user', 'err_recover_mail_sent'));
-            }
+        if ($this->hasTooRecentRecoveryEmail()) {
+            throw new FormError(\Yii::t('user', 'err_recover_mail_sent'));
         }
         if ($this->email === null) {
             return;
