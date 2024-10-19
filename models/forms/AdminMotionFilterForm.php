@@ -1294,7 +1294,7 @@ class AdminMotionFilterForm
                 $actions .= '<button type="submit" class="btn btn-success" name="proposalVisible">' . \Yii::t('admin', 'list_proposal_visible') . '</button>';
             }
             if ($this->hasAdditionalActions()) {
-                $actions = $this->showAdditionalActions($str);
+                $actions .= $this->showAdditionalActions($str);
             }
             $str .= $actions;
             $str .= '</div>
