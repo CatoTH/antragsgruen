@@ -49,9 +49,9 @@ class Module extends ModuleBase
     {
         $discourseData = $motion->getExtraDataKey('discourse');
         $currThreadId = ($discourseData && isset($discourseData['topic_id']) ? intval($discourseData['topic_id']) : '');
-        return '<div class="form-group">
-        <label class="col-md-3 control-label" for="motionDiscourseThreadId">Discourse Thread ID</label>
-        <div class="col-md-4">
+        return '<div class="stdTwoCols">
+        <label class="leftColumn" for="motionDiscourseThreadId">Discourse Thread ID</label>
+        <div class="rightColumn">
             <input type="text" class="form-control" name="motion[discourseThreadId]" id="discourseThreadId" value="' . $currThreadId . '">
         </div>
     </div>';
