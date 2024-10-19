@@ -48,19 +48,19 @@ class LoginUsernamePasswordForm extends Model
     /**
      * @throws MailNotSent
      */
-    private function sendConfirmationEmail(User $user): void
+    public function sendConfirmationEmail(User $user): void
     {
         if ($this->externalAuthenticator && !$this->externalAuthenticator->supportsCreatingAccounts()) {
             throw new Internal('Creating account is not supported');
         }
         $bestCode = $user->createEmailConfirmationCode();
-        $params = ['/user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
+        $params = ['/user/confirmregistration', 'email' => $user->email, 'code' => $bestCode, 'subdomain' => null];
         $link = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
 
         \app\components\mail\Tools::sendWithLog(
             EMailLog::TYPE_REGISTRATION,
             null,
-            $this->username,
+            $user->email,
             $user->id,
             \Yii::t('user', 'create_emailconfirm_title'),
             \Yii::t('user', 'create_emailconfirm_msg'),
@@ -70,8 +70,10 @@ class LoginUsernamePasswordForm extends Model
                 '%BEST_LINK%' => $link,
             ]
         );
-    }
 
+        $user->recoveryAt = date('Y-m-d H:i:s');
+        $user->save();
+    }
 
     /**
      * @throws Login
@@ -96,7 +98,7 @@ class LoginUsernamePasswordForm extends Model
             throw new Login($this->error);
         }
         if (strlen($this->password) < static::PASSWORD_MIN_LEN) {
-            $this->error = str_replace('%MINLEN%', static::PASSWORD_MIN_LEN, \Yii::t('user', 'create_err_pwdlength'));
+            $this->error = str_replace('%MINLEN%', (string)static::PASSWORD_MIN_LEN, \Yii::t('user', 'create_err_pwdlength'));
             throw new Login($this->error);
         }
         if ($this->password !== $this->passwordConfirm) {
@@ -136,7 +138,7 @@ class LoginUsernamePasswordForm extends Model
     public function doCreateAccount(?Site $site): User
     {
         if (!$this->supportsCreatingAccounts()) {
-            throw new Internal('Creating account is not supported');
+            throw new Internal('Creating accounts is not supported');
         }
         if ($this->externalAuthenticator) {
             return $this->externalAuthenticator->performRegistration($this->username, $this->password);
@@ -292,6 +294,15 @@ class LoginUsernamePasswordForm extends Model
             return false;
         }
         return $data['user_id'] === $user->id;
+    }
+
+    public function getOngoingEmailConfirmationSessionUser(): ?User
+    {
+        $data = $this->session->get(self::SESSION_KEY_EMAIL_CONFIRMATION);
+        if (!$data) {
+            return null;
+        }
+        return User::findOne(['id' => $data['user_id']]);
     }
 
     public function setLoggedInAwaitingPasswordChange(User $user): void

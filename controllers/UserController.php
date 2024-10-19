@@ -271,8 +271,11 @@ class UserController extends Base
         $msgError = '';
         $prefillCode = '';
         $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
+        $ongoingSessionUser = $usernamePasswordForm->getOngoingEmailConfirmationSessionUser();
 
-        if ($this->isRequestSet('email') && $this->isRequestSet('code')) {
+        if ($this->isRequestSet('resend') && $ongoingSessionUser && !$ongoingSessionUser->hasTooRecentRecoveryEmail()) {
+            $usernamePasswordForm->sendConfirmationEmail($ongoingSessionUser);
+        } elseif ($this->isRequestSet('email') && $this->isRequestSet('code')) {
             /** @var User|null $user */
             $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
@@ -313,6 +316,7 @@ class UserController extends Base
                 'prefillCode' => $prefillCode,
                 'errors' => $msgError,
                 'backUrl' => $backUrl,
+                'allowResend' => ($ongoingSessionUser && !$ongoingSessionUser->hasTooRecentRecoveryEmail()),
             ]
         ));
     }

@@ -46,6 +46,25 @@
     width: 400px;
   }
 }
+#confirmAccountForm {
+  .inputHolder {
+    margin-bottom: 15px;
+  }
+  .saveResetRow {
+    overflow: auto;
+    .save {
+      float: left;
+    }
+    .resend {
+      float: right;
+      button {
+        font-weight: normal;
+        font-size: 0.8em;
+        font-style: italic;
+      }
+    }
+  }
+}
 
 #conPwdForm {
   @media (min-width: $screenMinWith) {
