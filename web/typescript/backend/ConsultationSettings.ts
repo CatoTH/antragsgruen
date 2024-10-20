@@ -8,6 +8,7 @@ export class ConsultationSettings {
         this.initAdminMayEdit();
         this.initSingleMotionMode();
         this.initConPwd();
+        this.initManagedAccounts();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -118,5 +119,18 @@ export class ConsultationSettings {
             ev.stopPropagation();
             widget.classList.add('changePwd');
         });
+    }
+
+    private initManagedAccounts() {
+        const checkbox = this.element.querySelector('.managedUserAccounts input[type=checkbox]') as HTMLInputElement;
+        const onCheckboxChange = () => {
+            if (checkbox.checked) {
+                this.element.querySelector('.allowRequestingAccess').classList.remove("hidden");
+            } else {
+                this.element.querySelector('.allowRequestingAccess').classList.add("hidden");
+            }
+        };
+        checkbox.addEventListener('change', onCheckboxChange);
+        onCheckboxChange();
     }
 }

@@ -335,6 +335,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_policy_login'       => 'Auf Benutzer*innen einschränken',
     'siteacc_forcelogin'         => 'Nur eingeloggte Benutzer*innen dürfen zugreifen (inkl. <em>lesen</em>)',
     'siteacc_managedusers'       => 'Nur ausgewählten Benutzer*innen das Login erlauben',
+    'siteacc_allowrequesting'    => 'Benutzer*innen können Zugriff anfragen',
     'siteacc_logins'             => 'Folgende Login-Varianten sind möglich',
     'siteacc_useraccounts'       => 'Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>',
     'siteacc_ww'                 => 'Grünes Netz <small>(v.a. Parteimitglieder)</small>',

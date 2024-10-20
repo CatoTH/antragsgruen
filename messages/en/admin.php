@@ -334,6 +334,7 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_policy_login'      => 'Restrict to users',
     'siteacc_forcelogin'        => 'Only logged in users are allowed to access (incl. <em>reading</em>)',
     'siteacc_managedusers'      => 'Only allow selected users to log in',
+    'siteacc_allowrequesting'   => 'Users can ask for access',
     'siteacc_logins'            => 'The following login variants are possible',
     'siteacc_useraccounts'      => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
     'siteacc_ww'                => 'Grünes Netz <small>(members of the german green party)</small>',

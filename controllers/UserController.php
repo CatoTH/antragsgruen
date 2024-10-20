@@ -266,7 +266,7 @@ class UserController extends Base
         return new JsonResponse(JwtCreator::getJwtConfigForCurrUser($this->consultation));
     }
 
-    public function actionConfirmregistration(string $backUrl = '', string $email = ''): HtmlResponse
+    public function actionConfirmregistration(string $backUrl = '', string $email = ''): ResponseInterface
     {
         $msgError = '';
         $prefillCode = '';
@@ -295,8 +295,12 @@ class UserController extends Base
                     }
 
                     if ($this->consultation && $this->consultation->getSettings()->managedUserAccounts) {
-                        UserConsultationScreening::askForConsultationPermission($user, $this->consultation);
-                        $needsAdminScreening = true;
+                        if ($this->consultation->getSettings()->allowRequestingAccess) {
+                            UserConsultationScreening::askForConsultationPermission($user, $this->consultation);
+                            $needsAdminScreening = true;
+                        } else {
+                            return new RedirectResponse(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
+                        }
                     } else {
                         $needsAdminScreening = false;
                     }
@@ -668,13 +672,13 @@ class UserController extends Base
     {
         $user = User::getCurrentUser();
 
-        if ($this->isPostSet('askPermission')) {
+        if ($this->isPostSet('askPermission') && $this->consultation->getSettings()->allowRequestingAccess) {
             UserConsultationScreening::askForConsultationPermission($user, $this->consultation);
             $this->consultation->refresh();
         }
 
         if ($user) {
-            $askForPermission   = true;
+            $askForPermission   = $this->consultation->getSettings()->allowRequestingAccess;
             $askedForPermission = false;
             foreach ($this->consultation->screeningUsers as $screening) {
                 if ($screening->userId === $user->id) {
