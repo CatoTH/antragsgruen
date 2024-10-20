@@ -443,9 +443,12 @@ class UserController extends Base
         }
         if ($this->isPostSet('save')) {
             $post = $this->getHttpRequest()->post();
-            $user->nameGiven = $post['name_given'] ?? '';
-            $user->nameFamily = $post['name_family'] ?? '';
-            $user->name = trim($user->nameGiven . ' ' . $user->nameFamily);
+
+            if (($user->fixedData & User::FIXED_NAME) === 0) {
+                $user->nameGiven = $post['name_given'] ?? '';
+                $user->nameFamily = $post['name_family'] ?? '';
+                $user->name = trim($user->nameGiven . ' ' . $user->nameFamily);
+            }
 
             $selectableOrganisations = $user->getSelectableUserOrganizations();
             if (isset($post['orgaPrimary']) && $selectableOrganisations) {

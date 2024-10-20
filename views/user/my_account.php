@@ -35,20 +35,37 @@ if ($externalAuthenticator === null) {
     echo Html::beginForm($formUrl, 'post', ['class' => 'userAccountForm content']);
 
     echo $controller->showErrors();
+    $nameEditable = (($user->fixedData & User::FIXED_NAME) === 0);
     ?>
 
     <div class="stdTwoCols">
         <label class="leftColumn control-label" for="nameGiven"><?= Yii::t('user', 'name_given') ?>:</label>
         <div class="rightColumn">
-            <input type="text" name="name_given" value="<?= Html::encode($user->getGivenNameWithFallback()) ?>"
-                   class="form-control" id="nameGiven" required>
+            <?php
+            if ($nameEditable) {
+                ?>
+                <input type="text" name="name_given" value="<?= Html::encode($user->getGivenNameWithFallback()) ?>"
+                       class="form-control" id="nameGiven" required>
+                <?php
+            } else {
+                echo Html::encode($user->getGivenNameWithFallback());
+            }
+            ?>
         </div>
     </div>
     <div class="stdTwoCols">
         <label class="leftColumn control-label" for="nameFamily"><?= Yii::t('user', 'name_family') ?>:</label>
         <div class="rightColumn">
-            <input type="text" name="name_family" value="<?= Html::encode($user->getFamilyNameWithFallback()) ?>"
-                   class="form-control" id="nameFamily">
+            <?php
+            if ($nameEditable) {
+                ?>
+                <input type="text" name="name_family" value="<?= Html::encode($user->getFamilyNameWithFallback()) ?>"
+                       class="form-control" id="nameFamily">
+                <?php
+            } else {
+                echo Html::encode($user->getFamilyNameWithFallback());
+            }
+            ?>
         </div>
     </div>
     <?php
