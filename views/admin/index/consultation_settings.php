@@ -157,6 +157,14 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             </label>
         </div>
 
+        <?php $handledSettings[] = 'allowRequestingAccess'; ?>
+        <div class="allowRequestingAccess">
+            <label>
+                <?= Html::checkbox('settings[allowRequestingAccess]', $settings->allowRequestingAccess) ?>
+                <?= Yii::t('admin', 'siteacc_allowrequesting') ?>
+            </label>
+        </div>
+
         <div class="conpw <?= ($conPwd->isPasswordSet() ? 'hasPassword' : 'noPassword') ?>">
             <label class="setter">
                 <?= Html::checkbox('pwdProtected', $conPwd->isPasswordSet()) ?>
