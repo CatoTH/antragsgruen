@@ -17,6 +17,7 @@
 - Bugfix: It was possible for users to submit amendments for withdrawn motions.
 - Bugfix: When using "previous / next motion" links for pagination, motions and resolutions were not properly separated.
 - Bugfix: Some Youtube-Videos could not be embedded.
+- Bugfix: When copying a consultation with motion types whose permissions were restricted to a specific user group, these permissions where not properly copied.
 
 ### Version 4.14.2 (2024-09-08)
 
