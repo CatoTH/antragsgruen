@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\commands;
 
 use app\components\{UrlHelper, UserGroupAdminMethods};
@@ -14,10 +16,14 @@ class UserController extends Controller
     public ?string $password = null;
     public ?string $welcomeFile = null;
 
+    public bool $forcePasswordChange = false;
+    public bool $forceTwoFactor = false;
+    public bool $preventPasswordChange = false;
+
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create', 'create-or-update' => ['groupIds', 'organization', 'welcomeFile'],
+            'create', 'create-or-update' => ['groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange'],
             'update' => ['groupIds', 'organization', 'password'],
             default => [],
         };
@@ -80,6 +86,10 @@ class UserController extends Controller
      * ./yii user/create-or-update email:test@example.org test@example.org "Given Name" "Family Name" TestPassword --groupIds 1,2 --organization Antragsgrün --welcome-file welcome-email.txt
      *
      * "groupIds" refer to the primary IDs in "consultationUserGroup"
+     * Optional flags:
+     * --forcePasswordChange
+     * --forceTwoFactor
+     * --preventPasswordChange
      */
     public function actionCreateOrUpdate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
@@ -101,6 +111,10 @@ class UserController extends Controller
      * ./yii user/create email:test@example.org test@example.org "Given Name" "Family Name" TestPassword --groupIds 1,2 --organization Antragsgrün --welcome-file welcome-email.txt
      *
      * "groupIds" refer to the primary IDs in "consultationUserGroup"
+     * Optional flags:
+     *  --forcePasswordChange
+     *  --forceTwoFactor
+     *  --preventPasswordChange
      */
     public function actionCreate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
@@ -130,6 +144,19 @@ class UserController extends Controller
         $user->status = User::STATUS_CONFIRMED;
         $user->organizationIds = '';
         $user->organization = $this->organization;
+
+        $userSettings = $user->getSettingsObj();
+        if ($this->forcePasswordChange) {
+            $userSettings->forcePasswordChange = true;
+        }
+        if ($this->preventPasswordChange) {
+            $userSettings->preventPasswordChange = true;
+        }
+        if ($this->forceTwoFactor) {
+            $userSettings->enforceTwoFactorAuthentication = true;
+        }
+        $user->setSettingsObj($userSettings);
+
         $user->save();
 
         foreach ($toUserGroups as $toUserGroup) {
