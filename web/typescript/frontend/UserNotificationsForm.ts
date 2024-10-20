@@ -1,6 +1,6 @@
 export class UserNotificationsForm {
     constructor(private $widget: JQuery) {
-        $(".notiComment input").change((ev) => {
+        $(".notiComment input").on("change", (ev) => {
             if ($(ev.currentTarget).prop("checked")) {
                 $(".commentSettings").removeClass("hidden");
             } else {
@@ -8,7 +8,7 @@ export class UserNotificationsForm {
             }
         }).trigger("change");
 
-        $(".notiAmendment input").change((ev) => {
+        $(".notiAmendment input").on("change", (ev) => {
             if ($(ev.currentTarget).prop("checked")) {
                 $(".amendmentSettings").removeClass("hidden");
             } else {
