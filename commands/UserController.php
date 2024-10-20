@@ -19,11 +19,13 @@ class UserController extends Controller
     public bool $forcePasswordChange = false;
     public bool $forceTwoFactor = false;
     public bool $preventPasswordChange = false;
+    public bool $fixedName = false;
+    public bool $fixedOrganization = false;
 
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create', 'create-or-update' => ['groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange'],
+            'create', 'create-or-update' => ['groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange', 'fixedName', 'fixedOrganization'],
             'update' => ['groupIds', 'organization', 'password'],
             default => [],
         };
@@ -90,6 +92,8 @@ class UserController extends Controller
      * --forcePasswordChange
      * --forceTwoFactor
      * --preventPasswordChange
+     * --fixedName
+     * --fixedOrganization
      */
     public function actionCreateOrUpdate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
@@ -112,9 +116,11 @@ class UserController extends Controller
      *
      * "groupIds" refer to the primary IDs in "consultationUserGroup"
      * Optional flags:
-     *  --forcePasswordChange
-     *  --forceTwoFactor
-     *  --preventPasswordChange
+     * --forcePasswordChange
+     * --forceTwoFactor
+     * --preventPasswordChange
+     * --fixedName
+     * --fixedOrganization
      */
     public function actionCreate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
@@ -144,6 +150,14 @@ class UserController extends Controller
         $user->status = User::STATUS_CONFIRMED;
         $user->organizationIds = '';
         $user->organization = $this->organization;
+
+        $user->fixedData = 0;
+        if ($this->fixedName) {
+            $user->fixedData |= User::FIXED_NAME;
+        }
+        if ($this->fixedOrganization) {
+            $user->fixedData |= User::FIXED_ORGA;
+        }
 
         $userSettings = $user->getSettingsObj();
         if ($this->forcePasswordChange) {
