@@ -315,7 +315,7 @@ if ($controller->site) {
 }
 ?>
 
-    <section aria-labelledby="userDataExportTitle">
+    <section aria-labelledby="userDataExportTitle" id="userDataExportSection">
         <h2 class="green" id="userDataExportTitle"><?= Yii::t('user', 'export_title') ?></h2>
         <div class="content userDataExport">
             <?= Yii::t('user', 'export_intro') ?>
