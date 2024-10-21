@@ -98,6 +98,12 @@ foreach ($imotions as $imotion) {
         }
     }
 }
+
+if (count($tags) === 0) {
+    echo '<div class="content"><div class="noMotionsYet">' . ($isResolutionList ? Yii::t('con', 'no_resolutions_yet') : Yii::t('con', 'no_motions_yet')) . '</div></div>';
+    return;
+}
+
 $sortedTags = $consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
 foreach ($sortedTags as $tag) {
     if (isset($tags[$tag->id])) {
