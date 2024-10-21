@@ -22,6 +22,9 @@ if (User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CHAN
 ) {
     $useCache = false;
 }
+if (User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion))) {
+    $useCache = false; // Proposed procedure might be visible in the text, despite not being published yet
+}
 if (!\app\models\settings\AntragsgruenApp::getInstance()->viewCacheFilePath) {
     $useCache = false;
 }
