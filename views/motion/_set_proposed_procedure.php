@@ -386,7 +386,7 @@ $voting = $motion->getVotingData();
     </div>
 </section>
 <section class="saving showIfChanged">
-    <button class="btn btn-default btn-sm">
+    <button class="btn btn-primary btn-sm">
         <?= Yii::t('amend', 'proposal_save_changes') ?>
     </button>
 </section>
