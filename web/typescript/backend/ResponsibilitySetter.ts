@@ -33,7 +33,7 @@ export class ResponsibilitySetter {
     }
 
     private onKeyPressed(ev: KeyboardEvent) {
-        if (ev.keyCode == 13) { // Enter
+        if (ev.key === "Enter") {
             ev.preventDefault();
             ev.stopPropagation();
             const $row: JQuery = $(ev.currentTarget).parents(".respHolder").first() as JQuery;

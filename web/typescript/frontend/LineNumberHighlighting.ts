@@ -3,8 +3,8 @@ export class LineNumberHighlighting {
         let $panel = $(".gotoLineNumerPanel"),
             $lineInput = $panel.find("input[name=lineNumber]"),
             panelIsOpen = false;
-        window.addEventListener('keypress', (ev) => {
-            if (!panelIsOpen && ev.charCode >= 48 && ev.charCode <= 57) {
+        window.addEventListener('keydown', (ev) => {
+            if (!panelIsOpen && ev.key >= '0' && ev.key <= '9') {
                 let $target = $(ev.target);
                 if ($target.is('input, textarea, div.texteditor, .cke_editable') || $target.parents('input, textarea, div.texteditor, .cke_editable').length > 0) {
                     // Typing in an input field, like comments
