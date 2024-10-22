@@ -34,10 +34,10 @@ echo '<h1>' . Html::encode($consultation->title) . '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');
 
+echo $controller->showErrors();
+
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
-
-echo $controller->showErrors();
 
 $getMyMotionAttrs = function (\app\models\db\IMotion $motion, \app\models\db\ISupporter $supporter) {
     $class = [];
