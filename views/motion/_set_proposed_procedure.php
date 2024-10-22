@@ -15,6 +15,7 @@ use yii\helpers\Html;
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
+    'class'                    => 'version' . $motion->version,
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
 ]);
