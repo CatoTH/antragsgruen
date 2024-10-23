@@ -26,9 +26,11 @@ class LayoutHelper
             $cache->setSkipCache(true);
         }
 
-        if (in_array($type, [
-                ConsultationSettings::START_LAYOUT_AGENDA_LONG, ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND, ConsultationSettings::START_LAYOUT_AGENDA
-            ]) && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+        if ($type === 'index_layout_agenda' && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+            $cache->setSkipCache(true);
+        }
+        if (!in_array($type, ['index_layout_std', 'index_layout_tags', 'index_layout_agenda', 'index_layout_discussion_tags'])) {
+            // Disable cache for plugin homepages, to prevent accidental over-caching
             $cache->setSkipCache(true);
         }
 
