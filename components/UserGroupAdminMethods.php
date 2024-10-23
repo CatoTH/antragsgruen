@@ -146,7 +146,7 @@ class UserGroupAdminMethods
         $settings->ppReplyTo = $ppReplyTo;
         $user->setSettingsObj($settings);
 
-        if (trim($nameGiven) !== '' && trim($nameFamily) !== '') {
+        if ((trim($nameGiven) !== '' && trim($nameFamily) !== '') || trim($organization) !== '') {
             $user->nameFamily = trim($nameFamily);
             $user->nameGiven = trim($nameGiven);
             $user->organization = trim($organization);
