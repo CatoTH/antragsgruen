@@ -32,7 +32,7 @@ Installation
 
 #### Requirements:
 
-- A MySQL-database
+- A MySQL/MariaDB-database
 - PHP >= 8.1. Recommended: 8.3+. Required packages for Debian / Ubuntu Linux:
 
 ```bash
@@ -413,7 +413,7 @@ All endpoints of the API are located under `/rest`. An OpenAPI-based description
 
 #### Installation
 
-* Create a separate (MySQL-)database for testing (`antragsgruen_tests`)
+* Create a separate (MySQL/MariaDB-)database for testing (`antragsgruen_tests`)
 * Set up the configuration file: ```
 cp config/config_tests.template.json config/config_tests.json && vi config/config_tests.json```
 * Download [ChromeDriver](https://sites.google.com/chromium.org/driver/) and move the binary into the PATH (e.g. /usr/local/bin/)
