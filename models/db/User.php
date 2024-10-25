@@ -56,6 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
     // Hint: compared binary, i.e. values are 1, 2, 4, ...
     public const FIXED_NAME = 1; // When submitting as a natural person, this fixes name + orga of the person
     public const FIXED_ORGA = 2; // Only affects when submitting as the organization
+    public const FIXED_EMAIL = 4;
 
     public const AUTH_EMAIL = 'email';
 
@@ -497,7 +498,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function supportsSecondFactorAuth(): bool
     {
-        return $this->isEmailAuthUser();
+        return $this->isEmailAuthUser() && !$this->getSettingsObj()->preventPasswordChange;
     }
 
     /**

@@ -13,6 +13,7 @@ return [
     'name'                      => 'Name',
     'name_given'                => 'Vorname',
     'name_family'               => 'Nachname',
+    'organization '             => 'Organisation',
     'user_group'                => 'Gruppe',
     'user_groups'               => 'Gruppen',
     'user_groups_con'           => 'Diese Veranstaltung',
