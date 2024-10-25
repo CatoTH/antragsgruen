@@ -16,22 +16,25 @@ $date   = Tools::dateSql2bootstrapdate(date('Y-m-d'));
 $voting       = $motion->getVotingData();
 $votingOpened = $voting->hasAnyData();
 $statusesAll = $motion->getMyConsultation()->getStatuses()->getStatusNames();
+
+$newStatusPossibilities = [
+    'resolution_final' => Yii::t('amend', 'merge_new_status_res_f'),
+    'resolution_preliminary' => Yii::t('amend', 'merge_new_status_res_p'),
+    'motion' => Yii::t('amend', 'merge_new_status_screened'),
+];
 ?>
 <h2 class="green"><?= Yii::t('amend', 'merge_new_status') ?></h2>
 <div class="content contentMotionStatus">
     <div class="newMotionStatus">
-        <label>
-            <input type="radio" name="newStatus" value="motion" checked>
-            <?= Yii::t('amend', 'merge_new_status_screened') ?>
-        </label>
-        <label>
-            <input type="radio" name="newStatus" value="resolution_final">
-            <?= Yii::t('amend', 'merge_new_status_res_f') ?>
-        </label>
-        <label>
-            <input type="radio" name="newStatus" value="resolution_preliminary">
-            <?= Yii::t('amend', 'merge_new_status_res_p') ?>
-        </label>
+        <?php
+        $firstKey = array_keys($newStatusPossibilities)[0];
+        foreach ($newStatusPossibilities as $key => $name) {
+            echo '<label>';
+            echo Html::radio('newStatus', $key === $firstKey, ['value' => $key]);
+            echo ' ' . $name;
+            echo '</label>';
+        }
+        ?>
     </div>
     <div class="newMotionInitiator">
         <label for="newInitiator"><?= Yii::t('amend', 'merge_new_orga') ?></label>
