@@ -22,6 +22,17 @@ $newStatusPossibilities = [
     'resolution_preliminary' => Yii::t('amend', 'merge_new_status_res_p'),
     'motion' => Yii::t('amend', 'merge_new_status_screened'),
 ];
+$newResolutionProposer = '';
+foreach (\app\models\settings\AntragsgruenApp::getActivePlugins() as $plugin) {
+    if ($newStatuses = $plugin::getResolutionStatusOptions($motion->getMyConsultation())) {
+        $newStatusPossibilities = $newStatuses;
+    }
+    if ($newProposer = $plugin::getResolutionProposer($oldMotion)) {
+        $newResolutionProposer = $newProposer;
+    }
+}
+
+
 ?>
 <h2 class="green"><?= Yii::t('amend', 'merge_new_status') ?></h2>
 <div class="content contentMotionStatus">
@@ -38,7 +49,7 @@ $newStatusPossibilities = [
     </div>
     <div class="newMotionInitiator">
         <label for="newInitiator"><?= Yii::t('amend', 'merge_new_orga') ?></label>
-        <input class="form-control" name="newInitiator" type="text" id="newInitiator">
+        <input class="form-control" name="newInitiator" type="text" id="newInitiator" value="<?= Html::encode($newResolutionProposer) ?>">
         <label for="dateResolution"><?= Yii::t('amend', 'merge_new_resolution_date') ?></label>
         <div class="input-group date" id="dateResolutionHolder">
             <input type="text" class="form-control" name="dateResolution" id="dateResolution"

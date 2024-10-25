@@ -316,6 +316,19 @@ class ModuleBase extends Module
         return [];
     }
 
+    /**
+     * @return array<string, string>|null
+     */
+    public static function getResolutionStatusOptions(Consultation $consultation): ?array
+    {
+        return null;
+    }
+
+    public static function getResolutionProposer(IMotion $imotion): ?string
+    {
+        return null;
+    }
+
     public static function getMotionVersions(Consultation $consultation): ?array
     {
         return null;
