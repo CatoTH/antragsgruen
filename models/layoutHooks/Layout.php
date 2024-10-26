@@ -155,9 +155,19 @@ class Layout
         return self::callHook('getMotionViewData', [$motion], $motionData);
     }
 
+    public static function getMotionExportData(array $motionData, Motion $motion): array
+    {
+        return self::callHook('getMotionExportData', [$motion], $motionData);
+    }
+
     public static function getAmendmentViewData(array $amendmentData, Amendment $amendment): array
     {
         return self::callHook('getAmendmentViewData', [$amendment], $amendmentData);
+    }
+
+    public static function getAmendmentExportData(array $amendmentData, Amendment $amendment): array
+    {
+        return self::callHook('getAmendmentExportData', [$amendment], $amendmentData);
     }
 
     public static function getAmendmentBookmarkName(Amendment $amendment): string

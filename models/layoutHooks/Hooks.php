@@ -122,12 +122,22 @@ class Hooks
         return $motionData;
     }
 
+    public function getMotionExportData(array $motionData, Motion $motion): array
+    {
+        return $motionData;
+    }
+
     public function getMotionFormattedAmendmentList(string $before, Motion $motion): string
     {
         return $before;
     }
 
     public function getAmendmentViewData(array $amendmentData, Amendment $amendment): array
+    {
+        return $amendmentData;
+    }
+
+    public function getAmendmentExportData(array $amendmentData, Amendment $amendment): array
     {
         return $amendmentData;
     }

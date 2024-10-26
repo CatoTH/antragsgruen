@@ -19,7 +19,6 @@ use app\models\notifications\{AmendmentProposedProcedure,
     AmendmentPublished as AmendmentPublishedNotification,
     AmendmentSubmitted as AmendmentSubmittedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
-use app\models\policies\IPolicy;
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
 use app\models\supportTypes\SupportBase;
 use yii\db\ActiveQuery;
@@ -1069,7 +1068,13 @@ class Amendment extends IMotion implements IRSSItem
             $return[\Yii::t('motion', 'status')] = $consultation->getStatuses()->getStatusNames()[$this->status];
         }
 
-        return $return;
+        if ($this->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            if ($this->isProposalPublic() && $this->proposalStatus) {
+                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($this->getFormattedProposalStatus(true));
+            }
+        }
+
+        return Layout::getAmendmentExportData($return, $this);
     }
 
     public function getMyMotionType(): ConsultationMotionType

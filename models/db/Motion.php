@@ -1056,7 +1056,13 @@ class Motion extends IMotion implements IRSSItem
             $return[\Yii::t('motion', 'status')] = $consultation->getStatuses()->getStatusNames()[$this->status];
         }
 
-        return $return;
+        if ($this->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
+            if ($this->isProposalPublic() && $this->proposalStatus) {
+                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($this->getFormattedProposalStatus(true));
+            }
+        }
+
+        return Layout::getMotionExportData($return, $this);
     }
 
     public function findAmendmentWithPrefix(string $prefix, ?Amendment $ignore = null): ?Amendment
