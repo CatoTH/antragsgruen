@@ -778,8 +778,8 @@ class LayoutHelper
 
         foreach ($motion->getDataTable() as $key => $val) {
             $content->motionDataTable .= '<tr>';
-            $content->motionDataTable .= '<th>' . Html::encode($key) . ':</th>';
-            $content->motionDataTable .= '<td>' . Html::encode($val) . '</td>';
+            $content->motionDataTable .= '<th>' . nl2br(Html::encode($key)) . ':</th>';
+            $content->motionDataTable .= '<td>' . nl2br(Html::encode($val)) . '</td>';
             $content->motionDataTable .= '</tr>';
         }
 
