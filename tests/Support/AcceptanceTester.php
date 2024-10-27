@@ -8,6 +8,7 @@ use Tests\_pages\AdminIndexPage;
 use Tests\_pages\AdminMotionListPage;
 use Tests\_pages\AmendmentPage;
 use Tests\_pages\ConsultationHomePage;
+use Tests\_pages\ContentPage;
 use Tests\_pages\MotionCreatePage;
 use Tests\_pages\MotionPage;
 use Tests\Support\Helper\BasePage;
@@ -120,6 +121,20 @@ class AcceptanceTester extends Actor
                 'subdomain'        => $subdomain,
                 'consultationPath' => $path,
                 'motionTypeId'     => $motionTypeId,
+            ]
+        );
+        $this->wait(0.1);
+        return $page;
+    }
+
+    public function gotoContentPage(string $pageSlug, string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): ContentPage
+    {
+        $page = ContentPage::openBy(
+            $this,
+            [
+                'subdomain'        => $subdomain,
+                'consultationPath' => $path,
+                'pageSlug'         => $pageSlug,
             ]
         );
         $this->wait(0.1);

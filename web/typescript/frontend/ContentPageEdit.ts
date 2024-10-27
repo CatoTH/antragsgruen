@@ -9,6 +9,7 @@ export class ContentPageEdit {
     private $contentSettings: JQuery;
     private $downloadableFiles: JQuery;
     private $policyWidget: JQuery;
+    private $allConsultationsCheckbox: JQuery;
     private editor: editor;
 
     constructor(private $form: JQuery) {
@@ -18,6 +19,7 @@ export class ContentPageEdit {
         this.$editCaller = $(this.$form.data('edit-selector'));
         this.$contentSettings = $form.find('.contentSettingsToolbar');
         this.$downloadableFiles = $form.find('.downloadableFiles');
+        this.$allConsultationsCheckbox = $form.find('input[name=allConsultations]');
         this.$policyWidget = $form.find('.policyWidget');
 
         this.$editCaller.on("click", this.editCalled.bind(this));
@@ -69,7 +71,9 @@ export class ContentPageEdit {
         this.$textHolder.trigger("focus");
         this.$textSaver.removeClass('hidden');
         this.$contentSettings.removeClass('hidden');
-        this.$policyWidget.removeClass('hidden');
+        if (!this.$allConsultationsCheckbox.prop('checked')) {
+            this.$policyWidget.removeClass('hidden');
+        }
         this.showDownloadableFiles();
     }
 
@@ -77,6 +81,13 @@ export class ContentPageEdit {
         this.$contentSettings.find('input[name=url]').on('keyup change keypress', (ev) => {
             let $input = $(ev.currentTarget);
             $input.val(($input.val() as string).replace(/[^\w_\-,\.äöüß]/, ''));
+        });
+        this.$allConsultationsCheckbox.on('change', () => {
+            if (this.$allConsultationsCheckbox.prop('checked')) {
+                this.$policyWidget.addClass('hidden');
+            } else {
+                this.$policyWidget.removeClass('hidden');
+            }
         });
     }
 
@@ -178,7 +189,7 @@ export class ContentPageEdit {
         if (this.$contentSettings.length > 0) {
             data['url'] = this.$contentSettings.find('input[name=url]').val();
             data['title'] = this.$contentSettings.find('input[name=title]').val();
-            data['allConsultations'] = (this.$contentSettings.find('input[name=allConsultations]').prop('checked') ? 1 : 0);
+            data['allConsultations'] = (this.$allConsultationsCheckbox.prop('checked') ? 1 : 0);
             data['inMenu'] = (this.$contentSettings.find('input[name=inMenu]').prop('checked') ? 1 : 0);
         }
         if (this.$policyWidget.length > 0) {
