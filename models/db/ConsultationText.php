@@ -285,6 +285,10 @@ class ConsultationText extends ActiveRecord implements IHasPolicies
                 return false;
             }
 
+            if (!$page->getReadPolicy()->checkCurrUser()) {
+                return false;
+            }
+
             return $page->menuPosition !== null;
         });
         usort($pages, function (ConsultationText $page1, ConsultationText $page2) {

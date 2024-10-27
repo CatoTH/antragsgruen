@@ -56,7 +56,7 @@ class PagesController extends Base
         return new HtmlResponse($this->render('list'));
     }
 
-    protected function getPageForView(string $pageSlug): ?ConsultationText
+    protected function getPageForView(string $pageSlug): ConsultationText
     {
         $pageData = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
 
@@ -74,7 +74,10 @@ class PagesController extends Base
 
     public function actionShowPage(string $pageSlug): ResponseInterface
     {
-        $this->getPageForView($pageSlug); // Assert the page exists
+        $pageData = $this->getPageForView($pageSlug);
+        if (!$pageData->getReadPolicy()->checkCurrUser()) {
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
+        }
 
         return $this->renderContentPage($pageSlug);
     }
@@ -82,8 +85,8 @@ class PagesController extends Base
     public function actionGetRest(string $pageSlug): RestApiResponse
     {
         $pageData = $this->getPageForView($pageSlug);
-        if (!$pageData) {
-            return $this->returnRestResponseFromException(new \Exception('page not found'));
+        if (!$pageData->getReadPolicy()->checkCurrUser()) {
+            return new RestApiResponse(403, ['error' => 'No access']);
         }
 
         $data = [
@@ -256,8 +259,12 @@ class PagesController extends Base
         return $result;
     }
 
-    public function actionDeleteFile(): JsonResponse
+    public function actionDeleteFile(): ResponseInterface
     {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+            return new HtmlErrorResponse(403, 'No permissions to delete files');
+        }
+
         $fileId = intval($this->getHttpRequest()->post('id'));
         foreach ($this->consultation->files as $file) {
             if ($file->id === $fileId) {
@@ -389,7 +396,13 @@ class PagesController extends Base
             'filename'       => $filename,
         ]);
         if (!$file) {
-            throw new NotFoundHttpException('file not found', 404);
+            return new HtmlErrorResponse(404, 'File not found');
+        }
+
+        if ($file->fileGroupId && $file->fileGroup->consultationTextId) {
+            if (!$file->fileGroup->consultationText->getReadPolicy()->checkCurrUser()) {
+                return new HtmlErrorResponse(403, 'No access to file');
+            }
         }
 
         return new class($file) implements ResponseInterface {
@@ -530,6 +543,9 @@ class PagesController extends Base
 
         $zipName = 'documents';
         foreach ($this->consultation->fileGroups as $fileGroup) {
+            if ($fileGroup->consultationTextId) {
+                continue;
+            }
             $directory = Tools::sanitizeFilename($fileGroup->title, true);
             if ($fileGroup->id === intval($groupId)) {
                 $zipName = Tools::sanitizeFilename($fileGroup->title, false);

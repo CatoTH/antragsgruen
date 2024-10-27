@@ -11,7 +11,7 @@
 - When going to the Terms and Conditions and/or the Privacy page and back, you will end up in the same consultation than before now.
 - Custom input fields in motion forms can now have explanations. They can also be set to be "encouraged but not required" - that is, the user can skip them but will get a warning if they do so.
 - Content pages can now have attached files, just like the welcome text on the home page.
-- Access to content pages can now be restricted, to logged in users, admins or specific user groups.
+- Access to content pages can now be restricted to logged in users, admins or specific user groups.
 - Bugfix: Tabular data was not encoded correctly in the PHP-based PDF export.
 - Bugfix: The PDF with all amendments embedded into the motion text could not be generated if a Weasyprint-based PDF layout was selected.
 - Bugfix: If a motion with a proposed modified version was copied, merging that proposed version was not possible anymore.
