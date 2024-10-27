@@ -1,3 +1,5 @@
+declare let Sortable;
+
 export class ConsultationSettings {
     private element: HTMLFormElement;
 

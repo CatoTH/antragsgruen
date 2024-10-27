@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\policies\{IPolicy, UserGroups};
 use app\models\settings\{Layout, Privileges, AntragsgruenApp};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface, RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
-use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, User};
+use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError, ResponseException};
 use yii\web\{NotFoundHttpException, Response};
 
@@ -25,6 +26,15 @@ class PagesController extends Base
                 if (trim($url) === '' || preg_match('/[^\w_\-,.äöüß]/siu', $url)) {
                     throw new FormError('Invalid character in the URL');
                 }
+                $alreadyCreatedPage = ConsultationText::findOne([
+                    'category'       => 'pagedata',
+                    'consultationId' => $this->consultation->id,
+                    'textId'         => $url,
+                ]);
+                if ($alreadyCreatedPage) {
+                    throw new FormError(\Yii::t('pages', 'err_exists_con'));
+                }
+
                 $page = new ConsultationText();
                 $page->category = ConsultationText::DEFAULT_CATEGORY;
                 $page->textId = $url;
@@ -46,7 +56,7 @@ class PagesController extends Base
         return new HtmlResponse($this->render('list'));
     }
 
-    protected function getPageForView(string $pageSlug): ?ConsultationText
+    protected function getPageForView(string $pageSlug): ConsultationText
     {
         $pageData = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
 
@@ -64,7 +74,10 @@ class PagesController extends Base
 
     public function actionShowPage(string $pageSlug): ResponseInterface
     {
-        $this->getPageForView($pageSlug); // Assert the page exists
+        $pageData = $this->getPageForView($pageSlug);
+        if (!$pageData->getReadPolicy()->checkCurrUser()) {
+            return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
+        }
 
         return $this->renderContentPage($pageSlug);
     }
@@ -72,8 +85,8 @@ class PagesController extends Base
     public function actionGetRest(string $pageSlug): RestApiResponse
     {
         $pageData = $this->getPageForView($pageSlug);
-        if (!$pageData) {
-            return $this->returnRestResponseFromException(new \Exception('page not found'));
+        if (!$pageData->getReadPolicy()->checkCurrUser()) {
+            return new RestApiResponse(403, ['error' => 'No access']);
         }
 
         $data = [
@@ -174,6 +187,17 @@ class PagesController extends Base
                     $page->consultationId = $this->consultation->id;
                 }
             }
+
+            if ($this->getHttpRequest()->post('policyReadPage')) {
+                $data = $this->getHttpRequest()->post('policyReadPage');
+                $policy = IPolicy::getInstanceFromDb($data['id'], $this->consultation, $page);
+                if (is_a($policy, UserGroups::class)) {
+                    $groups = ConsultationUserGroup::loadGroupsByIdForConsultation($this->consultation, $data['groups'] ?? []);
+                    $policy->setAllowedUserGroups($groups);
+                }
+                $page->setReadPolicy($policy);
+            }
+
             $newTextId = $this->getHttpRequest()->post('url');
             if ($newTextId && !preg_match('/[^\w_\-,.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
                 $page->textId = $newTextId;
@@ -235,8 +259,12 @@ class PagesController extends Base
         return $result;
     }
 
-    public function actionDeleteFile(): JsonResponse
+    public function actionDeleteFile(): ResponseInterface
     {
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+            return new HtmlErrorResponse(403, 'No permissions to delete files');
+        }
+
         $fileId = intval($this->getHttpRequest()->post('id'));
         foreach ($this->consultation->files as $file) {
             if ($file->id === $fileId) {
@@ -368,7 +396,13 @@ class PagesController extends Base
             'filename'       => $filename,
         ]);
         if (!$file) {
-            throw new NotFoundHttpException('file not found', 404);
+            return new HtmlErrorResponse(404, 'File not found');
+        }
+
+        if ($file->fileGroupId && $file->fileGroup->consultationTextId) {
+            if (!$file->fileGroup->consultationText->getReadPolicy()->checkCurrUser()) {
+                return new HtmlErrorResponse(403, 'No access to file');
+            }
         }
 
         return new class($file) implements ResponseInterface {
@@ -509,6 +543,9 @@ class PagesController extends Base
 
         $zipName = 'documents';
         foreach ($this->consultation->fileGroups as $fileGroup) {
+            if ($fileGroup->consultationTextId) {
+                continue;
+            }
             $directory = Tools::sanitizeFilename($fileGroup->title, true);
             if ($fileGroup->id === intval($groupId)) {
                 $zipName = Tools::sanitizeFilename($fileGroup->title, false);

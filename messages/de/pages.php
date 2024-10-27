@@ -74,4 +74,5 @@ return [
     'err_permission' => 'Keine Berechtigung, diese Seite zu bearbeiten',
     'err_exists_site' => 'Es gibt bereits eine globale Seite mit dieser URL.',
     'err_exists_con' => 'Es gibt bereits eine Seite mit dieser URL.',
+    'err_invalid_caracter' => 'Ungültiges Zeichen in der eingegebenen URL',
 ];

@@ -88,7 +88,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m240406_155022_vote_weight', '1712418888'),
   ('m240427_090527_motion_status_index', '1714209051'),
   ('m240830_181716_user_secret_key', '1725041937'),
-  ('m241013_105549_pages_files', '1728817360')
+  ('m241013_105549_pages_files', '1728817360'),
+  ('m241027_074032_pages_policies', '1730015023')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

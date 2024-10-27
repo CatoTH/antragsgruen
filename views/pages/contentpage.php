@@ -7,6 +7,7 @@
  */
 
 use app\components\UrlHelper;
+use app\models\policies\IPolicy;
 use app\models\db\{ConsultationText, User};
 use yii\helpers\Html;
 
@@ -55,6 +56,7 @@ echo '<div class="primaryHeader"><h1 class="pageTitle">' . Html::encode($pageDat
 
 if ($admin) {
     $layout->loadCKEditor();
+    $layout->loadSelectize();
 
     echo Html::beginForm($saveUrl, 'post', [
         'class'                    => 'contentEditForm',
@@ -89,6 +91,28 @@ if ($admin) {
                     <?= Yii::t('pages', 'settings_inmenu') ?>
                 </label>
             </div>
+        </section>
+
+        <section class="policyToolbarBelowTitle hidden policyWidget">
+            <label class="title" for="policyReadPage">
+                Lesezugriff:
+            </label>
+            <div class="policySelectHolder">
+            <?php
+            $policies = [];
+            foreach (IPolicy::getPolicies() as $policy) {
+                $policies[$policy::getPolicyID()] = $policy::getPolicyName();
+            }
+            $currentPolicy = $pageData->getReadPolicy();
+            echo Html::dropDownList(
+                'policyReadPage[id]',
+                $currentPolicy::getPolicyID(),
+                $policies,
+                ['id' => 'policyReadPage', 'class' => 'stdDropdown policySelect']
+            );
+            ?>
+            </div>
+            <?= $this->render('@app/views/shared/usergroup_selector', ['id' => 'policyReadPageGroups', 'formName' => 'policyReadPage', 'consultation' => $consultation, 'currentPolicy' => $currentPolicy]) ?>
         </section>
         <?php
     }

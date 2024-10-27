@@ -92,7 +92,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 $policies,
                 ['id' => 'typeInitiatorPersonPolicy', 'class' => 'stdDropdown policySelect']
             );
-            echo $this->render('_usergroup_selector', ['id' => 'typeInitiatorPersonGroups', 'formName' => 'initiatorPersonPolicy', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+            echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typeInitiatorPersonGroups', 'formName' => 'type[initiatorPersonPolicy]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
             ?>
         </div>
     </div>
@@ -110,7 +110,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 $policies,
                 ['id' => 'typeInitiatorOrgaPolicy', 'class' => 'stdDropdown policySelect']
             );
-            echo $this->render('_usergroup_selector', ['id' => 'typeInitiatorOrgaGroups', 'formName' => 'initiatorOrgaPolicy', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+            echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typeInitiatorOrgaGroups', 'formName' => 'type[initiatorOrgaPolicy]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
             ?>
         </div>
     </div>
@@ -393,7 +393,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 $policies,
                 ['id' => 'typeAmendmentInitiatorPersonPolicy', 'class' => 'stdDropdown policySelect']
             );
-            echo $this->render('_usergroup_selector', ['id' => 'typeAmendmentInitiatorPersonGroups', 'formName' => 'amendmentInitiatorPersonPolicy', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+            echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typeAmendmentInitiatorPersonGroups', 'formName' => 'type[amendmentInitiatorPersonPolicy]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
             ?>
         </div>
     </div>
@@ -411,7 +411,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 $policies,
                 ['id' => 'typeAmendmentInitiatorOrgaPolicy', 'class' => 'stdDropdown policySelect']
             );
-            echo $this->render('_usergroup_selector', ['id' => 'typeAmendmentInitiatorOrgaGroups', 'formName' => 'amendmentInitiatorOrgaPolicy', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+            echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typeAmendmentInitiatorOrgaGroups', 'formName' => 'type[amendmentInitiatorOrgaPolicy]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
             ?>
         </div>
     </div>
