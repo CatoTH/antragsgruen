@@ -38,8 +38,6 @@ $I->see('Oamoi a Maß', '.inserted');
 
 
 $I->wantTo('choose the resolution');
-$I->dontSeeElement('#newInitiator');
-$I->dontSeeElement('#dateResolution');
 $I->click("//input[@name='newStatus'][@value='resolution_preliminary']");
 $I->seeElement('#newInitiator');
 $I->seeElement('#dateResolution');

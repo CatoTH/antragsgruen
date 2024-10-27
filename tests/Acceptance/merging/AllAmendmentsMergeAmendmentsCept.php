@@ -190,7 +190,7 @@ $I->submitForm('#motionConfirmedForm', [], '');
 
 
 $I->wantTo('check if the modifications were made');
-$I->see('A2', 'h1');
+$I->see('Beschluss', '.statusRow');
 $I->see('Version 2', '.motionDataTable .historyOpener .currVersion');
 $I->see('Oamoi a Maß');
 $I->see('Schooe');
