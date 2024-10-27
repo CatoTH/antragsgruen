@@ -26,18 +26,18 @@ class MergeSingleAmendment {
             "3": this.$form.find("> .step_3")
         };
 
-        this.$checkCollisions.click((ev) => {
+        this.$checkCollisions.on("click", (ev) => {
             ev.preventDefault();
             this.loadCollisions();
         });
-        this.$steps["1"].find(".goto_2").click((ev) => {
+        this.$steps["1"].find(".goto_2").on("click", (ev) => {
             ev.preventDefault();
             this.gotoStep("2");
         });
         this.$affectedParagraphs.each((i, el) => {
             this.initAffectedParagraph(el);
         });
-        this.$form.submit(this.onSubmit.bind(this));
+        this.$form.on("submit", this.onSubmit.bind(this));
 
         this.gotoStep("1");
     }
@@ -58,14 +58,14 @@ class MergeSingleAmendment {
     private initAffectedParagraph(el) {
         let $paragraph = $(el);
 
-        $paragraph.find(".versionSelector input").change(() => {
+        $paragraph.find(".versionSelector input").on("change", () => {
             if ($paragraph.find(".versionSelector input:checked").val() == "modified") {
                 $paragraph.removeClass("originalVersion").addClass("modifiedVersion");
             } else {
                 $paragraph.addClass("originalVersion").removeClass("modifiedVersion");
             }
         }).trigger("change");
-        $paragraph.find(".modifySelector input").change(() => {
+        $paragraph.find(".modifySelector input").on("change", () => {
             if ($paragraph.find(".modifySelector input").prop("checked")) {
                 $paragraph.addClass("changed").removeClass("unchanged");
             } else {
