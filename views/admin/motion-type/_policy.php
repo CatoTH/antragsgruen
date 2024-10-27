@@ -36,7 +36,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicyMotions', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyMotionsGroups', 'formName' => 'policyMotions', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyMotionsGroups', 'formName' => 'type[policyMotions]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -57,7 +57,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicySupportMotions', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicySupportMotionsGroups', 'formName' => 'policySupportMotions', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicySupportMotionsGroups', 'formName' => 'type[policySupportMotions]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -115,7 +115,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicyAmendments', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyAmendmentsGroups', 'formName' => 'policyAmendments', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyAmendmentsGroups', 'formName' => 'type[policyAmendments]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -170,7 +170,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicySupportAmendments', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicySupportAmendmentsGroups', 'formName' => 'policySupportAmendments', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicySupportAmendmentsGroups', 'formName' => 'type[policySupportAmendments]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -229,7 +229,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicyComments', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyCommentsGroups', 'formName' => 'policyComments', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyCommentsGroups', 'formName' => 'type[policyComments]', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>

@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\policies\{IPolicy, UserGroups};
 use app\models\settings\{Layout, Privileges, AntragsgruenApp};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface, RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
-use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, User};
+use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError, ResponseException};
 use yii\web\{NotFoundHttpException, Response};
 
@@ -183,6 +184,17 @@ class PagesController extends Base
                     $page->consultationId = $this->consultation->id;
                 }
             }
+
+            if ($this->getHttpRequest()->post('policyReadPage')) {
+                $data = $this->getHttpRequest()->post('policyReadPage');
+                $policy = IPolicy::getInstanceFromDb($data['id'], $this->consultation, $page);
+                if (is_a($policy, UserGroups::class)) {
+                    $groups = ConsultationUserGroup::loadGroupsByIdForConsultation($this->consultation, $data['groups'] ?? []);
+                    $policy->setAllowedUserGroups($groups);
+                }
+                $page->setReadPolicy($policy);
+            }
+
             $newTextId = $this->getHttpRequest()->post('url');
             if ($newTextId && !preg_match('/[^\w_\-,.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
                 $page->textId = $newTextId;

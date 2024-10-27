@@ -1,5 +1,6 @@
 import editor = CKEDITOR.editor;
 import config = CKEDITOR.config;
+import '../shared/PolicySetter';
 
 export class ContentPageEdit {
     private $editCaller: JQuery;
@@ -7,6 +8,7 @@ export class ContentPageEdit {
     private $textSaver: JQuery;
     private $contentSettings: JQuery;
     private $downloadableFiles: JQuery;
+    private $policyWidget: JQuery;
     private editor: editor;
 
     constructor(private $form: JQuery) {
@@ -16,6 +18,7 @@ export class ContentPageEdit {
         this.$editCaller = $(this.$form.data('edit-selector'));
         this.$contentSettings = $form.find('.contentSettingsToolbar');
         this.$downloadableFiles = $form.find('.downloadableFiles');
+        this.$policyWidget = $form.find('.policyWidget');
 
         this.$editCaller.on("click", this.editCalled.bind(this));
         this.$textSaver.addClass('hidden');
@@ -26,6 +29,9 @@ export class ContentPageEdit {
         }
         if (this.$downloadableFiles.length > 0) {
             this.initDownloadableFiles();
+        }
+        if (this.$policyWidget.length > 0) {
+            new PolicySetter(this.$policyWidget);
         }
 
         $(".deletePageForm").on("submit", this.onSubmitDeleteForm.bind(this));
@@ -63,6 +69,7 @@ export class ContentPageEdit {
         this.$textHolder.trigger("focus");
         this.$textSaver.removeClass('hidden');
         this.$contentSettings.removeClass('hidden');
+        this.$policyWidget.removeClass('hidden');
         this.showDownloadableFiles();
     }
 
@@ -174,6 +181,12 @@ export class ContentPageEdit {
             data['allConsultations'] = (this.$contentSettings.find('input[name=allConsultations]').prop('checked') ? 1 : 0);
             data['inMenu'] = (this.$contentSettings.find('input[name=inMenu]').prop('checked') ? 1 : 0);
         }
+        if (this.$policyWidget.length > 0) {
+            data['policyReadPage'] = {
+                'id': this.$policyWidget.find('.policySelect').val(),
+                'groups': this.$policyWidget.find('.userGroupSelect select').val(),
+            };
+        }
         if (this.$downloadableFiles.length > 0) {
             const input = this.$downloadableFiles.find("input[type=file]")[0] as HTMLInputElement;
             const uploadedFile = await this.readUploadableFile(input);
@@ -196,6 +209,7 @@ export class ContentPageEdit {
                 this.$textHolder.attr('contenteditable', 'false');
                 this.$editCaller.removeClass('hidden');
                 this.$contentSettings.addClass('hidden');
+                this.$policyWidget.addClass('hidden');
 
                 if (ret['title'] !== null) {
                     $(".pageTitle").text(ret['title']);

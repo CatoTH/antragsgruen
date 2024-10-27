@@ -87,7 +87,17 @@ class ConsultationText extends ActiveRecord implements IHasPolicies
 
     public function getReadPolicy(): IPolicy
     {
-        return IPolicy::getInstanceFromDb($this->policyRead, $this->getMyConsultation(), $this);
+        if ($this->policyRead === null) {
+            $policy = (string)IPolicy::POLICY_ALL;
+        } else {
+            $policy = $this->policyRead;
+        }
+        return IPolicy::getInstanceFromDb($policy, $this->getMyConsultation(), $this);
+    }
+
+    public function setReadPolicy(IPolicy $policy): void
+    {
+        $this->policyRead = $policy->serializeInstanceForDb();
     }
 
     public function getUrl(): string
