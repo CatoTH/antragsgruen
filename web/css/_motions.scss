@@ -351,13 +351,13 @@
     margin-top: -1px;
     width: 100vw;
     max-width: $content-max-width;
-    z-index: -1; // Line number highlighting should be behind the text
+    z-index: 0;
     background-color: rgba(255, 255, 0, 0);
     transition: background-color 0.5s ease;
   }
 
   .lineNumber.highlighted-active:before {
-    background-color: rgba(255, 255, 0, 1);
+    background-color: rgba(255, 255, 0, 0.3);
   }
 
   &.smallFont {

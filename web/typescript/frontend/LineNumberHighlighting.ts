@@ -13,7 +13,7 @@ export class LineNumberHighlighting {
 
                 $panel.addClass("active");
                 panelIsOpen = true;
-                $lineInput.trigger("focus");;
+                $lineInput.trigger("focus");
                 window.setTimeout(() => {
                     $lineInput.val(ev.key);
                 }, 1);
