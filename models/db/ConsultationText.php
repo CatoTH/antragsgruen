@@ -3,9 +3,9 @@
 namespace app\models\db;
 
 use app\components\UrlHelper;
+use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int|null $id
@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property string $category
  * @property string $textId
  * @property int|null $menuPosition
+ * @property string|null $policyRead
  * @property string|null $title
  * @property string|null $breadcrumb
  * @property string|null $text
@@ -24,7 +25,7 @@ use yii\db\ActiveRecord;
  * @property Consultation|null $consultation
  * @property Site|null $site
  */
-class ConsultationText extends ActiveRecord
+class ConsultationText extends ActiveRecord implements IHasPolicies
 {
     public const DEFAULT_CATEGORY = 'pagedata';
 
@@ -82,6 +83,11 @@ class ConsultationText extends ActiveRecord
         $defaultPages = array_keys(self::getDefaultPages());
 
         return !in_array($this->textId, $defaultPages);
+    }
+
+    public function getReadPolicy(): IPolicy
+    {
+        return IPolicy::getInstanceFromDb($this->policyRead, $this->getMyConsultation(), $this);
     }
 
     public function getUrl(): string
@@ -354,5 +360,16 @@ class ConsultationText extends ActiveRecord
         });
 
         return $pages;
+    }
+
+    // Hint: deadlines for votings are not implemented yet
+    public function isInDeadline(string $type): bool
+    {
+        return true;
+    }
+
+    public function getDeadlinesByType(string $type): array
+    {
+        return [];
     }
 }

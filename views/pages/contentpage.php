@@ -7,6 +7,7 @@
  */
 
 use app\components\UrlHelper;
+use app\models\policies\IPolicy;
 use app\models\db\{ConsultationText, User};
 use yii\helpers\Html;
 
@@ -90,7 +91,20 @@ if ($admin) {
                 </label>
             </div>
         </section>
+
         <?php
+        $policies = [];
+        foreach (IPolicy::getPolicies() as $policy) {
+            $policies[$policy::getPolicyID()] = $policy::getPolicyName();
+        }
+        $currentPolicy = $pageData->getReadPolicy();
+        echo Html::dropDownList(
+            'policyReadPageId',
+            $currentPolicy::getPolicyID(),
+            $policies,
+            ['id' => 'policyReadPage', 'class' => 'stdDropdown policySelect']
+        );
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'policyReadPageGroups', 'formName' => 'policyReadPage', 'consultation' => $consultation, 'currentPolicy' => $currentPolicy]);
     }
 }
 

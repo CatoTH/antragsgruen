@@ -1,17 +1,17 @@
 <?php
 
-use app\models\db\{ConsultationMotionType, ConsultationUserGroup};
+use app\models\db\{Consultation, ConsultationUserGroup};
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 /**
  * @var string $id
  * @var string $formName
- * @var ConsultationMotionType $motionType
+ * @var Consultation $consultation
  * @var IPolicy $currentPolicy
  */
 
-if (ConsultationUserGroup::consultationHasLoadableUserGroups($motionType->getConsultation())) {
+if (ConsultationUserGroup::consultationHasLoadableUserGroups($consultation)) {
     $groupLoadUrl = \app\components\UrlHelper::createUrl('/admin/users/search-groups');
 } else {
     $groupLoadUrl = '';
@@ -26,7 +26,7 @@ if (is_a($currentPolicy, \app\models\policies\UserGroups::class)) {
     <select id="<?= $id ?>" name="type[<?= $formName ?>][groups][]" multiple
             placeholder="<?= Yii::t('admin', 'motion_type_group_ph') ?>" title="<?= Yii::t('admin', 'motion_type_group_title') ?>">
         <?php
-        foreach ($motionType->getConsultation()->getAllAvailableUserGroups($preselectedUserGroupsIds) as $group) {
+        foreach ($consultation->getAllAvailableUserGroups($preselectedUserGroupsIds) as $group) {
             echo '<option value="' . $group->id . '"';
             if (is_a($currentPolicy, \app\models\policies\UserGroups::class) && $currentPolicy->allowsUserGroup($group)) {
                 echo ' selected';

@@ -1,7 +1,7 @@
 <?php
 
 use app\components\HTMLTools;
-use app\models\db\{ConsultationMotionType, ConsultationUserGroup};
+use app\models\db\ConsultationMotionType;
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
@@ -36,7 +36,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicyMotions', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('_usergroup_selector', ['id' => 'typePolicyMotionsGroups', 'formName' => 'policyMotions', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyMotionsGroups', 'formName' => 'policyMotions', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -57,7 +57,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicySupportMotions', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('_usergroup_selector', ['id' => 'typePolicySupportMotionsGroups', 'formName' => 'policySupportMotions', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicySupportMotionsGroups', 'formName' => 'policySupportMotions', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -115,7 +115,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicyAmendments', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('_usergroup_selector', ['id' => 'typePolicyAmendmentsGroups', 'formName' => 'policyAmendments', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyAmendmentsGroups', 'formName' => 'policyAmendments', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -170,7 +170,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicySupportAmendments', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('_usergroup_selector', ['id' => 'typePolicySupportAmendmentsGroups', 'formName' => 'policySupportAmendments', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicySupportAmendmentsGroups', 'formName' => 'policySupportAmendments', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
@@ -229,7 +229,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             $policies,
             ['id' => 'typePolicyComments', 'class' => 'stdDropdown policySelect']
         );
-        echo $this->render('_usergroup_selector', ['id' => 'typePolicyCommentsGroups', 'formName' => 'policyComments', 'motionType' => $motionType, 'currentPolicy' => $currentPolicy]);
+        echo $this->render('@app/views/shared/usergroup_selector', ['id' => 'typePolicyCommentsGroups', 'formName' => 'policyComments', 'consultation' => $motionType->getConsultation(), 'currentPolicy' => $currentPolicy]);
         ?>
     </div>
 </div>
