@@ -285,7 +285,7 @@ class ConsultationText extends ActiveRecord implements IHasPolicies
                 return false;
             }
 
-            if (!$page->getReadPolicy()->checkCurrUser()) {
+            if ($page->consultationId !== null && !$page->getReadPolicy()->checkCurrUser()) {
                 return false;
             }
 

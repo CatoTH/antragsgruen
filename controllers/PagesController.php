@@ -8,7 +8,7 @@ use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, JsonRe
 use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
 use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError, ResponseException};
-use yii\web\{NotFoundHttpException, Response};
+use yii\web\Response;
 
 class PagesController extends Base
 {
@@ -75,7 +75,7 @@ class PagesController extends Base
     public function actionShowPage(string $pageSlug): ResponseInterface
     {
         $pageData = $this->getPageForView($pageSlug);
-        if (!$pageData->getReadPolicy()->checkCurrUser()) {
+        if ($pageData->consultationId !== null && !$pageData->getReadPolicy()->checkCurrUser()) {
             return new HtmlErrorResponse(403, \Yii::t('admin', 'no_access'));
         }
 

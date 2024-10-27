@@ -339,7 +339,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationText` (
   `category`       varchar(20)  NOT NULL,
   `textId`         varchar(100) NOT NULL,
   `menuPosition`   int(11)           DEFAULT NULL,
-  `policyMotions`  text              DEFAULT NULL,
+  `policyRead`     text              DEFAULT NULL,
   `title`          text              DEFAULT NULL,
   `breadcrumb`     text              DEFAULT NULL,
   `text`           longtext,

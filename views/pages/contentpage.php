@@ -92,6 +92,9 @@ if ($admin) {
                 </label>
             </div>
         </section>
+        <?php
+        if ($pageData->consultationId !== null) {
+        ?>
 
         <section class="policyToolbarBelowTitle hidden policyWidget">
             <label class="title" for="policyReadPage">
@@ -115,6 +118,7 @@ if ($admin) {
             <?= $this->render('@app/views/shared/usergroup_selector', ['id' => 'policyReadPageGroups', 'formName' => 'policyReadPage', 'consultation' => $consultation, 'currentPolicy' => $currentPolicy]) ?>
         </section>
         <?php
+        }
     }
 }
 
