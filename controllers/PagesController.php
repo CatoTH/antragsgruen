@@ -25,6 +25,15 @@ class PagesController extends Base
                 if (trim($url) === '' || preg_match('/[^\w_\-,.äöüß]/siu', $url)) {
                     throw new FormError('Invalid character in the URL');
                 }
+                $alreadyCreatedPage = ConsultationText::findOne([
+                    'category'       => 'pagedata',
+                    'consultationId' => $this->consultation->id,
+                    'textId'         => $url,
+                ]);
+                if ($alreadyCreatedPage) {
+                    throw new FormError(\Yii::t('pages', 'err_exists_con'));
+                }
+
                 $page = new ConsultationText();
                 $page->category = ConsultationText::DEFAULT_CATEGORY;
                 $page->textId = $url;
