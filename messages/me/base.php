@@ -1,0 +1,71 @@
+<?php
+return [
+    'logo_current' => 'Trenutni logotip', // Original: Current logo
+    'Help' => 'Pomoć', // Original: Help
+    'Today' => 'Danas', // Original: Today
+    'Yesterday' => 'Juče', // Original: Yesterday
+    'save' => 'Sačuvaj', // Original: Save
+    'saved' => 'Sačuvano.', // Original: Saved.
+    'abort' => 'Otkaži', // Original: Cancel
+    'edit' => 'Urediti', // Original: Edit
+    'Home' => 'Početna', // Original: Home
+    'home_back' => 'Povratak na početnu stranicu', // Original: Back to home
+    'menu_logged_in' => 'Prijavljeni ste', // Original: Logged in
+    'menu_main' => 'Glavni meni', // Original: Main menu
+    'menu_account' => 'Nalog', // Original: Account
+    'menu_admin' => 'Postavke', // Original: Settings
+    'menu_login' => 'Prijava', // Original: Login
+    'menu_logout' => 'Odjava', // Original: Logout
+    'menu_motion_list' => 'Predlozi', // Original: Motions
+    'menu_todo' => 'Za uraditi', // Original: To Do
+    'menu_speech_list' => 'Lista govornika', // Original: Speaking list
+    'menu_documents' => 'Dokumenta', // Original: Documents
+    'menu_votings' => 'Glasanje', // Original: Votings
+    'goto_main_content' => 'Preskoči na glavni sadržaj', // Original: Skip to main content
+    'toggle_dropdown' => 'Otvori odabir', // Original: Open selection
+    'privacy_statement' => 'Privatnost', // Original: Privacy
+    'imprint' => 'Impresum', // Original: Imprint
+    'err_email_not_sent' => 'E-mail nije moguće poslati', // Original: An e-mail could not be sent
+    'err_no_email_given' => 'Nije unesena adresa e-pošte', // Original: No e-mail-address entered
+    'err_unknown' => 'Dogodila se neuobičajena greška.', // Original: An uncommon error occurred.
+    'err_js_or_login' => 'Da biste to koristili, morate biti prijavljeni ili JavaScript mora biti omogućen.', // Original: To use this, you need to be logged in or JavaScript needs to be enabled.
+    'err_no_data_given' => 'Nisu uneseni podaci (polje: %FIELD%)', // Original: No data entered (field: %FIELD%)
+    'err_max_len_exceed' => 'Prekoračena maksimalna dužina od %MAX%', // Original: Maximum length of %MAX% exceeded
+    'err_no_site_internal' => 'Nije definisan sajt. Ovo je vjerojatno greška instalacije.', // Original: No site given. This is probably an installation error.
+    'err_amend_not_consult' => 'Nevažeći URL: ovaj amandman ne pripada danom predlogu.', // Original: Invalid URL: this amendment does not belong to the given motion.
+    'err_amend_no_parent' => 'Matična izmjena za ovu izmjenu izbrisana je.', // Original: The parent amendment for this amendment was deleted.
+    'err_cons_not_site' => 'Nevažeći URL: ova konsultacija nije dio dane stranice.', // Original: Invalid URL: this consultation is not part of the given site.
+    'err_site_403' => 'Nema pristupa', // Original: No access
+    'err_site_410' => 'Ovaj sadržaj je izbrisan.', // Original: This content has been deleted.
+    'err_site_500' => 'Došlo je do interne greške', // Original: An internal error has occurred
+    'err_site_404' => 'Navedena stranica ne postoji. Ako mislite da je riječ o grešci, obratite nam se (info@antragsgruen.de).', // Original: The given site does not exist. If you think this is an error, please contact us (info@antragsgruen.de).
+    'err_cons_404' => 'Ova konsultacija nije pronađena. Ovo je vjerojatno greška u upisu u URL-u unesenom u vaš preglednik.', // Original: The given consultation was not found. This is probably a typo in the URL entered in your browser.
+    'err_update_mode' => 'Stranica je u načinu održavanja zbog ažuriranja. <br><br>Ako ste administrator i to nije namjerno, dodatne informacije možete pronaći u <a href="https://github.com/CatoTH/antragsgruen/blob/main/docs/update-troubleshooting.md">dokumentaciji</a>.', // Original: The site is in maintenance mode due to an update.<br><br>If you are the admin and this is not intentional, you can find further information in the <a href="https://github.com/CatoTH/antragsgruen/blob/main/docs/update-troubleshooting.md">documentation</a>.
+    'head_maintenance_adm' => 'Način održavanja je aktivan. Obični korisnici ne mogu vidjeti ovu stranicu dok ne <a href="%URL%">ne završite način održavanja u postavkama</a>.', // Original: Maintenance mode is active. Regular users cannot see this page until you <a href="%URL%">end the maintenance mode in the settings</a>.
+    'legal_multisite_hint' => '<p>Antragsgrün omogućuje korisnicima da otvore vlastite konsultacije koje se mogu samostalno provoditi.</p>', // Original: <p>Antragsgrün lets users open their own consultations that can be administered independently.</p>
+    'legal_base_title' => 'Operater platforme Antragsgruen.de', // Original: Operator of the Antragsgruen.de platform
+    'legal_base_intro' => 'Odgovoran za softver Antragsgrün i rad antragsgruen.de platforme:', // Original: Responsible for the Antragsgrün software and the operation of the antragsgruen.de platform:
+    'legal_site_title' => 'Konsultacije o lokaciji %SITE%', // Original: Consultation site %SITE%
+    'legal_template' => '<p><strong>Odgovoran za sadržaj (§ 5 TMG)</strong></p><address>%CONTACT%</address>', // Original: <p><strong>Responsible for the contents (§ 5 TMG)</strong></p><address>%CONTACT%</address>
+    'html_meta' => 'Antragsgrün je sistem za upravljanje sadržajem posebno izgrađen za političke stranke.', // Original: Antragsgrün is a content management system specifically built for political parties.
+    'email_footer'          => [
+		'title' => 'Potpis e-pošte za automatski poslane e-poruke', // Original: E-Mail-Signature for automatically sent e-mails
+		'text' => '', // Original:
+	],
+    'debug_deadline_head' => 'Simulirajte vrijeme', // Original: Simulate time
+    'debug_deadline_hint' => 'Samo za ovaj preglednik', // Original: Only for this browser
+    'debug_deadline_set' => 'Skup', // Original: Set
+    'debug_deadline_quit' => 'Prekinite simulaciju', // Original: Quit simulation
+    'aria_breadcrumb' => 'Breadcrumb meni', // Original: Breadcrumb menu
+    'aria_bc_back' => 'Natrag na %TITLE%', // Original: Back to %TITLE%
+    'aria_mainmenu' => 'Glavni meni', // Original: Main menu
+    'aria_footer' => 'Pravne veze i informacije o softveru', // Original: Legal links and software information
+    'aria_antragsgruen' => 'O softveru Antragsgrün', // Original: About the software Antragsgrün
+    'aria_version_hint' => 'Antragsgrün verzija: %VERSION% - Dnevnik promjena', // Original: Antragsgrün version: %VERSION% - Change log
+    'aria_tooltip' => 'Nagovještaj', // Original: Hint
+    'aria_error' => 'Greška', // Original: Error
+    'aria_info' => 'Informacije', // Original: Info
+    'aria_success' => 'Uspjeh', // Original: Success
+    'aria_close' => 'Zatvori', // Original: Close
+    'aria_remove' => 'Izbriši', // Original: Remove
+];
