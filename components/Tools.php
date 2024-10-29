@@ -77,7 +77,7 @@ class Tools
         }
 
         return match (self::getCurrentDateLocale()) {
-            'de' => ConsultationSettings::DATE_FORMAT_DMY_DOT,
+            'de', 'me' => ConsultationSettings::DATE_FORMAT_DMY_DOT,
             'fr', 'ca' => ConsultationSettings::DATE_FORMAT_DMY_SLASH,
             'nl' => ConsultationSettings::DATE_FORMAT_DMY_DASH,
             default => ConsultationSettings::DATE_FORMAT_MDY_SLASH,
@@ -90,7 +90,7 @@ class Tools
             $locale = Tools::getCurrentDateLocale();
         }
 
-        if ($locale === 'de') {
+        if ($locale === 'de' || $locale === 'me') {
             $pattern = '/^(?<day>\\d{1,2})\.(?<month>\\d{1,2})\.(?<year>\\d{4}) ' .
                        '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
             if (preg_match($pattern, $time, $matches) && $matches['year'] > 1970) {
@@ -181,7 +181,7 @@ class Tools
             return '';
         }
 
-        if ($locale === 'de') {
+        if ($locale === 'de' || $locale === 'me') {
             return $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'];
         } elseif ($locale === 'fr' || $locale === 'ca') {
             return $matches['day'] . '/' . $matches['month'] . '/' . $matches['year'];
@@ -203,7 +203,7 @@ class Tools
             $locale = Tools::getCurrentDateLocale();
         }
 
-        if ($locale === 'de') {
+        if ($locale === 'de' || $locale === 'me') {
             $pattern = '/^(?<day>\\d{1,2})\.(?<month>\\d{1,2})\.(?<year>\\d{4})$/';
             if (preg_match($pattern, $date, $matches)) {
                 return sprintf('%1$04d-%2$02d-%3$02d', $matches['year'], $matches['month'], $matches['day']);
@@ -245,7 +245,7 @@ class Tools
             return '';
         }
 
-        if ($locale === 'de') {
+        if ($locale === 'de' || $locale === 'me') {
             $date = $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'] . ' ';
             $date .= $matches['hour'] . ':' . $matches['minute'];
 
@@ -281,7 +281,7 @@ class Tools
         }
 
         return match ($locale) {
-            'de' => $time->format('d.m.Y H:i'),
+            'de', 'me' => $time->format('d.m.Y H:i'),
             'fr', 'ca' => $time->format('d/m/Y H:i'),
             'en' => $time->format('m/d/Y H:i'),
             'nl' => $time->format('d-m-Y H:i'),

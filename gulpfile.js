@@ -98,6 +98,15 @@ function taskBuildJsCa() {
         .pipe(gulp.dest('./web/js/build/'));
 }
 
+function taskBuildJsMe() {
+    return gulp.src(["web/js/antragsgruen-me.js"])
+        .pipe(sourcemaps.init())
+        .pipe(concat('antragsgruen-me.min.js'))
+        .pipe(terser())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./web/js/build/'));
+}
+
 function taskBuildJsEn() {
     return gulp.src(["web/js/antragsgruen-en.js"])
         .pipe(sourcemaps.init())
@@ -116,7 +125,7 @@ function taskBuildJsEnGb() {
         .pipe(gulp.dest('./web/js/build/'));
 }
 
-const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsFr, taskBuildJsNl, taskBuildJsCa, taskBuildJsEn, taskBuildJsEnGb, taskBuildDatetimepicker);
+const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsFr, taskBuildJsNl, taskBuildJsCa, taskBuildJsMe, taskBuildJsEn, taskBuildJsEnGb, taskBuildDatetimepicker);
 
 /**
  * Gulp-sass does not yet support new API.
