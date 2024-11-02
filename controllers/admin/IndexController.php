@@ -552,6 +552,13 @@ class IndexController extends AdminBase
                     'id'     => $this->getHttpRequest()->post('id'),
                 ]);
                 if ($file) {
+                    $settings = $this->consultation->getSettings();
+                    if ($settings->logoUrl === $file->getUrl()) {
+                        $settings->logoUrl = null;
+                        $this->consultation->setSettings($settings);
+                        $this->consultation->save();
+                    }
+
                     $file->delete();
                 }
 
