@@ -48,7 +48,12 @@ class SecondFactorAuthentication
             $secret = trim((string) file_get_contents(__DIR__ . '/../tests/config/2fa.secret'));
             $otp = TOTP::createFromSecret($secret);
         } else {
-            $otp = TOTP::generate();
+            $data = $this->session->get(self::SESSION_KEY_2FA_SETUP_KEY);
+            if ($data && $data['user'] === $user->id && $data['time'] > time() - self::TIMEOUT_2FA_SESSION) {
+                $otp = TOTP::createFromSecret($data['secret']);
+            } else {
+                $otp = TOTP::generate();
+            }
         }
         $otp->setLabel(AntragsgruenApp::getInstance()->mailFromName ?: 'Antragsgrün');
 
