@@ -53,6 +53,6 @@ $fp = fopen('php://output', 'w');
 fputcsv($fp, ['Identifier', 'Title', 'Text', 'Reason', 'Submitter', 'Category'], ';', '"');
 
 foreach ($data as $arr) {
-    fputcsv($fp, $arr, ';', '"');
+    fputcsv($fp, $arr, ';', '"', "\\");
 }
 fclose($fp);

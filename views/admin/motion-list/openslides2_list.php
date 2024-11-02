@@ -50,9 +50,9 @@ foreach ($motions as $motion) {
 
 $fp = fopen('php://output', 'w');
 
-fputcsv($fp, ['identifier', 'title', 'text', 'reason', 'submitter', 'category'], ',', '"');
+fputcsv($fp, ['identifier', 'title', 'text', 'reason', 'submitter', 'category'], ',', '"', "\\");
 
 foreach ($data as $arr) {
-    fputcsv($fp, $arr, ',', '"');
+    fputcsv($fp, $arr, ',', '"', "\\");
 }
 fclose($fp);

@@ -48,9 +48,9 @@ foreach ($users as $user) {
 
 $fp = fopen('php://output', 'w');
 
-fputcsv($fp, ['title', 'first_name', 'last_name', 'structure_level', 'groups', 'comment', 'is_active'], ',', '"');
+fputcsv($fp, ['title', 'first_name', 'last_name', 'structure_level', 'groups', 'comment', 'is_active'], ',', '"', "\\");
 
 foreach ($data as $arr) {
-    fputcsv($fp, $arr, ',', '"');
+    fputcsv($fp, $arr, ',', '"', "\\");
 }
 fclose($fp);
