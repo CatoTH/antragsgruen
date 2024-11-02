@@ -13,6 +13,7 @@
 - Content pages can now have attached files, just like the welcome text on the home page.
 - Access to content pages can now be restricted to logged in users, admins or specific user groups.
 - When merging amendments into a motion, the default setting now is to create a resolution, not a new motion.
+- Security improvement: When logging in, and a new verion of PHP (like 8.4) suggests a stronger default password hashing, the stored hash is updated accordingly.
 - A new translation is provided: Montenegrin (thanks to Danilo Boskovic)
 - Some compatibility issues with PHP 8.4 were resolved.
 - Bugfix: Tabular data was not encoded correctly in the PHP-based PDF export.
