@@ -160,11 +160,10 @@ $I->submitForm('#motionConfirmForm', [], 'confirm');
 $I->submitForm('#motionConfirmedForm', []);
 $I->see('A really small replacement');
 
-$I->see('A8', 'h1');
+$I->see('Testing proposed changes', 'h1');
 $I->see('Version 2', '.motionDataTable .historyOpener .currVersion');
 $I->clickJS('.motionDataTable .btnHistoryOpener');
 $I->see('Version 1', '.motionDataTable .motionHistory a');
 $I->see('Umwelt', '.motionDataTable');
 $I->gotoConsultationHome();
-$I->see('A8', '.motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
-$I->dontSeeElement('.motionRow118');
+$I->see('Testing proposed changes', '.sectionResolutions .motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
