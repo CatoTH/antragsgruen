@@ -516,7 +516,14 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function validatePassword(string $password): bool
     {
-        return password_verify($password, $this->pwdEnc);
+        $correctPassword = password_verify($password, $this->pwdEnc);
+
+        if ($correctPassword && password_needs_rehash($this->pwdEnc, PASSWORD_DEFAULT)) {
+            $this->pwdEnc = password_hash($password, PASSWORD_DEFAULT);
+            $this->save();
+        }
+
+        return $correctPassword;
     }
 
     public function changePassword(string $newPassword): void
