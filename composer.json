@@ -34,7 +34,7 @@
     "phpoffice/phpspreadsheet": "^3.3",
     "predis/predis": "^2.2",
     "s1syphos/php-simple-captcha": "^2.3",
-    "scssphp/scssphp": "^1.11",
+    "scssphp/scssphp": "^1.13.0",
     "setasign/fpdi": "^2.3.7",
     "spomky-labs/otphp": "^11.3",
     "symfony/amazon-mailer": "^5.4.23",
