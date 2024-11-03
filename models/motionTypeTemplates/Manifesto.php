@@ -27,7 +27,7 @@ class Manifesto
         $type->policySupportMotions         = (string)IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments      = (string)IPolicy::POLICY_NOBODY;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
-        $type->texTemplateId                = ($config->xelatexPath || $config->lualatexPath ? 1 : null);
+        $type->texTemplateId                = null;
         $type->amendmentMultipleParagraphs  = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
         $type->motionLikesDislikes          = 0;
         $type->amendmentLikesDislikes       = 0;
