@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components;
 
-use ScssPhp\ScssPhp\Parser;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\OutputStyle;
 
 /**
  * This is a workaround for missing math.div support in scssphp.
@@ -13,36 +16,47 @@ use ScssPhp\ScssPhp\Parser;
  *
  * Relevant test case: appearance/CustomThemeCept
  */
-class CssCompiler extends \ScssPhp\ScssPhp\Compiler
+class CssCompiler
 {
-    protected function parserFactory($path): Parser
+    public function compileCss(string $css): string
     {
-        $cssOnly = false;
+        $tmpDir = \app\models\settings\AntragsgruenApp::getInstance()->getTmpDir();
 
-        if ($path !== null && substr($path, -4) === '.css') {
-            $cssOnly = true;
+        $this->copyAndFixScss($tmpDir);
+
+        $scss = new Compiler();
+        $scss->addImportPath($tmpDir . 'css-compile');
+        $scss->setOutputStyle(OutputStyle::COMPRESSED);
+
+        return $scss->compileString($css)->getCss();
+    }
+
+    private function copyAndFixScss(string $tmpDir): void
+    {
+        $filesystem = new \Symfony\Component\Filesystem\Filesystem();
+        $filesystem->mirror(\Yii::$app->basePath . '/web/css', $tmpDir . 'css-compile');
+        $filesystem->mirror(\Yii::$app->basePath . '/web/fonts', $tmpDir . 'fonts');
+
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmpDir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $file) {
+            if (!str_ends_with($file->getPathname(), 'scss')) {
+                continue;
+            }
+
+            $content = file_get_contents($file->getPathname());
+            if ($content) {
+                file_put_contents($file->getPathname(), $this->fixCss($content));
+            }
         }
+    }
 
-        $parser = new class($path, \count($this->sourceNames), $this->encoding, $this->cache, $cssOnly) extends Parser {
-            public function __construct($sourceName, $sourceIndex = 0, $encoding = 'utf-8', \ScssPhp\ScssPhp\Cache $cache = null, $cssOnly = false, \ScssPhp\ScssPhp\Logger\LoggerInterface $logger = null)
-            {
-                parent::__construct($sourceName, $sourceIndex, $encoding, $cache, $cssOnly, $logger);
-            }
+    private function fixCss(String $css): string
+    {
+        $css = str_replace('@use "sass:math";', '', $css);
+        $css = preg_replace_callback('/math\.div\((?<first>[^,]*), (?<second>[^)]+)\)/siu', function ($matches): string {
+            return $matches['first'] . ' / ' . $matches['second'];
+        }, $css);
 
-            public function parse($buffer)
-            {
-                $buffer = str_replace('@use "sass:math";', '', $buffer);
-                $buffer = preg_replace_callback('/math\.div\((?<first>[^,]*), (?<second>[^)]+)\)/siu', function ($matches): string {
-                    return $matches['first'] . ' / ' . $matches['second'];
-                }, $buffer);
-
-                return parent::parse($buffer);
-            }
-        };
-
-        $this->sourceNames[] = $path;
-        $this->addParsedFile($path);
-
-        return $parser;
+        return $css;
     }
 }
