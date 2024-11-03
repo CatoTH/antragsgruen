@@ -270,6 +270,11 @@ class UsersController extends AdminBase
                 case 'remove-user':
                     $this->userGroupAdminMethods->removeUser(intval($this->getPostValue('userId')));
                     break;
+                case 'delete-user':
+                    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN, null)) {
+                        $this->userGroupAdminMethods->deleteUser(intval($this->getPostValue('userId')));
+                    }
+                    break;
                 case 'create-user-group':
                     $this->userGroupAdminMethods->createUserGroup($this->getPostValue('groupName'));
                     break;
