@@ -62,7 +62,7 @@ $html .= '</div>
 
 $layout->menusHtml[] = $html;
 
-$html = '';
+$html = '<ul>';
 foreach ($sitesCurrent as $data) {
     $html .= '<li class="manager-navbar-orgaLink">';
     if ($data['organization'] != '') {
@@ -77,6 +77,8 @@ if ($showAll) {
              Yii::t('antragsgruen_sites', 'btn_all_sites') . '</a>
     </li>';
 }
+$html .= '</ul>';
+
 $layout->menusHtmlSmall[] = $html;
 
 

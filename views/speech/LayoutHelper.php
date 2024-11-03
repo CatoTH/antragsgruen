@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 class LayoutHelper
 {
-    private static function addQueueToSidebar(SpeechQueue $speechQueue, ?IMotion $motion, string &$mainHtml, string &$miniHtml, SpeechQueue $selectedQueue)
+    private static function addQueueToSidebar(SpeechQueue $speechQueue, ?IMotion $motion, string &$mainHtml, string &$miniHtml, SpeechQueue $selectedQueue): void
     {
         if ($speechQueue->isActive) {
             $mainHtml .= '<li class="active">';

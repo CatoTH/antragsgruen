@@ -1,9 +1,21 @@
-.sidebarSmall.navbar {
-  .nav li {
+#sidebarSmallContent {
+  font-size: 18px;
+  > div {
+    float: right;
+  }
+  h2 {
+    font-size: 18px;
+    margin: 0;
     padding: 4px;
   }
-  .nav li a {
-    margin-left: 20px;
+  ul {
+    list-style-type: none;
+    margin: 0 0 0 15px;
+    padding: 0;
+    > li {
+      padding: 4px;
+      margin: 0;
+    }
   }
 }
 
