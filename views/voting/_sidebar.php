@@ -11,6 +11,7 @@ use yii\helpers\Html;
  */
 
 $html        = '<ul class="sidebarActions" aria-label="' . Html::encode(Yii::t('motion', 'sidebar_title_aria')) . '">';
+$menusHtmlSmall = '<ul>';
 
 $pdfLi = '<li class="votings">';
 if ($sidebarMode === 'open') {
@@ -21,7 +22,7 @@ if ($sidebarMode === 'open') {
     $pdfLi .= Html::a($title, UrlHelper::createUrl('/consultation/votings')) . '</li>';
 }
 $html .= $pdfLi;
-$layout->menusHtmlSmall[] = $pdfLi;
+$menusHtmlSmall .= $pdfLi;
 
 
 $pdfLi = '<li class="results">';
@@ -34,7 +35,7 @@ if ($sidebarMode === 'results') {
     $pdfLi .= Html::a($title, UrlHelper::createUrl('/consultation/voting-results')) . '</li>';
 }
 $html .= $pdfLi;
-$layout->menusHtmlSmall[] = $pdfLi;
+$menusHtmlSmall .= $pdfLi;
 
 
 if (\app\models\db\User::havePrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
@@ -48,8 +49,11 @@ if (\app\models\db\User::havePrivilege($consultation, Privileges::PRIVILEGE_VOTI
         $pdfLi .= Html::a($title, UrlHelper::createUrl('/consultation/admin-votings')) . '</li>';
     }
     $html .= $pdfLi;
-    $layout->menusHtmlSmall[] = $pdfLi;
+    $menusHtmlSmall .= $pdfLi;
 }
 
 $html .= '</ul>';
+$menusHtmlSmall .= '</ul>';
+
 $layout->menusHtml[] = $html;
+$layout->menusHtmlSmall[] = $menusHtmlSmall;

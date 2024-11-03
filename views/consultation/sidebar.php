@@ -72,10 +72,7 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
     if (count($creatableTypes) > 0) {
         $html      = '<section class="sidebar-box" aria-labelledby="sidebarCreateNewTitle"><ul class="nav nav-list motions createMotionList">';
         $html      .= '<li class="nav-header" id="sidebarCreateNewTitle">' . Yii::t('con', 'create_new') . '</li>';
-        $htmlSmall = '<li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-      aria-expanded="false">' . Yii::t('con', 'create_new') . ' <span class="caret"></span></a>
-                    <ul class="dropdown-menu">';
+        $htmlSmall = '<section><h2>' . Yii::t('con', 'create_new') . '</h2><ul>';
         foreach ($creatableTypes as $creatableType) {
             $motionCreateLink = $creatableType->getCreateLink(false, true);
 
@@ -88,7 +85,7 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
             $htmlSmall .= Html::encode($creatableType->titleSingular) . '</a></li>';
         }
         $html                     .= '</ul></section>';
-        $htmlSmall                .= '</ul></li>';
+        $htmlSmall                .= '</ul></section>';
         $layout->menusHtml[]      = $html;
         $layout->menusHtmlSmall[] = $htmlSmall;
     }
@@ -97,61 +94,71 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
 
 $html = '<section class="sidebar-box" aria-labelledby="sidebarNewsTitle"><ul class="nav nav-list"><li class="nav-header" id="sidebarNewsTitle">' .
     Yii::t('con', 'news') . '</li>';
+$htmlSmall = '<section><h2>' . Yii::t('con', 'news') . '</h2><ul>';
 
 $title = '<span class="fontello fontello-globe"></span>' . Yii::t('con', 'activity_log');
 $link  = UrlHelper::createUrl('consultation/activitylog');
 $html  .= '<li class="activitylog">' . Html::a($title, $link) . '</li>';
+$htmlSmall  .= '<li>' . Html::a(Yii::t('con', 'activity_log'), $link) . '</li>';
 
 $title = '<span class="glyphicon glyphicon-bell" aria-hidden="true"></span>' . Yii::t('con', 'email_notifications');
 $link  = UrlHelper::createUrl('consultation/notifications');
 $html  .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
+$htmlSmall .= '<li>' . Html::a(Yii::t('con', 'email_notifications'), $link) . '</li>';
 
 $title = '<span class="fontello fontello-rss-squared" aria-hidden="true"></span>' . Yii::t('con', 'feeds');
 $link  = UrlHelper::createUrl('consultation/feeds');
 $html  .= '<li class="feeds">' . Html::a($title, $link) . '</li>';
+$htmlSmall .= '<li>' . Html::a(Yii::t('con', 'feeds'), $link) . '</li>';
 
 if ($settings->collectingPage) {
     $title = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'sb_collecting');
     $link  = UrlHelper::createUrl('consultation/collecting');
     $html  .= '<li class="collecting">' . Html::a($title, $link) . '</li>';
+    $htmlSmall .= '<li>' . Html::a(Yii::t('con', 'sb_collecting'), $link) . '</li>';
 }
 
-$html                     .= '</ul></section>';
+$html .= '</ul></section>';
+$htmlSmall .= '</ul></section>';
 $layout->menusHtml[]      = $html;
-$layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'news'), $link) . '</li>';
+$layout->menusHtmlSmall[] = $htmlSmall;
 
 $closedVotings = VotingBlock::getPublishedClosedVotings($consultation);
 if ($settings->proposalProcedurePage || count($closedVotings) > 0 || $settings->startLayoutResolutions !== \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_ABOVE) {
     $html = '<section class="sidebar-box" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarPpTitle">' . Yii::t('con', 'sidebar_procedure') . '</li>';
 
+    $htmlSmall = '<section><h2>' . Yii::t('con', 'sidebar_procedure') . '</h2><ul>';
+
     if ($settings->proposalProcedurePage) {
         $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'proposed_procedure');
         $url = UrlHelper::createUrl('consultation/proposed-procedure');
         $html .= '<li>' . Html::a($name, $url, ['id' => 'proposedProcedureLink']) . "</li>\n";
-        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'proposed_procedure'), $url) . '</li>';
+        $htmlSmall .= '<li>' . Html::a(Yii::t('con', 'proposed_procedure'), $url) . '</li>';
     }
     if (count($closedVotings) > 0) {
         $name = '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span>' . Yii::t('con', 'voting_results');
         $url = UrlHelper::createUrl('consultation/voting-results');
         $html .= '<li>' . Html::a($name, $url, ['id' => 'votingResultsLink']) . "</li>\n";
-        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'voting_results'), $url) . '</li>';
+        $htmlSmall .= '<li>' . Html::a(Yii::t('con', 'voting_results'), $url) . '</li>';
     }
     if ($settings->startLayoutResolutions === \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_SEPARATE) {
         $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'resolutions');
         $url = UrlHelper::createUrl('consultation/resolutions');
         $html .= '<li>' . Html::a($name, $url, ['id' => 'sidebarResolutions']) . "</li>\n";
-        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'resolutions'), $url) . '</li>';
+        $htmlSmall .= '<li>' . Html::a(Yii::t('con', 'resolutions'), $url) . '</li>';
     }
     if ($settings->startLayoutResolutions === \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_DEFAULT) {
         $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'All Motions');
         $url = UrlHelper::createUrl('consultation/motions');
         $html .= '<li>' . Html::a($name, $url, ['id' => 'sidebarMotions']) . "</li>\n";
-        $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'All Motions'), $url) . '</li>';
+        $htmlSmall .= '<li>' . Html::a(Yii::t('con', 'All Motions'), $url) . '</li>';
     }
     $html .= "</ul></section>";
+    $htmlSmall .= '</ul></section>';
 
     $layout->menusHtml[] = $html;
+    $layout->menusHtmlSmall[] = $htmlSmall;
 }
 
 if ($hasMotions && $settings->sidebarNewMotions) {
@@ -298,8 +305,9 @@ if ($hasPDF) {
 
         return [$menusStd, $menusSmall];
     });
+
     $layout->menusHtml = array_merge($layout->menusHtml, $menusStd);
-    $layout->menusHtmlSmall = array_merge($layout->menusHtmlSmall, $menusSmall);
+    $layout->menusHtmlSmall[] = '<section><h2>PDFs</h2><ul>' . implode('', $menusSmall) . '</ul></section>';
 }
 
 if ($consultation->site->getSettings()->showAntragsgruenAd) {

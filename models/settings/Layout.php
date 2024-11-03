@@ -356,9 +356,9 @@ class Layout
             </button>';
 
             $collapsed = '<div class="collapse navbar-collapse" id="sidebarSmallContent">
-                <ul class="nav navbar-nav">
+                <div>
                     ' . $dropdownHtml . '
-                </ul>
+                </div>
             </div>';
         }
 
