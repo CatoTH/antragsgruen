@@ -442,7 +442,6 @@ class PagesController extends Base
 
         $data       = $this->renderPartial('css', [
             'stylesheetSettings' => $stylesheetSettings,
-            'format' => \ScssPhp\ScssPhp\Formatter\Compressed::class,
         ]);
         $toSaveData = ANTRAGSGRUEN_VERSION . "\n" . $data;
         ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $toSaveData);

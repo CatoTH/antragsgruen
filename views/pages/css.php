@@ -4,7 +4,7 @@
  * @var \app\models\settings\Stylesheet $stylesheetSettings
  */
 
-use ScssPhp\ScssPhp\OutputStyle;
+use app\components\CssCompiler;
 
 $css = '
 @charset "UTF-8";
@@ -92,8 +92,5 @@ $css .= '.logoImg {
 }
 ';
 
-
-$scss = new \app\components\CssCompiler();
-$scss->addImportPath(Yii::$app->basePath . '/web/css/');
-$scss->setOutputStyle(OutputStyle::COMPRESSED);
-echo $scss->compileString($css)->getCss();
+$compiler = new CssCompiler();
+echo $compiler->compileCss($css);
