@@ -142,11 +142,15 @@ ob_start();
                     </div>
                 </div>
 
+                <div v-if="permissionGlobalEdit" class="deleteActivator">
+                    <label><input type="checkbox" v-model="deletingVisible"> <?= Yii::t('admin', 'siteacc_useraccdel') ?></label>
+                </div>
+
                 <small v-if="!permissionGlobalEdit" class="onlyGlobalAdminsHint">
                     <?= Yii::t('admin', 'siteacc_usermodal_superh') ?>
                 </small>
             </main>
-            <footer class="modal-footer">
+            <footer class="modal-footer" v-if="!deletingVisible">
                 <a class="changeLogLink" :href="userLogUrl" v-if="user">
                     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                     <?= Yii::t('admin','siteacc_usergroup_log') ?>
@@ -159,6 +163,11 @@ ob_start();
                     <?= Yii::t('base', 'save') ?>
                 </button>
             </footer>
+            <footer class="modal-footer" v-if="deletingVisible && permissionGlobalEdit">
+                <button type="button" class="btn btn-danger btnDelete" @click="deleteAccount($event)">
+                    <?= Yii::t('admin','siteacc_useraccdel_btn') ?>
+                </button>
+            </footer>
         </article>
     </form>
 </div>
@@ -169,6 +178,7 @@ $html = ob_get_clean();
 
 <script>
     const userModalTitleTemplate = <?= json_encode(Yii::t('admin', 'siteacc_usermodal_title')) ?>;
+    const userDeleteConfirmTemplate = <?= json_encode(Yii::t('admin', 'siteacc_useraccdel_confirm')) ?>;
 
     __setVueComponent('users', 'component', 'user-edit-widget', {
         template: <?= json_encode($html) ?>,
@@ -188,6 +198,7 @@ $html = ob_get_clean();
                 force2Fa: false,
                 preventPasswordChange: false,
                 forcePasswordChange: false,
+                deletingVisible: false,
                 newPassword: '',
                 newAuth: '',
             }
@@ -237,6 +248,7 @@ $html = ob_get_clean();
                 this.preventPasswordChange = user.prevent_password_change;
                 this.forcePasswordChange = user.force_password_change;
                 this.newAuth = '';
+                this.deletingVisible = false;
 
                 $(this.$refs['user-edit-modal']).modal("show"); // We won't get rid of jquery/bootstrap anytime soon anyway...
             },
@@ -244,6 +256,15 @@ $html = ob_get_clean();
                 const password = (this.settingPassword ? this.newPassword : null);
                 const auth = (this.settingAuth ? this.newAuth : null);
                 this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth, this.remove2Fa, this.force2Fa, this.preventPasswordChange, this.forcePasswordChange);
+                $(this.$refs['user-edit-modal']).modal("hide");
+
+                if ($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                }
+            },
+            deleteAccount: function ($event) {
+                this.$emit('delete-user', this.user.id, userDeleteConfirmTemplate.replace("%USERNAME%", this.user.auth));
                 $(this.$refs['user-edit-modal']).modal("hide");
 
                 if ($event) {

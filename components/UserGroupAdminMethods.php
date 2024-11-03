@@ -270,6 +270,18 @@ class UserGroupAdminMethods
         AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
     }
 
+    public function deleteUser(int $userId): void
+    {
+        $myself = User::getCurrentUser();
+        if ($userId === $myself->id) {
+            throw new UserEditFailed(\Yii::t('admin', 'siteacc_err_lockout'));
+        }
+
+        $user = User::findOne(['id' => $userId]);
+        $user->deleteAccount();
+        $this->consultation->refresh();
+    }
+
     public function createUserGroup(string $groupName): void
     {
         $group = new ConsultationUserGroup();

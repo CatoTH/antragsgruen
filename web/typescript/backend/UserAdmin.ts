@@ -38,6 +38,7 @@ export class UserAdmin {
                     :permissionGlobalEdit="permissionGlobalEdit"
                     :urlUserLog="urlUserLog"
                     @save-user="saveUser"
+                    @delete-user="deleteUser"
                     ref="user-edit-widget"
                 ></user-edit-widget>
                 <group-edit-widget
@@ -134,6 +135,16 @@ export class UserAdmin {
                         force2Fa,
                         preventPasswordChange,
                         forcePasswordChange
+                    });
+                },
+                deleteUser(userId, msg) {
+                    bootbox.confirm(msg, (result) => {
+                        if (result) {
+                            this._performOperation({
+                                op: 'delete-user',
+                                userId: userId
+                            });
+                        }
                     });
                 },
                 removeUser(user) {
