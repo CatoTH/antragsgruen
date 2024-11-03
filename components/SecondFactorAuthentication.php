@@ -302,7 +302,7 @@ class SecondFactorAuthentication
 
     public function onPageView(string $controller, string $actionId): void
     {
-        if ($controller === PagesController::class || $actionId !== PagesController::VIEW_ID_FILES) {
+        if ($controller === PagesController::class && in_array($actionId, [PagesController::VIEW_ID_FILES, PagesController::VIEW_ID_CSS])) {
             // Could be an implicit load of custom CSS or a logo
             return;
         }

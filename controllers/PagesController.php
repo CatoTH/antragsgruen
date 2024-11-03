@@ -13,6 +13,7 @@ use yii\web\Response;
 class PagesController extends Base
 {
     public const VIEW_ID_FILES = 'file';
+    public const VIEW_ID_CSS = 'css';
 
     public function actionListPages(): ResponseInterface
     {
