@@ -9,6 +9,7 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 /**
  * @var Yii\web\View $this
+ * @var bool $reducedNavigation
  * @var Motion $motion
  * @var Consultation $consultation
  * @var int[] $openedComments
@@ -45,7 +46,7 @@ if ($replacedByMotion) {
 
 $motionData   = [];
 
-if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
+if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL && !$reducedNavigation) {
     $motionData[] = [
         'title'   => Yii::t('motion', 'consultation'),
         'content' => Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')),

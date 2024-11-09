@@ -28,6 +28,8 @@ class Base extends Controller
     /** @var null|bool - currently only null (default) and true (allow not-logged in, e.g. by plugins) are supported. false to come. */
     public ?bool $allowNotLoggedIn = null;
 
+    public bool $limitedAccessBecauseOfOverride = false;
+
     /**
      * @param string $cid the ID of this controller.
      * @param Module $module the module that this controller belongs to.
@@ -273,6 +275,7 @@ class Base extends Controller
         $params = array_merge(
             [
                 'consultation' => $this->consultation,
+                'reducedNavigation' => $this->limitedAccessBecauseOfOverride,
             ],
             $params
         );
@@ -388,6 +391,8 @@ class Base extends Controller
             /** @var ModuleBase $plugin */
             $access = $plugin::canAccessConsultationAsUnprivilegedUser($user, $this->consultation, get_class($this), $this->action->id);
             if ($access !== null) {
+                $this->limitedAccessBecauseOfOverride = $access;
+
                 return $access;
             }
         }

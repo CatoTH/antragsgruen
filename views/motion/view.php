@@ -10,6 +10,7 @@ use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
+ * @var bool $reducedNavigation
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var int[] $openedComments
@@ -108,7 +109,7 @@ if ($consultation->getSettings()->hasSpeechLists) {
 
 echo $layout->getMiniMenu('motionSidebarSmall');
 
-echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => true]);
+echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => true, 'reducedNavigation' => $reducedNavigation]);
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 
@@ -368,4 +369,4 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
     echo '</section>';
 }
 
-echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => false]);
+echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => false, 'reducedNavigation' => $reducedNavigation]);

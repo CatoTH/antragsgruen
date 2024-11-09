@@ -6,6 +6,7 @@ use app\models\settings\Layout;
 use yii\helpers\Html;
 
 /**
+ * @var bool $reducedNavigation
  * @var Motion $motion
  * @var bool $adminEdit
  * @var Layout $layout
@@ -103,7 +104,7 @@ if ($adminEdit) {
     $sidebarRows++;
 }
 
-if (!$motion->getMyConsultation()->getForcedMotion()) {
+if (!$motion->getMyConsultation()->getForcedMotion() && !$reducedNavigation) {
     $html .= '<li class="back">';
     $title = '<span class="icon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . Yii::t('motion', 'back_start');
     $html .= Html::a($title, \app\views\motion\LayoutHelper::getMotionBackLink($motion)) . '</li>';

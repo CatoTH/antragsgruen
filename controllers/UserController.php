@@ -19,6 +19,7 @@ class UserController extends Base
     public const VIEW_ID_LOGIN_FORCE_EMAIL_CONFIRM = 'confirmregistration';
     public const VIEW_ID_LOGIN_FORCE_2FA_REGISTRATION = 'login2fa-force-registration';
     public const VIEW_ID_LOGIN_2FA = 'login2fa';
+    public const VIEW_ID_MYACCOUNT = 'myaccount';
 
     public $enableCsrfValidation = false;
 
