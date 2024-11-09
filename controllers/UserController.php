@@ -14,6 +14,7 @@ use yii\web\Response;
 
 class UserController extends Base
 {
+    public const VIEW_ID_LOGIN_LOGIN = 'login';
     public const VIEW_ID_LOGIN_FORCE_PWD_CHANGE = 'login-force-pwd-change';
     public const VIEW_ID_LOGIN_FORCE_EMAIL_CONFIRM = 'confirmregistration';
     public const VIEW_ID_LOGIN_FORCE_2FA_REGISTRATION = 'login2fa-force-registration';

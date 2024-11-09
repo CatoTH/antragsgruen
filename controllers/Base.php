@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\forms\LoginUsernamePasswordForm;
+use app\plugins\ModuleBase;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, RequestContext, SecondFactorAuthentication, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
@@ -111,10 +112,10 @@ class Base extends Controller
             return true;
         }
 
-        if (get_class($this) === PagesController::class && in_array($action->id, ['show-page', 'css'])) {
+        if (get_class($this) === PagesController::class && in_array($action->id, [PagesController::VIEW_ID_SHOW_PAGE, PagesController::VIEW_ID_CSS])) {
             return true;
         }
-        if (get_class($this) === PagesController::class && $action->id === 'file' && $this->consultation) {
+        if (get_class($this) === PagesController::class && $action->id === PagesController::VIEW_ID_FILES && $this->consultation) {
             if ($this->consultation->getSettings()->logoUrl) {
                 $logo = urldecode(basename($this->consultation->getSettings()->logoUrl));
                 if (isset($params[1]['filename']) && $logo && $params[1]['filename'] === $logo) {
@@ -340,7 +341,7 @@ class Base extends Controller
 
 
 
-        if (get_class($this) === ConsultationController::class && $actionId === 'index') {
+        if (get_class($this) === ConsultationController::class && $actionId === ConsultationController::VIEW_ID_INDEX) {
             // On home, the actual error is shown on the regular page
             return false;
         }
@@ -371,11 +372,28 @@ class Base extends Controller
         if ($this->consultation->getSettings()->managedUserAccounts) {
             $user = User::getCurrentUser();
             if (count($user->getUserGroupsForConsultation($this->consultation)) === 0 &&
-                !User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
+                !$this->allowAccessToProtectedPage($user)) {
                 $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
                 return true;
             }
         }
+        return false;
+    }
+
+    private function allowAccessToProtectedPage(?User $user): bool
+    {
+        if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
+            return true;
+        }
+
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            /** @var ModuleBase $plugin */
+            $access = $plugin::canAccessConsultationAsUnprivilegedUser($user, $this->consultation, get_class($this), $this->action->id);
+            if ($access !== null) {
+                return $access;
+            }
+        }
+
         return false;
     }
 
@@ -552,7 +570,7 @@ class Base extends Controller
             UrlHelper::setCurrentSite($this->site);
         }
 
-        if ($this instanceof ConsultationController && $this->action->id === 'home') {
+        if ($this instanceof ConsultationController && $this->action->id === ConsultationController::VIEW_ID_HOME) {
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 if ($plugin::hasSiteHomePage()) {
                     return null;
@@ -564,7 +582,7 @@ class Base extends Controller
             $this->consultationNotFound();
         }
 
-        if ($consultationId === '' && $this instanceof UserController && $this->action->id === 'login' && $this->getRequestValue('backUrl')) {
+        if ($consultationId === '' && $this instanceof UserController && $this->action->id === UserController::VIEW_ID_LOGIN_LOGIN && $this->getRequestValue('backUrl')) {
             $consultationId = $this->getConsultationUrlFromBackLink($this->getRequestValue('backUrl'));
         }
         if ($consultationId === '') {
@@ -654,14 +672,7 @@ class Base extends Controller
         return $motion;
     }
 
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @param null|string $redirectView
-     * @param bool $throwExceptions
-     * @return Amendment|null
-     */
-    protected function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null, bool $throwExceptions = false): ?Amendment
+    protected function getAmendmentWithCheck(string $motionSlug, int $amendmentId, ?string $redirectView = null, bool $throwExceptions = false): ?Amendment
     {
         $motion    = $this->consultation->getMotion($motionSlug);
         $amendment = $this->consultation->getAmendment($amendmentId);

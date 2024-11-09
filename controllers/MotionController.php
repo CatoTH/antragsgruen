@@ -30,6 +30,8 @@ class MotionController extends Base
     use MotionMergingTrait;
     use MotionExportTraits;
 
+    public const VIEW_ID_VIEW = 'view';
+
     public function actionView(string $motionSlug, int $commentId = 0, ?string $procedureToken = null): HtmlResponse
     {
         $this->layout = 'column2';
