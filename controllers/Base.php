@@ -8,7 +8,7 @@ use app\plugins\ModuleBase;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{ConsultationAccessPassword, RequestContext, SecondFactorAuthentication, UrlHelper};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
-use app\models\db\{Amendment, Consultation, Motion, Site, User};
+use app\models\db\{Amendment, Consultation, Motion, repostory\MotionRepository, Site, User};
 use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
@@ -339,8 +339,6 @@ class Base extends Controller
             return false;
         }
 
-
-
         if (get_class($this) === ConsultationController::class && $actionId === ConsultationController::VIEW_ID_INDEX) {
             // On home, the actual error is shown on the regular page
             return false;
@@ -638,19 +636,8 @@ class Base extends Controller
 
     protected function getMotionWithCheck(string $motionSlug, bool $throwExceptions = false): ?Motion
     {
-        if (is_numeric($motionSlug) && $motionSlug > 0) {
-            $motion = Motion::findOne([
-                'consultationId' => $this->consultation->id,
-                'id'             => $motionSlug,
-                'slug'           => null
-            ]);
-        } else {
-            $motion = Motion::findOne([
-                'consultationId' => $this->consultation->id,
-                'slug'           => $motionSlug
-            ]);
-        }
-        /** @var Motion|null $motion */
+        $motion = MotionRepository::getMotionByIdOrSlug($this->consultation, $motionSlug);
+
         if (!$motion) {
             if ($throwExceptions) {
                 throw new NotFound('Motion not found', 404);
