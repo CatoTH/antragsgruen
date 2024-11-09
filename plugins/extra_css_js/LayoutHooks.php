@@ -4,15 +4,9 @@ declare(strict_types=1);
 
 namespace app\plugins\extra_css_js;
 
-use app\models\settings\Layout;
-use app\components\{RequestContext, UrlHelper};
-use app\controllers\admin\MotionListController;
-use app\models\layoutHooks\StdHooks;
-use app\models\db\{Consultation, ConsultationUserGroup, IMotion, Motion, User};
-use app\plugins\dbwv\workflow\{Step1, Step2, Step3, Step4, Step5, Step6, Step7, Workflow};
-use yii\helpers\Html;
+use app\models\layoutHooks\Hooks;
 
-class LayoutHooks extends StdHooks
+class LayoutHooks extends Hooks
 {
     private function getSiteAssetPath(): string
     {
