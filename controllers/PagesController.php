@@ -14,6 +14,7 @@ class PagesController extends Base
 {
     public const VIEW_ID_FILES = 'file';
     public const VIEW_ID_CSS = 'css';
+    public const VIEW_ID_SHOW_PAGE = 'show-page';
 
     public function actionListPages(): ResponseInterface
     {

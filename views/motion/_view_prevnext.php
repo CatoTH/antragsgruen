@@ -8,8 +8,12 @@ use yii\helpers\Html;
 /**
  * @var Motion $motion
  * @var bool $top
+ * @var bool $reducedNavigation
  */
 
+if ($reducedNavigation) {
+    return;
+}
 $consultation = $motion->getMyConsultation();
 if (!$consultation->getSettings()->motionPrevNextLinks) {
     return;

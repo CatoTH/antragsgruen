@@ -73,6 +73,25 @@ class MotionRepository
         self::$siteWideCachesInitialized = true;
     }
 
+    public static function getMotionByIdOrSlug(Consultation $consultation, int|string $motionSlug): ?Motion
+    {
+        if (is_numeric($motionSlug) && $motionSlug > 0) {
+            $motion = Motion::findOne([
+                'consultationId' => $consultation->id,
+                'id'             => $motionSlug,
+                'slug'           => null
+            ]);
+        } else {
+            $motion = Motion::findOne([
+                'consultationId' => $consultation->id,
+                'slug'           => $motionSlug
+            ]);
+        }
+
+        /** @var Motion|null $motion */
+        return $motion;
+    }
+
     public static function getReplacedByMotion(Motion $motion): ?Motion
     {
         if (!$motion->parentMotionId) {
