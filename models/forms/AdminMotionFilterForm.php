@@ -617,7 +617,7 @@ class AdminMotionFilterForm
                 $matches = false;
             }
 
-            if ($this->status !== null && $this->status !== '' && $motion->status !== $this->status) {
+            if ($this->status !== null && $motion->status !== $this->status) {
                 $matches = false;
             }
 
@@ -756,7 +756,7 @@ class AdminMotionFilterForm
                 $matches = false;
             }
 
-            if ($this->status !== null && $this->status !== "" && $amend->status !== $this->status) {
+            if ($this->status !== null && $amend->status !== $this->status) {
                 $matches = false;
             }
 

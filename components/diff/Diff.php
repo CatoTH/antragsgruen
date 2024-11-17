@@ -63,12 +63,19 @@ class Diff
         $line    = static::normalizeForDiff($line);
         $htmlTag = '/(<br>\n+|<[^>]+>)/siu';
         $arr     = preg_split($htmlTag, $line, -1, PREG_SPLIT_DELIM_CAPTURE);
+        if ($arr === false) {
+            throw new \RuntimeException('Failed to parse line: ' . $line);
+        }
         $out     = [];
         foreach ($arr as $arr2) {
             if (preg_match($htmlTag, $arr2)) {
                 $out[] = $arr2;
             } else {
-                foreach (preg_split('/([ \-.:])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
+                $tokens = preg_split('/([ \-.:])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE);
+                if ($tokens === false) {
+                    throw new \RuntimeException('Failed to parse line: ' . $arr2);
+                }
+                foreach ($tokens as $tok) {
                     if ($tok === ' ' || $tok === '-') {
                         if (count($out) == 0) {
                             $out[] = $tok;
@@ -410,8 +417,10 @@ class Diff
         if ($firstTag === false || $firstTag > $first) {
             return $first;
         }
-        /** @var string[] $parts */
         $parts = preg_split('/(<[^>]*>)/', $haystack, -1, PREG_SPLIT_DELIM_CAPTURE);
+        if ($parts === false) {
+            throw new \RuntimeException('Failed to parse line: ' . $haystack);
+        }
         $pos   = 0;
         for ($i = 0; $i < count($parts); $i++) {
             if (($i % 2) === 0) {
@@ -437,8 +446,10 @@ class Diff
             return ['', $orig, $new, $diff, ''];
         }
 
-        /** @var string[] $parts */
-        $parts      = preg_split('/###(INS|DEL)_(START|END)###/siuU', $diff);
+        $parts = preg_split('/###(INS|DEL)_(START|END)###/siuU', $diff);
+        if ($parts === false) {
+            throw new \RuntimeException('Failed to parse line: ' . $diff);
+        }
         $prefix     = $parts[0];
         $postfix    = $parts[(int)count($parts) - 1];
         $prefixLen  = (int)grapheme_strlen($prefix);
@@ -595,7 +606,10 @@ class Diff
         $words             = [
             0 => new DiffWord(),
         ];
-        $diffPartArr       = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $diffPartArr = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
+        if ($diffPartArr === false) {
+            throw new \RuntimeException('Failed to parse line: ' . $diff);
+        }
         $inDel             = $inIns = false;
         $originalWordPos   = 0;
         $pendingOpeningDel = false;

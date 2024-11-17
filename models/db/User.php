@@ -313,7 +313,6 @@ class User extends ActiveRecord implements IdentityInterface
      * @return IdentityInterface the identity object that matches the given token.
      * Null should be returned if such an identity cannot be found
      * or the identity is not in an active state (disabled, deleted, etc.)
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {

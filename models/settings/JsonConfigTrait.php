@@ -19,15 +19,8 @@ trait JsonConfigTrait
     private function propertyIsInt(\ReflectionClass $reflectionClass, string $key): bool
     {
         $propertyType = $reflectionClass->getProperty($key)->getType();
-        if (is_a($propertyType, \ReflectionNamedType::class)) {
-            $typeName = $propertyType->getName();
-        } else {
-            // Use the deprecated method in PHP <= 7.4
-            /** @var \ReflectionType $propertyType */
-            $typeName = trim($propertyType->__toString(), '?');
-        }
 
-        return $typeName === 'int';
+        return is_a($propertyType, \ReflectionNamedType::class) && $propertyType->getName() === 'int';
     }
 
     public static function decodeJson5(?string $json): ?array
@@ -81,7 +74,7 @@ trait JsonConfigTrait
             $dataArr = self::decodeJson5($data);
         }
         if ($dataArr === null) {
-            /** @var string $data */
+            /** @var non-falsy-string $data */
             throw new ConfigurationError('Invalid JSON string: ' . $data);
         }
 

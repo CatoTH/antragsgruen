@@ -53,9 +53,6 @@ class Module extends ModuleBase
         ];
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     public static function getSiteSettingsClass(Site $site): string
     {
         return SiteSettings::class;
