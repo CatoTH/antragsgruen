@@ -46,8 +46,10 @@ $controller->layoutParams->addInlineCss('
 </h1>
 
 <div class="content infoSite">
-    <p>Antragsgrün offers a clear and efficient tool for the effective administration of resolutions, motions, amendments, and
-        candidacies: from the submission of motions to the vote and the drafting of the resolution.</p>
+    <p>Antragsgrün is an easy-to-use online tool for NGOs, political parties,
+        and social initiatives to collaboratively discuss resolutions, party platforms, and amendments.
+        It helps to manage candidacies and supports meetings by providing online votings,
+        speaking lists, and many more features.</p>
 
     <p>Many organizations are already using the tool successfully such as the
         <a href="https://www.youthforum.org/">European Youth Forum</a>, the <a href="https://www.gruene.de/">German</a> and

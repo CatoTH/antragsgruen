@@ -1,7 +1,7 @@
 Antragsgrün
 ===========
 
-Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments, resolutions and candidacies: from submission to administration and print template.
+Antragsgrün is an easy-to-use online tool for NGOs, political parties, and social initiatives to collaboratively discuss resolutions, party platforms, and amendments. It helps to manage candidacies and supports meetings by providing online votings, speaking lists, and many more features.
 
 A number of organisations are using the tool successfully such as the federal association of the European and German Green Party, the German Federal Youth Council, the European Youth Forum or the National Council of German Women's Organizations.
 It can be easily adapted to a variety of scenarios.
