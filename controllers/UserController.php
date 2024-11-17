@@ -157,7 +157,7 @@ class UserController extends Base
 
             $successUser = $this->secondFactorAuthentication->confirmLoginWithSecondFactor($this->getPostValue('2fa'));
             if (!$successUser) {
-                FailedLoginAttempt::logFailedAttempt($loggingInUser->email);
+                FailedLoginAttempt::logAttempt($loggingInUser->email);
                 $error = \Yii::t('user', 'err_2fa_incorrect');
                 goto loginForm;
             }
@@ -210,7 +210,7 @@ class UserController extends Base
                 return new RedirectResponse($backUrl);
             } catch (\RuntimeException $e) {
                 $error = $e->getMessage();
-                FailedLoginAttempt::logFailedAttempt($loggingInUser->email);
+                FailedLoginAttempt::logAttempt($loggingInUser->email);
             }
         }
 
@@ -311,7 +311,7 @@ class UserController extends Base
                 }
             } else {
                 $msgError = \Yii::t('user', 'err_code_wrong');
-                FailedLoginAttempt::logFailedAttempt($user->email);
+                FailedLoginAttempt::logAttempt($user->email);
             }
         }
 

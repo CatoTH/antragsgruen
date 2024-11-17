@@ -163,6 +163,8 @@ class LoginUsernamePasswordForm extends Model
         }
 
         if ($user->save()) {
+            FailedLoginAttempt::logAttempt($this->username);
+
             if ($params->confirmEmailAddresses) {
                 $user->refresh();
                 try {
@@ -248,7 +250,7 @@ class LoginUsernamePasswordForm extends Model
         $candidates = $this->getCandidates($site);
 
         if (count($candidates) === 0) {
-            FailedLoginAttempt::logFailedAttempt($this->username);
+            FailedLoginAttempt::logAttempt($this->username);
             $this->error = \Yii::t('user', 'login_err_username');
             throw new LoginInvalidUser($this->error);
         }
@@ -258,7 +260,7 @@ class LoginUsernamePasswordForm extends Model
             }
         }
 
-        FailedLoginAttempt::logFailedAttempt($this->username);
+        FailedLoginAttempt::logAttempt($this->username);
         $this->error = \Yii::t('user', 'login_err_password');
         throw new LoginInvalidPassword($this->error);
     }
@@ -269,7 +271,7 @@ class LoginUsernamePasswordForm extends Model
     public function getOrCreateUser(?Site $site): User
     {
         if (Captcha::needsCaptcha($this->username) && !Captcha::checkEnteredCaptcha($this->captcha)) {
-            throw new Login(\Yii::t('user', 'login_err_captcha'));
+            throw new Login($this->captcha ? \Yii::t('user', 'login_err_captcha') : \Yii::t('user', 'login_err_nocaptcha'));
         }
 
         if ($this->createAccount) {

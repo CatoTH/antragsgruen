@@ -133,6 +133,7 @@ return [
     'login_err_username'      => 'Benutzer*innenname nicht gefunden',
     'login_err_siteaccess'    => 'Das Login mit Benutzer*innenname und Passwort ist bei dieser Veranstaltung nicht möglich.',
     'login_err_captcha'       => 'Der eingegebene Code stimmte nicht mit dem Angezeigten überein.',
+    'login_err_nocaptcha'     => 'Bitte gib den angezeigten Code ein.',
     'create_err_emailexists'  => 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse',
     'create_err_siteaccess'   => 'Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.',
     'create_err_emailinvalid' => 'Bitte gib eine gültige E-Mail-Adresse als Benutzer*innenname ein.',
