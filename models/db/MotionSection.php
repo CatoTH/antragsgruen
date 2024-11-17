@@ -144,9 +144,8 @@ class MotionSection extends IMotionSection
             if ($motion) {
                 return Consultation::findOne($motion->consultationId);
             } else {
-                /** @var Motion $motion */
-                $section = ConsultationSettingsMotionSection::findOne($this->sectionId);
                 /** @var ConsultationSettingsMotionSection $section */
+                $section = ConsultationSettingsMotionSection::findOne($this->sectionId);
                 return $section->motionType->getConsultation();
             }
         }

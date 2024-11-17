@@ -85,7 +85,7 @@ class StdHooks extends Hooks
     {
         $out             = '';
         $showBreadcrumbs = (!$this->consultation || !$this->consultation->site || $this->consultation->site->getSettings()->showBreadcrumbs);
-        if (is_array($this->layout->breadcrumbs) && $showBreadcrumbs) {
+        if (count($this->layout->breadcrumbs) > 0 && $showBreadcrumbs) {
             $out .= '<nav aria-label="' . \Yii::t('base', 'aria_breadcrumb') . '"><ol class="breadcrumb">';
             foreach ($this->layout->breadcrumbs as $link => $name) {
                 if ($link === '' || is_numeric($link)) {

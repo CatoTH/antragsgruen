@@ -274,7 +274,6 @@ class ModuleBase extends Module
 
     /**
      * @return class-string<VotingData>|null
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getVotingDataClass(Consultation $consultation): ?string
     {
