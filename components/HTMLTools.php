@@ -144,7 +144,7 @@ class HTMLTools
         $dom = self::html2DOM($html);
 
         $hasChanged = false;
-        /** @var \DOMElement $wrapP */
+        /** @var \DOMElement|null $wrapP */
         $wrapP = null;
         for ($i = 0; $i < $dom->childNodes->length; $i++) {
             $childNode = $dom->childNodes->item($i);
@@ -382,7 +382,7 @@ class HTMLTools
         if ($element->nodeName === 'ol' || $element->nodeName === 'ul') {
             $liCount          = 0;
             $start = $element->getAttribute('start');
-            if ($start !== null && $start > 0) {
+            if ($start > 0) {
                 $liCount = intval($start) - 1;
             }
             $formatting = self::OL_DECIMAL_DOT;
@@ -453,7 +453,7 @@ class HTMLTools
         $lino = 0;
         if ($element->nodeName === 'ol') {
             $start = $element->getAttribute('start');
-            if ($start !== null && $start > 0) {
+            if ($start > 0) {
                 $lino = intval($start) - 1;
             }
         }
@@ -927,7 +927,6 @@ class HTMLTools
     public static function getDomDebug(\DOMNode $node): array
     {
         if (is_a($node, \DOMElement::class)) {
-            /** @var \DOMNode $node */
             $nodeArr = [
                 'name'     => $node->nodeName,
                 'classes'  => '',

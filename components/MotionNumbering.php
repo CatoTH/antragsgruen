@@ -15,8 +15,10 @@ class MotionNumbering
         $new = \Yii::t('motion', 'prefix_new_code');
         $newMatch = preg_quote($new, '/');
         if (preg_match('/' . $newMatch . '/i', $titlePrefix)) {
-            /** @var string[] $parts */
             $parts = preg_split('/(' . $newMatch . '\s*)/i', $titlePrefix, -1, PREG_SPLIT_DELIM_CAPTURE);
+            if ($parts === false) {
+                return $titlePrefix . $new;
+            }
             $last = (int)array_pop($parts);
             $last = ($last > 0 ? $last + 1 : 2); // NEW BLA -> NEW 2
             $parts[] = $last;

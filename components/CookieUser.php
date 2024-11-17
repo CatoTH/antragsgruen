@@ -10,7 +10,6 @@ class CookieUser
 {
     public string $userToken;
     public string $name;
-    private static ?CookieUser $userCache = null;
 
     public static function getFromCookieOrCache(): ?CookieUser
     {
@@ -20,8 +19,6 @@ class CookieUser
             $cookieUser->name      = trim($matches['name']);
 
             return $cookieUser;
-        } elseif (self::$userCache) {
-            return self::$userCache;
         } else {
             return null;
         }

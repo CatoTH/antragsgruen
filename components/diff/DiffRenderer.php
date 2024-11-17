@@ -117,15 +117,6 @@ class DiffRenderer
         return false;
     }
 
-    /**
-     * @internal
-     * @return string[]
-     */
-    public function splitTextByMarkers(string $text): array
-    {
-        return preg_split('/###(INS|DEL)_(START|END)###/siu', $text);
-    }
-
     public static function nodeToPlainText(\DOMNode $node): string
     {
         $text = $node->nodeValue;
@@ -232,6 +223,9 @@ class DiffRenderer
         while ($text !== '') {
             if ($inIns !== null) {
                 $split = preg_split('/###INS_END###/siu', $text, 2);
+                if ($split === false) {
+                    throw new \RuntimeException('Could not parse text: ' . $text);
+                }
                 if ($split[0] !== '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
                     if ($lastIsIns) {
@@ -250,6 +244,9 @@ class DiffRenderer
                 }
             } elseif ($inDel !== null) {
                 $split = preg_split('/###DEL_END###/siu', $text, 2);
+                if ($split === false) {
+                    throw new \RuntimeException('Could not parse text: ' . $text);
+                }
                 if ($split[0] !== '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
                     if ($lastIsDel) {
@@ -267,8 +264,10 @@ class DiffRenderer
                     $text = '';
                 }
             } else {
-                /** @var string[] $split */
                 $split = preg_split('/(###(?:INS|DEL)_START([^#]{0,20})###)/siu', $text, 2, PREG_SPLIT_DELIM_CAPTURE);
+                if ($split === false) {
+                    throw new \RuntimeException('Could not parse text: ' . $text);
+                }
                 if (count($split) === 4) {
                     if ($split[0] !== '') {
                         $newText = $this->nodeCreator->createTextNode($split[0]);
