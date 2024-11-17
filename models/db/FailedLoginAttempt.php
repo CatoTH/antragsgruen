@@ -36,7 +36,7 @@ class FailedLoginAttempt extends ActiveRecord
         return trim(mb_strtolower($username));
     }
 
-    public static function logFailedAttempt(string $username): void
+    public static function logAttempt(string $username): void
     {
         $normalizedUsername = self::normalizeUsername($username);
         $attempt = new FailedLoginAttempt();
