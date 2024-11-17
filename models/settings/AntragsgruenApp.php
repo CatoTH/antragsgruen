@@ -38,6 +38,8 @@ class AntragsgruenApp implements \JsonSerializable
     public array $blockedSubdomains = ['www', 'rest', 'ftp', 'smtp', 'imap'];
     public int $autoLoginDuration = 31536000; // 1 Year
     public bool $loginCaptcha = false; // Forces captcha even at the first login attempt
+    /** @var string[] */
+    public array $loginCaptchaIgnoredIps = [];
     public ?string $xelatexPath = null; // @TODO OBSOLETE
     public ?string $xdvipdfmx = null; // @TODO OBSOLETE
     public ?string $lualatexPath = null;

@@ -25,10 +25,14 @@ class FailedLoginAttempt extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'failedLoginAttempt';
     }
 
+    private static function getCurrentIp(): string
+    {
+        return RequestContext::getWebRequest()->getRemoteIP() ?? '';
+    }
+
     private static function getCurrentIpHash(): string
     {
-        $ip = RequestContext::getWebRequest()->getRemoteIP() ?? '';
-        return hash('sha256', $ip);
+        return hash('sha256', self::getCurrentIp());
     }
 
     private static function normalizeUsername(string $username): string
@@ -50,6 +54,11 @@ class FailedLoginAttempt extends ActiveRecord
 
     private static function needsLoginThrottlingByIp(): bool
     {
+        $ignoredIps = AntragsgruenApp::getInstance()->loginCaptchaIgnoredIps;
+        if (in_array(self::getCurrentIp(), $ignoredIps)) {
+            return false;
+        }
+
         $interval = new Expression('NOW() - INTERVAL ' . intval(self::THROTTLING_DURATION_MINUTES) . ' MINUTE');
         $attempts = FailedLoginAttempt::find()
             ->where(['=', 'ipHash', self::getCurrentIpHash()])
