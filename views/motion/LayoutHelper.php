@@ -1061,6 +1061,7 @@ class LayoutHelper
             $initiatorStr = \Yii::t('export', 'InitiatorMulti');
         }
         $initiatorStr .= ': ' . implode(', ', $initiators);
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:AGENDA\}\}/siu', ($motion->getMyAgendaItem() ? $motion->getMyAgendaItem()->title : ''));
         $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
         $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
         if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $motion->proposalStatus !== null && $motion->isProposalPublic()) {
