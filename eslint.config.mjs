@@ -2,6 +2,7 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginPromise from 'eslint-plugin-promise'
 import globals from 'globals';
+import ConfusingGlobals from 'confusing-browser-globals';
 
 const config = tseslint.config(
     {
@@ -28,6 +29,7 @@ const config = tseslint.config(
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-inferrable-types': 'off',
             '@typescript-eslint/no-this-alias': 'off',
+            'no-restricted-globals': ['error', ...ConfusingGlobals],
             'no-prototype-builtins': 'off',
             '@typescript-eslint/no-empty-function': 'off',//todo
             '@typescript-eslint/no-unused-vars': 'off',//todo
