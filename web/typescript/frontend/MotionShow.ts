@@ -97,11 +97,11 @@ class MotionShow {
             new MotionParagraph($(el));
         });
         
-        let sComm = location.hash.split('#comm');
+        let sComm = window.location.hash.split('#comm');
         if (sComm.length == 2) {
             $('#comment' + sComm[1]).scrollintoview({top_offset: -100});
         }
-        const sAmend = location.hash.split('#amendment');
+        const sAmend = window.location.hash.split('#amendment');
         if (sAmend.length == 2) {
             $(".bookmarks .amendment" + sAmend[1]).first().scrollintoview({top_offset: -100});
         }

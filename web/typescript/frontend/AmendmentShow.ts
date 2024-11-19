@@ -2,7 +2,7 @@ import '../shared/IMotionShow';
 
 class AmendmentShow {
     constructor() {
-        let s: string[] = location.hash.split('#comm');
+        let s: string[] = window.location.hash.split('#comm');
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
         }
