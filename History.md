@@ -24,7 +24,7 @@
 - Bugfix: When using "previous / next motion" links for pagination, motions and resolutions were not properly separated.
 - Bugfix: Some Youtube-Videos could not be embedded.
 - Bugfix: When copying a consultation with motion types whose permissions were restricted to a specific user group, these permissions where not properly copied.
-- Bugfix: If an uploaded logo was deleted, the dhown logo was broken instead of falling back to the default logo.
+- Bugfix: If an uploaded logo was deleted, the shown logo was broken instead of falling back to the default logo.
 
 ### Version 4.14.2 (2024-09-08)
 
