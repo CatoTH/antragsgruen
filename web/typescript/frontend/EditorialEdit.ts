@@ -20,7 +20,7 @@ export class EditorialEdit {
         this.editCaller.addEventListener('click', this.editCalled.bind(this));
         this.saveRow.querySelector('button').addEventListener('click', this.save.bind(this));
 
-        if (location.href.indexOf('edit_editorial=1') !== -1) {
+        if (window.location.href.indexOf('edit_editorial=1') !== -1) {
             this.editCalled();
             $(this.textHolder).scrollintoview({top_offset: -150});
         }
