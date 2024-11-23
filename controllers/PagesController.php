@@ -463,7 +463,8 @@ class PagesController extends Base
             $group->save();
 
             $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_group_added'));
-            $this->consultation->refresh();
+
+            return new RedirectResponse(UrlHelper::createUrl('/pages/documents'));
         }
 
         if ($iAmAdmin && $this->isPostSet('deleteGroup') && $this->getPostValue('groupId') > 0) {
@@ -479,7 +480,8 @@ class PagesController extends Base
             }
             if ($found) {
                 $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_group_deleted'));
-                $this->consultation->refresh();
+
+                return new RedirectResponse(UrlHelper::createUrl('/pages/documents'));
             }
         }
 
@@ -502,7 +504,8 @@ class PagesController extends Base
                 );
 
                 $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_uploaded_file'));
-                $this->consultation->refresh();
+
+                return new RedirectResponse(UrlHelper::createUrl('/pages/documents'));
             }
         }
 
@@ -517,7 +520,8 @@ class PagesController extends Base
             }
             if ($found) {
                 $this->getHttpSession()->setFlash('success', \Yii::t('pages', 'documents_file_deleted'));
-                $this->consultation->refresh();
+
+                return new RedirectResponse(UrlHelper::createUrl('/pages/documents'));
             }
         }
 
@@ -530,7 +534,8 @@ class PagesController extends Base
             foreach ($this->consultation->fileGroups as $fileGroup) {
                 if (isset($idPosition[$fileGroup->id])) {
                     $fileGroup->position = $idPosition[$fileGroup->id];
-                    $fileGroup->save();
+
+                    return new RedirectResponse(UrlHelper::createUrl('/pages/documents'));
                 }
             }
         }
