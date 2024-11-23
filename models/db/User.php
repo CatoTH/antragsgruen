@@ -753,9 +753,13 @@ class User extends ActiveRecord implements IdentityInterface
         $subject  = \Yii::t('user', 'recover_mail_title');
         $url      = UrlHelper::createUrl(['user/recovery', 'email' => $this->email, 'code' => $recoveryToken]);
         $url      = UrlHelper::absolutizeLink($url);
-        $text     = \Yii::t('user', 'recover_mail_body');
-        $replaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
-        MailTools::sendWithLog($type, null, $this->email, $this->id, $subject, $text, '', $replaces);
+        $text     = str_replace(
+            ['%NAME_GIVEN%', '%NAME_FAMILY%'],
+            [$this->getGivenNameWithFallback(), $this->getFamilyNameWithFallback()],
+            \Yii::t('user', 'recover_mail_body')
+        );
+        $noLogReplaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
+        MailTools::sendWithLog($type, null, $this->email, $this->id, $subject, $text, '', $noLogReplaces);
     }
 
     /**
