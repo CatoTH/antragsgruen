@@ -23,7 +23,7 @@ class Captcha
         $builder = new CaptchaBuilder();
         $builder->distort = true;
         $builder->bgColor = '#fff';
-        @$builder->build(300, 80); // https://github.com/CatoTH/antragsgruen/issues/980
+        $builder->build(300, 80);
 
         $phrase = $builder->phrase;
         RequestContext::getSession()->set('captcha', $phrase);

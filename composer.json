@@ -33,7 +33,7 @@
     "paragonie/sodium_compat": "^2.0",
     "phpoffice/phpspreadsheet": "^3.3",
     "predis/predis": "^2.2",
-    "s1syphos/php-simple-captcha": "^2.3",
+    "s1syphos/php-simple-captcha": "dev-main#26d63ec7d3da30ea214d796eb613a8b6c2c51d81 as 2.4.0",
     "scssphp/scssphp": "dev-main#12d3cdf0fc2a73e9438ded5a5a82fb353b68d718 as 1.13.0",
     "setasign/fpdi": "^2.3.7",
     "spomky-labs/otphp": "^11.3",
@@ -122,6 +122,10 @@
     {
       "type": "composer",
       "url": "https://asset-packagist.org"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/CatoTH/php-simple-captcha.git"
     }
   ]
 }
