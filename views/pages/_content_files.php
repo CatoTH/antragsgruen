@@ -16,8 +16,8 @@ use yii\helpers\Html;
         echo '<ul class="fileList">';
         foreach ($files as $file) {
             echo '<li data-id="' . Html::encode($file->id) . '">';
-            $title = '<span class="glyphicon glyphicon-download-alt"></span> <span class="title">' . Html::encode($file->title) . '</span>';
-            echo Html::a($title, $file->getUrl());
+            $title = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> <span class="title">' . Html::encode($file->title) . '</span>';
+            echo \app\components\HTMLTools::createExternalLink($title, $file->getUrl());
             if ($contentAdmin) {
                 echo '<button type="button" class="btn btn-link deleteFile">';
                 echo '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';

@@ -19,6 +19,7 @@
 - Administrators of an installation can modify the behavior of the CAPTCHAs on registration (see README).
 - Some compatibility issues with PHP 8.4 were resolved.
 - Bugfix: Tabular data was not encoded correctly in the PHP-based PDF export.
+- Bugfix: The setting to open (PDF-)files in new browser tabs was not considered at several places.
 - Bugfix: The PDF with all amendments embedded into the motion text could not be generated if a Weasyprint-based PDF layout was selected.
 - Bugfix: If a motion with a proposed modified version was copied, merging that proposed version was not possible anymore.
 - Bugfix: It was possible for users to submit amendments for withdrawn motions.
