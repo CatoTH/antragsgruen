@@ -201,6 +201,43 @@ Super-Admins are administrators with some additional set of privileges not avail
 The list of super-admins cannot (on purpose) be changed using the Web-UI,
 but has to be manually changed in the `config/config.json` by adding and removing the user IDs in the `adminUserIds` array.
 
+### Securing Accounts
+
+Antragsgrün comes with built-in support for protecting user accounts from brute-force accounts. By default:
+- A CAPTCHA needs to be solved after three unsuccessful login attempts for every further login attempt.
+- Users can opt in to protect their accounts using a second factor authentication app (TOTP).
+
+#### Configuring the CAPTCHA
+
+The default behavior of the CAPTCHA can be modified in the `config.json`:
+- The `mode` indicates when a CAPTCHA is shown. The default  `throttle` requires it after three unsuccessful attempts, balancing security with trying not to bother users too much. `always` always requires entering a CAPTCHA, `never` disables it entirely.
+- `difficulty` defaults to `normal`, which should be solvable by most users. To make it easier (no distortion of image), set it to `easy`.
+- `ignoredIps` is a list of IP addresses that will never receive a CAPTCHA. This is often necessary on conventions where all delegates are sharing one WiFi IP address and unsuccessful login attempts of one delegate would otherwise trigger CAPTCHA-behavior for all others.
+
+```json
+{
+    "captcha": {
+        "mode": "always", // Options: "never", "throttle", "always"
+        "ignoredIps": [
+            "127.0.0.1",
+            "::1"
+        ],
+        "difficulty": "easy" // Options: "easy", "normal"
+    }
+}
+```
+
+#### Configuring / Enforcing 2FA
+
+By default, users have the option to secure their account with a TOTP-based second factor (supported by many apps like Authy, Google Authenticator, FreeOTP or password managers). Super-Admins can change this behavior on an *per-user-basis*:
+- Setting a second factor can be enforced.
+- Setting a second factor can be disabled (changing passwords can be prevented too, e.g. for accounts meant to be shared).
+- A second factor can be removed, e.g. if the user lost access to their 2FA-app.
+
+#### Integration Single-Sign-On-Providers
+
+The user administration of Antragsgrün can be connected to a SSO provider, for example using SAML. However, this is not part of the core distribution, as the requirements are typically too organization-specific.
+
 ### ImageMagick
 
 To resize uploaded images in applications on the server side, and to enable uploading PDFs as images, ImageMagick needs to be installed as command line tool:
@@ -268,39 +305,6 @@ Antragsgrün already does a decent amount of caching by default, and even more w
 Note that this might in some edge case lead to old information being shown and is only meant as a last resort if hundreds to thousands of users are accessing large motions in parallel.
 
 As a rule of thumb, this setting should be considered if you expect close to 1.000 motions and amendments or more in one consultation.
-
-### Securing Accounts
-
-Antragsgrün comes with built-in support for protecting user accounts from brute-force accounts. By default:
-- A CAPTCHA needs to be solved after three unsuccessful login attempts for every further login attempt.
-- Users can opt in to protect their accounts using a second factor authentication app (TOTP).
-
-#### Configuring the CAPTCHA
-
-The default behavior of the CAPTCHA can be modified in the `config.json`:
-- The `mode` indicates when a CAPTCHA is shown. The default  `throttle` requires it after three unsuccessful attempts, balancing security with trying not to bother users too much. `always` always requires entering a CAPTCHA, `never` disables it entirely.
-- `difficulty` defaults to `normal`, which should be solvable by most users. To make it easier (no distortion of image), set it to `easy`.
-- `ignoredIps` is a list of IP addresses that will never receive a CAPTCHA. This is often necessary on conventions where all delegates are sharing one WiFi IP address and unsuccessful login attempts of one delegate would otherwise trigger CAPTCHA-behavior for all others.
-
-```json
-{
-    "captcha": {
-        "mode": "always", // Options: "never", "throttle", "always"
-        "ignoredIps": [
-            "127.0.0.1",
-            "::1"
-        ],
-        "difficulty": "easy" // Options: "easy", "normal"
-    }
-}
-```
-
-#### Configuring / Enforcing 2FA
-
-By default, users have the option to secure their account with a TOTP-based second factor (supported by many apps like Authy, Google Authenticator, FreeOTP or password managers). Super-Admins can change this behavior on an *per-user-basis*:
-- Setting a second factor can be enforced.
-- Setting a second factor can be disabled (changing passwords can be prevented too, e.g. for accounts meant to be shared).
-- A second factor can be removed, e.g. if the user lost access to their 2FA-app.
 
 ### JWT Key Signing
 
