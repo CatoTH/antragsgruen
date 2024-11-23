@@ -54,7 +54,7 @@ class FailedLoginAttempt extends ActiveRecord
 
     private static function needsLoginThrottlingByIp(): bool
     {
-        $ignoredIps = AntragsgruenApp::getInstance()->loginCaptchaIgnoredIps;
+        $ignoredIps = AntragsgruenApp::getInstance()->captcha['ignoredIps'];
         if (in_array(self::getCurrentIp(), $ignoredIps)) {
             return false;
         }

@@ -12,9 +12,12 @@
   "baseLanguage": "de",
   "multisiteMode": true,
   "confirmEmailAddresses": true,
-  "loginCaptchaIgnoredIps": [
-    "127.0.0.1"
-  ],
+  "captcha": {
+    "ignoredIps": [
+      "127.0.0.1",
+      "::1"
+    ]
+  },
   "domainPlain": "http://localhost:8080/index-test.php",
   "domainSubdomain": "http://localhost:8080/index-test.php",
   "prependWWWToSubdomain": false,
