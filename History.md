@@ -16,6 +16,7 @@
 - When merging amendments into a motion, the default setting now is to create a resolution, not a new motion.
 - Security improvement: When logging in, and a new verion of PHP (like 8.4) suggests a stronger default password hashing, the stored hash is updated accordingly.
 - A new translation is provided: Montenegrin (thanks to Danilo Boskovic)
+- Administrators of an installation can modify the behavior of the CAPTCHAs on registration (see README).
 - Some compatibility issues with PHP 8.4 were resolved.
 - Bugfix: Tabular data was not encoded correctly in the PHP-based PDF export.
 - Bugfix: The PDF with all amendments embedded into the motion text could not be generated if a Weasyprint-based PDF layout was selected.

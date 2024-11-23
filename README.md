@@ -269,6 +269,39 @@ Note that this might in some edge case lead to old information being shown and i
 
 As a rule of thumb, this setting should be considered if you expect close to 1.000 motions and amendments or more in one consultation.
 
+### Securing Accounts
+
+Antragsgrün comes with built-in support for protecting user accounts from brute-force accounts. By default:
+- A CAPTCHA needs to be solved after three unsuccessful login attempts for every further login attempt.
+- Users can opt in to protect their accounts using a second factor authentication app (TOTP).
+
+#### Configuring the CAPTCHA
+
+The default behavior of the CAPTCHA can be modified in the `config.json`:
+- The `mode` indicates when a CAPTCHA is shown. The default  `throttle` requires it after three unsuccessful attempts, balancing security with trying not to bother users too much. `always` always requires entering a CAPTCHA, `never` disables it entirely.
+- `difficulty` defaults to `normal`, which should be solvable by most users. To make it easier (no distortion of image), set it to `easy`.
+- `ignoredIps` is a list of IP addresses that will never receive a CAPTCHA. This is often necessary on conventions where all delegates are sharing one WiFi IP address and unsuccessful login attempts of one delegate would otherwise trigger CAPTCHA-behavior for all others.
+
+```json
+{
+    "captcha": {
+        "mode": "always", // Options: "never", "throttle", "always"
+        "ignoredIps": [
+            "127.0.0.1",
+            "::1"
+        ],
+        "difficulty": "easy" // Options: "easy", "normal"
+    }
+}
+```
+
+#### Configuring / Enforcing 2FA
+
+By default, users have the option to secure their account with a TOTP-based second factor (supported by many apps like Authy, Google Authenticator, FreeOTP or password managers). Super-Admins can change this behavior on an *per-user-basis*:
+- Setting a second factor can be enforced.
+- Setting a second factor can be disabled (changing passwords can be prevented too, e.g. for accounts meant to be shared).
+- A second factor can be removed, e.g. if the user lost access to their 2FA-app.
+
 ### JWT Key Signing
 
 Some of the more advanced features of Antragsgrün need JWT signing set up. Right now, this is only the integration of the Live Server, but in the future this will also enable logged in access to the REST API.
