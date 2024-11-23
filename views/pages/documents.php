@@ -6,6 +6,7 @@
 
 /** @var \app\controllers\ConsultationController $controller */
 
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\settings\Privileges;
 use app\models\db\{ConsultationFileGroup, ConsultationText, User};
@@ -142,11 +143,11 @@ foreach ($fileGroups as $fileGroup) {
                 ?>
                 <li class="motion uploadedFileEntry">
                     <p class="title">
-                        <a href="<?= Html::encode($file->getUrl()) ?>">
-                            <span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>
-                            <?= Html::encode($file->title) ?>
-                        </a>
                         <?php
+                        $title = '<span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>';
+                        $title .= Html::encode($file->title);
+                        echo HTMLTools::createExternalLink($title, $file->getUrl());
+
                         if ($contentAdmin) {
                             ?>
                             <button class="btn btn-link deleteFileBtn" type="submit" name="deleteFile[<?= $file->id ?>]"
