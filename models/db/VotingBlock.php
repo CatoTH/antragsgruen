@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\majorityType\IMajorityType;
+use app\plugins\european_youth_forum\VotingHelper;
 use app\models\policies\{IPolicy, LoggedIn};
 use app\models\quorumType\{IQuorumType, NoQuorum};
 use app\models\settings\{AntragsgruenApp, VotingBlock as VotingBlockSettings};
@@ -661,13 +662,15 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return array{votes: int, users: int, abstentions: int}
+     * @return array{votes: int, users: int, abstentions: int, abstentions_ingyo: int, abstentions_nyc: int}
      */
     public function getVoteStatistics(): array
     {
         $total = 0;
         $voteUserIds = [];
         $abstainedUserIds = [];
+        $abstainedUserIdsNyc = [];
+        $abstainedUserIdsIngyo = [];
 
         $groupsMyMotionIds = [];
         $groupsMyAmendmentIds = [];
@@ -694,6 +697,12 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         foreach ($this->votes as $vote) {
             if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
                 $abstainedUserIds[] = $vote->userId;
+                if ($vote->getUser() && VotingHelper::userIsNyc($this->consultation, $vote->getUser())) {
+                    $abstainedUserIdsNyc[] = $vote->userId;
+                }
+                if ($vote->getUser() && VotingHelper::userIsIngyo($this->consultation, $vote->getUser())) {
+                    $abstainedUserIdsIngyo[] = $vote->userId;
+                }
                 if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
                     $voteUserIds[] = $vote->userId;
                 }
@@ -724,7 +733,13 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             }
         }
 
-        return ['votes' => $total, 'users' => count($voteUserIds), 'abstentions' => count($abstainedUserIds)];
+        return [
+            'votes' => $total,
+            'users' => count($voteUserIds),
+            'abstentions' => count($abstainedUserIds),
+            'abstentions_nyc' => count($abstainedUserIdsNyc),
+            'abstentions_ingyo' => count($abstainedUserIdsIngyo),
+        ];
     }
 
     /**
