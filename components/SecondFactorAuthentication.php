@@ -8,6 +8,7 @@ use app\controllers\PagesController;
 use app\controllers\UserController;
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
+use Endroid\QrCode\Label\Font\FontInterface;
 use app\models\http\{RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
 use Endroid\QrCode\Builder\Builder;
@@ -275,6 +276,18 @@ class SecondFactorAuthentication
         return $user;
     }
 
+    private static function getQrCodeLabelFont(): FontInterface
+    {
+        return new class() implements FontInterface {
+            public function getPath(): string {
+                return __DIR__ . '/../assets/PT-Sans/PTS55F.ttf';
+            }
+            public function getSize(): int {
+                return 16;
+            }
+        };
+    }
+
     public static function createQrCode(TOTP $totp): ResultInterface
     {
         $logo = Layout::squareLogoPath();
@@ -296,6 +309,8 @@ class SecondFactorAuthentication
                          ->logoResizeToWidth(50)
                          ->logoResizeToHeight(50)
                          ->logoPunchoutBackground(true)
+                         ->labelFont(self::getQrCodeLabelFont())
+                         ->labelText('')
                          ->validateResult(false)
                          ->build();
     }

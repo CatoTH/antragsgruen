@@ -81,6 +81,7 @@ rm ./vendor/s1syphos/php-simple-captcha/fonts/LinLibertine_Rah.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Hack-Regular.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Bitter-Bold.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Vollkorn-Regular.ttf
+rm -R vendor/endroid/qr-code/assets/ # Replaced by bundled TTF
 find vendor -type l -exec rm {} \;
 rm -R vendor/cebe/markdown/tests
 rm -R tests/
