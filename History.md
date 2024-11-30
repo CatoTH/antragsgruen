@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.15.0 [not released yet]
+## Version 4.15.0 (2024-11-30)
 
 - Several improvements for user account administration:
   - User accounts can now be protected using Two-Factor-Authentication through TOTP. For individual users or all users of dedicated installations, this can be enforced.
