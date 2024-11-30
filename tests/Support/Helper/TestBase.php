@@ -34,7 +34,7 @@ class TestBase extends Unit
      * @return object|\yii\console\Application|\yii\web\Application
      * @throws InvalidConfigException if the application configuration is invalid
      */
-    protected function mockApplication(array $config = null): Application|\yii\console\Application
+    protected function mockApplication(?array $config = null): Application|\yii\console\Application
     {
         Yii::$container = new Container();
 
