@@ -23,7 +23,7 @@ $I->executeJS('$("#resolutionDate").val("23.05.2020")');
 $I->submitForm('#motionEditForm', [], 'save');
 $I->see('Organisation-0 (dort beschlossen am: 23.05.2020)');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
-$I->see('Du hast den Antrag eingereicht.');
+$I->see('Sie haben den Antrag eingereicht.');
 $I->submitForm('#motionConfirmedForm', [], '');
 $I->see('Testantrag', '.myMotionList');
 $I->logout();
