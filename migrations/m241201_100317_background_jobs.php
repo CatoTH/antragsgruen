@@ -18,7 +18,7 @@ class m241201_100317_background_jobs extends Migration
             'dateStarted' => 'TIMESTAMP DEFAULT NULL',
             'dateUpdated' => 'TIMESTAMP DEFAULT NULL',
             'dateFinished' => 'TIMESTAMP DEFAULT NULL',
-            'payload' => 'MEDIUMBLOB NOT NULL',
+            'payload' => 'MEDIUMTEXT NOT NULL',
         ]);
 
         $this->addForeignKey('fk_background_site', 'backgroundJob', 'siteId', 'site', 'id');

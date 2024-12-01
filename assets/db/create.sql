@@ -828,7 +828,7 @@ CREATE TABLE `###TABLE_PREFIX###backgroundJob` (
   `dateStarted` timestamp NULL DEFAULT NULL,
   `dateUpdated` timestamp NULL DEFAULT NULL,
   `dateFinished` timestamp NULL DEFAULT NULL,
-  `payload` mediumblob NOT NULL
+  `payload` mediumtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
