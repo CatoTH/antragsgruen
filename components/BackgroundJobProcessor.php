@@ -46,19 +46,24 @@ class BackgroundJobProcessor
 
     public function processRow(IBackgroundJob $job): void
     {
-        echo "Processing row: " . $job->getId() . "\n";
-
         $this->connection->createCommand(
             'UPDATE backgroundJob SET dateUpdated = NOW() WHERE id = :id',
             ['id' => $job->getId()]
         )->execute();
 
-        $job->execute();
+        try {
+            $job->execute();
 
-        $this->connection->createCommand(
-            'UPDATE backgroundJob SET dateFinished = NOW() WHERE id = :id',
-            ['id' => $job->getId()]
-        )->execute();
+            $this->connection->createCommand(
+                'UPDATE backgroundJob SET dateFinished = NOW() WHERE id = :id',
+                ['id' => $job->getId()]
+            )->execute();
+        } catch (\Throwable $exception) {
+            $this->connection->createCommand(
+                'UPDATE backgroundJob SET error = :error WHERE id = :id',
+                [':error' => $exception->getMessage() . PHP_EOL . $exception->getTraceAsString(), ':id' => $job->getId()]
+            )->execute();
+        }
     }
 
     public function getProcessedEvents(): int {

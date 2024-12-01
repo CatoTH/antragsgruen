@@ -39,8 +39,6 @@ class SendNotification extends IBackgroundJob
 
     public function execute(): void
     {
-        file_put_contents('/tmp/sendmail.log', 'SEND MAIL: ' . $this->toEmail . PHP_EOL, FILE_APPEND);
-
         $params = AntragsgruenApp::getInstance();
         $mailer = Base::createMailer($params->mailService);
         if (!$mailer) {
