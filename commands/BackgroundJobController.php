@@ -23,7 +23,10 @@ class BackgroundJobController extends Controller
      */
     public function actionRun(): void
     {
-        $processor = new BackgroundJobProcessor(\Yii::$app->getDb());
+        $connection = \Yii::$app->getDb();
+        $connection->enableLogging = false;
+
+        $processor = new BackgroundJobProcessor($connection);
         while (!$this->needsRestart($processor)) {
             $row = $processor->getJobAndSetStarted();
             if ($row) {
@@ -32,7 +35,7 @@ class BackgroundJobController extends Controller
                 usleep(100000);
             }
 
-            file_put_contents('/tmp/memory_usage.log', memory_get_peak_usage() . "\n", FILE_APPEND);
+            file_put_contents('/tmp/memory_usage.log', date("Y-m-d H:i:s") . ": " . memory_get_peak_usage() . "\n", FILE_APPEND);
         }
     }
 
