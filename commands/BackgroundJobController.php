@@ -32,10 +32,8 @@ class BackgroundJobController extends Controller
             if ($row) {
                 $processor->processRow($row);
             } else {
-                usleep(100000);
+                usleep(100_000);
             }
-
-            file_put_contents('/tmp/memory_usage.log', date("Y-m-d H:i:s") . ": " . memory_get_peak_usage() . "\n", FILE_APPEND);
         }
     }
 
