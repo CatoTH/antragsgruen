@@ -12,17 +12,30 @@ use yii\console\Controller;
  */
 class BackgroundJobController extends Controller
 {
-    private const MAX_EVENTS = 1000;
-    private const MAX_RUNTIME_SECONDS = 600;
-    private const MAX_MEMORY_USAGE = 64_000_000;
+    private const DEFAULT_MAX_EVENTS = 1000;
+    private const DEFAULT_MAX_RUNTIME_SECONDS = 600;
+    private const DEFAULT_MAX_MEMORY_USAGE = 64_000_000;
+
+    protected int $maxEvents = self::DEFAULT_MAX_EVENTS;
+    protected int $maxRuntimeSeconds = self::DEFAULT_MAX_RUNTIME_SECONDS;
+    protected int $maxMemoryUsage = self::DEFAULT_MAX_MEMORY_USAGE;
+
+    public function options($actionID): array
+    {
+        return ['maxEvents', 'maxRuntimeSeconds', 'maxMemoryUsage'];
+    }
 
     /**
      * Runs the background job processor
-     *
-     * @throws \yii\db\Exception
+     * Options:
+     * --max-runtime-seconds 600
+     * --max-events 1000
+     * --max-memory-usage 64000000
      */
     public function actionRun(): void
     {
+        echo "Starting background job processor at: " . (new \DateTimeImmutable())->format("Y-m-d H:i:s.u") . "\n";
+
         $connection = \Yii::$app->getDb();
         $connection->enableLogging = false;
 
@@ -35,12 +48,27 @@ class BackgroundJobController extends Controller
                 usleep(100_000);
             }
         }
+
+        echo "Stopping background job processor at: " . (new \DateTimeImmutable())->format("Y-m-d H:i:s.u") . "\n";
     }
 
     private function needsRestart(BackgroundJobProcessor $processor): bool
     {
-        return $processor->getProcessedEvents() >= self::MAX_EVENTS
-            || $processor->getRuntimeInSeconds() >= self::MAX_RUNTIME_SECONDS
-            || memory_get_peak_usage() >= self::MAX_MEMORY_USAGE;
+        if ($processor->getProcessedEvents() >= $this->maxEvents) {
+            echo "Stopping because maximum number of processed events has been reached.\n";
+            return true;
+        }
+
+        if ($processor->getRuntimeInSeconds() >= $this->maxRuntimeSeconds) {
+            echo "Stopping because maximum runtime has been reached.\n";
+            return true;
+        }
+
+        if (memory_get_peak_usage() >= $this->maxMemoryUsage) {
+            echo "Stopping because maximum memory usage has been reached.\n";
+            return true;
+        }
+
+        return false;
     }
 }
