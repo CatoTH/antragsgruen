@@ -47,7 +47,7 @@
     "symfony/string": "^5.4.22",
     "symfony/translation-contracts": "^2.5.2",
     "tecnickcom/tcpdf": "^6.6.2",
-    "tijsverkoyen/css-to-inline-styles": "^2.2.6",
+    "tijsverkoyen/css-to-inline-styles": "dev-master#97b4134400745eacabe50513f5b4d52e4b9356df as 2.2.8",
     "yiisoft/yii2": "~2.0.47",
     "yiisoft/yii2-authclient": "^2.2.14",
     "yiisoft/yii2-redis": "^2.0"
