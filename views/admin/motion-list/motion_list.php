@@ -35,6 +35,7 @@ echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
 echo $this->render('_list_all_export', [
     'hasProposedProcedures' => $hasProposedProcedures,
     'hasResponsibilities'   => $hasResponsibilities,
+    'search' => $search,
 ]);
 
 echo '<div class="content" data-antragsgruen-widget="backend/MotionList">';
