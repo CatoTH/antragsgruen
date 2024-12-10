@@ -17,7 +17,7 @@ class AmendmentController extends Base
      * @return string
      * @throws \Yii\base\ExitException
      */
-    public function actionGotoDiscourse(string $motionSlug, $amendmentId)
+    public function actionGotoDiscourse(string $motionSlug, int $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
 
