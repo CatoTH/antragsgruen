@@ -77,7 +77,6 @@ class SamlLogin implements LoginProviderInterface
         $auth = $this->usernameToAuth($username);
 
         $organizations = $this->resolveAllOrgaIds($params[self::PARAM_ORGANIZATION] ?? []);
-        $organizations = $this->restrictOrganizations($organizations);
 
         /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
@@ -118,9 +117,13 @@ class SamlLogin implements LoginProviderInterface
      */
     public function getSelectableUserOrganizations(User $user): ?array
     {
+        $config = $this->getConfiguration();
+        $forceKv = isset($config['forceKv']) && $config['forceKv'];
+
         $orgas = [];
         foreach ($user->userGroups as $userGroup) {
-            if ($userGroup->externalId && str_starts_with($userGroup->externalId, Module::AUTH_KEY_GROUPS.':')) {
+            if ($userGroup->externalId && str_starts_with($userGroup->externalId, Module::AUTH_KEY_GROUPS.':') &&
+                !($forceKv || !str_starts_with($userGroup->title, 'KV'))) {
                 $orgas[] = $userGroup;
             }
         }
@@ -209,19 +212,6 @@ class SamlLogin implements LoginProviderInterface
         }
 
         return array_values(array_unique($newOrgaIds));
-    }
-
-    private function restrictOrganizations(array $organizations): array
-    {
-        $config = $this->getConfiguration();
-        if (!isset($config['forceKv']) || !$config['forceKv']) {
-            return $organizations;
-        }
-
-        if (count($organizations) === 0) {
-            return [];
-        }
-        return [$organizations[0]];
     }
 
     private function syncUserGroups(User $user, array $newOrgaIds): void
