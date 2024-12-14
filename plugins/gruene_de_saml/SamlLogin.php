@@ -214,7 +214,7 @@ class SamlLogin implements LoginProviderInterface
     private function restrictOrganizations(array $organizations): array
     {
         $config = $this->getConfiguration();
-        if (!isset($config['organizations']['forceKv']) || !$config['organizations']['forceKv']) {
+        if (!isset($config['forceKv']) || !$config['forceKv']) {
             return $organizations;
         }
 
