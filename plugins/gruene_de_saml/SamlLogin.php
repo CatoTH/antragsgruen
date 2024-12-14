@@ -28,6 +28,16 @@ class SamlLogin implements LoginProviderInterface
         return 'Grünes Netz';
     }
 
+    private function getConfiguration(): array
+    {
+        $fileName = __DIR__ . '/../../config/gruene_de_saml.json';
+        if (!file_exists($fileName)) {
+            return [];
+        }
+
+        return json_decode((string) file_get_contents($fileName), true, 512, JSON_THROW_ON_ERROR);
+    }
+
     public function renderLoginForm(string $backUrl, bool $active): string
     {
         return \Yii::$app->controller->renderPartial('@app/plugins/gruene_de_saml/views/login', [
@@ -67,6 +77,7 @@ class SamlLogin implements LoginProviderInterface
         $auth = $this->usernameToAuth($username);
 
         $organizations = $this->resolveAllOrgaIds($params[self::PARAM_ORGANIZATION] ?? []);
+        $organizations = $this->restrictOrganizations($organizations);
 
         /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
@@ -198,6 +209,19 @@ class SamlLogin implements LoginProviderInterface
         }
 
         return array_values(array_unique($newOrgaIds));
+    }
+
+    private function restrictOrganizations(array $organizations): array
+    {
+        $config = $this->getConfiguration();
+        if (!isset($config['organizations']['forceKv']) || !$config['organizations']['forceKv']) {
+            return $organizations;
+        }
+
+        if (count($organizations) === 0) {
+            return [];
+        }
+        return [$organizations[0]];
     }
 
     private function syncUserGroups(User $user, array $newOrgaIds): void
