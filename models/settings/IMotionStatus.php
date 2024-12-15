@@ -11,7 +11,10 @@ class IMotionStatus
         public string $name, // e.g. "published"
         public ?string $nameVerb = null, // e.g. "publish"
         public ?bool $adminInvisible = false,
-        public ?bool $userInvisible = false
+        public ?bool $userInvisible = false,
+        public ?bool $motionProposedProcedureStatus = false,
+        public ?bool $amendmentProposedProcedureStatus = false,
+        public ?string $proposedProcedureName = null,
     ) {
     }
 }
