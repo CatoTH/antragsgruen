@@ -248,13 +248,15 @@ class Factory
      * @return AgendaVoting[]
      * Hint: AgendaVoting objects returned here are guaranteed to have a VotingBlock object in the voting property
      */
-    public static function getOpenVotingBlocks(Consultation $consultation, ?Motion $assignedToMotion): array
+    public static function getOpenVotingBlocks(Consultation $consultation, bool $showAllOpen, ?Motion $assignedToMotion): array
     {
-        $openBlocks = array_values(array_filter($consultation->votingBlocks, function (VotingBlock $voting) use ($assignedToMotion): bool {
+        $openBlocks = array_values(array_filter($consultation->votingBlocks, function (VotingBlock $voting) use ($showAllOpen, $assignedToMotion): bool {
             if ($voting->votingStatus !== VotingBlock::STATUS_OPEN) {
                 return false;
             }
-            if ($assignedToMotion) {
+            if ($showAllOpen) {
+                return true;
+            } elseif ($assignedToMotion) {
                 return $voting->assignedToMotionId === $assignedToMotion->id;
             } else {
                 return $voting->assignedToMotionId === null;

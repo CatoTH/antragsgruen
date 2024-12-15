@@ -27,11 +27,11 @@ $layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
 
 $apiData = [];
-foreach (Factory::getOpenVotingBlocks($consultation, null) as $votingBlockToRender) {
+foreach (Factory::getOpenVotingBlocks($consultation, true, null) as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
 }
 
-$pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '']);
+$pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
 $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '']);
 
 ?>

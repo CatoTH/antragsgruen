@@ -18,7 +18,7 @@ if (!User::getCurrentUser()) {
     return;
 }
 
-$votingBlocksToRender = Factory::getOpenVotingBlocks($consultation, $assignedToMotion);
+$votingBlocksToRender = Factory::getOpenVotingBlocks($consultation, false, $assignedToMotion);
 if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consultation)) {
     // Hint: we poll once there is a online voting block created
     return;
@@ -35,7 +35,7 @@ foreach ($votingBlocksToRender as $votingBlockToRender) {
 }
 
 $assignedToMotionId = ($assignedToMotion ? $assignedToMotion->id : '');
-$pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => $assignedToMotionId]);
+$pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => $assignedToMotionId, 'showAllOpen' => 0]);
 $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => $assignedToMotionId]);
 ?>
 <section data-url-poll="<?= Html::encode($pollUrl) ?>"

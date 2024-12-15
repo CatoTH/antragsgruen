@@ -375,10 +375,10 @@ class VotingMethods
         }
     }
 
-    public function getOpenVotingsForUser(?Motion $assignedToMotion, User $user): array
+    public function getOpenVotingsForUser(bool $showAllOpen, ?Motion $assignedToMotion, User $user): array
     {
         $votingData = [];
-        foreach (Factory::getOpenVotingBlocks($this->consultation, $assignedToMotion) as $voting) {
+        foreach (Factory::getOpenVotingBlocks($this->consultation, $showAllOpen, $assignedToMotion) as $voting) {
             $votingData[] = $voting->getUserVotingApiObject($user);
         }
         return $votingData;
