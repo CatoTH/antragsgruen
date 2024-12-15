@@ -4,6 +4,7 @@
 
 - Bugfix: If a voting was set to be shown in a motion view, it was not shown on the dedicated voting page anymore.
 - Bugfix: Some tabs opened in parallel could interfere with logging in using a second factor.
+- Bugfix: When logging in using a second factor, one would always end up in the site home page, not the page where one started the login.
 
 ## Version 4.15.0 (2024-11-30)
 

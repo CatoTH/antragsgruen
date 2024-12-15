@@ -42,7 +42,7 @@ class ConsultationController extends Base
      */
     public function beforeAction($action): bool
     {
-        if ($action->id === 'home') {
+        if ($action->id === self::VIEW_ID_HOME) {
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 if ($plugin::siteHomeIsAlwaysPublic()) {
                     $this->allowNotLoggedIn = true;
