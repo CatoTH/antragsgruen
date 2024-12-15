@@ -17,7 +17,7 @@ class IMotionStatusEngine
     ) {
         $statuses = [];
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            $statuses = array_merge($statuses, $pluginClass::getAdditionalIMotionStatuses());
+            $statuses = array_merge($statuses, $pluginClass::getAdditionalIMotionStatuses($this->consultation));
         }
 
         $statuses[] = new IMotionStatus(
@@ -51,17 +51,32 @@ class IMotionStatusEngine
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_ACCEPTED,
             \Yii::t('structure', 'STATUS_ACCEPTED'),
-            \Yii::t('structure', 'STATUSV_ACCEPTED')
+            \Yii::t('structure', 'STATUSV_ACCEPTED'),
+            false,
+            false,
+            true,
+            true,
+            \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_REJECTED,
             \Yii::t('structure', 'STATUS_REJECTED'),
-            \Yii::t('structure', 'STATUSV_REJECTED')
+            \Yii::t('structure', 'STATUSV_REJECTED'),
+            false,
+            false,
+            true,
+            true,
+            \Yii::t('structure', 'PROPOSED_REJECTED')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MODIFIED_ACCEPTED,
             \Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
-            \Yii::t('structure', 'STATUSV_MODIFIED_ACCEPTED')
+            \Yii::t('structure', 'STATUSV_MODIFIED_ACCEPTED'),
+            false,
+            false,
+            true,
+            true,
+            \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MODIFIED,
@@ -87,12 +102,22 @@ class IMotionStatusEngine
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_REFERRED,
             \Yii::t('structure', 'STATUS_REFERRED'),
-            \Yii::t('structure', 'STATUSV_REFERRED')
+            \Yii::t('structure', 'STATUSV_REFERRED'),
+            false,
+            false,
+            true,
+            true,
+            \Yii::t('structure', 'PROPOSED_REFERRED')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_VOTE,
             \Yii::t('structure', 'STATUS_VOTE'),
-            \Yii::t('structure', 'STATUSV_VOTE')
+            \Yii::t('structure', 'STATUSV_VOTE'),
+            false,
+            false,
+            true,
+            true,
+            \Yii::t('structure', 'PROPOSED_VOTE')
         );
         $statuses[] = new IMotionStatus(IMotion::STATUS_PAUSED, \Yii::t('structure', 'STATUS_PAUSED'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_MISSING_INFORMATION, \Yii::t('structure', 'STATUS_MISSING_INFORMATION'));
@@ -124,16 +149,31 @@ class IMotionStatusEngine
             \Yii::t('structure', 'STATUS_OBSOLETED_BY_MOTION'),
             null,
             false,
-            !$this->consultation->getSettings()->obsoletedByMotionsShown
+            !$this->consultation->getSettings()->obsoletedByMotionsShown,
+            true,
+            false,
+            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_OBSOLETED_BY_AMENDMENT,
             \Yii::t('structure', 'STATUS_OBSOLETED_BY_AMEND'),
             null,
             false,
-            !$this->consultation->getSettings()->obsoletedByMotionsShown
+            !$this->consultation->getSettings()->obsoletedByMotionsShown,
+            true,
+            true,
+            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT')
         );
-        $statuses[] = new IMotionStatus(IMotion::STATUS_CUSTOM_STRING, \Yii::t('structure', 'STATUS_CUSTOM_STRING'));
+        $statuses[] = new IMotionStatus(
+            IMotion::STATUS_CUSTOM_STRING,
+            \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
+            null,
+            false,
+            false,
+            true,
+            true,
+            \Yii::t('structure', 'PROPOSED_CUSTOM_STRING')
+        );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_INLINE_REPLY,
             \Yii::t('structure', 'STATUS_INLINE_REPLY'),
@@ -185,7 +225,10 @@ class IMotionStatusEngine
             \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION'),
             null,
             false,
-            true
+            true,
+            false,
+            true,
+            \Yii::t('structure', 'PROPOSED_MOVE_TO_OTHER_MOTION')
         );
 
         $this->allStatusesCache = $statuses;
@@ -380,6 +423,44 @@ class IMotionStatusEngine
             IMotion::STATUS_QUORUM_MISSED => \Yii::t('structure', 'STATUS_QUORUM_MISSED'),
             IMotion::STATUS_QUORUM_REACHED => \Yii::t('structure', 'STATUS_QUORUM_REACHED'),
         ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getMotionProposedProcedureStatuses(): array
+    {
+        $statuses = [];
+        foreach ($this->allStatusesCache as $status) {
+            if ($status->motionProposedProcedureStatus) {
+                $statuses[$status->id] = $status->proposedProcedureName;
+            }
+        }
+        return $statuses;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getAmendmentProposedProcedureStatuses(): array
+    {
+        $statuses = [];
+        foreach ($this->allStatusesCache as $status) {
+            if ($status->amendmentProposedProcedureStatus) {
+                $statuses[$status->id] = $status->proposedProcedureName;
+            }
+        }
+        return $statuses;
+    }
+
+    public function getProposedProcedureStatusName(int $statusId): ?string
+    {
+        foreach ($this->allStatusesCache as $status) {
+            if ($status->id === $statusId) {
+                return $status->proposedProcedureName;
+            }
+        }
+        return null;
     }
 
     /**

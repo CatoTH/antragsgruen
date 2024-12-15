@@ -894,8 +894,8 @@ class AdminMotionFilterForm
             }
         }
         if (!$foundMyself && $this->proposalStatus !== null) {
-            $statusNames             = Motion::getProposedStatusNames();
-            $statuses[$this->status] = Html::encode($statusNames[$this->proposalStatus] . ' (0)');
+            $statusName = $this->consultation->getStatuses()->getProposedProcedureStatusName(intval($this->proposalStatus));
+            $statuses[$this->status] = Html::encode($statusName . ' (0)');
         }
         $str .= Html::dropDownList('Search[proposalStatus]', $this->proposalStatus, $statuses, ['class' => 'stdDropdown']);
         $str .= '</label>';
@@ -1049,8 +1049,7 @@ class AdminMotionFilterForm
                 }
             }
         }
-        $statuses = Amendment::getProposedStatusNames();
-        foreach ($statuses as $statusId => $statusName) {
+        foreach ($this->consultation->getStatuses()->getAmendmentProposedProcedureStatuses() as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
             }

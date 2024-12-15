@@ -63,7 +63,7 @@ $voting = $motion->getVotingData();
 
         <?php
         $foundStatus = false;
-        foreach (Motion::getProposedChangeStatuses() as $statusId) {
+        foreach ($consultation->getStatuses()->getMotionProposedProcedureStatuses() as $statusId => $statusName) {
             ?>
             <label class="proposalStatus<?= $statusId ?>">
                 <input type="radio" name="proposalStatus" value="<?= $statusId ?>"<?php
@@ -74,7 +74,7 @@ $voting = $motion->getVotingData();
                 if (!$canBeChangedUnlimitedly) {
                     echo ' disabled';
                 }
-                ?>> <?= Motion::getProposedStatusNames()[$statusId] ?>
+                ?>> <?= Html::encode($statusName) ?>
             </label><br>
             <?php
         }
