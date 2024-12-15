@@ -34,6 +34,9 @@ class MotionController extends Base
     public const VIEW_ID_VIEW_CHANGES = 'view-changes';
     public const VIEW_ID_VIEW_PDF = 'pdf';
 
+    public const VIEW_ID_MERGING_STATUS_AJAX = 'merge-amendments-status-ajax';
+    public const VIEW_ID_MERGING_PUBLIC_AJAX = 'merge-amendments-public-ajax';
+
     public function actionView(string $motionSlug, int $commentId = 0, ?string $procedureToken = null): HtmlResponse
     {
         $this->layout = 'column2';

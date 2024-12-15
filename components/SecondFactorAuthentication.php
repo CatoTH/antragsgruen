@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\controllers\PagesController;
-use app\controllers\UserController;
+use app\controllers\{MotionController, PagesController, SpeechController, UserController, VotingController};
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
 use Endroid\QrCode\Label\Font\FontInterface;
@@ -30,6 +29,13 @@ class SecondFactorAuthentication
     private const SESSION_KEY_2FA_ONGOING = 'loggedIn2FAInProgress';
     private const SESSION_KEY_2FA_REGISTRATION_ONGOING = 'loggedInForced2FARegistrationInProgress';
     public const TIMEOUT_2FA_SESSION = 300;
+
+    private const IMPLICITLY_CALLED_URLS = [
+        PagesController::class => [PagesController::VIEW_ID_FILES, PagesController::VIEW_ID_CSS],
+        SpeechController::class => [SpeechController::VIEW_ID_GET_QUEUE],
+        VotingController::class => [VotingController::VIEW_ID_GET_OPEN_VOTING_BLOCKS, VotingController::VIEW_ID_GET_ADMIN_VOTING_BLOCKS],
+        MotionController::class => [MotionController::VIEW_ID_MERGING_STATUS_AJAX, MotionController::VIEW_ID_MERGING_PUBLIC_AJAX],
+    ];
 
     public function __construct(Session $session) {
         $this->session = $session;
@@ -317,7 +323,7 @@ class SecondFactorAuthentication
 
     public function onPageView(string $controller, string $actionId): void
     {
-        if ($controller === PagesController::class && in_array($actionId, [PagesController::VIEW_ID_FILES, PagesController::VIEW_ID_CSS])) {
+        if (isset(self::IMPLICITLY_CALLED_URLS[$controller]) && in_array($actionId, self::IMPLICITLY_CALLED_URLS[$controller])) {
             // Could be an implicit load of custom CSS or a logo
             return;
         }

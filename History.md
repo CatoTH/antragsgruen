@@ -3,6 +3,7 @@
 ### Version 4.15.1 [not released yet]
 
 - Bugfix: If a voting was set to be shown in a motion view, it was not shown on the dedicated voting page anymore.
+- Bugfix: Some tabs opened in parallel could interfere with logging in using a second factor.
 
 ## Version 4.15.0 (2024-11-30)
 
