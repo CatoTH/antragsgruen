@@ -14,6 +14,9 @@ use app\models\proposedProcedure\Factory;
 
 class VotingController extends Base
 {
+    public const VIEW_ID_GET_OPEN_VOTING_BLOCKS = 'get-open-voting-blocks';
+    public const VIEW_ID_GET_ADMIN_VOTING_BLOCKS = 'get-admin-voting-blocks';
+
     private VotingMethods $votingMethods;
     private UserGroupAdminMethods $userGroupMethods;
 

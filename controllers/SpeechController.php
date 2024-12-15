@@ -12,6 +12,8 @@ use app\models\db\{SpeechQueue, SpeechQueueItem, User};
 
 class SpeechController extends Base
 {
+    public const VIEW_ID_GET_QUEUE = 'get-queue';
+
     // *** Shared methods ***
 
     private function getQueue(int $queueId): ?SpeechQueue
