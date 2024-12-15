@@ -149,24 +149,24 @@ class SecondFactorAuthentication
         return \Yii::t('user', 'err_2fa_incorrect');
     }
 
-    public function onUsernamePwdLoginSuccess(User $user): ?ResponseInterface
+    public function onUsernamePwdLoginSuccess(User $user, string $backUrl): ?ResponseInterface
     {
         if ($this->userHasSecondFactorSetUp($user)) {
-            return $this->initSecondFactorAuth($user);
+            return $this->initSecondFactorAuth($user, $backUrl);
         } elseif ($this->isForcedToSetupSecondFactor($user)) {
-            return $this->initForcedSecondFactorSetting($user);
+            return $this->initForcedSecondFactorSetting($user, $backUrl);
         } else {
             return null;
         }
     }
 
-    private function initSecondFactorAuth(User $user): ResponseInterface
+    private function initSecondFactorAuth(User $user, string $backUrl): ResponseInterface
     {
         $this->session->set(self::SESSION_KEY_2FA_ONGOING, [
             'time' => time(),
             'user_id' => $user->id,
         ]);
-        return new RedirectResponse(UrlHelper::createUrl('/user/login2fa'));
+        return new RedirectResponse(UrlHelper::createUrl(['/user/login2fa', 'backUrl' => $backUrl]));
     }
 
     public function isForcedToSetupSecondFactor(User $user): bool
@@ -181,13 +181,13 @@ class SecondFactorAuthentication
         return false;
     }
 
-    private function initForcedSecondFactorSetting(User $user): ResponseInterface
+    private function initForcedSecondFactorSetting(User $user, string $backUrl): ResponseInterface
     {
         $this->session->set(self::SESSION_KEY_2FA_REGISTRATION_ONGOING, [
             'time' => time(),
             'user_id' => $user->id,
         ]);
-        return new RedirectResponse(UrlHelper::createUrl('/user/login2fa-force-registration'));
+        return new RedirectResponse(UrlHelper::createUrl(['/user/login2fa-force-registration', 'backUrl' => $backUrl]));
     }
 
     public function getOngoingSessionUser(): ?User

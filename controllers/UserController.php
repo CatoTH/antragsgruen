@@ -88,7 +88,7 @@ class UserController extends Base
                         '/user/login-force-pwd-change',
                         'backUrl' => $backUrl,
                     ]);
-                } elseif ($return = $this->secondFactorAuthentication->onUsernamePwdLoginSuccess($user)) {
+                } elseif ($return = $this->secondFactorAuthentication->onUsernamePwdLoginSuccess($user, $backUrl)) {
                     // Needs to perform 2FA before actually being logged in
                     return $return;
                 } else {
