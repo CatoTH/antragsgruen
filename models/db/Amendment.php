@@ -75,23 +75,6 @@ class Amendment extends IMotion implements IRSSItem
         $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
     }
 
-    /**
-     * @return int[]
-     */
-    public static function getProposedChangeStatuses(): array
-    {
-        return [
-            IMotion::STATUS_ACCEPTED,
-            IMotion::STATUS_REJECTED,
-            IMotion::STATUS_MODIFIED_ACCEPTED,
-            IMotion::STATUS_REFERRED,
-            IMotion::STATUS_VOTE,
-            IMotion::STATUS_OBSOLETED_BY_AMENDMENT,
-            IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION,
-            IMotion::STATUS_CUSTOM_STRING,
-        ];
-    }
-
     public static function tableName(): string
     {
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendment';

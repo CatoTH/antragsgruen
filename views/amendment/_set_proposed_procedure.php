@@ -66,18 +66,18 @@ $voting = $amendment->getVotingData();
 
             <?php
             $foundStatus = false;
-            foreach (Amendment::getProposedChangeStatuses() as $statusId) {
+            foreach ($consultation->getStatuses()->getAmendmentProposedProcedureStatuses() as $statusId => $statusName) {
                 ?>
                 <label class="proposalStatus<?= $statusId ?>">
                     <input type="radio" name="proposalStatus" value="<?= $statusId ?>"<?php
-                    if ($amendment->proposalStatus == $statusId) {
+                    if ($amendment->proposalStatus == intval($statusId)) {
                         $foundStatus = true;
                         echo ' checked';
                     }
                     if (!$canBeChangedUnlimitedly) {
                         echo ' disabled';
                     }
-                    ?>> <?= Amendment::getProposedStatusNames()[$statusId] ?>
+                    ?>> <?= Html::encode($statusName) ?>
                 </label><br>
                 <?php
             }

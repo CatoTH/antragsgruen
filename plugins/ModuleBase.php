@@ -319,7 +319,7 @@ class ModuleBase extends Module
     /**
      * @return IMotionStatus[]
      */
-    public static function getAdditionalIMotionStatuses(): array
+    public static function getAdditionalIMotionStatuses(Consultation $consultation): array
     {
         return [];
     }

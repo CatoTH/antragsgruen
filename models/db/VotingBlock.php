@@ -50,13 +50,13 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     // Open for voting.
     public const STATUS_OPEN = 2;
 
-    // Vorting is closed, the results are visible for users.
+    // Voting is closed, the results are visible for users.
     public const STATUS_CLOSED_PUBLISHED = 3;
 
-    // Vorting is closed, the results are not visible for users.
+    // Voting is closed, the results are not visible for users.
     public const STATUS_CLOSED_UNPUBLISHED = 4;
 
-    // Vorting is deleted - not accessible in the frontend.
+    // Voting is deleted - not accessible in the frontend.
     public const STATUS_DELETED = -1;
 
     // Nobody can see who voted how

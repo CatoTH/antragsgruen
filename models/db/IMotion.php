@@ -400,24 +400,6 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
      */
     abstract public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array;
 
-    /**
-     * @return string[]
-     */
-    public static function getProposedStatusNames(): array
-    {
-        return [
-            self::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
-            self::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
-            self::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
-            self::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
-            self::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
-            self::STATUS_OBSOLETED_BY_AMENDMENT => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND'),
-            self::STATUS_OBSOLETED_BY_MOTION    => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT'),
-            self::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION => \Yii::t('structure', 'PROPOSED_MOVE_TO_OTHER_MOTION'),
-            self::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
-        ];
-    }
-
     public function getTitleSection(): ?IMotionSection
     {
         foreach ($this->sections as $section) {
@@ -615,13 +597,17 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         if ($this->proposalStatus === null || $this->proposalStatus == 0) {
             return $explStr;
         }
+
+        /** @var Consultation $consultation */
+        $consultation = $this->getMyConsultation();
+
         switch ($this->proposalStatus) {
             case self::STATUS_ACCEPTED:
-                return '<span class="accepted">' . static::getProposedStatusNames()[$this->proposalStatus] . '</span>' . $explStr;
+                return '<span class="accepted">' . Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_ACCEPTED)) . '</span>' . $explStr;
             case self::STATUS_REJECTED:
-                return '<span class="rejected">' . static::getProposedStatusNames()[$this->proposalStatus] . '</span>' . $explStr;
+                return '<span class="rejected">' . Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_REJECTED)) . '</span>' . $explStr;
             case self::STATUS_MODIFIED_ACCEPTED:
-                return '<span class="modifiedAccepted">' . static::getProposedStatusNames()[$this->proposalStatus] . '</span>' . $explStr;
+                return '<span class="modifiedAccepted">' . Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_MODIFIED_ACCEPTED)) . '</span>' . $explStr;
             case self::STATUS_REFERRED:
                 return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment) . $explStr;
             case self::STATUS_OBSOLETED_BY_AMENDMENT:
@@ -631,7 +617,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
                     return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr . $explStr;
                 } else {
-                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
+                    return Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_OBSOLETED_BY_AMENDMENT)) . $explStr;
                 }
             case self::STATUS_OBSOLETED_BY_MOTION:
                 $refMot = $this->getMyConsultation()->getMotion(intval($this->proposalComment));
@@ -640,12 +626,12 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
                     return \Yii::t('amend', 'obsoleted_by') . ': ' . $refMotStr . $explStr;
                 } else {
-                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
+                    return Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_OBSOLETED_BY_MOTION)) . $explStr;
                 }
             case self::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment) . $explStr;
             case self::STATUS_VOTE:
-                $str = static::getProposedStatusNames()[$this->proposalStatus];
+                $str = Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_VOTE));
                 if ($this->getMyProposalReference()) {
                     $str .= ' (' . \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED') . ')';
                 }
@@ -659,11 +645,10 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
                 return $str;
             default:
-                if (isset(static::getProposedStatusNames()[$this->proposalStatus])) {
-                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
-                } else {
-                    return $this->proposalStatus . '?' . $explStr;
-                }
+
+                $name = Html::encode($consultation->getStatuses()->getProposedProcedureStatusName($this->proposalStatus) ?? (string) $this->proposalStatus);
+
+                return $name . $explStr;
         }
     }
 
