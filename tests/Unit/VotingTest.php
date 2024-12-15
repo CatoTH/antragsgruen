@@ -296,7 +296,7 @@ class VotingTest extends DBTestBase
 
         // The voting is visible for the user
         $votingMethods = $this->getVotingMethods(null);
-        $openVotings = $votingMethods->getOpenVotingsForUser(null, $user);
+        $openVotings = $votingMethods->getOpenVotingsForUser(true, null, $user);
         $this->assertCount(1, $openVotings);
 
         // The voting will be set to closed, but unpublished
@@ -307,7 +307,7 @@ class VotingTest extends DBTestBase
 
         // The voting is visible neither on the opened nor on the results page
         $votingMethods = $this->getVotingMethods(null);
-        $openVotings = $votingMethods->getOpenVotingsForUser(null, $user);
+        $openVotings = $votingMethods->getOpenVotingsForUser(true, null, $user);
         $this->assertCount(0, $openVotings);
 
         $votingMethods = $this->getVotingMethods(null);
@@ -320,7 +320,7 @@ class VotingTest extends DBTestBase
         $votingBlock->refresh();
 
         $votingMethods = $this->getVotingMethods(null);
-        $openVotings = $votingMethods->getOpenVotingsForUser(null, $user);
+        $openVotings = $votingMethods->getOpenVotingsForUser(true, null, $user);
         $this->assertCount(0, $openVotings);
 
         $votingMethods = $this->getVotingMethods(null);

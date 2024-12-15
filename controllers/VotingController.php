@@ -226,7 +226,7 @@ class VotingController extends Base
 
     // *** User-facing methods ***
 
-    public function actionGetOpenVotingBlocks(?int $assignedToMotionId): RestApiResponse
+    public function actionGetOpenVotingBlocks(?int $assignedToMotionId, int $showAllOpen = 0): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
 
@@ -236,7 +236,7 @@ class VotingController extends Base
             $assignedToMotion = null;
         }
 
-        $response = $this->votingMethods->getOpenVotingsForUser($assignedToMotion, User::getCurrentUser());
+        $response = $this->votingMethods->getOpenVotingsForUser(($showAllOpen > 0), $assignedToMotion, User::getCurrentUser());
 
         return new RestApiResponse(200, $response);
     }
@@ -264,7 +264,7 @@ class VotingController extends Base
      *     public: 2 (optional)
      * }
      */
-    public function actionPostVote(int $votingBlockId, ?int $assignedToMotionId): RestApiResponse
+    public function actionPostVote(int $votingBlockId, ?int $assignedToMotionId, int $showAllOpen = 0): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
 
@@ -301,7 +301,7 @@ class VotingController extends Base
         ResourceLock::releaseAllLocks();
         $votingBlock->refresh();
 
-        $response = $this->votingMethods->getOpenVotingsForUser($assignedToMotion, User::getCurrentUser());
+        $response = $this->votingMethods->getOpenVotingsForUser(($showAllOpen > 0), $assignedToMotion, User::getCurrentUser());
 
         return new RestApiResponse(200, $response);
     }

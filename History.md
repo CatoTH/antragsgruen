@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.15.1 [not released yet]
+
+- Bugfix: If a voting was set to be shown in a motion view, it was not shown on the dedicated voting page anymore.
+
 ## Version 4.15.0 (2024-11-30)
 
 - Several improvements for user account administration:
