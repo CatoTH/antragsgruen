@@ -149,3 +149,20 @@
     margin: 0;
   }
 }
+
+.statusReferenceTable {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  col.name {
+    width: 220px;
+  }
+  tr {
+    td, th {
+      padding-right: 10px;
+      padding-bottom: 6px;
+      padding-top: 6px;
+      border-bottom: solid 1px #ddd;
+    }
+  }
+}

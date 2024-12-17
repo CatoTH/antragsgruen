@@ -143,6 +143,8 @@ $controller->layoutParams->addBreadcrumb('Help');
         from rather small groups, where too many formalities would overcomplicate things, to large assemblies with
         complex submission rules, possibly integrated into existing Single-Sign-On-Solutions for authentication.</p>
 
+    <p>The <a href="/help/status"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> status reference</a> gives an overview of all available statuses that a motion or amendment can take during its lifetime.</p>
+
     <h3 id="consultations">Consultations</h3>
     <p>A consultation is a collection of all motions, drafts, applications and so on being discussed at the same time.
         It may for example correspond to an assembly or conference, to a collection of chapters of a larger manifesto or
