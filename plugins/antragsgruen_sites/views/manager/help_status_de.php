@@ -16,6 +16,7 @@ $controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/he
 $controller->layoutParams->addBreadcrumb('Start', '/');
 $controller->layoutParams->addBreadcrumb('Hilfe', '/help');
 $controller->layoutParams->addBreadcrumb('Status');
+$controller->layoutParams->fullWidth = true;
 
 ?>
 <h1>Referenz: Antragsstatus</h1>
@@ -27,6 +28,11 @@ $controller->layoutParams->addBreadcrumb('Status');
     <h2>Referenz: Antragsstatus</h2>
 
     <table class="statusReferenceTable">
+        <colgroup>
+            <col class="name">
+            <col class="visibility">
+            <col class="description">
+        </colgroup>
         <thead>
         <tr>
             <th>Name</th>
@@ -36,151 +42,153 @@ $controller->layoutParams->addBreadcrumb('Status');
         </thead>
         <tbody>
         <tr>
-            <th>STATUS_DRAFT</th>
+            <th>Entwurf</th>
             <td>Nein</td>
-            <td></td>
+            <td>Ein Mitglied hat angefangen, einen Antrag einzureichen, diesen aber (noch) nicht eingereicht. Möglicherweise aus Versehen, möglicherweise beabsichtigt.</td>
         </tr>
         <tr>
-            <th>STATUS_DRAFT_ADMIN</th>
+            <th>Entwurf (Admin)</th>
             <td>Nein</td>
-            <td></td>
+            <td>Dieser Status kann vom Admin gesetzt werden, um einen Antrag unsichtbar zu machen, ohne dass dieser auf einer To-Do-Liste auftaucht.</td>
         </tr>
         <tr>
-            <th>STATUS_SUBMITTED_UNSCREENED</th>
+            <th>Eingereicht (ungeprüft)</th>
             <td>Nein <sup>[1]</sup></td>
-            <td></td>
+            <td>Dieser Status ist vor allem relevant, falls die Freischaltung von (Änderungs-)Anträgen aktiv wird. In diesem Fall erscheinen eingereichte Anträge in diesem Status, um vom Admin vor der Veröffentlichung geprüft zu werden.</td>
         </tr>
         <tr>
-            <th>STATUS_SUBMITTED_UNSCREENED_CHECKED</th>
+            <th>Eingereicht (geprüft, unveröffentlicht)</th>
             <td>Nein <sup>[1]</sup></td>
-            <td></td>
+            <td>Kann vom Admin gesetzt werden, um zu markieren, dass der Antrag zwar bereits geprüft wurde, aber dennoch noch nicht sichtbar sein soll.</td>
         </tr>
         <tr>
-            <th>STATUS_SUBMITTED_SCREENED</th>
+            <th>Eingereicht</th>
             <td>Ja</td>
-            <td></td>
+            <td>Sichtbar, freigeschaltet. Dies ist der Standard-Status für alle veröffentlichten Anträge.</td>
         </tr>
         <tr>
-            <th>STATUS_RESOLUTION_PRELIMINARY</th>
+            <th>Beschluss (vorläufig)</th>
             <td>Ja</td>
-            <td></td>
+            <td>Ein vorläufiger Beschluss. Funktional besteht kein Unterschied zum regulären Beschluss, außer dass hierurch angezeigt werden kann, dass ggf. noch eine redaktionelle Nachprüfung erfolgen kann.</td>
         </tr>
         <tr>
-            <th>STATUS_RESOLUTION_FINAL</th>
+            <th>Beschluss</th>
             <td>Ja</td>
-            <td></td>
+            <td>Ein engültiger Beschluss.</td>
         </tr>
         <tr>
-            <th>STATUS_WITHDRAWN</th>
+            <th>Zurückgezogen</th>
             <td>Ja</td>
-            <td></td>
+            <td>Der Antrag wurde vom Mitglied zurückgezogen.</td>
         </tr>
         <tr>
-            <th>STATUS_WITHDRAWN_INVISIBLE</th>
+            <th>Zurückgezogen (unsichtbar)</th>
             <td>Nein</td>
-            <td></td>
+            <td>Der Antrag wurde vom Mitglied zurückgezogen und ist nicht mehr sichtbar.</td>
         </tr>
         <tr>
-            <th>STATUS_OBSOLETED_BY_MOTION</th>
+            <th>Erledigt durch anderen Antrag</th>
             <td>Ja <sup>[2]</sup></td>
-            <td></td>
+            <td>Der (Änderungs-)Antrag wurde durch einen anderen Antrag hinfällig. Der ersetzende Antrag kann verlinkt werden.</td>
         </tr>
         <tr>
-            <th>STATUS_OBSOLETED_BY_AMENDMENT</th>
+            <th>Erledigt durch anderen ÄA</th>
             <td>Ja <sup>[2]</sup></td>
-            <td></td>
+            <td>Der (Änderungs-)Antrag wurde durch einen anderen Änderungsantrag hinfällig. Der ersetzende Änderungsantrag kann verlinkt werden.</td>
         </tr>
         <tr>
-            <th>STATUS_VOTE</th>
+            <th>Abstimmung</th>
             <td>Ja</td>
-            <td></td>
+            <td>Über den (Änderungs-)Antrag soll abgestimmt werden.</td>
         </tr>
         <tr>
-            <th>STATUS_ACCEPTED</th>
+            <th>Angenommen</th>
             <td>Ja</td>
-            <td></td>
+            <td>Über den (Änderungs-)Antrag wurde abgestimmt und die nötige Mehrheit wurde erreicht. Wird Automatisch beim Schließen einer Abstimmung gesetzt.</td>
         </tr>
         <tr>
-            <th>STATUS_REJECTED</th>
+            <th>Abgelehnt</th>
             <td>Ja</td>
-            <td></td>
+            <td>Über den (Änderungs-)Antrag wurde abgestimmt und die nötige Mehrheit wurde NICHT erreicht. Wird Automatisch beim Schließen einer Abstimmung gesetzt.</td>
         </tr>
         <tr>
-            <th>STATUS_QUORUM_MISSED</th>
+            <th>Quorum verfehlt</th>
             <td>Ja</td>
-            <td></td>
+            <td>Über den (Änderungs-)Antrag wurde abgestimmt und das nötige Quorum wurde NICHT erreicht. Wird Automatisch beim Schließen einer Abstimmung gesetzt.</td>
         </tr>
         <tr>
-            <th>STATUS_QUORUM_REACHED</th>
+            <th>Quorum erreicht</th>
             <td>Ja</td>
-            <td></td>
+            <td>Über den (Änderungs-)Antrag wurde abgestimmt und das nötige Quorum wurde erreicht. Wird Automatisch beim Schließen einer Abstimmung gesetzt.</td>
         </tr>
         <tr>
-            <th>STATUS_MODIFIED_ACCEPTED</th>
+            <th>Modifiziert übernommen</th>
             <td>Ja</td>
-            <td></td>
+            <td>Als Status ohne besondere Bedeutung; wichtig als Verfahrensvorschlag.</td>
         </tr>
         <tr>
-            <th>STATUS_MODIFIED</th>
+            <th>Modifiziert</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status ohne besondere Funktion</em></td>
         </tr>
         <tr>
-            <th>STATUS_ADOPTED</th>
+            <th>Übernahme</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status ohne besondere Funktion</em></td>
         </tr>
         <tr>
-            <th>STATUS_PAUSED</th>
+            <th>Pausiert</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status ohne besondere Funktion</em></td>
         </tr>
         <tr>
-            <th>STATUS_COMPLETED</th>
+            <th>Erledigt</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status ohne besondere Funktion</em></td>
         </tr>
         <tr>
-            <th>STATUS_MISSING_INFORMATION</th>
+            <th>Informationen fehlen</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status ohne besondere Funktion</em></td>
         </tr>
         <tr>
-            <th>STATUS_DISMISSED</th>
+            <th>Nicht zugelassen</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status ohne besondere Funktion</em></td>
         </tr>
         <tr>
-            <th>STATUS_PROCESSED</th>
+            <th>Behandelt</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status</em></td>
         </tr>
         <tr>
-            <th>STATUS_INLINE_REPLY</th>
+            <th>Antwort</th>
             <td>Ja</td>
-            <td></td>
+            <td><em>Rein informativer Status</em></td>
         </tr>
         <tr>
-            <th>STATUS_MOVED</th>
+            <th>Verschoben</th>
             <td>Ja</td>
-            <td></td>
+            <td>Ein Platzhalter-Antrag an der ursprünglichen Stelle, um die Verschiebung an eine andere Stelle (anderer Tagesordnungspunkt oder Veranstaltung) transparent zu machen.</td>
         </tr>
         <tr>
-            <th>STATUS_PROPOSED_MOVE_TO_OTHER_MOTION</th>
+            <th>Verschoben zu anderem Antrag</th>
             <td>Nein</td>
-            <td></td>
+            <td>Interner Status, um die vorgeschlagene Verschiebung eines Änderungsantrags zu einem anderen Antrag zu markieren.</td>
         </tr>
         <tr>
-            <th>STATUS_CUSTOM_STRING</th>
+            <th>Sonstiger Status</th>
             <td>Ja</td>
-            <td></td>
+            <td>Platzhalter-Status. Hier kann ein beliebiger Text hinterlegt werden, um einen informativen Status zu vergeben, der anderweitig nicht vorgesehen ist.</td>
         </tr>
         </tbody>
     </table>
 
     <p>
-    <sup>[1]</sup> screeningMotionsShown<br>
-    <sup>[2]</sup> obsoletedByMotionsShown
+    <sup>[1]</sup> Standardmäßig nicht sichtbar. Es ist aber einstellbar, dass diese (ausgegraut) anzeigt werden. Siehe: Veranstaltungs-Einstellungen -> Anträge<br>
+    </p>
+    <p>
+    <sup>[2]</sup> Standardmäßig sichtbar. Kann über die Datenbank händisch unsichtbar gestellt werden.
     </p>
 </div>
 

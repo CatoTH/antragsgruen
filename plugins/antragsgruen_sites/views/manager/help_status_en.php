@@ -16,6 +16,7 @@ $controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/he
 $controller->layoutParams->addBreadcrumb('Start', '/');
 $controller->layoutParams->addBreadcrumb('Help', '/help');
 $controller->layoutParams->addBreadcrumb('Status');
+$controller->layoutParams->fullWidth = true;
 
 ?>
 <h1>Reference: Statuses</h1>
@@ -27,6 +28,11 @@ $controller->layoutParams->addBreadcrumb('Status');
     <h2>Reference: Statuses</h2>
 
     <table class="statusReferenceTable">
+        <colgroup>
+            <col class="name">
+            <col class="visibility">
+            <col class="description">
+        </colgroup>
         <thead>
         <tr>
             <th>Name</th>
