@@ -233,8 +233,6 @@ class HTMLTools
 
         $allowedAttributes = ['style', 'href', 'class', 'li.value', 'ol.start'];
 
-        $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
-
         $configInstance = \HTMLPurifier_Config::create([
             'HTML.Doctype'                            => 'HTML 4.01 Transitional',
             'HTML.AllowedElements'                    => implode(',', $allowedTags),
@@ -253,8 +251,6 @@ class HTMLTools
         ]);
         $configInstance->autoFinalize = false;
         $html = self::purify($configInstance, $html);
-
-        $html = str_replace('<p>###EMPTY###</p>', '<p></p>', $html);
 
         // Text always needs to be in a block container. This is the normal case anyway,
         // however sometimes CKEditor + Lite Change Tracking produces messed up HTML that we need to fix here
@@ -279,6 +275,7 @@ class HTMLTools
         $html = preg_replace('/ +<\/li>/siu', '</li>', $html);
         $html = preg_replace('/ +<br>/siu', '<br>', $html);
         $html = str_replace("<p><br>\n", "<p>", $html);
+        $html = str_replace("<p></p>", "", $html);
 
         $html = trim($html);
 

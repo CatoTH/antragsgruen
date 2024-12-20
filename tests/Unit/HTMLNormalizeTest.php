@@ -70,7 +70,7 @@ class HTMLNormalizeTest extends TestBase
     public function testStripEmptySpans(): void
     {
         $orig   = '<p>Test</p><p><span class="underlined"><span>&nbsp;</span></span></p>';
-        $expect = '<p>Test</p>' . "\n" . '<p></p>';
+        $expect = '<p>Test</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
