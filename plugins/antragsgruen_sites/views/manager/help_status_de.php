@@ -172,7 +172,7 @@ $controller->layoutParams->fullWidth = true;
             <td>Ein Platzhalter-Antrag an der ursprünglichen Stelle, um die Verschiebung an eine andere Stelle (anderer Tagesordnungspunkt oder Veranstaltung) transparent zu machen.</td>
         </tr>
         <tr>
-            <th>Verschoben zu anderem Antrag</th>
+            <th>Vorgeschlagene Verschiebung von anderem Antrag</th>
             <td>Nein</td>
             <td>Interner Status, um die vorgeschlagene Verschiebung eines Änderungsantrags zu einem anderen Antrag zu markieren.</td>
         </tr>
