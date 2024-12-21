@@ -149,6 +149,8 @@ $controller->layoutParams->addBreadcrumb('Hilfe');
         einreichende Person bzw. die einreichende Personengruppe abgefragt werden, um sich den organisatorischen
         Vorgaben der jeweiligen Organisation anzupassen.</p>
 
+    <p>In der <a href="/help/status"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Status-Referenz</a> findet sich eine genauere Beschreibung der Status, die ein Antrag bzw. Änderungsantrag annehmen kann.</p>
+
     <h3 id="veranstaltungen">Veranstaltungen</h3>
     <p>Eine „Veranstaltung“ - manchmal auch „Programmdiskussion“ bezeichnet, ist die Sammlung aller Anträge, die
         zeitgleich diskutiert werden können. Das kann eine konkrete Verbandstagung, der Entwurf eines Wahlprogramms (in

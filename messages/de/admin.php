@@ -101,6 +101,8 @@ return [
     'motion_not_commentable_am'   => 'Weitere Kommentare speziell für diesen Änderungsantrag unterbinden',
     'motion_agenda_item'          => 'Tagesordnungspunkt',
     'motion_status'               => 'Status',
+    'motion_status_help'          => 'Referenz',
+    'motion_status_help_link'     => 'https://antragsgruen.de/help/status',
     'motion_type'                 => 'Antragstyp',
     'motion_replaces'             => 'Überarbeitete Fassung von',
     'motion_screen_as_x'          => 'Freischalten als %PREFIX%',

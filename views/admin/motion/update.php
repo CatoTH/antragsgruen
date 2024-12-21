@@ -133,7 +133,16 @@ echo '<div class="content form-horizontal">';
     </div>
 
     <div class="stdTwoCols">
-        <label class="leftColumn control-label" for="motionStatus"><?= Yii::t('admin', 'motion_status') ?>:</label>
+        <div class="leftColumn statusColTitle">
+            <label for="motionStatus">
+                <?= Yii::t('admin', 'motion_status') ?>:
+            </label>
+            <div class="statusHelpLink">
+                <a href="<?= Yii::t('admin', 'motion_status_help_link') ?>" target="_blank">
+                    ▸ <?= Yii::t('admin', 'motion_status_help') ?>
+                </a>
+            </div>
+        </div>
         <div class="middleColumn">
             <?php
             $stats = $consultation->getStatuses()->getStatusNamesVisibleForAdmins();
