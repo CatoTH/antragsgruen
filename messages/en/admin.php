@@ -104,6 +104,8 @@ return [
     'motion_not_commentable_am'   => 'Prevent further comments to this specific amendment',
     'motion_agenda_item'          => 'Agenda item',
     'motion_status'               => 'Status',
+    'motion_status_help'          => 'Reference',
+    'motion_status_help_link'     => 'https://motion.tools/help/status',
     'motion_type'                 => 'Motion type',
     'motion_replaces'             => 'Replaces',
     'motion_screen_as_x'          => 'Publish as %PREFIX%',

@@ -125,9 +125,16 @@ if (count($consultation->agendaItems) > 0) {
 ?>
 
     <div class="stdTwoCols">
-        <label class="leftColumn control-label" for="amendmentStatus">
-            <?= Yii::t('admin', 'motion_status') ?>:
-        </label>
+        <div class="leftColumn statusColTitle">
+            <label for="amendmentStatus">
+                <?= Yii::t('admin', 'motion_status') ?>:
+            </label>
+            <div class="statusHelpLink">
+                <a href="<?= Yii::t('admin', 'motion_status_help_link') ?>" target="_blank">
+                    ▸ <?= Yii::t('admin', 'motion_status_help') ?>
+                </a>
+            </div>
+        </div>
         <div class="middleColumn">
             <?php
             $options  = ['id' => 'amendmentStatus', 'class' => 'stdDropdown fullsize'];
