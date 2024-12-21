@@ -816,6 +816,23 @@ CREATE TABLE `###TABLE_PREFIX###votingQuestion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Table structure for table `backgroundJob`
+--
+
+CREATE TABLE `###TABLE_PREFIX###backgroundJob` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siteId` int DEFAULT NULL,
+  `consultationId` int DEFAULT NULL,
+  `type` varchar(150) NOT NULL,
+  `dateCreation` timestamp NOT NULL,
+  `dateStarted` timestamp NULL DEFAULT NULL,
+  `dateUpdated` timestamp NULL DEFAULT NULL,
+  `dateFinished` timestamp NULL DEFAULT NULL,
+  `payload` mediumtext NOT NULL,
+  `error` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
 -- Indexes for dumped tables
 --
 
@@ -1156,6 +1173,16 @@ ALTER TABLE `###TABLE_PREFIX###votingQuestion`
   ADD KEY `fk_question_consultation` (`consultationId`);
 
 --
+-- Indexes for table `backgroundJob`
+--
+ALTER TABLE `###TABLE_PREFIX###backgroundJob`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_background_site` (`siteId`),
+  ADD KEY `fk_background_consultation` (`consultationId`),
+  ADD KEY `ix_background_pending` (`dateStarted`,`id`),
+  ADD KEY `ix_background_todelete` (`dateFinished`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1320,6 +1347,13 @@ ALTER TABLE `###TABLE_PREFIX###votingBlock`
 --
 ALTER TABLE `###TABLE_PREFIX###votingQuestion`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `backgroundJob`
+--
+ALTER TABLE `###TABLE_PREFIX###backgroundJob`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
 -- Constraints for dumped tables
 --
@@ -1628,6 +1662,13 @@ ALTER TABLE `###TABLE_PREFIX###votingBlock`
 ALTER TABLE `###TABLE_PREFIX###votingQuestion`
   ADD CONSTRAINT `fk_question_block` FOREIGN KEY (`votingBlockId`) REFERENCES `###TABLE_PREFIX###votingBlock` (`id`),
   ADD CONSTRAINT `fk_question_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
+
+--
+-- Constraints for table `backgroundJob`
+--
+ALTER TABLE `###TABLE_PREFIX###backgroundJob`
+    ADD CONSTRAINT `fk_background_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
+    ADD CONSTRAINT `fk_background_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`);
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
