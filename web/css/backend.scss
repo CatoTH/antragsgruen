@@ -1029,6 +1029,18 @@ label.legend {
 }
 
 .motionEditForm {
+  .statusColTitle {
+    label {
+      margin-top: 5px;
+      margin-bottom: 0;
+    }
+  }
+  .statusHelpLink {
+    font-weight: normal;
+    font-size: 0.8em;
+    text-align: right;
+    margin-top: -3px;
+  }
   .control-label {
     font-weight: bold;
   }
@@ -1068,7 +1080,7 @@ label.legend {
     font-weight: bold;
   }
   .motionEditLinkHolder {
-    padding-top: 7px;
+    padding-top: 12px;
   }
   #amendmentTextEditCaller {
     text-align: center;
