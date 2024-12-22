@@ -15,6 +15,7 @@ class Module extends ModuleBase
         return [
             $domainPlain                                     => 'antragsgruen_sites/manager/index',
             $domainPlain . '/help/<_a:(' . $helpPaths . ')>' => 'antragsgruen_sites/manager/<_a>',
+            $domainPlain . '/rest/health'                    => '/manager/health',
             $domainPlain . '/<_a:(' . $domPlainPaths . ')>'  => 'antragsgruen_sites/manager/<_a>',
         ];
     }

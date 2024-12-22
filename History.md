@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.16.0 [not released yet]
+
+- An optional mechanism for background job execution is introduced, making it possible to send e-mails asynchronously (therefore not blocking regular requests).
+
 ### Version 4.15.1 [not released yet]
 
 - Next to the status-dropdown for motions and amendments, there is now a link to a reference page, explaining the uses of these different statuses.

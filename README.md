@@ -299,7 +299,8 @@ Some processes that are potentially blocking or long-running can be executed as 
 The following example on how to run the background job processor uses [Supervisord](http://supervisord.org), but it is just as possible running it via any other process manager.
 - Copy [supervisor.conf](docs/supervisor.conf) to your supervisord configuration directory, modify it to your needs, and run it.
 - Create an API key for the health checks (optional) and its hash (via `password_encode($password, PASSWORD_DEFAULT)`).
-- Enable background jobs by adding the following settings to your `config.json`:
+- Enable background jobs by adding the following settings to your `config.json`.
+- Set up a cronjob to clean the database at least once a day by executing `yii background-job/cleanup`.
 
 ```json
 {

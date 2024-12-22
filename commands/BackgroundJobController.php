@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace app\commands;
 
 use app\components\BackgroundJobProcessor;
+use app\components\BackgroundJobScheduler;
+use Yii;
 use yii\console\Controller;
 
 /**
@@ -15,6 +17,8 @@ class BackgroundJobController extends Controller
     private const DEFAULT_MAX_EVENTS = 1000;
     private const DEFAULT_MAX_RUNTIME_SECONDS = 600;
     private const DEFAULT_MAX_MEMORY_USAGE = 64_000_000;
+
+    private const MAX_RETENTION_PERIOD_HOURS = 24 * 3;
 
     protected int $maxEvents = self::DEFAULT_MAX_EVENTS;
     protected int $maxRuntimeSeconds = self::DEFAULT_MAX_RUNTIME_SECONDS;
@@ -70,5 +74,15 @@ class BackgroundJobController extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * Cleans up old tasks from database
+     */
+    public function actionCleanup(): void
+    {
+        $deletedJobs = BackgroundJobScheduler::cleanup(self::MAX_RETENTION_PERIOD_HOURS);
+
+        echo "Deleted $deletedJobs jobs.\n";
     }
 }

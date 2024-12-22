@@ -62,4 +62,14 @@ class BackgroundJobScheduler
             ],
         ];
     }
+
+    public static function cleanup(int $maxHageHours): int
+    {
+        $command = \Yii::$app->getDb()->createCommand(
+            'DELETE FROM backgroundJob WHERE dateFinished < NOW() - INTERVAL :hours HOUR',
+            [':hours' => $maxHageHours]
+        );
+
+        return $command->execute();
+    }
 }
