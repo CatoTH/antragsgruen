@@ -280,7 +280,7 @@ Instead of "antragsgruen_sites", a custom plugin managing the authentication and
 
 Redis can be used to cache the changes in amendments, user sessions, and many other aspects of the site. To enable redis, simply add a `redis` configuration key to the `config.json` and point it to your setup:
 
-Add the following settings to your config.json (and adapt them to your needs):
+Add the following settings to your `config.json` (and adapt them to your needs):
 ```json
 {
     "redis": {
@@ -291,6 +291,27 @@ Add the following settings to your config.json (and adapt them to your needs):
     }
 }
 ```
+
+### Enable background job processing
+
+Some processes that are potentially blocking or long-running can be executed as background jobs, by using a permanently running worker-job that executes these jobs asynchonously.
+
+The following example on how to run the background job processor uses [Supervisord](http://supervisord.org), but it is just as possible running it via any other process manager.
+- Copy [supervisor.conf](docs/supervisor.conf) to your supervisord configuration directory, modify it to your needs, and run it.
+- Create an API key for the health checks (optional) and its hash (via `password_encode($password, PASSWORD_DEFAULT)`).
+- Enable background jobs by adding the following settings to your `config.json`.
+- Set up a cronjob to clean the database at least once a day by executing `yii background-job/cleanup`.
+
+```json
+{
+    "backgroundJobs": {
+        "notifications": true
+    },
+    "healthCheckKey": "$2y$12$...."
+}
+```
+
+Currently, this only affects the sending of e-mails.
 
 ### File-based View Caching (very large consultations)
 
