@@ -29,22 +29,29 @@ class BackgroundJobScheduler
     }
 
     /**
-     * @return array{healthy: bool, data: array<string, mixed>}
+     * @return array{healthy: bool|null, data: array<string, mixed>}
      */
     public static function getDiagnostics(): array
     {
+        if (!isset(AntragsgruenApp::getInstance()->backgroundJobs['notifications']) || !AntragsgruenApp::getInstance()->backgroundJobs['notifications']) {
+            return [
+                'healthy' => null,
+                'data' => [],
+            ];
+        }
+
         $command = \Yii::$app->getDb()->createCommand('SELECT MIN(dateCreation) minAge, COUNT(*) num FROM backgroundJob WHERE dateStarted IS NULL');
         $result = $command->queryAll()[0];
         $unstarted = [
             'num' => intval($result['num']),
-            'age' => time() - Tools::dateSql2timestamp($result['minAge']),
+            'age' => ($result['minAge'] ? (time() - Tools::dateSql2timestamp($result['minAge'])) : 0),
         ];
 
         $command = \Yii::$app->getDb()->createCommand('SELECT MIN(dateCreation) minAge, COUNT(*) num FROM backgroundJob WHERE dateFinished IS NULL');
         $result = $command->queryAll()[0];
         $unfinished = [
             'num' => intval($result['num']),
-            'age' => time() - Tools::dateSql2timestamp($result['minAge']),
+            'age' => ($result['minAge'] ? (time() - Tools::dateSql2timestamp($result['minAge'])) : 0),
         ];
 
         return [

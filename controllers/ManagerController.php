@@ -136,15 +136,12 @@ class ManagerController extends Base
         }
 
         $backgroundJobs = BackgroundJobScheduler::getDiagnostics();
-        $healthy = $backgroundJobs['healthy'];
+        $healthy = $backgroundJobs['healthy'] !== false;
 
-        return new RestApiResponse(
-            ($healthy ? 200 : 500),
-            [
-                'success' => true,
-                'healthy' => $healthy,
-                'backgroundJobs' => $backgroundJobs['data'],
-            ]
-        );
+        return new RestApiResponse(200, [
+            'success' => true,
+            'healthy' => $healthy,
+            'backgroundJobs' => $backgroundJobs['data'],
+        ]);
     }
 }
