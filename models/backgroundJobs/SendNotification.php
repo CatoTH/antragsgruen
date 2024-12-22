@@ -6,8 +6,7 @@ namespace app\models\backgroundJobs;
 
 use app\components\mail\Base;
 use app\components\RequestContext;
-use app\models\db\Consultation;
-use app\models\db\EMailLog;
+use app\models\db\{Consultation, EMailLog};
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
