@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\backgroundJobs\IBackgroundJob;
+use app\models\backgroundJobs\{BuildStaticCache, IBackgroundJob};
 use app\models\settings\AntragsgruenApp;
 
 class HashedStaticCache
@@ -94,7 +94,7 @@ class HashedStaticCache
         return $this->cacheKey;
     }
 
-    public function getCached(callable $method, ?callable $cacheOutdatedDecorator = null): mixed
+    public function getCached(?callable $method, ?callable $cacheOutdatedDecorator = null): mixed
     {
         if (!$this->skipCache) {
             // Hint: don't even try to aquire a lock if a cache item already exists
@@ -110,16 +110,32 @@ class HashedStaticCache
             // Check if the cache item has been generated in the meantime
             $cached = $this->getCache();
             if ($cached !== false) {
+                // @TODO Check age - trigger rebuild async or rebuild synchronously if too old
                 ResourceLock::unlockCache($this);
                 return $this->returnDecoratedCache($cached, $cacheOutdatedDecorator);
             }
 
-            // @TODO call backgroundjob if set
+            if ($method) {
+                $result = $method();
+            } elseif ($this->rebuildBackgroundJob) {
+                $this->rebuildBackgroundJob->execute();
 
-            $result = $method();
+                $result = $this->rebuildBackgroundJob->getResult();
+            } else {
+                throw new \Exception('Either a callback or a background job needs to be provided');
+            }
+
             ResourceLock::unlockCache($this);
         } else {
-            $result = $method();
+            if ($method) {
+                $result = $method();
+            } elseif ($this->rebuildBackgroundJob) {
+                $this->rebuildBackgroundJob->execute();
+
+                $result = $this->rebuildBackgroundJob->getResult();
+            } else {
+                throw new \Exception('Either a callback or a background job needs to be provided');
+            }
         }
 
         if (!$this->skipCache) {
