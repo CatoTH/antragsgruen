@@ -9,9 +9,11 @@ use app\models\settings\AntragsgruenApp;
 
 class BackgroundJobScheduler
 {
+    public const HEALTH_MAX_AGE_SECONDS = 120;
+
     public static function executeOrScheduleJob(IBackgroundJob $job): void
     {
-        if (AntragsgruenApp::getInstance()->backgroundJobs) {
+        if (isset(AntragsgruenApp::getInstance()->backgroundJobs['notifications']) && AntragsgruenApp::getInstance()->backgroundJobs['notifications']) {
             \Yii::$app->getDb()->createCommand(
                 'INSERT INTO `backgroundJob` (`siteId`, `consultationId`, `type`, `dateCreation`, `payload`) VALUES (:siteId, :consultationId, :type, NOW(), :payload)',
                 [
@@ -24,5 +26,33 @@ class BackgroundJobScheduler
         } else {
             $job->execute();
         }
+    }
+
+    /**
+     * @return array{healthy: bool, data: array<string, mixed>}
+     */
+    public static function getDiagnostics(): array
+    {
+        $command = \Yii::$app->getDb()->createCommand('SELECT MIN(dateCreation) minAge, COUNT(*) num FROM backgroundJob WHERE dateStarted IS NULL');
+        $result = $command->queryAll()[0];
+        $unstarted = [
+            'num' => intval($result['num']),
+            'age' => time() - Tools::dateSql2timestamp($result['minAge']),
+        ];
+
+        $command = \Yii::$app->getDb()->createCommand('SELECT MIN(dateCreation) minAge, COUNT(*) num FROM backgroundJob WHERE dateFinished IS NULL');
+        $result = $command->queryAll()[0];
+        $unfinished = [
+            'num' => intval($result['num']),
+            'age' => time() - Tools::dateSql2timestamp($result['minAge']),
+        ];
+
+        return [
+            'healthy' => ($unstarted['age'] <= self::HEALTH_MAX_AGE_SECONDS && $unfinished['age'] <= self::HEALTH_MAX_AGE_SECONDS),
+            'data' => [
+                'unstarted' => $unstarted,
+                'unfinished' => $unfinished,
+            ],
+        ];
     }
 }

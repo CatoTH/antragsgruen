@@ -1,25 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\controllers;
 
-use app\components\RequestContext;
+use app\components\{BackgroundJobScheduler, RequestContext};
 use app\models\db\User;
-use app\models\http\{HtmlErrorResponse, HtmlResponse, ResponseInterface};
+use app\models\settings\AntragsgruenApp;
+use app\models\http\{HtmlErrorResponse, HtmlResponse, ResponseInterface, RestApiResponse};
 
 class ManagerController extends Base
 {
+    public const VIEW_ID_SITECONFIG = 'siteconfig';
+    public const VIEW_ID_HEALTH = 'health';
+
     /**
      * @inheritdoc
      */
     public function beforeAction($action): bool
     {
-        if (in_array($action->id, ['siteconfig'])) {
+        if (in_array($action->id, [self::VIEW_ID_SITECONFIG, self::VIEW_ID_HEALTH])) {
             // No cookieValidationKey is set in the beginning
             RequestContext::getWebApplication()->request->enableCookieValidation = false;
             return parent::beforeAction($action);
         }
 
-        if (!$this->getParams()->multisiteMode && !in_array($action->id, ['siteconfig'])) {
+        if (!$this->getParams()->multisiteMode && !in_array($action->id, [self::VIEW_ID_SITECONFIG, self::VIEW_ID_HEALTH])) {
             return false;
         }
 
@@ -117,5 +123,28 @@ class ManagerController extends Base
             'editable'           => $editable,
             'makeEditabeCommand' => $makeEditabeCommand,
         ]));
+    }
+
+    public function actionHealth(): RestApiResponse
+    {
+        $pwdHash = AntragsgruenApp::getInstance()->healthCheckKey;
+        if ($pwdHash === null) {
+            return new RestApiResponse(404, ['success' => false, 'error' => 'Health checks not activated']);
+        }
+        if ($this->getHttpHeader('X-API-Key') === null || !password_verify($this->getHttpHeader('X-API-Key'), $pwdHash)) {
+            return new RestApiResponse(401, ['success' => false, 'error' => 'No or invalid X-API-Key given']);
+        }
+
+        $backgroundJobs = BackgroundJobScheduler::getDiagnostics();
+        $healthy = $backgroundJobs['healthy'];
+
+        return new RestApiResponse(
+            ($healthy ? 200 : 500),
+            [
+                'success' => true,
+                'healthy' => $healthy,
+                'backgroundJobs' => $backgroundJobs['data'],
+            ]
+        );
     }
 }
