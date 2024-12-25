@@ -69,7 +69,7 @@ class InitiatorForm implements \JsonSerializable, IHasPolicies
         $this->initiatorPersonPolicy = $policy->serializeInstanceForDb();
     }
 
-    public function canSupportAsPerson(\app\models\db\Consultation $consultation): bool
+    public function canInitiateAsPerson(\app\models\db\Consultation $consultation): bool
     {
         return $this->initiatorCanBePerson && $this->getInitiatorPersonPolicy($consultation)->checkCurrUser(false);
     }
@@ -88,7 +88,7 @@ class InitiatorForm implements \JsonSerializable, IHasPolicies
         $this->initiatorOrganizationPolicy = $policy->serializeInstanceForDb();
     }
 
-    public function canSupportAsOrganization(\app\models\db\Consultation $consultation): bool
+    public function canInitiateAsOrganization(\app\models\db\Consultation $consultation): bool
     {
         return $this->initiatorCanBeOrganization && $this->getInitiatorOrganizationPolicy($consultation)->checkCurrUser(false);
     }
