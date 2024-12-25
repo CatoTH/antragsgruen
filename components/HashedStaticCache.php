@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\models\backgroundJobs\{BuildStaticCache, IBackgroundJob};
 use app\models\settings\AntragsgruenApp;
 
 class HashedStaticCache
@@ -16,6 +17,8 @@ class HashedStaticCache
     private bool $isSynchronized = false;
     private bool $skipCache = false;
     private ?int $timeout = null;
+
+    private ?IBackgroundJob $rebuildBackgroundJob = null;
 
     public function __construct(string $functionName, ?array $dependencies)
     {
@@ -53,6 +56,13 @@ class HashedStaticCache
         return $this;
     }
 
+    public function setRebuildBackgroundJob(IBackgroundJob $rebuildBackgroundJob): self
+    {
+        $this->rebuildBackgroundJob = $rebuildBackgroundJob;
+
+        return $this;
+    }
+
     /**
      * Setting a cache to synchronized prevents the system from generating the same cache in parallel.
      * This does come with some performance impact due to the communication with Redis / File system,
@@ -84,13 +94,13 @@ class HashedStaticCache
         return $this->cacheKey;
     }
 
-    public function getCached(callable $method): mixed
+    public function getCached(?callable $method, ?callable $cacheOutdatedDecorator = null): mixed
     {
         if (!$this->skipCache) {
             // Hint: don't even try to aquire a lock if a cache item already exists
             $cached = $this->getCache();
             if ($cached !== false) {
-                return $cached;
+                return $this->returnDecoratedCache($cached, $cacheOutdatedDecorator);
             }
         }
 
@@ -100,14 +110,32 @@ class HashedStaticCache
             // Check if the cache item has been generated in the meantime
             $cached = $this->getCache();
             if ($cached !== false) {
+                // @TODO Check age - trigger rebuild async or rebuild synchronously if too old
                 ResourceLock::unlockCache($this);
-                return $cached;
+                return $this->returnDecoratedCache($cached, $cacheOutdatedDecorator);
             }
 
-            $result = $method();
+            if ($method) {
+                $result = $method();
+            } elseif ($this->rebuildBackgroundJob) {
+                $this->rebuildBackgroundJob->execute();
+
+                $result = $this->rebuildBackgroundJob->getResult();
+            } else {
+                throw new \Exception('Either a callback or a background job needs to be provided');
+            }
+
             ResourceLock::unlockCache($this);
         } else {
-            $result = $method();
+            if ($method) {
+                $result = $method();
+            } elseif ($this->rebuildBackgroundJob) {
+                $this->rebuildBackgroundJob->execute();
+
+                $result = $this->rebuildBackgroundJob->getResult();
+            } else {
+                throw new \Exception('Either a callback or a background job needs to be provided');
+            }
         }
 
         if (!$this->skipCache) {
@@ -122,19 +150,43 @@ class HashedStaticCache
     }
 
     /**
-     * @return mixed|false
+     * @param array{content: mixed, createdAtTs: int|null} $cache
      */
-    private function getCache(): mixed
+    private function returnDecoratedCache(array $cache, ?callable $cacheOutdatedDecorator): mixed
+    {
+        $content = $cache['content'];
+        if ($cacheOutdatedDecorator) {
+            $content = $cacheOutdatedDecorator($cache['content'], $cache['createdAtTs']);
+        }
+        return $content;
+    }
+
+    /**
+     * @return array{content: mixed, createdAtTs: int|null}|false
+     */
+    private function getCache(): array|false
     {
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $directory = self::getDirectory($this->cacheKey);
             if (file_exists($directory . '/' . $this->cacheKey)) {
-                return (string)file_get_contents($directory . '/' . $this->cacheKey);
+                $mtime = filemtime($directory . '/' . $this->cacheKey);
+                return [
+                    'content' => (string)file_get_contents($directory . '/' . $this->cacheKey),
+                    'createdAtTs' => ($mtime ? $mtime : null),
+                ];
             } else {
                 return false;
             }
         } else {
-            return \Yii::$app->cache->get($this->cacheKey);
+            $content = \Yii::$app->cache->get($this->cacheKey);
+            if ($content === false) {
+                return false;
+            } else {
+                return [
+                    'content' => $content,
+                    'createdAtTs' => null,
+                ];
+            }
         }
     }
 
@@ -165,6 +217,7 @@ class HashedStaticCache
     public function flushCache(): void
     {
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            // @TODO Trigger backgroundjob instead if set
             $directory = self::getDirectory($this->cacheKey);
             if (file_exists($directory . '/' . $this->cacheKey)) {
                 unlink($directory . '/' . $this->cacheKey);
