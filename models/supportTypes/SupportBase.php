@@ -186,10 +186,10 @@ abstract class SupportBase
         } else {
             $personType = intval($initiator['personType']);
         }
-        if ($personType === ISupporter::PERSON_NATURAL && !$settings->canSupportAsPerson($this->motionType->getConsultation())) {
+        if ($personType === ISupporter::PERSON_NATURAL && !$settings->canInitiateAsPerson($this->motionType->getConsultation())) {
             $errors[] = \Yii::t('motion', 'err_invalid_person_type');
         }
-        if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->canSupportAsOrganization($this->motionType->getConsultation())) {
+        if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->canInitiateAsOrganization($this->motionType->getConsultation())) {
             $errors[] = \Yii::t('motion', 'err_invalid_person_type');
         }
         if ($personType === ISupporter::PERSON_ORGANIZATION &&
