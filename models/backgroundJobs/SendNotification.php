@@ -29,6 +29,7 @@ class SendNotification extends IBackgroundJob
         public ?string $replyTo
     ) {
         $this->consultation = $consultation;
+        $this->site = $consultation?->site;
     }
 
     public function getTypeId(): string
