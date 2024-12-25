@@ -137,6 +137,11 @@ class SitePurger
         )->execute();
 
         $connection->createCommand(
+            'DELETE FROM backgroundJob WHERE consultationId = :conId',
+            [':conId' => $consultationId]
+        )->execute();
+
+        $connection->createCommand(
             'UPDATE site SET currentConsultationId = NULL WHERE currentConsultationId = :conId',
             [':conId' => $consultationId]
         )->execute();
@@ -161,6 +166,11 @@ class SitePurger
 
         $connection->createCommand(
             'DELETE FROM emailLog WHERE fromSiteId = :siteId',
+            [':siteId' => $siteId]
+        )->execute();
+
+        $connection->createCommand(
+            'DELETE FROM backgroundJob WHERE siteId = :siteId',
             [':siteId' => $siteId]
         )->execute();
 

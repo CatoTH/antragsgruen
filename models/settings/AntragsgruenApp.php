@@ -58,6 +58,7 @@ class AntragsgruenApp implements \JsonSerializable
     public string $mode = 'production'; // [production | sandbox]
     public ?string $updateKey = null;
     public ?string $jwtPrivateKey = null;
+    public ?string $healthCheckKey = null; // A hash generated with password_hash(..., PASSWORD_DEFAULT)
 
     /** @var array{mode: string, ignoredIps: string[], difficulty: string} */
     public array $captcha = [
@@ -76,6 +77,9 @@ class AntragsgruenApp implements \JsonSerializable
 
     /** @var array{installationId: string, wsUri: string, stompJsUri: string, rabbitMqUri: string, rabbitMqExchangeName: string, rabbitMqUsername: string, rabbitMqPassword: string}|null */
     public ?array $live = null;
+
+    /** @var array{notifications?: bool}|null */
+    public ?array $backgroundJobs = null;
 
     public static function getInstance(): AntragsgruenApp
     {

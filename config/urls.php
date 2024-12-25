@@ -81,9 +81,10 @@ $urlRules = [
     $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
-    $dom . 'admin/<_a:(siteconfig)>'          => 'manager/<_a>',
+    $dom . 'admin/<_a:(siteconfig|health)>'   => 'manager/<_a>',
 
     $restBase                                                                        => 'consultation/rest-site',
+    $restBase . '/health'                                                            => '/manager/health',
     $restBaseCon                                                                     => 'consultation/rest',
     $restBaseCon . '/proposed-procedure'                                             => 'consultation/proposed-procedure-rest',
     $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/motion/rest',
