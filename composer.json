@@ -34,7 +34,7 @@
     "phpoffice/phpspreadsheet": "^3.3",
     "predis/predis": "^2.2",
     "s1syphos/php-simple-captcha": "dev-main#26d63ec7d3da30ea214d796eb613a8b6c2c51d81 as 2.4.0",
-    "scssphp/scssphp": "dev-main#12d3cdf0fc2a73e9438ded5a5a82fb353b68d718 as 1.13.0",
+    "scssphp/scssphp": "^2.0",
     "setasign/fpdi": "^2.3.7",
     "spomky-labs/otphp": "^11.3",
     "symfony/amazon-mailer": "^5.4.23",
@@ -47,7 +47,7 @@
     "symfony/string": "^5.4.22",
     "symfony/translation-contracts": "^2.5.2",
     "tecnickcom/tcpdf": "^6.6.2",
-    "tijsverkoyen/css-to-inline-styles": "dev-master#97b4134400745eacabe50513f5b4d52e4b9356df as 2.2.8",
+    "tijsverkoyen/css-to-inline-styles": "^2.3",
     "yiisoft/yii2": "~2.0.47",
     "yiisoft/yii2-authclient": "^2.2.14",
     "yiisoft/yii2-redis": "^2.0"
