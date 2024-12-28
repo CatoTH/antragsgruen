@@ -61,7 +61,7 @@ class TabularData extends ISectionType
             $dataOut['rows'][$row->rowId] = $row->parseFormInput($dat);
         }
 
-        $this->section->setData(json_encode($dataOut));
+        $this->section->setData(json_encode($dataOut, JSON_THROW_ON_ERROR));
     }
 
     public function deleteMotionData(): void

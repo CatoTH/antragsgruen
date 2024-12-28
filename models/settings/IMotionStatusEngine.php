@@ -475,7 +475,7 @@ class IMotionStatusEngine
             return in_array($imotion->status, $statuses);
         }));
         if ($sort && count($imotions) > 0) {
-            $imotions = MotionSorter::getSortedIMotions($imotions[0]->getMyConsultation(), $imotions);
+            $imotions = MotionSorter::getSortedIMotionsFlat($imotions[0]->getMyConsultation(), $imotions);
         }
         return $imotions;
     }

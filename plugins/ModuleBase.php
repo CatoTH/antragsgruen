@@ -186,7 +186,7 @@ class ModuleBase extends Module
 
     /**
      * @phpstan-ignore-next-line
-     * @return string|\app\models\settings\Site|null
+     * @return class-string<\app\models\settings\Site>|null
      */
     public static function getSiteSettingsClass(Site $site): ?string
     {
