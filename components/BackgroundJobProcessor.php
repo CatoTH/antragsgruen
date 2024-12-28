@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
+use app\components\yii\MessageSource;
 use app\models\backgroundJobs\IBackgroundJob;
 use yii\db\Connection;
 
@@ -44,6 +45,14 @@ class BackgroundJobProcessor
         return $foundJob;
     }
 
+    private function resetApplicationContext(IBackgroundJob $job): void
+    {
+        UrlHelper::setCurrentConsultation($job->getConsultation());
+        UrlHelper::setCurrentSite($job->getSite());
+
+        MessageSource::clearTranslationCache();
+    }
+
     public function processRow(IBackgroundJob $job): void
     {
         $this->connection->createCommand(
@@ -52,6 +61,8 @@ class BackgroundJobProcessor
         )->execute();
 
         try {
+            $this->resetApplicationContext($job);
+
             $job->execute();
 
             $this->connection->createCommand(

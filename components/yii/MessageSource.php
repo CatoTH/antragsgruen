@@ -24,6 +24,18 @@ class MessageSource extends \yii\i18n\MessageSource
         }
     }
 
+    public static function clearTranslationCache(): void
+    {
+        $i18n = \Yii::$app->getI18n();
+        $i18n->translations['*'] = \Yii::createObject([
+            'class' => self::class,
+            'basePath' => '@app/messages',
+        ]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
     public static function getTranslatableCategories(): array
     {
         if (\Yii::$app->language === 'de') {
