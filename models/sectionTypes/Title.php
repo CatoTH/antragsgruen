@@ -26,7 +26,7 @@ class Title extends ISectionType
             $str .= '<div class="maxLenHint"><span class="glyphicon glyphicon-info-sign icon" aria-hidden="true"></span> ';
             $str .= str_replace(
                 ['%LEN%', '%COUNT%'],
-                [$len, '<span class="counter"></span>'],
+                [(string) $len, '<span class="counter"></span>'],
                 \Yii::t('motion', 'max_len_hint')
             );
             $str .= '</div>';

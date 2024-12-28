@@ -154,6 +154,7 @@ class HTMLTools
             if ($isText || $isInline) {
                 $hasChanged = true;
                 if ($wrapP === null) {
+                    /** @var \DOMElement $wrapP */
                     $wrapP = $dom->ownerDocument->createElement('p');
                 }
                 $dom->removeChild($childNode);

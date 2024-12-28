@@ -32,7 +32,6 @@ class AmendmentSection extends IMotionSection
         if ($section) {
             return $section->getSettings();
         } else {
-            /** @var ConsultationSettingsMotionSection $section */
             return ConsultationSettingsMotionSection::findOne($this->sectionId);
         }
     }
