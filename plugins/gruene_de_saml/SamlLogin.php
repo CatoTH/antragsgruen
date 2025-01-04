@@ -138,7 +138,7 @@ class SamlLogin implements LoginProviderInterface
     public function logoutCurrentUserIfRelevant(string $backUrl): ?string
     {
         $backSubdomain = UrlHelper::getSubdomain($backUrl);
-        $currDomain    = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'];
+        $currDomain    = UrlHelper::getCurrentScheme() . '://' . $_SERVER['HTTP_HOST'];
         $currSubdomain = UrlHelper::getSubdomain($currDomain);
 
         if ($currSubdomain) {
@@ -151,7 +151,7 @@ class SamlLogin implements LoginProviderInterface
             RequestContext::getYiiUser()->logout();
             $backParts = parse_url($backUrl);
             if ($backParts === false || !isset($backParts['host'])) {
-                $backUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
+                $backUrl = UrlHelper::getCurrentScheme() . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
             }
 
             $backUrl = AntragsgruenApp::getInstance()->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl);
