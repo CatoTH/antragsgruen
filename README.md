@@ -120,6 +120,12 @@ If you encounter any problem using the web-based updater, please consult the [Up
 - If you have shell access to your server: execute ``./yii migrate`` on the command line to apply database changes
 - If you don't have shell access to your server: please refer to [UPGRADING.md](docs/UPGRADING.md) on how to upgrade your database
 
+### Installing from the git repository
+
+A bash script that performs `git pull` for the current branch, installs dependencies, compiles assets and performs database migrations can be found here:
+
+[docs/update-repository.sh](docs/update-repository.sh)
+
 ## PDF-Rendering
 
 Generating PDFs is performed by the PHP-Library [TCPDF](https://github.com/tecnickcom/tcpdf) by default.
