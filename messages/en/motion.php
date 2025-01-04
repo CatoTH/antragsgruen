@@ -138,7 +138,7 @@ return [
     'confirmed_screening'           => 'You submitted the motion. It will now be reviewed.',
 
     'screened_hint'             => 'Published',
-    'supporting_permitted'      => 'Berechtigung',
+    'supporting_permitted'      => 'Permission',
     'download_pdf'              => 'PDF version',
     'motion_text'               => 'Motion text',
     'resolution_text'           => 'Decided text',
