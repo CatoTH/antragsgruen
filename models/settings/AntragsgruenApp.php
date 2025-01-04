@@ -2,6 +2,7 @@
 
 namespace app\models\settings;
 
+use app\components\UrlHelper;
 use app\plugins\ModuleBase;
 
 class AntragsgruenApp implements \JsonSerializable
@@ -102,8 +103,7 @@ class AntragsgruenApp implements \JsonSerializable
         if ($data === '' || $data === null) {
             $this->resourceBase = $_SERVER['SCRIPT_NAME'];
             $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
-            $this->domainPlain  = ($this->isHttps() ? 'https' : 'http');
-            $this->domainPlain  .= '://' . $_SERVER['HTTP_HOST'] . '/';
+            $this->domainPlain  = UrlHelper::getCurrentScheme() . '://' . $_SERVER['HTTP_HOST'] . '/';
         }
     }
 

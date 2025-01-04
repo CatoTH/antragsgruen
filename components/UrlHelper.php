@@ -268,6 +268,19 @@ class UrlHelper
         return self::createUrl($params, $amendmentComment->getIMotion()->getMyConsultation());
     }
 
+    public static function getCurrentScheme(): string
+    {
+        // Needs to be equal to Yii2's web/Request.php
+        if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) {
+            return 'https';
+        }
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0) {
+            return 'https';
+        }
+
+        return 'http';
+    }
+
     /*
      * Returns the subdomain or null, if this is the main domain
      * Throws an error if the given URL does not belong to the current system (hacking attempt?)
@@ -280,7 +293,7 @@ class UrlHelper
         if (!$urlParts) {
             throw new FormError('Unable to parse the url');
         }
-        $scheme   = $urlParts['scheme'] ?? ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ($_SERVER['REQUEST_SCHEME'] ?? 'http'));
+        $scheme   = $urlParts['scheme'] ?? self::getCurrentScheme();
         $host     = $urlParts['host'] ?? $_SERVER['HTTP_HOST'];
         $fullhost = $scheme . '://' . $host . '/';
         if ($params->domainPlain === $fullhost) {
@@ -292,7 +305,7 @@ class UrlHelper
             if (preg_match($preg, $fullhost, $matches)) {
                 return $matches['subdomain'];
             } else {
-                throw new FormError('Unknown domain: ' . $urlParts['host']);
+                throw new FormError('Unknown domain: ' . $host);
             }
         }
     }
