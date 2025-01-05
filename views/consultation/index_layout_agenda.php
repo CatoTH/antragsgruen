@@ -14,7 +14,7 @@ use yii\helpers\Html;
  * @var bool $isResolutionList
  */
 
-$layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
+$layout->addTooltopOnloadJs();
 
 $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
     ConsultationSettings::START_LAYOUT_AGENDA_LONG,

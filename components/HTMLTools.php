@@ -837,11 +837,13 @@ class HTMLTools
         return trim($text);
     }
 
-    public static function getTooltipIcon(string $tooltip): string
+    public static function getTooltipIcon(string $tooltip, string $placement = 'top', bool $html = false): string
     {
-        return '<span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-                  'aria-label="' . Html::encode(\Yii::t('base', 'aria_tooltip') . ': ' . $tooltip) . '" ' .
-                  'data-original-title="' . Html::encode($tooltip) . '"></span>';
+        $html = ($html ? 'data-html="true" ' : '');
+        return '<span class="tooltipIcon glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="' . $placement . '" ' .
+               $html .
+               'aria-label="' . Html::encode(\Yii::t('base', 'aria_tooltip') . ': ' . $tooltip) . '" ' .
+               'data-original-title="' . Html::encode($tooltip) . '"></span>';
     }
 
     public static function labeledCheckbox(string $formName, string $htmlLabel, bool $checked, ?string $id = null, ?string $tooltip = null): string

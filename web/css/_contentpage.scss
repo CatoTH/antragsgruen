@@ -1,3 +1,5 @@
+$headlineHeight: 125px;
+
 .contentPage {
   margin-left: -1px;
   margin-right: -1px;
@@ -24,7 +26,7 @@
   overflow: auto;
 
   &.hasDeadline {
-    min-height: 135px; // Spacing for the deadline circle
+    min-height: $headlineHeight + 20; // Spacing for the deadline circle
   }
 
   .editCaller {
@@ -77,21 +79,63 @@
 
 .deadlineCircle {
   float: right;
-  width: 105px;
-  height: 105px;
-  padding-top: 20px;
   @include linear-gradient(90deg, $btn-primary-bg, lighten($btn-primary-bg, 3.5%));
   text-align: center;
   vertical-align: middle;
-  overflow: hidden;
+  overflow: visible; // Tooltip should be visible
   font-family: $deadlineCircleFont;
   font-weight: bold;
-  font-size: 15px;
-  line-height: 17px;
   text-transform: uppercase;
   color: #fff;
   margin-left: 30px;
   @include border-radius(90px);
+
+
+  &.single {
+    width: $headlineHeight;
+    height: $headlineHeight;
+    font-size: 15px;
+    line-height: 17px;
+    padding-top: 20px;
+  }
+  &.multiple {
+    width: $headlineHeight;
+    height: $headlineHeight;
+    font-size: 12px;
+    line-height: 14px;
+    padding-top: 12px;
+
+    .name {
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: auto; // if there are more than 2 lines
+      min-height: 45px;
+      line-height: 20px;
+      padding: 5px 5px 8px;
+      box-sizing: border-box; // Ensures padding doesn't affect the min-height
+      overflow: hidden;
+      text-align: center;
+
+      p {
+        margin: 0;
+        text-align: center;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        max-width: 110px;
+      }
+    }
+
+    .tooltipHolder {
+      position: relative;
+      overflow: visible;
+    }
+    .tooltipIcon {
+      margin-right: -20px;
+    }
+  }
 }
 
 .downloadableFiles {
