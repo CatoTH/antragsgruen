@@ -90,8 +90,13 @@ class Motion extends IMotion implements IRSSItem
      */
     public function save($runValidation = true, $attributeNames = null)
     {
+        $viewCacheNeedsRebuild = !(count($this->dirtyAttributes) === 0 || array_keys($this->dirtyAttributes) === ['cache']);
+
         $result = parent::save($runValidation, $attributeNames);
-        $this->flushViewCache();
+
+        if ($viewCacheNeedsRebuild) {
+            $this->flushViewCache();
+        }
 
         return $result;
     }
