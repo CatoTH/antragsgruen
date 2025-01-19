@@ -23,6 +23,7 @@ $restBaseCon = $restBase . '/<consultationPath:[\w_-]+>';
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
 $consultationPaths    .= '|resolutions|motions|todo|todo-count|votings|voting-results|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|speech|admin-speech|admin-votings|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
+$consultationPaths    .= '|rebuild-homepage';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf|embedded-amendments-pdf';
 $motionPaths          .= '|admin-speech|withdraw|view-changes|view-changes-odt';
 $motionPaths          .= '|save-proposal-status|edit-proposed-change|del-proposal-comment|save-editorial';

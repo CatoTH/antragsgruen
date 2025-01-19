@@ -13,7 +13,7 @@ use app\models\http\{BinaryFileResponse,
     RedirectResponse,
     ResponseInterface,
     RestApiResponse};
-use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
+use app\components\{DateTools, HashedStaticCache, RSSExporter, Tools, UrlHelper};
 use app\models\db\{Amendment,
     AmendmentComment,
     IComment,
@@ -311,6 +311,28 @@ class ConsultationController extends Base
             $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
         }
 
+        return $this->renderHomePage($cache);
+    }
+
+    public function actionRebuildHomepage(): ResponseInterface
+    {
+        $user = User::getCurrentUser();
+        if ($user) {
+            return new HtmlResponse('Diesen Link bitte nicht eingeloggt öffnen, z.B. in einem privaten Fenster');
+        }
+
+        $cache = LayoutHelper::getHomePageCache($this->consultation);
+        $cache->forceRebuild();
+
+        if ($cache->isSkipCache() || !$cache->cacheIsFilled()) {
+            $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+        }
+
+        return $this->renderHomePage($cache);
+    }
+
+    private function renderHomePage(HashedStaticCache $cache): HtmlResponse
+    {
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 

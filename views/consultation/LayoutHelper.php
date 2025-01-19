@@ -22,6 +22,7 @@ class LayoutHelper
         if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $cache->setIsSynchronized(true);
             $cache->setIsBulky(true);
+            $cache->setNoFlush(true);
         } else {
             $cache->setSkipCache(true);
         }

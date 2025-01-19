@@ -15,6 +15,8 @@ class HashedStaticCache
     private bool $isBulky = false;
     private bool $isSynchronized = false;
     private bool $skipCache = false;
+    private bool $noFlush = false;
+    private bool $forceRebuild = false;
     private ?int $timeout = null;
 
     public function __construct(string $functionName, ?array $dependencies)
@@ -44,6 +46,20 @@ class HashedStaticCache
     public function isSkipCache(): bool
     {
         return $this->skipCache;
+    }
+
+    public function setNoFlush(bool $noFlush): self
+    {
+        $this->noFlush = $noFlush;
+
+        return $this;
+    }
+
+    public function forceRebuild(): self
+    {
+        $this->forceRebuild = true;
+
+        return $this;
     }
 
     public function setIsBulky(bool $isBulky): self
@@ -89,7 +105,7 @@ class HashedStaticCache
         if (!$this->skipCache) {
             // Hint: don't even try to aquire a lock if a cache item already exists
             $cached = $this->getCache();
-            if ($cached !== false) {
+            if ($cached !== false && !$this->forceRebuild) {
                 return $cached;
             }
         }
@@ -99,7 +115,7 @@ class HashedStaticCache
 
             // Check if the cache item has been generated in the meantime
             $cached = $this->getCache();
-            if ($cached !== false) {
+            if ($cached !== false && !$this->forceRebuild) {
                 ResourceLock::unlockCache($this);
                 return $cached;
             }
@@ -164,6 +180,10 @@ class HashedStaticCache
 
     public function flushCache(): void
     {
+        if ($this->noFlush) {
+            return;
+        }
+
         if ($this->isBulky && AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $directory = self::getDirectory($this->cacheKey);
             if (file_exists($directory . '/' . $this->cacheKey)) {
