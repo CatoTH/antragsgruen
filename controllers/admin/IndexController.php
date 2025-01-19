@@ -232,6 +232,13 @@ class IndexController extends AdminBase
         return new HtmlResponse($this->render('appearance', ['consultation' => $this->consultation]));
     }
 
+    public function actionAgenda(): HtmlResponse
+    {
+        $consultation = $this->consultation;
+
+        return new HtmlResponse($this->render('agenda', ['consultation' => $this->consultation]));
+    }
+
     private function saveTags(Consultation $consultation): void
     {
         $newTags = $this->getHttpRequest()->post('tags', []);
