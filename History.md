@@ -8,6 +8,7 @@
 
 - Next to the status-dropdown for motions and amendments, there is now a link to a reference page, explaining the uses of these different statuses.
 - Bugfix: If a voting was set to be shown in a motion view, it was not shown on the dedicated voting page anymore.
+- Bugfix: Sorting document groups on the separate document page did not work properly.
 - Bugfix: Some tabs opened in parallel could interfere with logging in using a second factor.
 - Bugfix: When logging in using a second factor, one would always end up in the site home page, not the page where one started the login.
 - Bugfix: Some empty paragraphs could lead to problems with creating amendments if only one paragraph could be changed.
