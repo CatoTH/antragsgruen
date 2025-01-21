@@ -534,10 +534,11 @@ class PagesController extends Base
             foreach ($this->consultation->fileGroups as $fileGroup) {
                 if (isset($idPosition[$fileGroup->id])) {
                     $fileGroup->position = $idPosition[$fileGroup->id];
-
-                    return new RedirectResponse(UrlHelper::createUrl('/pages/documents'));
+                    $fileGroup->save();
                 }
             }
+
+            return new RedirectResponse(UrlHelper::createUrl('/pages/documents'));
         }
 
         return new HtmlResponse($this->render('documents'));
