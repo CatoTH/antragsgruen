@@ -76,6 +76,7 @@ if ($longVersion) {
             $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
             echo '<h2 class="green">' . $prefix . Html::encode($agendaItem->title) . '</h2>';
             echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
+            echo '<!-- Test -->';
             $itemImotions = MotionSorter::getSortedIMotionsFlat($consultation, $itemImotions);
             foreach ($itemImotions as $imotion) {
                 if (is_a($imotion, Motion::class)) {
