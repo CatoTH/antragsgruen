@@ -191,6 +191,18 @@ class Layout
         return $this;
     }
 
+    private bool $tooltipOnloadJsInitialized = false;
+
+    public function addTooltopOnloadJs(): self
+    {
+        if (!$this->tooltipOnloadJsInitialized) {
+            $this->tooltipOnloadJsInitialized = true;
+            $this->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
+        }
+
+        return $this;
+    }
+
     public function addJS(string $file): self
     {
         $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');

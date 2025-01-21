@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\layoutHooks;
 
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
-use app\components\{RequestContext, Tools, UrlHelper};
+use app\components\{HTMLTools, RequestContext, Tools, UrlHelper};
 use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
@@ -476,7 +476,6 @@ class StdHooks extends Hooks
 
     public function getConsultationPreWelcome(string $before): string
     {
-        $str = '';
         $highlightedDeadlines = [];
         foreach ($this->consultation->motionTypes as $motionType) {
             $deadline = $motionType->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
@@ -484,9 +483,21 @@ class StdHooks extends Hooks
                 $highlightedDeadlines[] = $deadline;
             }
         }
-        if (count($highlightedDeadlines) === 1) {
-            $str = '<p class="deadlineCircle">' . \Yii::t('con', 'deadline_circle') . ': ';
+        if (count($highlightedDeadlines) === 0) {
+            $str = '';
+        } elseif (count($highlightedDeadlines) === 1) {
+            $str = '<p class="deadlineCircle single">' . \Yii::t('con', 'deadline_circle') . ': ';
             $str .= Tools::formatMysqlDateTime($highlightedDeadlines[0]) . "</p>\n";
+        } else {
+            $this->layout->addTooltopOnloadJs();
+
+            $icon = HTMLTools::getTooltipIcon('Alle kommenden Fristen:<br>12.12. Blabla', 'bottom', true);
+            $str = '<div class="deadlineCircle multiple">';
+            $str .='<div class="top">Nächste<br>Frist <span class="tooltipHolder">' . $icon . '</span></div>';
+            $str .= '<div class="name"><p>Anträge</p></div>';
+            $str .= '<div class="bottom">';
+            $str .= str_replace(", ", "<br>", Tools::formatMysqlDateTime($highlightedDeadlines[0]));
+            $str .= '</div></div>';
         }
 
         return $str;

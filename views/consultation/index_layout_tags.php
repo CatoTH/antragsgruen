@@ -1,10 +1,9 @@
 <?php
 
 use app\models\sectionTypes\ISectionType;
-use app\views\consultation\LayoutHelper;
 use app\components\{MotionSorter, UrlHelper};
 use app\models\layoutHooks\Layout as LayoutHooks;
-use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionComment, User};
+use app\models\db\{Amendment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion};
 use yii\helpers\Html;
 
 /**
@@ -74,7 +73,7 @@ $tags = [];
 $tagIds = [];
 $hasNoTagMotions = false;
 
-$layout->addOnLoadJS('$(\'[data-toggle="tooltip"]\').tooltip();');
+$layout->addTooltopOnloadJs();
 
 foreach ($imotions as $imotion) {
     if (
