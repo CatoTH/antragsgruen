@@ -269,6 +269,8 @@ class AdminTodoItem
 
     public static function getConsultationTodoCount(?Consultation $consultation, bool $onlyIfExists): ?int
     {
+        return 0;
+
         $cache = self::getTodoCache($consultation, User::getCurrentUser()?->id);
         $cache->setTimeout(5 * 60);
 
