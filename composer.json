@@ -24,7 +24,7 @@
     "ext-json": "*",
     "ext-pdo": "*",
     "ext-zip": "*",
-    "catoth/html2opendocument": "0.18",
+    "catoth/html2opendocument": "0.19",
     "colinodell/json5": "^3.0",
     "doctrine/annotations": "^1.14.3",
     "endroid/qr-code": "^5.0",
