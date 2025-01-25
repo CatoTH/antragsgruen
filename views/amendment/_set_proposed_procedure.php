@@ -11,7 +11,11 @@ use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
 use app\models\db\{Amendment, IAdminComment, Motion, User};
 use yii\helpers\Html;
 
-$collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
+if (defined("ANTRAGSGRUEN_DEACTIVATE_COLLISSIONS") && ANTRAGSGRUEN_DEACTIVATE_COLLISSIONS) {
+    $collidingAmendments = [];
+} else {
+    $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
+}
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [

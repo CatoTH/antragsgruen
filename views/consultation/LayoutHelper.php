@@ -27,7 +27,11 @@ class LayoutHelper
             $cache->setSkipCache(true);
         }
 
-        if ($type === 'index_layout_agenda' && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+        if (
+            $type === 'index_layout_agenda' &&
+            User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null) &&
+            !(defined("ANTRAGSGRUEN_DEACTIVATE_AGENDA") && ANTRAGSGRUEN_DEACTIVATE_AGENDA)
+        ) {
             $cache->setSkipCache(true);
         }
         if (!in_array($type, ['index_layout_std', 'index_layout_tags', 'index_layout_agenda', 'index_layout_discussion_tags'])) {

@@ -6,3 +6,6 @@ define('ANTRAGSGRUEN_UPDATE_BASE', 'https://antragsgruen.de/updates/');
 define('ANTRAGSGRUEN_MIN_PHP_VERSION', '8.1.0');
 define('ANTRAGSGRUEN_NEXT_PHP_VERSION', '8.1.0');
 define('ANTRAGSGRUEN_INSTALLATION_SOURCE', 'repository-source');
+
+//define('ANTRAGSGRUEN_DEACTIVATE_AGENDA', true);
+//define('ANTRAGSGRUEN_DEACTIVATE_COLLISSIONS', true);

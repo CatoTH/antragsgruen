@@ -27,6 +27,10 @@ $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
 echo '<section class="sectionAgenda" aria-labelledby="sectionAgendaTitle">';
 echo '<h2 class="green" id="sectionAgendaTitle">' . Yii::t('con', 'Agenda') . '</h2>';
 
+if (defined("ANTRAGSGRUEN_DEACTIVATE_AGENDA") && ANTRAGSGRUEN_DEACTIVATE_AGENDA) {
+    $admin = false;
+}
+
 if ($admin) {
     echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit" ';
     echo 'data-save-order="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-order-ajax'])) . '">';
