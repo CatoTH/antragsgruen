@@ -220,10 +220,12 @@ class PagesController extends Base
             'redirectTo'       => ($needsReload ? $page->getUrl() : null),
         ];
 
+        $page->save();
+
         $downloadableResult = $this->handleDownloadableFiles($page, $this->getHttpRequest()->post());
         $result             = array_merge($result, $downloadableResult);
 
-        $page->save();
+        $page->refresh();
 
         return new JsonResponse($result);
     }
@@ -415,7 +417,7 @@ class PagesController extends Base
                 $this->file = $file;
             }
 
-            public function renderYii(Layout $layoutParams, Response $response): ?string
+            public function renderYii(Layout $layoutParams, Response $response): string
             {
                 $response->format = Response::FORMAT_RAW;
                 $response->headers->add('Content-Type', $this->file->mimetype);

@@ -222,7 +222,7 @@ export class ContentPageEdit {
                 this.$contentSettings.addClass('hidden');
                 this.$policyWidget.addClass('hidden');
 
-                if (ret['title'] !== null) {
+                if (ret['title'] !== null && !document.querySelector("body").classList.contains("consultationIndex")) {
                     $(".pageTitle").text(ret['title']);
                     document.title = ret['title'];
                     $("#mainmenu .page" + ret['id']).text(ret['title']);
