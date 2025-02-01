@@ -417,7 +417,7 @@ class PagesController extends Base
                 $this->file = $file;
             }
 
-            public function renderYii(Layout $layoutParams, Response $response): ?string
+            public function renderYii(Layout $layoutParams, Response $response): string
             {
                 $response->format = Response::FORMAT_RAW;
                 $response->headers->add('Content-Type', $this->file->mimetype);
