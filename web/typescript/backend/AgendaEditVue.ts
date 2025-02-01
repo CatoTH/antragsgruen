@@ -1,6 +1,6 @@
 declare let Vue: any;
 
-export class AgendEditVue {
+export class AgendaEditVue {
     private widget;
     private element: HTMLElement;
 
@@ -15,12 +15,10 @@ export class AgendEditVue {
 
         const agenda = JSON.parse(this.element.getAttribute('data-agenda'));
 
-        console.log(vueEl, agenda);
-
         this.widget = Vue.createApp({
-            template: `<div class="agendaEditHolder">!
+            template: `<div class="agendaEditHolder">
                 <agenda-edit-widget
-                    :agenda="agenda"
+                    v-model="agenda"
                     ref="agenda-edit-widget"
                 ></agenda-edit-widget>
             </div>`,
