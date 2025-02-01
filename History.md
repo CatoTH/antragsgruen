@@ -3,6 +3,7 @@
 ### Version 4.15.1 [not released yet]
 
 - Next to the status-dropdown for motions and amendments, there is now a link to a reference page, explaining the uses of these different statuses.
+- Bugfix: Uploading files from the home page did not work properly.
 - Bugfix: If a voting was set to be shown in a motion view, it was not shown on the dedicated voting page anymore.
 - Bugfix: Sorting document groups on the separate document page did not work properly.
 - Bugfix: Some tabs opened in parallel could interfere with logging in using a second factor.

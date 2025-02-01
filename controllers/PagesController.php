@@ -220,10 +220,12 @@ class PagesController extends Base
             'redirectTo'       => ($needsReload ? $page->getUrl() : null),
         ];
 
+        $page->save();
+
         $downloadableResult = $this->handleDownloadableFiles($page, $this->getHttpRequest()->post());
         $result             = array_merge($result, $downloadableResult);
 
-        $page->save();
+        $page->refresh();
 
         return new JsonResponse($result);
     }
