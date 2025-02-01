@@ -50,9 +50,14 @@ echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';
 
+$files = $consultation->getDownloadableFiles($pageData->getMyFileGroup()?->id);
+if ($pageData->getMyFileGroup()) {
+    // Legacy way of storing files (fileGroupId = null)
+    $files = array_merge($consultation->getDownloadableFiles(null), $files);
+}
 echo $this->render('@app/views/pages/_content_files', [
     'contentAdmin' => $contentAdmin,
-    'files' => $consultation->getDownloadableFiles(null),
+    'files' => $files,
 ]);
 
 if ($contentAdmin) {
