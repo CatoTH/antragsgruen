@@ -1,17 +1,67 @@
+<style>
+    .drag-area {
+        min-height: 50px;
+        outline: 1px dashed;
+        display: block;
+        pointer-events: all;
+    }
+    .item {
+        display: block;
+        list-style: none;
+        margin: 0;
+        padding: 5px;
+    }
+</style>
+
 <?php
 
 ob_start();
 ?>
+<draggable-plus v-model="list" class="drag-area" :animation="150" group="agenda" tag="ul" handle=".sortIndicator" @update="onUpdate">
+    <li v-for="item in list" :key="item.id" class="item">
+        <p>
+            <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
+            {{ item.title }}
+        </p>
+        <agenda-sorter v-model="item.children" />
+    </li>
+</draggable-plus>
+<?php
+$html = ob_get_clean();
+
+?>
+<script>
+    __setVueComponent('agenda', 'component', 'draggable-plus', VueDraggablePlus.VueDraggable);
+
+    __setVueComponent('agenda', 'component', 'agenda-sorter', {
+        template: <?= json_encode($html) ?>,
+        props: ['modelValue'],
+        computed: {
+            list: {
+                get: function () {
+                    return this.modelValue;
+                },
+                set: function (value) {
+                    this.$emit('update:modelValue', value);
+                }
+            }
+        },
+        methods: {
+            onUpdate: function() {
+                console.log("onUpdate", arguments);
+            }
+        }
+    });
+</script>
+
+<?php
+ob_start();
+?>
 <section class="votingSorting stdSortingWidget">
-    {{ agenda }}
-    <draggable :list="agenda" item-key="id" @change="onChange">
-        <template #item="{ element }">
-            <div class="list-group-item">
-                <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-                {{ element.title }}
-            </div>
-        </template>
-    </draggable>
+    <agenda-sorter v-model="list"></agenda-sorter>
+
+    <pre>{{ list }}</pre>
+
 
     <div class="saveRow">
         <button type="button" @click="saveOrder()" class="btn btn-primary btnSave">
@@ -25,46 +75,28 @@ $html = ob_get_clean();
 ?>
 
 <script>
-    __setVueComponent('agenda', 'component', 'draggable', vuedraggable);
-
     __setVueComponent('agenda', 'component', 'agenda-edit-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['agenda'],
+        props: ['modelValue'],
+        computed: {
+            list: {
+                get: function () {
+                    return this.modelValue;
+                },
+                set: function (value) {
+                    this.$emit('update:modelValue', value);
+                }
+            }
+        },
         data() {
             return {
-                votingCache: null,
-                votingCachedIds: null,
+
             }
         },
         watch: {
-            votings: {
-                handler(votingArr) {
-                    // We need to prevent reloads in the outer component to reset the sorting - unless there is a significant change.
-                    const ids = votingArr.map(vot => vot.id).join("-");
-                    if (this.votingCachedIds !== ids) {
-                        this.votingCachedIds = ids;
-                        this.votingCache = votingArr;
-                    }
-                },
-                immediate: true
-            }
         },
         methods: {
-            onChange: function () {},
-            getSortedIds: function () {
-                return this.votingCache.map(voting => {
-                    return voting.id;
-                });
-            },
-            saveOrder: function () {
-                this.$emit('sorted', this.getSortedIds());
-            },
-            setOrder: function (orderVotingIds) { // called by test cases
-                const indexedOrder = {};
-                orderVotingIds.forEach((votingId, idx) => indexedOrder[votingId.toString()] = idx);
-                this.votingCache = this.votingCache.sort((voting1, voting2) => {
-                    return indexedOrder[voting1.id] - indexedOrder[voting2.id];
-                });
+            onChange: function () {
             }
         }
     });
