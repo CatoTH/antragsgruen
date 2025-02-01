@@ -250,7 +250,7 @@ if ($hasPDF) {
             $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_resolutions');
             $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'resolutionPdfCompilation']) . '</li>';
 
-            $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
+            $link                     = Html::a(Yii::t('con', 'pdf_resolutions'), $pdfLink, $opts);
             $menusSmall[] = '<li>' . $link . '</li>';
         }
 
