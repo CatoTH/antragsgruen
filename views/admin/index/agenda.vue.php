@@ -1,18 +1,3 @@
-<style>
-    .drag-area {
-        min-height: 50px;
-        outline: 1px dashed;
-        display: block;
-        pointer-events: all;
-    }
-    .item {
-        display: block;
-        list-style: none;
-        margin: 0;
-        padding: 5px;
-    }
-</style>
-
 <?php
 
 ob_start();
@@ -21,11 +6,21 @@ ob_start();
     <li v-for="item in list" :key="item.id" class="item">
         <p>
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-            {{ item.title }}
+            <span v-if="!editing">{{ item.title }}</span>
+            <span v-if="editing"><input type="text" v-model="item.title" class="form-control"/></span>
+            <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="toggleEditing()">
+                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+            </button>
         </p>
         <agenda-sorter v-model="item.children" />
     </li>
 </draggable-plus>
+<div class="adderRow">
+    <button type="button" class="btn btn-link adderBtn" @click="addRow()">
+        <span class="glyphicon glyphicon-add" aria-hidden="true"></span>
+        Hinzufügen
+    </button>
+</div>
 <?php
 $html = ob_get_clean();
 
@@ -36,6 +31,11 @@ $html = ob_get_clean();
     __setVueComponent('agenda', 'component', 'agenda-sorter', {
         template: <?= json_encode($html) ?>,
         props: ['modelValue'],
+        data() {
+            return {
+                editing: false,
+            }
+        },
         computed: {
             list: {
                 get: function () {
@@ -49,6 +49,17 @@ $html = ob_get_clean();
         methods: {
             onUpdate: function() {
                 console.log("onUpdate", arguments);
+            },
+            toggleEditing: function() {
+                this.editing = !this.editing;
+            },
+            addRow: function() {
+                console.log(this.modelValue);
+                this.modelValue.push({
+                    id: 'NEW',
+                    title: '',
+                    children: [],
+                }); // @TODO Open Editing
             }
         }
     });
