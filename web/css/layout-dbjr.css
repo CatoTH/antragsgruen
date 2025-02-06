@@ -5783,14 +5783,52 @@ button.link {
   text-align: center;
 }
 
-.stdSortingWidget .list-group-item {
+.stdSortingWidget ul {
+  margin: 0;
+  padding: 0;
+}
+.stdSortingWidget ul p {
+  margin: 0;
+}
+.stdSortingWidget li > ul {
+  margin-left: 20px;
+}
+.stdSortingWidget .btn.editBtn {
+  padding: 0;
+}
+.stdSortingWidget .btn.adderBtn {
+  padding: 0;
+  font-size: 12px;
+  font-weight: normal;
+}
+.stdSortingWidget .adderRow {
+  opacity: 0;
+  line-height: 12px;
+  height: 12px;
+  padding-left: 20px;
+}
+.stdSortingWidget .adderRow:hover {
+  opacity: 1;
+}
+.stdSortingWidget .drag-area {
+  min-height: 0px;
+  display: block;
+  pointer-events: all;
+}
+.stdSortingWidget .item {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 10px 0 0 0;
+  border: solid 1px transparent;
+}
+.stdSortingWidget .item.sortable-chosen {
+  border: solid 1px #ddd;
+  border-radius: 3px;
+  background-color: #fcfcfc;
+}
+.stdSortingWidget .sortIndicator {
   cursor: move;
-}
-.stdSortingWidget .list-group-item .sortIndicator {
-  float: right;
-}
-.stdSortingWidget .list-group-item.sortable-ghost {
-  background-color: #eee;
 }
 .stdSortingWidget .saveRow {
   margin-top: 20px;
