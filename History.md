@@ -9,6 +9,7 @@
 - Bugfix: Some tabs opened in parallel could interfere with logging in using a second factor.
 - Bugfix: When logging in using a second factor, one would always end up in the site home page, not the page where one started the login.
 - Bugfix: Some empty paragraphs could lead to problems with creating amendments if only one paragraph could be changed.
+- Bugfix: The activity log did not show some actions related to supporting/liking motions or amendments.
 
 ## Version 4.15.0 (2024-11-30)
 
