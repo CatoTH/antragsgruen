@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.15.1 [not released yet]
+### Version 4.15.1 (2025-02-08)
 
 - Next to the status-dropdown for motions and amendments, there is now a link to a reference page, explaining the uses of these different statuses.
 - Bugfix: Uploading files from the home page did not work properly.
