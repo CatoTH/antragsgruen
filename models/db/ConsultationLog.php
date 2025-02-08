@@ -517,8 +517,6 @@ class ConsultationLog extends ActiveRecord
                 $str      = \Yii::t('structure', 'activity_MOTION_PUBLISH');
                 $fallback = ($this->motion ? $this->motion->getInitiatorsStr() : '-');
                 return $this->formatLogEntryUser($str, $fallback);
-            case self::MOTION_SUPPORT_FINISH:
-                return null;
             case self::MOTION_DELETE:
                 $str    = \Yii::t('structure', 'activity_MOTION_DELETE');
                 $prefix = self::motionId2Prefix($this->actionReferenceId);
@@ -554,6 +552,18 @@ class ConsultationLog extends ActiveRecord
             case self::MOTION_SUPPORT:
                 $str = \Yii::t('structure', 'activity_MOTION_SUPPORT');
                 return $this->formatLogEntryUser($str, '');
+            case self::MOTION_LIKE:
+                $str = \Yii::t('structure', 'activity_MOTION_LIKE');
+                return $this->formatLogEntryUser($str, '');
+            case self::MOTION_UNLIKE:
+                $str = \Yii::t('structure', 'activity_MOTION_UNLIKE');
+                return $this->formatLogEntryUser($str, '');
+            case self::MOTION_DISLIKE:
+                $str = \Yii::t('structure', 'activity_MOTION_DISLIKE');
+                return $this->formatLogEntryUser($str, '');
+            case self::MOTION_SUPPORT_FINISH:
+                $str = \Yii::t('structure', 'activity_MOTION_SUPPORT_FINISH');
+                return $this->formatLogEntryUser($str, '');
             case self::MOTION_PUBLISH_PROPOSAL:
                 $str = \Yii::t('structure', 'activity_MOTION_PUBLISH_PROPOSAL');
                 return $this->formatLogEntryUser($str, '');
@@ -571,8 +581,6 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
                 return $this->formatLogEntryUser($str, ($this->amendment ? $this->amendment->getInitiatorsStr() : ''));
-            case self::AMENDMENT_SUPPORT_FINISH:
-                return null;
             case self::AMENDMENT_DELETE:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_DELETE');
                 $str = $this->formatLogEntryAmendment($str);
@@ -612,6 +620,22 @@ class ConsultationLog extends ActiveRecord
                 return null;
             case self::AMENDMENT_SUPPORT:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SUPPORT');
+                $str = $this->formatLogEntryAmendment($str);
+                return $this->formatLogEntryUser($str, '');
+            case self::AMENDMENT_LIKE:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_LIKE');
+                $str = $this->formatLogEntryAmendment($str);
+                return $this->formatLogEntryUser($str, '');
+            case self::AMENDMENT_DISLIKE:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_DISLIKE');
+                $str = $this->formatLogEntryAmendment($str);
+                return $this->formatLogEntryUser($str, '');
+            case self::AMENDMENT_UNLIKE:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_UNLIKE');
+                $str = $this->formatLogEntryAmendment($str);
+                return $this->formatLogEntryUser($str, '');
+            case self::AMENDMENT_SUPPORT_FINISH:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_SUPPORT_FINISH');
                 $str = $this->formatLogEntryAmendment($str);
                 return $this->formatLogEntryUser($str, '');
             case self::AMENDMENT_PUBLISH_PROPOSAL:
