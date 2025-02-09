@@ -27,6 +27,7 @@ class BuildStaticCache extends IBackgroundJob
         public bool $adminMode
     ) {
         $this->consultation = $consultation;
+        $this->site = $this->consultation?->site;
     }
 
     public function getTypeId(): string
