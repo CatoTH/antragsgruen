@@ -238,7 +238,11 @@ class HashedStaticCache
 
     public function triggerBackgroundJobCacheRebuild(): void
     {
-        BackgroundJobScheduler::executeOrScheduleJob($this->rebuildBackgroundJob);
+        if (!BackgroundJobScheduler::backgroundJobsActive()) {
+            return;
+        }
+
+        BackgroundJobScheduler::scheduleJob($this->rebuildBackgroundJob);
     }
 
     /**
