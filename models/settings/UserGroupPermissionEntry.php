@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace app\models\settings;
 
 use app\models\db\Consultation;
-use app\models\exceptions\FormError;
-use app\models\exceptions\NotFound;
+use app\models\exceptions\{FormError, NotFound};
 
 class UserGroupPermissionEntry
 {
@@ -17,6 +16,9 @@ class UserGroupPermissionEntry
     /** @var int[] */
     private array $privileges;
 
+    /**
+     * @param array{motionTypeId?: int|null, agendaItemId?: int|null, tagId?: int|null, privileges: int[]} $data
+     */
     public static function fromArray(array $data): self
     {
         $obj = new self();
@@ -36,6 +38,23 @@ class UserGroupPermissionEntry
             'tagId' => $this->tagId,
             'privileges' => $this->privileges,
         ];
+    }
+
+    /**
+     * @param array{tags: array<int|string, int>, tags: array<int|string, int>, agenda: array<int|string, int>, motionTypes: array<int|string, int>} $idMapping
+     */
+    public function cloneWithReplacedIds(array $idMapping): self
+    {
+        $motionTypeId = ($this->motionTypeId !== null && isset($idMapping['motionTypes'][$this->motionTypeId]) ? $idMapping['motionTypes'][$this->motionTypeId] : null);
+        $agendaItemId = ($this->agendaItemId !== null && isset($idMapping['agenda'][$this->agendaItemId]) ? $idMapping['agenda'][$this->agendaItemId] : null);
+        $tagId = ($this->tagId !== null && isset($idMapping['tags'][$this->tagId]) ? $idMapping['tags'][$this->tagId] : null);
+
+        return self::fromArray([
+            'motionTypeId' => $motionTypeId,
+            'agendaItemId' => $agendaItemId,
+            'tagId' => $tagId,
+            'privileges' => $this->privileges,
+        ]);
     }
 
     /**
