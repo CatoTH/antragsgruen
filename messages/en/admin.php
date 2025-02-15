@@ -660,6 +660,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'cons_template_subsel_sett'   => 'Consultation settings',
     'cons_template_subsel_tags'   => 'Tags',
     'cons_template_subsel_texts'  => 'Content pages',
+    'cons_template_subsel_agenda' => 'Agenda',
     'cons_template_subsel_types'  => 'Motion types',
     'cons_template_subsel_users'  => 'Users, groups and admin permissions',
     'support_coll_policy_fix'     => 'Fix settings',

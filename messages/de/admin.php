@@ -713,6 +713,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'cons_template_subsel_sett'   => 'Veranstaltungs-Einstellungen',
     'cons_template_subsel_tags'   => 'Themen / Schlagworte',
     'cons_template_subsel_texts'  => 'Redaktionelle Seiten',
+    'cons_template_subsel_agenda' => 'Tagesordnung',
     'cons_template_subsel_types'  => 'Antragstypen',
     'cons_template_subsel_users'  => 'Gruppen und Berechtigungen',
     'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
