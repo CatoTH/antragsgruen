@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace app\models\forms;
 
 use app\models\policies\{IPolicy, UserGroups};
-use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, Site, User};
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationSettingsMotionSection, ConsultationSettingsTag, ConsultationText, ConsultationUserGroup, Site, User};
 use app\models\exceptions\FormError;
 
+
+/**
+ * @phpstan-type IdMapping array<int|string, int>
+ */
 class ConsultationCreateForm
 {
     public const SETTINGS_TYPE_TEMPLATE = 'template';
@@ -17,6 +21,7 @@ class ConsultationCreateForm
     public const SUBSELECTION_MOTION_TYPES = 'motiontypes';
     public const SUBSELECTION_TEXTS = 'texts';
     public const SUBSELECTION_USERS = 'users';
+    public const SUBSELECTION_AGENDA = 'agenda';
 
     public string $settingsType;
     public string $urlPath = '';
@@ -30,7 +35,7 @@ class ConsultationCreateForm
 
     public SiteCreateForm $siteCreateWizard;
 
-    public function __construct(private Site $site)
+    public function __construct(private readonly Site $site)
     {
         $this->siteCreateWizard = new SiteCreateForm();
     }
@@ -66,7 +71,7 @@ class ConsultationCreateForm
 
         $idMapping = [
             'tags' => [],
-            'agenda' => [], // @TODO Not supported yet,
+            'agenda' => [],
             'motionTypes' => [],
         ];
 
@@ -86,6 +91,10 @@ class ConsultationCreateForm
 
         if (in_array(self::SUBSELECTION_TAGS, $this->templateSubselection)) {
             $idMapping['tags'] = $this->createConsultationFromTemplate_tags($consultation);
+        }
+
+        if (in_array(self::SUBSELECTION_AGENDA, $this->templateSubselection)) {
+            $idMapping['agenda'] = $this->createConsultationFromTemplate_agenda($consultation, $idMapping['motionTypes']);
         }
 
         $this->createConsultationFromTemplate_fixOrganisations($this->template, $consultation);
@@ -120,7 +129,7 @@ class ConsultationCreateForm
     }
 
     /**
-     * @return array<int|string, int>
+     * @return IdMapping
      */
     private function createConsultationFromTemplate_motionTypes(Consultation $newConsultation): array
     {
@@ -169,7 +178,7 @@ class ConsultationCreateForm
     }
 
     /**
-     * @return array<int|string, int>
+     * @return IdMapping
      */
     private function createConsultationFromTemplate_tags(Consultation $newConsultation): array
     {
@@ -195,6 +204,40 @@ class ConsultationCreateForm
             $newTag = $newTagsByOldId[$oldTag->id];
             $newTag->parentTagId = $newTagsByOldId[$oldTag->parentTagId]->id;
             $newTag->save();
+        }
+
+        return $idMapping;
+    }
+
+    /**
+     * @param IdMapping $motionTypeMapping
+     * @return IdMapping
+     */
+    private function createConsultationFromTemplate_agenda(Consultation $newConsultation, array $motionTypeMapping): array
+    {
+        $newItems = [];
+        $idMapping = [];
+        foreach ($this->template->agendaItems as $oldItem) {
+            $newItem = new ConsultationAgendaItem();
+            $newItem->setAttributes($oldItem->getAttributes(), false);
+            $newItem->id = null; // @phpstan-ignore-line
+            $newItem->consultationId = $newConsultation->id;
+            if ($newItem->motionTypeId !== null) {
+                $newItem->motionTypeId = $motionTypeMapping[$newItem->motionTypeId] ?? null;
+            }
+            if (!$newItem->save()) {
+                throw new FormError(implode(', ', $newItem->getErrors()));
+            }
+
+            $newItems[] = $newItem;
+            $idMapping[$oldItem->id] = (int) $newItem->id;
+        }
+        foreach ($newItems as $newItem) {
+            if ($newItem->parentItemId === null) {
+                continue;
+            }
+            $newItem->parentItemId = $idMapping[$newItem->parentItemId];
+            $newItem->save();
         }
 
         return $idMapping;
@@ -235,7 +278,7 @@ class ConsultationCreateForm
     /**
      * Rewrite links in restricted permissions to new agenda items (not supported yet), tags, motion types.
      *
-     * @param array{tags: array<int|string, int>, tags: array<int|string, int>, agenda: array<int|string, int>, motionTypes: array<int|string, int>} $idMapping
+     * @param array{tags: IdMapping, tags: IdMapping, agenda: IdMapping, motionTypes: IdMapping} $idMapping
      */
     private function createConsultationFromTemplate_fixUserGroupLinks(Consultation $newConsultation, array $idMapping): void
     {

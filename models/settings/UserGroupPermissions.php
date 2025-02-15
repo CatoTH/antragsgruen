@@ -23,7 +23,7 @@ class UserGroupPermissions
     private ?array $privileges = null;
 
     public function __construct(
-        private bool $isSiteWide
+        private readonly bool $isSiteWide
     ) {
     }
 
