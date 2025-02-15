@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.15.2 [not released yet]
+
+- Bugfix: When cloning consultations with user groups that have administrative permissions to only a subset of motions, these restrictions were not copied to the new consultation.
+
 ### Version 4.15.1 (2025-02-08)
 
 - Next to the status-dropdown for motions and amendments, there is now a link to a reference page, explaining the uses of these different statuses.

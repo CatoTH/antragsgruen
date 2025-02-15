@@ -64,6 +64,12 @@ class ConsultationCreateForm
             throw new FormError(implode(', ', $consultation->getErrors()));
         }
 
+        $idMapping = [
+            'tags' => [],
+            'agenda' => [], // @TODO Not supported yet,
+            'motionTypes' => [],
+        ];
+
         if (in_array(self::SUBSELECTION_USERS, $this->templateSubselection)) {
             $this->createConsultationFromTemplate_users($consultation);
         } else {
@@ -71,7 +77,7 @@ class ConsultationCreateForm
         }
 
         if (in_array(self::SUBSELECTION_MOTION_TYPES, $this->templateSubselection)) {
-            $this->createConsultationFromTemplate_motionTypes($consultation);
+            $idMapping['motionTypes'] = $this->createConsultationFromTemplate_motionTypes($consultation);
         }
 
         if (in_array(self::SUBSELECTION_TEXTS, $this->templateSubselection)) {
@@ -79,10 +85,11 @@ class ConsultationCreateForm
         }
 
         if (in_array(self::SUBSELECTION_TAGS, $this->templateSubselection)) {
-            $this->createConsultationFromTemplate_tags($consultation);
+            $idMapping['tags'] = $this->createConsultationFromTemplate_tags($consultation);
         }
 
         $this->createConsultationFromTemplate_fixOrganisations($this->template, $consultation);
+        $this->createConsultationFromTemplate_fixUserGroupLinks($consultation, $idMapping);
 
         if ($this->setAsDefault) {
             $this->site->currentConsultationId = $consultation->id;
@@ -112,23 +119,27 @@ class ConsultationCreateForm
         return $policy;
     }
 
-    private function createConsultationFromTemplate_motionTypes(Consultation $newConsultation): void
+    /**
+     * @return array<int|string, int>
+     */
+    private function createConsultationFromTemplate_motionTypes(Consultation $newConsultation): array
     {
-        foreach ($this->template->motionTypes as $motionType) {
+        $idMapping = [];
+        foreach ($this->template->motionTypes as $oldMotionType) {
             $newType = new ConsultationMotionType();
-            $newType->setAttributes($motionType->getAttributes(), false);
+            $newType->setAttributes($oldMotionType->getAttributes(), false);
             $newType->consultationId = $newConsultation->id;
             $newType->id = null;
-            $newType->setMotionPolicy($this->createConsultationFromTemplate_policy($newConsultation, $motionType->getMotionPolicy()));
-            $newType->setAmendmentPolicy($this->createConsultationFromTemplate_policy($newConsultation, $motionType->getAmendmentPolicy()));
-            $newType->setMotionSupportPolicy($this->createConsultationFromTemplate_policy($newConsultation, $motionType->getMotionSupportPolicy()));
-            $newType->setAmendmentSupportPolicy($this->createConsultationFromTemplate_policy($newConsultation, $motionType->getAmendmentSupportPolicy()));
+            $newType->setMotionPolicy($this->createConsultationFromTemplate_policy($newConsultation, $oldMotionType->getMotionPolicy()));
+            $newType->setAmendmentPolicy($this->createConsultationFromTemplate_policy($newConsultation, $oldMotionType->getAmendmentPolicy()));
+            $newType->setMotionSupportPolicy($this->createConsultationFromTemplate_policy($newConsultation, $oldMotionType->getMotionSupportPolicy()));
+            $newType->setAmendmentSupportPolicy($this->createConsultationFromTemplate_policy($newConsultation, $oldMotionType->getAmendmentSupportPolicy()));
 
             if (!$newType->save()) {
                 throw new FormError($newType->getErrors());
             }
 
-            foreach ($motionType->motionSections as $section) {
+            foreach ($oldMotionType->motionSections as $section) {
                 $newSection = new ConsultationSettingsMotionSection();
                 $newSection->setAttributes($section->getAttributes(), false);
                 $newSection->motionTypeId = (int)$newType->id;
@@ -137,7 +148,11 @@ class ConsultationCreateForm
                     throw new FormError($newType->getErrors());
                 }
             }
+
+            $idMapping[$oldMotionType->id] = (int) $newType->id;
         }
+
+        return $idMapping;
     }
 
     private function createConsultationFromTemplate_texts(Consultation $newConsultation): void
@@ -153,12 +168,16 @@ class ConsultationCreateForm
         }
     }
 
-    private function createConsultationFromTemplate_tags(Consultation $newConsultation): void
+    /**
+     * @return array<int|string, int>
+     */
+    private function createConsultationFromTemplate_tags(Consultation $newConsultation): array
     {
         $newTagsByOldId = [];
-        foreach ($this->template->tags as $tag) {
+        $idMapping = [];
+        foreach ($this->template->tags as $oldTag) {
             $newTag = new ConsultationSettingsTag();
-            $newTag->setAttributes($tag->getAttributes(), false);
+            $newTag->setAttributes($oldTag->getAttributes(), false);
             $newTag->id = null;
             $newTag->consultationId = $newConsultation->id;
             $newTag->parentTagId = null;
@@ -166,16 +185,19 @@ class ConsultationCreateForm
                 throw new FormError(implode(', ', $newTag->getErrors()));
             }
 
-            $newTagsByOldId[$tag->id] = $newTag;
+            $newTagsByOldId[$oldTag->id] = $newTag;
+            $idMapping[$oldTag->id] = (int) $newTag->id;
         }
-        foreach ($this->template->tags as $tag) {
-            if ($tag->parentTagId === null) {
+        foreach ($this->template->tags as $oldTag) {
+            if ($oldTag->parentTagId === null) {
                 continue;
             }
-            $newTag = $newTagsByOldId[$tag->id];
-            $newTag->parentTagId = $newTagsByOldId[$tag->parentTagId]->id;
+            $newTag = $newTagsByOldId[$oldTag->id];
+            $newTag->parentTagId = $newTagsByOldId[$oldTag->parentTagId]->id;
             $newTag->save();
         }
+
+        return $idMapping;
     }
 
     private function createConsultationFromTemplate_fixOrganisations(Consultation $oldConsultation, Consultation $newConsultation): void
@@ -210,18 +232,32 @@ class ConsultationCreateForm
         $newConsultation->save();
     }
 
+    /**
+     * Rewrite links in restricted permissions to new agenda items (not supported yet), tags, motion types.
+     *
+     * @param array{tags: array<int|string, int>, tags: array<int|string, int>, agenda: array<int|string, int>, motionTypes: array<int|string, int>} $idMapping
+     */
+    private function createConsultationFromTemplate_fixUserGroupLinks(Consultation $newConsultation, array $idMapping): void
+    {
+        foreach ($newConsultation->userGroups as $userGroup) {
+            $newPermissions = $userGroup->getGroupPermissions()->cloneWithReplacedIds($idMapping);
+            $userGroup->setGroupPermissions($newPermissions);
+            $userGroup->save();
+        }
+    }
+
     private function createConsultationFromTemplate_users(Consultation $newConsultation): void
     {
-        foreach ($this->template->userGroups as $userGroup) {
+        foreach ($this->template->userGroups as $oldGroup) {
             $newGroup = new ConsultationUserGroup();
-            $newGroup->setAttributes($userGroup->getAttributes(), false);
+            $newGroup->setAttributes($oldGroup->getAttributes(), false);
             $newGroup->id = null;
             $newGroup->consultationId = $newConsultation->id;
             if (!$newGroup->save()) {
                 throw new FormError(implode(', ', $newGroup->getErrors()));
             }
 
-            foreach ($userGroup->users as $user) {
+            foreach ($oldGroup->users as $user) {
                 $newGroup->addUser($user);
             }
         }
