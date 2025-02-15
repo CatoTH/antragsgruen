@@ -209,6 +209,12 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 <?= Yii::t('admin', 'cons_template_subsel_texts') ?>
             </label>
 
+            <label class="templateSubselectAgenda">
+                <input type="checkbox" name="newConsultation[templateSubselect][]" id="templateSubselectAgenda"
+                       value="<?= ConsultationCreateForm::SUBSELECTION_AGENDA ?>" checked>
+                <?= Yii::t('admin', 'cons_template_subsel_agenda') ?>
+            </label>
+
             <label class="templateSubselectUsers">
                 <input type="checkbox" name="newConsultation[templateSubselect][]" id="templateSubselectUsers"
                        value="<?= ConsultationCreateForm::SUBSELECTION_USERS ?>" checked>

@@ -23,7 +23,7 @@ class UserGroupPermissions
     private ?array $privileges = null;
 
     public function __construct(
-        private bool $isSiteWide
+        private readonly bool $isSiteWide
     ) {
     }
 
@@ -51,6 +51,7 @@ class UserGroupPermissions
 
         if (isset($data['privileges'])) {
             $permissions->privileges = array_map(function (array $arr): UserGroupPermissionEntry {
+                /** @var array{motionTypeId?: int|null, agendaItemId?: int|null, tagId?: int|null, privileges: int[]} $arr */
                 return UserGroupPermissionEntry::fromArray($arr);
             }, $data['privileges']);
         }
@@ -108,6 +109,23 @@ class UserGroupPermissions
             'default_permissions' => $this->defaultPermissions,
             'privileges' => $apiPrivileges,
         ];
+    }
+
+    /**
+     * @param array{tags: array<int|string, int>, tags: array<int|string, int>, agenda: array<int|string, int>, motionTypes: array<int|string, int>} $idMapping
+     */
+    public function cloneWithReplacedIds(array $idMapping): self
+    {
+        $cloned = new self($this->isSiteWide);
+        $cloned->defaultPermissions = $this->defaultPermissions;
+        if ($this->privileges) {
+            $cloned->privileges = array_map(
+                fn (UserGroupPermissionEntry $entry): UserGroupPermissionEntry => $entry->cloneWithReplacedIds($idMapping),
+                $this->privileges
+            );
+        }
+
+        return $cloned;
     }
 
     public function containsPrivilege(int $privilege, ?PrivilegeQueryContext $context): bool
