@@ -173,6 +173,7 @@ const VUE_TO_REGISTER_COMPONENTS = {
     "speech": [],
     "users": [],
     "voting": [],
+    "agenda": [],
 };
 
 window['__setVueComponent'] = function(appId, componentType, componentName, componentData) {
