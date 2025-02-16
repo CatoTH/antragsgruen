@@ -2,8 +2,8 @@
 
 ob_start();
 ?>
-<draggable-plus v-model="list" class="drag-area" :animation="150" group="agenda" tag="ul" handle=".sortIndicator" @update="onUpdate">
-    <li v-for="item in list" :key="item.id" class="item">
+<draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @update="onUpdate" @add="onAdd" @sort="onSort"  @filter="onFilter" @change="onChange" @move="onMove" @start="onStart" @clone="onClone">
+    <li v-for="item in list" :key="item.id" class="item" :class="'type_' + item.type">
         <p>
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
             <span v-if="!editing">{{ item.title }}</span>
@@ -12,7 +12,7 @@ ob_start();
                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
             </button>
         </p>
-        <agenda-sorter v-model="item.children" />
+        <agenda-sorter v-model="item.children" :disabled="disableChildList" />
     </li>
 </draggable-plus>
 <div class="adderRow">
@@ -30,10 +30,11 @@ $html = ob_get_clean();
 
     __setVueComponent('agenda', 'component', 'agenda-sorter', {
         template: <?= json_encode($html) ?>,
-        props: ['modelValue'],
+        props: ['modelValue', 'root', 'disabled'],
         data() {
             return {
                 editing: false,
+                disableChildListExplicitly: false,
             }
         },
         computed: {
@@ -44,11 +45,14 @@ $html = ob_get_clean();
                 set: function (value) {
                     this.$emit('update:modelValue', value);
                 }
+            },
+            disableChildList: function () {
+                return this.disabled || this.disableChildListExplicitly;
             }
         },
         methods: {
-            onUpdate: function() {
-                console.log("onUpdate", arguments);
+            onClone: function (evt) {
+                this.disableChildListExplicitly = evt.clone.classList.contains("type_date_separator") || this.disabled;
             },
             toggleEditing: function() {
                 this.editing = !this.editing;
@@ -69,7 +73,7 @@ $html = ob_get_clean();
 ob_start();
 ?>
 <section class="votingSorting stdSortingWidget">
-    <agenda-sorter v-model="list"></agenda-sorter>
+    <agenda-sorter v-model="list" :root="true"></agenda-sorter>
 
     <pre>{{ list }}</pre>
 
