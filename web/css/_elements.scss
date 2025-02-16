@@ -243,12 +243,14 @@ button.link {
   .btn.adderBtn {
     padding: 0;
     font-size: 12px;
+    line-height: 12px;
+    height: 16px;
     font-weight: normal;
   }
   .adderRow {
     opacity: 0;
     line-height: 12px;
-    height: 12px;
+    height: 16px;
     padding-left: 20px;
     &:hover {
       opacity: 1;

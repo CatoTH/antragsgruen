@@ -1,0 +1,73 @@
+<?php
+
+declare(strict_types=1);
+
+namespace app\models\api;
+
+use app\components\CookieUser;
+use app\models\db\Consultation;
+use app\models\db\ConsultationAgendaItem;
+use app\models\db\User;
+use app\models\settings\SpeechQueue as SpeechQueueSettings;
+use Symfony\Component\Serializer\Annotation\Ignore;
+
+class AgendaItem
+{
+    public const TYPE_ITEM = 'item';
+    public const TYPE_DATE_SEPARATOR = 'date_separator';
+
+    public int $id;
+    public string $type;
+    public ?string $code;
+    public string $title;
+    public ?string $time;
+    public ?string $date; // Only set for type=date_separator
+
+    /** @var AgendaItem[] */
+    public array $children;
+
+    /**
+     * @return AgendaItem[]
+     */
+    public static function getItemsFromConsultation(Consultation $consultation): array
+    {
+        $allItems = $consultation->agendaItems;
+        $rootItems = array_values(array_filter($allItems, fn (ConsultationAgendaItem $item) => $item->parentItemId === null));
+        usort($rootItems, fn (ConsultationAgendaItem $a, ConsultationAgendaItem $b) => $a->position <=> $b->position);
+
+        return array_map(
+            fn (ConsultationAgendaItem $item) => self::fromEntity($item, $allItems),
+            $rootItems
+        );
+    }
+
+    /**
+     * @param ConsultationAgendaItem[] $allEntities
+     */
+    private static function fromEntity(ConsultationAgendaItem $entity, array $allEntities): self
+    {
+        $apiItem = new self();
+        $apiItem->id = $entity->id;
+        $apiItem->code = ($entity->code === ConsultationAgendaItem::CODE_AUTO || $entity->code === '' ? null : $entity->code);
+        $apiItem->title = $entity->title;
+        if ($entity->time && preg_match('/^\d{4}-\d{2}-\d{2}$/', $entity->time)) {
+            $apiItem->type = self::TYPE_DATE_SEPARATOR;
+            $apiItem->date = $entity->time;
+        } else {
+            $apiItem->type = self::TYPE_ITEM;
+            if ($entity->time && preg_match('/^\d{2}:\d{2}$/', $entity->time)) {
+                $apiItem->time = $entity->time;
+            }
+        }
+
+        $childEntities = array_values(array_filter($allEntities, fn (ConsultationAgendaItem $child) => $child->parentItemId === $entity->id));
+        usort($childEntities, fn (ConsultationAgendaItem $a, ConsultationAgendaItem $b) => $a->position <=> $b->position);
+
+        $apiItem->children = array_map(
+            fn(ConsultationAgendaItem $child) => self::fromEntity($child, $allEntities),
+            $childEntities
+        );
+
+        return $apiItem;
+    }
+}

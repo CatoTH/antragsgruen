@@ -24,20 +24,15 @@ $this->title = 'Tagesordnung';
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Tagesordnung');
 
+$apiModel = \app\models\api\AgendaItem::getItemsFromConsultation($consultation);
+
 ?><h1><?= Yii::t('admin', 'con_h1') ?></h1>
 
 <div class="content">
 
     <div class="agendaEditForm"
          data-antragsgruen-widget="backend/AgendaEditVue"
-         data-agenda="<?= Html::encode(json_encode([
-             ["id" => 1, "title" => "TOP 1", "children" => []],
-             ["id" => 2, "title" => "TOP 2", "children" => [
-                 ["id" => 3, "title" => "TOP 2.1", "children" => []],
-                 ["id" => 4, "title" => "TOP 2.2", "children" => []],
-             ]],
-             ["id" => 5, "title" => "TOP 3", "children" => []],
-         ])) ?>">
+         data-agenda="<?= Html::encode(json_encode($apiModel)) ?>">
         <div class="agendaEdit"></div>
     </div>
 </div>
