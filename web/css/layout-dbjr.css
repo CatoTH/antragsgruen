@@ -5836,6 +5836,12 @@ button.link {
   margin-top: 20px;
 }
 
+.agendaEditWidget .infoRow {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
 .stdNonFormattedList {
   list-style-type: none;
   margin: 0;

@@ -32,16 +32,20 @@
         methods: {
             initElement: function () {
                 var format = '';
+                let initDate = null;
+
                 if (this.type === 'date') {
                     format = 'dddd, Do MMMM YYYY';
+                    if (this.modelValue) {
+                        initDate = moment(this.modelValue, "YYYY-MM-DD", this.locale);
+                    }
                 }
                 if (this.type === 'time') {
                     format = 'LT';
-                }
-
-                let initDate = null;
-                if (this.modelValue) {
-                    initDate = moment(this.modelValue, "YYYY-MM-DD", this.locale);
+                    if (this.modelValue) {
+                        console.log(this.modelValue);
+                        initDate = moment(this.modelValue, "HH:mm", this.locale);
+                    }
                 }
 
                 this.pickerElement = $(this.$el).datetimepicker({
@@ -50,7 +54,12 @@
                     defaultDate: initDate
                 });
                 this.pickerElement.on("dp.change", (newDate) => {
-                    this.$emit('update:modelValue', newDate.date.format("YYYY-MM-DD"));
+                    if (this.type === 'date') {
+                        this.$emit('update:modelValue', newDate.date.format("YYYY-MM-DD"));
+                    }
+                    if (this.type === 'time') {
+                        this.$emit('update:modelValue', newDate.date.format("HH:mm"));
+                    }
                 })
             }
         },
