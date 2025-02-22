@@ -558,6 +558,9 @@ class User extends ActiveRecord implements IdentityInterface
         foreach ($supporters as $supporter) {
             /** @var Motion $motion */
             $motion = $supporter->getIMotion();
+            if (!$motion->isReadable()) {
+                continue;
+            }
             $history = MotionNumbering::getSortedHistoryForMotion($motion, false);
             if (count($history) === 0 || in_array($history[0]->id, $firstMotionIds)) {
                 continue;
