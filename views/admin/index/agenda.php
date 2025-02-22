@@ -15,8 +15,10 @@ $controller = $this->context;
 $layout = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
+$layout->addVueTemplate('@app/views/shared/datetime_selector.vue.php');
 $layout->addVueTemplate('@app/views/admin/index/agenda.vue.php');
 $layout->loadSortable();
+$layout->loadDatepicker();
 $layout->loadVue();
 $layout->loadVueDraggablePlus();
 

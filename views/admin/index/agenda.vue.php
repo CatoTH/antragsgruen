@@ -1,5 +1,10 @@
 <?php
 
+use app\components\Tools;
+
+$simpleDeadlineMotions = '';
+$locale = Tools::getCurrentDateLocale();
+
 ob_start();
 ?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
@@ -14,14 +19,16 @@ ob_start();
         </p>
         <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :disabled="disableChildList" />
 
-        <p v-if="item.type == 'date_separator'">
+        <div v-if="item.type == 'date_separator'">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-            <span v-if="!isEditing(item)">{{ item.title }}</span>
-            <span v-if="isEditing(item)"><input type="text" v-model="item.title" class="form-control"/></span>
+            <span v-if="!isEditing(item)">{{ item.date }}</span>
+            <div v-if="isEditing(item)">
+                <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
+            </div>
             <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="toggleEditing(item)">
                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
             </button>
-        </p>
+        </div>
     </li>
 </draggable-plus>
 <div class="adderRow">
@@ -39,6 +46,8 @@ $html = ob_get_clean();
 
 ?>
 <script>
+    let locale = <?=  json_encode($locale) ?>;
+
     __setVueComponent('agenda', 'component', 'draggable-plus', VueDraggablePlus.VueDraggable);
 
     __setVueComponent('agenda', 'component', 'agenda-sorter', {
@@ -46,6 +55,7 @@ $html = ob_get_clean();
         props: ['modelValue', 'root', 'disabled'],
         data() {
             return {
+                locale,
                 editing: [],
                 disableChildListExplicitly: false,
             }
