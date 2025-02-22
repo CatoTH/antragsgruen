@@ -9,17 +9,19 @@ ob_start();
 ?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
     <li v-for="item in list" :key="item.id" class="item" :class="'type_' + item.type">
-        <p v-if="item.type == 'item'">
+        <div v-if="item.type == 'item'" class="infoRow">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-            <span v-if="!isEditing(item)">{{ item.title }}</span>
-            <span v-if="isEditing(item)"><input type="text" v-model="item.title" class="form-control"/></span>
+            <span v-if="!isEditing(item)">{{ item.time }} {{ item.title }}</span>
+            <v-datetime-picker v-if="isEditing(item)" v-model="item.time" type="time" :locale="locale" />
+            <input type="text" v-if="isEditing(item)" v-model="item.title" class="form-control"/>
+
             <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="toggleEditing(item)">
                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
             </button>
-        </p>
+        </div>
         <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :disabled="disableChildList" />
 
-        <div v-if="item.type == 'date_separator'">
+        <div v-if="item.type == 'date_separator'" class="infoRow">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
             <span v-if="!isEditing(item)">{{ item.date }}</span>
             <div v-if="isEditing(item)">
@@ -52,7 +54,20 @@ $html = ob_get_clean();
 
     __setVueComponent('agenda', 'component', 'agenda-sorter', {
         template: <?= json_encode($html) ?>,
-        props: ['modelValue', 'root', 'disabled'],
+        props: {
+            modelValue: {
+                type: Array
+            },
+            root: {
+                type: Boolean
+            },
+            disabled: {
+                type: Boolean
+            },
+            showTime: {
+                type: Boolean
+            }
+        },
         data() {
             return {
                 locale,
@@ -114,8 +129,13 @@ $html = ob_get_clean();
 <?php
 ob_start();
 ?>
-<section class="votingSorting stdSortingWidget">
-    <agenda-sorter v-model="list" :root="true"></agenda-sorter>
+<section class="agendaEditWidget stdSortingWidget">
+    <div class="settings" style="text-align: right;">
+        <label>
+            <input type="checkbox" v-model="showTime"> Zeit anzeigen
+        </label>
+    </div>
+    <agenda-sorter v-model="list" :root="true" :showTime="showTime"></agenda-sorter>
 
     <pre>{{ list }}</pre>
 
@@ -141,13 +161,26 @@ $html = ob_get_clean();
                     return this.modelValue;
                 },
                 set: function (value) {
+                    console.log("set", value)
                     this.$emit('update:modelValue', value);
                 }
             }
         },
         data() {
-            return {
+            const anyItemHasTime = function(items) {
+                for (let item in items) {
+                    if (items[item].time) {
+                        return true;
+                    }
+                    if (anyItemHasTime(items[item].children)) {
+                        return true;
+                    }
+                }
+                return false;
+            };
 
+            return {
+                showTime: anyItemHasTime(this.modelValue)
             }
         },
         watch: {
