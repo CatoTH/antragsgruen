@@ -8,6 +8,7 @@
 
 - When clonsing a consultation, the agenda is now also copied by default.
 - Bugfix: When cloning consultations with user groups that have administrative permissions to only a subset of motions, these restrictions were not copied to the new consultation.
+- Bugfix: The "My Motions" sections could show not accessible new versions of submitted motions.
 
 ### Version 4.15.1 (2025-02-08)
 
