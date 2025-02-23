@@ -75,6 +75,17 @@ $I->dontSee('To Do (1)', '#adminTodo');
 $I->logout();
 
 
+$I->wantTo('Antragsberechtigte: Nur V1 sichtbar');
+$I->gotoConsultationHome(true, 'std', 'lv-sued');
+$I->loginAsDbwvTestUser('lv-sued-antragsberechtigt-0');
+$I->see('III/01: Testantrag', '.myMotionList');
+$I->click('.myMotionList .motion1');
+$I->see('Es führt kein Weg an Lorem ipsum vorbei');
+$I->dontSee('Third paragraph');
+$I->dontSeeElement('.motionHistory');
+$I->logout();
+
+
 $I->wantTo('Büroleitung: Antrag freischalten');
 $I->loginAsDbwvTestUser('lv-sued-bueroleitung');
 $I->gotoConsultationHome(true, 'std', 'lv-sued');
