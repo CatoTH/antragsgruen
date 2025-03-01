@@ -42,7 +42,7 @@ class SendNotification extends IBackgroundJob
         $params = AntragsgruenApp::getInstance();
         $mailer = Base::createMailer($params->mailService);
         if (!$mailer) {
-            throw new MailNotSent('E-Mail not configured');
+            throw new MailNotSent(true, 'E-Mail not configured');
         }
 
         $sendTextPlain = ($this->noLogReplaces ? str_replace(
@@ -99,7 +99,11 @@ class SendNotification extends IBackgroundJob
 
         if ($exception) {
             \Yii::error($exception->getMessage());
-            throw new MailNotSent($exception->getMessage());
+
+            // SMTP Code 450: address/domain not known.
+            // For SES, no exception is thown, so unknown e-mail-addresses will be considered successful
+            $isCritical = ($exception->getCode() !== 450);
+            throw new MailNotSent($isCritical, $exception->getMessage(), $exception->getCode(), $exception);
         }
 
         if (YII_ENV === 'test') {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\components\yii\MessageSource;
-use app\models\backgroundJobs\IBackgroundJob;
+use app\models\backgroundJobs\{IBackgroundJob, IBackgroundJobException};
 use yii\db\Connection;
 
 class BackgroundJobProcessor
@@ -70,11 +70,27 @@ class BackgroundJobProcessor
                 ['id' => $job->getId()]
             )->execute();
         } catch (\Throwable $exception) {
-            $this->connection->createCommand(
-                'UPDATE backgroundJob SET error = :error WHERE id = :id',
-                [':error' => $exception->getMessage() . PHP_EOL . $exception->getTraceAsString(), ':id' => $job->getId()]
-            )->execute();
+            if ($this->isCriticalException($exception)) {
+                $this->connection->createCommand(
+                    'UPDATE backgroundJob SET error = :error WHERE id = :id',
+                    [':error' => $exception->getMessage() . PHP_EOL . $exception->getTraceAsString(), ':id' => $job->getId()]
+                )->execute();
+            } else {
+                $this->connection->createCommand(
+                    'UPDATE backgroundJob SET error = :error, dateFinished = NOW() WHERE id = :id',
+                    [':error' => $exception->getMessage() . PHP_EOL . $exception->getTraceAsString(), ':id' => $job->getId()]
+                )->execute();
+            }
         }
+    }
+
+    private function isCriticalException(\Throwable $exception): bool
+    {
+        if ($exception instanceof IBackgroundJobException) {
+            return $exception->isCritical();
+        }
+
+        return true;
     }
 
     public function getProcessedEvents(): int {
