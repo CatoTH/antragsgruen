@@ -18,13 +18,23 @@ class AgendaItem
 
     public int $id;
     public string $type;
-    public ?string $code;
+    public ?string $code = null;
     public string $title;
-    public ?string $time;
-    public ?string $date; // Only set for type=date_separator
+    public ?string $time = null;
+    public ?string $date = null; // Only set for type=date_separator
 
     /** @var AgendaItem[] */
     public array $children;
+
+    public function addChildren(AgendaItem $item): void
+    {
+        $this->children[] = $item;
+    }
+
+    public function removeChildren(AgendaItem $item): void
+    {
+        $this->children = array_values(array_filter($this->children, fn (AgendaItem $it) => $it !== $item));
+    }
 
     /**
      * @return AgendaItem[]
