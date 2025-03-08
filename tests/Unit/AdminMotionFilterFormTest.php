@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
-use app\components\RequestContext;
+use app\components\{IMotionSorter, RequestContext};
 use app\models\db\{Consultation, IMotion, User};
 use app\models\forms\AdminMotionFilterForm;
 use app\models\layoutHooks\StdHooks;
@@ -72,7 +74,7 @@ class AdminMotionFilterFormTest extends DBTestBase
         $consultation = Consultation::findOne(6);
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
-        $form->setAttributes(['agendaItem' => 8, 'sort' => AdminMotionFilterForm::SORT_TITLE]);
+        $form->setAttributes(['agendaItem' => 8, 'sort' => IMotionSorter::SORT_TITLE]);
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
         $this->assertEquals(['F-01', 'T-01'], $first);
@@ -84,19 +86,19 @@ class AdminMotionFilterFormTest extends DBTestBase
         $consultation = Consultation::findOne(5);
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
-        $form->setAttributes(['title' => 'zeit', 'sort' => AdminMotionFilterForm::SORT_INITIATOR]);
+        $form->setAttributes(['title' => 'zeit', 'sort' => IMotionSorter::SORT_INITIATOR]);
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
         $this->assertEquals([null, 'U-07', 'U-10', 'Z-01', 'Z-01-233-1'], $first);
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
-        $form->setAttributes(['sort' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
+        $form->setAttributes(['sort' => IMotionSorter::SORT_TITLE_PREFIX]);
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
         $this->assertEquals(['EGP-01', 'F-01', 'S-01', 'S-ohne Nummer', 'T-01'], $first);
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
-        $form->setAttributes(['initiator' => 'Bundesvorstand', 'sort' => AdminMotionFilterForm::SORT_TAG]);
+        $form->setAttributes(['initiator' => 'Bundesvorstand', 'sort' => IMotionSorter::SORT_TAG]);
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
         $this->assertEquals(['S-01', 'S-ohne Nummer', 'F-01', 'T-01', 'U-01'], $first);

@@ -8,23 +8,12 @@ use app\models\AdminTodoItem;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\exceptions\{ExceptionBase, ResponseException};
 use app\models\http\HtmlErrorResponse;
-use app\components\{IMotionStatusFilter, RequestContext, Tools, UrlHelper};
+use app\components\{IMotionSorter, IMotionStatusFilter, RequestContext, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
 class AdminMotionFilterForm
 {
-    public const SORT_STATUS = 1;
-    public const SORT_TITLE = 2;
-    public const SORT_TITLE_PREFIX = 3;
-    public const SORT_INITIATOR = 4;
-    public const SORT_TAG = 5;
-    public const SORT_PUBLICATION = 6;
-    public const SORT_PROPOSAL = 7;
-    public const SORT_PROPOSAL_STATUS = 8;
-    public const SORT_RESPONSIBILITY = 9;
-    public const SORT_DATE = 10;
-
     public ?int $motionType = null;
     public ?int $status = null;
     public ?string $version = null;
@@ -40,7 +29,7 @@ class AdminMotionFilterForm
     /** @var Amendment[] */
     public array $allAmendments;
 
-    public int $sort = self::SORT_TITLE_PREFIX;
+    public int $sort = IMotionSorter::SORT_TITLE_PREFIX;
 
     public bool $showReplaced = false;
     public bool $onlyTodo = false;
@@ -188,7 +177,7 @@ class AdminMotionFilterForm
     {
         return !$this->isFilterSet() &&
                $this->showReplaced === false &&
-               $this->sort === self::SORT_TITLE_PREFIX;
+               $this->sort === IMotionSorter::SORT_TITLE_PREFIX;
     }
 
     public function setCurrentRoute(array $route): void
@@ -224,210 +213,6 @@ class AdminMotionFilterForm
         return $this->versionNames;
     }
 
-    public function sortDefault(IMotion $motion1, IMotion $motion2): int
-    {
-        if (is_a($motion1, Motion::class) && is_a($motion2, Amendment::class)) {
-            return -1;
-        }
-        if (is_a($motion1, Amendment::class) && is_a($motion2, Motion::class)) {
-            return 1;
-        }
-        return $motion1->id <=> $motion2->id;
-    }
-
-    public function sortStatus(IMotion $motion1, IMotion $motion2): int
-    {
-        return $motion1->status <=> $motion2->status;
-    }
-
-    public function sortProposalStatus(IMotion $motion1, IMotion $motion2): int
-    {
-        $status1 = (is_a($motion1, Amendment::class) ? $motion1->proposalStatus : 0);
-        $status2 = (is_a($motion2, Amendment::class) ? $motion2->proposalStatus : 0);
-        return $status1 <=> $status2;
-    }
-
-    private function normalizeResponsibility(IMotion $motion): string
-    {
-        $parts = [];
-        if ($motion->responsibilityUser) {
-            if ($motion->responsibilityUser->name) {
-                $parts[] = trim($motion->responsibilityUser->name);
-            } else {
-                $parts[] = trim($motion->responsibilityUser->getAuthName());
-            }
-        }
-        if ($motion->responsibilityComment) {
-            $parts[] = trim($motion->responsibilityComment);
-        }
-
-        return trim(implode(' ', $parts));
-    }
-
-    public function sortResponsibility(IMotion $motion1, IMotion $motion2): int
-    {
-        $responsibility1 = $this->normalizeResponsibility($motion1);
-        $responsibility2 = $this->normalizeResponsibility($motion2);
-
-        if ($responsibility1 && $responsibility2) {
-            return strnatcasecmp($responsibility1, $responsibility2);
-        } elseif ($responsibility1) {
-            return -1;
-        } elseif ($responsibility2) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    public function sortTitle(IMotion $motion1, IMotion $motion2): int
-    {
-        if (is_a($motion1, Motion::class)) {
-            /** @var Motion $motion1 */
-            $title1 = $motion1->title;
-        } else {
-            /** @var Amendment $motion1 */
-            $title1 = $motion1->getMyMotion()->title;
-        }
-        if (is_a($motion2, Motion::class)) {
-            /** @var Motion $motion2 */
-            $title2 = $motion2->title;
-        } else {
-            /** @var Amendment $motion2 */
-            $title2 = $motion2->getMyMotion()->title;
-        }
-        $cmp = strnatcasecmp($title1, $title2);
-        if ($cmp === 0) {
-            return ($motion1->id < $motion2->id ? 1 : -1);
-        } else {
-            return $cmp;
-        }
-    }
-
-    public function sortTitlePrefix(IMotion $motion1, IMotion $motion2): int
-    {
-        if (is_a($motion1, Motion::class)) {
-            /** @var Motion $motion1 */
-            $rev1 = $motion1->getFormattedTitlePrefix();
-        } else {
-            /** @var Amendment $motion1 */
-            $rev1 = $motion1->getFormattedTitlePrefix() . ' ' . \Yii::t('amend', 'amend_for_motion') .
-                    ' ' . $motion1->getMyMotion()->getFormattedTitlePrefix();
-        }
-        if (is_a($motion2, Motion::class)) {
-            /** @var Motion $motion2 */
-            $rev2 = $motion2->getFormattedTitlePrefix();
-        } else {
-            /** @var Amendment $motion2 */
-            $rev2 = $motion2->getFormattedTitlePrefix() . ' ' . \Yii::t('amend', 'amend_for_motion') .
-                    ' ' . $motion2->getMyMotion()->getFormattedTitlePrefix();
-        }
-
-        return strnatcasecmp($rev1, $rev2);
-    }
-
-    public function sortInitiator(IMotion $motion1, IMotion $motion2): int
-    {
-        $init1 = $motion1->getInitiatorsStr();
-        $init2 = $motion2->getInitiatorsStr();
-        $cmp   = strnatcasecmp($init1, $init2);
-        if ($cmp === 0) {
-            return $this->sortTitlePrefix($motion1, $motion2);
-        } else {
-            return $cmp;
-        }
-    }
-
-    public function sortTag(IMotion $motion1, IMotion $motion2): int
-    {
-        if (is_a($motion1, Motion::class)) {
-            /** @var Motion $motion1 */
-            if (count($motion1->getPublicTopicTags()) > 0) {
-                $tag1 = $motion1->getPublicTopicTags()[0];
-            } else {
-                $tag1 = null;
-            }
-        } else {
-            $tag1 = null;
-        }
-        if (is_a($motion2, Motion::class)) {
-            /** @var Motion $motion2 */
-            if (count($motion2->getPublicTopicTags()) > 0) {
-                $tag2 = $motion2->getPublicTopicTags()[0];
-            } else {
-                $tag2 = null;
-            }
-        } else {
-            $tag2 = null;
-        }
-        if ($tag1 === null && $tag2 === null) {
-            return 0;
-        } elseif ($tag1 === null) {
-            return 1;
-        } elseif ($tag2 === null) {
-            return -1;
-        } else {
-            $cmp = strnatcasecmp($tag1->title, $tag2->title);
-            if ($cmp === 0) {
-                return $this->sortTitlePrefix($motion1, $motion2);
-            } else {
-                return $cmp;
-            }
-        }
-    }
-
-    public function sortDate(IMotion $imotion1, IMotion $imotion2): int
-    {
-        $timestamp1 = ($imotion1->dateCreation ? Tools::dateSql2timestamp($imotion1->dateCreation) : 0);
-        $timestamp2 = ($imotion2->dateCreation ? Tools::dateSql2timestamp($imotion2->dateCreation) : 0);
-        return $timestamp1 <=> $timestamp2;
-    }
-
-    /**
-     * @param IMotion[] $entries
-     *
-     * @return IMotion[]
-     */
-    public function moveAmendmentsToMotions(array $entries): array
-    {
-        $foundMotions = [];
-        foreach ($entries as $entry) {
-            if (is_a($entry, Motion::class)) {
-                $foundMotions[] = $entry->id;
-            }
-        }
-        /** @var IMotion[] $newArr1 */
-        $newArr1 = [];
-        /** @var Amendment[] $movingAmendments */
-        $movingAmendments = [];
-        foreach ($entries as $entry) {
-            if (is_a($entry, Amendment::class)) {
-                /** @var Amendment $entry */
-                if (in_array($entry->motionId, $foundMotions)) {
-                    $movingAmendments[] = $entry;
-                } else {
-                    $newArr1[] = $entry;
-                }
-            } else {
-                $newArr1[] = $entry;
-            }
-        }
-        /** @var IMotion[] $result */
-        $result = [];
-        foreach ($newArr1 as $entry) {
-            $result[] = $entry;
-            if (is_a($entry, Motion::class)) {
-                foreach ($movingAmendments as $amendment) {
-                    if ($amendment->motionId === $entry->id) {
-                        $result[] = $amendment;
-                    }
-                }
-            }
-        }
-
-        return $result;
-    }
-
     /**
      * @return IMotion[]
      */
@@ -436,39 +221,7 @@ class AdminMotionFilterForm
         $filteredMotions = $this->getFilteredMotions();
         $merge = array_merge($filteredMotions, $this->getFilteredAmendments($filteredMotions));
 
-        switch ($this->sort) {
-            case static::SORT_TITLE:
-                usort($merge, [$this, 'sortTitle']);
-                break;
-            case static::SORT_STATUS:
-                usort($merge, [$this, 'sortStatus']);
-                break;
-            case static::SORT_TITLE_PREFIX:
-                usort($merge, [$this, 'sortTitlePrefix']);
-                break;
-            case static::SORT_INITIATOR:
-                usort($merge, [$this, 'sortInitiator']);
-                break;
-            case static::SORT_TAG:
-                usort($merge, [$this, 'sortTag']);
-                break;
-            case static::SORT_PROPOSAL_STATUS:
-                usort($merge, [$this, 'sortProposalStatus']);
-                break;
-            case static::SORT_RESPONSIBILITY:
-                usort($merge, [$this, 'sortResponsibility']);
-                break;
-            case static::SORT_DATE:
-                usort($merge, [$this, 'sortDate']);
-                break;
-            default:
-                usort($merge, [$this, 'sortTitlePrefix']);
-        }
-        if (!in_array($this->sort, [static::SORT_STATUS, static::SORT_INITIATOR, static::SORT_TAG])) {
-            $merge = $this->moveAmendmentsToMotions($merge);
-        }
-
-        return $merge;
+        return IMotionSorter::sortIMotions($merge, $this->sort);
     }
 
     private function motionMatchesInitiator(Motion $motion): bool
