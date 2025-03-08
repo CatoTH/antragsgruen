@@ -3,9 +3,9 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
-use app\models\api\SpeechQueue as SpeechQueueApi;
+use app\models\api\{SpeechQueue as SpeechQueueApi, AgendaItem as AgendaItemApi};
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
-use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface, RestApiResponse};
 use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
@@ -237,6 +237,20 @@ class IndexController extends AdminBase
         $consultation = $this->consultation;
 
         return new HtmlResponse($this->render('agenda', ['consultation' => $this->consultation]));
+    }
+
+    public function actionSaveAgenda(): RestApiResponse
+    {
+        $this->handleRestHeaders(['POST'], true);
+
+        $serializer = Tools::getSerializer();
+
+        /** @var AgendaItemApi[] $data */
+        $data = $serializer->deserialize($this->getPostBody(), AgendaItemApi::class . '[]', 'json');
+
+        // @TODO Save
+
+        return new RestApiResponse(200, null, $serializer->serialize($data, 'json'));
     }
 
     private function saveTags(Consultation $consultation): void
