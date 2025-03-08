@@ -359,7 +359,7 @@ class MotionListController extends AdminBase
         $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
-        $filename = Tools::sanitizeFilename(\Yii::t('export', 'Kommentare') . '-' . $motionType->titlePlural, false);
+        $filename = Tools::sanitizeFilename(\Yii::t('export', 'comments') . '-' . $motionType->titlePlural, false);
         $xlsx = $this->renderPartial('xlsx_comments', [
             'imotions'     => $imotions,
             'motionType'   => $motionType,
