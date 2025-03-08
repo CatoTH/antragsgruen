@@ -42,7 +42,7 @@ class AgendaSerializationTest extends TestBase
     public function testSerialization(): void
     {
         $serializer = Tools::getSerializer();
-        $data = $serializer->deserialize(self::INPUT_JSON, '\app\models\api\AgendaItem[]', 'json');
+        $data = $serializer->deserialize(self::INPUT_JSON, \app\models\api\AgendaItem::class . '[]', 'json');
 
         $reSerialized = $serializer->serialize($data, 'json');
         $this->assertJsonStringEqualsJsonString(self::INPUT_JSON, $reSerialized);

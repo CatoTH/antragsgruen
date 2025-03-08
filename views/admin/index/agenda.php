@@ -34,6 +34,7 @@ $apiModel = \app\models\api\AgendaItem::getItemsFromConsultation($consultation);
 
     <div class="agendaEditForm"
          data-antragsgruen-widget="backend/AgendaEditVue"
+         data-save-agenda-url="<?= Html::encode(UrlHelper::createUrl(['/admin/index/save-agenda'])) ?>"
          data-agenda="<?= Html::encode(json_encode($apiModel)) ?>">
         <div class="agendaEdit"></div>
     </div>
