@@ -9,7 +9,8 @@ use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, Redire
 use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
-use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
+use app\models\forms\{AgendaSaver, AntragsgruenUpdateModeForm, ConsultationCreateForm};
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 
 class IndexController extends AdminBase
 {
@@ -245,12 +246,19 @@ class IndexController extends AdminBase
 
         $serializer = Tools::getSerializer();
 
-        /** @var AgendaItemApi[] $data */
-        $data = $serializer->deserialize($this->getPostBody(), AgendaItemApi::class . '[]', 'json');
+        try {
+            /** @var AgendaItemApi[] $data */
+            $data = $serializer->deserialize($this->getPostBody(), AgendaItemApi::class . '[]', 'json');
+        } catch (NotNormalizableValueException $e) {
+            return new RestApiResponse(400, ['error' => $e->getMessage()]);
+        }
 
-        // @TODO Save
+        $saver = new AgendaSaver($this->consultation);
+        $saver->saveAgendaFromApi(null, $data);
 
-        return new RestApiResponse(200, null, $serializer->serialize($data, 'json'));
+        $savedAgenda = AgendaItemApi::getItemsFromConsultation($this->consultation);
+
+        return new RestApiResponse(200, null, $serializer->serialize($savedAgenda, 'json'));
     }
 
     private function saveTags(Consultation $consultation): void
