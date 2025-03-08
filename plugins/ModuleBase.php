@@ -23,7 +23,7 @@ class ModuleBase extends Module
         parent::init();
 
         if (\Yii::$app instanceof \yii\console\Application) {
-            $ref                       = new \ReflectionClass($this);
+            $ref = new \ReflectionClass($this);
             $this->controllerNamespace = $ref->getNamespaceName() . '\\commands';
         }
     }
@@ -64,11 +64,11 @@ class ModuleBase extends Module
     public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
         foreach (static::getMotionUrlRoutes() as $url => $route) {
-            $urls[$dommotion . '/' . $url]    = $route;
+            $urls[$dommotion . '/' . $url] = $route;
             $urls[$dommotionOld . '/' . $url] = $route;
         }
         foreach (static::getAmendmentUrlRoutes() as $url => $route) {
-            $urls[$domamend . '/' . $url]    = $route;
+            $urls[$domamend . '/' . $url] = $route;
             $urls[$domamendOld . '/' . $url] = $route;
         }
 
@@ -85,6 +85,7 @@ class ModuleBase extends Module
 
     /**
      * @param Privilege[] $origPrivileges
+     *
      * @return Privilege[]
      */
     public static function addCustomPrivileges(Consultation $consultation, array $origPrivileges): array
@@ -358,5 +359,19 @@ class ModuleBase extends Module
     public static function onBeforeProposedProcedureStatusSave(IMotion $imotion): IMotion
     {
         return $imotion;
+    }
+
+    /**
+     * @param IMotion[] $imotions
+     *
+     * @return IMotion[]|null
+     *
+     * Returns a sorted array, if a custom sorting is defined.
+     * The first plugin to return an array takes precedence.
+     * If no plugin returns an array (only null), the default sorting is applied.
+     */
+    public static function sortIMotions(array $imotions, int $sort): ?array
+    {
+        return null;
     }
 }

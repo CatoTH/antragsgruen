@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\models\db\{Amendment, IMotion, Motion};
+use app\models\settings\AntragsgruenApp;
 
 class IMotionSorter
 {
@@ -19,8 +20,20 @@ class IMotionSorter
     public const SORT_RESPONSIBILITY = 9;
     public const SORT_DATE = 10;
 
+    /**
+     * @param IMotion[] $imotions
+     *
+     * @return IMotion[]
+     */
     public static function sortIMotions(array $imotions, int $sort): array
     {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $sorted = $plugin::sortIMotions($imotions, $sort);
+            if ($sorted !== null) {
+                return $sorted;
+            }
+        }
+
         switch ($sort) {
             case self::SORT_TITLE:
                 usort($imotions, [IMotionSorter::class, 'sortTitle']);
