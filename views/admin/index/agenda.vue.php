@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use app\components\Tools;
 
 $simpleDeadlineMotions = '';
@@ -137,14 +139,13 @@ ob_start();
     </div>
     <agenda-sorter v-model="list" :root="true" :showTime="showTime"></agenda-sorter>
 
-    <pre>{{ list }}</pre>
-
-
     <div class="saveRow">
-        <button type="button" @click="saveOrder()" class="btn btn-primary btnSave">
+        <button type="button" @click="saveAgenda()" class="btn btn-primary btnSave">
             <?= Yii::t('voting', 'settings_sort_save') ?>
         </button>
     </div>
+
+    <pre>{{ list }}</pre>
 </section>
 
 <?php
@@ -154,7 +155,11 @@ $html = ob_get_clean();
 <script>
     __setVueComponent('agenda', 'component', 'agenda-edit-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['modelValue'],
+        props: {
+            modelValue: {
+                type: Array
+            }
+        },
         computed: {
             list: {
                 get: function () {
@@ -186,7 +191,8 @@ $html = ob_get_clean();
         watch: {
         },
         methods: {
-            onChange: function () {
+            saveAgenda: function() {
+                this.$emit('save-agenda');
             }
         }
     });

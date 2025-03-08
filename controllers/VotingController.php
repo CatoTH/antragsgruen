@@ -208,16 +208,11 @@ class VotingController extends Base
         }
         $agendaVoting = AgendaVoting::getFromVotingBlock($votingBlock);
 
-        switch ($format) {
-            case 'ods':
-                $formatResponse = BinaryFileResponse::TYPE_ODS;
-                break;
-            case 'xlsx':
-                $formatResponse = BinaryFileResponse::TYPE_XLSX;
-                break;
-            default:
-                $formatResponse = BinaryFileResponse::TYPE_HTML;
-        }
+        $formatResponse = match ($format) {
+            'ods' => BinaryFileResponse::TYPE_ODS,
+            'xlsx' => BinaryFileResponse::TYPE_XLSX,
+            default => BinaryFileResponse::TYPE_HTML,
+        };
 
         return new BinaryFileResponse(
             $formatResponse,
