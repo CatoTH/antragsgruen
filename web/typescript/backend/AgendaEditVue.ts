@@ -32,7 +32,6 @@ export class AgendaEditVue {
             },
             methods: {
                 onSaveAgenda() {
-                    console.log(JSON.stringify(this.agenda));
                     const widget = this;
 
                     $.ajax({
@@ -44,14 +43,14 @@ export class AgendaEditVue {
                         dataType: "json",
                         headers: {"X-CSRF-Token": csrf},
                         success: data => {
-                            if (data.msg_error) {
-                                bootbox.alert(data.msg_error);
+                            if (data.error) {
+                                bootbox.alert(data.error);
                             } else {
                                 widget.agenda = data;
                             }
                         }
                     }).catch(function (err) {
-                        alert(err.responseText);
+                        bootbox.alert(err.responseText);
                     })
                 }
             }
