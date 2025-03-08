@@ -106,7 +106,7 @@ $html = ob_get_clean();
             },
             addItemRow: function() {
                 this.modelValue.push({
-                    id: 'NEW',
+                    id: null,
                     type: 'item',
                     code: null,
                     title: '',
@@ -116,7 +116,7 @@ $html = ob_get_clean();
             },
             addDateSeparatorRow: function() {
                 this.modelValue.push({
-                    id: 'NEW',
+                    id: null,
                     type: 'date_separator',
                     code: null,
                     title: '',

@@ -16,7 +16,7 @@ class AgendaItem
     public const TYPE_ITEM = 'item';
     public const TYPE_DATE_SEPARATOR = 'date_separator';
 
-    public int $id;
+    public ?int $id = null;
     public string $type;
     public ?string $code = null;
     public string $title;
