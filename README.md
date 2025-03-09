@@ -425,7 +425,7 @@ Known limitations:
 ## Plugins
 
 * Each plugin has a directory under [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
-* Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory. A rather complex example containing a bit of everything can be seen in [member_petitions](plugins/member_petitions/).
+* Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory.
 * Each plugin has a unique ID that is equivalent to the name of the directory. To activate a plugin, the ID has to be added to the ``plugins``-list in the ``config.json``:
 
 ```json
@@ -442,7 +442,7 @@ Known limitations:
 The most frequent use case for plugins is custom themes / layouts. You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
 
 - Create a directory for the plugin with a ``Module.php`` and ``Assets.php``. If your directory / plugin ID is ``mylayout``, the namespace of these classes needs to be ``app\plugins\mylayout``.
-- The ``Module.php`` needs the static method ``getProvidedLayout`` that returns the asset bundle. See the [gruen_ci](plugins/gruen_ci/Module.php) or [neos](plugins/neos/Module.php) for examples.
+- The ``Module.php`` needs the static method ``getProvidedLayout`` that returns the asset bundle. See the [gruen_ci](plugins/gruen_ci/Module.php) for examples.
 - Create a file ```plugins/mylayout/assets/mylayout.scss```. Again, use the existing plugins as an example to get the imports right.
 - Adapt the SCSS variables and add custom styles
 - Run ```gulp``` to compile the SCSS into CSS
