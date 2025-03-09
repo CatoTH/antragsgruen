@@ -20,6 +20,8 @@ class Diff
     // # is necessary for placeholders like ###LINENUMBER###
     private const WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
 
+    private const LINENUMBER_MARKER = '###LINENUMBER###';
+
     private Engine $engine;
 
     public function __construct()
@@ -240,9 +242,9 @@ class Diff
 
     public function computeWordDiff(string $wordDel, string $wordInsert): string
     {
-        if (grapheme_substr($wordDel, 0, 16) === '###LINENUMBER###' && grapheme_substr($wordInsert, 0, 16) !== '###LINENUMBER###') {
-            $linenumber = '###LINENUMBER###';
-            $wordDel    = (string)grapheme_substr($wordDel, 16);
+        if (str_starts_with($wordDel, self::LINENUMBER_MARKER) && !str_starts_with($wordInsert, self::LINENUMBER_MARKER)) {
+            $linenumber = self::LINENUMBER_MARKER;
+            $wordDel    = substr($wordDel, strlen(self::LINENUMBER_MARKER));
         } else {
             $linenumber = '';
         }
@@ -361,7 +363,7 @@ class Diff
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
 
-        $middleLen  = grapheme_strlen(str_replace('###LINENUMBER###', '', $middleOrig));
+        $middleLen  = grapheme_strlen(str_replace(self::LINENUMBER_MARKER, '', $middleOrig));
         $breaksList = (grapheme_stripos($middleDiff, '</li>') !== false);
         if ($middleLen > self::MAX_LINE_CHANGE_RATIO_MIN_LEN && !$breaksList) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
@@ -399,7 +401,7 @@ class Diff
             }
         }
         $matcher = new ArrayMatcher();
-        $matcher->addIgnoredString('###LINENUMBER###');
+        $matcher->addIgnoredString(self::LINENUMBER_MARKER);
         $newInserts = $matcher->matchArrayResolved($deleteStrs, $insertStrs);
         return [$deleteStrs, $newInserts, count($deleteStrs) + count($insertStrs)];
     }
@@ -496,8 +498,8 @@ class Diff
         }
 
         // The old and the new version might have different attributes in the HTML tags, like a start="1" attribute. We need to normalize that
-        $prefixNew               = str_replace('###LINENUMBER###', '', $prefix);
-        $postfixNew              = str_replace('###LINENUMBER###', '', $postfix);
+        $prefixNew               = str_replace(self::LINENUMBER_MARKER, '', $prefix);
+        $postfixNew              = str_replace(self::LINENUMBER_MARKER, '', $postfix);
         $prefixNewNormalized     = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $prefixNew); // remove start/class-attributes from tags
         $postfixNewNormalized    = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $postfixNew); // remove start/class-attributes from tags
         $newNormalized           = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $new);
@@ -516,14 +518,11 @@ class Diff
 
     /**
      * @internal
-     * @param string $orig
-     * @param string $diff
-     * @return float
      */
     public function computeLineDiffChangeRatio(string $orig, string $diff): float
     {
-        $orig       = str_replace(['###LINENUMBER###'], [''], $orig);
-        $diff       = str_replace(['###LINENUMBER###'], [''], $diff);
+        $orig       = str_replace([self::LINENUMBER_MARKER], [''], $orig);
+        $diff       = str_replace([self::LINENUMBER_MARKER], [''], $diff);
         $origLength = grapheme_strlen(strip_tags($orig));
         if ($origLength === 0) {
             return 0.0;
@@ -552,8 +551,8 @@ class Diff
 
         return $cache->getCached(function () use ($referenceParas, $newParas, $diffFormatting) {
             $matcher = new ArrayMatcher();
-            $matcher->addIgnoredString('###LINENUMBER###');
-            $this->setIgnoreStr('###LINENUMBER###');
+            $matcher->addIgnoredString(self::LINENUMBER_MARKER);
+            $this->setIgnoreStr(self::LINENUMBER_MARKER);
             $renderer = new DiffRenderer();
             $renderer->setFormatting($diffFormatting);
 
@@ -570,12 +569,7 @@ class Diff
             $pendingInsert = '';
             $resolved      = [];
             foreach ($diffSections as $diffS) {
-                $diffS = str_replace('<del>###LINENUMBER###</del>', '###LINENUMBER###', $diffS);
-                $diffS = str_replace(
-                    '<del style="color: red; text-decoration: line-through;">###LINENUMBER###</del>',
-                    '###LINENUMBER###',
-                    $diffS
-                );
+                $diffS = preg_replace('/<del( [^>]*)?>' . self::LINENUMBER_MARKER . '<\/del>/siu', self::LINENUMBER_MARKER, $diffS);
                 if (preg_match('/<del( [^>]*)?>###EMPTYINSERTED###<\/del>/siu', $diffS)) {
                     $str = preg_replace('/<del( [^>]*)?>###EMPTYINSERTED###<\/del>/siu', '', $diffS);
                     if (count($resolved) > 0) {
@@ -722,7 +716,7 @@ class Diff
     public function compareHtmlParagraphsToWordArray(array $referenceParas, array $newParas, ?int $amendmentId = null): array
     {
         $matcher = new ArrayMatcher();
-        $matcher->addIgnoredString('###LINENUMBER###');
+        $matcher->addIgnoredString(self::LINENUMBER_MARKER);
         list($adjustedRef, $adjustedMatching) = $matcher->matchForDiff($referenceParas, $newParas);
         if (count($adjustedRef) !== count($adjustedMatching)) {
             throw new Internal('compareSectionedHtml: number of sections does not match');
