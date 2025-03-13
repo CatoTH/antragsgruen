@@ -6,7 +6,7 @@ namespace app\commands;
 
 use app\components\{UrlHelper, UserGroupAdminMethods};
 use app\models\settings\AntragsgruenApp;
-use app\models\db\{ConsultationUserGroup, Site, User};
+use app\models\db\{Consultation, ConsultationUserGroup, Site, User};
 use yii\console\Controller;
 
 class UserController extends Controller
@@ -15,6 +15,7 @@ class UserController extends Controller
     public ?string $organization = null;
     public ?string $password = null;
     public ?string $welcomeFile = null;
+    public ?string $consultationPath = null;
 
     public bool $forcePasswordChange = false;
     public bool $forceTwoFactor = false;
@@ -25,8 +26,8 @@ class UserController extends Controller
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create', 'create-or-update' => ['groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange', 'fixedName', 'fixedOrganization'],
-            'update' => ['groupIds', 'organization', 'password'],
+            'create', 'create-or-update' => ['consultationPath', 'groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange', 'fixedName', 'fixedOrganization'],
+            'update' => ['consultationPath', 'groupIds', 'organization', 'password', 'welcomeFile'],
             default => [],
         };
     }
@@ -37,6 +38,29 @@ class UserController extends Controller
             $auth = 'email:' . $auth;
         }
         return User::findOne(['auth' => $auth]);
+    }
+
+    private function getAndSetConsultation(): Consultation
+    {
+        $consultation = null;
+        $site = Site::findOne(['subdomain' => AntragsgruenApp::getInstance()->siteSubdomain]);
+        if ($this->consultationPath) {
+            foreach ($site->consultations as $siteConsultation) {
+                if ($siteConsultation->urlPath === $this->consultationPath) {
+                    $consultation = $siteConsultation;
+                }
+            }
+        } else {
+            $consultation = $site->currentConsultation;
+        }
+
+        if (!$consultation) {
+            throw new \RuntimeException('Consultation not found');
+        }
+        UrlHelper::setCurrentSite($site);
+        UrlHelper::setCurrentConsultation($consultation);
+
+        return $consultation;
     }
 
     /**
@@ -60,6 +84,15 @@ class UserController extends Controller
         }
 
         return $toUserGroups;
+    }
+
+    private function sendWelcomeEmail(Consultation $consultation, User $user, string $welcomeTemplate, ?string $password): void
+    {
+        \Yii::$app->urlManager->setBaseUrl("/");
+        \Yii::$app->language = substr($consultation->wordingBase, 0, 2);
+        $methods = new UserGroupAdminMethods();
+        $methods->setRequestData($consultation, null, null);
+        $methods->sendWelcomeEmail($user, $welcomeTemplate, $password);
     }
 
     /**
@@ -132,10 +165,7 @@ class UserController extends Controller
             $welcomeTemplate = file_get_contents($this->welcomeFile);
         }
 
-        $site = Site::findOne(['subdomain' => AntragsgruenApp::getInstance()->siteSubdomain]);
-        $consultation = $site->currentConsultation;
-        UrlHelper::setCurrentSite($site);
-        UrlHelper::setCurrentConsultation($consultation);
+        $consultation = $this->getAndSetConsultation();
 
         $toUserGroups = $this->getToSetUserGroups();
 
@@ -180,18 +210,14 @@ class UserController extends Controller
         $this->stdout('Created the user: ' . $user->auth . "\n");
 
         if ($welcomeTemplate) {
-            \Yii::$app->urlManager->setBaseUrl("/");
-            \Yii::$app->language = substr($consultation->wordingBase, 0, 2);
-            $methods = new UserGroupAdminMethods();
-            $methods->setRequestData($consultation, null, null);
-            $methods->sendWelcomeEmail($user, $welcomeTemplate, $password);
+            $this->sendWelcomeEmail($consultation, $user, $welcomeTemplate, $password);
         }
 
         return 0;
     }
 
     /**
-     * Creates a user
+     * Updates a user
      *
      * Example:
      * ./yii user/update email:test@example.org --password TestPassword --groupIds 1,2 --organization Antragsgrün
@@ -213,8 +239,18 @@ class UserController extends Controller
         return 0;
     }
 
-    public function updateUser(?User $user, ?string $organization, ?string $password): void
+    private function updateUser(?User $user, ?string $organization, ?string $password): void
     {
+        $welcomeTemplate = null;
+        if ($this->welcomeFile) {
+            if (!file_exists($this->welcomeFile)) {
+                throw new \RuntimeException('welcome template not found');
+            }
+            $welcomeTemplate = file_get_contents($this->welcomeFile);
+        }
+
+        $consultation = $this->getAndSetConsultation();
+
         $toUserGroups = $this->getToSetUserGroups();
 
         if ($organization !== null) {
@@ -237,5 +273,9 @@ class UserController extends Controller
         }
 
         $this->stdout('Updated the user: ' . $user->auth);
+
+        if ($welcomeTemplate) {
+            $this->sendWelcomeEmail($consultation, $user, $welcomeTemplate, $password);
+        }
     }
 }
