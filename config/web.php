@@ -1,7 +1,6 @@
 <?php
 
-$configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'models' .
-    DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR;
+$configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR;
 require_once($configDir . 'JsonConfigTrait.php');
 require_once($configDir . 'AntragsgruenApp.php');
 
@@ -42,8 +41,12 @@ $common = require(__DIR__ . DIRECTORY_SEPARATOR . 'common.php');
 
 $cookieSettings = [
     'httpOnly' => true,
-    'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null
+    'sameSite' => \yii\web\Cookie::SAME_SITE_LAX,
 ];
+foreach ($params->getPluginClasses() as $plugin) {
+    $cookieSettings = array_merge($cookieSettings, $plugin::getSessionCookieSettings());
+}
+
 if ((isset($_SERVER['REQUEST_SCHEME']) && strtolower($_SERVER['REQUEST_SCHEME']) === 'https') || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
     $cookieSettings['secure'] = true;
 }
@@ -88,19 +91,11 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 if ($params->cookieDomain) {
     $config['components']['session'] = [
-        'cookieParams' => [
-            'httponly' => true,
-            'domain'   => $params->cookieDomain,
-            'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
-        ]
+        'cookieParams' => array_merge($cookieSettings, ['domain' => $params->cookieDomain]),
     ];
 } elseif ($params->domainPlain) {
     $config['components']['session'] = [
-        'cookieParams' => [
-            'httponly' => true,
-            'domain'   => '.' . parse_url($params->domainPlain, PHP_URL_HOST),
-            'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
-        ]
+        'cookieParams' => array_merge($cookieSettings, ['domain' => '.' . parse_url($params->domainPlain, PHP_URL_HOST)]),
     ];
 }
 
