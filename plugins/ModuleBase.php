@@ -75,6 +75,11 @@ class ModuleBase extends Module
         return $urls;
     }
 
+    public static function getSessionCookieSettings(): array
+    {
+        return [];
+    }
+
     /**
      * Return value needs to be a class name extending from \app\models\settings\Permissions
      */
