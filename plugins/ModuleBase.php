@@ -356,6 +356,10 @@ class ModuleBase extends Module
         return [];
     }
 
+    public static function onBeforeAction(string $controller, string $actionId): void
+    {
+    }
+
     public static function getConsultationHomePage(Consultation $consultation): ?ResponseInterface
     {
         return null;

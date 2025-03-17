@@ -58,6 +58,10 @@ class Base extends Controller
         $response->headers->add('X-Content-Type-Options', 'nosniff');
         $response->headers->add('X-Frame-Options', 'sameorigin');
 
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $plugin::onBeforeAction(get_class($this), $action->id);
+        }
+
         $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
         $usernamePasswordForm->onPageView(get_class($this), $action->id);
 
