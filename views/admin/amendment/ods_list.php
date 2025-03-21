@@ -194,7 +194,7 @@ foreach ($amendments as $amendmentGroup) {
             foreach ($sections as $section) {
                 $firstLine    = $section->getFirstLineNumber();
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-                $originalData = $section->getOriginalMotionSection()->getData();
+                $originalData = $section->getOriginalMotionSection()?->getData() ?? '';
                 $newData      = $section->getData();
                 $proposal     .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
             }

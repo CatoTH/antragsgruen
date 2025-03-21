@@ -143,7 +143,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
             foreach ($sections as $section) {
                 $firstLine    = $section->getFirstLineNumber();
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-                $originalData = $section->getOriginalMotionSection()->getData();
+                $originalData = $section->getOriginalMotionSection()?->getData() ?? '';
                 $newData      = $section->data;
                 $proposal     .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
                 $minHeight    += 1;
