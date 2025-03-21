@@ -62,7 +62,7 @@ class Agenda
                 try {
                     $firstLine    = $section->getFirstLineNumber();
                     $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-                    $originalData = $section->getOriginalMotionSection()->getData();
+                    $originalData = $section->getOriginalMotionSection()?->getData() ?? '';
                     $newData      = $section->data;
                     if ($originalData === $newData) {
                         continue;

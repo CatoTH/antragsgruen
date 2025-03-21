@@ -34,17 +34,18 @@ abstract class TextSimpleCommon extends Text {
      */
     private function getMaybeCachedDiffGroups(AmendmentSection $section, int $lineLength, int $firstLine): array
     {
-        $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA];
+        $originalText = $section->getOriginalMotionSection()?->getData() ?? '';
+        $cacheDeps = [$originalText, $section->data, $firstLine, $lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA];
         $cache = HashedStaticCache::getInstance('getMaybeCachedDiffGroups', $cacheDeps);
 
         // Only use cache for long motions
-        if (strlen($section->getOriginalMotionSection()->getData()) < 10000) {
+        if (strlen($originalText) < 10000) {
             $cache->setSkipCache(true);
         }
 
-        return $cache->getCached(function () use ($section, $lineLength, $firstLine) {
+        return $cache->getCached(function () use ($section, $lineLength, $firstLine, $originalText) {
             $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+            $formatter->setTextOriginal($originalText);
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
@@ -235,7 +236,7 @@ abstract class TextSimpleCommon extends Text {
                 $tex .= Exporter::encodeHTMLString($section->data);
             } else {
                 $formatter = new AmendmentSectionFormatter();
-                $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+                $formatter->setTextOriginal($section->getOriginalMotionSection()?->getData() ?? '');
                 $formatter->setTextNew($section->data);
                 $formatter->setFirstLineNo($firstLine);
 
@@ -321,7 +322,7 @@ abstract class TextSimpleCommon extends Text {
 
         $firstLine    = $section->getFirstLineNumber();
         $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-        $originalData = $section->getOriginalMotionSection()->getData();
+        $originalData = $section->getOriginalMotionSection()?->getData() ?? '';
         return static::formatAmendmentForOds($originalData, $section->data, $firstLine, $lineLength);
     }
 
@@ -481,7 +482,7 @@ abstract class TextSimpleCommon extends Text {
             $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
             $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
+            $formatter->setTextOriginal($section->getOriginalMotionSection()?->getData() ?? '');
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
 
