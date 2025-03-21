@@ -66,12 +66,15 @@ class TextSimple extends TextSimpleCommon
     {
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
-        $moSection = $amSection->getOriginalMotionSection();
-        $moParas = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
-        $amParas = array_map(fn(SectionedParagraph $par) => $par->html, $moParas);
+        if ($amSection->getOriginalMotionSection()) {
+            $origParas = HTMLTools::sectionSimpleHTML($amSection->getOriginalMotionSection()->getData());
+        } else {
+            $origParas = [];
+        }
+        $amParas = array_map(fn(SectionedParagraph $par) => $par->html, $origParas);
 
         $changedParagraph = -1;
-        foreach ($amSection->diffStrToOrigParagraphs($moParas, false, DiffRenderer::FORMATTING_ICE) as $paraNo => $para) {
+        foreach ($amSection->diffStrToOrigParagraphs($origParas, false, DiffRenderer::FORMATTING_ICE) as $paraNo => $para) {
             $amParas[$paraNo] = $para;
             $changedParagraph = $paraNo;
         }
@@ -80,7 +83,7 @@ class TextSimple extends TextSimpleCommon
         $str  = '<div class="label">' . Html::encode($this->getTitle()) . '</div>';
         $str  .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '" ' .
             'data-changed-para-no="' . $changedParagraph . '">';
-        foreach ($moParas as $paraNo => $moPara) {
+        foreach ($origParas as $paraNo => $moPara) {
             $nameBase = 'sections[' . $type->id . '][' . $paraNo . ']';
             $htmlId   = 'sections_' . $type->id . '_' . $paraNo;
             $holderId = 'section_holder_' . $type->id . '_' . $paraNo;
