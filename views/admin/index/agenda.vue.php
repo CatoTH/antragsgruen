@@ -17,11 +17,37 @@ ob_start();
             <v-datetime-picker v-if="isEditing(item)" v-model="item.time" type="time" :locale="locale" />
             <input type="text" v-if="isEditing(item)" v-model="item.title" class="form-control"/>
 
+            <select class="stdDropdown">
+                <option>-</option>
+                <option v-for="motionType in motionTypes" :value="motionType.id" :selected="isMotionTypeSelected(motionType, item)">{{ motionType.title }}</option>
+            </select>
+
+            <div class="dropdown extraSettings" v-if="isEditing(item)">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="checkbox inProposedProcedures">
+                        <label>
+                            <input type="checkbox" v-model="item.settings.inProposedProcedures">
+                            <?= Yii::t('con', 'agenda_pp') ?>
+                        </label>
+                    </li>
+                    <li class="checkbox hasSpeakingList">
+                        <label>
+                            <input type="checkbox" v-model="item.settings.hasSpeakingList">
+                            <?= Yii::t('con', 'agenda_speaking') ?>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+
             <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="toggleEditing(item)">
                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
             </button>
         </div>
-        <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :disabled="disableChildList" />
+        <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :motionTypes="motionTypes" :disabled="disableChildList" />
 
         <div v-if="item.type == 'date_separator'" class="infoRow">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
@@ -60,6 +86,9 @@ $html = ob_get_clean();
             modelValue: {
                 type: Array
             },
+            motionTypes: {
+                type: Array
+            },
             root: {
                 type: Boolean
             },
@@ -73,7 +102,7 @@ $html = ob_get_clean();
         data() {
             return {
                 locale,
-                editing: [],
+                notEditing: [],
                 disableChildListExplicitly: false,
             }
         },
@@ -95,14 +124,17 @@ $html = ob_get_clean();
                 this.disableChildListExplicitly = evt.clone.classList.contains("type_date_separator") || this.disabled;
             },
             isEditing: function(item) {
-                return this.editing.indexOf(item.id) !== -1;
+                return this.notEditing.indexOf(item.id) === -1;
             },
             toggleEditing: function(item) {
-                if (this.editing.indexOf(item.id) === -1) {
-                    this.editing.push(item.id);
+                if (this.notEditing.indexOf(item.id) !== -1) {
+                    this.notEditing.push(item.id);
                 } else {
-                    this.editing = this.editing.filter(id => id !== item.id);
+                    this.notEditing = this.notEditing.filter(id => id !== item.id);
                 }
+            },
+            isMotionTypeSelected(motionType, item) {
+                return item.settings.motionTypes.indexOf(motionType.id) !== -1;
             },
             addItemRow: function() {
                 this.modelValue.push({
@@ -137,7 +169,7 @@ ob_start();
             <input type="checkbox" v-model="showTime"> Zeit anzeigen
         </label>
     </div>
-    <agenda-sorter v-model="list" :root="true" :showTime="showTime"></agenda-sorter>
+    <agenda-sorter v-model="list" :motionTypes="motionTypes" :root="true" :showTime="showTime"></agenda-sorter>
 
     <div class="saveRow">
         <button type="button" @click="saveAgenda()" class="btn btn-primary btnSave">
@@ -158,6 +190,9 @@ $html = ob_get_clean();
         props: {
             modelValue: {
                 type: Array
+            },
+            motionTypes: {
+                type: Array
             }
         },
         computed: {
@@ -166,7 +201,6 @@ $html = ob_get_clean();
                     return this.modelValue;
                 },
                 set: function (value) {
-                    console.log("set", value)
                     this.$emit('update:modelValue', value);
                 }
             }
