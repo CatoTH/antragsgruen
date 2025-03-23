@@ -17,6 +17,11 @@ class AgendaSerializationTest extends TestBase
         "title": "Tagesordnungspunkt 23",
         "date": null,
         "time": "15:34",
+        "settings": {
+            "hasSpeakingList": true,
+            "inProposedProcedures": true,
+            "motionTypes": [10]
+        },
         "children": [
           {
             "id": 16,

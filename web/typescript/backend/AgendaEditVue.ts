@@ -14,6 +14,7 @@ export class AgendaEditVue {
         let agendaWidgetComponent;
 
         const agenda = JSON.parse(this.element.getAttribute('data-agenda'));
+        const motionTypes = JSON.parse(this.element.getAttribute('data-motion-types'));
         const saveAgendaUrl = this.element.getAttribute('data-save-agenda-url');
         const csrf = document.querySelector('head meta[name=csrf-token]').getAttribute('content') as string;
 
@@ -21,13 +22,15 @@ export class AgendaEditVue {
             template: `<div class="agendaEditHolder">
                 <agenda-edit-widget
                     v-model="agenda"
+                    :motionTypes="motionTypes"
                     ref="agenda-edit-widget"
                     @saveAgenda="onSaveAgenda()"
                 ></agenda-edit-widget>
             </div>`,
             data() {
                 return {
-                    agenda
+                    agenda,
+                    motionTypes
                 }
             },
             methods: {

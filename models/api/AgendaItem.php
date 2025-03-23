@@ -23,6 +23,8 @@ class AgendaItem
     public ?string $time = null;
     public ?string $date = null; // Only set for type=date_separator
 
+    public AgendaItemSettings $settings;
+
     /** @var AgendaItem[] */
     public array $children;
 
@@ -69,6 +71,7 @@ class AgendaItem
                 $apiItem->time = $entity->time;
             }
         }
+        $apiItem->settings = AgendaItemSettings::fromEntity($entity);
 
         $childEntities = array_values(array_filter($allEntities, fn (ConsultationAgendaItem $child) => $child->parentItemId === $entity->id));
         usort($childEntities, fn (ConsultationAgendaItem $a, ConsultationAgendaItem $b) => $a->position <=> $b->position);
