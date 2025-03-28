@@ -13,29 +13,40 @@ use yii\helpers\Html;
 $motionType   = $amendment->getMyMotionType();
 $html        = '<ul class="sidebarActions" aria-label="' . Html::encode(Yii::t('amend', 'sidebar_title_aria')) . '">';
 $sidebarRows = 0;
+$menusHtmlSmall = [];
 
 if ($motionType->hasPdfLayout() && $amendment->isVisible()) {
-    $html .= '<li class="download">';
+    $downloadLi = '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt" aria-hidden="true"></span>' .
         Yii::t('motion', 'download_pdf');
-    $html .= HtmlTools::createExternalLink($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
+    $downloadLi .= HtmlTools::createExternalLink($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
+
+    $html .= $downloadLi;
+    $menusHtmlSmall[] = $downloadLi;
     $sidebarRows++;
 }
 
 
 if ($amendment->canEditText()) {
-    $html .= '<li class="edit">';
+    $editLi = '<li class="edit">';
     $title = '<span class="icon glyphicon glyphicon-edit" aria-hidden="true"></span>' .
         Yii::t('amend', 'amendment_edit');
-    $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'edit')) . '</li>';
+    $editLi .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'edit')) . '</li>';
+
+    $html .= $editLi;
+    $menusHtmlSmall[] = $editLi;
     $sidebarRows++;
 }
 
 if ($amendment->canWithdraw()) {
-    $html .= '<li class="withdraw">';
+    $withdrawLi = '<li class="withdraw">';
     $title = '<span class="icon glyphicon glyphicon-remove" aria-hidden="true"></span>' .
         Yii::t('amend', 'amendment_withdraw');
-    $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'withdraw')) . '</li>';
+    $withdrawLi .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'withdraw')) . '</li>';
+
+    $html .= $withdrawLi;
+    $menusHtmlSmall[] = $withdrawLi;
+
     $sidebarRows++;
 }
 
@@ -43,7 +54,7 @@ if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments
     try {
         $amendment->getMyMotion()->isCurrentlyAmendable(true, true, true);
 
-        $html .= '<li class="amendmentCreate">';
+        $createLi = '<li class="amendmentCreate">';
         $amendCreateUrl = UrlHelper::createUrl([
             'amendment/create',
             'motionSlug' => $amendment->getMyMotion()->getMotionSlug(),
@@ -54,9 +65,10 @@ if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments
         if (!$amendment->getMyMotion()->isCurrentlyAmendable(false, true)) {
             $title .= ' <span class="onlyAdmins">(' . Yii::t('motion', 'amendment_create_admin') . ')</span>';
         }
-        $html .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';
-        $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '" ' .
-            'rel="nofollow">' . $title . '</a>';
+        $createLi .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';
+
+        $html .= $createLi;
+        $menusHtmlSmall[] = $createLi;
         $sidebarRows++;
     } catch (\app\models\exceptions\NotAmendable $e) {
         if ($e->isMessagePublic()) {
@@ -67,7 +79,7 @@ if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments
             $createLi .= Html::encode($e->getMessage()) . '</span></span></div>';
 
             $html .= $createLi;
-            $layout->menusHtmlSmall[] = $createLi;
+            $menusHtmlSmall[] = $createLi;
 
             $sidebarRows++;
         }
@@ -75,17 +87,23 @@ if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments
 }
 
 if ($amendment->canMergeIntoMotion(true)) {
-    $html .= '<li class="mergeIntoMotion">';
+    $mergeLi = '<li class="mergeIntoMotion">';
     $title = '<span class="icon glyphicon glyphicon-wrench" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_mergeintomotion');
     $url = UrlHelper::createAmendmentUrl($amendment, 'merge');
-    $html .= Html::a($title, $url) . '</li>';
+    $mergeLi .= Html::a($title, $url) . '</li>';
+
+    $html .= $mergeLi;
+    $menusHtmlSmall[] = $mergeLi;
     $sidebarRows++;
 }
 
 if ($adminEdit) {
-    $html .= '<li class="adminEdit">';
+    $adminEditLi = '<li class="adminEdit">';
     $title = '<span class="icon glyphicon glyphicon-wrench" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_adminedit');
-    $html .= Html::a($title, $adminEdit) . '</li>';
+    $adminEditLi .= Html::a($title, $adminEdit) . '</li>';
+
+    $html .= $adminEditLi;
+    $menusHtmlSmall[] = $adminEditLi;
     $sidebarRows++;
 }
 
@@ -103,6 +121,7 @@ $html .= '</ul>';
 
 
 $layout->menusHtml[] = $html;
+$layout->menusHtmlSmall[] = '<ul>' . implode("\n", $menusHtmlSmall) . '</ul>';
 $layout->menuSidebarType = Layout::SIDEBAR_TYPE_AMENDMENT;
 
 
