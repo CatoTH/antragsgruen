@@ -12,7 +12,7 @@ $I->wantTo('merge an amendment');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->gotoAmendment(true, 2, 274);
-$I->click('.mergeIntoMotion a');
+$I->click('#sidebar .mergeIntoMotion a');
 $I->wait(1);
 $I->selectOption('#amendmentStatus', IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->selectOption('#otherAmendmentsStatus1', IMotion::STATUS_REJECTED);
@@ -45,7 +45,7 @@ $I->seeElement('.alert-danger.motionReplacedBy');
 
 $I->wantTo('try to merge another amendment');
 $I->gotoAmendment(true, AcceptanceTester::FIRST_FREE_MOTION_ID, 272);
-$I->click('.mergeIntoMotion a');
+$I->click('#sidebar .mergeIntoMotion a');
 $I->wait(1);
 $I->click('.save-row .goto_2');
 $I->wait(1);
