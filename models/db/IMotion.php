@@ -766,15 +766,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         $needsCollectionPhase = false;
         if ($supportBase->collectSupportersBeforePublication()) {
             $supporters = $this->getSupporters(true);
-            $initiators = $this->getInitiators();
 
-            $isOrganization = false;
-            foreach ($initiators as $initiator) {
-                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
-                    $isOrganization = true;
-                }
-            }
-            if (!$isOrganization) {
+            if (!$this->isInitiatedByOrganization()) {
                 $minSupporters = $supportBase->getSettingsObj()->minSupporters;
                 if (count($supporters) < $minSupporters) {
                     $needsCollectionPhase = true;
@@ -813,6 +806,10 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     }
 
     public function hasEnoughSupporters(SupportBase $supportType): bool {
+        if ($this->isInitiatedByOrganization()) {
+            return true;
+        }
+
         $min           = $supportType->getSettingsObj()->minSupporters;
         $curr          = count($this->getSupporters(true));
         $missingFemale = $this->getMissingSupporterCountByGender($supportType, 'female');
