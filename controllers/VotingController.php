@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\models\exceptions\ApiResponseException;
 use app\models\http\{BinaryFileResponse, ResponseInterface, RestApiResponse};
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\quorumType\IQuorumType;
@@ -208,16 +209,11 @@ class VotingController extends Base
         }
         $agendaVoting = AgendaVoting::getFromVotingBlock($votingBlock);
 
-        switch ($format) {
-            case 'ods':
-                $formatResponse = BinaryFileResponse::TYPE_ODS;
-                break;
-            case 'xlsx':
-                $formatResponse = BinaryFileResponse::TYPE_XLSX;
-                break;
-            default:
-                $formatResponse = BinaryFileResponse::TYPE_HTML;
-        }
+        $formatResponse = match ($format) {
+            'ods' => BinaryFileResponse::TYPE_ODS,
+            'xlsx' => BinaryFileResponse::TYPE_XLSX,
+            default => BinaryFileResponse::TYPE_HTML,
+        };
 
         return new BinaryFileResponse(
             $formatResponse,
@@ -232,6 +228,9 @@ class VotingController extends Base
     public function actionGetOpenVotingBlocks(?int $assignedToMotionId, int $showAllOpen = 0): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
+        if (!User::getCurrentUser()) {
+            throw new ApiResponseException('Log logged in', 401);
+        }
 
         if ($assignedToMotionId) {
             $assignedToMotion = $this->consultation->getMotion($assignedToMotionId);
@@ -247,6 +246,9 @@ class VotingController extends Base
     public function actionGetClosedVotingBlocks(): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
+        if (!User::getCurrentUser()) {
+            throw new ApiResponseException('Log logged in', 401);
+        }
 
         $response = $this->votingMethods->getClosedPublishedVotingsForUser(User::getCurrentUser());
 
@@ -288,7 +290,7 @@ class VotingController extends Base
         }
         $user = User::getCurrentUser();
         if (!$user) {
-            return $this->returnRestResponseFromException(new \Exception('Not logged in'));
+            throw new ApiResponseException('Log logged in', 401);
         }
 
         try {
