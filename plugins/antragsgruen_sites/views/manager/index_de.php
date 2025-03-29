@@ -221,9 +221,7 @@ $controller->layoutParams->addInlineCss('
         </p>
         <p style="margin-bottom: 40px;">
             <a href="mailto:info@antragsgruen.de" aria-label="Kontaktiert uns - E-Mail an info@antragsgruen.de schreiben"><strong>Kontaktiert uns</strong></a>
-            für genauere Informationen und ein konkretes Angebot -
-            kleineren bis mittelgroßen Organisationen bieten wir das Hosting in der Regel für 100€ + MwSt. pro Jahr an.
-            Jugendorganisationen für die Hälfte.
+            für genauere Informationen und ein konkretes Angebot.
         </p>
 
         <h3>Angebot für Grüne Organisationen</h3>
