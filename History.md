@@ -7,6 +7,7 @@
 ### Version 4.15.2 [not released yet]
 
 - When clonsing a consultation, the agenda is now also copied by default.
+- Bugfix: editing and withdrawing amendments was not available as menu items on small screened devices.
 - Bugfix: When cloning consultations with user groups that have administrative permissions to only a subset of motions, these restrictions were not copied to the new consultation.
 - Bugfix: The "My Motions" sections could show not accessible new versions of submitted motions.
 - Bugfix: Multiple line breaks without starting a new paragraph in a motion could lead to empty deletions in the amendment view.
