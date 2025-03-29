@@ -105,6 +105,9 @@ class AntragsgruenApp implements \JsonSerializable
         $this->setPropertiesFromJSON($data);
 
         if ($data === '' || $data === null) {
+            // No configuration set, e.g. in installer
+            require_once(__DIR__ . '/../../components/UrlHelper.php');
+
             $this->resourceBase = $_SERVER['SCRIPT_NAME'];
             $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
             $this->domainPlain  = UrlHelper::getCurrentScheme() . '://' . $_SERVER['HTTP_HOST'] . '/';
