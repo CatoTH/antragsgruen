@@ -25,6 +25,7 @@ abstract class IBackgroundJob
     {
         return [
             SendNotification::TYPE_ID => SendNotification::class,
+            BuildStaticCache::TYPE_ID => BuildStaticCache::class,
         ];
     }
 
