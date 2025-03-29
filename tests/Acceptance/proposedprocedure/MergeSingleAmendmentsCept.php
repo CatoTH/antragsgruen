@@ -17,7 +17,7 @@ $I->loginAsStdAdmin();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 281);
 $I->see('Zombie', 'ins');
 
-$I->click('.mergeIntoMotion a');
+$I->click('#sidebar .mergeIntoMotion a');
 $I->wait(1);
 
 $I->click('.save-row .goto_2');
