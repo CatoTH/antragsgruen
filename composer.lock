@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2c0eb8c9cb76f086db2fa1fde67b831",
+    "content-hash": "2610059719a6b6bf3552e922e0f0cd63",
     "packages": [
         {
             "name": "async-aws/core",
@@ -5700,16 +5700,16 @@
         },
         {
             "name": "codeception/codeception",
-            "version": "dev-main",
+            "version": "5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "3d7a135b76f29eba80917db17ef5653fb1c4f885"
+                "reference": "6e06224627dcd89e7d4753f44ba4df35034b6314"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/3d7a135b76f29eba80917db17ef5653fb1c4f885",
-                "reference": "3d7a135b76f29eba80917db17ef5653fb1c4f885",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/6e06224627dcd89e7d4753f44ba4df35034b6314",
+                "reference": "6e06224627dcd89e7d4753f44ba4df35034b6314",
                 "shasum": ""
             },
             "require": {
@@ -5766,7 +5766,6 @@
                 "symfony/phpunit-bridge": "For phpunit-bridge support",
                 "vlucas/phpdotenv": "For loading params from .env files"
             },
-            "default-branch": true,
             "bin": [
                 "codecept"
             ],
@@ -5810,7 +5809,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Codeception/Codeception/issues",
-                "source": "https://github.com/Codeception/Codeception/tree/main"
+                "source": "https://github.com/Codeception/Codeception/tree/5.2.1"
             },
             "funding": [
                 {
@@ -5818,7 +5817,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2025-03-08T11:26:29+00:00"
+            "time": "2025-02-20T14:52:49+00:00"
         },
         {
             "name": "codeception/lib-asserts",
@@ -5935,16 +5934,16 @@
         },
         {
             "name": "codeception/lib-web",
-            "version": "dev-main",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/lib-web.git",
-                "reference": "bc7c96a52e61cf636130caec77bd4668a2bc5969"
+                "reference": "1444ccc9b1d6721f3ced8703c8f4a9041b80df93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/lib-web/zipball/bc7c96a52e61cf636130caec77bd4668a2bc5969",
-                "reference": "bc7c96a52e61cf636130caec77bd4668a2bc5969",
+                "url": "https://api.github.com/repos/Codeception/lib-web/zipball/1444ccc9b1d6721f3ced8703c8f4a9041b80df93",
+                "reference": "1444ccc9b1d6721f3ced8703c8f4a9041b80df93",
                 "shasum": ""
             },
             "require": {
@@ -5960,7 +5959,6 @@
             "require-dev": {
                 "php-webdriver/webdriver": "^1.12"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -9264,18 +9262,6 @@
     ],
     "aliases": [
         {
-            "package": "codeception/codeception",
-            "version": "dev-main",
-            "alias": "5.1.2",
-            "alias_normalized": "5.1.2.0"
-        },
-        {
-            "package": "codeception/lib-web",
-            "version": "dev-main",
-            "alias": "1.0.6",
-            "alias_normalized": "1.0.6.0"
-        },
-        {
             "package": "s1syphos/php-simple-captcha",
             "version": "dev-main",
             "alias": "2.4.0",
@@ -9296,8 +9282,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "codeception/codeception": 20,
-        "codeception/lib-web": 20,
         "s1syphos/php-simple-captcha": 20,
         "scssphp/scssphp": 20,
         "tijsverkoyen/css-to-inline-styles": 20
