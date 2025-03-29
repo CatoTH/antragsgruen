@@ -4,7 +4,7 @@
 
 - An optional mechanism for background job execution is introduced, making it possible to send e-mails asynchronously (therefore not blocking regular requests).
 
-### Version 4.15.2 [not released yet]
+### Version 4.15.2 (2025-03-29)
 
 - When cloning a consultation, the agenda is now also copied by default.
 - Bugfix: Editing and withdrawing amendments was not available as menu items on small screened devices.
