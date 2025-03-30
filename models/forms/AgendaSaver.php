@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\forms;
 
 use app\models\api\AgendaItem;
+use app\models\exceptions\NotFound;
 use app\models\db\{Consultation, ConsultationAgendaItem};
 use app\models\exceptions\FormError;
 
@@ -43,18 +44,18 @@ class AgendaSaver
             $dbItem->position = $position;
             $dbItem->title = mb_substr($apiItem->title, 0, 250);
             $dbItem->code  = ($apiItem->code !== null ? mb_substr($apiItem->code, 0, 20) : ConsultationAgendaItem::CODE_AUTO);
-            /*
-             *
 
-            $settings                       = $item->getSettingsObj();
-            $settings->inProposedProcedures = (!isset($data['inProposedProcedures']) || $data['inProposedProcedures']);
-            $item->setSettingsObj($settings);
+            $settings = $dbItem->getSettingsObj();
+            $settings->inProposedProcedures = $apiItem->settings->inProposedProcedures;
+            $dbItem->setSettingsObj($settings);
 
-            if (isset($data['hasSpeakingList']) && $data['hasSpeakingList']) {
-                $item->addSpeakingListIfNotExistant();
+            if ($apiItem->settings->hasSpeakingList) {
+                $dbItem->addSpeakingListIfNotExistant();
             } else {
-                $item->removeSpeakingListsIfPossible();
+                $dbItem->removeSpeakingListsIfPossible();
             }
+
+            /*
 
             if (isset($data['time']) && preg_match('/^(?<hour>\d\d):(?<minute>\d\d)(?<ampm> (AM|PM))?$/siu', $data['time'], $matches)) {
                 $hour = $matches['hour'];
@@ -67,6 +68,18 @@ class AgendaSaver
             }
             Motion Type
             */
+
+            try {
+                if (count($apiItem->settings->motionTypes) > 0) {
+                    // Hint: for now, we only support one motion type
+                    $type = $this->consultation->getMotionType($apiItem->settings->motionTypes[0]); // Throws an exception if not existent
+                    $dbItem->motionTypeId = $type->id;
+                } else {
+                    $dbItem->motionTypeId = null;
+                }
+            } catch (NotFound) {
+                $dbItem->motionTypeId = null;
+            }
 
             $dbItem->save();
 
