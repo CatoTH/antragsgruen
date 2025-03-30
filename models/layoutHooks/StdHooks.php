@@ -474,30 +474,64 @@ class StdHooks extends Hooks
         return $before;
     }
 
+    /**
+     * Show upcoming deadlines according to the following cases:
+     * - If only one date is upcoming, just show the date
+     * - If multiple dates are upcoming, show the first one big, and the others in the tooltip.
+     *   - If the first upcoming date is only for one specific motion type, show its name
+     *   - If the first upcoming date is for multiple motion types, don't show the name, refer to tooltip
+     */
     public function getConsultationPreWelcome(string $before): string
     {
-        $highlightedDeadlines = [];
+        /** @var array<string, array{date: string, titles: string[]}> $deadlines */
+        $deadlines = [];
         foreach ($this->consultation->motionTypes as $motionType) {
             $deadline = $motionType->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
-            if ($motionType->sidebarCreateButton && $deadline && !in_array($deadline, $highlightedDeadlines)) {
-                $highlightedDeadlines[] = $deadline;
+            if ($deadline) {
+                if (!isset($deadlines[$deadline])) {
+                    $deadlines[$deadline] = ['date' => $deadline, 'titles' => []];
+                }
+                $deadlines[$deadline]['titles'][] = $motionType->titlePlural;
+            }
+
+            $deadline = $motionType->getUpcomingDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
+            if ($deadline) {
+                if (!isset($deadlines[$deadline])) {
+                    $deadlines[$deadline] = ['date' => $deadline, 'titles' => []];
+                }
+                $deadlines[$deadline]['titles'][] = \Yii::t('con', 'deadline_amendments');
             }
         }
-        if (count($highlightedDeadlines) === 0) {
+
+        if (count($deadlines) === 0) {
             $str = '';
-        } elseif (count($highlightedDeadlines) === 1) {
-            $str = '<p class="deadlineCircle single">' . \Yii::t('con', 'deadline_circle') . ': ';
-            $str .= Tools::formatMysqlDateTime($highlightedDeadlines[0]) . "</p>\n";
+        } elseif (count($deadlines) === 1) {
+            $str = '<div class="deadlineCircle single">';
+            $str .= '<div class="top">'. \Yii::t('con', 'deadline_circle') . ':</div>';
+            $str .= '<div class="date">' . str_replace(" ", "<br>", Tools::formatMysqlDateTime(array_values($deadlines)[0]['date'])) . "</div>";
+            $str .= '</div>';
         } else {
             $this->layout->addTooltopOnloadJs();
 
-            $icon = HTMLTools::getTooltipIcon('Alle kommenden Fristen:<br>12.12. Blabla', 'bottom', true);
+            $deadlines = array_values($deadlines);
+            usort($deadlines, fn ($a, $b) => $a['date'] <=> $b['date']);
+
+            $deadlinesStrs = array_map(function ($deadline) {
+                return Tools::formatMysqlDateTime($deadline['date'], false) . ': ' . implode(", ", $deadline['titles']);
+            }, $deadlines);
+            $icon = HTMLTools::getTooltipIcon(\Yii::t('con', 'deadline_all') . ':<br>' . implode("<br>", $deadlinesStrs), 'bottom', true);
             $str = '<div class="deadlineCircle multiple">';
-            $str .='<div class="top">Nächste<br>Frist <span class="tooltipHolder">' . $icon . '</span></div>';
-            $str .= '<div class="name"><p>Anträge</p></div>';
-            $str .= '<div class="bottom">';
-            $str .= str_replace(", ", "<br>", Tools::formatMysqlDateTime($highlightedDeadlines[0]));
-            $str .= '</div></div>';
+            $str .='<div class="top">' . \Yii::t('con', 'deadline_upcoming') . ' <span class="tooltipHolder">' . $icon . '</span></div>';
+
+            if (count($deadlines[0]['titles']) === 1) {
+                $str .= '<div class="name singleline"><p>' . Html::encode($deadlines[0]['titles'][0]) . '</p></div>';
+                $str .= '<div class="bottom">';
+                $str .= str_replace(", ", "<br>", Tools::formatMysqlDateTime($deadlines[0]['date']));
+                $str .= '</div>';
+            } else {
+                $str .= '<div class="name nobottom"><p>' . str_replace(" ", "<br>", Tools::formatMysqlDateTime($deadlines[0]['date'])) . '</p></div>';
+            }
+            $str .= '</div>';
         }
 
         return $str;

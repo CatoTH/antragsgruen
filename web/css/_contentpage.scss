@@ -94,9 +94,20 @@ $headlineHeight: 125px;
   &.single {
     width: $headlineHeight;
     height: $headlineHeight;
-    font-size: 15px;
-    line-height: 17px;
-    padding-top: 20px;
+
+    .top {
+      font-size: 12px;
+      line-height: 14px;
+      padding-top: 12px;
+      max-width: 100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .date {
+      font-size: 16px;
+      line-height: 17px;
+      padding-top: 20px;
+    }
   }
   &.multiple {
     width: $headlineHeight;
@@ -123,9 +134,22 @@ $headlineHeight: 125px;
         margin: 0;
         text-align: center;
         hyphens: auto;
-        overflow-wrap: break-word;
-        max-width: 110px;
+        max-width: 120px;
       }
+
+      &.singleline p {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &.nobottom {
+        margin-top: 10px;
+      }
+    }
+
+    .tooltip-inner {
+      min-width: 200px;
+      text-align: left;
     }
 
     .tooltipHolder {
