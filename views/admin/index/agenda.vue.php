@@ -9,52 +9,90 @@ $locale = Tools::getCurrentDateLocale();
 
 ob_start();
 ?>
+<div class="infoRow">
+    <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
+    <span v-if="!isEditing">{{ modelValue.time }} {{ modelValue.title }}</span>
+    <v-datetime-picker v-if="isEditing" v-model="modelValue.time" type="time" :locale="locale" />
+    <input type="text" v-if="isEditing" v-model="modelValue.title" class="form-control"/>
+
+    <select class="stdDropdown" @change="onMotionTypeChange($event)">
+        <option>-</option>
+        <option v-for="motionType in motionTypes" :value="motionType.id" :selected="isMotionTypeSelected(motionType)">{{ motionType.title }}</option>
+    </select>
+
+    <div class="dropdown extraSettings" v-if="isEditing">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="glyphicon glyphicon-wrench"></span>
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <li class="checkbox inProposedProcedures">
+                <label>
+                    <input type="checkbox" v-model="modelValue.settings.inProposedProcedures">
+                    <?= Yii::t('con', 'agenda_pp') ?>
+                </label>
+            </li>
+            <li class="checkbox hasSpeakingList">
+                <label>
+                    <input type="checkbox" v-model="modelValue.settings.hasSpeakingList">
+                    <?= Yii::t('con', 'agenda_speaking') ?>
+                </label>
+            </li>
+        </ul>
+    </div>
+
+    <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="isEditing = !isEditing">
+        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+    </button>
+</div>
+<?php
+$html = ob_get_clean();
+?>
+<script>
+    __setVueComponent('agenda', 'component', 'agenda-edit-item-row', {
+        template: <?= json_encode($html) ?>,
+        props: {
+            modelValue: { type: Array },
+            motionTypes: { type: Array }
+        },
+        data() {
+            return {
+                isEditing: true,
+            }
+        },
+        methods: {
+            isMotionTypeSelected(motionType) {
+                return this.modelValue.settings.motionTypes.indexOf(motionType.id) !== -1;
+            },
+            onMotionTypeChange(event) {
+                this.modelValue.settings.motionTypes = (event.target.value ? [parseInt(event.target.value)] : null);
+            }
+        },
+        mounted: function () {
+            this.$el.querySelectorAll(".dropdown-menu .checkbox").forEach((el) => {
+                el.addEventListener("click", ev => ev.stopPropagation());
+            });
+        }
+    });
+</script>
+<?php
+
+ob_start();
+?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
     <li v-for="item in list" :key="item.id" class="item" :class="'type_' + item.type">
-        <div v-if="item.type == 'item'" class="infoRow">
-            <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-            <span v-if="!isEditing(item)">{{ item.time }} {{ item.title }}</span>
-            <v-datetime-picker v-if="isEditing(item)" v-model="item.time" type="time" :locale="locale" />
-            <input type="text" v-if="isEditing(item)" v-model="item.title" class="form-control"/>
-
-            <select class="stdDropdown">
-                <option>-</option>
-                <option v-for="motionType in motionTypes" :value="motionType.id" :selected="isMotionTypeSelected(motionType, item)">{{ motionType.title }}</option>
-            </select>
-
-            <div class="dropdown extraSettings" v-if="isEditing(item)">
-                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span class="glyphicon glyphicon-wrench"></span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li class="checkbox inProposedProcedures">
-                        <label>
-                            <input type="checkbox" v-model="item.settings.inProposedProcedures">
-                            <?= Yii::t('con', 'agenda_pp') ?>
-                        </label>
-                    </li>
-                    <li class="checkbox hasSpeakingList">
-                        <label>
-                            <input type="checkbox" v-model="item.settings.hasSpeakingList">
-                            <?= Yii::t('con', 'agenda_speaking') ?>
-                        </label>
-                    </li>
-                </ul>
-            </div>
-
-            <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="toggleEditing(item)">
-                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-            </button>
-        </div>
+        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" />
         <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :motionTypes="motionTypes" :disabled="disableChildList" />
 
         <div v-if="item.type == 'date_separator'" class="infoRow">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
+            <!--
             <span v-if="!isEditing(item)">{{ item.date }}</span>
             <div v-if="isEditing(item)">
                 <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
             </div>
+            -->
+            <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
             <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="toggleEditing(item)">
                 <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
             </button>
@@ -83,26 +121,15 @@ $html = ob_get_clean();
     __setVueComponent('agenda', 'component', 'agenda-sorter', {
         template: <?= json_encode($html) ?>,
         props: {
-            modelValue: {
-                type: Array
-            },
-            motionTypes: {
-                type: Array
-            },
-            root: {
-                type: Boolean
-            },
-            disabled: {
-                type: Boolean
-            },
-            showTime: {
-                type: Boolean
-            }
+            modelValue: { type: Array },
+            motionTypes: { type: Array },
+            root: { type: Boolean },
+            disabled: { type: Boolean },
+            showTime: { type: Boolean }
         },
         data() {
             return {
                 locale,
-                notEditing: [],
                 disableChildListExplicitly: false,
             }
         },
@@ -123,19 +150,6 @@ $html = ob_get_clean();
             onClone: function (evt) {
                 this.disableChildListExplicitly = evt.clone.classList.contains("type_date_separator") || this.disabled;
             },
-            isEditing: function(item) {
-                return this.notEditing.indexOf(item.id) === -1;
-            },
-            toggleEditing: function(item) {
-                if (this.notEditing.indexOf(item.id) !== -1) {
-                    this.notEditing.push(item.id);
-                } else {
-                    this.notEditing = this.notEditing.filter(id => id !== item.id);
-                }
-            },
-            isMotionTypeSelected(motionType, item) {
-                return item.settings.motionTypes.indexOf(motionType.id) !== -1;
-            },
             addItemRow: function() {
                 this.modelValue.push({
                     id: null,
@@ -144,7 +158,12 @@ $html = ob_get_clean();
                     title: '',
                     time: null,
                     children: [],
-                }); // @TODO Open Editing
+                    settings: {
+                        inProposedProcedures: false,
+                        hasSpeakingList: false,
+                        motionTypes: [],
+                    },
+                });
             },
             addDateSeparatorRow: function() {
                 this.modelValue.push({
@@ -154,7 +173,7 @@ $html = ob_get_clean();
                     title: '',
                     date: null,
                     children: [],
-                }); // @TODO Open Editing
+                });
             }
         }
     });
@@ -188,12 +207,8 @@ $html = ob_get_clean();
     __setVueComponent('agenda', 'component', 'agenda-edit-widget', {
         template: <?= json_encode($html) ?>,
         props: {
-            modelValue: {
-                type: Array
-            },
-            motionTypes: {
-                type: Array
-            }
+            modelValue: { type: Array },
+            motionTypes: { type: Array }
         },
         computed: {
             list: {
@@ -221,8 +236,6 @@ $html = ob_get_clean();
             return {
                 showTime: anyItemHasTime(this.modelValue)
             }
-        },
-        watch: {
         },
         methods: {
             saveAgenda: function() {
