@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace app\models\api;
 
-use app\components\CookieUser;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
-use app\models\db\User;
-use app\models\settings\SpeechQueue as SpeechQueueSettings;
-use Symfony\Component\Serializer\Annotation\Ignore;
 
 class AgendaItem
 {
