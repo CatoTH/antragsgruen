@@ -1,6 +1,6 @@
 <script>
     const dateTimePickerComponent = {
-        template: '<div class="input-group date datetimepicker">\
+        template: '<div class="input-group datetimepicker" :class="[\'locale-\' + locale, type]">\
             <input type="text" class="form-control" value="" autocomplete="off">\
             <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>\
         </div>',
@@ -18,11 +18,13 @@
                 default: null
             }
         },
+        /*
         watch: {
             value: function (newVal, oldVal) {
                 console.log(newVal);
             }
         },
+         */
         data() {
             return {
                 pickerElement: null
@@ -43,7 +45,6 @@
                 if (this.type === 'time') {
                     format = 'LT';
                     if (this.modelValue) {
-                        console.log(this.modelValue);
                         initDate = moment(this.modelValue, "HH:mm", this.locale);
                     }
                 }

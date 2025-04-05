@@ -13,9 +13,12 @@ ob_start();
     <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
     <span v-if="!isEditing">{{ modelValue.time }} {{ modelValue.title }}</span>
     <v-datetime-picker v-if="isEditing" v-model="modelValue.time" type="time" :locale="locale" />
-    <input type="text" v-if="isEditing" v-model="modelValue.title" class="form-control"/>
 
-    <select class="stdDropdown" @change="onMotionTypeChange($event)">
+    <input type="text" v-if="isEditing" v-model="modelValue.code" :placeholder="codePlaceholder" class="form-control codeCol"/>
+    <input type="text" v-if="isEditing" v-model="modelValue.title" class="form-control titleCol"/>
+
+
+    <select class="stdDropdown motionTypeCol" @change="onMotionTypeChange($event)">
         <option>-</option>
         <option v-for="motionType in motionTypes" :value="motionType.id" :selected="isMotionTypeSelected(motionType)">{{ motionType.title }}</option>
     </select>
@@ -53,11 +56,17 @@ $html = ob_get_clean();
         template: <?= json_encode($html) ?>,
         props: {
             modelValue: { type: Array },
+            locale: { type: String },
             motionTypes: { type: Array }
         },
         data() {
             return {
                 isEditing: true,
+            }
+        },
+        computed: {
+            codePlaceholder() {
+                return 'bla'; // @TODO
             }
         },
         methods: {
@@ -81,7 +90,7 @@ ob_start();
 ?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
     <li v-for="item in list" :key="item.id" class="item" :class="'type_' + item.type">
-        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" />
+        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" :locale="locale" />
         <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :motionTypes="motionTypes" :disabled="disableChildList" />
 
         <div v-if="item.type == 'date_separator'" class="infoRow">
