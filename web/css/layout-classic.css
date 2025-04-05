@@ -5897,6 +5897,51 @@ button.link {
   flex-direction: row;
   width: 100%;
 }
+.agendaEditWidget .sortIndicator {
+  flex-grow: 0;
+  flex-basis: 25px;
+  padding-top: 10px;
+}
+.agendaEditWidget .datetimepicker {
+  flex-grow: 0;
+  padding-right: 5px;
+}
+.agendaEditWidget .datetimepicker.time {
+  flex-basis: 80px;
+}
+.agendaEditWidget .datetimepicker.time.locale-en {
+  flex-basis: 100px;
+}
+.agendaEditWidget .datetimepicker.date {
+  flex-basis: 250px;
+}
+.agendaEditWidget .datetimepicker .form-control {
+  padding: 6px 6px;
+}
+.agendaEditWidget .datetimepicker .input-group-addon {
+  padding: 6px 6px;
+  background-color: white;
+  color: gray;
+}
+.agendaEditWidget .codeCol {
+  flex-grow: 0;
+  flex-basis: 50px;
+  margin-right: 5px;
+}
+.agendaEditWidget .titleCol {
+  flex-grow: 1;
+  flex-basis: 200px;
+  margin-right: 5px;
+}
+.agendaEditWidget .motionTypeCol {
+  flex-grow: 0;
+  flex-basis: 180px;
+  margin-right: 5px;
+}
+.agendaEditWidget .extraSettings {
+  flex-grow: 0;
+  flex-basis: 40px;
+}
 
 .stdNonFormattedList {
   list-style-type: none;
