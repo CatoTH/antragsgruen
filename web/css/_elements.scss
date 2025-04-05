@@ -288,6 +288,55 @@ button.link {
     flex-direction: row;
     width: 100%;
   }
+  .sortIndicator {
+    flex-grow: 0;
+    flex-basis: 25px;
+    padding-top: 10px;
+  }
+
+  .datetimepicker {
+    flex-grow: 0;
+    padding-right: 5px;
+
+    &.time {
+      flex-basis: 80px;
+
+      &.locale-en {
+        flex-basis: 100px;
+      }
+    }
+    &.date {
+      flex-basis: 250px;
+    }
+
+    .form-control {
+      padding: 6px 6px;
+    }
+    .input-group-addon {
+      padding: 6px 6px;
+      background-color: white;
+      color: gray;
+    }
+  }
+  .codeCol {
+    flex-grow: 0;
+    flex-basis: 50px;
+    margin-right: 5px;
+  }
+  .titleCol {
+    flex-grow: 1;
+    flex-basis: 200px;
+    margin-right: 5px;
+  }
+  .motionTypeCol {
+    flex-grow: 0;
+    flex-basis: 180px;
+    margin-right: 5px;
+  }
+  .extraSettings {
+    flex-grow: 0;
+    flex-basis: 40px;
+  }
 }
 
 .stdNonFormattedList {
