@@ -12,8 +12,8 @@ class SMTP extends Base
 {
     private string $host;
     private int $port = 25;
-    private ?string $username = null;
-    private ?string $password = null;
+    private ?string $username = "";
+    private ?string $password = "";
     /** @phpstan-ignore-next-line  */
     private ?string $encryption = null;
 
