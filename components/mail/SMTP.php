@@ -12,8 +12,8 @@ class SMTP extends Base
 {
     private string $host;
     private int $port = 25;
-    private ?string $username = "";
-    private ?string $password = "";
+    private ?string $username = null;
+    private ?string $password = null;
     /** @phpstan-ignore-next-line  */
     private ?string $encryption = null;
 
@@ -71,8 +71,12 @@ class SMTP extends Base
 
         return new \Swift_Mailer($transport);
         */
-        $dsn = 'smtp://' . urlencode($this->username) . ':' . urlencode($this->password) . '@' .
-            urlencode($this->host) . ':' . $this->port;
+        if ($this->username && $this->password) {
+            $dsn = 'smtp://' . urlencode($this->username) . ':' . urlencode($this->password) . '@' .
+                urlencode($this->host) . ':' . $this->port;
+        } else {
+            $dsn = 'smtp://' . urlencode($this->host) . ':' . $this->port;
+        }
 
         return Transport::fromDsn($dsn);
     }
