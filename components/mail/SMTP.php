@@ -71,8 +71,12 @@ class SMTP extends Base
 
         return new \Swift_Mailer($transport);
         */
-        $dsn = 'smtp://' . urlencode($this->username) . ':' . urlencode($this->password) . '@' .
-            urlencode($this->host) . ':' . $this->port;
+        if ($this->username && $this->password) {
+            $dsn = 'smtp://' . urlencode($this->username) . ':' . urlencode($this->password) . '@' .
+                urlencode($this->host) . ':' . $this->port;
+        } else {
+            $dsn = 'smtp://' . urlencode($this->host) . ':' . $this->port;
+        }
 
         return Transport::fromDsn($dsn);
     }
