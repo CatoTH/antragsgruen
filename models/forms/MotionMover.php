@@ -11,9 +11,9 @@ use app\models\exceptions\Inconsistency;
 class MotionMover
 {
     public function __construct(
-        private Consultation $consultation,
-        private Motion $motion,
-        private User $mover
+        private readonly Consultation $consultation,
+        private readonly Motion $motion,
+        private readonly User $mover
     ) {
     }
 
@@ -170,7 +170,7 @@ class MotionMover
 
     private function copyToConsultation(ConsultationMotionType $motionType, string $titlePrefix, bool $markAsMoved): Motion
     {
-        $newMotion = MotionDeepCopy::copyMotion($this->motion, $motionType, null, $titlePrefix, Motion::VERSION_DEFAULT, $markAsMoved);
+        $newMotion = MotionDeepCopy::copyMotion($this->motion, $motionType, null, $titlePrefix, $this->motion->version, $markAsMoved);
 
         if ($markAsMoved) {
             $this->motion->status = IMotion::STATUS_MOVED;

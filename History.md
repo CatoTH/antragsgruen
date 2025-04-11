@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.15.3 [not released yet]
+
+- When copying a motion to a different consultation, the tags and the version was not transferred.
+
 ### Version 4.15.2 (2025-03-29)
 
 - When cloning a consultation, the agenda is now also copied by default.
