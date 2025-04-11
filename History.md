@@ -5,6 +5,10 @@
 - An optional mechanism for background job execution is introduced, making it possible to send e-mails asynchronously (therefore not blocking regular requests).
 - The deadline circle at the top of the homepage now also shows dates if more than one future deadline exists.
 
+### Version 4.15.3 [not released yet]
+
+- When copying a motion to a different consultation, the tags and the version was not transferred.
+
 ### Version 4.15.2 (2025-03-29)
 
 - When cloning a consultation, the agenda is now also copied by default.

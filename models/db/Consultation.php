@@ -521,13 +521,21 @@ class Consultation extends ActiveRecord
         return $tags;
     }
 
-    public function getExistingTagOrCreate(int $type, string $nameUnnormalized, int $position): ConsultationSettingsTag
+    public function getExistingTag(int $type, string $nameUnnormalized): ?ConsultationSettingsTag
     {
         $nameNormalized = ConsultationSettingsTag::normalizeName($nameUnnormalized);
         foreach ($this->tags as $tag) {
             if ($tag->type === $type && $tag->getNormalizedName() === $nameNormalized) {
                 return $tag;
             }
+        }
+        return null;
+    }
+
+    public function getExistingTagOrCreate(int $type, string $nameUnnormalized, int $position): ConsultationSettingsTag
+    {
+        if ($tag = $this->getExistingTag($type, $nameUnnormalized)) {
+            return $tag;
         }
 
         $tag = new ConsultationSettingsTag();
