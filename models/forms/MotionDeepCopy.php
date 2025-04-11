@@ -89,7 +89,7 @@ class MotionDeepCopy
 
         $motion->getMyConsultation()->refresh();
         $newConsultation->refresh();
-        UrlHelper::getCurrentConsultation()->refresh();
+        UrlHelper::getCurrentConsultation()?->refresh();
 
         return $newMotion;
     }
@@ -111,13 +111,18 @@ class MotionDeepCopy
 
     private static function copyTags(Motion $oldMotion, Motion $newMotion): void
     {
-        if ($newMotion->consultationId !== $oldMotion->consultationId) {
-            // Alternatively, we could link similar sounding tags,
-            // but as there is no guarantee there would be matching tags, we skip it completely.
-            return;
-        }
-        foreach ($oldMotion->getPublicTopicTags() as $tag) {
-            $newMotion->link('tags', $tag);
+        if ($newMotion->consultationId === $oldMotion->consultationId) {
+            foreach ($oldMotion->getPublicTopicTags() as $tag) {
+                $newMotion->link('tags', $tag);
+            }
+        } else {
+            $newConsultation = $newMotion->getMyConsultation();
+            foreach ($oldMotion->getPublicTopicTags() as $tag) {
+                $newTag = $newConsultation->getExistingTag($tag->type, $tag->title);
+                if ($newTag) {
+                    $newMotion->link('tags', $newTag);
+                }
+            }
         }
     }
 

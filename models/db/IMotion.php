@@ -99,7 +99,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     // This amendment is being referenced by proposalReference of the modified amendment.
     public const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
 
-    // The modified version of amotion, as proposed by the admins.
+    // The modified version of a motion, as proposed by the admins.
     // This amendment is being referenced by proposalReference of the modified motion.
     public const STATUS_PROPOSED_MODIFIED_MOTION = 31;
 
