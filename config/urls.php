@@ -108,8 +108,8 @@ $urlRules = [
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/vote' => '/voting/post-vote',
     $restBaseCon . '/votings/<votingBlockId:[^\/]+>/results.<format:[^\/]+>' => '/voting/download-voting-results',
 
-    $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
-    $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',
+    $domv . 'motion/pdfcollection/<motionTypeId:[\d,]+>/<filename:.*>' => 'motion/pdfcollection',
+    $domv . 'motion/fullpdf/<motionTypeId:[\d,]+>/<filename:.*>'       => 'motion/fullpdf',
     $domv . 'amendment/pdfcollection/<filename:.*>'                 => 'amendment/pdfcollection',
 
     $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',
