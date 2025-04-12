@@ -14,7 +14,9 @@ use yii\helpers\Html;
 
 class AdminMotionFilterForm
 {
-    public ?int $motionType = null;
+    /** @var int[]|null  */
+    public ?array $motionTypes = null;
+
     public ?int $status = null;
     public ?string $version = null;
     public ?int $tag = null;
@@ -113,7 +115,11 @@ class AdminMotionFilterForm
 
     public function setAttributes(array $values): void
     {
-        $this->motionType = $this->getNullableIntVal($values, 'motionType');
+        if (isset($values['motionTypes'])) {
+            $this->motionTypes = array_map('intval', explode(',', $values['motionTypes']));
+        } else {
+            $this->motionTypes = null;
+        }
         $this->title = $values['title'] ?? null;
         $this->initiator = $values['initiator'] ?? null;
         $this->prefix = $values['prefix'] ?? null;
@@ -142,7 +148,7 @@ class AdminMotionFilterForm
     public function getAttributes(): array
     {
         return [
-            'motionType' => $this->motionType,
+            'motionTypes' => ($this->motionTypes ? implode(',', $this->motionTypes) : null),
             'title' => $this->title,
             'initiator' => $this->initiator,
             'prefix' => $this->prefix,
@@ -160,7 +166,7 @@ class AdminMotionFilterForm
 
     public function isFilterSet(): bool
     {
-        return $this->motionType !== null ||
+        return $this->motionTypes !== null ||
                $this->title !== null ||
                $this->initiator !== null ||
                $this->prefix !== null ||
@@ -366,7 +372,7 @@ class AdminMotionFilterForm
         foreach ($this->allMotions as $motion) {
             $matches = true;
 
-            if ($this->motionType !== null && $motion->motionTypeId !== $this->motionType) {
+            if ($this->motionTypes !== null && !in_array($motion->motionTypeId, $this->motionTypes)) {
                 $matches = false;
             }
 
@@ -505,7 +511,7 @@ class AdminMotionFilterForm
                 $matches = false;
             }
 
-            if ($this->motionType !== null && $amend->getMyMotion()->motionTypeId !== $this->motionType) {
+            if ($this->motionTypes !== null && !in_array($amend->getMyMotion()->motionTypeId, $this->motionTypes)) {
                 $matches = false;
             }
 
@@ -605,14 +611,15 @@ class AdminMotionFilterForm
 
         // Motion Type
 
+        // Hint: on the UI, only one value is supported
         $motionTypeList = $this->getMotionTypeList();
-        if (count($motionTypeList) > 1 || $this->motionType !== null) {
+        if (count($motionTypeList) > 1 || $this->motionTypes !== null) {
             $str .= '<label class="filterMotionType">' . \Yii::t('admin', 'filter_motiontype') . ':<br>';
             $types = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($motionTypeList as $typeId => $typeName) {
                 $types[$typeId] = $typeName;
             }
-            $str .= Html::dropDownList('Search[motionType]', (string)$this->motionType, $types, ['class' => 'stdDropdown']);
+            $str .= Html::dropDownList('Search[motionTypes]', (string)($this->motionTypes[0] ?? ''), $types, ['class' => 'stdDropdown']);
             $str .= '</label>';
         }
 
@@ -1060,31 +1067,29 @@ class AdminMotionFilterForm
      * If a filter is set via the motion filter, then this will return exactly what the motion list will show (only filtered by type).
      * Otherwise, the inactive-flag will be considered.
      *
+     * @param int[]|null $motionTypeIds
      * @return IMotion[]
      */
-    public function getMotionsForExport(Consultation $consultation, ?int $motionTypeId, bool $inactive): array
+    public function getMotionsForExport(Consultation $consultation, ?array $motionTypeIds, bool $inactive): array
     {
-        if ($motionTypeId) {
+        if ($motionTypeIds) {
             try {
-                $consultation->getMotionType($motionTypeId);
+                foreach ($motionTypeIds as $motionTypeId) {
+                    $consultation->getMotionType($motionTypeId);
+                }
             } catch (ExceptionBase $e) {
                 throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
             }
+            $this->motionTypes = $motionTypeIds;
+        } else {
+            $this->motionTypes = null;
         }
 
         if ($this->isDefaultSettings()) {
-            if ($motionTypeId > 0) {
-                $this->motionType = $motionTypeId;
-            }
-
             $imotions = $this->getSorted();
             $filter = IMotionStatusFilter::adminExport($consultation, $inactive);
             $allIMotions = $filter->filterIMotions($imotions);
         } else {
-            if ($motionTypeId > 0) {
-                $this->motionType = $motionTypeId;
-            }
-
             $allIMotions = $this->getSorted();
         }
 

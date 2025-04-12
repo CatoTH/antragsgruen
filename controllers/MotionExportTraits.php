@@ -174,20 +174,13 @@ trait MotionExportTraits
             $this->consultation->motions,
             $this->getRequestValue('Search')
         );
-        $imotions = $search->getMotionsForExport($this->consultation, (int) $motionTypeId, $inactive);
 
         if ($motionTypeId !== '' && $motionTypeId !== '0') {
-            $motionTypeIds = explode(',', $motionTypeId);
-            $imotions       = array_filter($imotions, function (IMotion $motion) use ($motionTypeIds) {
-                if (is_a($motion, Motion::class)) {
-                    $motionTypeId = $motion->motionTypeId;
-                } else {
-                    /** @var Amendment $motion */
-                    $motionTypeId = $motion->getMyMotion()->motionTypeId;
-                }
-                return in_array($motionTypeId, $motionTypeIds);
-            });
+            $motionTypeIds = array_map('intval', explode(',', $motionTypeId));
+        } else {
+            $motionTypeIds = null;
         }
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeIds, $inactive);
 
         $imotionsFiltered = [];
         foreach ($imotions as $imotion) {
