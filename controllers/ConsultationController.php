@@ -30,8 +30,6 @@ use app\models\proposedProcedure\Factory;
 
 class ConsultationController extends Base
 {
-    use ConsultationAgendaTrait;
-
     public const VIEW_ID_HOME = 'home';
     public const VIEW_ID_INDEX = 'index';
 
