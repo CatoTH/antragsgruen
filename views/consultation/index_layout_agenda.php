@@ -76,11 +76,10 @@ if ($longVersion) {
             $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
             echo '<h2 class="green">' . $prefix . Html::encode($agendaItem->title) . '</h2>';
             echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
-            echo '<!-- Test -->';
             $itemImotions = MotionSorter::getSortedIMotionsFlat($consultation, $itemImotions);
             foreach ($itemImotions as $imotion) {
                 if (is_a($imotion, Motion::class)) {
-                    echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault, true);
+                    echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault, true, 3);
                 } else {
                     /** @var Amendment $imotion */
                     echo LayoutHelper::showStatuteAmendment($imotion, $consultation);
@@ -114,7 +113,7 @@ if (count($otherMotions) > 0) {
     echo '<ul class="motionList motionListStd motionListBelowAgenda agenda0">';
     foreach ($otherMotions as $motion) {
         if (is_a($motion, Motion::class)) {
-            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault, true);
+            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault, true, 3);
         } else {
             /** @var Amendment $motion */
             echo LayoutHelper::showStatuteAmendment($motion, $consultation);

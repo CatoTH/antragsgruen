@@ -238,7 +238,7 @@ class LayoutHelper
         return $statusName;
     }
 
-    public static function showMotion(Motion $motion, Consultation $consultation, bool $hideAmendmendsByDefault, bool $hasAgenda): string
+    public static function showMotion(Motion $motion, Consultation $consultation, bool $hideAmendmendsByDefault, bool $hasAgenda, int $headingLevel): string
     {
         $return = '';
 
@@ -270,18 +270,19 @@ class LayoutHelper
             }));
         }
         if (count($amendments) > 0) {
+            $h = 'h' . $headingLevel;
             if ($hideAmendmendsByDefault) {
-                $return .= '<h4 class="amendments amendmentsToggler closed"><button class="btn-link">';
+                $return .= '<' . $h .' class="amendmentsListHeader amendmentsToggler closed"><button class="btn-link">';
                 $return .= '<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> ';
                 if (count($amendments) === 1) {
                     $return .= '1 ' . \Yii::t('amend', 'amendment');
                 } else {
                     $return .= count($amendments) . ' ' . \Yii::t('amend', 'amendments');
                 }
-                $return .= '</button></h4>';
+                $return .= '</button></' . $h .'>';
                 $return .= '<ul class="amendments closed">';
             } else {
-                $return .= '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
+                $return .= '<' . $h .' class="amendmentsListHeader">' . \Yii::t('amend', 'amendments') . '</' . $h .'>';
                 $return .= '<ul class="amendments">';
             }
             foreach ($amendments as $amend) {
@@ -441,7 +442,7 @@ class LayoutHelper
                 echo '<ul class="motions">';
                 foreach ($imotions as $imotion) {
                     if (is_a($imotion, Motion::class)) {
-                        echo static::showMotion($imotion, $consultation, false, true);
+                        echo static::showMotion($imotion, $consultation, false, true, 4);
                     } elseif (is_a($imotion, Amendment::class)) {
                         echo static::showStatuteAmendment($imotion, $consultation);
                     }
