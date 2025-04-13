@@ -20,7 +20,7 @@ $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'
 $restBase = $dom . 'rest';
 $restBaseCon = $restBase . '/<consultationPath:[\w_-]+>';
 
-$consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
+$consultationPaths    = 'search|maintenance|notifications|activitylog|collecting';
 $consultationPaths    .= '|resolutions|motions|todo|todo-count|votings|voting-results|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|speech|admin-speech|admin-votings|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf|embedded-amendments-pdf';
