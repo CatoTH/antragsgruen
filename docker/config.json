@@ -1,0 +1,72 @@
+{
+  "dbConnection": {
+    "dsn": "mysql:host=mysql;dbname=antragsgruen",
+    "emulatePrepare": true,
+    "username": "root",
+    "password": "root",
+    "charset": "utf8mb4",
+    "class": "app\\components\\yii\\DBConnection"
+  },
+  "siteSubdomain": "stdparteitag",
+  "redis": null,
+  "prettyUrl": true,
+  "tablePrefix": "",
+  "resourceBase": "\/",
+  "baseLanguage": "en",
+  "randomSeed": "x-1234567_123456-123456nnyIv2M7A",
+  "multisiteMode": false,
+  "domainPlain": "http:\/\/stdparteitag.antragsgruen.test:12380\/",
+  "domainSubdomain": "http:\/\/<subdomain:[\\w_-]+>.antragsgruen.test:12380\/",
+  "captcha": {
+    "mode": "throttle", // never, throttle, always
+    "ignoredIps": [
+      // 127.0.0.1
+    ],
+    "difficulty": "easy"
+  },
+  "cookieDomain": null,
+  "hasSaml": false,
+  "prependWWWToSubdomain": true,
+  "confirmEmailAddresses": true,
+  "allowRegistration": true,
+  "dataPrivacyCheckbox": true,
+  "mailFromName": "Antragsgr\u00fcn",
+  "mailFromEmail": "noreply@antragsgruen.de",
+  "mailDefaultReplyTo": "tobias@hoessl.eu",
+  "adminUserIds": [
+    1
+  ],
+  "authClientCollection": [],
+  "blockedSubdomains": [
+    "www"
+  ],
+  "autoLoginDuration": 31536000,
+  "pdfunitePath": "/usr/bin/pdfunite",
+  "pdfExportConcat": true,
+  "pdfExportIntegFrame": false,
+  "weasyprintPath": "/usr/bin/weasyprint",
+  "imageMagickPath": "/usr/bin/convert",
+  "mode": "production",
+  "updateKey": null,
+  "plugins": [
+    // "antragsgruen_sites"
+  ],
+  "viewCacheFilePath": "/tmp/viewcache/",
+  "mailService": {
+    "transport": "none"
+  },
+  "backgroundJobs": {
+    //"notifications": true
+  }
+  /*
+  "live": {
+    "wsUri": "ws://localhost:8080/websocket",
+    "stompJsUri": "http://localhost:8080/stomp.umd.min.js",
+    "rabbitMqUri": "http://localhost:15672",
+    "rabbitMqExchangeName": "antragsgruen-exchange",
+    "rabbitMqUsername": "guest",
+    "rabbitMqPassword": "guest",
+    "installationId": "std"
+  }
+  */
+}
