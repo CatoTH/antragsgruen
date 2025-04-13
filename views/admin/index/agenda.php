@@ -23,9 +23,8 @@ $layout->loadDatepicker();
 $layout->loadVue();
 $layout->loadVueDraggablePlus();
 
-$this->title = 'Tagesordnung';
-$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Tagesordnung');
+$this->title = Yii::t('admin', 'agenda_title');
+$layout->addBreadcrumb(Yii::t('admin', 'agenda_bc'));
 
 $apiModel = \app\models\api\AgendaItem::getItemsFromConsultation($consultation);
 $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
@@ -37,6 +36,11 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
 
 <div class="content">
 
+    <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <?= Yii::t('admin', 'agenda_back') ?>
+    </a>
+
     <div class="agendaEditForm"
          data-antragsgruen-widget="backend/AgendaEditVue"
          data-save-agenda-url="<?= Html::encode(UrlHelper::createUrl(['/admin/index/save-agenda'])) ?>"
@@ -44,4 +48,9 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
          data-agenda="<?= Html::encode(json_encode($apiModel)) ?>">
         <div class="agendaEdit"></div>
     </div>
+
+    <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <?= Yii::t('admin', 'agenda_back') ?>
+    </a>
 </div>

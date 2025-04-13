@@ -797,4 +797,13 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'files_download_title' => 'Title',
     'files_download_del'   => 'Delete this file: %TITLE%',
     'files_download_del_c' => 'Do you want to delete this file?',
+
+    'agenda_title' => 'Manage Agenda',
+    'agenda_bc' => 'Agenda',
+    'agenda_edit' => 'Edit',
+    'agenda_add_item' => 'Add item',
+    'agenda_add_date' => 'Add date',
+    'agenda_show_times' => 'Enter fixed times',
+    'agenda_move_aria' => 'Move item',
+    'agenda_back' => 'Back to the home page',
 ];
