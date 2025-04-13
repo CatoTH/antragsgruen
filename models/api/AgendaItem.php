@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\api;
 
-use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
+use app\models\db\{Consultation, ConsultationAgendaItem};
 
 class AgendaItem
 {
