@@ -67,7 +67,7 @@ abstract class TextSimpleCommon extends Text {
         $section = $this->section;
 
         $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($this->getTitle()) . '</h3>';
+        $str .= '<h2 class="green">' . Html::encode($this->getTitle()) . '</h2>';
         $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
 
         $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
@@ -106,7 +106,7 @@ abstract class TextSimpleCommon extends Text {
         $viewFullMode = ($section->getAmendment()->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true || !$this->defaultOnlyDiff);
         $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($title);
+        $str .= '<h2 class="green">' . Html::encode($title);
         $str .= '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
           <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
             <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
@@ -116,7 +116,7 @@ abstract class TextSimpleCommon extends Text {
           <li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' . \Yii::t('amend', 'textmode_only_changed') . '</a></li>
           <li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' . \Yii::t('amend', 'textmode_full_text') . '</a></li>
           </ul>';
-        $str .= '</h3>';
+        $str .= '</h2>';
         $str       .= '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
         if ($section->getSettings()->fixedWidth) {

@@ -193,7 +193,7 @@ class TextSimple extends TextSimpleCommon
             $titPattern = \Yii::t('amend', 'amendment_for_prefix');
             $title = str_replace('%PREFIX%', $section->getMotion()->getFormattedTitlePrefix(), $titPattern);
         }
-        $str = '<h3 class="green">' . Html::encode($title) . '</h3>';
+        $str = '<h2 class="green">' . Html::encode($title) . '</h2>';
 
         if ($section->getAmendment()->globalAlternative) {
             $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
@@ -393,7 +393,7 @@ class TextSimple extends TextSimpleCommon
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
         if ($section->getAmendment()->globalAlternative) {
-            $str = ($skipTitle ? '' : '<h3>' . Html::encode($this->getTitle()) . '</h3>');
+            $str = ($skipTitle ? '' : '<h2>' . Html::encode($this->getTitle()) . '</h2>');
             $str .= '<p><strong>' . \Yii::t('amend', 'global_alternative') . '</strong></p>';
             $str .= $section->data;
             return $str;
@@ -405,7 +405,7 @@ class TextSimple extends TextSimpleCommon
             return $cache->getCached(function () use ($section, $firstLine, $lineLength) {
                 $text = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
                 if ($text !== '') {
-                    $text = '<h3>' . Html::encode($this->getTitle()) . '</h3>' . $text;
+                    $text = '<h2>' . Html::encode($this->getTitle()) . '</h2>' . $text;
                 }
                 return $text;
             });
