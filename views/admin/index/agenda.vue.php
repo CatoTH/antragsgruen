@@ -14,7 +14,7 @@ ob_start();
     <span v-if="!isEditing">{{ modelValue.time }} {{ modelValue.title }}</span>
     <v-datetime-picker v-if="isEditing" v-model="modelValue.time" type="time" :locale="locale" />
 
-    <input type="text" v-if="isEditing" v-model="modelValue.code" :placeholder="codePlaceholder" class="form-control codeCol"/>
+    <input type="text" v-if="isEditing" v-model="modelValue.code" :placeholder="codeBase" class="form-control codeCol"/>
     <input type="text" v-if="isEditing" v-model="modelValue.title" class="form-control titleCol"/>
 
 
@@ -57,6 +57,7 @@ $html = ob_get_clean();
         props: {
             modelValue: { type: Array },
             locale: { type: String },
+            codeBase: { type: String },
             motionTypes: { type: Array }
         },
         data() {
@@ -65,9 +66,6 @@ $html = ob_get_clean();
             }
         },
         computed: {
-            codePlaceholder() {
-                return 'bla'; // @TODO
-            }
         },
         methods: {
             isMotionTypeSelected(motionType) {
@@ -89,8 +87,8 @@ $html = ob_get_clean();
 ob_start();
 ?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
-    <li v-for="item in list" :key="item.id" class="item" :class="'type_' + item.type">
-        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" :locale="locale" />
+    <li v-for="(item, itemIndex) in list" :key="item.id" class="item" :class="'type_' + item.type">
+        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" :locale="locale" :codeBase="getCodeBase(itemIndex)" />
         <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :motionTypes="motionTypes" :disabled="disableChildList" />
 
         <div v-if="item.type == 'date_separator'" class="infoRow">
@@ -140,6 +138,15 @@ $html = ob_get_clean();
             return {
                 locale,
                 disableChildListExplicitly: false,
+                calculatedCodes: null,
+            }
+        },
+        watch: {
+            modelValue: {
+                handler(oldValue, newValue) {
+                    this.recalculateCodeBases(newValue);
+                },
+                deep: true
             }
         },
         computed: {
@@ -173,6 +180,7 @@ $html = ob_get_clean();
                         motionTypes: [],
                     },
                 });
+                this.recalculateCodeBases(this.modelValue)
             },
             addDateSeparatorRow: function() {
                 this.modelValue.push({
@@ -183,7 +191,43 @@ $html = ob_get_clean();
                     date: null,
                     children: [],
                 });
+                this.recalculateCodeBases(this.modelValue)
+            },
+            recalculateCodeBases: function(values) {
+                this.calculatedCodes = [];
+                let lastValue = null;
+                values.forEach((value, idx) => {
+                    if (value.type !== 'item') {
+                        this.calculatedCodes[idx] = null;
+                        return;
+                    }
+
+                    if (value.code !== null && value.code !== '') {
+                        this.calculatedCodes[idx] = value.code;
+                        lastValue = value.code;
+                        return;
+                    }
+
+                    if (lastValue === null) {
+                        this.calculatedCodes[idx] = "1.";
+                    } else if (lastValue.match(/^[a-y]\.$/i)) {
+                        this.calculatedCodes[idx] = String.fromCharCode(lastValue.charCodeAt(0) + 1) + ".";
+                    } else {
+                        let strWithoutSeparator = (lastValue.substr(-1) === '.' ? lastValue.substr(0, lastValue.length - 1) : lastValue);
+                        let matches = strWithoutSeparator.match(/^(.*[^0-9])?([0-9]*)?$/),
+                            nonNumeric = (typeof (matches[1]) == 'undefined' ? '' : matches[1]),
+                            numeric = parseInt(matches[2] == '' ? '1' : matches[2]);
+                        this.calculatedCodes[idx] = nonNumeric + ++numeric + ".";
+                    }
+                    lastValue = this.calculatedCodes[idx];
+                });
+            },
+            getCodeBase: function(itemIndex) {
+                return this.calculatedCodes[itemIndex];
             }
+        },
+        created: function () {
+            this.recalculateCodeBases(this.modelValue)
         }
     });
 </script>
