@@ -20,46 +20,26 @@ $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
     ConsultationSettings::START_LAYOUT_AGENDA_LONG,
     ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND,
 ]));
-$hideAmendmendsByDefault = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND);
+$hideAmendmentsByDefault = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND);
 
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
 
 echo '<section class="sectionAgenda" aria-labelledby="sectionAgendaTitle">';
-echo '<h2 class="green" id="sectionAgendaTitle">' . Yii::t('con', 'Agenda') . '</h2>';
-
+echo '<h2 class="green" id="sectionAgendaTitle">';
 if ($admin) {
-    echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit" ';
-    echo 'data-save-order="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-order-ajax'])) . '">';
-    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $isResolutionList, $admin, true);
-    $templateItem                 = new ConsultationAgendaItem();
-    $templateItem->consultationId = $consultation->id;
-    $templateItem->refresh();
-    $templateItem->id    = -1;
-    $templateItem->title = Yii::t('con', 'new_item');
-    $templateItem->code  = '#';
-    $templateItem->time  = null;
-
-    ob_start();
-    LayoutHelper::showAgendaItem($templateItem, $consultation, $isResolutionList, $admin);
-    $newElementTemplate = ob_get_clean();
-    echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
-
-    ob_start();
-    $templateItem->title = '';
-    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $isResolutionList, $admin);
-    $newElementTemplate = ob_get_clean();
-    echo '<input id="agendaNewDateTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
-
-    $layout->addJS('js/jquery-ui.min.js');
-    $layout->addJS('js/jquery.ui.touch-punch.js');
-    $layout->addJS('js/jquery.mjs.nestedSortable.js');
-    echo '</div>';
-} else {
-    echo '<div class="agendaHolder">';
-    $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $isResolutionList, $admin, true);
-    echo '</div>';
+    $url = UrlHelper::createUrl('/admin/index/agenda');
+    echo '<a href="' . Html::encode($url) . '" class="greenHeaderExtraLink">';
+    echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
+    echo Yii::t('admin', 'agenda_edit');
+    echo '</a>';
 }
-echo '</section>';
+echo Yii::t('con', 'Agenda');
+echo '</h2>';
+
+
+echo '<div class="agendaHolder">';
+$shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $isResolutionList, true);
+echo '</div>';
 
 
 
@@ -79,7 +59,7 @@ if ($longVersion) {
             $itemImotions = MotionSorter::getSortedIMotionsFlat($consultation, $itemImotions);
             foreach ($itemImotions as $imotion) {
                 if (is_a($imotion, Motion::class)) {
-                    echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmendsByDefault, true, 3);
+                    echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmentsByDefault, true, 3);
                 } else {
                     /** @var Amendment $imotion */
                     echo LayoutHelper::showStatuteAmendment($imotion, $consultation);
@@ -113,7 +93,7 @@ if (count($otherMotions) > 0) {
     echo '<ul class="motionList motionListStd motionListBelowAgenda agenda0">';
     foreach ($otherMotions as $motion) {
         if (is_a($motion, Motion::class)) {
-            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault, true, 3);
+            echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmentsByDefault, true, 3);
         } else {
             /** @var Amendment $motion */
             echo LayoutHelper::showStatuteAmendment($motion, $consultation);
