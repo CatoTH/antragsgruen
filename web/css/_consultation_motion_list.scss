@@ -123,7 +123,7 @@
     .amendment > a {
       opacity: 0.4;
     }
-    h4.amendments {
+    .amendmentsListHeader {
       opacity: 0.65;
     }
   }
@@ -133,7 +133,7 @@
     }
   }
 
-  h4.amendments.amendmentsToggler {
+  .amendmentsListHeader.amendmentsToggler {
     margin-top: -5px;
     button {
       padding-left: 0;
@@ -217,7 +217,7 @@
       display: none;
     }
   }
-  h4.amendments {
+  .amendmentsListHeader {
     display: none;
   }
   ul.amendments {
@@ -287,7 +287,7 @@
       }
     }
   }
-  h4.amendments {
+  .amendmentsListHeader {
     margin-top: 10px;
     margin-bottom: 5px;
     font-family: $headingFont;
@@ -500,7 +500,7 @@ $agendaMarginPerLevel: 50px;
       > .title {
         margin-right: 75px;
       }
-      h4.amendments {
+      .amendmentsListHeader {
         @if ($font-size-base < 16) {
           font-size: 16px;
         } @else {
