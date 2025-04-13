@@ -800,4 +800,13 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'files_download_title' => 'Titel',
     'files_download_del'   => 'Datei löschen: %TITLE%',
     'files_download_del_c' => 'Soll diese Datei wirklich gelöscht werden?',
+
+    'agenda_title' => 'Tagesordnung bearbeiten',
+    'agenda_bc' => 'Tagesordnung',
+    'agenda_edit' => 'Bearbeiten',
+    'agenda_add_item' => 'Eintrag hinzufügen',
+    'agenda_add_date' => 'Datum hinzufügen',
+    'agenda_show_times' => 'Datum hinzufügen',
+    'agenda_move_aria' => 'Tagesordnungspunkt verschieben',
+    'agenda_back' => 'Zurück zur Startseite',
 ];

@@ -11,21 +11,19 @@ ob_start();
 ?>
 <div class="infoRow">
     <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-    <span v-if="!isEditing">{{ modelValue.time }} {{ modelValue.title }}</span>
-    <v-datetime-picker v-if="isEditing" v-model="modelValue.time" type="time" :locale="locale" />
+    <v-datetime-picker v-model="modelValue.time" type="time" :locale="locale" />
 
-    <input type="text" v-if="isEditing" v-model="modelValue.code" :placeholder="codeBase" class="form-control codeCol"/>
-    <input type="text" v-if="isEditing" v-model="modelValue.title" class="form-control titleCol"/>
-
+    <input type="text" v-model="modelValue.code" :placeholder="codeBase" class="form-control codeCol"/>
+    <input type="text" v-model="modelValue.title" class="form-control titleCol"/>
 
     <select class="stdDropdown motionTypeCol" @change="onMotionTypeChange($event)">
         <option>-</option>
         <option v-for="motionType in motionTypes" :value="motionType.id" :selected="isMotionTypeSelected(motionType)">{{ motionType.title }}</option>
     </select>
 
-    <div class="dropdown extraSettings" v-if="isEditing">
+    <div class="dropdown extraSettings">
         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <span class="glyphicon glyphicon-wrench"></span>
+            <span class="glyphicon glyphicon-wrench" aria-label="<?= Yii::t('admin', 'agenda_move_aria') ?>"></span>
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
@@ -43,10 +41,6 @@ ob_start();
             </li>
         </ul>
     </div>
-
-    <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="isEditing = !isEditing">
-        <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-    </button>
 </div>
 <?php
 $html = ob_get_clean();
@@ -61,9 +55,7 @@ $html = ob_get_clean();
             motionTypes: { type: Array }
         },
         data() {
-            return {
-                isEditing: true,
-            }
+            return {}
         },
         computed: {
         },
@@ -94,8 +86,7 @@ ob_start();
         <div v-if="item.type == 'date_separator'" class="infoRow">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
             <!--
-            <span v-if="!isEditing(item)">{{ item.date }}</span>
-            <div v-if="isEditing(item)">
+            <div>
                 <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
             </div>
             -->
@@ -109,11 +100,11 @@ ob_start();
 <div class="adderRow">
     <button type="button" class="btn btn-link adderBtn" @click="addItemRow()">
         <span class="glyphicon glyphicon-add" aria-hidden="true"></span>
-        Eintrag hinzufügen
+        <?= Yii::t('admin', 'agenda_add_item') ?>
     </button>
     <button type="button" class="btn btn-link adderBtn" @click="addDateSeparatorRow()" v-if="root">
         <span class="glyphicon glyphicon-add" aria-hidden="true"></span>
-        Datum hinzufügen
+        <?= Yii::t('admin', 'agenda_add_date') ?>
     </button>
 </div>
 <?php
@@ -238,7 +229,7 @@ ob_start();
 <section class="agendaEditWidget stdSortingWidget">
     <div class="settings" style="text-align: right;">
         <label>
-            <input type="checkbox" v-model="showTime"> Zeit anzeigen
+            <input type="checkbox" v-model="showTime"> <?= Yii::t('admin', 'agenda_show_times') ?>
         </label>
     </div>
     <agenda-sorter v-model="list" :motionTypes="motionTypes" :root="true" :showTime="showTime"></agenda-sorter>
