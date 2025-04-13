@@ -400,6 +400,28 @@ After updating the source code from git, do:
 gulp
 ```
 
+### Running with Docker Compose
+
+[docker-compose.development.yml](docker-compose.development.yml) provides a very basic docker setup to run Antragsgrün in Development mode.
+
+It requires the dependencies (composer, npm, gulp) to be run on the host system and initialized (see "Compiling from source").
+Furthermore, it requires entries in your `/etc/hosts`:
+```
+127.0.0.1 stdparteitag.antragsgruen.test
+::1 stdparteitag.antragsgruen.test
+```
+
+Then, you can run:
+```shell
+touch config/DEBUG
+docker-compose -f docker-compose.development.yml up
+docker exec -it antragsgruen-web-1 bash
+./yii database/create-test
+```
+
+After that, the following URL should be accessible:
+- http://stdparteitag.antragsgruen.test:12380/
+
 ### Updating PDF.JS
 
 * Download the [latest release](https://github.com/mozilla/pdf.js/releases)
