@@ -115,7 +115,7 @@ class AdminMotionFilterForm
 
     public function setAttributes(array $values): void
     {
-        if (isset($values['motionTypes'])) {
+        if (isset($values['motionTypes']) && trim($values['motionTypes']) !== '') {
             $this->motionTypes = array_map('intval', explode(',', $values['motionTypes']));
         } else {
             $this->motionTypes = null;
@@ -371,6 +371,10 @@ class AdminMotionFilterForm
         $out = [];
         foreach ($this->allMotions as $motion) {
             $matches = true;
+
+
+
+            var_dump($this->motionTypes);
 
             if ($this->motionTypes !== null && !in_array($motion->motionTypeId, $this->motionTypes)) {
                 $matches = false;
