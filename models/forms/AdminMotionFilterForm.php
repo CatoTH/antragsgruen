@@ -372,10 +372,6 @@ class AdminMotionFilterForm
         foreach ($this->allMotions as $motion) {
             $matches = true;
 
-
-
-            var_dump($this->motionTypes);
-
             if ($this->motionTypes !== null && !in_array($motion->motionTypeId, $this->motionTypes)) {
                 $matches = false;
             }

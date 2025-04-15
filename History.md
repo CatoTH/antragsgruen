@@ -4,6 +4,7 @@
 
 - When copying a motion to a different consultation, the tags and the version was not transferred.
 - Bugfix: Sending e-mails via SMTP only worked with SMTP Servers requiring authentication. (thanks to tiran133)
+- Bugfix: Amending motions with list items was broken if amendments were to only affect one particular place.
 
 ### Version 4.15.2 (2025-03-29)
 
