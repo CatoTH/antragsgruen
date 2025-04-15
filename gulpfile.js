@@ -128,15 +128,14 @@ function taskBuildJsEnGb() {
 const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsFr, taskBuildJsNl, taskBuildJsCa, taskBuildJsMe, taskBuildJsEn, taskBuildJsEnGb, taskBuildDatetimepicker);
 
 /**
- * Gulp-sass does not yet support new API.
- * @see https://github.com/dlmanning/gulp-sass/pull/846
- * @type {import('sass').LegacyOptions<sync>}
- * // @type {import('sass').Options<sync>}
+ * @see https://sass-lang.com/documentation/js-api/interfaces/options/
+ * @type {import('sass').Options<sync>}
  */
 const sassOptions = {
-    outputStyle: 'compressed',
-    includePaths: ['web/'],
-    silenceDeprecations: ['mixed-decls', 'legacy-js-api','color-functions'],
+    style: 'compressed',
+    loadPaths: ['web/'],
+    quietDeps: true,
+    silenceDeprecations: ['color-functions', 'import', 'global-builtin'],
 };
 
 function taskBuildCss() {
