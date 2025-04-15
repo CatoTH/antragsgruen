@@ -112,7 +112,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     if ($section->getSettings()->hasAmendments &&
         in_array($motionType->amendmentMultipleParagraphs, [ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH, ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE])) {
-        echo '<!--AMENDMENT_LINK_' . $section->sectionId . '_' . $paragraph->paragraphNoWithoutSplitLists . '-->';
+        echo '<!--AMENDMENT_LINK_' . $section->sectionId . '_' . $paragraph->paragraphNo . '-->';
     }
 
     echo '</div>';
