@@ -74,7 +74,7 @@ class TextSimple extends TextSimpleCommon
         $amParas = array_map(fn(SectionedParagraph $par) => $par->html, $origParas);
 
         $changedParagraph = -1;
-        foreach ($amSection->diffStrToOrigParagraphs($origParas, false, DiffRenderer::FORMATTING_ICE) as $paraNo => $para) {
+        foreach ($amSection->diffStrToOrigParagraphs($origParas, true, DiffRenderer::FORMATTING_ICE) as $paraNo => $para) {
             $amParas[$paraNo] = $para;
             $changedParagraph = $paraNo;
         }
