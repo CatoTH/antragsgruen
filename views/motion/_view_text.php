@@ -85,7 +85,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $proce
         if ($section->getSettings()->getSettingsObj()->public !== \app\models\settings\MotionSection::PUBLIC_YES) {
             if ($motion->iAmInitiator()) {
                 $nonPublicHint = '<div class="alert alert-info alertNonPublicSection"><p>' . Yii::t('motion', 'nonpublic_see_user') . '</p></div>';
-            } elseif (\app\models\db\User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
+            } elseif (User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
                 $nonPublicHint = '<div class="alert alert-info alertNonPublicSection"><p>' . Yii::t('motion', 'nonpublic_see_admin') . '</p></div>';
             } else {
                 throw new \app\models\exceptions\Internal('Not allowed to see this content');
@@ -122,7 +122,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $proce
 
             if (!$shownPp) {
                 if (!in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_IMAGE])) {
-                    $sectionText .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
+                    $sectionText .= '<h2 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h2>';
                 }
                 $sectionText .= $nonPublicHint;
 
