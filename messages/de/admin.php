@@ -806,7 +806,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'agenda_edit' => 'Bearbeiten',
     'agenda_add_item' => 'Eintrag hinzufügen',
     'agenda_add_date' => 'Datum hinzufügen',
-    'agenda_show_times' => 'Datum hinzufügen',
+    'agenda_show_times' => 'Genaue Zeiten festlegen',
     'agenda_move_aria' => 'Tagesordnungspunkt verschieben',
     'agenda_back' => 'Zurück zur Startseite',
 ];

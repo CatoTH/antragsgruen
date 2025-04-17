@@ -5863,10 +5863,12 @@ button.link {
   opacity: 0;
   line-height: 12px;
   height: 16px;
-  padding-left: 20px;
 }
 .stdSortingWidget .adderRow:hover {
   opacity: 1;
+}
+.stdSortingWidget li > .adderRow {
+  padding-left: 20px;
 }
 .stdSortingWidget .drag-area {
   min-height: 0px;

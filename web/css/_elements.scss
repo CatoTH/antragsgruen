@@ -251,10 +251,12 @@ button.link {
     opacity: 0;
     line-height: 12px;
     height: 16px;
-    padding-left: 20px;
     &:hover {
       opacity: 1;
     }
+  }
+  li > .adderRow {
+    padding-left: 20px;
   }
   .drag-area {
     min-height: 0px;
