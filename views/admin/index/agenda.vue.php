@@ -227,10 +227,18 @@ ob_start();
     </div>
     <agenda-sorter v-model="list" :motionTypes="motionTypes" :root="true" :showTime="showTime"></agenda-sorter>
 
-    <div class="saveRow">
-        <button type="button" @click="saveAgenda()" class="btn btn-primary btnSave">
-            <?= Yii::t('voting', 'settings_sort_save') ?>
-        </button>
+    <div class="saveRow" :class="{saving: saving, saved: saved, savable: !saving && !saved}">
+        <div class="savable">
+            <button type="button" @click="saveAgenda()" class="btn btn-primary btnSave">
+                <?= Yii::t('voting', 'settings_sort_save') ?>
+            </button>
+        </div>
+        <div class="saving">
+            Saving...
+        </div>
+        <div class="saved">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Saved
+        </div>
     </div>
 </section>
 
@@ -269,12 +277,22 @@ $html = ob_get_clean();
             };
 
             return {
-                showTime: anyItemHasTime(this.modelValue)
+                showTime: anyItemHasTime(this.modelValue),
+                saving: false,
+                saved: false,
             }
         },
         methods: {
             saveAgenda: function() {
+                this.saving = true;
                 this.$emit('save-agenda');
+            },
+            onSaved: function() {
+                this.saving = false;
+                this.saved = true;
+                setTimeout(() => {
+                    this.saved = false;
+                }, 2000);
             }
         }
     });
