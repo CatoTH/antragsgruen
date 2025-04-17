@@ -5836,6 +5836,38 @@ button.link {
 }
 .stdSortingWidget .saveRow {
   margin-top: 20px;
+  position: relative;
+}
+.stdSortingWidget .saveRow > * {
+  transition: opacity 0.3s ease-in-out;
+}
+.stdSortingWidget .saveRow .saving {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  pointer-events: none;
+  padding-top: 6px;
+}
+.stdSortingWidget .saveRow.saving .saving {
+  opacity: 1;
+}
+.stdSortingWidget .saveRow .saved {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  pointer-events: none;
+  padding-top: 6px;
+}
+.stdSortingWidget .saveRow.saved .saved {
+  opacity: 1;
+}
+.stdSortingWidget .saveRow .savable {
+  opacity: 0;
+}
+.stdSortingWidget .saveRow.savable .savable {
+  opacity: 1;
 }
 
 .agendaEditWidget .infoRow {

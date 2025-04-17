@@ -281,6 +281,40 @@ button.link {
   }
   .saveRow {
     margin-top: 20px;
+
+    position: relative;
+    > * {
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .saving {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      pointer-events: none;
+      padding-top: 6px;
+    }
+    &.saving .saving {
+      opacity: 1;
+    }
+    .saved {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      pointer-events: none;
+      padding-top: 6px;
+    }
+    &.saved .saved {
+      opacity: 1;
+    }
+    .savable {
+      opacity: 0;
+    }
+    &.savable .savable {
+      opacity: 1;
+    }
   }
 }
 
