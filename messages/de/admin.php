@@ -266,6 +266,7 @@ return [
     'con_feeds_sidebar'       => 'Feeds in der Sidebar anzeigen',
     'con_show_ad'             => '„Dein Antragsgrün“ in der Sidebar anzeigen',
     'con_show_breadcrumbs'    => 'Breadcrumbs über dem Seiteninhalt anzeigen',
+    'con_show_deadline_circle' => '<strong>Anstehende Fristen</strong> groß auf der Startseite anzeigen (Störer-Kreis)',
     'con_single_motion_mode'  => 'Es wird nur <strong>ein einziger Antrag</strong> diskutiert, auf eine einleitende Übersichts-Startseite wird verzichtet',
     'con_force_motion'        => 'Dieser Antrag ist',
     'con_line_number_global'  => '<strong>Zeilennummerierung</strong> durchgehend für die ganze Veranstaltung',

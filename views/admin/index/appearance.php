@@ -293,6 +293,9 @@ $handledSiteSettings = [];
             echo Yii::t('admin', 'con_show_breadcrumbs');
             echo '</label></div>';
 
+            $propTitle = Yii::t('admin', 'con_show_deadline_circle');
+            $boolSettingRow($settings, 'homepageDeadlineCircle', $handledSettings, $propTitle);
+
             $propTitle = Yii::t('admin', 'con_show_private_notes');
             $boolSettingRow($settings, 'showPrivateNotes', $handledSettings, $propTitle);
 

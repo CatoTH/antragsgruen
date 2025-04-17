@@ -483,6 +483,10 @@ class StdHooks extends Hooks
      */
     public function getConsultationPreWelcome(string $before): string
     {
+        if (!$this->consultation->getSettings()->homepageDeadlineCircle) {
+            return '';
+        }
+
         /** @var array<string, array{date: string, titles: string[]}> $deadlines */
         $deadlines = [];
         foreach ($this->consultation->motionTypes as $motionType) {

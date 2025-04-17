@@ -85,6 +85,7 @@ class Consultation implements \JsonSerializable
     public bool $ppEditableAfterPublication = true;
     public bool $homepageTagsList = true;
     public bool $homepageByTag = false;
+    public bool $homepageDeadlineCircle = true;
     public bool $externalLinksNewWindow = false;
     public bool $motionPrevNextLinks = false;
     public bool $allowRequestingAccess = true;

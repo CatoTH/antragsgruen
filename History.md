@@ -3,7 +3,7 @@
 ## Version 4.16.0 [not released yet]
 
 - An optional mechanism for background job execution is introduced, making it possible to send e-mails asynchronously (therefore not blocking regular requests).
-- The deadline circle at the top of the homepage now also shows dates if more than one future deadline exists.
+- The deadline circle at the top of the homepage now also shows dates if more than one future deadline exists. It can also be deactivated entirely.
 
 ### Version 4.15.3 [not released yet]
 

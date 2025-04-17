@@ -269,6 +269,7 @@ return [
     'con_feeds_sidebar'       => 'Show feeds in the sidebar',
     'con_show_ad'             => 'Show &quot;Using Antragsgrün&quot; in the sidebar',
     'con_show_breadcrumbs'    => 'Show Breadcrumbs above the site content',
+    'con_show_deadline_circle' => 'Show <strong>upcoming deadlines</strong> prominently on the homepage (pink circle)',
     'con_single_motion_mode'  => 'Only a <strong>single motion</strong> is being discussed, no motion overview page will be shown.',
     'con_force_motion'        => 'The following motion',
     'con_line_number_global'  => '<strong>Global line numbering</strong> throughout the whole consultation',
