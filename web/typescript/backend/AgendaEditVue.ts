@@ -50,6 +50,7 @@ export class AgendaEditVue {
                                 bootbox.alert(data.error);
                             } else {
                                 widget.agenda = data;
+                                widget.$refs['agenda-edit-widget'].onSaved();
                             }
                         }
                     }).catch(function (err) {
