@@ -11,7 +11,7 @@ ob_start();
 ?>
 <div class="infoRow">
     <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-    <v-datetime-picker v-model="modelValue.time" type="time" :locale="locale" />
+    <v-datetime-picker v-model="modelValue.time" type="time" :locale="locale" v-if="showTime" />
 
     <input type="text" v-model="modelValue.code" :placeholder="codeBase" class="form-control codeCol"/>
     <input type="text" v-model="modelValue.title" class="form-control titleCol"/>
@@ -24,7 +24,7 @@ ob_start();
     <div class="dropdown extraSettings">
         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             <span class="glyphicon glyphicon-wrench" aria-label="<?= Yii::t('admin', 'agenda_move_aria') ?>"></span>
-            <span class="caret"></span>
+            <span class="caret" aria-hidden="true"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
             <li class="checkbox inProposedProcedures">
@@ -52,7 +52,8 @@ $html = ob_get_clean();
             modelValue: { type: Array },
             locale: { type: String },
             codeBase: { type: String },
-            motionTypes: { type: Array }
+            motionTypes: { type: Array },
+            showTime: { type: Boolean }
         },
         data() {
             return {}
@@ -80,20 +81,12 @@ ob_start();
 ?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
     <li v-for="(item, itemIndex) in list" :key="item.id" class="item" :class="'type_' + item.type">
-        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" :locale="locale" :codeBase="getCodeBase(itemIndex)" />
-        <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :motionTypes="motionTypes" :disabled="disableChildList" />
+        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" :locale="locale" :codeBase="getCodeBase(itemIndex)" :showTime="showTime" />
+        <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :motionTypes="motionTypes" :disabled="disableChildList" :showTime="showTime" />
 
         <div v-if="item.type == 'date_separator'" class="infoRow">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-            <!--
-            <div>
-                <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
-            </div>
-            -->
             <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
-            <button type="button" class="btn btn-link editBtn" title="Bearbeiten" @click="toggleEditing(item)">
-                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-            </button>
         </div>
     </li>
 </draggable-plus>
@@ -239,8 +232,6 @@ ob_start();
             <?= Yii::t('voting', 'settings_sort_save') ?>
         </button>
     </div>
-
-    <pre>{{ list }}</pre>
 </section>
 
 <?php
