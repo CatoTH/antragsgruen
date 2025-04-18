@@ -319,6 +319,14 @@ button.link {
 }
 
 .agendaEditWidget {
+  .settings {
+    margin-top: -20px;
+    margin-bottom: 40px;
+    float: right;
+    label {
+      font-weight: normal;
+    }
+  }
   .infoRow {
     display: flex;
     flex-direction: row;
@@ -372,6 +380,10 @@ button.link {
   .extraSettings {
     flex-grow: 0;
     flex-basis: 40px;
+  }
+
+  .saveRow {
+    margin-bottom: 30px;
   }
 }
 
