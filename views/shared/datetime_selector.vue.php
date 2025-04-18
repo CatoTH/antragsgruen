@@ -55,6 +55,10 @@
                     defaultDate: initDate
                 });
                 this.pickerElement.on("dp.change", (newDate) => {
+                    if (!newDate.date) {
+                        this.$emit('update:modelValue', null);
+                        return;
+                    }
                     if (this.type === 'date') {
                         this.$emit('update:modelValue', newDate.date.format("YYYY-MM-DD"));
                     }
