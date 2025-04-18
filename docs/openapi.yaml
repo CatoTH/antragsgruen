@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Antragsgrün API
   description: Read-Only-API for [Antragsgrün](https://antragsgruen.de/)
-  version: 0.1.0
+  version: 0.3.0
 paths:
   /rest:
     get:
@@ -163,9 +163,121 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
-
+  /rest/{consultationPath}/agenda:
+    get:
+      summary: Gets the agenda of this consultation
+      parameters:
+        - in: path
+          name: consultationPath
+          required: true
+          example: std-parteitag
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The agenda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agenda'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    post:
+      summary: Save the new agenda
+      parameters:
+        - in: path
+          name: consultationPath
+          required: true
+          example: std-parteitag
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Agenda'
+      responses:
+        '200':
+          description: The agenda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agenda'
+        '403':
+          description: No permission to edit the agenda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
 components:
   schemas:
+    Agenda:
+      type: array
+      items:
+        $ref: '#/components/schemas/AgendaItem'
+
+    AgendaItem:
+      type: object
+      required:
+        - type
+        - title
+      properties:
+        id:
+          type: number
+          description: Always set when retrieving the agenda; only optional when saving, for newly created items.
+          example: 12
+        type:
+          type: string
+          enum:
+            - item
+            - date_separator
+        code:
+          type: string
+          description: If not set or null (default), the agenda item code will be automatically determined.
+          example: "7."
+        title:
+          type: string
+          example: "Discussion about motions"
+        time:
+          type: string
+          example: "12:34"
+          description: Time in 24h format
+        date:
+          type: string
+          example: "2020-12-31"
+          description: Only relevant for type=date_separator. Format is YYYY-MM-DD
+        settings:
+          type: object
+          required:
+            - hasSpeakingList
+            - inProposedProcedures
+          properties:
+            hasSpeakingList:
+              type: boolean
+            inProposedProcedures:
+              type: boolean
+            motionTypes:
+              type: array
+              items:
+                type: number
+              description: List of Motion Type IDs permissible for this agenda item. At the moment, only one is supported, subject to future enhancements.
+              example:
+                - 12
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgendaItem'
+
     ConsultationLinkList:
       type: array
       items:
@@ -705,6 +817,14 @@ components:
           type: string
           example: "2015-03-30T03:27:20+02:00"
           description: When the speaker applied. Always set.
+    ErrorNoPermission:
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: No permission to edit the agenda
     ErrorNotFound:
       properties:
         success:
