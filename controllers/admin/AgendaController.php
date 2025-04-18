@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers\admin;
 
+use app\components\LiveTools;
 use app\models\api\AgendaItem as AgendaItemApi;
 use app\models\settings\Privileges;
 use app\models\http\{HtmlResponse, RestApiResponse};
@@ -41,6 +42,7 @@ class AgendaController extends AdminBase
         }
 
         $savedAgenda = AgendaItemApi::getItemsFromConsultation($this->consultation);
+        LiveTools::sendAgenda($this->consultation, $savedAgenda);
 
         return new RestApiResponse(200, null, $serializer->serialize($savedAgenda, 'json'));
     }
