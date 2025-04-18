@@ -32,7 +32,7 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
     'title' => $item->titlePlural,
 ], $consultation->motionTypes);
 
-?><h1><?= Yii::t('admin', 'con_h1') ?></h1>
+?><h1><?= Yii::t('admin', 'agenda_title') ?></h1>
 
 <div class="content">
     <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>">

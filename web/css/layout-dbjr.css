@@ -5870,6 +5870,14 @@ button.link {
   opacity: 1;
 }
 
+.agendaEditWidget .settings {
+  margin-top: -20px;
+  margin-bottom: 40px;
+  float: right;
+}
+.agendaEditWidget .settings label, .agendaEditWidget .settings .label {
+  font-weight: normal;
+}
 .agendaEditWidget .infoRow {
   display: flex;
   flex-direction: row;
@@ -5919,6 +5927,9 @@ button.link {
 .agendaEditWidget .extraSettings {
   flex-grow: 0;
   flex-basis: 40px;
+}
+.agendaEditWidget .saveRow {
+  margin-bottom: 30px;
 }
 
 .stdNonFormattedList {
