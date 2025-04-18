@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\api\SpeechQueue;
+use app\models\api\{AgendaItem, SpeechQueue};
 use app\models\exceptions\{ConfigurationError, Internal};
 use app\models\db\Consultation;
 use app\models\settings\AntragsgruenApp;
@@ -75,6 +75,28 @@ class LiveTools
         }
 
         $routingKey = 'speech.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
+
+        self::sendToRabbitMq($routingKey, $json);
+    }
+
+    /**
+     * @param AgendaItem[] $agendaItem
+     */
+    public static function sendAgenda(Consultation $consultation, array $agendaItem, bool $debug = false): void
+    {
+        $params = AntragsgruenApp::getInstance()->live;
+        if (!$params) {
+            return;
+        }
+
+        $serializer = Tools::getSerializer();
+        $json = $serializer->serialize($agendaItem, 'json', ['live']);
+
+        if ($debug) {
+            echo $json . "\n";
+        }
+
+        $routingKey = 'agenda.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
 
         self::sendToRabbitMq($routingKey, $json);
     }
