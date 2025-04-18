@@ -35,7 +35,6 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
 ?><h1><?= Yii::t('admin', 'con_h1') ?></h1>
 
 <div class="content">
-
     <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>">
         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
         <?= Yii::t('admin', 'agenda_back') ?>
@@ -43,7 +42,7 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
 
     <div class="agendaEditForm"
          data-antragsgruen-widget="backend/AgendaEditVue"
-         data-save-agenda-url="<?= Html::encode(UrlHelper::createUrl(['/admin/agenda/save'])) ?>"
+         data-save-agenda-url="<?= Html::encode(UrlHelper::createUrl(['/admin/agenda/rest-index'])) ?>"
          data-motion-types="<?= Html::encode(json_encode($motionTypesData)) ?>"
          data-agenda="<?= Html::encode(json_encode($apiModel)) ?>">
         <div class="agendaEdit"></div>
