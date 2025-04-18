@@ -22,21 +22,23 @@ class AgendaController extends AdminBase
         return new HtmlResponse($this->render('index', ['consultation' => $this->consultation]));
     }
 
-    public function actionSave(): RestApiResponse
+    public function actionRestIndex(): RestApiResponse
     {
-        $this->handleRestHeaders(['POST'], true);
+        $this->handleRestHeaders(['POST', 'GET'], true);
 
         $serializer = Tools::getSerializer();
 
-        try {
-            /** @var AgendaItemApi[] $data */
-            $data = $serializer->deserialize($this->getPostBody(), AgendaItemApi::class . '[]', 'json');
-        } catch (NotNormalizableValueException $e) {
-            return new RestApiResponse(400, ['error' => $e->getMessage()]);
-        }
+        if ($this->getHttpMethod() === 'POST') {
+            try {
+                /** @var AgendaItemApi[] $data */
+                $data = $serializer->deserialize($this->getPostBody(), AgendaItemApi::class . '[]', 'json');
+            } catch (NotNormalizableValueException $e) {
+                return new RestApiResponse(400, ['error' => $e->getMessage()]);
+            }
 
-        $saver = new AgendaSaver($this->consultation);
-        $saver->saveAgendaFromApi(null, $data);
+            $saver = new AgendaSaver($this->consultation);
+            $saver->saveAgendaFromApi(null, $data);
+        }
 
         $savedAgenda = AgendaItemApi::getItemsFromConsultation($this->consultation);
 
