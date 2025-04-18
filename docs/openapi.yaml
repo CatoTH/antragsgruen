@@ -259,14 +259,14 @@ components:
         settings:
           type: object
           required:
-            - hasSpeakingList
-            - inProposedProcedures
+            - has_speaking_list
+            - in_proposed_procedures
           properties:
-            hasSpeakingList:
+            has_speaking_list:
               type: boolean
-            inProposedProcedures:
+            in_proposed_procedures:
               type: boolean
-            motionTypes:
+            motion_types:
               type: array
               items:
                 type: number

@@ -11,7 +11,7 @@ services:
       - RABBITMQ_HOST=rabbitmq
     volumes:
       - "./:/var/www/antragsgruen"
-      #- "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
+      - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
 
   nginx:
     image: nginx:latest

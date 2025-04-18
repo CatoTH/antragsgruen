@@ -29,13 +29,13 @@ ob_start();
         <ul class="dropdown-menu dropdown-menu-right">
             <li class="checkbox inProposedProcedures">
                 <label>
-                    <input type="checkbox" v-model="modelValue.settings.inProposedProcedures">
+                    <input type="checkbox" v-model="modelValue.settings.in_proposed_procedures">
                     <?= Yii::t('con', 'agenda_pp') ?>
                 </label>
             </li>
             <li class="checkbox hasSpeakingList">
                 <label>
-                    <input type="checkbox" v-model="modelValue.settings.hasSpeakingList">
+                    <input type="checkbox" v-model="modelValue.settings.has_speaking_list">
                     <?= Yii::t('con', 'agenda_speaking') ?>
                 </label>
             </li>
@@ -62,10 +62,10 @@ $html = ob_get_clean();
         },
         methods: {
             isMotionTypeSelected(motionType) {
-                return this.modelValue.settings.motionTypes.indexOf(motionType.id) !== -1;
+                return this.modelValue.settings.motion_types.indexOf(motionType.id) !== -1;
             },
             onMotionTypeChange(event) {
-                this.modelValue.settings.motionTypes = (event.target.value ? [parseInt(event.target.value)] : null);
+                this.modelValue.settings.motion_types = (event.target.value ? [parseInt(event.target.value)] : null);
             }
         },
         mounted: function () {
@@ -159,9 +159,9 @@ $html = ob_get_clean();
                     time: null,
                     children: [],
                     settings: {
-                        inProposedProcedures: false,
-                        hasSpeakingList: false,
-                        motionTypes: [],
+                        in_proposed_procedures: false,
+                        has_speaking_list: false,
+                        motion_types: [],
                     },
                 });
                 this.recalculateCodeBases(this.modelValue)
@@ -175,9 +175,9 @@ $html = ob_get_clean();
                     date: null,
                     children: [],
                     settings: {
-                        inProposedProcedures: false,
-                        hasSpeakingList: false,
-                        motionTypes: [],
+                        in_proposed_procedures: false,
+                        has_speaking_list: false,
+                        motion_types: [],
                     },
                 });
                 this.recalculateCodeBases(this.modelValue)
