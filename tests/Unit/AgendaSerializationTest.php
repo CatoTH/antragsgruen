@@ -18,9 +18,9 @@ class AgendaSerializationTest extends TestBase
         "date": null,
         "time": "15:34",
         "settings": {
-            "hasSpeakingList": true,
-            "inProposedProcedures": true,
-            "motionTypes": [10]
+            "has_speaking_list": true,
+            "in_proposed_procedures": true,
+            "motion_types": [10]
         },
         "children": [
           {
