@@ -46,6 +46,7 @@ return [
     'index_consultation_settings' => 'This consultation',
     'index_motion_types'          => 'Edit motion types',
     'index_site_voting'           => 'Votings',
+    'index_site_agenda'           => 'Agenda',
     'index_site_speaking'         => 'Speaking lists',
     'index_site_access'           => 'Login / users / admins',
     'index_site_consultations'    => 'Manage more consultations on this subdomain',

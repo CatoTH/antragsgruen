@@ -46,6 +46,7 @@ return [
     'index_consultation_settings' => 'Diese Veranstaltung / Programmdiskussion',
     'index_motion_types'          => 'Antragstypen bearbeiten',
     'index_site_voting'           => 'Abstimmungen',
+    'index_site_agenda'           => 'Tagesordnung',
     'index_site_speaking'         => 'Redelisten',
     'index_site_access'           => 'Login / Benutzer*innen / Admins',
     'index_site_consultations'    => 'Weitere Veranstaltungen anlegen / verwalten',
