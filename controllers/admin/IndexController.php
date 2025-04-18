@@ -3,14 +3,13 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
-use app\models\api\{SpeechQueue as SpeechQueueApi, AgendaItem as AgendaItemApi};
+use app\models\api\{SpeechQueue as SpeechQueueApi};
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
-use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface, RestApiResponse};
+use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
-use app\models\forms\{AgendaSaver, AntragsgruenUpdateModeForm, ConsultationCreateForm};
-use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 
 class IndexController extends AdminBase
 {
@@ -231,34 +230,6 @@ class IndexController extends AdminBase
         }
 
         return new HtmlResponse($this->render('appearance', ['consultation' => $this->consultation]));
-    }
-
-    public function actionAgenda(): HtmlResponse
-    {
-        $consultation = $this->consultation;
-
-        return new HtmlResponse($this->render('agenda', ['consultation' => $this->consultation]));
-    }
-
-    public function actionSaveAgenda(): RestApiResponse
-    {
-        $this->handleRestHeaders(['POST'], true);
-
-        $serializer = Tools::getSerializer();
-
-        try {
-            /** @var AgendaItemApi[] $data */
-            $data = $serializer->deserialize($this->getPostBody(), AgendaItemApi::class . '[]', 'json');
-        } catch (NotNormalizableValueException $e) {
-            return new RestApiResponse(400, ['error' => $e->getMessage()]);
-        }
-
-        $saver = new AgendaSaver($this->consultation);
-        $saver->saveAgendaFromApi(null, $data);
-
-        $savedAgenda = AgendaItemApi::getItemsFromConsultation($this->consultation);
-
-        return new RestApiResponse(200, null, $serializer->serialize($savedAgenda, 'json'));
     }
 
     private function saveTags(Consultation $consultation): void

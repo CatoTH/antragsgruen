@@ -3,6 +3,7 @@
 ## Version 4.16.0 [not released yet]
 
 - Editing the agenda is now done on a separate page, allowing better caching and removing long-legacy JS-Libraries.
+- The permission to edit the agenda can now be granted independent of other permissions.
 - An optional mechanism for background job execution is introduced, making it possible to send e-mails asynchronously (therefore not blocking regular requests).
 - The deadline circle at the top of the homepage now also shows dates if more than one future deadline exists. It can also be deactivated entirely.
 - The export functions for motions in the admin list now allow to combine one or multiple motion types, with all motion types being selected by default.
