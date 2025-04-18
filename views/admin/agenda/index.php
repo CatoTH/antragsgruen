@@ -1,9 +1,9 @@
 <?php
 
-use app\models\db\ConsultationMotionType;
-use app\components\{HTMLTools, UrlHelper};
-use app\models\db\Consultation;
-use app\models\settings\Consultation as ConsultationSettings;
+declare(strict_types=1);
+
+use app\models\db\{ConsultationMotionType, Consultation};
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /**
@@ -31,6 +31,7 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
     'id' => $item->id,
     'title' => $item->titlePlural,
 ], $consultation->motionTypes);
+$serializer = \app\components\Tools::getSerializer();
 
 ?><h1><?= Yii::t('admin', 'agenda_title') ?></h1>
 
@@ -43,8 +44,8 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
     <div class="agendaEditForm"
          data-antragsgruen-widget="backend/AgendaEditVue"
          data-save-agenda-url="<?= Html::encode(UrlHelper::createUrl(['/admin/agenda/rest-index'])) ?>"
-         data-motion-types="<?= Html::encode(json_encode($motionTypesData)) ?>"
-         data-agenda="<?= Html::encode(json_encode($apiModel)) ?>">
+         data-motion-types="<?= Html::encode($serializer->serialize($motionTypesData, 'json')) ?>"
+         data-agenda="<?= Html::encode($serializer->serialize($apiModel, 'json')) ?>">
         <div class="agendaEdit"></div>
     </div>
 
