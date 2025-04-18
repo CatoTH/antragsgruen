@@ -14,7 +14,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property int $position
  * @property string $code
  * @property string|null $time
- * @property string|null $title
+ * @property string $title
  * @property int|null $motionTypeId
  * @property string|null $settings
  *
