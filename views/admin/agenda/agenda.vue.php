@@ -174,6 +174,11 @@ $html = ob_get_clean();
                     title: '',
                     date: null,
                     children: [],
+                    settings: {
+                        inProposedProcedures: false,
+                        hasSpeakingList: false,
+                        motionTypes: [],
+                    },
                 });
                 this.recalculateCodeBases(this.modelValue)
             },
