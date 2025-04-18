@@ -225,7 +225,7 @@ $html = ob_get_clean();
 ob_start();
 ?>
 <section class="agendaEditWidget stdSortingWidget">
-    <div class="settings" style="text-align: right;">
+    <div class="settings">
         <label>
             <input type="checkbox" v-model="showTime"> <?= Yii::t('admin', 'agenda_show_times') ?>
         </label>
