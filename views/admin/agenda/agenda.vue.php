@@ -227,7 +227,7 @@ ob_start();
 <section class="agendaEditWidget stdSortingWidget">
     <div class="settings">
         <label>
-            <input type="checkbox" v-model="showTime"> <?= Yii::t('admin', 'agenda_show_times') ?>
+            <input type="checkbox" v-model="showTime" :disabled="anyItemHasTime"> <?= Yii::t('admin', 'agenda_show_times') ?>
         </label>
     </div>
     <agenda-sorter v-model="list" :motionTypes="motionTypes" :root="true" :showTime="showTime"></agenda-sorter>
@@ -266,23 +266,25 @@ $html = ob_get_clean();
                 set: function (value) {
                     this.$emit('update:modelValue', value);
                 }
+            },
+            anyItemHasTime: function () {
+                const checkItemRec = function(items) {
+                    for (let item in items) {
+                        if (items[item].time) {
+                            return true;
+                        }
+                        if (checkItemRec(items[item].children)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                return checkItemRec(this.modelValue);
             }
         },
         data() {
-            const anyItemHasTime = function(items) {
-                for (let item in items) {
-                    if (items[item].time) {
-                        return true;
-                    }
-                    if (anyItemHasTime(items[item].children)) {
-                        return true;
-                    }
-                }
-                return false;
-            };
-
             return {
-                showTime: anyItemHasTime(this.modelValue),
+                showTime: false,
                 saving: false,
                 saved: false,
             }
@@ -299,6 +301,9 @@ $html = ob_get_clean();
                     this.saved = false;
                 }, 2000);
             }
+        },
+        created: function () {
+            this.showTime = this.anyItemHasTime;
         }
     });
 </script>
