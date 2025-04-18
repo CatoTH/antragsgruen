@@ -67,6 +67,7 @@ return [
     'privilege_content'       => 'Manage content pages / texts',
     'privilege_speech'        => 'Manage speech queues',
     'privilege_voting'        => 'Manage votings',
+    'privilege_agenda'        => 'Manage agenda',
     'privilege_screening'     => 'Review & Publish',
     'privilege_motionsee'     => 'See all (including unpublished)',
     'privilege_motionstruct'  => 'Manage metadata',

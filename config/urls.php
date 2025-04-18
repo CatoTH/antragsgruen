@@ -39,13 +39,14 @@ $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-odtall|motion-openslides|motion-comments-xlsx';
 $adminAmendmentPaths  = 'excellist|odslist|odslist-short|xlsx-list|pdflist|pdfziplist|odtziplist|openslides';
 $adminUserPaths       = 'save|poll|add-single-init|add-single|add-multiple-ww|add-multiple-email|search-groups';
-$adminPaths           = 'consultation|appearance|agenda|save-agenda|translation|translation-motion-type|siteaccess|siteconsultations|openslidesusers';
+$adminPaths           = 'consultation|appearance|translation|translation-motion-type|siteaccess|siteconsultations|openslidesusers';
 $adminPaths           .= '|theming|files|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
 $adminPpPaths         = 'index-ajax|ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible|save-responsibility|save-tags';
 
 $urlRules = [
     $domadmin                                                     => 'admin/index',
     $domadmin . '<_a:(' . $adminPaths . ')>'                      => 'admin/index/<_a>',
+    $domadmin . 'agenda'                                          => 'admin/agenda/index',
     $domadmin . 'users'                                           => 'admin/users/index',
     $domadmin . 'users/<_a:(' . $adminUserPaths . ')>'            => 'admin/users/<_a>',
     $domadmin . 'motion/update/<motionId:\d+>'                    => 'admin/motion/update',
@@ -99,6 +100,7 @@ $urlRules = [
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
     $restBaseCon . '/page/<pageSlug:[^\/]+>'                                         => '/pages/get-rest',
 
+    $restBaseCon . '/agenda/save' => '/admin/agenda/save',
     $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
     $restBaseCon . '/votings/closed' => '/voting/get-closed-voting-blocks',
     $restBaseCon . '/votings/admin' => '/voting/get-admin-voting-blocks',

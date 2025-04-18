@@ -17,7 +17,7 @@ $layout = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 $layout->addVueTemplate('@app/views/shared/datetime_selector.vue.php');
-$layout->addVueTemplate('@app/views/admin/index/agenda.vue.php');
+$layout->addVueTemplate('@app/views/admin/agenda/agenda.vue.php');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadVue();
@@ -43,7 +43,7 @@ $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
 
     <div class="agendaEditForm"
          data-antragsgruen-widget="backend/AgendaEditVue"
-         data-save-agenda-url="<?= Html::encode(UrlHelper::createUrl(['/admin/index/save-agenda'])) ?>"
+         data-save-agenda-url="<?= Html::encode(UrlHelper::createUrl(['/admin/agenda/save'])) ?>"
          data-motion-types="<?= Html::encode(json_encode($motionTypesData)) ?>"
          data-agenda="<?= Html::encode(json_encode($apiModel)) ?>">
         <div class="agendaEdit"></div>

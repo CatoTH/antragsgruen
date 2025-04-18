@@ -1,15 +1,14 @@
 <?php
 
 use app\components\{IMotionStatusFilter, MotionSorter, UrlHelper};
-use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion};
-use app\models\settings\{Layout, Consultation as ConsultationSettings};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, User};
+use app\models\settings\{Layout, Consultation as ConsultationSettings, Privileges};
 use app\views\consultation\LayoutHelper;
 use yii\helpers\Html;
 
 /**
  * @var Consultation $consultation
  * @var Layout $layout
- * @var bool $admin
  * @var IMotion[] $imotions
  * @var bool $isResolutionList
  */
@@ -26,8 +25,8 @@ $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
 
 echo '<section class="sectionAgenda" aria-labelledby="sectionAgendaTitle">';
 echo '<h2 class="green" id="sectionAgendaTitle">';
-if ($admin) {
-    $url = UrlHelper::createUrl('/admin/index/agenda');
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_AGENDA, null)) {
+    $url = UrlHelper::createUrl('/admin/agenda/index');
     echo '<a href="' . Html::encode($url) . '" class="greenHeaderExtraLink">';
     echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
     echo Yii::t('admin', 'agenda_edit');
