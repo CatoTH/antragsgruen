@@ -35,3 +35,14 @@ services:
     image: "redis:7"
     volumes:
       - 'redis-data:/data'
+
+  rabbitmq:
+    image: 'rabbitmq:3-management-alpine'
+    environment:
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_USER=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    profiles:
+      - live
