@@ -294,7 +294,7 @@ class TextSimple extends TextSimpleCommon
         } else {
             // On server side, we do not make a difference between single paragraph and single change mode, as this is enforced on client-side only
             $moSection = $section->getOriginalMotionSection();
-            $paras = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
+            $paras = HTMLTools::sectionSimpleHTML($moSection->getData(), true);
             $paras = array_map(fn(SectionedParagraph $par) => $par->html, $paras);
 
             $parasRaw  = $paras;
