@@ -11,6 +11,7 @@ class Privileges
     public const PRIVILEGE_CONTENT_EDIT = 2;  // Editing pages, uploaded documents (not motions), agenda
     public const PRIVILEGE_SPEECH_QUEUES = 8;
     public const PRIVILEGE_VOTINGS = 9;
+    public const PRIVILEGE_AGENDA = 15;
     public const PRIVILEGE_SITE_ADMIN = 6;  // SPECIAL CASE: gives all permissions to all consultations of the site
     public const PRIVILEGE_GLOBAL_USER_ADMIN = 10; // Editing user data, not only groups
 
@@ -63,6 +64,12 @@ class Privileges
             self::PRIVILEGE_CONTENT_EDIT => new Privilege(
                 self::PRIVILEGE_CONTENT_EDIT,
                 \Yii::t('structure', 'privilege_content'),
+                false,
+                null
+            ),
+            self::PRIVILEGE_AGENDA => new Privilege(
+                self::PRIVILEGE_AGENDA,
+                \Yii::t('structure', 'privilege_agenda'),
                 false,
                 null
             ),
