@@ -20,9 +20,9 @@ $layout = $controller->layoutParams;
 $hasOpenslides = $consultation->getSettings()->openslidesExportEnabled;
 $hasInactiveFunctionality = (!$hasResponsibilities || !$hasProposedProcedures || !$hasOpenslides);
 
-$getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) use ($search) {
-    $params     = array_merge($route, ['motionTypeId' => $motionTypeId, 'inactive' => '0']);
-    $paramsTmpl = array_merge($route, ['motionTypeId' => $motionTypeId, 'inactive' => 'INACTIVE']);
+$getExportLinkLi = function ($title, $route, $motionTypeIds, $cssClass) use ($search) {
+    $params     = array_merge($route, ['motionTypeId' => $motionTypeIds, 'inactive' => '0']);
+    $paramsTmpl = array_merge($route, ['motionTypeId' => ($motionTypeIds ? 'MOTIONTYPES' : null), 'inactive' => 'INACTIVE']);
     if (!$search->isDefaultSettings()) {
         $params = array_merge($params, $search->getSearchUrlParams());
         $paramsTmpl = array_merge($paramsTmpl, $search->getSearchUrlParams());
@@ -36,8 +36,8 @@ $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) use ($sea
     }
     $link    = UrlHelper::createUrl($params);
     $linkTpl = UrlHelper::createUrl($paramsTmpl);
-    if ($motionTypeId) {
-        $cssClass .= $motionTypeId;
+    if ($motionTypeIds) {
+        $cssClass .= $motionTypeIds;
     }
     $attrs = ['class' => $cssClass, 'data-href-tpl' => $linkTpl];
 
@@ -89,7 +89,7 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
             <button class="btn btn-default dropdown-toggle" type="button" id="activateFncBtn"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <?= Yii::t('admin', 'list_functions') ?>
-                <span class="caret"></span>
+                <span class="caret" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="activateFncBtn">
                 <?php
@@ -121,55 +121,65 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
     <div class="export">
         <span class="title">Export:</span>
 
-        <?php
-        foreach ($consultation->motionTypes as $motionType) { ?>
-            <div class="dropdown dropdown-menu-left exportMotionDd">
-                <button class="btn btn-default dropdown-toggle" type="button" id="exportMotionBtn<?= $motionType->id ?>"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <?= Html::encode($motionType->titlePlural) ?>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="exportMotionBtn<?= $motionType->id ?>">
-                    <li class="checkbox"><label>
-                            <input type="checkbox" class="inactive" name="inactive">
-                            <?= Yii::t('export', 'incl_inactive') ?>
-                        </label></li>
-                    <li role="separator" class="divider"></li>
-                    <?php
-                    $title = Yii::t('admin', 'index_export_ods');
-                    $title .= HTMLTools::getTooltipIcon(Yii::t('admin', 'index_export_ods_tt'));
-                    echo $getExportLinkLi($title, ['admin/motion-list/motion-odslist'], $motionType->id, 'motionODS');
-
-                    if ($controller->getParams()->weasyprintPath) {
-                        $title = Yii::t('admin', 'index_pdf_collection');
-                        echo $getExportLinkLi($title, ['motion/pdfcollection'], $motionType->id, 'motionPDF');
-                    }
-
-                    if ($controller->getParams()->weasyprintPath) {
-                        $title = Yii::t('admin', 'index_pdf_zip_list');
-                        $path  = ['admin/motion-list/motion-pdfziplist'];
-                        echo $getExportLinkLi($title, $path, $motionType->id, 'motionZIP');
-                    }
-
-                    $title = Yii::t('admin', 'index_odt_zip_list');
-                    $path  = ['admin/motion-list/motion-odtziplist'];
-                    echo $getExportLinkLi($title, $path, $motionType->id, 'motionOdtZIP');
-
-                    $title = Yii::t('admin', 'index_odt_allmot');
-                    $path  = ['admin/motion-list/motion-odtall'];
-                    echo $getExportLinkLi($title, $path, $motionType->id, 'motionOdtAll');
-
-                    $title = Yii::t('admin', 'index_export_ods_listall');
-                    $path  = ['admin/motion-list/motion-odslistall'];
-                    echo $getExportLinkLi($title, $path, $motionType->id, 'motionODSlist');
-
-                    $title = Yii::t('admin', 'index_export_comments_xlsx');
-                    echo $getExportLinkLi($title, ['admin/motion-list/motion-comments-xlsx'], $motionType->id, 'motionCommentsXlsx');
+        <div class="dropdown dropdown-menu-left exportMotionDd">
+            <button class="btn btn-default dropdown-toggle" type="button" id="exportMotionBtn"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <?= Yii::t('export', 'motions') ?>
+                <span class="caret" aria-hidden="true"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="exportMotionBtn">
+                <li class="checkbox"><label>
+                        <input type="checkbox" class="inactive" name="inactive">
+                        <?= Yii::t('export', 'incl_inactive') ?>
+                    </label></li>
+                <li role="separator" class="divider"></li>
+                <?php
+                foreach ($consultation->motionTypes as $motionType) {
                     ?>
-                </ul>
-            </div>
-            <?php
-        } ?>
+                    <li class="checkbox motionTypeCheckbox"><label>
+                            <input type="checkbox" class="motionType" name="motionType" value="<?= $motionType->id ?>" checked>
+                            <?= Html::encode($motionType->titlePlural) ?>
+                        </label></li>
+                <?php
+                }
+                ?>
+                <li role="separator" class="divider"></li>
+                <?php
+
+                $motionTypeIds = implode(",", array_map(fn($motionType) => $motionType->id, $consultation->motionTypes));
+
+                $title = Yii::t('admin', 'index_export_ods');
+                $title .= HTMLTools::getTooltipIcon(Yii::t('admin', 'index_export_ods_tt'));
+                echo $getExportLinkLi($title, ['admin/motion-list/motion-odslist'], $motionTypeIds, 'motionODS');
+
+                if ($controller->getParams()->weasyprintPath) {
+                    $title = Yii::t('admin', 'index_pdf_collection');
+                    echo $getExportLinkLi($title, ['motion/pdfcollection'], $motionTypeIds, 'motionPDF');
+                }
+
+                if ($controller->getParams()->weasyprintPath) {
+                    $title = Yii::t('admin', 'index_pdf_zip_list');
+                    $path  = ['admin/motion-list/motion-pdfziplist'];
+                    echo $getExportLinkLi($title, $path, $motionTypeIds, 'motionZIP');
+                }
+
+                $title = Yii::t('admin', 'index_odt_zip_list');
+                $path  = ['admin/motion-list/motion-odtziplist'];
+                echo $getExportLinkLi($title, $path, $motionTypeIds, 'motionOdtZIP');
+
+                $title = Yii::t('admin', 'index_odt_allmot');
+                $path  = ['admin/motion-list/motion-odtall'];
+                echo $getExportLinkLi($title, $path, $motionTypeIds, 'motionOdtAll');
+
+                $title = Yii::t('admin', 'index_export_ods_listall');
+                $path  = ['admin/motion-list/motion-odslistall'];
+                echo $getExportLinkLi($title, $path, $motionTypeIds, 'motionODSlist');
+
+                $title = Yii::t('admin', 'index_export_comments_xlsx');
+                echo $getExportLinkLi($title, ['admin/motion-list/motion-comments-xlsx'], $motionTypeIds, 'motionCommentsXlsx');
+                ?>
+            </ul>
+        </div>
 
         <div class="dropdown dropdown-menu-left exportAmendmentDd">
             <button class="btn btn-default dropdown-toggle" type="button" id="exportAmendmentsBtn"

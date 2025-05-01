@@ -1243,6 +1243,10 @@ label.legend {
       line-height: 1.2;
     }
   }
+
+  a.disabled {
+    font-style: italic;
+  }
 }
 
 .motionListSearchForm {

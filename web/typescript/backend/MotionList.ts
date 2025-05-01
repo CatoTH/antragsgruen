@@ -66,13 +66,29 @@ export class MotionList {
         $exportRow.find("li.checkbox").on("click", function (ev) {
             ev.stopPropagation();
         });
+        $exportRow.on("click", "a.disabled", function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+        });
         $exportRow.find(".exportMotionDd, .exportAmendmentDd").each(function () {
             let $dd = $(this),
                 recalcLinks = function () {
-                    let inactive = ($dd.find("input[name=inactive]").prop("checked") ? 1 : 0);
+                    const inactive = ($dd.find("input[name=inactive]").prop("checked") ? 1 : 0);
+                    const motionTypes = [];
+                    $dd.find("input[name=motionType]:checked").each(function () {
+                        motionTypes.push($(this).val());
+                    });
                     $dd.find(".exportLink a").each(function () {
                         let link = $(this).data("href-tpl");
+
+                        if (motionTypes.length === 0 && link.indexOf("MOTIONTYPES") !== -1) {
+                            this.classList.add("disabled");
+                        } else {
+                            this.classList.remove("disabled");
+                        }
+
                         link = link.replace("INACTIVE", inactive);
+                        link = link.replace("MOTIONTYPES", motionTypes.join(","));
                         $(this).attr("href", link);
                     });
                 };
