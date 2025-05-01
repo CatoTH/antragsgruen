@@ -8,7 +8,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 /**
  * @var yii\web\View $this
  * @var Motion[] $imotions
- * @var \app\models\db\ConsultationMotionType $motionType
  */
 
 /** @var \app\controllers\Base $controller */

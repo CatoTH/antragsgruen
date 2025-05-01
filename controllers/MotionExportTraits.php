@@ -175,12 +175,7 @@ trait MotionExportTraits
             $this->getRequestValue('Search')
         );
 
-        if ($motionTypeId !== '' && $motionTypeId !== '0') {
-            $motionTypeIds = array_map('intval', explode(',', $motionTypeId));
-        } else {
-            $motionTypeIds = null;
-        }
-        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeIds, $inactive);
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, $inactive);
 
         $imotionsFiltered = [];
         foreach ($imotions as $imotion) {

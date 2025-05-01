@@ -1067,11 +1067,16 @@ class AdminMotionFilterForm
      * If a filter is set via the motion filter, then this will return exactly what the motion list will show (only filtered by type).
      * Otherwise, the inactive-flag will be considered.
      *
-     * @param int[]|null $motionTypeIds
      * @return IMotion[]
      */
-    public function getMotionsForExport(Consultation $consultation, ?array $motionTypeIds, bool $inactive): array
+    public function getMotionsForExport(Consultation $consultation, ?string $motionTypeIdStr, bool $inactive): array
     {
+        if ($motionTypeIdStr !== '' && $motionTypeIdStr !== '0') {
+            $motionTypeIds = array_map('intval', explode(',', $motionTypeIdStr));
+        } else {
+            $motionTypeIds = null;
+        }
+
         if ($motionTypeIds) {
             try {
                 foreach ($motionTypeIds as $motionTypeId) {
