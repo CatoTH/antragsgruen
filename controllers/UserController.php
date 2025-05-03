@@ -674,6 +674,10 @@ class UserController extends Base
     {
         $user = User::getCurrentUser();
 
+        if ($this->consultation && $this->consultation->urlPath === 'hv') {
+            throw new \app\models\exceptions\ResponseException(new RedirectResponse('/'));
+        }
+
         if ($this->isPostSet('askPermission') && $this->consultation->getSettings()->allowRequestingAccess) {
             UserConsultationScreening::askForConsultationPermission($user, $this->consultation);
             $this->consultation->refresh();
