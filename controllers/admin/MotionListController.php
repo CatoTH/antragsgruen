@@ -322,13 +322,11 @@ class MotionListController extends AdminBase
     {
         $search = $this->getSearchForm($this->consultation->motions);
         $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
-        $motionType = $this->consultation->getMotionType($motionTypeId);
 
-        $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
+        $filename = Tools::sanitizeFilename(\Yii::t('export', 'motions'), false);
         $ods = $this->renderPartial('ods_list', [
             'imotions'     => $imotions,
             'textCombined' => $textCombined,
-            'motionType'   => $motionType,
         ]);
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, $filename);
     }
@@ -337,9 +335,8 @@ class MotionListController extends AdminBase
     {
         $search = $this->getSearchForm($this->consultation->motions);
         $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, false);
-        $motionType = $this->consultation->getMotionType($motionTypeId);
 
-        $filename = Tools::sanitizeFilename($motionType->titlePlural, false);
+        $filename = Tools::sanitizeFilename(\Yii::t('export', 'motions'), false);
 
         if ($version == 1) {
             $csv = $this->renderPartial('openslides1_list', [
