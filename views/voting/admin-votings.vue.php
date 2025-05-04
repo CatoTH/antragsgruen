@@ -680,11 +680,15 @@ $html = ob_get_clean();
                 }
             },
             abstentionsStr: function () {
+                let str = '';
                 if (this.voting.abstentions_total === 1) {
-                    return abstentions1;
+                    str = abstentions1;
                 } else {
-                    return abstentionsx.replace(/%NUM%/, this.voting.abstentions_total);
+                    str = abstentionsx.replace(/%NUM%/, this.voting.abstentions_total);
                 }
+                str += " (" + this.voting.abstentions_nyc + " NYC / " + this.voting.abstentions_ingyo + " INGYO)";
+
+                return str;
             }
         },
         methods: {
