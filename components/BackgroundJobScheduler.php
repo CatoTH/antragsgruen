@@ -11,21 +11,32 @@ class BackgroundJobScheduler
 {
     public const HEALTH_MAX_AGE_SECONDS = 120;
 
+    // @TODO Separate "notifications" from cache rebuild
+    public static function backgroundJobsActive(): bool
+    {
+        return isset(AntragsgruenApp::getInstance()->backgroundJobs['notifications']) && AntragsgruenApp::getInstance()->backgroundJobs['notifications'];
+    }
+
     public static function executeOrScheduleJob(IBackgroundJob $job): void
     {
-        if (isset(AntragsgruenApp::getInstance()->backgroundJobs['notifications']) && AntragsgruenApp::getInstance()->backgroundJobs['notifications']) {
-            \Yii::$app->getDb()->createCommand(
-                'INSERT INTO `backgroundJob` (`siteId`, `consultationId`, `type`, `dateCreation`, `payload`) VALUES (:siteId, :consultationId, :type, NOW(), :payload)',
-                [
-                    ':siteId' => $job->getSite()?->id,
-                    ':consultationId' => $job->getConsultation()?->id,
-                    ':type' => $job->getTypeId(),
-                    ':payload' => $job->toJson(),
-                ]
-            )->execute();
+        if (self::backgroundJobsActive()) {
+            self::scheduleJob($job);
         } else {
             $job->execute();
         }
+    }
+
+    public static function scheduleJob(IBackgroundJob $job): void
+    {
+        \Yii::$app->getDb()->createCommand(
+            'INSERT INTO `backgroundJob` (`siteId`, `consultationId`, `type`, `dateCreation`, `payload`) VALUES (:siteId, :consultationId, :type, NOW(), :payload)',
+            [
+                ':siteId' => $job->getSite()?->id,
+                ':consultationId' => $job->getConsultation()?->id,
+                ':type' => $job->getTypeId(),
+                ':payload' => $job->toJson(),
+            ]
+        )->execute();
     }
 
     /**

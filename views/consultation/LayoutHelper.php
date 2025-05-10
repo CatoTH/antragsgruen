@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\consultation;
 
+use app\models\backgroundJobs\BuildStaticCache;
 use app\components\{HashedStaticCache, HTMLTools, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\IMotionList;
 use app\models\settings\{AntragsgruenApp, Consultation as ConsultationSettings, Privileges};
@@ -26,13 +27,19 @@ class LayoutHelper
             $cache->setSkipCache(true);
         }
 
-        if ($type === 'index_layout_agenda' && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+        $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
+
+        if ($type === 'index_layout_agenda' && $contentAdmin) {
             $cache->setSkipCache(true);
         }
         if (!in_array($type, ['index_layout_std', 'index_layout_tags', 'index_layout_agenda', 'index_layout_discussion_tags'])) {
             // Disable cache for plugin homepages, to prevent accidental over-caching
             $cache->setSkipCache(true);
         }
+
+        $cache->setRebuildBackgroundJob(
+            new BuildStaticCache(BuildStaticCache::CACHE_ID_CONSULTATION_HOME, $consultation, $contentAdmin)
+        );
 
         return $cache;
     }
@@ -52,6 +59,32 @@ class LayoutHelper
     public static function getHomePageCache(Consultation $consultation): HashedStaticCache
     {
         return self::getHomePageCacheForType($consultation, $consultation->getSettings()->getStartLayoutView());
+    }
+
+    public static function renderHomePageList(Consultation $consultation, bool $contentAdmin): string
+    {
+        $output = '';
+        $resolutionMode = $consultation->getSettings()->startLayoutResolutions;
+        list($imotions, $resolutions) = MotionSorter::getIMotionsAndResolutions($consultation->motions);
+        if (count($resolutions) > 0 && $resolutionMode === ConsultationSettings::START_LAYOUT_RESOLUTIONS_ABOVE) {
+            $output .= \Yii::$app->controller->renderPartial('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
+        }
+
+        if (count($consultation->motionTypes) > 0 && $consultation->getSettings()->getStartLayoutView()) {
+            if ($resolutionMode === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT) {
+                $toShowImotions = $resolutions;
+            } else {
+                $toShowImotions = $imotions;
+            }
+            $output .= \Yii::$app->controller->renderPartial($consultation->getSettings()->getStartLayoutView(), [
+                'consultation' => $consultation,
+                'admin' => $contentAdmin,
+                'imotions' => $toShowImotions,
+                'isResolutionList' => ($resolutionMode === ConsultationSettings::START_LAYOUT_RESOLUTIONS_DEFAULT),
+                'skipTitle' => false,
+            ]);
+        }
+        return $output;
     }
 
     public static function getTagMotionListCache(Consultation $consultation, ConsultationSettingsTag $tag, bool $isResolutionList): HashedStaticCache
