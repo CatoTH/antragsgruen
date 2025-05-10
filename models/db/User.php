@@ -467,6 +467,11 @@ class User extends ActiveRecord implements IdentityInterface
         return '';
     }
 
+    public function getFullName(): string
+    {
+        return trim($this->getGivenNameWithFallback() . ' ' . $this->getFamilyNameWithFallback());
+    }
+
     public function getGruenesNetzName(): ?string
     {
         if (preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches)) {
