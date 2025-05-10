@@ -438,6 +438,21 @@ ob_start();
             </label>
             <div class="hint"><?= Yii::t('voting', 'settings_votespublic_hint') ?></div>
         </fieldset>
+        <fieldset class="votesNamesSettings">
+            <legend><?= Yii::t('voting', 'settings_votesnames') ?>:</legend>
+            <label>
+                <input type="radio" value="0" v-model="votesNames">
+                <?= Yii::t('voting', 'settings_votesnames_auth') ?>
+            </label>
+            <label>
+                <input type="radio" value="1" v-model="votesNames">
+                <?= Yii::t('voting', 'settings_votesnames_name') ?>
+            </label>
+            <label>
+                <input type="radio" value="2" v-model="votesNames">
+                <?= Yii::t('voting', 'settings_votesnames_organization') ?>
+            </label>
+        </fieldset>
         <fieldset class="inputWithLabelHolder votesTimer">
             <legend><?= Yii::t('voting', 'settings_timer') ?>:
                 <span class="glyphicon glyphicon-info-sign"
@@ -519,6 +534,7 @@ $html = ob_get_clean();
                     maxVotesRestrictionPerGroup: null,
                     quorumType: null,
                     votesPublic: null,
+                    votesNames: null,
                     resultsPublic: null,
                     hasGeneralAbstention: null,
                     votePolicy: null,
@@ -631,6 +647,14 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.changedSettings.votesPublic = value;
+                }
+            },
+            votesNames: {
+                get: function () {
+                    return (this.changedSettings.votesNames !== null ? this.changedSettings.votesNames : this.voting.votes_names);
+                },
+                set: function (value) {
+                    this.changedSettings.votesNames = value;
                 }
             },
             resultsPublic: {
@@ -895,8 +919,9 @@ $html = ob_get_clean();
                     });
                 }
 
-                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.hasGeneralAbstention, this.votePolicy, maxVotesSettings, this.resultsPublic, this.votesPublic, this.votingTime, this.settingsAssignedMotion);
+                this.$emit('save-settings', this.voting.id, this.settingsTitle, this.answerTemplate, this.majorityType, this.quorumType, this.hasGeneralAbstention, this.votePolicy, maxVotesSettings, this.resultsPublic, this.votesPublic, this.votingTime, this.settingsAssignedMotion, this.changedSettings.votesNames);
                 this.changedSettings.votesPublic = null;
+                this.changedSettings.votesNames = null;
                 this.changedSettings.majorityType = null;
                 this.changedSettings.quorumType = null;
                 this.changedSettings.hasGeneralAbstention = null;
