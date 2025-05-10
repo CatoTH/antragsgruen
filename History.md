@@ -9,6 +9,7 @@
 ### Version 4.15.3 [not released yet]
 
 - For votings, it is now possible to set if the e-mail-address, the name or the organization of the voters is to be displayed (if at all).
+- On speaking list, it is now possible to not show the list of applicants in the publicly visible speaking list view.
 - Bugfix: When copying a motion to a different consultation, the tags and the version was not transferred.
 - Bugfix: Sending e-mails via SMTP only worked with SMTP Servers requiring authentication. (thanks to tiran133)
 - Bugfix: Amending motions with list items was broken if amendments were to only affect one particular place.

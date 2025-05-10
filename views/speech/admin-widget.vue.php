@@ -55,6 +55,12 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                     </li>
                     <li class="checkbox">
                         <label @click="$event.stopPropagation()">
+                            <input type="checkbox" class="showNames" v-model="queue.settings.show_names" @change="settingsChanged()">
+                            <?= Yii::t('speech', 'admin_show_names') ?>
+                        </label>
+                    </li>
+                    <li class="checkbox">
+                        <label @click="$event.stopPropagation()">
                             <input type="checkbox" class="hasSpeakingTime" v-model="hasSpeakingTime" @change="settingsChanged()">
                             <?= Yii::t('speech', 'admin_speaking_time') ?>
                         </label>
@@ -440,6 +446,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                     is_open_poo: (this.queue.settings.is_open_poo ? 1 : 0),
                     prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
                     allow_custom_names: (this.queue.settings.allow_custom_names ? 1 : 0),
+                    show_names: (this.queue.settings.show_names ? 1 : 0),
                     speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : null),
                     _csrf: this.csrf,
                 }, function (data) {
