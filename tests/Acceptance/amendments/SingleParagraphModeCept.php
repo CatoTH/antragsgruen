@@ -148,12 +148,11 @@ $I->seeElement('.amendmentParaLink');
 $I->clickJS('#section_2_5 .amendmentParaLink');
 $I->wait(1);
 
-// Note that 2_5 becomes 2_2 because lists are not split anymore
-$I->dontSeeElement('#section_holder_2_2.modifyable');
-$I->seeElement('#section_holder_2_2.modified');
+$I->dontSeeElement('#section_holder_2_5.modifyable');
+$I->seeElement('#section_holder_2_5.modified');
 $I->dontSeeElement('#section_holder_2_1.modifyable');
 
-$I->executeJS('CKEDITOR.instances.sections_2_2_wysiwyg.setData("<p>Yet another test</p>");');
+$I->executeJS('CKEDITOR.instances.sections_2_5_wysiwyg.setData("<p>Yet another test</p>");');
 $I->see('Yet another test');
 
 $I->wantTo('submit the amendment');

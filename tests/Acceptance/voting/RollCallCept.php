@@ -115,6 +115,7 @@ $I->assertJsonStringEqualsJsonString('[
     "title": "Roll call",
     "status": 3,
     "votes_public": 2,
+    "votes_names": 0,
     "results_public": 1,
     "assigned_motion": null,
     "majority_type": 1,

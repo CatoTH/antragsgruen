@@ -32,7 +32,7 @@ if (json_encode($ret)!=='["3","2","1","4","5"]') {
 
 $I->wantTo('check if the change is reflected on the motion');
 $I->gotoMotion();
-$I->see(mb_strtoupper('Begründung'), '.motionTextHolder0 h3');
+$I->see(mb_strtoupper('Begründung'), '.motionTextHolder0 h2');
 
 
 
