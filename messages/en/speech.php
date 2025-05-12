@@ -57,6 +57,7 @@ return [
     'admin_setting_open'     => 'Open to apply',
     'admin_setting_open_poo' => 'Open to Points of Orders',
     'admin_prefer_nonspeak'  => 'Prefer persons who haven\'t talked yet',
+    'admin_show_names'       => 'Show names of applicants publicly',
     'admin_allow_custom_names' => 'Speakers can change their names',
     'admin_speaking_time'    => 'Show speaking time',
     'admin_goto_components'  => 'Quota, (de-)activation',

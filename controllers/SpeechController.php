@@ -175,6 +175,7 @@ class SpeechController extends Base
         $settings->isOpenPoo = ($this->getHttpRequest()->post('is_open_poo') > 0);
         $settings->allowCustomNames = ($this->getHttpRequest()->post('allow_custom_names') > 0);
         $settings->preferNonspeaker = (intval($this->getHttpRequest()->post('prefer_nonspeaker')) > 0);
+        $settings->showNames = (intval($this->getHttpRequest()->post('show_names')) > 0);
         if ($this->getHttpRequest()->post('speaking_time') > 0) {
             $settings->speakingTime = intval($this->getHttpRequest()->post('speaking_time'));
         } else {

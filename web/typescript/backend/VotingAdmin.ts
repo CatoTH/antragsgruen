@@ -129,7 +129,7 @@ export class VotingAdmin {
                         status: newStatus,
                     });
                 },
-                saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion) {
+                saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames) {
                     this._performOperation(votingBlockId, {
                         op: 'save-settings',
                         title,
@@ -143,6 +143,7 @@ export class VotingAdmin {
                         votesPublic,
                         votingTime,
                         assignedMotion,
+                        votesNames,
                     });
                 },
                 onSorted(sortedIds) {
@@ -167,7 +168,7 @@ export class VotingAdmin {
                         op: 'delete-voting',
                     });
                 },
-                createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, votePolicy, userGroups, resultsPublic, votesPublic) {
+                createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, votePolicy, userGroups, resultsPublic, votesPublic, votesNames) {
                     let postData = {
                         _csrf: this.csrf,
                         type,
@@ -179,7 +180,8 @@ export class VotingAdmin {
                         votePolicy,
                         userGroups,
                         resultsPublic,
-                        votesPublic
+                        votesPublic,
+                        votesNames
                     };
 
                     const widget = this;
@@ -380,13 +382,14 @@ export class VotingAdmin {
             const resultsPublic = parseInt(getRadioListValue('.resultsPublicSettings input', '1'), 10); // Default: everyone
             const votesPublic = parseInt(getRadioListValue('.votesPublicSettings input', '0'), 10); // Default: nobody
             const votePolicy = parseInt((form.querySelector('.policySelect') as HTMLSelectElement).value, 10);
+            const votesNames = parseInt(getRadioListValue('.votesNamesSettings input', '0'), 10);
             let userGroups;
             if (votePolicy === POLICY_USER_GROUPS) {
                 userGroups = (form.querySelector('.userGroupSelectList') as any).selectize.items.map(item => parseInt(item, 10));
             } else {
                 userGroups = [];
             }
-            this.widgetComponent.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic);
+            this.widgetComponent.createVoting(type, answers, title.value, specificQuestion.value, assigned.value, majorityType, votePolicy, userGroups, resultsPublic, votesPublic, votesNames);
 
             form.classList.add('hidden');
             opener.classList.remove('hidden');

@@ -109,6 +109,7 @@ class AgendaVoting
             'title' => $title,
             'status' => $this->voting?->votingStatus,
             'votes_public' => $this->voting?->votesPublic,
+            'votes_names' => $this->voting?->getSettings()->votesNames,
             'results_public' => $this->voting?->resultsPublic,
             'assigned_motion' => $this->voting?->assignedToMotionId,
             'majority_type' => $this->voting?->majorityType,
@@ -259,11 +260,25 @@ class AgendaVoting
                     'vote' => $vote->getVoteForApi($answers),
                     'weight' => $vote->weight,
                     'user_id' => $vote->userId,
-                    'user_name' => ($vote->getUser() ? $vote->getUser()->getAuthUsername() : null),
+                    'user_name' => $this->getVoteName($vote, $voting),
                     'user_groups' => ($vote->getUser() ? $vote->getUser()->getConsultationUserGroupIds($voting->getMyConsultation()) : null),
                 ];
             }, $this->getFilteredVotesList($votes, $isAdmin));
         }
+    }
+
+    private function getVoteName(Vote $vote, VotingBlock $voting): ?string
+    {
+        if (!$vote->getUser()) {
+            return null;
+        }
+
+        return match ($voting->getSettings()->votesNames) {
+            \app\models\settings\VotingBlock::VOTES_NAMES_NAME => $vote->getUser()->getFullName(),
+            \app\models\settings\VotingBlock::VOTES_NAMES_ORGANIZATION => $vote->getUser()->organization ?? '?',
+            \app\models\settings\VotingBlock::VOTES_NAMES_AUTH => $vote->getUser()->getAuthUsername(),
+            default => $vote->getUser()->getAuthUsername(),
+        };
     }
 
     private function setApiObjectAbstentionData(array &$data, VotingBlock $voting, IVotingItem $item, bool $isAdmin): void

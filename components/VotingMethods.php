@@ -10,6 +10,7 @@ use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use app\models\quorumType\IQuorumType;
 use app\models\policies\{IPolicy, UserGroups};
+use app\models\settings\{VotingBlock as VotingBlockSettings};
 use app\models\votings\AnswerTemplates;
 use yii\web\Request;
 
@@ -83,6 +84,11 @@ class VotingMethods
             $votingBlock->resultsPublic = intval($this->request->post('resultsPublic'));
         } else {
             $votingBlock->resultsPublic = VotingBlock::RESULTS_PUBLIC_YES;
+        }
+        if ($this->request->post('votesNames') !== null) {
+            $settings->votesNames = intval($this->request->post('votesNames'));
+        } else {
+            $settings->votesNames = VotingBlockSettings::VOTES_NAMES_AUTH;
         }
         if (in_array($votingBlock->votingStatus, [VotingBlock::STATUS_OFFLINE, VotingBlock::STATUS_PREPARING])) {
             if ($this->request->post('maxVotesByGroup') !== null && $this->request->post('maxVotesByGroup') !== '') {

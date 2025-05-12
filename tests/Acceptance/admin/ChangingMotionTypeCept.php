@@ -48,7 +48,7 @@ $I->submitForm('#motionUpdateForm', [], 'save');
 $I->seeElement('.alert-success');
 
 $I->click('#sidebar .view');
-$I->see(strtoupper('New motion text'), 'h3');
+$I->see(strtoupper('New motion text'), 'h2');
 
 
 $I->wantTo('change the type of a motion again');
@@ -64,5 +64,5 @@ $I->submitForm('#motionUpdateForm', [], 'save');
 $I->seeElement('.alert-success');
 
 $I->click('#sidebar .view');
-$I->dontSee(strtoupper('New motion text'), 'h3');
-$I->see(strtoupper('Antragstext'), 'h3');
+$I->dontSee(strtoupper('New motion text'), 'h2');
+$I->see(strtoupper('Antragstext'), 'h2');

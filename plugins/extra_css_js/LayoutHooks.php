@@ -8,6 +8,11 @@ use app\models\layoutHooks\Hooks;
 
 class LayoutHooks extends Hooks
 {
+    private function getAllAssetPath(): string
+    {
+        return __DIR__ . '/assets/all';
+    }
+
     private function getSiteAssetPath(): string
     {
         if ($this->consultation && $this->consultation->site) {
@@ -28,6 +33,10 @@ class LayoutHooks extends Hooks
 
     public function endOfHead(string $before): string
     {
+        if (file_exists($this->getAllAssetPath() . '.css')) {
+            $before .= '<style>' . file_get_contents($this->getAllAssetPath() . '.css') . '</style>';
+        }
+
         if (file_exists($this->getSiteAssetPath() . '.css')) {
             $before .= '<style>' . file_get_contents($this->getSiteAssetPath() . '.css') . '</style>';
         }

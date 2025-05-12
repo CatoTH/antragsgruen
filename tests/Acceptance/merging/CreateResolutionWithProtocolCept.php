@@ -61,7 +61,7 @@ $I->see('Beschlossen am', '.motionDataTable');
 $I->see('Mitgliedervollversammlung', '.motionDataTable');
 $I->see('Beschluss (vorläufig)', '.motionDataTable');
 
-$I->see('Beschlusstext', 'h3');
+$I->see('Beschlusstext', 'h2');
 
 $I->dontSeeElement('.protocolHolder');
 $I->dontSee('So Long, and Thanks for All the Fish');

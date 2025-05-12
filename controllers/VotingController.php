@@ -181,6 +181,11 @@ class VotingController extends Base
         ));
         // If the voting is created from the proposed procedure, we assume it's only used to show it there
         $newBlock->votingStatus = VotingBlock::STATUS_PREPARING;
+
+        $settings = $newBlock->getSettings();
+        $settings->votesNames = intval($this->getPostValue('votesNames', \app\models\settings\VotingBlock::VOTES_NAMES_AUTH));
+        $newBlock->setSettings($settings);
+
         $newBlock->save();
 
         if ($this->getPostValue('type') === 'question') {
