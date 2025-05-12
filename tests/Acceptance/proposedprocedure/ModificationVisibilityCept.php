@@ -29,7 +29,7 @@ $I->loginAsProposalAdmin();
 
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 281);
 $I->see('brains');
-$I->see('Verfahrensvorschlag:', 'h3');
+$I->see('Verfahrensvorschlag:', 'h2');
 $I->dontSeeElement('#proposedChanges');
 $I->clickJS('.proposedChangesOpener button');
 $I->wait(0.3);
@@ -42,7 +42,7 @@ $I->see('Noch keine Bestätigung', '.notificationStatus');
 
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 283);
 $I->see('brains');
-$I->see('Verfahrensvorschlag zu Ä3:', 'h3');
+$I->see('Verfahrensvorschlag zu Ä3:', 'h2');
 $I->seeElement('#proposedChanges');
 $I->click('#proposedChanges .notifyProposer');
 $I->seeElement('.notifyProposerSection');
@@ -55,19 +55,19 @@ $I->wantTo('not see the changes logged out');
 $I->logout();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 281);
 $I->dontSee('brains');
-$I->dontSee('Verfahrensvorschlag:', 'h3');
+$I->dontSee('Verfahrensvorschlag:', 'h2');
 
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 283);
 $I->dontSee('brains');
-$I->dontSee('Verfahrensvorschlag zu Ä3:', 'h3');
+$I->dontSee('Verfahrensvorschlag zu Ä3:', 'h2');
 
 
 $I->wantTo('see the changes as initiator');
 $I->loginAsStdUser();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 281);
 $I->see('brains');
-$I->see('Verfahrensvorschlag:', 'h3');
+$I->see('Verfahrensvorschlag:', 'h2');
 
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 283);
 $I->see('brains');
-$I->see('Verfahrensvorschlag zu Ä3:', 'h3');
+$I->see('Verfahrensvorschlag zu Ä3:', 'h2');

@@ -59,19 +59,19 @@ $I->see('O’zapft is!', 'h1');
 $I->see('Beschluss durch', '.motionDataTable');
 $I->see('Mitgliedervollversammlung', '.motionDataTable');
 
-$I->see('Beschlusstext', 'h3');
+$I->see('Beschlusstext', 'h2');
 $I->seeElement('#section_53');
-$I->see('Sachstand', 'h3');
+$I->see('Sachstand', 'h2');
 
 $I->wantTo('not see the progress report as regular user');
 $I->logout();
-$I->see('Beschlusstext', 'h3');
-$I->dontSee('Sachstand', 'h3');
+$I->see('Beschlusstext', 'h2');
+$I->dontSee('Sachstand', 'h2');
 
 
 $I->wantTo('edit the progress report as admin');
 $I->loginAsProgressAdmin();
-$I->see('Sachstand', 'h3');
+$I->see('Sachstand', 'h2');
 $I->clickJS('.editorialEditForm .editCaller');
 $I->wait(0.5);
 
