@@ -259,6 +259,21 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
                 </label>
                 <div class="hint"><?= Yii::t('voting', 'settings_votespublic_hint') ?></div>
             </fieldset>
+            <fieldset class="votesNamesSettings">
+                <legend><?= Yii::t('voting', 'settings_votesnames') ?>:</legend>
+                <label>
+                    <input type="radio" value="<?= \app\models\settings\VotingBlock::VOTES_NAMES_AUTH ?>" name="votesNames" checked>
+                    <?= Yii::t('voting', 'settings_votesnames_auth') ?>
+                </label>
+                <label>
+                    <input type="radio" value="<?= \app\models\settings\VotingBlock::VOTES_NAMES_NAME ?>" name="votesNames">
+                    <?= Yii::t('voting', 'settings_votesnames_name') ?>
+                </label>
+                <label>
+                    <input type="radio" value="<?= \app\models\settings\VotingBlock::VOTES_NAMES_ORGANIZATION ?>" name="votesNames">
+                    <?= Yii::t('voting', 'settings_votesnames_organization') ?>
+                </label>
+            </fieldset>
             <button type="submit" class="btn btn-success">
                 <?= Yii::t('voting', 'settings_save') ?>
             </button>

@@ -441,15 +441,15 @@ ob_start();
         <fieldset class="votesNamesSettings">
             <legend><?= Yii::t('voting', 'settings_votesnames') ?>:</legend>
             <label>
-                <input type="radio" value="0" v-model="votesNames">
+                <input type="radio" value="<?= \app\models\settings\VotingBlock::VOTES_NAMES_AUTH ?>" v-model="votesNames">
                 <?= Yii::t('voting', 'settings_votesnames_auth') ?>
             </label>
             <label>
-                <input type="radio" value="1" v-model="votesNames">
+                <input type="radio" value="<?= \app\models\settings\VotingBlock::VOTES_NAMES_NAME ?>" v-model="votesNames">
                 <?= Yii::t('voting', 'settings_votesnames_name') ?>
             </label>
             <label>
-                <input type="radio" value="2" v-model="votesNames">
+                <input type="radio" value="<?= \app\models\settings\VotingBlock::VOTES_NAMES_ORGANIZATION ?>" v-model="votesNames">
                 <?= Yii::t('voting', 'settings_votesnames_organization') ?>
             </label>
         </fieldset>
