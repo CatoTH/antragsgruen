@@ -94,7 +94,8 @@ $I->submitForm('.createdForm', [], '');
 $I->see('Hallo auf Antragsgrün');
 $I->see('Test-Congress', 'h1');
 $I->see('Tagesordnung', '.agendaItem');
-$I->see('30.12.2028, 20:00', '.contentPageWelcome');
+$I->see('Änderungs&shy;anträge', '.deadlineCircle');
+$I->see('30.11.2026 20:00', '.deadlineCircle');
 
 $I->seeElement('#documentsLink');
 $I->seeElement('#votingsLink');
