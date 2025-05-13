@@ -274,7 +274,7 @@ class AgendaVoting
         }
 
         return match ($voting->getSettings()->votesNames) {
-            \app\models\settings\VotingBlock::VOTES_NAMES_NAME => $vote->getUser()->getFullName(),
+            \app\models\settings\VotingBlock::VOTES_NAMES_NAME => ($vote->getUser()->getFullName() !== '' ? $vote->getUser()->getFullName() : '?'),
             \app\models\settings\VotingBlock::VOTES_NAMES_ORGANIZATION => $vote->getUser()->organization ?? '?',
             \app\models\settings\VotingBlock::VOTES_NAMES_AUTH => $vote->getUser()->getAuthUsername(),
             default => $vote->getUser()->getAuthUsername(),
