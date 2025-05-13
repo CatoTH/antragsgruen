@@ -6,11 +6,11 @@
 - The deadline circle at the top of the homepage now also shows dates if more than one future deadline exists. It can also be deactivated entirely.
 - The export functions for motions in the admin list now allow to combine one or multiple motion types, with all motion types being selected by default.
 
-### Version 4.15.3 [not released yet]
+### Version 4.15.3 (2025-05.13)
 
 - For votings, it is now possible to set if the e-mail-address, the name or the organization of the voters is to be displayed (if at all).
 - On speaking list, it is now possible to not show the list of applicants in the publicly visible speaking list view.
-- Bugfix: When copying a motion to a different consultation, the tags and the version was not transferred.
+- Bugfix: When copying a motion to a different consultation, the tags and the version were not transferred.
 - Bugfix: Sending e-mails via SMTP only worked with SMTP Servers requiring authentication. (thanks to tiran133)
 - Bugfix: Amending motions with list items was broken if amendments were to only affect one particular place.
 
