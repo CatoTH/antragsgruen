@@ -102,7 +102,7 @@ return [
     'settings_votespublic_admins' => 'Admins',
     'settings_votespublic_all' => 'Everyone',
     'settings_votesnames' => 'Which name of the voter shall be shown?',
-    'settings_votesnames_email' => 'Username (e.g. e-mail)',
+    'settings_votesnames_auth' => 'Username (e.g. e-mail)',
     'settings_votesnames_name' => 'Name',
     'settings_votesnames_organization' => 'Organization (if given)',
     'settings_maxvotes' => 'Number of votes per user',
