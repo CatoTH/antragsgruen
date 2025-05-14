@@ -26,7 +26,7 @@ class LayoutHelper
             $cache->setSkipCache(true);
         }
 
-        if ($type === 'index_layout_agenda' && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
+        if ($type === 'index_layout_agenda' && User::havePrivilege($consultation, Privileges::PRIVILEGE_AGENDA, null)) {
             $cache->setSkipCache(true);
         }
         if (!in_array($type, ['index_layout_std', 'index_layout_tags', 'index_layout_agenda', 'index_layout_discussion_tags'])) {
@@ -329,7 +329,7 @@ class LayoutHelper
         return $return;
     }
 
-    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $isResolutionList, bool $admin): IMotionList
+    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $isResolutionList): IMotionList
     {
         $showMotions = !in_array($consultation->getSettings()->startLayoutType, [
             ConsultationSettings::START_LAYOUT_AGENDA_LONG,
@@ -359,76 +359,6 @@ class LayoutHelper
 
         echo '</h3>';
 
-        if ($admin) {
-            $motionTypes          = [0 => ' - ' . \Yii::t('con', 'no motions') . ' - '];
-            $hasProposedProcedure = false;
-
-            foreach ($consultation->motionTypes as $motionType) {
-                $motionTypes[$motionType->id] = $motionType->titlePlural;
-                if ($motionType->getSettingsObj()->hasProposedProcedure) {
-                    $hasProposedProcedure = true;
-                }
-            }
-            $typeId   = $agendaItem->motionTypeId;
-            $time     = $agendaItem->getTime() ?: '';
-            $settings = $agendaItem->getSettingsObj();
-
-            echo '<form class="agendaItemEditForm">
-                <div class="input-group time datetimepicker">
-                    <input type="text" name="time" value="' . Html::encode($time) . '" placeholder="' . \Yii::t('con', 'agenda_time') . '"
-                    class="form-control">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                </div>
-                <div class="code">
-                    <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '" class="form-control">
-                </div>
-                <div class="title">
-                    <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
-                 class="form-control" placeholder="' . \Yii::t('con', 'agenda_title') . '">
-                </div><div class="motionType">';
-            $opts = ['class' => 'form-control'];
-            echo Html::dropDownList('motionType', ($typeId > 0 ? $typeId : 0), $motionTypes, $opts);
-            echo '</div>';
-            echo '<div class="dropdown extraSettings">
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <span class="glyphicon glyphicon-wrench"></span>
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right">';
-            if ($hasProposedProcedure) {
-                echo '<li class="checkbox inProposedProcedures">
-                            <label>
-                                ' . Html::checkbox('inProposedProcedures', $settings->inProposedProcedures) . '
-                                ' . \Yii::t('con', 'agenda_pp') . '
-                            </label>
-                        </li>';
-            }
-
-            $hasSpeakingList = false;
-            $speakingOptions = ['autocomplete' => 'off'];
-            foreach ($agendaItem->speechQueues as $speechQueue) {
-                $hasSpeakingList = true;
-                if (count($speechQueue->items) > 0) {
-                    $speakingOptions['disabled'] = 'disabled';
-                }
-            }
-            echo '<li class="checkbox hasSpeakingList">
-                            <label>
-                                ' . Html::checkbox('hasSpeakingList', $hasSpeakingList, $speakingOptions) . '
-                                ' . \Yii::t('con', 'agenda_speaking') . '
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ok">
-                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
-                </div>
-                <div class="delete">
-                    <a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>
-                </div>
-            </form>';
-        }
-
         $shownMotions = new IMotionList();
         if ($showMotions) {
             $imotions = [];
@@ -455,7 +385,7 @@ class LayoutHelper
         echo '</div>';
 
         $children = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $agendaListShownMotions = static::showAgendaList($children, $consultation, $isResolutionList, $admin, false);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $isResolutionList, false);
         $shownMotions->addIMotionList($agendaListShownMotions);
 
         echo '</li>';
@@ -463,7 +393,7 @@ class LayoutHelper
         return $shownMotions;
     }
 
-    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $isResolutionList, bool $admin): IMotionList
+    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $isResolutionList): IMotionList
     {
         $fullTitle = '';
         if ($agendaItem->time && $agendaItem->time !== '0000-00-00') {
@@ -484,31 +414,10 @@ class LayoutHelper
         echo '<span class="title">' . Html::encode($fullTitle) . '</span>';
         echo '</h3>';
 
-        if ($admin) {
-            $date = '';
-            echo '<form class="agendaDateEditForm">
-                <div class="input-group dateSelector datetimepicker" data-date="' . Html::encode($agendaItem->time ?: '') . '">
-                    <input type="text" name="date" value="' . Html::encode($date) . '" placeholder="' . \Yii::t('con', 'agenda_date') . '"
-                    class="form-control">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                </div>
-                <div class="title">
-                    <input type="text" name="title" value="' . Html::encode($agendaItem->title ?: '') . '"
-                 class="form-control title" placeholder="' . \Yii::t('con', 'agenda_comment') . '">
-                 </div>
-                 <div class="ok">
-                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
-                </div>
-                <div class="delete">
-                    <a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>
-                </div>
-            </form>';
-        }
-
         echo '</div>';
 
         $children               = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $agendaListShownMotions = static::showAgendaList($children, $consultation, $isResolutionList, $admin, false);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $isResolutionList, false);
 
         echo '</li>';
 
@@ -518,7 +427,7 @@ class LayoutHelper
     /**
      * @param ConsultationAgendaItem[] $items
      */
-    public static function showAgendaList(array $items, Consultation $consultation, bool $isResolutionList, bool $admin, bool $isRoot = false): IMotionList
+    public static function showAgendaList(array $items, Consultation $consultation, bool $isResolutionList, bool $isRoot = false): IMotionList
     {
         $timesClass = 'noShowTimes ';
         foreach ($consultation->agendaItems as $agendaItem) {
@@ -532,9 +441,9 @@ class LayoutHelper
         $shownIMotions = new IMotionList();
         foreach ($items as $item) {
             if ($item->isDateSeparator()) {
-                $newShown = static::showDateAgendaItem($item, $consultation, $isResolutionList, $admin);
+                $newShown = static::showDateAgendaItem($item, $consultation, $isResolutionList);
             } else {
-                $newShown = static::showAgendaItem($item, $consultation, $isResolutionList, $admin);
+                $newShown = static::showAgendaItem($item, $consultation, $isResolutionList);
             }
             $shownIMotions->addIMotionList($newShown);
         }
