@@ -62,8 +62,12 @@ class ConsultationController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
+        if ($this->getPostValue('query')) {
+            return new RedirectResponse(UrlHelper::createUrl(['consultation/search', 'query' => $query]));
+        }
+
         $results = $this->consultation->fulltextSearch($query, [
-            'backTitle' => 'Suche',
+            'backTitle' => \Yii::t('con', 'search_results_bc'),
             'backUrl'   => UrlHelper::createUrl(['consultation/search', 'query' => $query]),
         ]);
 
