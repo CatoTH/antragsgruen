@@ -42,3 +42,12 @@ $I->see('Ä2 zu A2');
 $I->wantTo('check that the backlinks in the amendments work');
 $I->click('.amendment3 a');
 $I->see('Suche', '.breadcrumb');
+
+
+$I->wantTo('search an amendment by proposer name');
+$I->gotoConsultationHome();
+$I->fillField('#sidebar .query', 'Lischke');
+$I->submitForm('#sidebar .form-search', [], '');
+
+$I->dontSee('Ä2 zu A2');
+$I->see('Ä4 zu A2');
