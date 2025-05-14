@@ -632,34 +632,47 @@ class Consultation extends ActiveRecord
                 continue;
             }
             $found = false;
+            if (grapheme_stripos(strip_tags($motion->getInitiatorsStr()), $text) !== false) {
+                $found = true;
+            }
             foreach ($motion->getActiveSections() as $section) {
                 if (!$found && $section->getSectionType()->matchesFulltextSearch($text)) {
                     $found             = true;
-                    $result            = new SearchResult();
-                    $result->id        = 'motion' . $motion->id;
-                    $result->typeTitle = $motion->motionType->titleSingular;
-                    $result->type      = SearchResult::TYPE_MOTION;
-                    $result->title     = $motion->getTitleWithPrefix();
-                    $result->link      = UrlHelper::createMotionUrl($motion, 'view', $backParams);
-                    $results[]         = $result;
                 }
             }
+            if ($found) {
+                $result            = new SearchResult();
+                $result->id        = 'motion' . $motion->id;
+                $result->typeTitle = $motion->motionType->titleSingular;
+                $result->type      = SearchResult::TYPE_MOTION;
+                $result->title     = $motion->getTitleWithPrefix();
+                $result->link      = UrlHelper::createMotionUrl($motion, 'view', $backParams);
+                $results[]         = $result;
+            }
+
+            // If the motion was found, don't display individual amendments anymore
             if (!$found) {
                 foreach ($motion->amendments as $amend) {
                     if (in_array($amend->status, $this->getStatuses()->getInvisibleAmendmentStatuses())) {
                         continue;
                     }
+                    $found = false;
+                    if (grapheme_stripos(strip_tags($amend->getInitiatorsStr()), $text) !== false) {
+                        $found = true;
+                    }
                     foreach ($amend->getActiveSections() as $section) {
                         if (!$found && $section->getSectionType()->matchesFulltextSearch($text)) {
-                            $found             = true;
-                            $result            = new SearchResult();
-                            $result->id        = 'amendment' . $amend->id;
-                            $result->typeTitle = \Yii::t('amend', 'amendment');
-                            $result->type      = SearchResult::TYPE_AMENDMENT;
-                            $result->title     = $amend->getTitle();
-                            $result->link      = UrlHelper::createAmendmentUrl($amend, 'view', $backParams);
-                            $results[]         = $result;
+                            $found = true;
                         }
+                    }
+                    if ($found) {
+                        $result            = new SearchResult();
+                        $result->id        = 'amendment' . $amend->id;
+                        $result->typeTitle = \Yii::t('amend', 'amendment');
+                        $result->type      = SearchResult::TYPE_AMENDMENT;
+                        $result->title     = $amend->getTitle();
+                        $result->link      = UrlHelper::createAmendmentUrl($amend, 'view', $backParams);
+                        $results[]         = $result;
                     }
                 }
             }
