@@ -66,7 +66,7 @@ class ConsultationCreateForm
         $consultation->dateCreation       = date('Y-m-d H:i:s');
         $consultation->settings           = $this->template->settings;
         if (!$consultation->save()) {
-            throw new FormError(implode(', ', $consultation->getErrors()));
+            throw new FormError($consultation->getErrors());
         }
 
         $idMapping = [
@@ -172,7 +172,7 @@ class ConsultationCreateForm
             $newText->consultationId = $newConsultation->id;
             $newText->id             = null;
             if (!$newText->save()) {
-                throw new FormError(implode(', ', $newText->getErrors()));
+                throw new FormError($newText->getErrors());
             }
         }
     }
@@ -191,7 +191,7 @@ class ConsultationCreateForm
             $newTag->consultationId = $newConsultation->id;
             $newTag->parentTagId = null;
             if (!$newTag->save()) {
-                throw new FormError(implode(', ', $newTag->getErrors()));
+                throw new FormError($newTag->getErrors());
             }
 
             $newTagsByOldId[$oldTag->id] = $newTag;
@@ -226,7 +226,7 @@ class ConsultationCreateForm
                 $newItem->motionTypeId = $motionTypeMapping[$newItem->motionTypeId] ?? null;
             }
             if (!$newItem->save()) {
-                throw new FormError(implode(', ', $newItem->getErrors()));
+                throw new FormError($newItem->getErrors());
             }
 
             $newItems[] = $newItem;
@@ -297,7 +297,7 @@ class ConsultationCreateForm
             $newGroup->id = null;
             $newGroup->consultationId = $newConsultation->id;
             if (!$newGroup->save()) {
-                throw new FormError(implode(', ', $newGroup->getErrors()));
+                throw new FormError($newGroup->getErrors());
             }
 
             foreach ($oldGroup->users as $user) {
