@@ -140,6 +140,14 @@ class Motion extends IMotion implements IRSSItem
             }
         }
 
+        if ($this->replacedMotion) {
+            foreach ($this->replacedMotion->privateComments as $comment) {
+                if ($comment->sectionId === $sectionId && $comment->paragraph === $paragraphNo) {
+                    return $comment;
+                }
+            }
+        }
+
         return null;
     }
 

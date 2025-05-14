@@ -24,6 +24,22 @@ foreach ($myMotionComments as $comment) {
                    ': ' . $comment->text;
     }
 }
+foreach ($myMotionComments as $comment) {
+    if (!$comment->motion) {
+        continue;
+    }
+    foreach ($comment->motion->replacedByMotions as $replacedByMotion) {
+        if (!isset($motionComments[$replacedByMotion->id])) {
+            $motionComments[$replacedByMotion->id] = [];
+        }
+        if ($comment->paragraph === -1) {
+            $motionComments[$replacedByMotion->id][] = $comment->text;
+        } else {
+            $motionComments[$replacedByMotion->id][] = str_replace('%NO%', (string) $comment->paragraph, Yii::t('motion', 'private_notes_para')) .
+                                                                  ': ' . $comment->text;
+        }
+    }
+}
 
 $amendmentComments = [];
 foreach ($myAmendmentComments as $comment) {
