@@ -19,6 +19,10 @@ if (!$consultation->getSettings()->motionPrevNextLinks) {
     return;
 }
 
+if (Yii::$app->request->get('pagination_version') === 'prev' && $motion->replacedMotion) {
+    $motion = $motion->replacedMotion;
+}
+
 $prevMotion = null;
 $nextMotion = null;
 
