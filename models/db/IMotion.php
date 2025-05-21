@@ -582,7 +582,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
             return \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION');
         }
         $explStr = '';
-        if (!$this->isProposalPublic()) {
+        if ($includeExplanation && !$this->isProposalPublic()) {
             $explStr .= ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') . '</span>';
         }
         if ($includeExplanation && $this->proposalExplanation) {
