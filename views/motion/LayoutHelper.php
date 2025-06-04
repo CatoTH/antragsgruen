@@ -247,6 +247,10 @@ class LayoutHelper
         return 'motion_view_' . $motion->id;
     }
 
+    public static function getPaginationCacheKey(Motion $motion): string {
+        return 'motion_pagination_' . $motion->id;
+    }
+
     /**
      * @throws \app\models\exceptions\Internal
      * @throws \Exception

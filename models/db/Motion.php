@@ -931,6 +931,7 @@ class Motion extends IMotion implements IRSSItem
     public function flushViewCache(): void
     {
         HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this), null)->setIsBulky(true)->flushCache();
+        HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getPaginationCacheKey($this), null)->flushCache();
         HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
         MotionRepository::flushCaches();
         LayoutHelper::flushViewCaches($this->getMyConsultation());
