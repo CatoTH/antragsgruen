@@ -352,6 +352,12 @@ class Base extends Controller
         }
         $settings = $this->consultation->getSettings();
         $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if (User::getCurrentUser() && $plugin::canSeeFullMotionList($this->consultation, User::getCurrentUser()) === true) {
+                $admin = true;
+            }
+        }
+
         if ($settings->maintenanceMode && !$admin) {
             $this->redirect(UrlHelper::createUrl(['/consultation/index']));
             return true;
