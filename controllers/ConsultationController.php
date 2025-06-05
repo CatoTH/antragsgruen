@@ -295,7 +295,15 @@ class ConsultationController extends Base
         if (!$this->consultation) {
             return new HtmlErrorResponse(500, 'The page was not found. This might be due to a misconfiguration of the installation.');
         }
-        if ($this->consultation->getSettings()->maintenanceMode && !User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+
+        $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if (User::getCurrentUser() && $plugin::canSeeFullMotionList($this->consultation, User::getCurrentUser()) === true) {
+                $admin = true;
+            }
+        }
+
+        if ($this->consultation->getSettings()->maintenanceMode && !$admin) {
             return $this->renderContentPage('maintenance');
         }
 
