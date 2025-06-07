@@ -143,17 +143,6 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private sendAgain() {
-        const confirm = this.$widget.find('.sendAgain').data('msg');
-        bootbox.confirm(confirm, (result) => {
-            if (result) {
-                this.performCallWithReload({
-                    'sendAgain': '1',
-                });
-            }
-        });
-    }
-
     private saveStatus() {
         const selectize = this.$tagsSelect[0] as any
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
@@ -244,9 +233,13 @@ export class ChangeProposedProcedure {
 
         this.$widget.on('click', '.notifyProposer', () => {
             this.$widget.find('.notifyProposerSection').removeClass('hidden');
+            this.$widget.find('.notifyProposerSection').scrollintoview({top_offset: -50});
         });
         this.$widget.on('click', '.setConfirmation', this.setPropserHasAccepted.bind(this));
-        this.$widget.on('click', '.sendAgain', this.sendAgain.bind(this));
+        this.$widget.on('click', '.sendAgain', () => {
+            this.$widget.find('.notifyProposerSection').removeClass('hidden');
+            this.$widget.find('.notifyProposerSection').scrollintoview({top_offset: -50});
+        });
         this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
     }
 

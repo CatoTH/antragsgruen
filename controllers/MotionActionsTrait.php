@@ -565,7 +565,7 @@ trait MotionActionsTrait
             }
         }
 
-        if ($this->getHttpRequest()->post('notifyProposer') || $this->getHttpRequest()->post('sendAgain')) {
+        if ($this->getHttpRequest()->post('notifyProposer')) {
             try {
                 new MotionProposedProcedure(
                     $motion,
