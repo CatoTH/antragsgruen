@@ -10,6 +10,7 @@ use yii\helpers\Html;
 
 echo Html::beginForm('', 'post', ['class' => 'agreeToProposal']);
 $agreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_ACCEPTED);
+$disagreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_REJECTED);
 ?>
     <h2><?= Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
     <div class="holder">
@@ -31,19 +32,22 @@ $agreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_ACCEPTE
             <?php
             if ($agreed) {
                 echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
-                echo Yii::t('amend', 'proposal_user_agree');
+                echo Yii::t('amend', 'proposal_user_agreed');
+            } elseif ($disagreed) {
+                echo '<span class="agreed glyphicon glyphicon-remove" aria-hidden="true"></span> ';
+                echo Yii::t('amend', 'proposal_user_disagreed');
             } else {
                 ?>
                 <button type="submit" name="setProposalAgree" class="btn btn-success">
                     <?= Yii::t('amend', 'proposal_user_agree') ?>
                 </button>
+                <button type="submit" name="setProposalDisagree" class="btn btn-danger">
+                    <?= Yii::t('amend', 'proposal_user_disagree') ?>
+                </button>
                 <?php
             }
             ?>
         </div>
-    </div>
-    <div class="hint">
-        <?= Yii::t('amend', 'proposal_user_disagree_h') ?>
     </div>
     <input type="hidden" name="procedureToken" value="<?= Html::encode($procedureToken) ?>">
 <?php

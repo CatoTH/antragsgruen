@@ -349,7 +349,7 @@ trait MotionActionsTrait
         }
     }
 
-    private function setProposalAgree(Motion $motion): void
+    private function setProposalAgreement(Motion $motion, int $status): void
     {
         $procedureToken = $this->getHttpRequest()->get('procedureToken');
         if (!$motion->canSeeProposedProcedure($procedureToken) || !$motion->proposalFeedbackHasBeenRequested()) {
@@ -357,7 +357,7 @@ trait MotionActionsTrait
             return;
         }
 
-        $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
+        $motion->proposalUserStatus = $status;
         $motion->save();
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
@@ -437,7 +437,9 @@ trait MotionActionsTrait
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($motion, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {
-            $this->setProposalAgree($motion);
+            $this->setProposalAgreement($motion, Motion::STATUS_ACCEPTED);
+        } elseif (isset($post['setProposalDisagree'])) {
+            $this->setProposalAgreement($motion, Motion::STATUS_REJECTED);
         } elseif (isset($post['savePrivateNote'])) {
             $this->savePrivateNote($motion);
         }
