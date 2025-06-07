@@ -187,7 +187,7 @@ $voting = $amendment->getVotingData();
                         }
                     } elseif ($amendment->proposalFeedbackHasBeenRequested()) {
                         $msg  = Yii::t('amend', 'proposal_notified');
-                        $date = Tools::formatMysqlDate($amendment->proposalNotification, false);
+                        $date = Tools::formatMysqlDateTime($amendment->proposalNotification, false);
                         echo str_replace('%DATE%', $date, $msg);
                         echo ' ' . Yii::t('amend', 'proposal_no_feedback');
                         ?>
