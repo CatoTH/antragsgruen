@@ -65,19 +65,11 @@ class LineSplitter
 
                 $currLineCount++;
                 if ($currLineCount > $this->lineLength) {
-                    /*
-                    echo "Aktuelle Zeile: \"" . $currLine . "\"\n";
-                    echo "Count: \"" . $currLineCount . "\"\n";
-                    echo "Letztes Leerzeichen: \"" . $lastSeparator . "\"\n";
-                    */
                     if ($lastSeparator == -1) {
                         $lines[]       = grapheme_substr($currLine, 0, grapheme_strlen($currLine) - 1) . '-';
                         $currLine      = $currChar;
                         $currLineCount = 1;
                     } else {
-                        /*
-                        echo "Aktuelles Zeichen: \"" . grapheme_substr($this->text, $i, 1) . "\"\n";
-                        */
                         if (grapheme_substr($this->text, $i, 1) == ' ') {
                             $lines[] = $currLine;
 
@@ -85,10 +77,6 @@ class LineSplitter
                             $currLineCount = 0;
                         } else {
                             $remainder = (string)grapheme_substr($currLine, $lastSeparator + 1);
-                            /*
-                            echo "Überhang: \"" . $ueberhang . "\"\n";
-                            echo "Letztes ist Leerzeichen: " . $lastIsSpace . "\n";
-                            */
                             $lines[] = (string)grapheme_substr($currLine, 0, $lastSeparator + 1);
 
                             $currLine      = $remainder;
@@ -98,10 +86,6 @@ class LineSplitter
                         $lastSeparator      = -1;
                         $lastSeparatorCount = 0;
                     }
-                    /*
-                    echo "Neue aktuelle Zeile: \"" . $currLine . "\"\n";
-                    echo "Count: \"" . $currLineCount . "\"\n\n";
-                    */
                 } elseif (in_array($currChar, [' ', '-'])) {
                     $lastSeparator      = grapheme_strlen($currLine) - 1;
                     $lastSeparatorCount = $currLineCount;
@@ -193,27 +177,8 @@ class LineSplitter
 
         return $cache->getCached(function () use ($html, $lineLength, $prependLines) {
             $dom = HTMLTools::html2DOM($html);
-            if (is_a($dom, \DOMText::class)) {
-                $spl = new LineSplitter($html, $lineLength);
-
-                return $spl->splitLines();
-            } else {
-                return self::splitHtmlToLinesInt($dom, $lineLength, $prependLines);
-            }
+            return self::splitHtmlToLinesInt($dom, $lineLength, $prependLines);
         });
-    }
-
-    /**
-     * @param string[] $paragraphs
-     * @return string[]
-     */
-    public static function addLineNumbersToParagraphs(array $paragraphs, int $lineLength): array
-    {
-        for ($i = 0; $i < count($paragraphs); $i++) {
-            $lines          = self::splitHtmlToLines($paragraphs[$i], $lineLength, '###LINENUMBER###');
-            $paragraphs[$i] = implode('', $lines);
-        }
-        return $paragraphs;
     }
 
     public static function replaceLinebreakPlaceholdersByMarkup(string $html, bool $addLineNumbers, int $firstLineNo): string

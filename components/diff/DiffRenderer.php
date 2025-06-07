@@ -300,7 +300,6 @@ class DiffRenderer
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child, $inDel);
             $newChildren = array_merge($newChildren, $currNewChildren);
         } elseif ($inIns !== null) {
-            /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName === 'ins');
             if ($prevIsIns && self::nodeCanBeAttachedToDelIns($child)) {
@@ -317,7 +316,6 @@ class DiffRenderer
                 $newChildren[] = $clone;
             }
         } elseif ($inDel !== null) {
-            /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
             if ($prevIsDel && self::nodeCanBeAttachedToDelIns($child)) {
@@ -444,7 +442,7 @@ class DiffRenderer
     {
         // Workaround: PREG_OFFSET_CAPTURE ignores utf-8
         $strBefore = substr($line, 0, $matches[0][1]);
-        $strBefore = mb_convert_encoding($strBefore, 'ISO-8859-1', 'UTF-8');
+        $strBefore = (string) mb_convert_encoding($strBefore, 'ISO-8859-1', 'UTF-8');
         return strlen($strBefore);
     }
 

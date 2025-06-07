@@ -241,10 +241,8 @@ trait MotionExportTraits
             if ($motionType->amendmentsOnly) {
                 $imotions = [];
                 foreach ($motionType->motions as $motion) {
-                    if (is_a($motion, Motion::class)) {
-                        $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
-                        $imotions = array_merge($imotions, $motion->getFilteredAndSortedAmendments($filter));
-                    }
+                    $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+                    $imotions = array_merge($imotions, $motion->getFilteredAndSortedAmendments($filter));
                 }
                 if (count($imotions) === 0) {
                     return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
