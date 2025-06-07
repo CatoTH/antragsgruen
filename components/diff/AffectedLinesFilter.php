@@ -235,9 +235,6 @@ class AffectedLinesFilter
         $html = str_replace('<del>###LINENUMBER###', '###LINENUMBER###<del>', $html);
 
         $dom = HTMLTools::html2DOM($html);
-        if (is_a($dom, \DOMText::class)) {
-            return [];
-        }
         $lines = self::splitToAffectedLinesInt($dom, $firstLine, $context);
 
         return self::groupAffectedDiffBlocks($lines);

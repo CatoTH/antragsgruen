@@ -10,12 +10,19 @@ use Tests\Support\Helper\TestBase;
 
 class DiffRendererTest extends TestBase
 {
-    public function testNodeToText(): void
+    public function testNodeToText1(): void
     {
         $html = '<div> 1 <em>2 <strike>###LINENUMBER### 2</strike></em> 3 <span>4</span>';
         $dom = HTMLTools::html2DOM($html);
         $text = DiffRenderer::nodeToPlainText($dom);
         $this->assertEquals('1 2 2 3 4', $text);
+    }
+
+    public function testNodeToText2(): void
+    {
+        $html = 'Plain text';
+        $dom = HTMLTools::html2DOM($html);
+        $this->assertEquals('Plain text', $dom->childNodes->item(0)->nodeValue);
     }
 
     public function testAria1(): void
