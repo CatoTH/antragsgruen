@@ -355,7 +355,8 @@ return [
                                     "  The Antragsgrün-Team",
     'proposal_user_agree'        => 'I agree with the proposal',
     'proposal_user_agreed'       => 'You agreed to the proposal',
-    'proposal_user_disagree_h'   => 'If you do not agree, please contact the organizators of this consultation.',
+    'proposal_user_disagree'     => 'I disagree',
+    'proposal_user_disagreed'    => 'You disagreed with the proposal',
     'proposal_user_saved'        => 'Your decision has been saved',
     'proposal_user_change_reset' => 'As the proposed procedure has changed, the decision by the proposer has been reset.',
 ];
