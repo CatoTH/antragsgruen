@@ -271,7 +271,7 @@ export class ChangeProposedProcedure {
             this.$widget.find('.newBlock').addClass('hidden');
             this.$widget.find('.votingItemBlockRow').addClass('hidden');
             this.$widget.find('.votingItemBlockRow' + this.$votingBlockId.val()).removeClass('hidden');
-            this.$widget.find(".votingItemBlockRow" + this.$votingBlockId.val() + " select").trigger('change'); // to trigger group name listener
+            this.$widget.find(".votingItemBlockRow" + this.$votingBlockId.val() + " select").trigger('change', [{initialization: true}]); // to trigger group name listener
         }
     }
 
@@ -280,7 +280,10 @@ export class ChangeProposedProcedure {
             this.$widget.addClass('isChanged');
             this.setVotingBlockSettings();
         });
-        this.$widget.on('change', '.votingItemBlockRow select', () => {
+        this.$widget.on('change', '.votingItemBlockRow select', (e, data) => {
+            if (data && data.initialization) {
+                return;
+            }
             this.$widget.addClass('isChanged');
         });
         this.$widget.find('.newBlock').addClass('hidden');
