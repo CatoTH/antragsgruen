@@ -115,6 +115,8 @@ return [
     'agenda_date'    => 'Date',
     'agenda_pp'      => 'In proposed procedure',
     'agenda_speaking' => 'Has a speaking list',
+    'agenda_del'     => 'Remove agenda item',
+    'agenda_del_confirm' => 'Delete this agenda item and all sub-items?',
 
     'discuss_comments_title'  => 'Discussed recently',
     'discuss_comment_link'    => 'more',

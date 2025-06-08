@@ -41,6 +41,12 @@ ob_start();
             </li>
         </ul>
     </div>
+
+    <div class="deleteHolder">
+        <button class="btn btn-link btnDelete" type="button" @click="removeItem()" title="<?= Yii::t('admin', 'agenda_del') ?>">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        </button>
+    </div>
 </div>
 <?php
 $html = ob_get_clean();
@@ -66,6 +72,9 @@ $html = ob_get_clean();
             },
             onMotionTypeChange(event) {
                 this.modelValue.settings.motion_types = (event.target.value ? [parseInt(event.target.value)] : null);
+            },
+            removeItem: function() {
+                this.$emit('remove');
             }
         },
         mounted: function () {
@@ -81,12 +90,23 @@ ob_start();
 ?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
     <li v-for="(item, itemIndex) in list" :key="item.id" class="item" :class="'type_' + item.type">
-        <agenda-edit-item-row v-if="item.type == 'item'" v-model="item" :motionTypes="motionTypes" :locale="locale" :codeBase="getCodeBase(itemIndex)" :showTime="showTime" />
+        <agenda-edit-item-row
+            v-if="item.type == 'item'"
+            v-model="item" :motionTypes="motionTypes"
+            :locale="locale" :codeBase="getCodeBase(itemIndex)" :showTime="showTime"
+            @remove="removeItem(item)"
+        />
         <agenda-sorter v-if="item.type == 'item'" v-model="item.children" :motionTypes="motionTypes" :disabled="disableChildList" :showTime="showTime" />
 
-        <div v-if="item.type == 'date_separator'" class="infoRow">
+        <div v-if="item.type == 'date_separator'" class="infoRow" @remove="removeItem(item)">
             <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
             <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
+
+            <div class="deleteHolder">
+                <button class="btn btn-link btnDelete" type="button" @click="removeItem(item)" title="<?= Yii::t('admin', 'agenda_del') ?>">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+            </div>
         </div>
     </li>
 </draggable-plus>
@@ -184,6 +204,10 @@ $html = ob_get_clean();
                     },
                 });
                 this.recalculateCodeBases(this.modelValue)
+            },
+            removeItem: function(item) {
+                const newValues = this.modelValue.filter(it => it !== item);
+                this.$emit('update:modelValue', newValues);
             },
             recalculateCodeBases: function(values) {
                 this.calculatedCodes = [];

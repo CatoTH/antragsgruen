@@ -385,6 +385,24 @@ button.link {
   .saveRow {
     margin-bottom: 30px;
   }
+
+  .deleteHolder {
+    position: relative;
+  }
+  .btnDelete {
+    color: $colorDelLink;
+    opacity: 0.5;
+    margin-right: -15px;
+  }
+  @media (hover: hover) {
+    .btnDelete {
+      opacity: 0;
+    }
+    .infoRow:hover > .deleteHolder .btnDelete {
+      opacity: 1;
+    }
+  }
+
 }
 
 .stdNonFormattedList {

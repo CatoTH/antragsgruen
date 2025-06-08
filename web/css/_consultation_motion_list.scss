@@ -362,65 +362,13 @@ $agendaMarginPerLevel: 50px;
     }
   }
 
-  .agendaItemAdder {
-    padding-left: 35px;
-    margin-bottom: 0;
-    margin-top: -4px;
-    display: flex;
-    flex-direction: row;
-    height: 20px; // to prevent invalid height of placeholder while dragging
-    overflow: hidden;
-    .addEntry {
-      flex: 0;
-      flex-basis: 25%;
-    }
-    .addDate {
-      flex: 0;
-      flex-basis: 25%;
-    }
-    .spacer {
-      flex: 1;
-    }
-    .showTimes {
-      flex: 0;
-      flex-basis: 25%;
-      font-weight: normal;
-    }
-  }
-  @media (hover: hover) {
-    .agendaItemAdder > * {
-      opacity: 0;
-      &:focus-within {
-        opacity: 1;
-      }
-    }
-    &:hover > .agendaItemAdder > * {
-      opacity: 1;
-    }
-
-    ol.agenda:hover > .agendaItemAdder > * {
-      opacity: 1;
-    }
-  }
-
   li.agendaItem {
-    border: solid 1px transparent; // Otherwise: strange behavior when moving items
     position: relative;
     @media (min-width: $screenMinWith) {
       padding-left: 20px;
     }
     @media (max-width: $screenMinWith - 1) {
       padding-left: 16px;
-    }
-
-    .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
-      color: $colorDelLink;
-      position: absolute;
-      top: 5px;
-      right: 10px;
-    }
-    &.agendaItemDate .delAgendaItem {
-      top: 30px;
     }
 
     > div {
@@ -436,35 +384,6 @@ $agendaMarginPerLevel: 50px;
         overflow: visible; // Times
         padding: 3px;
         font-weight: normal;
-
-        @media (hover: hover) {
-          & .delAgendaItem {
-            opacity: 0;
-          }
-          &:hover .delAgendaItem {
-            opacity: 1;
-          }
-          & .delAgendaItem:focus {
-            opacity: 1;
-          }
-        }
-
-        .editAgendaItem {
-          font-size: 0.7em;
-          margin-left: 10px;
-        }
-
-        @media (hover: hover) {
-          & .editAgendaItem {
-            opacity: 0;
-          }
-          &:hover .editAgendaItem {
-            opacity: 1;
-          }
-          & .editAgendaItem:focus {
-            opacity: 1;
-          }
-        }
       }
 
       .motionCreateLink {
@@ -474,21 +393,6 @@ $agendaMarginPerLevel: 50px;
         text-indent: -7px;
         padding-left: 18px;
         display: block;
-      }
-    }
-
-    &.editing {
-      > div > h3 {
-        display: none;
-      }
-      > div > .agendaItemEditForm {
-        display: flex;
-      }
-      > div > .agendaDateEditForm {
-        display: flex;
-      }
-      > ol > .agendaItemAdder {
-        visibility: hidden !important;
       }
     }
 
@@ -521,107 +425,9 @@ $agendaMarginPerLevel: 50px;
     }
   }
 
-  &.agendaListEditing {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    li.agendaItem {
-      > div {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        padding-top: 0;
-      }
-      &.agendaItemDate > div {
-        padding-top: 30px;
-      }
-    }
-  }
-
-  .agendaItemEditForm {
-    display: none;
-    /* display: flex */
-    width: 100%;
-    flex-direction: row;
-    padding-bottom: 6px;
-
-    .code {
-      margin-right: 10px;
-      flex-grow: 0;
-    }
-
-    .time {
-      margin-right: 10px;
-      flex-grow: 0;
-      flex-basis: 80px;
-      width: 80px;
-      input {
-        padding-left: 7px;
-        padding-right: 7px;
-      }
-      .input-group-addon {
-        cursor: pointer;
-        padding-left: 7px;
-        padding-right: 7px;
-      }
-    }
-
-    .title {
-      margin-right: 10px;
-      flex-grow: 1;
-    }
-
-    .extraSettings {
-      .dropdown-toggle {
-        margin-right: 10px;
-
-        .glyphicon-wrench {
-          position: absolute;
-          top: 6px;
-          left: 10px;
-        }
-        .caret {
-          margin-top: 13px;
-        }
-      }
-      .dropdown-menu {
-        min-width: 240px;
-      }
-    }
-
-    .delete {
-      flex-basis: 30px;
-      flex-grow: 0;
-    }
-
-    .agendaMotionsRow {
-      padding-top: 5px;
-      font-size: 0.8em;
-      color: gray;
-    }
-
-    .motionType {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding-right: 0;
-    }
-  }
   &.noShowTimes {
     h3 .time {
       display: none;
-    }
-    .agendaItemEditForm {
-      .time {
-        display: none;
-      }
-
-      .code {
-        width: 80px;
-        flex-basis: 80px;
-      }
-
-      .motionType {
-        max-width: 170px;
-        flex-basis: 170px;
-      }
     }
   }
   &.showTimes {
@@ -643,69 +449,11 @@ $agendaMarginPerLevel: 50px;
     li.agendaItem li.agendaItem li.agendaItem h3 .time {
       margin-left: -50px - $agendaMarginPerLevel * 2;
     }
-    .agendaItemEditForm {
-      .code {
-        flex-basis: 50px;
-      }
-
-      .motionType {
-        flex-basis: 140px;
-      }
-    }
-  }
-  .agendaDateEditForm {
-    display: none;
-    /* display: flex */
-    width: 100%;
-    flex-direction: row;
-
-    .dateSelector {
-      width: 285px;
-      flex-basis: 285px;
-      flex-grow: 0;
-      margin-right: 10px;
-
-      .input-group-addon {
-        cursor: pointer;
-      }
-    }
-
-    .title {
-      flex-grow: 1;
-      margin-right: 10px;
-    }
-
-    .delete {
-      flex-basis: 30px;
-      flex-grow: 0;
-    }
   }
 
   h2, h3 {
     margin: 0 0 5px;
     font-size: 18px;
-  }
-  .moveHandle {
-    float: left;
-    font-size: 1.5em;
-    color: lightgrey;
-    margin-left: -27px;
-    cursor: move;
-  }
-  &.showTimes > li > div .moveHandle { // Only move the top-level handlers to the side
-    margin-left: -67px;
-  }
-  @media (hover: hover) {
-    li.agendaItem > div > .moveHandle {
-      display: none;
-    }
-    li.agendaItem:hover > div > .moveHandle {
-      display: block;
-    }
-  }
-
-  .movePlaceholder {
-    border: dotted 1px gray;
   }
 }
 

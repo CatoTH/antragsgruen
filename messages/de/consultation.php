@@ -115,6 +115,8 @@ return [
     'agenda_date'    => 'Datum',
     'agenda_pp'      => 'Im Verfahrensvorschlag',
     'agenda_speaking' => 'Hat eine Redeliste',
+    'agenda_del'     => 'Tagesordnungspunkt entfernen',
+    'agenda_del_confirm' => 'Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?',
 
     'discuss_comments_title'  => 'Aktuell diskutiert',
     'discuss_comment_link'    => 'weiter',
