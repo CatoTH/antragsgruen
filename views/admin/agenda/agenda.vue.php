@@ -140,6 +140,9 @@ $html = ob_get_clean();
                 },
                 set: function (value) {
                     this.$emit('update:modelValue', value);
+                    window.setTimeout(() => {
+                        this.recalculateCodeBases(value);
+                    }, 1);
                 }
             },
             disableChildList: function () {
@@ -199,7 +202,7 @@ $html = ob_get_clean();
 
                     if (lastValue === null) {
                         this.calculatedCodes[idx] = "1.";
-                    } else if (lastValue.match(/^[a-y]\.$/i)) {
+                    } else if (lastValue.match(/^[a-z]\.?$/i)) {
                         this.calculatedCodes[idx] = String.fromCharCode(lastValue.charCodeAt(0) + 1) + ".";
                     } else {
                         let strWithoutSeparator = (lastValue.substr(-1) === '.' ? lastValue.substr(0, lastValue.length - 1) : lastValue);
