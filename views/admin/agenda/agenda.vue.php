@@ -227,7 +227,8 @@ ob_start();
 <section class="agendaEditWidget stdSortingWidget">
     <div class="settings">
         <label>
-            <input type="checkbox" v-model="showTime" :disabled="anyItemHasTime"> <?= Yii::t('admin', 'agenda_show_times') ?>
+            <input type="checkbox" v-model="showTime" :disabled="anyItemHasTime" class="showTimeSelector">
+            <?= Yii::t('admin', 'agenda_show_times') ?>
         </label>
     </div>
     <agenda-sorter v-model="list" :motionTypes="motionTypes" :root="true" :showTime="showTime"></agenda-sorter>
@@ -300,6 +301,12 @@ $html = ob_get_clean();
                 setTimeout(() => {
                     this.saved = false;
                 }, 2000);
+            },
+            getAgendaTest: function() {
+                return this.modelValue;
+            },
+            setAgendaTest: function(value) {
+                this.$emit('update:modelValue', value);
             }
         },
         created: function () {

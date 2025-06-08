@@ -36,7 +36,7 @@ $serializer = \app\components\Tools::getSerializer();
 ?><h1><?= Yii::t('admin', 'agenda_title') ?></h1>
 
 <div class="content">
-    <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>">
+    <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>" class="backHomeLink">
         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
         <?= Yii::t('admin', 'agenda_back') ?>
     </a>
@@ -49,7 +49,7 @@ $serializer = \app\components\Tools::getSerializer();
         <div class="agendaEdit"></div>
     </div>
 
-    <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>">
+    <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>" class="backHomeLink">
         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
         <?= Yii::t('admin', 'agenda_back') ?>
     </a>

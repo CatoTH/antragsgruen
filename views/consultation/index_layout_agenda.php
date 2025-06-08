@@ -27,7 +27,7 @@ echo '<section class="sectionAgenda" aria-labelledby="sectionAgendaTitle">';
 echo '<h2 class="green" id="sectionAgendaTitle">';
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_AGENDA, null)) {
     $url = UrlHelper::createUrl('/admin/agenda/index');
-    echo '<a href="' . Html::encode($url) . '" class="greenHeaderExtraLink">';
+    echo '<a href="' . Html::encode($url) . '" class="greenHeaderExtraLink agendaEditLink">';
     echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
     echo Yii::t('admin', 'agenda_edit');
     echo '</a>';
