@@ -42,7 +42,9 @@ class AgendaController extends AdminBase
         }
 
         $savedAgenda = AgendaItemApi::getItemsFromConsultation($this->consultation);
-        LiveTools::sendAgenda($this->consultation, $savedAgenda);
+
+        // Not implemented in live server yet
+        //LiveTools::sendAgenda($this->consultation, $savedAgenda);
 
         return new RestApiResponse(200, null, $serializer->serialize($savedAgenda, 'json'));
     }
