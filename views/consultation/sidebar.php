@@ -310,6 +310,8 @@ if ($hasPDF) {
     $layout->menusHtmlSmall[] = '<section><h2>PDFs</h2><ul>' . implode('', $menusSmall) . '</ul></section>';
 }
 
+$layout->menusHtmlSmall[] = \app\models\layoutHooks\Layout::getSearchFormSmall();
+
 if ($consultation->site->getSettings()->showAntragsgruenAd) {
     $layout->postSidebarHtml = \app\models\layoutHooks\Layout::getAntragsgruenAd();
 }

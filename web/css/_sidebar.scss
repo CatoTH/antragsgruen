@@ -1,5 +1,16 @@
 #sidebarSmallContent {
   font-size: 18px;
+  padding-bottom: 8px;
+
+  @media (min-width: 550px) {
+    column-count: 2;
+    column-gap: 20px;
+
+    > li {
+      break-inside: avoid;
+    }
+  }
+
   > div {
     float: right;
   }

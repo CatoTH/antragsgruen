@@ -136,6 +136,28 @@ class StdHooks extends Hooks
         return $html;
     }
 
+    public function getSearchFormSmall(string $before): string
+    {
+        $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', [
+            'class'           => 'form-search',
+            'aria-labelledby' => 'sidebarSearchTitle',
+        ]);
+        $html .= '<h2 id="sidebarSearchTitleSmall">' . \Yii::t('con', 'sb_search') . '</h2>
+<div class="input-group">
+      <label for="searchQuery" class="sr-only">' . \Yii::t('con', 'sb_search_query') . '</label>
+      <input type="text" class="form-control query" name="query" id="searchQuery"
+        placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required>
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit" title="' . Html::encode(\Yii::t('con', 'sb_search_do')) . '">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span> ' . \Yii::t('con', 'sb_search_do') . '
+        </button>
+      </span>
+</div>';
+        $html .= Html::endForm();
+
+        return $html;
+    }
+
     public function renderSidebar(string $before): string
     {
         $str = $this->layout->preSidebarHtml;
