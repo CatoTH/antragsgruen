@@ -74,6 +74,11 @@ class Hooks
         return $before;
     }
 
+    public function getSearchFormSmall(string $before): string
+    {
+        return $before;
+    }
+
     public function getAntragsgruenAd(string $before): string
     {
         return $before;
