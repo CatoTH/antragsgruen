@@ -36,10 +36,6 @@ ANTRAGSGRUEN_STRINGS = {
     "admin": {
         "adminMayEditConfirm": "If this is deactivated, this cannot be undone for all motions created up to now.",
         "deleteDataConfirm": "Really delete this?",
-        "agendaAddEntry": "Add entry",
-        "agendaAddDate": "Add date",
-        "agendaShowTimes": "Enter fixed times",
-        "agendaDelEntryConfirm": "Delete this agenda item and all sub-items?",
         "removeAdminConfirm": "Do you really want to remove admin right from this user?",
         "removeUserConfirm": "Do you really want to remove the user %NAME% from THIS consultation? Submitted motions etc. will remain in the system and need to be removed manually.",
         "deleteUserConfirm": "Do you really want to delete the user %NAME%? Submitted motions etc. will remain in the system and need to be removed manually.",

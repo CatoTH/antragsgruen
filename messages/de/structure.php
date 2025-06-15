@@ -67,6 +67,7 @@ return [
     'privilege_content'       => 'Redaktionelle Texte bearbeiten',
     'privilege_speech'        => 'Redelisten bearbeiten',
     'privilege_voting'        => 'Abstimmungen bearbeiten',
+    'privilege_agenda'        => 'Tagesordnung bearbeiten',
     'privilege_screening'     => 'Freischalten',
     'privilege_motionstruct'  => 'Rahmendaten bearbeiten',
     'privilege_motionsee'     => 'Alle einsehen (auch unveröffentlichte)',

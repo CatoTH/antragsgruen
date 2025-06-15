@@ -3,7 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\updater\UpdateChecker;
-use app\models\api\SpeechQueue as SpeechQueueApi;
+use app\models\api\{SpeechQueue as SpeechQueueApi};
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};

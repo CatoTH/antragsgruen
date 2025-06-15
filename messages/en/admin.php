@@ -46,6 +46,7 @@ return [
     'index_consultation_settings' => 'This consultation',
     'index_motion_types'          => 'Edit motion types',
     'index_site_voting'           => 'Votings',
+    'index_site_agenda'           => 'Agenda',
     'index_site_speaking'         => 'Speaking lists',
     'index_site_access'           => 'Login / users / admins',
     'index_site_consultations'    => 'Manage more consultations on this subdomain',
@@ -797,4 +798,13 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'files_download_title' => 'Title',
     'files_download_del'   => 'Delete this file: %TITLE%',
     'files_download_del_c' => 'Do you want to delete this file?',
+
+    'agenda_title' => 'Manage Agenda',
+    'agenda_bc' => 'Agenda',
+    'agenda_edit' => 'Edit',
+    'agenda_add_item' => 'Add item',
+    'agenda_add_date' => 'Add date',
+    'agenda_show_times' => 'Enter fixed times',
+    'agenda_move_aria' => 'Move item',
+    'agenda_back' => 'Back to the home page',
 ];

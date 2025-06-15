@@ -72,6 +72,16 @@ echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(
 echo '</li>';
 echo '</ul></li>';
 
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_AGENDA, null)) {
+    echo '<li>';
+    echo Html::a(
+        Yii::t('admin', 'index_site_agenda'),
+        UrlHelper::createUrl(['/admin/agenda/index']),
+        ['class' => 'agendaAdminLink']
+    );
+    echo '</li>';
+}
+
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
     echo '<li>';
     echo Html::a(
