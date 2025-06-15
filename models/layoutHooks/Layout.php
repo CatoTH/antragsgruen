@@ -101,6 +101,11 @@ class Layout
         return self::callHook('getSearchForm');
     }
 
+    public static function getSearchFormSmall(): string
+    {
+        return self::callHook('getSearchFormSmall');
+    }
+
     public static function getAntragsgruenAd(): string
     {
         return self::callHook('getAntragsgruenAd');
