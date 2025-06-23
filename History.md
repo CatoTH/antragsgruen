@@ -9,6 +9,7 @@
 - The export functions for motions in the admin list now allow to combine one or multiple motion types, with all motion types being selected by default.
 - The consultation-wide search now also searches for the name of proposers of motions / amendments.
 - The small-screen main menu now also has the full-text search.
+- If a motion/amendment is marked as obsoleted by another one, the motion list will not show an internal number anymore behind the status, but the actual signature of the motion/amendment obsoleting it. 
 
 ### Version 4.15.3 (2025-05.13)
 
