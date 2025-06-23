@@ -54,19 +54,10 @@ if ($editUrl) {
     echo Html::encode($title);
 }
 echo '</span></td>';
-echo '<td>' . Html::encode($amendmentStatuses[$entry->status]);
-if ($entry->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
-    echo ' (' . count($entry->getSupporters(true)) . ')';
-}
-if ($entry->statusString !== null && $entry->statusString !== '') {
-    echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
-}
-$todos = array_map(fn(AdminTodoItem $item): string => $item->action, AdminTodoItem::getTodosForIMotion($entry));
-if (count($todos) > 0) {
-    echo '<div class="todo">' . Yii::t('admin', 'list_todo') . ': ';
-    echo Html::encode(implode(', ', $todos));
-    echo '</div>';
-}
+echo '<td>';
+
+echo $this->render('_list_all_status', ['entry' => $entry]);
+
 echo '</td>';
 if ($colDate) {
     echo '<td class="dateCol">';

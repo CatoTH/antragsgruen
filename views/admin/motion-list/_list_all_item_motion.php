@@ -24,7 +24,6 @@ $consultation = $controller->consultation;
 
 $hasTags        = (count($consultation->tags) > 0);
 $isReplaced     = (count($entry->getReadableReplacedByMotions()) > 0);
-$motionStatuses = $consultation->getStatuses()->getStatusNames();
 $viewUrl        = UrlHelper::createMotionUrl($entry);
 if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\MotionController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::motion($entry))) {
     $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
@@ -68,20 +67,7 @@ if (count($versionNames) > 0 && isset($versionNames[$entry->version])) {
     echo Html::encode($nameParts[0]) . ", ";
 }
 
-echo Html::encode($motionStatuses[$entry->status]);
-if ($entry->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-    echo ' (' . count($entry->getSupporters(true)) . ')';
-}
-if ($entry->statusString !== null && $entry->statusString !== '') {
-    echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
-}
-
-$todos = array_map(fn(AdminTodoItem $item): string => $item->action, AdminTodoItem::getTodosForIMotion($entry));
-if (count($todos) > 0) {
-    echo '<div class="todo">' . Yii::t('admin', 'list_todo') . ': ';
-    echo Html::encode(implode(', ', $todos));
-    echo '</div>';
-}
+echo $this->render('_list_all_status', ['entry' => $entry]);
 
 echo '</td>';
 if ($colDate) {
