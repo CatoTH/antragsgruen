@@ -143,17 +143,6 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private sendAgain() {
-        const confirm = this.$widget.find('.sendAgain').data('msg');
-        bootbox.confirm(confirm, (result) => {
-            if (result) {
-                this.performCallWithReload({
-                    'sendAgain': '1',
-                });
-            }
-        });
-    }
-
     private saveStatus() {
         const selectize = this.$tagsSelect[0] as any
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
@@ -244,9 +233,13 @@ export class ChangeProposedProcedure {
 
         this.$widget.on('click', '.notifyProposer', () => {
             this.$widget.find('.notifyProposerSection').removeClass('hidden');
+            this.$widget.find('.notifyProposerSection').scrollintoview({top_offset: -50});
         });
         this.$widget.on('click', '.setConfirmation', this.setPropserHasAccepted.bind(this));
-        this.$widget.on('click', '.sendAgain', this.sendAgain.bind(this));
+        this.$widget.on('click', '.sendAgain', () => {
+            this.$widget.find('.notifyProposerSection').removeClass('hidden');
+            this.$widget.find('.notifyProposerSection').scrollintoview({top_offset: -50});
+        });
         this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
     }
 
@@ -271,7 +264,7 @@ export class ChangeProposedProcedure {
             this.$widget.find('.newBlock').addClass('hidden');
             this.$widget.find('.votingItemBlockRow').addClass('hidden');
             this.$widget.find('.votingItemBlockRow' + this.$votingBlockId.val()).removeClass('hidden');
-            this.$widget.find(".votingItemBlockRow" + this.$votingBlockId.val() + " select").trigger('change'); // to trigger group name listener
+            this.$widget.find(".votingItemBlockRow" + this.$votingBlockId.val() + " select").trigger('change', [{initialization: true}]); // to trigger group name listener
         }
     }
 
@@ -280,7 +273,10 @@ export class ChangeProposedProcedure {
             this.$widget.addClass('isChanged');
             this.setVotingBlockSettings();
         });
-        this.$widget.on('change', '.votingItemBlockRow select', () => {
+        this.$widget.on('change', '.votingItemBlockRow select', (e, data) => {
+            if (data && data.initialization) {
+                return;
+            }
             this.$widget.addClass('isChanged');
         });
         this.$widget.find('.newBlock').addClass('hidden');

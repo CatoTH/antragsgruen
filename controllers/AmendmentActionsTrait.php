@@ -325,7 +325,7 @@ trait AmendmentActionsTrait
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'support_finish_done'));
     }
 
-    private function setProposalAgree(Amendment $amendment): void
+    private function setProposalAgreement(Amendment $amendment, int $status): void
     {
         $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
         if (!$amendment->canSeeProposedProcedure($procedureToken) || !$amendment->proposalFeedbackHasBeenRequested()) {
@@ -333,7 +333,7 @@ trait AmendmentActionsTrait
             return;
         }
 
-        $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
+        $amendment->proposalUserStatus = $status;
         $amendment->save();
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
@@ -403,7 +403,9 @@ trait AmendmentActionsTrait
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {
-            $this->setProposalAgree($amendment);
+            $this->setProposalAgreement($amendment, Amendment::STATUS_ACCEPTED);
+        } elseif (isset($post['setProposalDisagree'])) {
+            $this->setProposalAgreement($amendment, Amendment::STATUS_REJECTED);
         } elseif (isset($post['savePrivateNote'])) {
             $this->savePrivateNote($amendment);
         }
