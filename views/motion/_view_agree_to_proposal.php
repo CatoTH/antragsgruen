@@ -17,7 +17,7 @@ $disagreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_REJE
         <div class="status">
             <div class="head"><?= Yii::t('amend', 'proposal_edit_title_prop') ?></div>
             <div class="description">
-                <?= $motion->getFormattedProposalStatus() ?>
+                <?= $motion->getLatestProposal()?->getFormattedProposalStatus() ?>
             </div>
             <?php
             if ($motion->votingBlock) {

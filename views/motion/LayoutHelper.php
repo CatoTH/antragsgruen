@@ -106,7 +106,7 @@ class LayoutHelper
      */
     public static function getVisibleProposedProcedureSections(Motion $motion, ?string $procedureToken): array
     {
-        if (!$motion->hasVisibleAlternativeProposaltext($procedureToken)) {
+        if (!$motion->getLatestProposal()?->hasVisibleAlternativeProposaltext($procedureToken)) {
             return [];
         }
         $reference = $motion->getAlternativeProposaltextReference();
@@ -127,7 +127,7 @@ class LayoutHelper
             } else {
                 $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->getFormattedTitlePrefix();
             }
-            if (!$motion->isProposalPublic()) {
+            if (!$motion->getLatestProposal()?->isProposalPublic()) {
                 $prefix = '[ADMIN] ' . $prefix;
             }
             $sectionType = $section->getSectionType();
@@ -146,7 +146,7 @@ class LayoutHelper
         return $motion->getMyConsultation()->getSettings()->proposalProcedureInline
                && count($motion->getVisibleAmendments()) === 0
                && count($motion->comments) === 0
-               && $motion->isProposalPublic();
+               && $motion->getLatestProposal()?->isProposalPublic();
     }
 
     public static function addVotingResultsRow(VotingData $votingData, array &$rows): void
@@ -1064,8 +1064,8 @@ class LayoutHelper
         $doc->addReplace('/\{\{ANTRAGSGRUEN:AGENDA\}\}/siu', ($motion->getMyAgendaItem() ? $motion->getMyAgendaItem()->title : ''));
         $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
         $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
-        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $motion->proposalStatus !== null && $motion->isProposalPublic()) {
-            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', \Yii::t('export', 'proposed_procedure') . ': ' . strip_tags($motion->getFormattedProposalStatus(false)));
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $motion->getLatestProposal()?->proposalStatus !== null && $motion->getLatestProposal()?->isProposalPublic()) {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', \Yii::t('export', 'proposed_procedure') . ': ' . strip_tags($motion->getLatestProposal()?->getFormattedProposalStatus(false)));
         } else {
             $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', '');
         }

@@ -3,15 +3,16 @@
 /**
  * @var Yii\web\View $this
  * @var Amendment $amendment
+ * @var AmendmentProposal $proposal
  * @var string $procedureToken
  */
 
-use app\models\db\{Amendment, AmendmentSection};
+use app\models\db\{Amendment, AmendmentProposal, AmendmentSection};
 use app\views\amendment\LayoutHelper;
 
 $consultation = $amendment->getMyConsultation();
 
-$ppSections = LayoutHelper::getVisibleProposedProcedureSections($amendment, $procedureToken);
+$ppSections = LayoutHelper::getVisibleProposedProcedureSections($amendment, $proposal, $procedureToken);
 $hasProposedChange = (count($ppSections) > 0);
 foreach ($ppSections as $ppSection) {
     $ppSection['section']->setTitlePrefix($ppSection['title']);

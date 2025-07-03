@@ -20,7 +20,7 @@ if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->p
         } else {
             echo '???'; // Not yet supported
         }
-    } elseif ($entry->proposalFeedbackHasBeenRequested()) {
+    } elseif ($entry->getLatestProposal()?->proposalFeedbackHasBeenRequested()) {
         $title = Yii::t('admin', 'list_prop_user_asked');
         echo '<span class="asked" title="' . $title . '">❓</span>';
     }
@@ -32,7 +32,7 @@ if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->p
     */
 
     if ($show_visibility) {
-        if ($entry->isProposalPublic()) {
+        if ($entry->getLatestProposal()?->isProposalPublic()) {
             $title = Yii::t('admin', 'list_prop_visible');
             echo '<span class="glyphicon glyphicon-eye-open visible" title="' . $title . '"></span>';
         } else {

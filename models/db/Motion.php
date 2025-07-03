@@ -50,6 +50,7 @@ use yii\helpers\Html;
  * @property MotionComment[] $privateComments
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
+ * @property MotionProposal[] $proposals
  * @property Motion|null $replacedMotion
  * @property Motion[] $replacedByMotions
  * @property VotingBlock|null $votingBlock
@@ -256,6 +257,14 @@ class Motion extends IMotion implements IRSSItem
     {
         $section = $this->getActiveSections(ISectionType::TYPE_PDF_ALTERNATIVE);
         return (count($section) > 0 && $section[0]->getData() !== '' ? $section[0] : null);
+    }
+
+    /**
+     * @return ActiveQuery<MotionProposal[]>
+     */
+    public function getProposals(): ActiveQuery
+    {
+        return $this->hasMany(MotionProposal::class, ['motionId' => 'id']);
     }
 
     /**
@@ -1200,12 +1209,6 @@ class Motion extends IMotion implements IRSSItem
     public function isDeadlineOver(): bool
     {
         return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
-    }
-
-    public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool
-    {
-        return in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReferenceId && $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
     }
 
     /**

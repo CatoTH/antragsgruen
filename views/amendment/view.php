@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment, User};
+use app\models\db\{Amendment, AmendmentProposal, User};
 use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
@@ -20,7 +20,7 @@ $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = ($hasPp && $amendment->canEditLimitedProposedProcedure());
+$hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()?->canEditLimitedProposedProcedure());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -160,6 +160,7 @@ if (User::getCurrentUser() && !$amendment->getPrivateComment() && $consultation-
 }
 
 if ($hasPp) {
+    $proposal = $amendment->getLatestProposal() ?: AmendmentProposal::createNew($amendment);
     if ($hasPpAdminbox) {
         ?>
         <div class="proposedChangesOpener">
@@ -172,12 +173,13 @@ if ($hasPp) {
 
         echo $this->render('_set_proposed_procedure', [
             'amendment' => $amendment,
+            'proposal' => $proposal,
             'context'   => 'view',
             'msgAlert'  => null,
         ]);
     }
-    if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->canSeeProposedProcedure($procedureToken)) {
-        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment, 'procedureToken' => $procedureToken]);
+    if ($proposal->proposalFeedbackHasBeenRequested() && $proposal->canSeeProposedProcedure($procedureToken)) {
+        echo $this->render('_view_agree_to_proposal', ['proposal' => $proposal, 'procedureToken' => $procedureToken]);
     }
 }
 
@@ -191,7 +193,11 @@ if ($amendment->status === Amendment::STATUS_DRAFT) {
     <?php
 }
 
-echo $this->render('_view_text', ['amendment' => $amendment, 'procedureToken' => $procedureToken]);
+echo $this->render('_view_text', [
+    'amendment' => $amendment,
+    'proposal' => $amendment->getLatestProposal() ?: AmendmentProposal::createNew($amendment),
+    'procedureToken' => $procedureToken,
+]);
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
 $supporters    = $amendment->getSupporters(true);

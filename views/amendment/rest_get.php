@@ -11,13 +11,13 @@ use app\models\sectionTypes\ISectionType;
 $motion = $amendment->getMyMotion();
 
 $proposedProcedure = null;
-if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
+if ($amendment->getLatestProposal()?->isProposalPublic() && $amendment->proposalStatus) {
     $proposedProcedure = [
         'status_id' => $amendment->proposalStatus,
-        'status_title' => $amendment->getFormattedProposalStatus(true),
+        'status_title' => $amendment->getLatestProposal()?->getFormattedProposalStatus(true),
         'sections' => [],
     ];
-    if ($amendment->hasVisibleAlternativeProposaltext(null)) {
+    if ($amendment->getLatestProposal()?->hasVisibleAlternativeProposaltext(null)) {
         $hasProposedChange = true;
         $reference = $amendment->getAlternativeProposaltextReference();
         if ($reference) {

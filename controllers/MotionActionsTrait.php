@@ -468,10 +468,11 @@ trait MotionActionsTrait
         if (!$motion) {
             return new RestApiExceptionResponse(404, 'Motion not found');
         }
-        if (!$motion->canEditLimitedProposedProcedure()) {
+        $latestProposal = $motion->getLatestProposal();
+        if (!$latestProposal || !$latestProposal->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
-        $canChangeProposalUnlimitedly = $motion->canEditProposedProcedure();
+        $canChangeProposalUnlimitedly = $latestProposal->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
@@ -479,7 +480,7 @@ trait MotionActionsTrait
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
             $originalMotionId = $motion->id;
-            $originalProposalStatus = $motion->proposalStatus;
+            $originalProposalStatus = $latestProposal->proposalStatus;
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 /** @var Motion $motion */
                 $motion = $plugin::onBeforeProposedProcedureStatusSave($motion);
@@ -487,42 +488,42 @@ trait MotionActionsTrait
 
             if ($canChangeProposalUnlimitedly) {
                 $setStatus = intval($this->getHttpRequest()->post('setStatus'));
-                if ($motion->proposalStatus !== $setStatus) {
-                    $ppChanges->setProposalStatusChanges($motion->proposalStatus, $setStatus);
-                    if ($motion->proposalUserStatus !== null) {
+                if ($latestProposal->proposalStatus !== $setStatus) {
+                    $ppChanges->setProposalStatusChanges($latestProposal->proposalStatus, $setStatus);
+                    if ($latestProposal->userStatus !== null) {
                         $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                     }
-                    $motion->proposalUserStatus = null;
+                    $latestProposal->userStatus = null;
                 }
-                $motion->proposalStatus = $setStatus;
+                $latestProposal->proposalStatus = $setStatus;
 
-                $ppChanges->setProposalCommentChanges($motion->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
-                $motion->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
+                $ppChanges->setProposalCommentChanges($latestProposal->comment, $this->getHttpRequest()->post('proposalComment', ''));
+                $latestProposal->comment = $this->getHttpRequest()->post('proposalComment', '');
             }
 
             $motion->setProposedProcedureTags($this->getHttpRequest()->post('tags', []), $ppChanges);
 
             if ($canChangeProposalUnlimitedly) {
-                $proposalExplanationPre = $motion->proposalExplanation;
+                $proposalExplanationPre = $latestProposal->explanation;
                 if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
                     if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
-                        $motion->proposalExplanation = null;
+                        $latestProposal->explanation = null;
                     } else {
-                        $motion->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
+                        $latestProposal->explanation = $this->getHttpRequest()->post('proposalExplanation', '');
                     }
                 } else {
-                    $motion->proposalExplanation = null;
+                    $latestProposal->explanation = null;
                 }
-                $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $motion->proposalExplanation);
+                $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $latestProposal->explanation);
 
                 if ($this->getHttpRequest()->post('visible', 0)) {
-                    if ($motion->proposalVisibleFrom === null) {
+                    if ($latestProposal->visibleFrom === null) {
                         // Reload the page, to update section titles and permissions to edit the proposed procedure
                         $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
                     }
                     $motion->setProposalPublished();
                 } else {
-                    $motion->proposalVisibleFrom = null;
+                    $latestProposal->visibleFrom = null;
                 }
             }
 
@@ -545,19 +546,20 @@ trait MotionActionsTrait
             }
 
             $response['success'] = false;
-            if ($motion->save()) {
+            if ($latestProposal->save()) {
                 $response['success'] = true;
             }
 
             $this->consultation->refresh();
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,
+                'proposal' => $latestProposal,
                 'msgAlert' => $msgAlert,
                 'context'   => $this->getHttpRequest()->post('context', 'view'),
             ]);
-            $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
+            $response['proposalStr'] = $latestProposal->getFormattedProposalStatus(true);
 
-            if ($motion->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $motion->proposalStatus) {
+            if ($motion->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $latestProposal->proposalStatus) {
                 $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
             } elseif ($motion->id !== $originalMotionId) {
                 // This can happen if a plugin enforces the creation of a new motion when saving
@@ -573,11 +575,12 @@ trait MotionActionsTrait
                     $this->getHttpRequest()->post('fromName'),
                     $this->getHttpRequest()->post('replyTo')
                 );
-                $motion->proposalNotification = date('Y-m-d H:i:s');
-                $motion->save();
+                $latestProposal->notifiedAt = date('Y-m-d H:i:s');
+                $latestProposal->save();
                 $response['success'] = true;
                 $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                     'motion'   => $motion,
+                    'proposal' => $latestProposal,
                     'msgAlert' => $msgAlert,
                     'context'  => $this->getHttpRequest()->post('context', 'view'),
                 ]);
@@ -588,12 +591,13 @@ trait MotionActionsTrait
         }
 
         if ($this->getHttpRequest()->post('setProposerHasAccepted')) {
-            $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
-            $motion->save();
+            $latestProposal->userStatus = Motion::STATUS_ACCEPTED;
+            $latestProposal->save();
             ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id);
             $response['success'] = true;
             $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,
+                'proposal' => $latestProposal,
                 'msgAlert' => $msgAlert,
             ]);
         }
@@ -628,19 +632,20 @@ trait MotionActionsTrait
         if (!$motion) {
             return new HtmlErrorResponse(404, 'Motion not found');
         }
-        if (!$motion->canEditProposedProcedure()) {
+        $latestProposal = $motion->getLatestProposal();
+        if (!$latestProposal || !$latestProposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to edit the proposed procedure');
         }
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
-            $reference = $motion->getMyProposalReference();
+            $reference = $latestProposal->getMyProposalReference();
             if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
                 foreach ($reference->sections as $section) {
                     $section->delete();
                 }
 
-                $motion->proposalReferenceId = null;
-                $motion->save();
+                $latestProposal->proposalReferenceId = null;
+                $latestProposal->save();
 
                 $reference->delete();
             }
@@ -659,8 +664,8 @@ trait MotionActionsTrait
             if ($motion->proposalUserStatus !== null) {
                 $this->getHttpSession()->setFlash('info', \Yii::t('amend', 'proposal_user_change_reset'));
             }
-            $motion->proposalUserStatus = null;
-            $motion->save();
+            $latestProposal->userStatus = null;
+            $latestProposal->save();
             $motion->flushCacheItems(['procedure']);
 
             return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'view'));
