@@ -50,6 +50,7 @@ use yii\helpers\Html;
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
+ * @property AmendmentProposal[] $proposals
  * @property Amendment|null $proposalReferencedByAmendment
  * @property Motion|null $proposalReferencedByMotion
  * @property VotingBlock|null $votingBlock
@@ -239,6 +240,25 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $sections;
+    }
+
+    /**
+     * @return ActiveQuery<AmendmentProposal[]>
+     */
+    public function getProposals(): ActiveQuery
+    {
+        return $this->hasMany(AmendmentProposal::class, ['amendmentId' => 'id']);
+    }
+
+    public function getLatestProposal(): ?AmendmentProposal
+    {
+        $max = null;
+        foreach ($this->proposals as $proposal) {
+            if ($proposal->version > ($max?->version ?: 0)) {
+                $max = $proposal;
+            }
+        }
+        return $max;
     }
 
     /**
@@ -704,14 +724,6 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    public function canSeeProposedProcedure(?string $procedureToken): bool
-    {
-        if ($procedureToken && AmendmentProposedProcedure::getPpOpenAcceptToken($this) === $procedureToken) {
-            return true;
-        }
-        return $this->iAmInitiator();
-    }
-
     public function canEditText(): bool
     {
         return $this->getPermissionsObject()->amendmentCanEditText($this);
@@ -1135,71 +1147,6 @@ class Amendment extends IMotion implements IRSSItem
         return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
     }
 
-    public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool
-    {
-        // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReferenceId && $this->getMyConsultation()->getAmendment($this->proposalReferenceId)) {
-            return true;
-        }
-
-        // This amendment is obsoleted by an amendment with a modification proposal
-        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($obsoletedBy && $internalNestingLevel < 10) {
-                return $obsoletedBy->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
-            }
-        }
-
-        // It was proposed to move this amendment to another motion
-        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
-            $movedTo = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($movedTo) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns the modification proposed and the amendment to which the modification was directly proposed
-     * (which has not to be this very amendment, in case this amendment is obsoleted by another amendment)
-     *
-     * @return array{amendment: Amendment, modification: Amendment}|null
-     */
-    public function getAlternativeProposaltextReference(int $internalNestingLevel = 0): ?array
-    {
-        // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getMyProposalReference()) {
-            return [
-                'amendment'    => $this,
-                'modification' => $this->getMyProposalReference(),
-            ];
-        }
-
-        // This amendment is obsoleted by an amendment with a modification proposal
-        if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($obsoletedBy && $internalNestingLevel < 10) {
-                return $obsoletedBy->getAlternativeProposaltextReference($internalNestingLevel + 1);
-            }
-        }
-
-        // It was proposed to move this amendment to another motion
-        if ($this->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
-            $movedTo = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($movedTo) {
-                return [
-                    'amendment'    => $this,
-                    'modification' => $movedTo,
-                ];
-            }
-        }
-
-        return null;
-    }
-
     /*
      * Global alternatives and withdrawn amendments are never selected.
      * For regular amendments, voting results always take precedence.
@@ -1290,42 +1237,6 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return Layout::getFormattedAmendmentStatus($status, $this);
-    }
-
-    /**
-     * @return Amendment[]
-     * @throws Internal
-     */
-    public function collidesWithOtherProposedAmendments(bool $includeVoted): array
-    {
-        $collidesWith = [];
-
-        if ($this->getMyProposalReference()) {
-            $sections = $this->getMyProposalReference()->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
-        } else {
-            $sections = $this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
-        }
-        $newSections = [];
-        foreach ($sections as $section) {
-            $newSections[$section->sectionId] = $section->data;
-        }
-
-        foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this->id]) as $amendment) {
-            if ($this->globalAlternative || $amendment->globalAlternative) {
-                $collidesWith[] = $amendment;
-                continue;
-            }
-            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
-                if (count($coll) > 0) {
-                    if (!in_array($amendment, $collidesWith, true)) {
-                        $collidesWith[] = $amendment;
-                    }
-                }
-            }
-        }
-
-        return $collidesWith;
     }
 
     public function getLink(bool $absolute = false): string
