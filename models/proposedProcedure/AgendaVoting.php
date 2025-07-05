@@ -60,7 +60,7 @@ class AgendaVoting
             if (!$vAmendment->isVisibleForAdmins()) {
                 continue;
             }
-            if ($vAmendment->isProposalPublic() || $includeNotOnPublicProposalOnes) {
+            if ($vAmendment->getLatestProposal()->isProposalPublic() || $includeNotOnPublicProposalOnes) {
                 $this->items[]  = $vAmendment;
                 $this->itemIds->addAmendment($vAmendment);
             }
