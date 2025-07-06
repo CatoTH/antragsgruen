@@ -84,8 +84,8 @@ class AmendmentProposal extends IProposal
     public function rules(): array
     {
         return [
-            [['amendmentId', 'version'], 'required'],
-            [['amendmentId', 'version'], 'number'],
+            [['amendmentId'], 'required'],
+            [['amendmentId'], 'number'],
         ];
     }
 

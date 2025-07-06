@@ -182,7 +182,7 @@ $voting = $motion->getVotingData();
                     } else {
                         echo 'Error: unknown response of the proposer';
                     }
-                } elseif ($motion->proposalFeedbackHasBeenRequested()) {
+                } elseif ($motion->getLatestProposal()?->proposalFeedbackHasBeenRequested()) {
                     $msg  = Yii::t('amend', 'proposal_notified');
                     $date = Tools::formatMysqlDateTime($motion->proposalNotification, false);
                     echo str_replace('%DATE%', $date, $msg);

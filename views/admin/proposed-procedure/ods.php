@@ -128,16 +128,16 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 
     $minHeight = 1;
 
-    if ($onlyPublic && !$amendment->isProposalPublic()) {
+    if ($onlyPublic && !$amendment->getLatestProposal()?->isProposalPublic()) {
         $proposal = '';
     } else {
-        $proposal = '<p>' . $amendment->getFormattedProposalStatus() . '</p>';
+        $proposal = '<p>' . $amendment->getLatestProposal()?->getFormattedProposalStatus() . '</p>';
         if (strlen($proposal) > 200) {
             $minHeight += 2;
         }
 
-        if ($amendment->hasAlternativeProposaltext()) {
-            $reference = $amendment->getMyProposalReference();
+        if ($amendment->getLatestProposal()?->hasAlternativeProposaltext()) {
+            $reference = $amendment->getLatestProposal()?->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
             $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {
@@ -180,10 +180,10 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 
     $minHeight = 1;
 
-    if ($onlyPublic && !$motion->isProposalPublic()) {
+    if ($onlyPublic && !$motion->getLatestProposal()?->isProposalPublic()) {
         $proposal = '';
     } else {
-        $proposal = '<p>' . $motion->getFormattedProposalStatus() . '</p>';
+        $proposal = '<p>' . $motion->getLatestProposal()?->getFormattedProposalStatus() . '</p>';
         if (grapheme_strlen($proposal) > 200) {
             $minHeight += 2;
         }

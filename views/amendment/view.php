@@ -160,7 +160,7 @@ if (User::getCurrentUser() && !$amendment->getPrivateComment() && $consultation-
 }
 
 if ($hasPp) {
-    $proposal = $amendment->getLatestProposal() ?: \app\models\db\AmendmentProposal::createNew($amendment);
+    $proposal = $amendment->getLatestProposal() ?: AmendmentProposal::createNew($amendment);
     if ($hasPpAdminbox) {
         ?>
         <div class="proposedChangesOpener">
