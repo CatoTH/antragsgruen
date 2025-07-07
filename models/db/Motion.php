@@ -1218,10 +1218,10 @@ class Motion extends IMotion implements IRSSItem
     public function getAlternativeProposaltextReference(): ?array
     {
         // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getMyProposalReference()) {
+        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getLatestProposal()?->getMyProposalReference()) {
             return [
                 'motion'    => $this,
-                'modification' => $this->getMyProposalReference(),
+                'modification' => $this->getLatestProposal()?->getMyProposalReference(),
             ];
         }
 
@@ -1244,7 +1244,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function followProposalAndCreateNewVersion(string $versionId, int $acceptStatus = self::STATUS_ACCEPTED, ?array $newInitiators = null): Motion
     {
-        if (!in_array($this->proposalStatus, [self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_CUSTOM_STRING])) {
+        $proposal = $this->getLatestProposal();
+        if (!$proposal || !in_array($proposal->proposalStatus, [self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_CUSTOM_STRING])) {
             throw new FormError('No proposal set');
         }
 
@@ -1267,17 +1268,17 @@ class Motion extends IMotion implements IRSSItem
             }
         }
 
-        $newVersion->status = match ($this->proposalStatus) {
+        $newVersion->status = match ($proposal->proposalStatus) {
             self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED => $acceptStatus,
-            default => $this->proposalStatus,
+            default => $proposal->proposalStatus,
         };
-        if (in_array($this->proposalStatus, [self::STATUS_OBSOLETED_BY_MOTION, self::STATUS_OBSOLETED_BY_AMENDMENT])) {
-            $newVersion->statusString = $this->proposalComment;
+        if (in_array($proposal->proposalStatus, [self::STATUS_OBSOLETED_BY_MOTION, self::STATUS_OBSOLETED_BY_AMENDMENT])) {
+            $newVersion->statusString = $proposal->comment;
         }
-        if ($this->proposalStatus === self::STATUS_CUSTOM_STRING) {
-            $newVersion->statusString = $this->proposalComment;
+        if ($proposal->proposalStatus === self::STATUS_CUSTOM_STRING) {
+            $newVersion->statusString = $proposal->comment;
         }
-        if ($this->proposalStatus === self::STATUS_MODIFIED_ACCEPTED && ($modified = $this->getMyProposalReference())) {
+        if ($proposal->proposalStatus === self::STATUS_MODIFIED_ACCEPTED && ($modified = $proposal->getMyProposalReference())) {
             foreach ($newVersion->sections as $section) {
                 $amendmentSection = $modified->getSection($section->sectionId);
                 if ($amendmentSection) {

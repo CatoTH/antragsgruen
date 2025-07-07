@@ -238,7 +238,7 @@ foreach ($amendments as $amendmentGroup) {
 
         $proposal = $amendment->getLatestProposal()?->getFormattedProposalStatus();
         if ($amendment->getLatestProposal()?->hasAlternativeProposaltext()) {
-            $reference = $amendment->getMyProposalReference();
+            $reference = $amendment->getLatestProposal()?->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
             $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {

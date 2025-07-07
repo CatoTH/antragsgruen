@@ -78,7 +78,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                 if ($amend->proposalStatus !== null) {
                     $hasProposals = true;
                 }
-                if ($amend->getMyProposalReference()) {
+                if ($amend->getLatestProposal()?->getMyProposalReference()) {
                     $hasProposalText = true;
                 }
                 if (in_array($amend->votingStatus, [Amendment::STATUS_ACCEPTED, Amendment::STATUS_REJECTED])) {

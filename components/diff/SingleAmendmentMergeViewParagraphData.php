@@ -4,6 +4,7 @@ namespace app\components\diff;
 
 use app\components\HTMLTools;
 use app\models\db\Amendment;
+use app\models\db\AmendmentProposal;
 use app\models\sectionTypes\ISectionType;
 
 class SingleAmendmentMergeViewParagraphData
@@ -34,10 +35,12 @@ class SingleAmendmentMergeViewParagraphData
         $diffRenderer      = new DiffRenderer();
         $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
 
+        /** @var AmendmentProposal|null $proposal */
+        $proposal = $amendment->getLatestProposal();
         $modifiedSections = [];
-        if ($amendment->hasAlternativeProposaltext(false)) {
+        if ($proposal && $proposal->hasAlternativeProposaltext(false)) {
             /** @var Amendment $modifiedAmend */
-            $modifiedAmend = $amendment->getAlternativeProposaltextReference()['modification'];
+            $modifiedAmend = $proposal->getAlternativeProposaltextReference()['modification'];
             foreach ($modifiedAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $modifiedSections[$section->sectionId] = $section;
             }

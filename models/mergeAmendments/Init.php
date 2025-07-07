@@ -42,7 +42,7 @@ class Init
             if ($proposal && $proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
                 $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
                 if (isset($postAmendIds[$amendment->id])) {
-                    $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
+                    $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
                 }
             } else {
                 if (isset($postAmendIds[$amendment->id])) {
@@ -125,17 +125,6 @@ class Init
         return array_values(array_filter($motion->amendments, function (Amendment $amendment) use ($hiddenStatuses): bool {
             return !in_array($amendment->status, $hiddenStatuses);
         }));
-    }
-
-    public function resolveAmendmentToProposalId(int $amendmentId): ?int
-    {
-        foreach (static::getMotionAmendmentsForMerging($this->motion) as $amendment) {
-            if ($amendment->id === $amendmentId && $amendment->getMyProposalReference()) {
-                return $amendment->getMyProposalReference()->id;
-            }
-        }
-
-        return null;
     }
 
     public function getRegularSection(MotionSection $section): MotionSection
@@ -246,7 +235,7 @@ class Init
             'url'           => UrlHelper::createAmendmentUrl($amendment),
             'oldStatusId'   => $amendment->status,
             'oldStatusName' => $statusesAllNames[$amendment->status] ?? null,
-            'hasProposal'   => ($amendment->getMyProposalReference() !== null),
+            'hasProposal'   => ($amendment->getLatestProposal()?->getMyProposalReference() !== null),
             'isMotionModU'  => ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION),
         ];
     }

@@ -22,11 +22,11 @@ class ProposedChangeForm
 
     protected function initProposal(): void
     {
-        if ($this->proposal->getMyProposalReference() && in_array($proposal->getMyProposalReference()->status, [
+        if ($this->proposal->getMyProposalReference() && in_array($this->proposal->getMyProposalReference()->status, [
             Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT,
             Motion::STATUS_PROPOSED_MODIFIED_MOTION,
         ])) {
-            $this->proposalSections = $proposal->getMyProposalReference()->getActiveSections();
+            $this->proposalSections = $this->proposal->getMyProposalReference()->getActiveSections();
             return;
         }
         $this->proposalSections = [];
