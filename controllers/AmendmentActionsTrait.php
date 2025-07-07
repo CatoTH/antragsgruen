@@ -328,13 +328,14 @@ trait AmendmentActionsTrait
     private function setProposalAgreement(Amendment $amendment, int $status): void
     {
         $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
-        if (!$amendment->canSeeProposedProcedure($procedureToken) || !$amendment->proposalFeedbackHasBeenRequested()) {
+        $proposal = $amendment->getLatestProposal();
+        if (!$proposal || !$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }
 
-        $amendment->proposalUserStatus = $status;
-        $amendment->save();
+        $proposal->userStatus = $status;
+        $proposal->save();
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
 

@@ -127,17 +127,6 @@ class Init
         }));
     }
 
-    public function resolveAmendmentToProposalId(int $amendmentId): ?int
-    {
-        foreach (static::getMotionAmendmentsForMerging($this->motion) as $amendment) {
-            if ($amendment->id === $amendmentId && $amendment->getMyProposalReference()) {
-                return $amendment->getMyProposalReference()->id;
-            }
-        }
-
-        return null;
-    }
-
     public function getRegularSection(MotionSection $section): MotionSection
     {
         if ($this->draftData && isset($this->draftData->sections[$section->sectionId]) && $section->getSettings()->type === ISectionType::TYPE_TITLE) {

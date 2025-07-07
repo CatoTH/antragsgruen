@@ -352,13 +352,14 @@ trait MotionActionsTrait
     private function setProposalAgreement(Motion $motion, int $status): void
     {
         $procedureToken = $this->getHttpRequest()->get('procedureToken');
-        if (!$motion->canSeeProposedProcedure($procedureToken) || !$motion->proposalFeedbackHasBeenRequested()) {
+        $proposal = $motion->getLatestProposal();
+        if ($proposal || !$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }
 
-        $motion->proposalUserStatus = $status;
-        $motion->save();
+        $proposal->userStatus = $status;
+        $proposal->save();
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
 
