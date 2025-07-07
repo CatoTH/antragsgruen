@@ -245,8 +245,8 @@ class UrlHelper
 
     public static function createAmendmentUrl(Amendment $amendment, string $mode = 'view', array $addParams = []): string
     {
-        if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT && $amendment->getMyProposalReference()) {
-            $amendment = $amendment->getMyProposalReference();
+        if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT && $amendment->getLatestProposal()?->getMyProposalReference()) {
+            $amendment = $amendment->getLatestProposal()?->getMyProposalReference();
         }
         $params = array_merge([
             '/amendment/' . $mode,

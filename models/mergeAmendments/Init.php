@@ -42,7 +42,7 @@ class Init
             if ($proposal && $proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
                 $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
                 if (isset($postAmendIds[$amendment->id])) {
-                    $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
+                    $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
                 }
             } else {
                 if (isset($postAmendIds[$amendment->id])) {
@@ -246,7 +246,7 @@ class Init
             'url'           => UrlHelper::createAmendmentUrl($amendment),
             'oldStatusId'   => $amendment->status,
             'oldStatusName' => $statusesAllNames[$amendment->status] ?? null,
-            'hasProposal'   => ($amendment->getMyProposalReference() !== null),
+            'hasProposal'   => ($amendment->getLatestProposal()?->getMyProposalReference() !== null),
             'isMotionModU'  => ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION),
         ];
     }
