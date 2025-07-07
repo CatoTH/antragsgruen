@@ -47,8 +47,9 @@ class Agenda
 
         /** @var Amendment|null $toShowAmendment */
         $toShowAmendment = null;
-        if ($imotion->hasAlternativeProposaltext()) {
-            $toShowAmendment = $imotion->getMyProposalReference();
+        $proposal = $imotion->getLatestProposal();
+        if ($proposal && $proposal->hasAlternativeProposaltext()) {
+            $toShowAmendment = $proposal->getMyProposalReference();
         }
         if ($imotion->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($imotion, Amendment::class)) {
             $toShowAmendment = $imotion;
@@ -87,15 +88,20 @@ class Agenda
 
     public static function formatProposedProcedure(IMotion $item, int $format): string
     {
-        $proposal = '<p>' . trim($item->getFormattedProposalStatus()) . '</p>';
-        if ($item->proposalExplanation) {
-            $proposal .= '<p class="explanation">' . Html::encode($item->proposalExplanation) . '</p>';
+        $proposal = $item->getLatestProposal();
+        if (!$proposal) {
+            return '';
+        }
+
+        $proposalStr = '<p>' . trim($proposal->getFormattedProposalStatus()) . '</p>';
+        if ($proposal->explanation) {
+            $proposalStr .= '<p class="explanation">' . Html::encode($proposal->explanation) . '</p>';
         }
 
         if ($item->status !== IMotion::STATUS_WITHDRAWN) {
-            $proposal .= static::formatProposedAmendmentProcedure($item, $format);
+            $proposalStr .= static::formatProposedAmendmentProcedure($item, $format);
         }
 
-        return $proposal;
+        return $proposalStr;
     }
 }

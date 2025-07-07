@@ -1102,8 +1102,9 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         if ($this->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
-            if ($this->isProposalPublic() && $this->proposalStatus) {
-                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($this->getFormattedProposalStatus(true));
+            $proposal = $this->getLatestProposal();
+            if ($proposal && $proposal->isProposalPublic() && $proposal->proposalStatus) {
+                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($proposal->getFormattedProposalStatus(true));
             }
         }
 
@@ -1333,7 +1334,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getAgendaApiBaseObject(): array
     {
-        if ($this->isProposalPublic()) {
+        if ($this->getLatestProposal()?->isProposalPublic()) {
             $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
         } else {
             $procedure = null;
