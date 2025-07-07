@@ -165,14 +165,14 @@ class Factory
 
             $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
-            if ($imotion->isProposalPublic() || $this->includeInvisible) {
+            if ($imotion->getLatestProposal()?->isProposalPublic() || $this->includeInvisible) {
                 $handledIMotions->addVotingItem($imotion);
                 $block->items[] = $imotion;
             }
             if (is_a($imotion, Motion::class)) {
                 $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($imotion->amendments, $forbiddenStatuses, true);
                 foreach ($amendments as $amendment) {
-                    if ($amendment->isProposalPublic() || $this->includeInvisible) {
+                    if ($amendment->getLatestProposal()?->isProposalPublic() || $this->includeInvisible) {
                         $handledIMotions->addAmendment($amendment);
                         $block->items[] = $amendment;
                     }

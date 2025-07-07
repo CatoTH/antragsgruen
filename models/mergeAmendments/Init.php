@@ -38,7 +38,8 @@ class Init
                 $form->toMergeMainIds[] = $amendment->id;
             }
 
-            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
+            $proposal = $amendment->getLatestProposal();
+            if ($proposal && $proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
                 $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
                 if (isset($postAmendIds[$amendment->id])) {
                     $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
@@ -68,8 +69,9 @@ class Init
         foreach ($motion->getFilteredAmendments($filter) as $amendment) {
             $form->toMergeMainIds[] = $amendment->id;
 
-            if ($amendment->hasAlternativeProposaltext(false)) {
-                $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
+            $proposal = $amendment->getLatestProposal();
+            if ($proposal && $proposal->hasAlternativeProposaltext(false)) {
+                $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
                 $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL;
             } else {
                 $form->toMergeResolvedIds[] = $amendment->id;
