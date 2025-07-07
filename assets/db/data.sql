@@ -90,7 +90,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m240830_181716_user_secret_key', '1725041937'),
   ('m241013_105549_pages_files', '1728817360'),
   ('m241027_074032_pages_policies', '1730015023'),
-  ('m241201_100317_background_jobs', '1733052690')
+  ('m241201_100317_background_jobs', '1733052690'),
+  ('m250608_180000_multiple_proposals', '1751805105')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;
