@@ -3,13 +3,14 @@
 /**
  * @var Yii\web\View $this
  * @var Motion $motion
+ * @var MotionProposal $proposal
  * @var string $context
  * @var string $saveUrl
  */
 
 use app\models\settings\Privileges;
 use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
-use app\models\db\{IAdminComment, Motion, User};
+use app\models\db\{IAdminComment, Motion, MotionProposal, User};
 use yii\helpers\Html;
 
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
@@ -44,7 +45,7 @@ $votingBlocks = $consultation->votingBlocks;
 $allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
 $selectedTags = $motion->getProposedProcedureTags();
 $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeRemoved());
-$canBeChangedUnlimitedly = $motion->canEditProposedProcedure();
+$canBeChangedUnlimitedly = $proposal->canEditProposedProcedure();
 $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 $voting = $motion->getVotingData();
 ?>

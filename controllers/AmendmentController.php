@@ -456,17 +456,19 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new RestApiExceptionResponse(404, 'Amendment not found');
         }
-        if (!$amendment->canEditLimitedProposedProcedure()) {
+
+        $latestProposal = $amendment->getLatestProposal();
+        if (!$latestProposal || !$latestProposal->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
-        $canChangeProposalUnlimitedly = $amendment->canEditProposedProcedure();
+        $canChangeProposalUnlimitedly = $latestProposal->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
         $ppChanges = new ProposedProcedureChange(null);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
-            $originalProposalStatus = $amendment->proposalStatus;
+            $originalProposalStatus = $latestProposal->proposalStatus;
 
             foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
                 /** @var Amendment $amendment */
@@ -475,42 +477,42 @@ class AmendmentController extends Base
 
             if ($canChangeProposalUnlimitedly) {
                 $setStatus = intval($this->getHttpRequest()->post('setStatus'));
-                if ($amendment->proposalStatus !== $setStatus) {
-                    $ppChanges->setProposalStatusChanges($amendment->proposalStatus, $setStatus);
-                    if ($amendment->proposalUserStatus !== null) {
+                if ($latestProposal->proposalStatus !== $setStatus) {
+                    $ppChanges->setProposalStatusChanges($latestProposal->proposalStatus, $setStatus);
+                    if ($latestProposal->userStatus !== null) {
                         $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                     }
-                    $amendment->proposalUserStatus = null;
+                    $latestProposal->userStatus = null;
                 }
-                $amendment->proposalStatus = $setStatus;
+                $latestProposal->proposalStatus = $setStatus;
 
-                $ppChanges->setProposalCommentChanges($amendment->proposalComment, $this->getHttpRequest()->post('proposalComment', ''));
-                $amendment->proposalComment = $this->getHttpRequest()->post('proposalComment', '');
+                $ppChanges->setProposalCommentChanges($latestProposal->comment, $this->getHttpRequest()->post('proposalComment', ''));
+                $latestProposal->comment = $this->getHttpRequest()->post('proposalComment', '');
             }
 
             $amendment->setProposedProcedureTags($this->getHttpRequest()->post('tags', []), $ppChanges);
 
             if ($canChangeProposalUnlimitedly) {
-                $proposalExplanationPre = $amendment->proposalExplanation;
+                $proposalExplanationPre = $latestProposal->explanation;
                 if ($this->getHttpRequest()->post('proposalExplanation', null) !== null) {
                     if (trim($this->getHttpRequest()->post('proposalExplanation', '')) === '') {
-                        $amendment->proposalExplanation = null;
+                        $latestProposal->explanation = null;
                     } else {
-                        $amendment->proposalExplanation = $this->getHttpRequest()->post('proposalExplanation', '');
+                        $latestProposal->explanation = $this->getHttpRequest()->post('proposalExplanation', '');
                     }
                 } else {
-                    $amendment->proposalExplanation = null;
+                    $latestProposal->explanation = null;
                 }
-                $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $amendment->proposalExplanation);
+                $ppChanges->setProposalExplanationChanges($proposalExplanationPre, $latestProposal->explanation);
 
                 if ($this->getHttpRequest()->post('visible', 0)) {
-                    if ($amendment->proposalVisibleFrom === null) {
+                    if ($latestProposal->visibleFrom === null) {
                         // Reload the page, to update section titles and permissions to edit the proposed procedure
                         $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'view');
                     }
                     $amendment->setProposalPublished();
                 } else {
-                    $amendment->proposalVisibleFrom = null;
+                    $latestProposal->visibleFrom = null;
                 }
             }
 
@@ -525,7 +527,7 @@ class AmendmentController extends Base
                     $ppChanges
                 );
 
-                if ($amendment->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $amendment->proposalStatus) {
+                if ($latestProposal->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $latestProposal->proposalStatus) {
                     $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change');
                 }
             } catch (FormError $e) {
@@ -539,7 +541,7 @@ class AmendmentController extends Base
             }
 
             $response['success'] = false;
-            if ($amendment->save()) {
+            if ($latestProposal->save()) {
                 $response['success'] = true;
             }
             $amendment->flushCacheItems(['procedure']);
@@ -547,10 +549,11 @@ class AmendmentController extends Base
             $this->consultation->refresh();
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
+                'proposal'  => $latestProposal,
                 'msgAlert'  => $msgAlert,
                 'context'   => $this->getHttpRequest()->post('context', 'view'),
             ]);
-            $response['proposalStr'] = $amendment->getFormattedProposalStatus(true);
+            $response['proposalStr'] = $latestProposal->getFormattedProposalStatus(true);
         }
 
         if ($this->getHttpRequest()->post('notifyProposer')) {
@@ -561,12 +564,13 @@ class AmendmentController extends Base
                     $this->getHttpRequest()->post('fromName'),
                     $this->getHttpRequest()->post('replyTo')
                 );
-                $amendment->proposalNotification = date('Y-m-d H:i:s');
-                $amendment->save();
+                $latestProposal->notifiedAt = date('Y-m-d H:i:s');
+                $latestProposal->save();
                 $amendment->flushCacheItems(['procedure']);
                 $response['success'] = true;
                 $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                     'amendment' => $amendment,
+                    'proposal' => $latestProposal,
                     'msgAlert'  => $msgAlert,
                     'context'   => $this->getHttpRequest()->post('context', 'view'),
                 ]);
@@ -577,13 +581,14 @@ class AmendmentController extends Base
         }
 
         if ($this->getHttpRequest()->post('setProposerHasAccepted')) {
-            $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
-            $amendment->save();
+            $latestProposal->userStatus = Amendment::STATUS_ACCEPTED;
+            $latestProposal->save();
             $amendment->flushCacheItems(['procedure']);
             ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id);
             $response['success'] = true;
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
+                'proposal'  => $latestProposal,
                 'msgAlert'  => $msgAlert,
                 'context'   => $this->getHttpRequest()->post('context', 'view'),
             ]);
@@ -623,20 +628,21 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
-        if (!$amendment->canEditProposedProcedure()) {
+        $latestProposal = $amendment->getLatestProposal();
+        if (!$latestProposal || !$latestProposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
-            $reference = $amendment->getMyProposalReference();
+            $reference = $latestProposal->getMyProposalReference();
             if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 foreach ($reference->sections as $section) {
                     $section->delete();
                 }
 
-                $amendment->proposalReferenceId = null;
-                $amendment->save();
+                $latestProposal->proposalReferenceId = null;
+                $latestProposal->save();
 
                 $reference->delete();
             }
@@ -652,11 +658,11 @@ class AmendmentController extends Base
             $form->save($this->getHttpRequest()->post(), $_FILES);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
-            if ($amendment->proposalUserStatus !== null) {
+            if ($latestProposal->userStatus !== null) {
                 $this->getHttpSession()->setFlash('info', \Yii::t('amend', 'proposal_user_change_reset'));
             }
-            $amendment->proposalUserStatus = null;
-            $amendment->save();
+            $latestProposal->userStatus = null;
+            $latestProposal->save();
             $amendment->flushCacheItems(['procedure']);
 
             return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment, 'view'));

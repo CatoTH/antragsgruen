@@ -104,7 +104,7 @@ class ByLDK extends IPDFLayout
             $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
             $pdf->MultiCell(50, 0, \Yii::t('export', 'proposed_procedure') . ':', 0, 'L', false, 0);
             $pdf->SetFont('helvetica', '', 12);
-            $pdf->MultiCell(120, 0, $motion->getFormattedProposalStatus(), 0, 'L');
+            $pdf->MultiCell(120, 0, $motion->getLatestProposal()?->getFormattedProposalStatus(), 0, 'L');
             $pdf->Ln(5);
         }
 
@@ -224,7 +224,7 @@ class ByLDK extends IPDFLayout
             $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
             $pdf->MultiCell(50, 0, \Yii::t('export', 'proposed_procedure') . ':', 0, 'L', false, 0);
             $pdf->SetFont('helvetica', '', 12);
-            $pdf->MultiCell(120, 0, $amendment->getFormattedProposalStatus(), 0, 'L');
+            $pdf->MultiCell(120, 0, $amendment->getLatestProposal()?->getFormattedProposalStatus(), 0, 'L');
             $pdf->Ln(5);
         }
 

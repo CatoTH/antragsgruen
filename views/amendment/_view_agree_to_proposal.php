@@ -17,7 +17,7 @@ $disagreed = ($amendment->proposalUserStatus === \app\models\db\Amendment::STATU
         <div class="status">
             <div class="head"><?= Yii::t('amend', 'proposal_edit_title_prop') ?></div>
             <div class="description">
-                <?= $amendment->getFormattedProposalStatus() ?>
+                <?= $amendment->getLatestProposal()?->getFormattedProposalStatus() ?>
             </div>
             <?php
             if ($amendment->votingBlock) {
