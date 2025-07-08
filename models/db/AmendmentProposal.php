@@ -168,8 +168,9 @@ class AmendmentProposal extends IProposal
         // This amendment is obsoleted by an amendment with a modification proposal
         if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->comment));
-            if ($obsoletedBy && $internalNestingLevel < 10 && $obsoletedBy->getLatestProposal()) {
-                return $obsoletedBy->getLatestProposal()->getAlternativeProposaltextReference($internalNestingLevel + 1);
+            if ($obsoletedBy && $internalNestingLevel < 10 && ($amendProposal = $obsoletedBy->getLatestProposal())) {
+                /** @var AmendmentProposal $amendProposal */
+                return $amendProposal->getAlternativeProposaltextReference($internalNestingLevel + 1);
             }
         }
 

@@ -930,11 +930,12 @@ class Amendment extends IMotion implements IRSSItem
 
     public function setProposalPublished(): void
     {
-        if ($this->proposalVisibleFrom) {
+        $proposal = $this->getLatestProposal();
+        if (!$proposal || $proposal->visibleFrom) {
             return;
         }
-        $this->proposalVisibleFrom = date('Y-m-d H:i:s');
-        $this->save();
+        $proposal->visibleFrom = date('Y-m-d H:i:s');
+        $proposal->save();
 
         $consultation = $this->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_PUBLISH_PROPOSAL, $this->id);
@@ -1167,7 +1168,7 @@ class Amendment extends IMotion implements IRSSItem
         if (in_array($this->status, [static::STATUS_ACCEPTED, static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION])) {
             return true;
         }
-        if (in_array($this->status, [static::STATUS_VOTE, static::STATUS_SUBMITTED_SCREENED]) || $this->proposalStatus === static::STATUS_VOTE) {
+        if (in_array($this->status, [static::STATUS_VOTE, static::STATUS_SUBMITTED_SCREENED]) || $this->getLatestProposal()?->proposalStatus === static::STATUS_VOTE) {
             if ($this->votingStatus === static::STATUS_ACCEPTED) {
                 return true;
             }
@@ -1179,11 +1180,11 @@ class Amendment extends IMotion implements IRSSItem
         if (!$hasProposals) {
             return true;
         }
-        if ($this->proposalStatus === static::STATUS_ACCEPTED) {
+        if ($this->getLatestProposal()?->proposalStatus === static::STATUS_ACCEPTED) {
             return true;
         }
         if (in_array($this->status, [static::STATUS_PROPOSED_MODIFIED_AMENDMENT, static::STATUS_PROPOSED_MODIFIED_MOTION]) ||
-            $this->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
+            $this->getLatestProposal()?->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
             return true;
         }
 

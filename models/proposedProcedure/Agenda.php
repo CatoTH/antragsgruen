@@ -36,7 +36,9 @@ class Agenda
 
     public static function formatProposedAmendmentProcedure(IMotion $imotion, int $format): string
     {
-        if ($format === Agenda::FORMAT_HTML && $imotion->proposalStatus !== IMotion::STATUS_OBSOLETED_BY_AMENDMENT) {
+        $proposal = $imotion->getLatestProposal();
+
+        if ($format === Agenda::FORMAT_HTML && $proposal?->proposalStatus !== IMotion::STATUS_OBSOLETED_BY_AMENDMENT) {
             // Flushing an amendment's cache does not work when a modified version of an amendment is edited
             // that is replacing this one -> we disable the cache in this case
             $cached = $imotion->getCacheItem('procedure.formatted');
@@ -47,7 +49,6 @@ class Agenda
 
         /** @var Amendment|null $toShowAmendment */
         $toShowAmendment = null;
-        $proposal = $imotion->getLatestProposal();
         if ($proposal && $proposal->hasAlternativeProposaltext()) {
             $toShowAmendment = $proposal->getMyProposalReference();
         }
@@ -55,7 +56,7 @@ class Agenda
             $toShowAmendment = $imotion;
         }
 
-        $proposal  = '';
+        $proposalStr = '';
         if ($toShowAmendment) {
             /** @var AmendmentSection[] $sections */
             $sections = $toShowAmendment->getSortedSections(false);
@@ -69,21 +70,21 @@ class Agenda
                         continue;
                     }
                     if ($format === static::FORMAT_ODS) {
-                        $proposal .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                        $proposalStr .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
                     } else {
-                        $proposal .= $section->getSectionType()->getAmendmentPlainHtml();
+                        $proposalStr .= $section->getSectionType()->getAmendmentPlainHtml();
                     }
                 } catch (Internal $e) {
-                    $proposal .= '<p>@INTERNAL ERROR@</p>';
+                    $proposalStr .= '<p>@INTERNAL ERROR@</p>';
                 }
             }
         }
 
-        if ($format === Agenda::FORMAT_HTML && $imotion->proposalStatus !== Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
-            $imotion->setCacheItem('procedure.formatted', $proposal);
+        if ($format === Agenda::FORMAT_HTML && $proposal?->proposalStatus !== Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
+            $imotion->setCacheItem('procedure.formatted', $proposalStr);
         }
 
-        return $proposal;
+        return $proposalStr;
     }
 
     public static function formatProposedProcedure(IMotion $item, int $format): string

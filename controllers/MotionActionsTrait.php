@@ -560,7 +560,7 @@ trait MotionActionsTrait
             ]);
             $response['proposalStr'] = $latestProposal->getFormattedProposalStatus(true);
 
-            if ($motion->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $latestProposal->proposalStatus) {
+            if ($motion->getLatestProposal()?->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $latestProposal->proposalStatus) {
                 $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
             } elseif ($motion->id !== $originalMotionId) {
                 // This can happen if a plugin enforces the creation of a new motion when saving
@@ -662,7 +662,7 @@ trait MotionActionsTrait
             $form->save($this->getHttpRequest()->post(), $_FILES);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
-            if ($motion->proposalUserStatus !== null) {
+            if ($latestProposal->userStatus !== null) {
                 $this->getHttpSession()->setFlash('info', \Yii::t('amend', 'proposal_user_change_reset'));
             }
             $latestProposal->userStatus = null;

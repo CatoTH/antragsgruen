@@ -49,8 +49,9 @@ class AmendmentProposedProcedure
     public static function getDefaultText(Amendment $amendment): string
     {
         $initiator = $amendment->getInitiators();
+        $proposal = $amendment->getLatestProposal();
 
-        $body = match ($amendment->proposalStatus) {
+        $body = match ($proposal?->proposalStatus) {
             Amendment::STATUS_ACCEPTED => \Yii::t('amend', 'proposal_email_accepted'),
             Amendment::STATUS_MODIFIED_ACCEPTED => \Yii::t('amend', 'proposal_email_modified'),
             default => \Yii::t('amend', 'proposal_email_other'),

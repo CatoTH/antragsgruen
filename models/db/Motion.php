@@ -497,7 +497,7 @@ class Motion extends IMotion implements IRSSItem
             if ($includeVoted) {
                 $toBeCheckedStatuses[] = Amendment::STATUS_VOTE;
             }
-            if (in_array($amendment->proposalStatus, $toBeCheckedStatuses)) {
+            if ($amendment->getLatestProposal() && in_array($amendment->getLatestProposal()->proposalStatus, $toBeCheckedStatuses)) {
                 $amendments[] = $amendment;
             }
         }
@@ -883,11 +883,12 @@ class Motion extends IMotion implements IRSSItem
 
     public function setProposalPublished(): void
     {
-        if ($this->proposalVisibleFrom) {
+        $proposal = $this->getLatestProposal();
+        if (!$proposal || $proposal->visibleFrom) {
             return;
         }
-        $this->proposalVisibleFrom = date('Y-m-d H:i:s');
-        $this->save();
+        $proposal->visibleFrom = date('Y-m-d H:i:s');
+        $proposal->save();
 
         $consultation = $this->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_PUBLISH_PROPOSAL, $this->id);
@@ -1218,7 +1219,11 @@ class Motion extends IMotion implements IRSSItem
     public function getAlternativeProposaltextReference(): ?array
     {
         // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getLatestProposal()?->getMyProposalReference()) {
+        $proposal = $this->getLatestProposal();
+        if (!$proposal) {
+            return null;
+        }
+        if (in_array($proposal->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $proposal->getMyProposalReference()) {
             return [
                 'motion'    => $this,
                 'modification' => $this->getLatestProposal()?->getMyProposalReference(),
@@ -1287,9 +1292,13 @@ class Motion extends IMotion implements IRSSItem
                 }
             }
         }
-        $newVersion->proposalStatus = null;
-        $newVersion->proposalComment = null;
-        $newVersion->save();
+
+        $newProposal = $newVersion->getLatestProposal();
+        if ($newProposal) {
+            $newProposal->proposalStatus = null;
+            $newProposal->comment = null;
+            $newProposal->save();
+        }
 
         return $newVersion;
     }
