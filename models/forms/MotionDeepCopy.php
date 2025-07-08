@@ -7,6 +7,7 @@ namespace app\models\forms;
 use app\models\db\{Amendment,
     AmendmentAdminComment,
     AmendmentComment,
+    AmendmentProposal,
     AmendmentSection,
     AmendmentSupporter,
     ConsultationAgendaItem,
@@ -14,6 +15,7 @@ use app\models\db\{Amendment,
     Motion,
     MotionAdminComment,
     MotionComment,
+    MotionProposal,
     MotionSection,
     MotionSupporter};
 use app\components\UrlHelper;
@@ -65,7 +67,9 @@ class MotionDeepCopy
         $newMotion->parentMotionId = ($linkMotions ? $motion->id : null);
 
         if (in_array(self::SKIP_PROPOSED_PROCEDURE, $skip)) {
-            self::resetProposedProcedure($newMotion);
+            self::resetVotingData($newMotion);
+        } else {
+            self::copyProposedProcedure($motion, $newMotion);
         }
 
         $newMotion->save();
@@ -94,19 +98,38 @@ class MotionDeepCopy
         return $newMotion;
     }
 
-    private static function resetProposedProcedure(Motion $newMotion): void
+    private static function resetVotingData(Motion $newMotion): void
     {
-        $newMotion->proposalStatus = null;
-        $newMotion->proposalReferenceId = null;
-        $newMotion->proposalVisibleFrom = null;
-        $newMotion->proposalComment = null;
-        $newMotion->proposalNotification = null;
-        $newMotion->proposalUserStatus = null;
-        $newMotion->proposalExplanation = null;
         $newMotion->votingBlockId = null;
         $newMotion->votingData = null;
         $newMotion->votingStatus = null;
         $newMotion->responsibilityId = null;
+    }
+
+    private static function copyAmendmentProposedProcedure(Amendment $amendment, Amendment $newAmendment): void
+    {
+        $latestProposal = $amendment->getLatestProposal();
+        if ($latestProposal) {
+            $newProposal = new AmendmentProposal();
+            $newProposal->setAttributes($latestProposal->getAttributes(), false);
+            $newProposal->id = null;
+            $newProposal->amendmentId = $newAmendment->id;
+            $newProposal->version = 1;
+            $newProposal->save();
+        }
+    }
+
+    private static function copyProposedProcedure(Motion $motion, Motion $newMotion): void
+    {
+        $latestProposal = $motion->getLatestProposal();
+        if ($latestProposal) {
+            $newProposal = new MotionProposal();
+            $newProposal->setAttributes($latestProposal->getAttributes(), false);
+            $newProposal->id = null;
+            $newProposal->motionId = $newMotion->id;
+            $newProposal->version = 1;
+            $newProposal->save();
+        }
     }
 
     private static function copyTags(Motion $oldMotion, Motion $newMotion): void
@@ -205,6 +228,7 @@ class MotionDeepCopy
             self::copyAmendmentSupporters($amendment, $newAmendment);
             self::copyAmendmentComments($amendment, $newAmendment);
             self::copyAmendmentAdminComments($amendment, $newAmendment);
+            self::copyAmendmentProposedProcedure($amendment, $newAmendment);
         }
 
         foreach ($newAmendments as $newAmendment) {
