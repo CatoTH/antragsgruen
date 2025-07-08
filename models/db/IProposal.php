@@ -18,7 +18,7 @@ use yii\helpers\Html;
  * @property string|null $visibleFrom
  * @property string|null $notifiedAt
  * @property string|null $notifiedText
- * @property string|null $userStatus
+ * @property int|null $userStatus
  * @property string|null $explanation ??
  * @property string $publicToken
  */

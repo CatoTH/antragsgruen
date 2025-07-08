@@ -27,6 +27,7 @@ use yii\helpers\Html;
  * @property string|null $dateResolution
  * @property string $dateContentModification
  * @property IComment[] $comments
+ * @property IProposal[] $proposals
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationAgendaItem|null $agendaItem
  * @property int $status

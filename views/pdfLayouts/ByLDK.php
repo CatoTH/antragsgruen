@@ -98,7 +98,8 @@ class ByLDK extends IPDFLayout
         $pdf->MultiCell(120, 0, $motion->getInitiatorsStr(), 0, 'L');
         $pdf->Ln(5);
 
-        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $motion->proposalStatus !== null && $motion->isProposalPublic()) {
+        $proposal = $motion->getLatestProposal();
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $proposal && $proposal->proposalStatus !== null && $proposal->isProposalPublic()) {
             $pdf->SetX(12);
             $pdf->SetFont('helvetica', 'B', 12);
             $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
@@ -218,7 +219,8 @@ class ByLDK extends IPDFLayout
         $pdf->MultiCell(120, 0, $amendment->getInitiatorsStr(), 0, 'L');
         $pdf->Ln(5);
 
-        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports && $amendment->proposalStatus !== null && $amendment->isProposalPublic()) {
+        $proposal = $amendment->getLatestProposal();
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports && $proposal && $proposal->proposalStatus !== null && $proposal->isProposalPublic()) {
             $pdf->SetX(12);
             $pdf->SetFont('helvetica', 'B', 12);
             $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);

@@ -137,7 +137,7 @@ trait MotionMergingTrait
                 $newAmendmentsStaticData[]           = Init::getJsAmendmentStaticData($amendment);
                 $newAmendmentsStatus[$amendment->id] = [
                     'status'     => $amendment->status,
-                    'version'    => ($amendment->hasAlternativeProposaltext(false) ? Init::TEXT_VERSION_PROPOSAL : Init::TEXT_VERSION_ORIGINAL),
+                    'version'    => ($amendment->getLatestProposal()?->hasAlternativeProposaltext(false) ? Init::TEXT_VERSION_PROPOSAL : Init::TEXT_VERSION_ORIGINAL),
                     'votingData' => $amendment->getVotingData()->jsonSerialize(),
                 ];
             }
