@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
 /**
+ * @property int|null $id
  * @property int $version
  * @property int|null $proposalStatus
  * @property int|null $proposalReferenceId

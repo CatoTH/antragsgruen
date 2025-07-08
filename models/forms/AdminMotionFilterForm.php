@@ -521,17 +521,18 @@ class AdminMotionFilterForm
 
             if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
                 if ($this->proposalStatus == 'noresponse') {
-                    if ($amend->proposalNotification === null ||
-                        $amend->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                    $proposal = $amend->getLatestProposal();
+                    if (!$proposal || $proposal->notifiedAt === null || $proposal->userStatus == Amendment::STATUS_ACCEPTED) {
                         $matches = false;
                     }
                 } elseif ($this->proposalStatus === 'accepted') {
-                    if ($amend->proposalNotification === null ||
-                        $amend->proposalUserStatus !== Amendment::STATUS_ACCEPTED) {
+                    $proposal = $amend->getLatestProposal();
+                    if (!$proposal || $proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_ACCEPTED) {
                         $matches = false;
                     }
                 } else {
-                    if ($this->proposalStatus != $amend->proposalStatus) {
+                    $proposal = $amend->getLatestProposal();
+                    if (!$proposal || $this->proposalStatus != $proposal->proposalStatus) {
                         $matches = false;
                     }
                 }
@@ -797,12 +798,16 @@ class AdminMotionFilterForm
         $out         = $num = [];
         $numAccepted = $numNotResponded = 0;
         foreach ($this->allAmendments as $amend) {
-            if (!isset($num[$amend->proposalStatus])) {
-                $num[$amend->proposalStatus] = 0;
+            $proposal = $amend->getLatestProposal();
+            if (!$proposal) {
+                continue;
             }
-            $num[$amend->proposalStatus]++;
-            if ($amend->proposalNotification) {
-                if ($amend->proposalUserStatus === Amendment::STATUS_ACCEPTED) {
+            if (!isset($num[$proposal->proposalStatus])) {
+                $num[$proposal->proposalStatus] = 0;
+            }
+            $num[$proposal->proposalStatus]++;
+            if ($proposal->notifiedAt) {
+                if ($proposal->userStatus === Amendment::STATUS_ACCEPTED) {
                     $numAccepted++;
                 } else {
                     $numNotResponded++;

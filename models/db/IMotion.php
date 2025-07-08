@@ -33,13 +33,6 @@ use yii\helpers\Html;
  * @property int $status
  * @property string $statusString
  * @property int $notCommentable
- * @property int|null $proposalStatus
- * @property int|null $proposalReferenceId
- * @property string|null $proposalVisibleFrom
- * @property string|null $proposalComment
- * @property string|null $proposalNotification
- * @property int|null $proposalUserStatus
- * @property string|null $proposalExplanation
  * @property int|null $votingBlockId
  * @property string|null $votingData
  * @property int|null $votingStatus
