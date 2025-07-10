@@ -458,7 +458,7 @@ class AmendmentController extends Base
         }
 
         $latestProposal = $amendment->getLatestProposal();
-        if (!$latestProposal || !$latestProposal->canEditLimitedProposedProcedure()) {
+        if (!$latestProposal->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
         $canChangeProposalUnlimitedly = $latestProposal->canEditProposedProcedure();
@@ -629,7 +629,7 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
         $latestProposal = $amendment->getLatestProposal();
-        if (!$latestProposal || !$latestProposal->canEditProposedProcedure()) {
+        if (!$latestProposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 

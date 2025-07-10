@@ -236,9 +236,9 @@ foreach ($amendments as $amendmentGroup) {
         $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
         $sheet->setCellValue($COL_REASON . $row, $htmlHelper->toRichTextObject($changeExplanation));
 
-        $proposal = $amendment->getLatestProposal()?->getFormattedProposalStatus();
-        if ($amendment->getLatestProposal()?->hasAlternativeProposaltext()) {
-            $reference = $amendment->getLatestProposal()?->getMyProposalReference();
+        $proposal = $amendment->getLatestProposal()->getFormattedProposalStatus();
+        if ($amendment->getLatestProposal()->hasAlternativeProposaltext()) {
+            $reference = $amendment->getLatestProposal()->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
             $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {

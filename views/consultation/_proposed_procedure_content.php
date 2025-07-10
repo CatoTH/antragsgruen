@@ -72,7 +72,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             <td class="initiator"><?= $item->getInitiatorsStr() ?></td>
                             <td class="procedure">
                                 <?php
-                                if ($item->getLatestProposal()?->isProposalPublic()) {
+                                if ($item->getLatestProposal()->isProposalPublic()) {
                                     echo Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
                                 } elseif ($item->status === IMotion::STATUS_MOVED && is_a($item, Motion::class)) {
                                     /** @var Motion $item */

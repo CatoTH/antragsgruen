@@ -75,10 +75,10 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
             $hasProposalText = false;
             $hasVoteResults = false;
             foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
-                if ($amend->proposalStatus !== null) {
+                if ($amend->getLatestProposal()->proposalStatus !== null) {
                     $hasProposals = true;
                 }
-                if ($amend->getLatestProposal()?->getMyProposalReference()) {
+                if ($amend->getLatestProposal()->getMyProposalReference()) {
                     $hasProposalText = true;
                 }
                 if (in_array($amend->votingStatus, [Amendment::STATUS_ACCEPTED, Amendment::STATUS_REJECTED])) {
@@ -141,7 +141,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                             }
                             echo '</td>';
                         }
-                        if ($amend->getLatestProposal()?->hasAlternativeProposaltext(false)) {
+                        if ($amend->getLatestProposal()->hasAlternativeProposaltext(false)) {
                             echo '<td class="colText hasAlternative">';
                             echo '<label class="textOriginal">';
                             echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_ORIGINAL . '"> ';
@@ -152,7 +152,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                             echo '<label class="textProposal">';
                             echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_PROPOSAL . '" checked>';
                             echo ' ' . Yii::t('amend', 'merge_amtable_text_prop') . ' ';
-                            echo \app\components\HTMLTools::amendmentDiffTooltip($amend->getLatestProposal()?->getMyProposalReference(), 'bottom');
+                            echo \app\components\HTMLTools::amendmentDiffTooltip($amend->getLatestProposal()->getMyProposalReference(), 'bottom');
                             echo '</label>';
                             echo '</td>';
                         } else {

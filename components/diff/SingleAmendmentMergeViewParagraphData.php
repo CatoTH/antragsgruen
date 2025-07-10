@@ -38,7 +38,7 @@ class SingleAmendmentMergeViewParagraphData
         /** @var AmendmentProposal|null $proposal */
         $proposal = $amendment->getLatestProposal();
         $modifiedSections = [];
-        if ($proposal && $proposal->hasAlternativeProposaltext(false)) {
+        if ($proposal->hasAlternativeProposaltext(false)) {
             /** @var Amendment $modifiedAmend */
             $modifiedAmend = $proposal->getAlternativeProposaltextReference()['modification'];
             foreach ($modifiedAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {

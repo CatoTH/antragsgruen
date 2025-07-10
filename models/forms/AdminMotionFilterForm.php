@@ -522,17 +522,17 @@ class AdminMotionFilterForm
             if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
                 if ($this->proposalStatus == 'noresponse') {
                     $proposal = $amend->getLatestProposal();
-                    if (!$proposal || $proposal->notifiedAt === null || $proposal->userStatus == Amendment::STATUS_ACCEPTED) {
+                    if ($proposal->notifiedAt === null || $proposal->userStatus == Amendment::STATUS_ACCEPTED) {
                         $matches = false;
                     }
                 } elseif ($this->proposalStatus === 'accepted') {
                     $proposal = $amend->getLatestProposal();
-                    if (!$proposal || $proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_ACCEPTED) {
+                    if ($proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_ACCEPTED) {
                         $matches = false;
                     }
                 } else {
                     $proposal = $amend->getLatestProposal();
-                    if (!$proposal || $this->proposalStatus != $proposal->proposalStatus) {
+                    if ($this->proposalStatus != $proposal->proposalStatus) {
                         $matches = false;
                     }
                 }
@@ -799,9 +799,6 @@ class AdminMotionFilterForm
         $numAccepted = $numNotResponded = 0;
         foreach ($this->allAmendments as $amend) {
             $proposal = $amend->getLatestProposal();
-            if (!$proposal) {
-                continue;
-            }
             if (!isset($num[$proposal->proposalStatus])) {
                 $num[$proposal->proposalStatus] = 0;
             }

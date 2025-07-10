@@ -1614,8 +1614,8 @@ ALTER TABLE `###TABLE_PREFIX###motionComment`
 -- Constraints for table `motionProposal`
 --
 ALTER TABLE `###TABLE_PREFIX###motionProposal`
-  ADD CONSTRAINT `fk_motion_proposal` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX##motion` (`id`),
-  ADD CONSTRAINT `fk_motion_proposal_ref` FOREIGN KEY (`proposalReferenceId`) REFERENCES `###TABLE_PREFIX##amendment` (`id`);
+  ADD CONSTRAINT `fk_motion_proposal` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
+  ADD CONSTRAINT `fk_motion_proposal_ref` FOREIGN KEY (`proposalReferenceId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`);
 
 --
 -- Constraints for table `motionCommentSupporter`

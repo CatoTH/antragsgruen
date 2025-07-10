@@ -54,6 +54,16 @@ class MotionProposal extends IProposal
         return $this->getCachedConsultation()->getMotion($this->motionId);
     }
 
+    public static function createNew(Motion $motion, int $version): MotionProposal
+    {
+        $proposal = new MotionProposal();
+        $proposal->version = $version;
+        $proposal->motionId = $motion->id;
+        $proposal->publicToken = \Yii::$app->getSecurity()->generateRandomString(32);
+
+        return $proposal;
+    }
+
     function getMyIMotion(): IMotion
     {
         return $this->getMotion();

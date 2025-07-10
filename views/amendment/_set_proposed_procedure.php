@@ -376,7 +376,7 @@ $voting = $amendment->getVotingData();
                 $title = $collidingAmendment->getShortTitle();
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
                 echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
-                if ($collidingAmendment->getLatestProposal()?->proposalStatus == Amendment::STATUS_VOTE) {
+                if ($collidingAmendment->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . Yii::t('amend', 'proposal_voting') . ')';
                 }
                 echo '</li>';

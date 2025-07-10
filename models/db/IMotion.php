@@ -249,16 +249,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
     }
 
-    public function getLatestProposal(): ?IProposal
-    {
-        $max = null;
-        foreach ($this->proposals as $proposal) {
-            if ($proposal->version > ($max?->version ?: 0)) {
-                $max = $proposal;
-            }
-        }
-        return $max;
-    }
+    abstract public function getLatestProposal(): IProposal;
 
     public function isVisible(): bool
     {

@@ -928,10 +928,26 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
     }
 
+    public function getLatestProposal(): AmendmentProposal
+    {
+        $max = null;
+        foreach ($this->proposals as $proposal) {
+            if ($proposal->version > ($max?->version ?: 0)) {
+                $max = $proposal;
+            }
+        }
+
+        if ($max === null) {
+            $max = AmendmentProposal::createNew($this, 1);
+        }
+
+        return $max;
+    }
+
     public function setProposalPublished(): void
     {
         $proposal = $this->getLatestProposal();
-        if (!$proposal || $proposal->visibleFrom) {
+        if ($proposal->visibleFrom) {
             return;
         }
         $proposal->visibleFrom = date('Y-m-d H:i:s');
@@ -1104,7 +1120,7 @@ class Amendment extends IMotion implements IRSSItem
 
         if ($this->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
             $proposal = $this->getLatestProposal();
-            if ($proposal && $proposal->isProposalPublic() && $proposal->proposalStatus) {
+            if ($proposal->isProposalPublic() && $proposal->proposalStatus) {
                 $return[\Yii::t('amend', 'proposed_status')] = strip_tags($proposal->getFormattedProposalStatus(true));
             }
         }
@@ -1168,7 +1184,7 @@ class Amendment extends IMotion implements IRSSItem
         if (in_array($this->status, [static::STATUS_ACCEPTED, static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION])) {
             return true;
         }
-        if (in_array($this->status, [static::STATUS_VOTE, static::STATUS_SUBMITTED_SCREENED]) || $this->getLatestProposal()?->proposalStatus === static::STATUS_VOTE) {
+        if (in_array($this->status, [static::STATUS_VOTE, static::STATUS_SUBMITTED_SCREENED]) || $this->getLatestProposal()->proposalStatus === static::STATUS_VOTE) {
             if ($this->votingStatus === static::STATUS_ACCEPTED) {
                 return true;
             }
@@ -1180,11 +1196,11 @@ class Amendment extends IMotion implements IRSSItem
         if (!$hasProposals) {
             return true;
         }
-        if ($this->getLatestProposal()?->proposalStatus === static::STATUS_ACCEPTED) {
+        if ($this->getLatestProposal()->proposalStatus === static::STATUS_ACCEPTED) {
             return true;
         }
         if (in_array($this->status, [static::STATUS_PROPOSED_MODIFIED_AMENDMENT, static::STATUS_PROPOSED_MODIFIED_MOTION]) ||
-            $this->getLatestProposal()?->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
+            $this->getLatestProposal()->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
             return true;
         }
 
@@ -1335,7 +1351,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getAgendaApiBaseObject(): array
     {
-        if ($this->getLatestProposal()?->isProposalPublic()) {
+        if ($this->getLatestProposal()->isProposalPublic()) {
             $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
         } else {
             $procedure = null;

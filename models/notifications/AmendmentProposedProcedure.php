@@ -51,7 +51,7 @@ class AmendmentProposedProcedure
         $initiator = $amendment->getInitiators();
         $proposal = $amendment->getLatestProposal();
 
-        $body = match ($proposal?->proposalStatus) {
+        $body = match ($proposal->proposalStatus) {
             Amendment::STATUS_ACCEPTED => \Yii::t('amend', 'proposal_email_accepted'),
             Amendment::STATUS_MODIFIED_ACCEPTED => \Yii::t('amend', 'proposal_email_modified'),
             default => \Yii::t('amend', 'proposal_email_other'),

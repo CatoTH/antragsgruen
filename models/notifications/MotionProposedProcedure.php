@@ -52,7 +52,7 @@ class MotionProposedProcedure
         $initiatorName = (count($initiator) > 0 ? $initiator[0]->getGivenNameOrFull() : null);
         $proposal = $motion->getLatestProposal();
 
-        $body = match ($proposal?->proposalStatus) {
+        $body = match ($proposal->proposalStatus) {
             Motion::STATUS_ACCEPTED => \Yii::t('motion', 'proposal_email_accepted'),
             Motion::STATUS_MODIFIED_ACCEPTED => \Yii::t('motion', 'proposal_email_modified'),
             default => \Yii::t('motion', 'proposal_email_other'),

@@ -353,7 +353,7 @@ trait MotionActionsTrait
     {
         $procedureToken = $this->getHttpRequest()->get('procedureToken');
         $proposal = $motion->getLatestProposal();
-        if (!$proposal || !$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
+        if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }
@@ -470,7 +470,7 @@ trait MotionActionsTrait
             return new RestApiExceptionResponse(404, 'Motion not found');
         }
         $latestProposal = $motion->getLatestProposal();
-        if (!$latestProposal || !$latestProposal->canEditLimitedProposedProcedure()) {
+        if (!$latestProposal->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
         $canChangeProposalUnlimitedly = $latestProposal->canEditProposedProcedure();
@@ -560,7 +560,7 @@ trait MotionActionsTrait
             ]);
             $response['proposalStr'] = $latestProposal->getFormattedProposalStatus(true);
 
-            if ($motion->getLatestProposal()?->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $latestProposal->proposalStatus) {
+            if ($motion->getLatestProposal()->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $latestProposal->proposalStatus) {
                 $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
             } elseif ($motion->id !== $originalMotionId) {
                 // This can happen if a plugin enforces the creation of a new motion when saving
@@ -634,7 +634,7 @@ trait MotionActionsTrait
             return new HtmlErrorResponse(404, 'Motion not found');
         }
         $latestProposal = $motion->getLatestProposal();
-        if (!$latestProposal || !$latestProposal->canEditProposedProcedure()) {
+        if (!$latestProposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to edit the proposed procedure');
         }
 

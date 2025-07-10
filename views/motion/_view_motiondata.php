@@ -81,12 +81,12 @@ MotionLayoutHelper::addVotingResultsRow($motion->getVotingData(), $motionData);
 
 if (!$motion->isResolution()) {
     $proposalAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion));
-    if (($motion->getLatestProposal()?->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
+    if (($motion->getLatestProposal()->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
         $motionData[] = [
             'rowClass' => 'proposedStatusRow',
             'title'    => Yii::t('amend', 'proposed_status'),
             'tdClass'  => 'str',
-            'content'  => $motion->getLatestProposal()?->getFormattedProposalStatus(true),
+            'content'  => $motion->getLatestProposal()->getFormattedProposalStatus(true),
         ];
     }
 }

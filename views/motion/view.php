@@ -23,7 +23,7 @@ use yii\helpers\Html;
 
 $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestProposal()?->canEditLimitedProposedProcedure());
+$hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestProposal()->canEditLimitedProposedProcedure());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -196,11 +196,12 @@ if ($hasPp) {
     if ($hasPpAdminbox) {
         echo $this->render('_set_proposed_procedure', [
             'motion' => $motion,
+            'proposal' => $motion->getLatestProposal(),
             'context'   => 'view',
             'msgAlert' => null,
         ]);
     }
-    if ($motion->getLatestProposal()?->proposalFeedbackHasBeenRequested() && $motion->canSeeProposedProcedure($procedureToken)) {
+    if ($motion->getLatestProposal()->proposalFeedbackHasBeenRequested() && $motion->canSeeProposedProcedure($procedureToken)) {
         echo $this->render('_view_agree_to_proposal', ['motion' => $motion, 'procedureToken' => $procedureToken]);
     }
 }

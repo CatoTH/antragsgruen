@@ -99,13 +99,13 @@ class ByLDK extends IPDFLayout
         $pdf->Ln(5);
 
         $proposal = $motion->getLatestProposal();
-        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $proposal && $proposal->proposalStatus !== null && $proposal->isProposalPublic()) {
+        if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports && $proposal->proposalStatus !== null && $proposal->isProposalPublic()) {
             $pdf->SetX(12);
             $pdf->SetFont('helvetica', 'B', 12);
             $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
             $pdf->MultiCell(50, 0, \Yii::t('export', 'proposed_procedure') . ':', 0, 'L', false, 0);
             $pdf->SetFont('helvetica', '', 12);
-            $pdf->MultiCell(120, 0, $motion->getLatestProposal()?->getFormattedProposalStatus(), 0, 'L');
+            $pdf->MultiCell(120, 0, $motion->getLatestProposal()->getFormattedProposalStatus(), 0, 'L');
             $pdf->Ln(5);
         }
 
@@ -220,13 +220,13 @@ class ByLDK extends IPDFLayout
         $pdf->Ln(5);
 
         $proposal = $amendment->getLatestProposal();
-        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports && $proposal && $proposal->proposalStatus !== null && $proposal->isProposalPublic()) {
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports && $proposal->proposalStatus !== null && $proposal->isProposalPublic()) {
             $pdf->SetX(12);
             $pdf->SetFont('helvetica', 'B', 12);
             $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
             $pdf->MultiCell(50, 0, \Yii::t('export', 'proposed_procedure') . ':', 0, 'L', false, 0);
             $pdf->SetFont('helvetica', '', 12);
-            $pdf->MultiCell(120, 0, $amendment->getLatestProposal()?->getFormattedProposalStatus(), 0, 'L');
+            $pdf->MultiCell(120, 0, $proposal->getFormattedProposalStatus(), 0, 'L');
             $pdf->Ln(5);
         }
 

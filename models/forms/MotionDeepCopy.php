@@ -109,7 +109,7 @@ class MotionDeepCopy
     private static function copyAmendmentProposedProcedure(Amendment $amendment, Amendment $newAmendment): void
     {
         $latestProposal = $amendment->getLatestProposal();
-        if ($latestProposal) {
+        if (!$latestProposal->isNewRecord) {
             $newProposal = new AmendmentProposal();
             $newProposal->setAttributes($latestProposal->getAttributes(), false);
             $newProposal->id = null;
@@ -122,7 +122,7 @@ class MotionDeepCopy
     private static function copyProposedProcedure(Motion $motion, Motion $newMotion): void
     {
         $latestProposal = $motion->getLatestProposal();
-        if ($latestProposal) {
+        if (!$latestProposal->isNewRecord) {
             $newProposal = new MotionProposal();
             $newProposal->setAttributes($latestProposal->getAttributes(), false);
             $newProposal->id = null;

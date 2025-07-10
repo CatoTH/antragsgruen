@@ -11,10 +11,10 @@ use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 
 $proposedProcedure = null;
-if ($motion->getLatestProposal()?->isProposalPublic() && $motion->proposalStatus) {
+if ($motion->getLatestProposal()->isProposalPublic() && $motion->proposalStatus) {
     $proposedProcedure = [
         'status_id' => $motion->proposalStatus,
-        'status_title' => $motion->getLatestProposal()?->getFormattedProposalStatus(true),
+        'status_title' => $motion->getLatestProposal()->getFormattedProposalStatus(true),
     ];
 }
 
