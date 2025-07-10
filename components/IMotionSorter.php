@@ -76,8 +76,8 @@ class IMotionSorter
 
     private static function sortProposalStatus(IMotion $motion1, IMotion $motion2): int
     {
-        $status1 = (is_a($motion1, Amendment::class) ? $motion1->proposalStatus : 0);
-        $status2 = (is_a($motion2, Amendment::class) ? $motion2->proposalStatus : 0);
+        $status1 = (is_a($motion1, Amendment::class) ? $motion1->getLatestProposal()->proposalStatus : 0);
+        $status2 = (is_a($motion2, Amendment::class) ? $motion2->getLatestProposal()->proposalStatus : 0);
         return $status1 <=> $status2;
     }
 

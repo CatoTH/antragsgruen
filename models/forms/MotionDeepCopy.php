@@ -109,7 +109,7 @@ class MotionDeepCopy
     private static function copyAmendmentProposedProcedure(Amendment $amendment, Amendment $newAmendment): void
     {
         $latestProposal = $amendment->getLatestProposal();
-        if ($latestProposal) {
+        if (!$latestProposal->isNewRecord) {
             $newProposal = new AmendmentProposal();
             $newProposal->setAttributes($latestProposal->getAttributes(), false);
             $newProposal->id = null;
@@ -122,7 +122,7 @@ class MotionDeepCopy
     private static function copyProposedProcedure(Motion $motion, Motion $newMotion): void
     {
         $latestProposal = $motion->getLatestProposal();
-        if ($latestProposal) {
+        if (!$latestProposal->isNewRecord) {
             $newProposal = new MotionProposal();
             $newProposal->setAttributes($latestProposal->getAttributes(), false);
             $newProposal->id = null;
@@ -232,9 +232,10 @@ class MotionDeepCopy
         }
 
         foreach ($newAmendments as $newAmendment) {
-            if ($newAmendment->proposalReferenceId && isset($amendmentIdMapping[$newAmendment->proposalReferenceId])) {
-                $newAmendment->proposalReferenceId = $amendmentIdMapping[$newAmendment->proposalReferenceId];
-                $newAmendment->save();
+            $newProposal = $newAmendment->getLatestProposal();
+            if ($newProposal->proposalReferenceId && isset($amendmentIdMapping[$newProposal->proposalReferenceId])) {
+                $newProposal->proposalReferenceId = $amendmentIdMapping[$newProposal->proposalReferenceId];
+                $newProposal->save();
             }
             if ($newAmendment->amendingAmendmentId && isset($amendmentIdMapping[$newAmendment->amendingAmendmentId])) {
                 $newAmendment->amendingAmendmentId = $amendmentIdMapping[$newAmendment->amendingAmendmentId];
@@ -242,9 +243,10 @@ class MotionDeepCopy
             }
         }
 
-        if ($newMotion->proposalReferenceId && isset($amendmentIdMapping[$newMotion->proposalReferenceId])) {
-            $newMotion->proposalReferenceId = $amendmentIdMapping[$newMotion->proposalReferenceId];
-            $newMotion->save();
+        $newProposal = $newMotion->getLatestProposal();
+        if ($newProposal->proposalReferenceId && isset($amendmentIdMapping[$newProposal->proposalReferenceId])) {
+            $newProposal->proposalReferenceId = $amendmentIdMapping[$newProposal->proposalReferenceId];
+            $newProposal->save();
         }
     }
 

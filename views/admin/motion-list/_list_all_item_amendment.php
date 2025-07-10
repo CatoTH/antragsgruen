@@ -78,10 +78,10 @@ if ($colProposals) {
 
     echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry, 'show_visibility' => true]);
 
-    $name = $entry->getLatestProposal()?->getFormattedProposalStatus();
+    $name = $entry->getLatestProposal()->getFormattedProposalStatus();
     echo Html::a(($name ?: '-'), UrlHelper::createAmendmentUrl($entry));
 
-    if ($entry->getLatestProposal()?->proposalStatus === Amendment::STATUS_MODIFIED_ACCEPTED) {
+    if ($entry->getLatestProposal()->proposalStatus === Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
         echo '<div class="editModified"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' .
             Html::a(Yii::t('admin', 'amend_edit_text'), $url) . '</div>';

@@ -20,7 +20,7 @@ $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()?->canEditLimitedProposedProcedure());
+$hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedProposedProcedure());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -160,7 +160,7 @@ if (User::getCurrentUser() && !$amendment->getPrivateComment() && $consultation-
 }
 
 if ($hasPp) {
-    $proposal = $amendment->getLatestProposal() ?: AmendmentProposal::createNew($amendment);
+    $proposal = $amendment->getLatestProposal();
     if ($hasPpAdminbox) {
         ?>
         <div class="proposedChangesOpener">
@@ -195,7 +195,7 @@ if ($amendment->status === Amendment::STATUS_DRAFT) {
 
 echo $this->render('_view_text', [
     'amendment' => $amendment,
-    'proposal' => $amendment->getLatestProposal() ?: AmendmentProposal::createNew($amendment),
+    'proposal' => $amendment->getLatestProposal(),
     'procedureToken' => $procedureToken,
 ]);
 

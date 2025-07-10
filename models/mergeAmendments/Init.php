@@ -39,7 +39,7 @@ class Init
             }
 
             $proposal = $amendment->getLatestProposal();
-            if ($proposal && $proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
+            if ($proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
                 $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
                 if (isset($postAmendIds[$amendment->id])) {
                     $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
@@ -70,7 +70,7 @@ class Init
             $form->toMergeMainIds[] = $amendment->id;
 
             $proposal = $amendment->getLatestProposal();
-            if ($proposal && $proposal->hasAlternativeProposaltext(false)) {
+            if ($proposal->hasAlternativeProposaltext(false)) {
                 $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
                 $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL;
             } else {
@@ -235,7 +235,7 @@ class Init
             'url'           => UrlHelper::createAmendmentUrl($amendment),
             'oldStatusId'   => $amendment->status,
             'oldStatusName' => $statusesAllNames[$amendment->status] ?? null,
-            'hasProposal'   => ($amendment->getLatestProposal()?->getMyProposalReference() !== null),
+            'hasProposal'   => ($amendment->getLatestProposal()->getMyProposalReference() !== null),
             'isMotionModU'  => ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION),
         ];
     }

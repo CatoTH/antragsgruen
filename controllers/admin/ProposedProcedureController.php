@@ -174,10 +174,9 @@ class ProposedProcedureController extends AdminBase
         if ($this->getPostValue('visible', 0)) {
             $motion->setProposalPublished();
         } else {
-            if ($proposal = $motion->getLatestProposal()) {
-                $proposal->visibleFrom = null;
-                $proposal->save();
-            }
+            $proposal = $motion->getLatestProposal();
+            $proposal->visibleFrom = null;
+            $proposal->save();
         }
 
         return new JsonResponse([
@@ -200,10 +199,9 @@ class ProposedProcedureController extends AdminBase
         if ($this->getPostValue('visible', 0)) {
             $amendment->setProposalPublished();
         } else {
-            if ($proposal = $amendment->getLatestProposal()) {
-                $proposal->visibleFrom = null;
-                $proposal->save();
-            }
+            $proposal = $amendment->getLatestProposal();
+            $proposal->visibleFrom = null;
+            $proposal->save();
         }
 
         return new JsonResponse([

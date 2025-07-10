@@ -57,7 +57,7 @@ class AmendmentProposal extends IProposal
         // This amendment is obsoleted by an amendment with a modification proposal
         if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $obsoletedBy = $consultation->getAmendment(intval($this->comment));
-            if ($obsoletedBy && $internalNestingLevel < 10 && $obsoletedBy->getLatestProposal()) {
+            if ($obsoletedBy && $internalNestingLevel < 10) {
                 return $obsoletedBy->getLatestProposal()->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
             }
         }
@@ -97,13 +97,10 @@ class AmendmentProposal extends IProposal
         return $this->getCachedConsultation()->getAmendment($this->amendmentId);
     }
 
-    public static function createNew(Amendment $amendment): AmendmentProposal
+    public static function createNew(Amendment $amendment, int $version): AmendmentProposal
     {
-        $latest = $amendment->getLatestProposal();
-        $newVersion = ($latest ? $latest->version + 1 : 1);
-
         $proposal = new AmendmentProposal();
-        $proposal->version = $newVersion;
+        $proposal->version = $version;
         $proposal->amendmentId = $amendment->id;
         $proposal->publicToken = \Yii::$app->getSecurity()->generateRandomString(32);
 
@@ -168,9 +165,8 @@ class AmendmentProposal extends IProposal
         // This amendment is obsoleted by an amendment with a modification proposal
         if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->comment));
-            if ($obsoletedBy && $internalNestingLevel < 10 && ($amendProposal = $obsoletedBy->getLatestProposal())) {
-                /** @var AmendmentProposal $amendProposal */
-                return $amendProposal->getAlternativeProposaltextReference($internalNestingLevel + 1);
+            if ($obsoletedBy && $internalNestingLevel < 10) {
+                return $obsoletedBy->getLatestProposal()->getAlternativeProposaltextReference($internalNestingLevel + 1);
             }
         }
 

@@ -53,10 +53,10 @@ $amendmentData[] = [
 MotionLayoutHelper::addVotingResultsRow($amendment->getVotingData(), $amendmentData);
 
 $proposalAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment));
-if (($amendment->getLatestProposal()?->isProposalPublic() && $amendment->proposalStatus) || $proposalAdmin) {
+if (($amendment->getLatestProposal()->isProposalPublic() && $amendment->getLatestProposal()->proposalStatus) || $proposalAdmin) {
     $amendmentData[] = [
         'title'   => Yii::t('amend', 'proposed_status'),
-        'content' => $amendment->getLatestProposal()?->getFormattedProposalStatus(true),
+        'content' => $amendment->getLatestProposal()->getFormattedProposalStatus(true),
     ];
     // CSS-Class "str" ?
 }

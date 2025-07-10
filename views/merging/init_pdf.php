@@ -59,7 +59,7 @@ foreach ($amendments as $amendment) {
     $table .= '</td><td>';
     $table .= $amendment->getFormattedStatus();
     $table .= '</td><td>';
-    $table .= $amendment->getLatestProposal()?->getFormattedProposalStatus();
+    $table .= $amendment->getLatestProposal()->getFormattedProposalStatus();
     $table .= '</td></tr>' . "\n";
 }
 $table .= '</table>';

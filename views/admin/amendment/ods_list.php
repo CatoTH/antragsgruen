@@ -187,9 +187,9 @@ foreach ($amendments as $amendmentGroup) {
         $change = HTMLTools::correctHtmlErrors($change);
         $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);
 
-        $proposal = $amendment->getLatestProposal()?->getFormattedProposalStatus();
-        if ($amendment->getLatestProposal()?->hasAlternativeProposaltext()) {
-            $reference = $amendment->getLatestProposal()?->getMyProposalReference();
+        $proposal = $amendment->getLatestProposal()->getFormattedProposalStatus();
+        if ($amendment->getLatestProposal()->hasAlternativeProposaltext()) {
+            $reference = $amendment->getLatestProposal()->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
             $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {

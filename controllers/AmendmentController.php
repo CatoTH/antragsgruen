@@ -458,7 +458,7 @@ class AmendmentController extends Base
         }
 
         $latestProposal = $amendment->getLatestProposal();
-        if (!$latestProposal || !$latestProposal->canEditLimitedProposedProcedure()) {
+        if (!$latestProposal->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
         $canChangeProposalUnlimitedly = $latestProposal->canEditProposedProcedure();
@@ -629,7 +629,7 @@ class AmendmentController extends Base
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
         $latestProposal = $amendment->getLatestProposal();
-        if (!$latestProposal || !$latestProposal->canEditProposedProcedure()) {
+        if (!$latestProposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 
@@ -716,7 +716,7 @@ class AmendmentController extends Base
             'collisions' => array_map(function (Amendment $amend) {
                 // Keep in sync with edit_proposed_change.php
                 $title = $amend->getShortTitle();
-                if ($amend->proposalStatus == Amendment::STATUS_VOTE) {
+                if ($amend->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                     $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
                 $html = '<li>' . Html::a($title, UrlHelper::createAmendmentUrl($amend), ['target' => '_blank']);

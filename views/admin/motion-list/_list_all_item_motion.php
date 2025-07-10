@@ -89,7 +89,7 @@ if ($colProposals) {
 
     echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry, 'show_visibility' => true]);
 
-    $name = $entry->getLatestProposal()?->getFormattedProposalStatus();
+    $name = $entry->getLatestProposal()->getFormattedProposalStatus();
     if ($entry->status === Motion::STATUS_MOVED) {
         echo $name;
     } else {

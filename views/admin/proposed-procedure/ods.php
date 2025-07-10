@@ -128,16 +128,17 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 
     $minHeight = 1;
 
-    if ($onlyPublic && !$amendment->getLatestProposal()?->isProposalPublic()) {
+    if ($onlyPublic && !$amendment->getLatestProposal()->isProposalPublic()) {
         $proposal = '';
     } else {
-        $proposal = '<p>' . $amendment->getLatestProposal()?->getFormattedProposalStatus() . '</p>';
+        $proposal = '<p>' . $amendment->getLatestProposal()->getFormattedProposalStatus() . '</p>';
         if (strlen($proposal) > 200) {
             $minHeight += 2;
         }
 
-        if ($amendment->getLatestProposal()?->hasAlternativeProposaltext()) {
-            $reference = $amendment->getLatestProposal()?->getMyProposalReference();
+        $latestProposal = $amendment->getLatestProposal();
+        if ($latestProposal->hasAlternativeProposaltext()) {
+            $reference = $latestProposal->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
             $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {
@@ -149,9 +150,9 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
                 $minHeight    += 1;
             }
         }
-        if ($amendment->proposalExplanation) {
+        if ($latestProposal->explanation) {
             $minHeight += 1;
-            $proposal  .= '<p>' . Html::encode($amendment->proposalExplanation) . '</p>';
+            $proposal  .= '<p>' . Html::encode($latestProposal->explanation) . '</p>';
         }
     }
 
@@ -180,16 +181,17 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 
     $minHeight = 1;
 
-    if ($onlyPublic && !$motion->getLatestProposal()?->isProposalPublic()) {
+    $latestProposal = $motion->getLatestProposal();
+    if ($onlyPublic && !$latestProposal->isProposalPublic()) {
         $proposal = '';
     } else {
-        $proposal = '<p>' . $motion->getLatestProposal()?->getFormattedProposalStatus() . '</p>';
+        $proposal = '<p>' . $latestProposal->getFormattedProposalStatus() . '</p>';
         if (grapheme_strlen($proposal) > 200) {
             $minHeight += 2;
         }
-        if ($motion->proposalExplanation) {
+        if ($latestProposal->explanation) {
             $minHeight += 1;
-            $proposal  .= '<p>' . Html::encode($motion->proposalExplanation) . '</p>';
+            $proposal  .= '<p>' . Html::encode($latestProposal->explanation) . '</p>';
         }
     }
 

@@ -46,7 +46,7 @@ class AgendaVoting
             if (!$motion->isVisibleForAdmins()) {
                 continue;
             }
-            if ($motion->getLatestProposal()?->isProposalPublic() || $includeNotOnPublicProposalOnes) {
+            if ($motion->getLatestProposal()->isProposalPublic() || $includeNotOnPublicProposalOnes) {
                 $this->items[]   = $motion;
                 $this->itemIds->addMotion($motion);
             }

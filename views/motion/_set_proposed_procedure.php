@@ -20,18 +20,18 @@ echo Html::beginForm($saveUrl, 'POST', [
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
 ]);
-if ($motion->proposalStatus === Motion::STATUS_REFERRED) {
-    $preReferredTo = $motion->proposalComment;
+if ($proposal->proposalStatus === Motion::STATUS_REFERRED) {
+    $preReferredTo = $proposal->comment;
 } else {
     $preReferredTo = '';
 }
-if ($motion->proposalStatus === Motion::STATUS_OBSOLETED_BY_AMENDMENT) {
-    $preObsoletedBy = $motion->proposalComment;
+if ($proposal->proposalStatus === Motion::STATUS_OBSOLETED_BY_AMENDMENT) {
+    $preObsoletedBy = $proposal->comment;
 } else {
     $preObsoletedBy = '';
 }
-if ($motion->proposalStatus === Motion::STATUS_CUSTOM_STRING) {
-    $preCustomStr = $motion->proposalComment;
+if ($proposal->proposalStatus === Motion::STATUS_CUSTOM_STRING) {
+    $preCustomStr = $proposal->comment;
 } else {
     $preCustomStr = '';
 }
@@ -68,7 +68,7 @@ $voting = $motion->getVotingData();
             ?>
             <label class="proposalStatus<?= $statusId ?>">
                 <input type="radio" name="proposalStatus" value="<?= $statusId ?>"<?php
-                if (intval($motion->proposalStatus) === intval($statusId)) {
+                if (intval($proposal->proposalStatus) === intval($statusId)) {
                     $foundStatus = true;
                     echo ' checked';
                 }
@@ -90,11 +90,11 @@ $voting = $motion->getVotingData();
             <legend class="hidden"><?= Yii::t('amend', 'proposal_publicity') ?></legend>
             <h3><?= Yii::t('amend', 'proposal_publicity') ?></h3>
             <label>
-                <?= Html::checkbox('proposalVisible', ($motion->proposalVisibleFrom !== null), ['disabled' => $limitedDisabled]) ?>
+                <?= Html::checkbox('proposalVisible', ($proposal->visibleFrom !== null), ['disabled' => $limitedDisabled]) ?>
                 <?= Yii::t('amend', 'proposal_visible') ?>
             </label>
             <label>
-                <?= Html::checkbox('setPublicExplanation', ($motion->proposalExplanation !== null), ['disabled' => $limitedDisabled]) ?>
+                <?= Html::checkbox('setPublicExplanation', ($proposal->explanation !== null), ['disabled' => $limitedDisabled]) ?>
                 <?= Yii::t('amend', 'proposal_public_expl_set') ?>
             </label>
         </fieldset>
@@ -173,19 +173,19 @@ $voting = $motion->getVotingData();
             <h3><?= Yii::t('amend', 'proposal_noti') ?></h3>
             <div class="notificationStatus">
                 <?php
-                if ($motion->proposalUserStatus !== null) {
-                    if ($motion->proposalUserStatus === Motion::STATUS_ACCEPTED) {
+                if ($proposal->userStatus !== null) {
+                    if ($proposal->userStatus === Motion::STATUS_ACCEPTED) {
                         echo '<span class="glyphicon glyphicon glyphicon-ok accepted" aria-hidden="true"></span>';
                         echo Yii::t('amend', 'proposal_user_accepted');
-                    } elseif ($motion->proposalUserStatus === Motion::STATUS_REJECTED) {
+                    } elseif ($proposal->userStatus === Motion::STATUS_REJECTED) {
                         echo '<span class="glyphicon glyphicon glyphicon-remove rejected" aria-hidden="true"></span>';
                         echo Yii::t('amend', 'proposal_user_rejected');
                     } else {
                         echo 'Error: unknown response of the proposer';
                     }
-                } elseif ($motion->getLatestProposal()?->proposalFeedbackHasBeenRequested()) {
+                } elseif ($proposal->proposalFeedbackHasBeenRequested()) {
                     $msg  = Yii::t('amend', 'proposal_notified');
-                    $date = Tools::formatMysqlDateTime($motion->proposalNotification, false);
+                    $date = Tools::formatMysqlDateTime($proposal->notifiedAt, false);
                     echo str_replace('%DATE%', $date, $msg);
                     echo ' ' . Yii::t('amend', 'proposal_no_feedback');
 
@@ -201,8 +201,8 @@ $voting = $motion->getVotingData();
                         </button>
                     </div>
                     <?php
-                } elseif ($motion->proposalStatus !== null) {
-                    if ($motion->proposalAllowsUserFeedback()) {
+                } elseif ($proposal->proposalStatus !== null) {
+                    if ($proposal->proposalAllowsUserFeedback()) {
                         $msg = Yii::t('amend', 'proposal_notify_w_feedback');
                     } else {
                         $msg = Yii::t('amend', 'proposal_notify_o_feedback');
@@ -333,7 +333,7 @@ $voting = $motion->getVotingData();
     <?php
     echo Html::textarea(
         'proposalExplanation',
-        $motion->proposalExplanation ?: '',
+        $proposal->explanation ?: '',
         [
             'title' => Yii::t('amend', 'proposal_public_expl_title'),
             'class' => 'form-control',
@@ -377,7 +377,7 @@ $voting = $motion->getVotingData();
     <div class="submitRow">
         <button type="button" name="notificationSubmit" class="btn btn-success btn-sm">
             <?php
-            if ($motion->proposalAllowsUserFeedback()) {
+            if ($proposal->proposalAllowsUserFeedback()) {
                 echo Yii::t('amend', 'proposal_notify_w_feedback');
             } else {
                 echo Yii::t('amend', 'proposal_notify_o_feedback');

@@ -329,7 +329,7 @@ trait AmendmentActionsTrait
     {
         $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
         $proposal = $amendment->getLatestProposal();
-        if (!$proposal || !$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
+        if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }
