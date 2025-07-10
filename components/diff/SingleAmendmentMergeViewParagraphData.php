@@ -35,7 +35,6 @@ class SingleAmendmentMergeViewParagraphData
         $diffRenderer      = new DiffRenderer();
         $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
 
-        /** @var AmendmentProposal|null $proposal */
         $proposal = $amendment->getLatestProposal();
         $modifiedSections = [];
         if ($proposal->hasAlternativeProposaltext(false)) {

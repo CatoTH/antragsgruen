@@ -716,7 +716,7 @@ class AmendmentController extends Base
             'collisions' => array_map(function (Amendment $amend) {
                 // Keep in sync with edit_proposed_change.php
                 $title = $amend->getShortTitle();
-                if ($amend->proposalStatus == Amendment::STATUS_VOTE) {
+                if ($amend->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                     $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
                 $html = '<li>' . Html::a($title, UrlHelper::createAmendmentUrl($amend), ['target' => '_blank']);

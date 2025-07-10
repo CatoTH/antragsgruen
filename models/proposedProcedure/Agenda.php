@@ -80,7 +80,7 @@ class Agenda
             }
         }
 
-        if ($format === Agenda::FORMAT_HTML && $proposal?->proposalStatus !== Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
+        if ($format === Agenda::FORMAT_HTML && $proposal->proposalStatus !== Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $imotion->setCacheItem('procedure.formatted', $proposalStr);
         }
 

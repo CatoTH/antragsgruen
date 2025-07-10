@@ -353,7 +353,7 @@ INSERT INTO `amendmentSection` (`amendmentId`, `sectionId`, `data`, `dataRaw`, `
 (283, 4, '', '', '', NULL);
 
 INSERT INTO `###TABLE_PREFIX###amendmentProposal` (amendmentId,version,proposalStatus,proposalReferenceId,comment,visibleFrom,notifiedAt,notifiedText,userStatus,explanation,publicToken) VALUES
-  (1,1,6,286,'','2017-08-13 23:15:22',NULL,NULL,NULL,NULL,'906259315'),
+  (1,1,6,NULL,'','2017-08-13 23:15:22',NULL,NULL,NULL,NULL,'906259315'),
   (3,1,11,NULL,'','2017-08-13 23:13:42',NULL,NULL,NULL,NULL,'44395764'),
   (197,1,4,NULL,'',NULL,NULL,NULL,NULL,NULL,'503200908'),
   (236,1,4,NULL,'','2017-12-27 09:23:26',NULL,NULL,NULL,'Erklärung','382817276'),
