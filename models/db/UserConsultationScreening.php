@@ -4,8 +4,7 @@ namespace app\models\db;
 
 use app\models\notifications\UserAsksPermission;
 use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $userId
@@ -27,6 +26,9 @@ class UserConsultationScreening extends ActiveRecord
         return User::getCachedUser($this->userId);
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);

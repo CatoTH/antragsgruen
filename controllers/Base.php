@@ -44,7 +44,7 @@ class Base extends Controller
     }
 
     /**
-     * @param \yii\base\Action $action
+     * @param \yii\base\Action<static> $action
      * @throws Internal
      * @throws \Exception
      * @throws \yii\base\ExitException

@@ -2,10 +2,8 @@
 
 namespace app\models\db;
 
-use app\components\CookieUser;
 use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int|null $id
@@ -32,11 +30,17 @@ class SpeechQueueItem extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'speechQueueItem';
     }
 
+    /**
+     * @return ActiveQuery<SpeechQueue>
+     */
     public function getSpeechQueue(): ActiveQuery
     {
         return $this->hasOne(SpeechQueue::class, ['id' => 'agendaItemId']);
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId']);

@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\controllers\Base;
 use app\models\exceptions\{ResponseException, UserEditFailed};
 use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, Privileges};
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, RestApiResponse};
@@ -12,6 +13,9 @@ class UsersController extends AdminBase
 {
     private UserGroupAdminMethods $userGroupAdminMethods;
 
+    /**
+     * @param \yii\base\Action<static> $action
+     */
     public function beforeAction($action): bool
     {
         $result = parent::beforeAction($action);

@@ -456,6 +456,9 @@ class Layout
         }
     }
 
+    /**
+     * @param Action<Base> $action
+     */
     protected function isRobotsIndexDefault(Action $action): bool
     {
         if (AntragsgruenApp::getInstance()->mode === 'sandbox') {
@@ -488,6 +491,9 @@ class Layout
         }
     }
 
+    /**
+     * @param Action<Base> $action
+     */
     public function isRobotsIndex(Action $action): bool
     {
         $visible = $this->isRobotsIndexDefault($action);

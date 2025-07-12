@@ -3,11 +3,9 @@
 namespace app\models\db;
 
 use app\models\exceptions\FormError;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\VotingData;
+use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\votings\Answer;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -38,22 +36,34 @@ class Vote extends ActiveRecord
         return User::getCachedUser($this->userId);
     }
 
+    /**
+     * @return ActiveQuery<VotingBlock>
+     */
     public function getVotingBlock(): ActiveQuery
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
+    /**
+     * @return ActiveQuery<Amendment>
+     */
     public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
     }
 
+    /**
+     * @return ActiveQuery<VotingQuestion>
+     */
     public function getQuestion(): ActiveQuery
     {
         return $this->hasOne(VotingQuestion::class, ['id' => 'questionId']);

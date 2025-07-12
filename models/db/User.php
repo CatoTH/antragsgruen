@@ -153,41 +153,65 @@ class User extends ActiveRecord implements IdentityInterface
         return AntragsgruenApp::getInstance()->tablePrefix . 'user';
     }
 
+    /**
+     * @return ActiveQuery<MotionComment[]>
+     */
     public function getMotionComments(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<MotionSupporter[]>
+     */
     public function getMotionSupports(): ActiveQuery
     {
         return $this->hasMany(MotionSupporter::class, ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<AmendmentComment[]>
+     */
     public function getAmendmentComments(): ActiveQuery
     {
         return $this->hasMany(AmendmentComment::class, ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<AmendmentSupporter[]>
+     */
     public function getAmendmentSupports(): ActiveQuery
     {
         return $this->hasMany(AmendmentSupporter::class, ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<EMailLog[]>
+     */
     public function getEmailLogs(): ActiveQuery
     {
         return $this->hasMany(EMailLog::class, ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationLog[]>
+     */
     public function getLogEntries(): ActiveQuery
     {
         return $this->hasMany(ConsultationLog::class, ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationUserGroup[]>
+     */
     public function getUserGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserGroup::class, ['id' => 'groupId'])->viaTable('userGroup', ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<UserConsultationScreening[]>
+     */
     public function getConsultationScreenings(): ActiveQuery
     {
         return $this->hasMany(UserConsultationScreening::class, ['userId' => 'id']);
@@ -261,11 +285,17 @@ class User extends ActiveRecord implements IdentityInterface
         });
     }
 
+    /**
+     * @return ActiveQuery<UserNotification[]>
+     */
     public function getNotifications(): ActiveQuery
     {
         return $this->hasMany(UserNotification::class, ['userId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<Vote[]>
+     */
     public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['userId' => 'id']);

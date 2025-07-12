@@ -84,6 +84,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return AntragsgruenApp::getInstance()->tablePrefix . 'votingBlock';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
@@ -107,18 +110,27 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }
     }
 
+    /**
+     * @return ActiveQuery<Amendment[]>
+     */
     public function getAmendments(): ActiveQuery
     {
         return $this->hasMany(Amendment::class, ['votingBlockId' => 'id'])
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<Motion[]>
+     */
     public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['votingBlockId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<VotingQuestion[]>
+     */
     public function getQuestions(): ActiveQuery
     {
         return $this->hasMany(VotingQuestion::class, ['votingBlockId' => 'id']);
@@ -134,11 +146,17 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return null;
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getAssignedToMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'assignedToMotionId']);
     }
 
+    /**
+     * @return ActiveQuery<Vote[]>
+     */
     public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['votingBlockId' => 'id']);

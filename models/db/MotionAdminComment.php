@@ -18,6 +18,9 @@ class MotionAdminComment extends IAdminComment
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionAdminComment';
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);

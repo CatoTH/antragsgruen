@@ -86,12 +86,18 @@ class EMailLog extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'emailLog';
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'toUserId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<Site>
+     */
     public function getFromSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'fromSiteId']);

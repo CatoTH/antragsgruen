@@ -36,16 +36,25 @@ class ConsultationFile extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationFile';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationFileGroup>
+     */
     public function getFileGroup(): ActiveQuery
     {
         return $this->hasOne(ConsultationFileGroup::class, ['id' => 'fileGroupId']);
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUploadedBy(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'uploadedById']);
@@ -60,6 +69,9 @@ class ConsultationFile extends ActiveRecord
         }
     }
 
+    /**
+     * @return ActiveQuery<Site>
+     */
     public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);

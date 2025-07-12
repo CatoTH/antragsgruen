@@ -4,8 +4,7 @@ namespace app\models\db;
 
 use app\models\notifications\{CommentNotificationSubscriptions, MotionNotificationSubscriptions};
 use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -36,11 +35,17 @@ class UserNotification extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'userNotification';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])

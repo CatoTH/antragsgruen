@@ -113,6 +113,9 @@ class Motion extends IMotion implements IRSSItem
         $this->flushViewCache();
     }
 
+    /**
+     * @return ActiveQuery<MotionComment[]>
+     */
     public function getComments(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['motionId' => 'id'])
@@ -120,6 +123,9 @@ class Motion extends IMotion implements IRSSItem
                     ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
+    /**
+     * @return ActiveQuery<MotionComment[]>
+     */
     public function getPrivateComments(): ActiveQuery
     {
         $userId = User::getCurrentUser()->id;
@@ -167,23 +173,35 @@ class Motion extends IMotion implements IRSSItem
         return $adminComments;
     }
 
+    /**
+     * @return ActiveQuery<MotionSupporter[]>
+     */
     public function getMotionSupporters(): ActiveQuery
     {
         return $this->hasMany(MotionSupporter::class, ['motionId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<Amendment[]>
+     */
     public function getAmendments(): ActiveQuery
     {
         return $this->hasMany(Amendment::class, ['motionId' => 'id'])
                     ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationSettingsTag[]>
+     */
     public function getTags(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
                     ->viaTable('motionTag', ['motionId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<MotionSection[]>
+     */
     public function getSections(): ActiveQuery
     {
         return $this->hasMany(MotionSection::class, ['motionId' => 'id']);
@@ -240,48 +258,75 @@ class Motion extends IMotion implements IRSSItem
         return (count($section) > 0 && $section[0]->getData() !== '' ? $section[0] : null);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationMotionType>
+     */
     public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationAgendaItem>
+     */
     public function getAgendaItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getReplacedMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'parentMotionId']);
     }
 
+    /**
+     * @return ActiveQuery<VotingBlock>
+     */
     public function getVotingBlock(): ActiveQuery
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<VotingBlock[]>
+     */
     public function getAssignedVotingBlocks(): ActiveQuery
     {
         return $this->hasMany(VotingBlock::class, ['assignedToMotionId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<Vote[]>
+     */
     public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['motionId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<Motion[]>
+     */
     public function getReplacedByMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['parentMotionId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<SpeechQueue[]>
+     */
     public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['motionId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getResponsibilityUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
