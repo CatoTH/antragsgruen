@@ -19,6 +19,7 @@ echo Html::beginForm($saveUrl, 'POST', [
     'class'                    => 'version' . $motion->version,
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
+    'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
 ]);
 if ($proposal->proposalStatus === Motion::STATUS_REFERRED) {
     $preReferredTo = $proposal->comment;
@@ -57,6 +58,33 @@ $voting = $motion->getVotingData();
         <span class="sr-only"><?= Html::encode(Yii::t('amend', 'proposal_close')) ?></span>
     </button>
 </h2>
+<?php
+if (count($motion->proposals) > 0) {
+    ?>
+    <section class="proposalHistory">
+        <div class="versionList">
+            Versionen:
+            <ol>
+                <?php
+                foreach ($motion->proposals as $itProp) {
+                    if ($itProp->id === $proposal->id) {
+                        echo '<li>Version ' . $itProp->version . '</li>';
+                    } else {
+                        $versionLink = UrlHelper::createMotionUrl($motion, 'show', ['proposalVersion' => $itProp->id]);
+                        echo '<li>' . Html::a(Html::encode('Version ' . $itProp->version), $versionLink) . '</li>';
+                    }
+                }
+                ?>
+            </ol>
+        </div>
+        <label class="versionCreate">
+            <input type="checkbox" name="newVersion">
+            Neue Version anlegen
+        </label>
+    </section>
+    <?php
+}
+?>
 <div class="holder">
     <fieldset class="statusForm">
         <legend class="hidden"><?= Yii::t('amend', 'proposal_status_title') ?></legend>

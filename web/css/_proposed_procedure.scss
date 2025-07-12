@@ -22,6 +22,29 @@
     margin-top: -2px;
   }
 
+  .proposalHistory {
+    border-bottom: solid 1px #ded;
+    display: flex;
+    .versionList {
+      flex: 1;
+      padding: 5px 10px;
+    }
+    .versionList > ol {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      > li {
+        display: inline-block;
+        margin: 0 20px;
+      }
+    }
+    .versionCreate {
+      text-align: right;
+      padding: 5px 10px;
+    }
+  }
+
   .holder {
     display: flex;
     > * {

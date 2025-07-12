@@ -19,6 +19,7 @@ echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
+    'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
 ]);
 if ($proposal->proposalStatus === Amendment::STATUS_REFERRED) {
     $preReferredTo = $proposal->comment;
@@ -61,7 +62,34 @@ $voting = $amendment->getVotingData();
             <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
         </button>
     </h2>
-    <div class="holder">
+<?php
+if (count($amendment->proposals) > 0) {
+    ?>
+    <section class="proposalHistory">
+        <div class="versionList">
+        Versionen:
+        <ol>
+            <?php
+            foreach ($amendment->proposals as $itProp) {
+                if ($itProp->id === $proposal->id) {
+                    echo '<li>Version ' . $itProp->version . '</li>';
+                } else {
+                    $versionLink = UrlHelper::createAmendmentUrl($amendment, 'show', ['proposalVersion' => $itProp->id]);
+                    echo '<li>' . Html::a(Html::encode('Version ' . $itProp->version), $versionLink) . '</li>';
+                }
+            }
+            ?>
+        </ol>
+        </div>
+        <label class="versionCreate">
+            <input type="checkbox" name="newVersion">
+            Neue Version anlegen
+        </label>
+    </section>
+    <?php
+}
+?>
+<div class="holder">
         <section class="statusForm">
             <h3><?= Yii::t('amend', 'proposal_status_title') ?></h3>
 
