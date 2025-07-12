@@ -18,6 +18,9 @@ class AmendmentAdminComment extends IAdminComment
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentAdminComment';
     }
 
+    /**
+     * @return ActiveQuery<Amendment>
+     */
     public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);

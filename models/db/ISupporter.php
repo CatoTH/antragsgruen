@@ -50,6 +50,9 @@ abstract class ISupporter extends ActiveRecord
         ];
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])

@@ -22,6 +22,9 @@ class MotionCommentSupporter extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionCommentSupporter';
     }
 
+    /**
+     * @return ActiveQuery<MotionComment>
+     */
     public function getMotionComment(): ActiveQuery
     {
         return $this->hasOne(MotionComment::class, ['id' => 'motionCommentId']);

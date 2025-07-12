@@ -2,8 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\EmailNotifications;
-use app\components\RequestContext;
+use app\components\{EmailNotifications, RequestContext};
 use app\models\events\AmendmentSupporterEvent;
 use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
@@ -54,6 +53,9 @@ class AmendmentSupporter extends ISupporter
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentSupporter';
     }
 
+    /**
+     * @return ActiveQuery<Amendment>
+     */
     public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);

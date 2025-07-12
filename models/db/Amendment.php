@@ -99,6 +99,9 @@ class Amendment extends IMotion implements IRSSItem
         return $result;
     }
 
+    /**
+     * @return ActiveQuery<ConsultationAgendaItem>
+     */
     public function getAgendaItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
@@ -106,6 +109,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * This returns the amendment being amended by this amendment
+     * @return ActiveQuery<Amendment>
      */
     public function getAmendedAmendment(): ActiveQuery
     {
@@ -115,6 +119,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * This returns the amendments amending this amendment
+     * @return ActiveQuery<Amendment[]>
      */
     public function getAmendingAmendments(): ActiveQuery
     {
@@ -122,6 +127,9 @@ class Amendment extends IMotion implements IRSSItem
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<AmendmentComment[]>
+     */
     public function getComments(): ActiveQuery
     {
         return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
@@ -129,6 +137,9 @@ class Amendment extends IMotion implements IRSSItem
             ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_PRIVATE);
     }
 
+    /**
+     * @return ActiveQuery<AmendmentComment[]>
+     */
     public function getPrivateComments(): ActiveQuery
     {
         $userId = User::getCurrentUser()->id;
@@ -173,17 +184,26 @@ class Amendment extends IMotion implements IRSSItem
         return $comments;
     }
 
+    /**
+     * @return ActiveQuery<AmendmentSupporter[]>
+     */
     public function getAmendmentSupporters(): ActiveQuery
     {
         return $this->hasMany(AmendmentSupporter::class, ['amendmentId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationSettingsTag[]>
+     */
     public function getTags(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
                     ->viaTable('amendmentTag', ['amendmentId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<AmendmentSection[]>
+     */
     public function getSections(): ActiveQuery
     {
         return $this->hasMany(AmendmentSection::class, ['amendmentId' => 'id']);
@@ -221,27 +241,42 @@ class Amendment extends IMotion implements IRSSItem
         return $sections;
     }
 
+    /**
+     * @return ActiveQuery<Amendment>
+     */
     public function getProposalReferencedByAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getProposalReferencedByMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['proposalReferenceId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<VotingBlock>
+     */
     public function getVotingBlock(): ActiveQuery
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId'])
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getResponsibilityUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'responsibilityId']);
     }
 
+    /**
+     * @return ActiveQuery<Vote[]>
+     */
     public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['amendmentId' => 'id']);
@@ -377,6 +412,9 @@ class Amendment extends IMotion implements IRSSItem
         return $this->myMotion;
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getMotionJoin(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId'])
@@ -543,7 +581,7 @@ class Amendment extends IMotion implements IRSSItem
         $query->joinWith(
             [
                 'motionJoin' => function ($query) use ($invisibleStatuses, $consultation) {
-                    /** @var ActiveQuery $query */
+                    /** @var ActiveQuery<Amendment> $query */
                     $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                 }
@@ -570,7 +608,7 @@ class Amendment extends IMotion implements IRSSItem
             [
                 'motionJoin' => function ($query) use ($consultation) {
                     $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-                    /** @var ActiveQuery $query */
+                    /** @var ActiveQuery<Amendment> $query */
                     $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                 }

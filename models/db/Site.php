@@ -40,26 +40,41 @@ class Site extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'site';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getCurrentConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'currentConsultationId']);
     }
 
+    /**
+     * @return ActiveQuery<Consultation[]>
+     */
     public function getConsultations(): ActiveQuery
     {
         return $this->hasMany(Consultation::class, ['siteId' => 'id'])->where('consultation.dateDeletion IS NULL');
     }
 
+    /**
+     * @return ActiveQuery<ConsultationUserGroup[]>
+     */
     public function getUserGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserGroup::class, ['siteId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<TexTemplate[]>
+     */
     public function getTexTemplates(): ActiveQuery
     {
         return $this->hasMany(TexTemplate::class, ['siteId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationFile[]>
+     */
     public function getFiles(): ActiveQuery
     {
         return $this->hasMany(ConsultationFile::class, ['siteId' => 'id']);
@@ -76,6 +91,9 @@ class Site extends ActiveRecord
         return array_values($images);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationText[]>
+     */
     public function getTexts(): ActiveQuery
     {
         return $this->hasMany(ConsultationText::class, ['siteId' => 'id']);

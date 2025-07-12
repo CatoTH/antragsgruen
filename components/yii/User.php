@@ -4,9 +4,13 @@ namespace app\components\yii;
 
 use app\components\RequestContext;
 use app\models\settings\AntragsgruenApp;
+use PHPUnit\Framework\MockObject\Builder\Identity;
 use yii\web\Cookie;
 use yii\web\IdentityInterface;
 
+/**
+ * @extends \yii\web\User<\app\models\db\User>
+ */
 class User extends \yii\web\User
 {
     protected function getCookieDomain(): string
@@ -80,6 +84,10 @@ class User extends \yii\web\User
      */
     public function switchIdentity($identity, $duration = 0): void
     {
+        if ($identity && !is_a($identity, \app\models\db\User::class)) {
+            throw new \RuntimeException('Invalid user identity (' . get_class($identity) . ')');
+        }
+
         $this->setIdentity($identity);
 
         if (!$this->enableSession) {

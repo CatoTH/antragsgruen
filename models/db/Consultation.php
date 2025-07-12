@@ -87,6 +87,9 @@ class Consultation extends ActiveRecord
         return parent::refresh();
     }
 
+    /**
+     * @return ActiveQuery<Site>
+     */
     public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
@@ -112,6 +115,9 @@ class Consultation extends ActiveRecord
         return $this->preloadedAllMotionData;
     }
 
+    /**
+     * @return ActiveQuery<Motion[]>
+     */
     public function getMotions(): ActiveQuery
     {
         if ($this->preloadedAllMotionData === self::PRELOAD_ALL) {
@@ -252,21 +258,33 @@ class Consultation extends ActiveRecord
         return null;
     }
 
+    /**
+     * @return ActiveQuery<ConsultationText[]>
+     */
     public function getTexts(): ActiveQuery
     {
         return $this->hasMany(ConsultationText::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationAgendaItem[]>
+     */
     public function getAgendaItems(): ActiveQuery
     {
         return $this->hasMany(ConsultationAgendaItem::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationUserGroup[]>
+     */
     public function getUserGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationUserGroup::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<UserConsultationScreening[]>
+     */
     public function getScreeningUsers(): ActiveQuery
     {
         return $this->hasMany(UserConsultationScreening::class, ['consultationId' => 'id']);
@@ -301,11 +319,17 @@ class Consultation extends ActiveRecord
         return null;
     }
 
+    /**
+     * @return ActiveQuery<ConsultationFile[]>
+     */
     public function getFiles(): ActiveQuery
     {
         return $this->hasMany(ConsultationFile::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationFileGroup[]>
+     */
     public function getFileGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationFileGroup::class, ['consultationId' => 'id']);
@@ -327,11 +351,17 @@ class Consultation extends ActiveRecord
         return array_values($users);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationSettingsTag[]>
+     */
     public function getTags(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<VotingBlock[]>
+     */
     public function getVotingBlocks(): ActiveQuery
     {
         return $this->hasMany(VotingBlock::class, ['consultationId' => 'id'])
@@ -348,6 +378,9 @@ class Consultation extends ActiveRecord
         return null;
     }
 
+    /**
+     * @return ActiveQuery<VotingQuestion[]>
+     */
     public function getVotingQuestions(): ActiveQuery
     {
         return $this->hasMany(VotingQuestion::class, ['consultationId' => 'id']);
@@ -363,17 +396,26 @@ class Consultation extends ActiveRecord
         return null;
     }
 
+    /**
+     * @return ActiveQuery<ConsultationLog[]>
+     */
     public function getLogEntries(): ActiveQuery
     {
         return $this->hasMany(ConsultationLog::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationMotionType[]>
+     */
     public function getMotionTypes(): ActiveQuery
     {
         return $this->hasMany(ConsultationMotionType::class, ['consultationId' => 'id'])
             ->andWhere(ConsultationMotionType::tableName() . '.status != ' . ConsultationMotionType::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<SpeechQueue[]>
+     */
     public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['consultationId' => 'id']);
@@ -401,6 +443,9 @@ class Consultation extends ActiveRecord
         }
     }
 
+    /**
+     * @return ActiveQuery<UserNotification[]>
+     */
     public function getUserNotifications(): ActiveQuery
     {
         return $this->hasMany(UserNotification::class, ['consultationId' => 'id']);

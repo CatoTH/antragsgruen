@@ -34,7 +34,7 @@ class ConsultationController extends Base
     public const VIEW_ID_INDEX = 'index';
 
     /**
-     * @param \yii\base\Action $action
+     * @param \yii\base\Action<static> $action
      *
      * @throws \Exception
      */

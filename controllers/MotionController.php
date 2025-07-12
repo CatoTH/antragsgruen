@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\RequestContext;
 use app\components\UrlHelper;
 use app\models\db\{Amendment,
     ConsultationAgendaItem,

@@ -35,21 +35,33 @@ class ConsultationFileGroup extends ActiveRecord
         }
     }
 
+    /**
+     * @return ActiveQuery<ConsultationFile[]>
+     */
     public function getFiles(): ActiveQuery
     {
         return $this->hasMany(ConsultationFile::class, ['fileGroupId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationFileGroup[]>
+     */
     public function getParentGroup(): ActiveQuery
     {
         return $this->hasOne(ConsultationFileGroup::class, ['id' => 'parentGroupId']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationFileGroup[]>
+     */
     public function getChildGroups(): ActiveQuery
     {
         return $this->hasMany(ConsultationFileGroup::class, ['parentGroupId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationText>
+     */
     public function getConsultationText(): ActiveQuery
     {
         return $this->hasOne(ConsultationText::class, ['id' => 'consultationTextId']);

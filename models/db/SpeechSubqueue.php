@@ -3,8 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int $id
@@ -24,6 +23,9 @@ class SpeechSubqueue extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'speechSubqueue';
     }
 
+    /**
+     * @return ActiveQuery<SpeechQueue>
+     */
     public function getQueue(): ActiveQuery
     {
         return $this->hasOne(SpeechQueue::class, ['id' => 'queueId']);

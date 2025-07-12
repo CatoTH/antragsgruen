@@ -41,12 +41,18 @@ class MotionComment extends IComment
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionComment';
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
@@ -72,16 +78,25 @@ class MotionComment extends IComment
         return $this->imotion;
     }
 
+    /**
+     * @return ActiveQuery<MotionCommentSupporter[]>
+     */
     public function getSupporters(): ActiveQuery
     {
         return $this->hasMany(MotionCommentSupporter::class, ['motionCommentId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<MotionSection[]>
+     */
     public function getSection(): ActiveQuery
     {
         return $this->hasOne(MotionSection::class, ['motionId' => 'motionId', 'sectionId' => 'sectionId']);
     }
 
+    /**
+     * @return ActiveQuery<MotionComment>
+     */
     public function getParentComment(): ActiveQuery
     {
         return $this->hasOne(MotionComment::class, ['id' => 'parentCommentId'])
@@ -89,6 +104,9 @@ class MotionComment extends IComment
             ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
+    /**
+     * @return ActiveQuery<MotionComment>
+     */
     public function getReplies(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['parentCommentId' => 'id'])
@@ -199,7 +217,7 @@ class MotionComment extends IComment
             [
                 'motion' => function ($query) use ($consultation) {
                     $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-                    /** @var ActiveQuery $query */
+                    /** @var ActiveQuery<MotionComment> $query */
                     $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                 }
