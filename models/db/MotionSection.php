@@ -128,6 +128,9 @@ class MotionSection extends IMotionSection
         return null;
     }
 
+    /**
+     * @return ActiveQuery<MotionComment[]>
+     */
     public function getComments(): ActiveQuery
     {
         return $this->hasMany(MotionComment::class, ['motionId' => 'motionId', 'sectionId' => 'sectionId'])

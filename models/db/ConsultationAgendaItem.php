@@ -41,6 +41,9 @@ class ConsultationAgendaItem extends ActiveRecord
         return $ret;
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
@@ -56,16 +59,25 @@ class ConsultationAgendaItem extends ActiveRecord
         }
     }
 
+    /**
+     * @return ActiveQuery<ConsultationAgendaItem>
+     */
     public function getParentItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'parentItemId']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationAgendaItem[]>
+     */
     public function getChildItems(): ActiveQuery
     {
         return $this->hasMany(ConsultationAgendaItem::class, ['parentItemId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationMotionType>
+     */
     public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
@@ -88,12 +100,18 @@ class ConsultationAgendaItem extends ActiveRecord
         return $this->motionType;
     }
 
+    /**
+     * @return ActiveQuery<Motion[]>
+     */
     public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['agendaItemId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<SpeechQueue[]>
+     */
     public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['agendaItemId' => 'id']);

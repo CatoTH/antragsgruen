@@ -23,6 +23,9 @@ final class RequestContext
         return self::getWebApplication()->session;
     }
 
+    /**
+     * @return YiiUser<DbUser>
+     */
     public static function getYiiUser(): YiiUser
     {
         return self::getWebApplication()->user;

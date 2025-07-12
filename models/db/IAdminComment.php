@@ -25,12 +25,14 @@ abstract class IAdminComment extends ActiveRecord
     public const SORT_DESC = 'desc';
     public const SORT_ASC = 'asc';
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
-
 
     public function getMyUser(): ?User
     {

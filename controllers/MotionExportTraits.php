@@ -21,7 +21,7 @@ use app\views\motion\LayoutHelper;
 use yii\web\NotFoundHttpException;
 
 /**
- * @property \Yii\base\Action $action
+ * @property \Yii\base\Action<Base> $action
  * @property Consultation $consultation
  * @property \app\models\settings\Layout $layoutParams
  *

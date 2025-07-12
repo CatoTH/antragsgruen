@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\components\HTMLTools;
 use app\models\sectionTypes\{ISectionType, TabularData};
 use app\models\settings\{AntragsgruenApp, MotionSection as MotionSectionSettings};
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQuery, ActiveRecord};
 
 /**
  * @property int|null $id
@@ -58,12 +58,18 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         ];
     }
 
-    public function getSections(): \yii\db\ActiveQuery
+    /**
+     * @return ActiveQuery<MotionSection[]>
+     */
+    public function getSections(): ActiveQuery
     {
         return $this->hasMany(MotionSection::class, ['sectionId' => 'id']);
     }
 
-    public function getMotionType(): \yii\db\ActiveQuery
+    /**
+     * @return ActiveQuery<ConsultationMotionType>
+     */
+    public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }

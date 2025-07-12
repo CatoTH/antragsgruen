@@ -5,6 +5,7 @@ namespace app\plugins;
 use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Amendment, Consultation, IMotion, Motion, Site, User, Vote, VotingBlock};
 use app\components\LoginProviderInterface;
+use app\controllers\Base;
 use app\models\AdminTodoItem;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\http\ResponseInterface;
@@ -240,6 +241,9 @@ class ModuleBase extends Module
         return null;
     }
 
+    /**
+     * @param Action<Base> $action
+     */
     public static function getRobotsIndexOverride(?Consultation $consultation, Action $action, bool $default): ?bool
     {
         return null;

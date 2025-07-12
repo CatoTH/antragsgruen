@@ -182,11 +182,17 @@ class ConsultationLog extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationLog';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])

@@ -27,6 +27,9 @@ class SpeechQueue extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'speechQueue';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
@@ -41,21 +44,33 @@ class SpeechQueue extends ActiveRecord
         }
     }
 
+    /**
+     * @return ActiveQuery<ConsultationAgendaItem>
+     */
     public function getAgendaItem(): ActiveQuery
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
+    /**
+     * @return ActiveQuery<SpeechSubqueue[]>
+     */
     public function getSubqueues(): ActiveQuery
     {
         return $this->hasMany(SpeechSubqueue::class, ['queueId' => 'id'])->orderBy('position ASC');
     }
 
+    /**
+     * @return ActiveQuery<SpeechQueueItem[]>
+     */
     public function getItems(): ActiveQuery
     {
         return $this->hasMany(SpeechQueueItem::class, ['queueId' => 'id']);

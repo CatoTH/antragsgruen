@@ -54,6 +54,9 @@ class MotionSupporter extends ISupporter
         return AntragsgruenApp::getInstance()->tablePrefix . 'motionSupporter';
     }
 
+    /**
+     * @return ActiveQuery<Motion>
+     */
     public function getMotion(): ActiveQuery
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);

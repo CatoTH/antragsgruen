@@ -30,6 +30,9 @@ class ConsultationSettingsTag extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationSettingsTag';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
@@ -45,23 +48,35 @@ class ConsultationSettingsTag extends ActiveRecord
         }
     }
 
+    /**
+     * @return ActiveQuery<Motion[]>
+     */
     public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['id' => 'motionId'])->viaTable('motionTag', ['tagId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<Amendment[]>
+     */
     public function getAmendments(): ActiveQuery
     {
         return $this->hasMany(Amendment::class, ['id' => 'amendmentId'])->viaTable('amendmentTag', ['tagId' => 'id'])
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationSettingsTag>
+     */
     public function getParentTag(): ActiveQuery
     {
         return $this->hasOne(ConsultationSettingsTag::class, ['id' => 'parentTagId']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationSettingsTag[]>
+     */
     public function getChildTags(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['parentTagId' => 'id']);

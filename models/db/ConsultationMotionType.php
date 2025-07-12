@@ -100,22 +100,34 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         }
     }
 
+    /**
+     * @return ActiveQuery<Motion[]>
+     */
     public function getMotions(): ActiveQuery
     {
         return $this->hasMany(Motion::class, ['motionTypeId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationText[]>
+     */
     public function getConsultationTexts(): ActiveQuery
     {
         return $this->hasMany(ConsultationText::class, ['motionTypeId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<TexTemplate>
+     */
     public function getTexTemplate(): ActiveQuery
     {
         return $this->hasOne(TexTemplate::class, ['id' => 'texTemplateId']);
     }
 
+    /**
+     * @return ActiveQuery<ConsultationSettingsMotionSection[]>
+     */
     public function getMotionSections(): ActiveQuery
     {
         return $this->hasMany(ConsultationSettingsMotionSection::class, ['motionTypeId' => 'id'])
@@ -133,6 +145,9 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         return null;
     }
 
+    /**
+     * @return ActiveQuery<ConsultationAgendaItem[]>
+     */
     public function getAgendaItems(): ActiveQuery
     {
         return $this->hasMany(ConsultationAgendaItem::class, ['motionTypeId' => 'id']);

@@ -37,12 +37,18 @@ class AmendmentComment extends IComment
         return AntragsgruenApp::getInstance()->tablePrefix . 'amendmentComment';
     }
 
+    /**
+     * @return ActiveQuery<User>
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
+    /**
+     * @return ActiveQuery<Amendment>
+     */
     public function getAmendment(): ActiveQuery
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId'])
@@ -69,6 +75,9 @@ class AmendmentComment extends IComment
         return $this->imotion;
     }
 
+    /**
+     * @return ActiveQuery<AmendmentComment>
+     */
     public function getParentComment(): ActiveQuery
     {
         return $this->hasOne(AmendmentComment::class, ['id' => 'parentCommentId'])
@@ -76,6 +85,9 @@ class AmendmentComment extends IComment
             ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_PRIVATE);
     }
 
+    /**
+     * @return ActiveQuery<AmendmentComment[]>
+     */
     public function getReplies(): ActiveQuery
     {
         return $this->hasMany(AmendmentComment::class, ['parentCommentId' => 'id'])
@@ -190,7 +202,7 @@ class AmendmentComment extends IComment
             [
                 'amendment' => function ($query) use ($consultation) {
                     $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleAmendmentStatuses());
-                    /** @var ActiveQuery $query */
+                    /** @var ActiveQuery<AmendmentComment> $query */
                     $query->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('amendment.motionId = motion.id');
 
@@ -198,7 +210,7 @@ class AmendmentComment extends IComment
                         [
                             'motionJoin' => function ($query) use ($consultation) {
                                 $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
-                                /** @var ActiveQuery $query */
+                                /** @var ActiveQuery<AmendmentComment> $query */
                                 $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                                 $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                             }

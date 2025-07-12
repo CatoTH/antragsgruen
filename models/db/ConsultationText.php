@@ -44,11 +44,17 @@ class ConsultationText extends ActiveRecord implements IHasPolicies
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationText';
     }
 
+    /**
+     * @return ActiveQuery<ConsultationMotionType>
+     */
     public function getMotionType(): ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
@@ -64,6 +70,9 @@ class ConsultationText extends ActiveRecord implements IHasPolicies
         }
     }
 
+    /**
+     * @return ActiveQuery<Site>
+     */
     public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);

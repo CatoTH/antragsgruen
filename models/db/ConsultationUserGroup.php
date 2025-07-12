@@ -35,6 +35,9 @@ class ConsultationUserGroup extends ActiveRecord
         return AntragsgruenApp::getInstance()->tablePrefix . 'consultationUserGroup';
     }
 
+    /**
+     * @return ActiveQuery<Consultation>
+     */
     public function getConsultation(): ActiveQuery
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
@@ -50,11 +53,17 @@ class ConsultationUserGroup extends ActiveRecord
         }
     }
 
+    /**
+     * @return ActiveQuery<Site>
+     */
     public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
+    /**
+     * @return ActiveQuery<User[]>
+     */
     public function getUsers(): ActiveQuery
     {
         return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('userGroup', ['groupId' => 'id'])
