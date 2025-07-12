@@ -224,43 +224,8 @@ $voting = $amendment->getVotingData();
         </div>
         <section class="proposalCommentForm">
             <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
-            <ol class="commentList">
-                <?php
-                $commentTypes = [IAdminComment::TYPE_PROPOSED_PROCEDURE];
-                foreach ($amendment->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
-                    $user = $adminComment->getMyUser();
-                    ?>
-                    <li class="comment" data-id="<?= $adminComment->id ?>">
-                        <div class="header">
-                            <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
-                            <?php
-                            if (User::isCurrentUser($user)) {
-                                $url = UrlHelper::createAmendmentUrl($amendment, 'del-proposal-comment');
-                                echo '<button type="button" data-url="' . Html::encode($url) . '" ';
-                                echo 'class="btn-link delComment">';
-                                echo '<span class="glyphicon glyphicon-trash"></span></button>';
-                            }
-                            ?>
-                            <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
-                        </div>
-                        <div class="comment">
-                            <?php
-                            if ($adminComment->status == IAdminComment::TYPE_PROPOSED_PROCEDURE) {
-                                echo '<div class="overv">' . Yii::t('amend', 'proposal_comment_overview') . '</div>';
-                            }
-                            ?>
-                            <?= HTMLTools::textToHtmlWithLink($adminComment->text) ?>
-                        </div>
-                    </li>
-                    <?php
-                }
-                ?>
-            </ol>
 
-            <textarea name="text" placeholder="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
-                      title="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
-                      class="form-control" rows="1"></textarea>
-            <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
+            <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
         </section>
     </div>
     <section class="proposalTags">

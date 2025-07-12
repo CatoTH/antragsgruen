@@ -168,6 +168,20 @@ class ConsultationLog extends ActiveRecord
         self::USER_REMOVE_FROM_GROUP,
     ];
 
+    private const MOTION_PROPOSAL_EVENTS = [
+        self::MOTION_SET_PROPOSAL,
+        self::MOTION_NOTIFY_PROPOSAL,
+        self::MOTION_ACCEPT_PROPOSAL,
+        self::MOTION_PUBLISH_PROPOSAL,
+    ];
+
+    private const AMENDMENT_PROPOSAL_EVENTS = [
+        self::AMENDMENT_SET_PROPOSAL,
+        self::AMENDMENT_NOTIFY_PROPOSAL,
+        self::AMENDMENT_ACCEPT_PROPOSAL,
+        self::AMENDMENT_PUBLISH_PROPOSAL,
+    ];
+
     private ?Motion $motion = null;
     private ?Amendment $amendment = null;
     private ?int $amendmentId = null;
@@ -244,6 +258,22 @@ class ConsultationLog extends ActiveRecord
     public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible): array
     {
         return self::getLogForActionTypes($consultationId, $amendmentId, $showUserInvisible, self::AMENDMENT_ACTION_TYPES);
+    }
+
+    public static function getLogForProposedProcedure(IMotion $imotion): array
+    {
+        if (is_a($imotion, Amendment::class)) {
+            $actions = self::AMENDMENT_PROPOSAL_EVENTS;
+        } else {
+            $actions = self::MOTION_PROPOSAL_EVENTS;
+        }
+
+        return self::getLogForActionTypes(
+            $imotion->getMyConsultation()->id,
+            $imotion->id,
+            true,
+            $actions
+        );
     }
 
     public static function getLogForUserId(int $consultationId, int $userId): array
