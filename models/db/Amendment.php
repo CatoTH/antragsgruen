@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\exceptions\Internal;
+use app\models\exceptions\NotFound;
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, Privileges, MotionSection as MotionSectionSettings};
 use app\components\{diff\AmendmentSectionFormatter,
@@ -931,6 +932,25 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $max;
+    }
+
+    public function getProposalById(?int $id): AmendmentProposal
+    {
+        if ($id === null) {
+            $latest = $this->getLatestProposal();
+            if ($latest->isNewRecord) {
+                return $latest;
+            } else {
+                return AmendmentProposal::createNew($this, $latest->version + 1);
+            }
+        } else {
+            foreach ($this->proposals as $proposal) {
+                if ($proposal->id === $id) {
+                    return $proposal;
+                }
+            }
+            throw new NotFound('Proposal not found');
+        }
     }
 
     public function setProposalPublished(): void

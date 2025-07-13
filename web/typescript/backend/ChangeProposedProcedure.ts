@@ -94,29 +94,47 @@ export class ChangeProposedProcedure {
     }
 
     private performCallWithReload(data: object) {
-        data['_csrf'] = this.csrf;
         data['context'] = this.context;
+        data['version'] = null;
 
-        $.post(this.saveUrl, data, (ret) => {
-            if (ret['redirectToUrl']) {
-                window.location.href = ret['redirectToUrl'];
-            } else if (ret['success']) {
-                let $content = $(ret['html']);
-                this.$widget.children().remove();
-                this.$widget.append($content.children());
-                this.reinitAfterReload();
-                this.$widget.addClass('showSaved').removeClass('isChanged');
-                if (ret['proposalStr']) {
-                    this.setGlobalProposedStr(ret['proposalStr']);
+        $.ajax({
+            url: this.saveUrl,
+            type: "POST",
+            data: JSON.stringify(data),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            headers: {"X-CSRF-Token": this.csrf},
+            success: ret => {
+                if (ret['redirectToUrl']) {
+                    window.location.href = ret['redirectToUrl'];
+                } else if (ret['success']) {
+                    let $content = $(ret['html']);
+                    this.$widget.children().remove();
+                    this.$widget.append($content.children());
+                    this.reinitAfterReload();
+                    this.$widget.addClass('showSaved').removeClass('isChanged');
+                    if (ret['proposalStr']) {
+                        this.setGlobalProposedStr(ret['proposalStr']);
+                    }
+                    window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
+                } else if (ret['message']) {
+                    alert(ret['message']);
+                } else {
+                    alert('An error occurred');
                 }
-                window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
-            } else if (ret['error']) {
-                alert(ret['error']);
-            } else {
-                alert('An error occurred');
             }
-        }).fail(() => {
-            alert('Could not save');
+        }).catch(function (err) {
+            try {
+                const ret = JSON.parse(err.responseText);
+                if (ret['message']) {
+                    alert(ret['message']);
+                } else {
+                    alert(err.responseText);
+                }
+            } catch (e) {
+                alert(err.responseText);
+            }
         });
     }
 
@@ -145,10 +163,11 @@ export class ChangeProposedProcedure {
 
     private saveStatus() {
         const selectize = this.$tagsSelect[0] as any
-        let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
+        let newValStr = this.$widget.find('.statusForm input[type=radio]:checked').val() as string|undefined;
+        let newVal = (newValStr === undefined ? null : parseInt(newValStr, 10));
         let data = {
             setStatus: newVal,
-            visible: (this.$visibilityInput.prop('checked') ? 1 : 0),
+            visible: this.$visibilityInput.prop('checked'),
             votingBlockId: this.$votingBlockId.val(),
             votingItemBlockName: this.$widget.find(".votingItemBlockNameRow input").val(),
             tags: selectize.selectize.items,

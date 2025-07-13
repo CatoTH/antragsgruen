@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\NotFound;
 use app\models\layoutHooks\Layout;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\consultationLog\ProposedProcedureChange;
@@ -250,6 +251,11 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     }
 
     abstract public function getLatestProposal(): IProposal;
+
+    /**
+     * @throws NotFound
+     */
+    abstract public function getProposalById(?int $id): IProposal;
 
     public function isVisible(): bool
     {

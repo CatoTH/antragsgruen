@@ -897,6 +897,26 @@ class Motion extends IMotion implements IRSSItem
         return $max;
     }
 
+    public function getProposalById(?int $id): MotionProposal
+    {
+        if ($id === null) {
+            $latest = $this->getLatestProposal();
+            if ($latest->isNewRecord) {
+                return $latest;
+            } else {
+                return MotionProposal::createNew($this, $latest->version + 1);
+            }
+        } else {
+            foreach ($this->proposals as $proposal) {
+                if ($proposal->id === $id) {
+                    return $proposal;
+                }
+            }
+            throw new NotFound('Proposal not found');
+        }
+    }
+
+
     public function setProposalPublished(): void
     {
         $proposal = $this->getLatestProposal();
