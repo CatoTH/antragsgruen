@@ -13,6 +13,7 @@ export class ChangeProposedProcedure {
     private $tagsSelect: JQuery;
     private saveUrl: string;
     private context: string;
+    private version: number|null;
     private csrf: string;
     private savingComment: boolean = false;
 
@@ -38,6 +39,7 @@ export class ChangeProposedProcedure {
         this.context = this.$widget.data('context');
         this.saveUrl = this.$widget.attr('action');
         this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
+        this.version = this.$widget.data('proposal-id') ?? null;
     }
 
     private initOpener() {
@@ -95,7 +97,7 @@ export class ChangeProposedProcedure {
 
     private performCallWithReload(data: object) {
         data['context'] = this.context;
-        data['version'] = null;
+        data['version'] = this.version;
 
         $.ajax({
             url: this.saveUrl,
@@ -143,7 +145,7 @@ export class ChangeProposedProcedure {
             fromName = this.$widget.find('input[name=proposalNotificationFrom]').val(),
             replyTo = this.$widget.find('input[name=proposalNotificationReply]').val();
         this.performCallWithReload({
-            'notifyProposer': '1',
+            'notifyProposer': true,
             'text': text,
             'fromName': fromName,
             'replyTo': replyTo,
@@ -331,29 +333,39 @@ export class ChangeProposedProcedure {
         }
 
         this.savingComment = true;
-        $.post(this.saveUrl, {
-            writeComment: text,
-            _csrf: this.csrf
-        }, (ev) => {
-            if (ev.success) {
-                let delHtml = '';
-                if (ev.comment.delLink) {
-                    delHtml = '<button type="button" data-url="' + ev.comment.delLink + '" class="btn-link delComment">';
-                    delHtml += '<span class="glyphicon glyphicon-trash"></span></button>';
+
+        $.ajax({
+            url: this.saveUrl,
+            type: "POST",
+            data: JSON.stringify({
+                writeComment: text,
+                version: this.version,
+            }),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            headers: {"X-CSRF-Token": this.csrf},
+            success: ev => {
+                if (ev.success) {
+                    let delHtml = '';
+                    if (ev.comment.delLink) {
+                        delHtml = '<button type="button" data-url="' + ev.comment.delLink + '" class="btn-link delComment">';
+                        delHtml += '<span class="glyphicon glyphicon-trash"></span></button>';
+                    }
+                    let $comment = $('<li class="comment"><div class="header"><div class="date"></div>' + delHtml + '<div class="name"></div></div><div class="comment"></div></li>');
+                    $comment.find('.date').text(ev.comment.dateFormatted);
+                    $comment.find('.name').text(ev.comment.username);
+                    $comment.find('.comment').text(ev.comment.text);
+                    $comment.data('id', ev.comment.id);
+                    $commentList.append($comment);
+                    $commentWidget.find('textarea').val('');
+                    $commentList[0].scrollTop = $commentList[0].scrollHeight;
+                } else {
+                    alert('Could not save: ' + JSON.stringify(ev));
                 }
-                let $comment = $('<li class="comment"><div class="header"><div class="date"></div>' + delHtml + '<div class="name"></div></div><div class="comment"></div></li>');
-                $comment.find('.date').text(ev.comment.dateFormatted);
-                $comment.find('.name').text(ev.comment.username);
-                $comment.find('.comment').text(ev.comment.text);
-                $comment.data('id', ev.comment.id);
-                $commentList.append($comment);
-                $commentWidget.find('textarea').val('');
-                $commentList[0].scrollTop = $commentList[0].scrollHeight;
-            } else {
-                alert('Could not save: ' + JSON.stringify(ev));
+                this.savingComment = false;
             }
-            this.savingComment = false;
-        }).fail(() => {
+        }).catch(() => {
             alert('Could not save');
             this.savingComment = false;
         });

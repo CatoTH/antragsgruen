@@ -575,6 +575,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
             }
         }
 
+        $this->save();
         $ppChanges->setVotingBlockChanges($votingBlockPre, $this->votingBlockId);
     }
 

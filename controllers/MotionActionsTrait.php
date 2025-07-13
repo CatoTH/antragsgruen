@@ -566,7 +566,7 @@ trait MotionActionsTrait
             ]);
             $response['proposalStr'] = $proposal->getFormattedProposalStatus(true);
 
-            if ($motion->getLatestProposal()->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $proposal->proposalStatus) {
+            if ($proposal->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $proposal->proposalStatus) {
                 $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
             } elseif ($motion->id !== $originalMotionId) {
                 // This can happen if a plugin enforces the creation of a new motion when saving
@@ -574,7 +574,7 @@ trait MotionActionsTrait
             }
         }
 
-        if ($this->getHttpRequest()->post('notifyProposer')) {
+        if ($this->getHttpRequest()->post('notifyProposer', false)) {
             try {
                 new MotionProposedProcedure(
                     $motion,
