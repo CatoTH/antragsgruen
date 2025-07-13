@@ -179,7 +179,7 @@ if ($hasPp) {
         ]);
     }
     if ($proposal->proposalFeedbackHasBeenRequested() && $proposal->canSeeProposedProcedure($procedureToken)) {
-        echo $this->render('_view_agree_to_proposal', ['proposal' => $proposal, 'procedureToken' => $procedureToken]);
+        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment, 'proposal' => $proposal, 'procedureToken' => $procedureToken]);
     }
 }
 

@@ -193,16 +193,17 @@ if ($hasPpAdminbox) {
     <?php
 }
 if ($hasPp) {
+    $proposal = $motion->getLatestProposal();
     if ($hasPpAdminbox) {
         echo $this->render('_set_proposed_procedure', [
             'motion' => $motion,
-            'proposal' => $motion->getLatestProposal(),
+            'proposal' => $proposal,
             'context'   => 'view',
             'msgAlert' => null,
         ]);
     }
-    if ($motion->getLatestProposal()->proposalFeedbackHasBeenRequested() && $motion->canSeeProposedProcedure($procedureToken)) {
-        echo $this->render('_view_agree_to_proposal', ['motion' => $motion, 'procedureToken' => $procedureToken]);
+    if ($proposal->proposalFeedbackHasBeenRequested() && $proposal->canSeeProposedProcedure($procedureToken)) {
+        echo $this->render('_view_agree_to_proposal', ['motion' => $motion, 'proposal' => $proposal, 'procedureToken' => $procedureToken]);
     }
 }
 

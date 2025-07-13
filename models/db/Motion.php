@@ -531,14 +531,6 @@ class Motion extends IMotion implements IRSSItem
         return false;
     }
 
-    public function canSeeProposedProcedure(?string $procedureToken): bool
-    {
-        if ($procedureToken && MotionProposedProcedure::getPpOpenAcceptToken($this) === $procedureToken) {
-            return true;
-        }
-        return $this->iAmInitiator();
-    }
-
     public function canEditText(): bool
     {
         return $this->getPermissionsObject()->motionCanEditText($this);

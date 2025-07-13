@@ -52,8 +52,8 @@ use yii\helpers\Html;
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
  * @property AmendmentProposal[] $proposals
- * @property Amendment|null $proposalReferencedByAmendment
- * @property Motion|null $proposalReferencedByMotion
+ * @property AmendmentProposal|null $proposalReferencedByAmendment
+ * @property MotionProposal|null $proposalReferencedByMotion
  * @property VotingBlock|null $votingBlock
  * @property User|null $responsibilityUser
  * @property Vote[] $votes
@@ -252,19 +252,19 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<Amendment>
+     * @return ActiveQuery<AmendmentProposal>
      */
     public function getProposalReferencedByAmendment(): ActiveQuery
     {
-        return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
+        return $this->hasOne(AmendmentProposal::class, ['proposalReferenceId' => 'id']);
     }
 
     /**
-     * @return ActiveQuery<Motion>
+     * @return ActiveQuery<MotionProposal>
      */
     public function getProposalReferencedByMotion(): ActiveQuery
     {
-        return $this->hasOne(Motion::class, ['proposalReferenceId' => 'id']);
+        return $this->hasOne(MotionProposal::class, ['proposalReferenceId' => 'id']);
     }
 
     /**

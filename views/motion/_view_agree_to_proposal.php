@@ -5,19 +5,20 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\Motion $motion
+ * @var \app\models\db\MotionProposal $proposal
  * @var string|null $procedureToken
  */
 
 echo Html::beginForm('', 'post', ['class' => 'agreeToProposal']);
-$agreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_ACCEPTED);
-$disagreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_REJECTED);
+$agreed = ($proposal->userStatus === \app\models\db\Motion::STATUS_ACCEPTED);
+$disagreed = ($proposal->userStatus === \app\models\db\Motion::STATUS_REJECTED);
 ?>
     <h2><?= Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
     <div class="holder">
         <div class="status">
             <div class="head"><?= Yii::t('amend', 'proposal_edit_title_prop') ?></div>
             <div class="description">
-                <?= $motion->getLatestProposal()->getFormattedProposalStatus() ?>
+                <?= $proposal->getFormattedProposalStatus() ?>
             </div>
             <?php
             if ($motion->votingBlock) {

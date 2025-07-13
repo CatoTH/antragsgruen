@@ -181,9 +181,10 @@ class Init
             // ModUs that modify a paragraph unaffected by the original amendment.
             // We need to check that the original amendment is not deleted though.
             // Also be defensive about data inconsistencies when the motion assignment does not match - see https://github.com/CatoTH/antragsgruen/issues/576
-            if ($amendment->proposalReferencedByAmendment && $amendment->motionId === $amendment->proposalReferencedByAmendment->motionId &&
-                !in_array($amendment->proposalReferencedByAmendment->status, $hiddenStatuses)) {
-                $normalAmendments[$amendment->proposalReferencedByAmendment->id] = $amendment->proposalReferencedByAmendment;
+            $referencedByAmendment = $amendment->proposalReferencedByAmendment?->getAmendment();
+            if ($referencedByAmendment && $amendment->motionId === $referencedByAmendment->motionId &&
+                !in_array($referencedByAmendment->status, $hiddenStatuses)) {
+                $normalAmendments[$referencedByAmendment->id] = $referencedByAmendment;
             }
         }
         if (count($normalAmendments) > 0) {
