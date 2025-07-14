@@ -30,6 +30,7 @@ $apiModel = \app\models\api\AgendaItem::getItemsFromConsultation($consultation);
 $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
     'id' => $item->id,
     'title' => $item->titlePlural,
+    'has_proposed_procedure' => $item->getSettingsObj()->hasProposedProcedure,
 ], $consultation->motionTypes);
 $serializer = \app\components\Tools::getSerializer();
 

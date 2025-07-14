@@ -28,17 +28,19 @@ $I->loginAsGlobalAdmin();
 
 $I->wantTo('deactivate Zeitpolitik from the proposed procedure');
 
-$I->executeJS('$("#agendaitem_9 > div > h3 > .editAgendaItem").trigger("click");');
-$I->wait(0.3);
-$I->seeElement('#agendaitem_9 > div > .agendaItemEditForm');
-$I->seeElement('#agendaitem_9 > div > .agendaItemEditForm > .extraSettings');
-$I->executeJS('$("#agendaitem_9 > div > .agendaItemEditForm > .extraSettings .dropdown-toggle").trigger("click");');
+$I->click('.agendaEditLink');
+
+$I->seeElement('.agendaEditWidget .item_9 .extraSettings');
+$I->clickJS('.agendaEditWidget .item_9 .extraSettings button');
 $I->wait(0.5);
-$I->checkOption('#agendaitem_9 > div > .agendaItemEditForm > .extraSettings .inProposedProcedures');
-$I->executeJS('$("#agendaitem_9 > div > .agendaItemEditForm").trigger("submit");');
+$I->uncheckOption('.agendaEditWidget .item_9 .extraSettings .inProposedProcedures input');
+
+$I->clickJS('.agendaEditWidget .btnSave');
+$I->wait(1);
 
 $I->wantTo('test that it\'s not visible anymore');
 
+$I->gotoConsultationHome(true, 'laenderrat-to', 'laenderrat-to');
 $I->click('#sidebar #proposedProcedureLink');
 
 $I->dontSee('Abstimmung: Zeitpolitik');
@@ -56,11 +58,10 @@ $I->uncheckOption('#typeProposedProcedure');
 $page->saveForm();
 
 $I->gotoConsultationHome(true, 'laenderrat-to', 'laenderrat-to');
-$I->wait(0.3);
-$I->executeJS('$("#agendaitem_9 > div > h3 > .editAgendaItem").trigger("click");');
-$I->wait(0.3);
-$I->seeElement('#agendaitem_9 > div > .agendaItemEditForm > .extraSettings');
-$I->executeJS('$("#agendaitem_9 > div > .agendaItemEditForm > .extraSettings .dropdown-toggle").trigger("click");');
+$I->click('.agendaEditLink');
+
+$I->seeElement('.agendaEditWidget .item_9 .extraSettings');
+$I->clickJS('.agendaEditWidget .item_9 .extraSettings button');
 $I->wait(0.5);
-$I->seeElement('#agendaitem_9 > div > .agendaItemEditForm > .extraSettings .hasSpeakingList');
-$I->dontSeeElement('#agendaitem_9 > div > .agendaItemEditForm > .extraSettings .inProposedProcedures');
+$I->seeElement('.agendaEditWidget .item_9 .extraSettings .hasSpeakingList');
+$I->dontSeeElement('.agendaEditWidget .item_9 .extraSettings .inProposedProcedures');

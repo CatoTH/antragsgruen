@@ -27,7 +27,7 @@ ob_start();
             <span class="caret" aria-hidden="true"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <li class="checkbox inProposedProcedures">
+            <li class="checkbox inProposedProcedures" v-if="hasProposedProcedure()">
                 <label>
                     <input type="checkbox" v-model="modelValue.settings.in_proposed_procedures">
                     <?= Yii::t('con', 'agenda_pp') ?>
@@ -67,6 +67,9 @@ $html = ob_get_clean();
         computed: {
         },
         methods: {
+            hasProposedProcedure: function() {
+                return this.motionTypes.filter(type => type.has_proposed_procedure).length > 0;
+            },
             isMotionTypeSelected(motionType) {
                 return this.modelValue.settings.motion_types.indexOf(motionType.id) !== -1;
             },
@@ -89,7 +92,7 @@ $html = ob_get_clean();
 ob_start();
 ?>
 <draggable-plus v-model="list" class="drag-area" :animation="150" :group="disabled ? 'disabled' : 'agenda'" tag="ul" handle=".sortIndicator" @clone="onClone">
-    <li v-for="(item, itemIndex) in list" :key="item.id" class="item" :class="'type_' + item.type">
+    <li v-for="(item, itemIndex) in list" :key="item.id" class="item" :class="'type_' + item.type + ' item_' + item.id">
         <agenda-edit-item-row
             v-if="item.type == 'item'"
             v-model="item" :motionTypes="motionTypes"
