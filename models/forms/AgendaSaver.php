@@ -31,11 +31,21 @@ class AgendaSaver
         return $item;
     }
 
+    public function saveAgendaFromApi(array $data): void
+    {
+        $newIds = $this->saveAgendaFromApiRec(null, $data);
+        $this->removeOldAgendaItems($newIds);
+    }
+
     /**
      * @param AgendaItem[] $apiItems
+     *
+     * @return int[]
      */
-    public function saveAgendaFromApi(?ConsultationAgendaItem $parentItem, array $apiItems): void
+    private function saveAgendaFromApiRec(?ConsultationAgendaItem $parentItem, array $apiItems): array
     {
+        $newIds = [];
+
         $position = 0;
         foreach ($apiItems as $apiItem) {
             $dbItem = $this->getOrCreateItem($apiItem->id);
@@ -77,11 +87,27 @@ class AgendaSaver
 
             $dbItem->save();
 
-            $this->saveAgendaFromApi($dbItem, $apiItem->children);
+            $recNewIds = $this->saveAgendaFromApiRec($dbItem, $apiItem->children);
+            $newIds = array_merge($newIds, $recNewIds);
 
             $dbItem->refresh();
 
             $position++;
+            $newIds[] = $dbItem->id;
+        }
+
+        return $newIds;
+    }
+
+    /**
+     * @param int[] $newIds
+     */
+    private function removeOldAgendaItems(array $newIds): void
+    {
+        foreach ($this->consultation->agendaItems as $agItem) {
+            if (!in_array($agItem->id, $newIds)) {
+                $agItem->delete();
+            }
         }
     }
 }
