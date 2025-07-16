@@ -27,6 +27,7 @@ $I->seeElementInDOM('.agendaEditLink');
 $I->click('.agendaEditLink');
 
 $I->wantTo('reorder the list');
+$I->wait(0.3);
 $I->seeElement('.agendaEditWidget');
 
 // Move last item ("Sonstiges") to first location, and set code to "10."
@@ -119,4 +120,4 @@ $I->click('.backHomeLink');
 
 $I->dontSee('Sonntag, 2. Februar 2020');
 $I->dontSee('More motions');
-$I->see('1. Sonstiges');
+$I->see('10. Sonstiges');
