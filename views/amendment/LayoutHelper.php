@@ -17,9 +17,9 @@ class LayoutHelper
     /**
      * @return array<array{title: string, section: ISectionType}>
      */
-    public static function getVisibleProposedProcedureSections(Amendment $amendment, AmendmentProposal $proposal, ?string $procedureToken): array
+    public static function getVisibleProposedProcedureSections(Amendment $amendment, ?AmendmentProposal $proposal): array
     {
-        if (!$proposal->hasVisibleAlternativeProposaltext($procedureToken)) {
+        if (!$proposal || !$proposal->hasVisibleAlternativeProposaltext()) {
             return [];
         }
         $reference = $proposal->getAlternativeProposaltextReference();

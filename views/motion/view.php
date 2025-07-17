@@ -24,6 +24,7 @@ use yii\helpers\Html;
 $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestProposal()->canEditLimitedProposedProcedure());
+$activeProposal = ($procedureToken ? $motion->getProposalByToken($procedureToken) ?? $motion->getLatestProposal() : $motion->getLatestProposal());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -193,17 +194,16 @@ if ($hasPpAdminbox) {
     <?php
 }
 if ($hasPp) {
-    $proposal = $motion->getLatestProposal();
     if ($hasPpAdminbox) {
         echo $this->render('_set_proposed_procedure', [
             'motion' => $motion,
-            'proposal' => $proposal,
+            'proposal' => $activeProposal,
             'context'   => 'view',
             'msgAlert' => null,
         ]);
     }
-    if ($proposal->proposalFeedbackHasBeenRequested() && $proposal->canSeeProposedProcedure($procedureToken)) {
-        echo $this->render('_view_agree_to_proposal', ['motion' => $motion, 'proposal' => $proposal, 'procedureToken' => $procedureToken]);
+    if ($activeProposal->proposalFeedbackHasBeenRequested() && $activeProposal->canSeeProposedProcedure($procedureToken)) {
+        echo $this->render('_view_agree_to_proposal', ['motion' => $motion, 'proposal' => $activeProposal, 'procedureToken' => $procedureToken]);
     }
 }
 
@@ -225,7 +225,7 @@ $viewText = $this->render('_view_text', [
     'motion'         => $motion,
     'commentForm'    => $commentForm,
     'openedComments' => $openedComments,
-    'procedureToken' => $procedureToken
+    'proposal'       => $activeProposal,
 ]);
 
 $viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragraphNo>\d+)-->/iu', function ($matches) use ($motion) {

@@ -7,7 +7,7 @@ namespace app\views\motion;
 use app\components\{HashedStaticCache, IMotionStatusFilter, Tools, UrlHelper};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
-use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, User};
+use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionProposal, User};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\LimitedSupporterList;
 use app\models\mergeAmendments\Init;
@@ -104,12 +104,12 @@ class LayoutHelper
     /**
      * @return array<array{title: string, section: ISectionType}>
      */
-    public static function getVisibleProposedProcedureSections(Motion $motion, ?string $procedureToken): array
+    public static function getVisibleProposedProcedureSections(Motion $motion, ?MotionProposal $proposal): array
     {
-        if (!$motion->getLatestProposal()->hasVisibleAlternativeProposaltext($procedureToken)) {
+        if (!$proposal || !$proposal->hasVisibleAlternativeProposaltext()) {
             return [];
         }
-        $reference = $motion->getAlternativeProposaltextReference();
+        $reference = $proposal->getAlternativeProposaltextReference();
         if (!$reference) {
             return [];
         }
@@ -127,7 +127,7 @@ class LayoutHelper
             } else {
                 $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceMotion->getFormattedTitlePrefix();
             }
-            if (!$motion->getLatestProposal()->isProposalPublic()) {
+            if (!$proposal->isProposalPublic()) {
                 $prefix = '[ADMIN] ' . $prefix;
             }
             $sectionType = $section->getSectionType();

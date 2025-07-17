@@ -125,7 +125,7 @@ trait MotionMergingTrait
 
         $knownAmendments = array_map('intval', explode(',', $knownAmendments));
         $amendments = Init::getMotionAmendmentsForMerging($motion);
-        $proposedAlternative = $motion->getAlternativeProposaltextReference();
+        $proposedAlternative = $motion->getLatestProposal()->getAlternativeProposaltextReference();
         if ($proposedAlternative && $proposedAlternative['motion']->id === $motion->id) {
             $amendments[] = $proposedAlternative['modification'];
         }

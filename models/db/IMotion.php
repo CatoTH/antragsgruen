@@ -252,6 +252,16 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function getLatestProposal(): IProposal;
 
+    public function getProposalByToken(string $token): ?IProposal
+    {
+        foreach ($this->proposals as $proposal) {
+            if ($proposal->publicToken === $token) {
+                return $proposal;
+            }
+        }
+        return null;
+    }
+
     /**
      * @throws NotFound
      */

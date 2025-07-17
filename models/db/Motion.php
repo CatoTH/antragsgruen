@@ -875,6 +875,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function getLatestProposal(): MotionProposal
     {
+        // @TODO Different view for users and admins
         $max = null;
         foreach ($this->proposals as $proposal) {
             if ($proposal->version > ($max?->version ?: 0)) {
@@ -1239,23 +1240,6 @@ class Motion extends IMotion implements IRSSItem
     public function isDeadlineOver(): bool
     {
         return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
-    }
-
-    /**
-     * @return array{motion: Motion, modification: Amendment}|null
-     */
-    public function getAlternativeProposaltextReference(): ?array
-    {
-        // This amendment has a direct modification proposal
-        $proposal = $this->getLatestProposal();
-        if (in_array($proposal->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $proposal->getMyProposalReference()) {
-            return [
-                'motion'    => $this,
-                'modification' => $this->getLatestProposal()->getMyProposalReference(),
-            ];
-        }
-
-        return null;
     }
 
     // Hint: All statuses selectable except STATUS_VOTE

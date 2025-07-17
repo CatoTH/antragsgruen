@@ -65,15 +65,15 @@ abstract class IProposal extends ActiveRecord
         return ($visibleFromTs <= time());
     }
 
-    public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
+    public function hasVisibleAlternativeProposaltext(): bool
     {
         $imotion = $this->getMyIMotion();
 
         return ($this->hasAlternativeProposaltext(true) && (
                 $this->isProposalPublic() ||
                 User::havePrivilege($imotion->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($imotion)) ||
-                ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
-            ));
+                $this->proposalFeedbackHasBeenRequested())
+            );
     }
 
     abstract public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool;

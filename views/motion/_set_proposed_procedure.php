@@ -70,7 +70,7 @@ if (count($motion->proposals) > 0) {
                     if ($itProp->id === $proposal->id) {
                         echo '<li>Version ' . $itProp->version . '</li>';
                     } else {
-                        $versionLink = UrlHelper::createMotionUrl($motion, 'show', ['proposalVersion' => $itProp->id]);
+                        $versionLink = UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $itProp->id]);
                         echo '<li>' . Html::a(Html::encode('Version ' . $itProp->version), $versionLink) . '</li>';
                     }
                 }
@@ -355,7 +355,7 @@ if (count($motion->proposals) > 0) {
         </div>
     </div>
     <?php
-    $defaultText = \app\models\notifications\MotionProposedProcedure::getDefaultText($motion);
+    $defaultText = \app\models\notifications\MotionProposedProcedure::getDefaultText($proposal);
     echo Html::textarea(
         'proposalNotificationText',
         $defaultText,

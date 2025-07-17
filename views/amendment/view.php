@@ -21,6 +21,7 @@ $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedProposedProcedure());
+$activeProposal = ($procedureToken ? $amendment->getProposalByToken($procedureToken) ?? $amendment->getLatestProposal() : $amendment->getLatestProposal());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -160,7 +161,6 @@ if (User::getCurrentUser() && !$amendment->getPrivateComment() && $consultation-
 }
 
 if ($hasPp) {
-    $proposal = $amendment->getLatestProposal();
     if ($hasPpAdminbox) {
         ?>
         <div class="proposedChangesOpener">
@@ -173,13 +173,13 @@ if ($hasPp) {
 
         echo $this->render('_set_proposed_procedure', [
             'amendment' => $amendment,
-            'proposal' => $proposal,
+            'proposal' => $activeProposal,
             'context'   => 'view',
             'msgAlert'  => null,
         ]);
     }
-    if ($proposal->proposalFeedbackHasBeenRequested() && $proposal->canSeeProposedProcedure($procedureToken)) {
-        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment, 'proposal' => $proposal, 'procedureToken' => $procedureToken]);
+    if ($activeProposal->proposalFeedbackHasBeenRequested() && $activeProposal->canSeeProposedProcedure($procedureToken)) {
+        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment, 'proposal' => $activeProposal, 'procedureToken' => $procedureToken]);
     }
 }
 
@@ -195,8 +195,7 @@ if ($amendment->status === Amendment::STATUS_DRAFT) {
 
 echo $this->render('_view_text', [
     'amendment' => $amendment,
-    'proposal' => $amendment->getLatestProposal(),
-    'procedureToken' => $procedureToken,
+    'proposal' => $activeProposal,
 ]);
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);

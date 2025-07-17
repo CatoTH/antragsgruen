@@ -82,4 +82,20 @@ class MotionProposal extends IProposal
         }
         return $this->getMyIMotion()->iAmInitiator();
     }
+
+    /**
+     * @return array{motion: Motion, modification: Amendment}|null
+     */
+    public function getAlternativeProposaltextReference(): ?array
+    {
+        // This motion has a direct modification proposal
+        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getMyProposalReference() && $this->getMotion()) {
+            return [
+                'motion' => $this->getMotion(),
+                'modification' => $this->getMyProposalReference(),
+            ];
+        }
+
+        return null;
+    }
 }

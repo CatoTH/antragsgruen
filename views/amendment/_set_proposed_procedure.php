@@ -398,7 +398,7 @@ if (count($amendment->proposals) > 0) {
             </div>
         </div>
         <?php
-        $defaultText = \app\models\notifications\AmendmentProposedProcedure::getDefaultText($amendment);
+        $defaultText = \app\models\notifications\AmendmentProposedProcedure::getDefaultText($proposal);
         echo Html::textarea(
             'proposalNotificationText',
             $defaultText,

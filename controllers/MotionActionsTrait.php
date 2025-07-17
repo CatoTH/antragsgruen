@@ -577,7 +577,7 @@ trait MotionActionsTrait
         if ($this->getHttpRequest()->post('notifyProposer', false)) {
             try {
                 new MotionProposedProcedure(
-                    $motion,
+                    $proposal,
                     $this->getHttpRequest()->post('text'),
                     $this->getHttpRequest()->post('fromName'),
                     $this->getHttpRequest()->post('replyTo')

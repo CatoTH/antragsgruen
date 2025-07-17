@@ -556,10 +556,10 @@ class AmendmentController extends Base
             $response['proposalStr'] = $latestProposal->getFormattedProposalStatus(true);
         }
 
-        if ($this->getHttpRequest()->post('notifyProposer')) {
+        if ($this->getHttpRequest()->post('notifyProposer', false)) {
             try {
                 new AmendmentProposedProcedure(
-                    $amendment,
+                    $latestProposal,
                     $this->getHttpRequest()->post('text'),
                     $this->getHttpRequest()->post('fromName'),
                     $this->getHttpRequest()->post('replyTo')

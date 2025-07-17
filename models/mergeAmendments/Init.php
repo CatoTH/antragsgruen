@@ -26,7 +26,7 @@ class Init
         $form->toMergeMainIds = [];
         $form->toMergeResolvedIds = [];
 
-        $proposedAlternative = $motion->getAlternativeProposaltextReference();
+        $proposedAlternative = $motion->getLatestProposal()->getAlternativeProposaltextReference();
         if ($proposedAlternative && $proposedAlternative['motion']->id === $motion->id) {
             $form->toMergeMainIds[] = $proposedAlternative['modification']->id;
             $form->toMergeResolvedIds[] = $proposedAlternative['modification']->id;

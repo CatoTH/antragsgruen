@@ -125,7 +125,7 @@ class Draft implements \JsonSerializable
         $draft->amendmentVersions = [];
         $draft->amendmentVotingData = [];
 
-        $proposedAlternative = $form->motion->getAlternativeProposaltextReference();
+        $proposedAlternative = $form->motion->getLatestProposal()->getAlternativeProposaltextReference();
         if ($proposedAlternative && $proposedAlternative['motion']->id === $form->motion->id) {
             $proposedAlternativeAmendment = $proposedAlternative['modification'];
             $draft->amendmentStatuses[$proposedAlternativeAmendment->id] = Amendment::STATUS_MERGING_DRAFT_PRIVATE;
