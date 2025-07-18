@@ -39,6 +39,7 @@ class ConsultationLog extends ActiveRecord
     public const MOTION_SET_PROPOSAL        = 35;
     public const MOTION_NOTIFY_PROPOSAL     = 36;
     public const MOTION_ACCEPT_PROPOSAL     = 31;
+    public const MOTION_REJECT_PROPOSAL     = 50;
     public const MOTION_PUBLISH_PROPOSAL    = 30;
     public const MOTION_VOTE_ACCEPTED       = 39;
     public const MOTION_VOTE_REJECTED       = 40;
@@ -60,6 +61,7 @@ class ConsultationLog extends ActiveRecord
     public const AMENDMENT_SET_PROPOSAL     = 37;
     public const AMENDMENT_NOTIFY_PROPOSAL  = 38;
     public const AMENDMENT_ACCEPT_PROPOSAL  = 32;
+    public const AMENDMENT_REJECT_PROPOSAL  = 51;
     public const AMENDMENT_PUBLISH_PROPOSAL = 29;
     public const AMENDMENT_VOTE_ACCEPTED    = 41;
     public const AMENDMENT_VOTE_REJECTED    = 42;
@@ -90,6 +92,7 @@ class ConsultationLog extends ActiveRecord
         self::MOTION_SET_PROPOSAL,
         self::MOTION_NOTIFY_PROPOSAL,
         self::MOTION_ACCEPT_PROPOSAL,
+        self::MOTION_REJECT_PROPOSAL,
         self::MOTION_PUBLISH_PROPOSAL,
         self::MOTION_VOTE_ACCEPTED,
         self::MOTION_VOTE_REJECTED,
@@ -114,6 +117,7 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_SET_PROPOSAL,
         self::AMENDMENT_NOTIFY_PROPOSAL,
         self::AMENDMENT_ACCEPT_PROPOSAL,
+        self::AMENDMENT_REJECT_PROPOSAL,
         self::AMENDMENT_PUBLISH_PROPOSAL,
         self::AMENDMENT_VOTE_ACCEPTED,
         self::AMENDMENT_VOTE_REJECTED,
@@ -172,6 +176,7 @@ class ConsultationLog extends ActiveRecord
         self::MOTION_SET_PROPOSAL,
         self::MOTION_NOTIFY_PROPOSAL,
         self::MOTION_ACCEPT_PROPOSAL,
+        self::MOTION_REJECT_PROPOSAL,
         self::MOTION_PUBLISH_PROPOSAL,
     ];
 
@@ -179,6 +184,7 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_SET_PROPOSAL,
         self::AMENDMENT_NOTIFY_PROPOSAL,
         self::AMENDMENT_ACCEPT_PROPOSAL,
+        self::AMENDMENT_REJECT_PROPOSAL,
         self::AMENDMENT_PUBLISH_PROPOSAL,
     ];
 

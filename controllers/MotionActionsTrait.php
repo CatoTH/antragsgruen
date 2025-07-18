@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\consultationLog\ProposedProcedureChange;
+use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureChange, ProposedProcedureUserNotification};
 use app\models\forms\ProposedChangeForm;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\sectionTypes\ISectionType;
@@ -352,7 +352,7 @@ trait MotionActionsTrait
     private function setProposalAgreement(Motion $motion, int $status): void
     {
         $procedureToken = $this->getHttpRequest()->get('procedureToken');
-        $proposal = $motion->getLatestProposal();
+        $proposal = $motion->getProposalByToken($procedureToken);
         if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
@@ -360,6 +360,15 @@ trait MotionActionsTrait
 
         $proposal->userStatus = $status;
         $proposal->save();
+
+        $data = (new ProposedProcedureAgreement(true, $proposal->id))->jsonSerialize();
+        if ($status === Motion::STATUS_ACCEPTED) {
+            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id, $data);
+        }
+        if ($status === Motion::STATUS_REJECTED) {
+            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_REJECT_PROPOSAL, $motion->id, $data);
+        }
+
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
 
@@ -584,6 +593,10 @@ trait MotionActionsTrait
                 );
                 $proposal->notifiedAt = date('Y-m-d H:i:s');
                 $proposal->save();
+
+                $data = (new ProposedProcedureUserNotification($this->getHttpRequest()->post('text'), $proposal->id))->jsonSerialize();
+                ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_NOTIFY_PROPOSAL, $motion->id, $data);
+
                 $response['success'] = true;
                 $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                     'motion'   => $motion,
@@ -600,7 +613,10 @@ trait MotionActionsTrait
         if ($this->getHttpRequest()->post('setProposerHasAccepted')) {
             $proposal->userStatus = Motion::STATUS_ACCEPTED;
             $proposal->save();
-            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id);
+
+            $data = (new ProposedProcedureAgreement(false, $proposal->id))->jsonSerialize();
+            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id, $data);
+
             $response['success'] = true;
             $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,
