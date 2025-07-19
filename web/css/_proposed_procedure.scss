@@ -39,10 +39,6 @@
         margin: 0 20px;
       }
     }
-    .versionCreate {
-      text-align: right;
-      padding: 5px 10px;
-    }
   }
 
   .holder {
@@ -217,11 +213,37 @@
     vertical-align: middle;
     display: none;
   }
+  .saving {
+    width: 100%;
+    flex-direction: row;
+    > * {
+      flex: 1;
+    }
+    .versionSelect {
+      text-align: left;
+      padding: 10px;
+    }
+    .submit {
+      text-align: right;
+      padding-right: 10px;
+    }
+    label, input {
+      margin: 0;
+      line-height: 20px;
+      vertical-align: top;
+    }
+    label {
+      padding-right: 10px;
+    }
+  }
   .showIfChanged {
     display: none;
   }
   &.isChanged .showIfChanged {
     display: block;
+    &.saving {
+      display: flex;
+    }
   }
   &.isChanged .hideIfChanged {
     display: none;

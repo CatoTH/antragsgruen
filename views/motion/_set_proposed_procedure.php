@@ -59,11 +59,11 @@ $voting = $motion->getVotingData();
     </button>
 </h2>
 <?php
-if (count($motion->proposals) > 0) {
+if (count($motion->proposals) > 1) {
     ?>
     <section class="proposalHistory">
         <div class="versionList">
-            Versionen:
+            <?= Yii::t('amend', 'proposal_close') ?>:
             <ol>
                 <?php
                 foreach ($motion->proposals as $itProp) {
@@ -71,16 +71,13 @@ if (count($motion->proposals) > 0) {
                         echo '<li>Version ' . $itProp->version . '</li>';
                     } else {
                         $versionLink = UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $itProp->id]);
-                        echo '<li>' . Html::a(Html::encode('Version ' . $itProp->version), $versionLink) . '</li>';
+                        $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
+                        echo '<li>' . Html::a(Html::encode($versionName), $versionLink) . '</li>';
                     }
                 }
                 ?>
             </ol>
         </div>
-        <label class="versionCreate">
-            <input type="checkbox" name="newVersion">
-            Neue Version anlegen
-        </label>
     </section>
     <?php
 }
@@ -379,9 +376,21 @@ if (count($motion->proposals) > 0) {
     </div>
 </section>
 <section class="saving showIfChanged">
-    <button class="btn btn-primary btn-sm">
-        <?= Yii::t('amend', 'proposal_save_changes') ?>
-    </button>
+    <div class="versionSelect">
+        <label>
+            <input type="radio" name="newVersion" value="current">
+            <?= Yii::t('amend', 'proposal_version_edit') ?>
+        </label>
+        <label>
+            <input type="radio" name="newVersion" value="new">
+            <?= Yii::t('amend', 'proposal_version_new') ?>
+        </label>
+    </div>
+    <div class="submit">
+        <button class="btn btn-primary btn-sm">
+            <?= Yii::t('amend', 'proposal_save_changes') ?>
+        </button>
+    </div>
 </section>
 <section class="saved">
     <?= Yii::t('base', 'saved') ?>

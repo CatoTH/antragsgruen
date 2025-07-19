@@ -8,8 +8,8 @@
  */
 
 use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentProposal, IAdminComment, Motion, User};
+use app\components\{IMotionStatusFilter, Tools, UrlHelper};
+use app\models\db\{Amendment, AmendmentProposal, Motion, User};
 use yii\helpers\Html;
 
 $collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
@@ -63,28 +63,25 @@ $voting = $amendment->getVotingData();
         </button>
     </h2>
 <?php
-if (count($amendment->proposals) > 0) {
+if (count($amendment->proposals) > 1) {
     ?>
     <section class="proposalHistory">
         <div class="versionList">
-        Versionen:
-        <ol>
-            <?php
-            foreach ($amendment->proposals as $itProp) {
-                if ($itProp->id === $proposal->id) {
-                    echo '<li>Version ' . $itProp->version . '</li>';
-                } else {
-                    $versionLink = UrlHelper::createAmendmentUrl($amendment, 'show', ['proposalVersion' => $itProp->id]);
-                    echo '<li>' . Html::a(Html::encode('Version ' . $itProp->version), $versionLink) . '</li>';
+            <?= Yii::t('amend', 'proposal_close') ?>:
+            <ol>
+                <?php
+                foreach ($amendment->proposals as $itProp) {
+                    if ($itProp->id === $proposal->id) {
+                        echo '<li>Version ' . $itProp->version . '</li>';
+                    } else {
+                        $versionLink = UrlHelper::createAmendmentUrl($amendment, 'show', ['proposalVersion' => $itProp->id]);
+                        $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
+                        echo '<li>' . Html::a(Html::encode($versionName), $versionLink) . '</li>';
+                    }
                 }
-            }
-            ?>
-        </ol>
+                ?>
+            </ol>
         </div>
-        <label class="versionCreate">
-            <input type="checkbox" name="newVersion">
-            Neue Version anlegen
-        </label>
     </section>
     <?php
 }
@@ -422,9 +419,21 @@ if (count($amendment->proposals) > 0) {
         </div>
     </section>
     <section class="saving showIfChanged">
-        <button class="btn btn-primary btn-sm">
-            <?= Yii::t('amend', 'proposal_save_changes') ?>
-        </button>
+        <div class="versionSelect">
+            <label>
+                <input type="radio" name="newVersion" value="current">
+                <?= Yii::t('amend', 'proposal_version_edit') ?>
+            </label>
+            <label>
+                <input type="radio" name="newVersion" value="new">
+                <?= Yii::t('amend', 'proposal_version_new') ?>
+            </label>
+        </div>
+        <div class="submit">
+            <button class="btn btn-primary btn-sm">
+                <?= Yii::t('amend', 'proposal_save_changes') ?>
+            </button>
+        </div>
     </section>
     <section class="saved">
         <?= Yii::t('base', 'saved') ?>

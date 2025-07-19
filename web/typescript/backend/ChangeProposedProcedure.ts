@@ -96,8 +96,14 @@ export class ChangeProposedProcedure {
     }
 
     private performCallWithReload(data: object) {
+
+        console.log(data);
+
         data['context'] = this.context;
-        data['version'] = this.version;
+
+        if (data['version'] === undefined) {
+            data['version'] = this.version;
+        }
 
         $.ajax({
             url: this.saveUrl,
@@ -208,6 +214,13 @@ export class ChangeProposedProcedure {
 
         if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
             data['proposalExplanation'] = this.$widget.find('textarea[name=proposalExplanation]').val();
+        }
+
+        if (this.$widget.find('input[name=newVersion][value=current]').prop('checked')) {
+            data['version'] = this.version;
+        }
+        if (this.$widget.find('input[name=newVersion][value=new]').prop('checked')) {
+            data['version'] = null;
         }
 
         this.performCallWithReload(data);
