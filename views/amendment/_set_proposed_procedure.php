@@ -3,39 +3,41 @@
 /**
  * @var Yii\web\View $this
  * @var Amendment $amendment
+ * @var AmendmentProposal $proposal
  * @var string $context
  */
 
 use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
-use app\models\db\{Amendment, IAdminComment, Motion, User};
+use app\components\{IMotionStatusFilter, Tools, UrlHelper};
+use app\models\db\{Amendment, AmendmentProposal, Motion, User};
 use yii\helpers\Html;
 
-$collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
+$collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
+    'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
 ]);
-if ($amendment->proposalStatus === Amendment::STATUS_REFERRED) {
-    $preReferredTo = $amendment->proposalComment;
+if ($proposal->proposalStatus === Amendment::STATUS_REFERRED) {
+    $preReferredTo = $proposal->comment;
 } else {
     $preReferredTo = '';
 }
-if (in_array($amendment->proposalStatus, [Amendment::STATUS_OBSOLETED_BY_AMENDMENT, Motion::STATUS_OBSOLETED_BY_MOTION])) {
-    $preObsoletedBy = $amendment->proposalComment;
+if (in_array($proposal->proposalStatus, [Amendment::STATUS_OBSOLETED_BY_AMENDMENT, Motion::STATUS_OBSOLETED_BY_MOTION])) {
+    $preObsoletedBy = $proposal->comment;
 } else {
     $preObsoletedBy = '';
 }
-if ($amendment->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
-    $preMovedToMotion = $amendment->proposalComment;
+if ($proposal->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+    $preMovedToMotion = $proposal->comment;
 } else {
     $preMovedToMotion = '';
 }
-if ($amendment->proposalStatus === Amendment::STATUS_CUSTOM_STRING) {
-    $preCustomStr = $amendment->proposalComment;
+if ($proposal->proposalStatus === Amendment::STATUS_CUSTOM_STRING) {
+    $preCustomStr = $proposal->comment;
 } else {
     $preCustomStr = '';
 }
@@ -49,7 +51,7 @@ $votingBlocks = $consultation->votingBlocks;
 $allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
 $selectedTags = $amendment->getProposedProcedureTags();
 $currBlockIsLocked = ($amendment->votingBlock && !$amendment->votingBlock->itemsCanBeRemoved());
-$canBeChangedUnlimitedly = $amendment->canEditProposedProcedure();
+$canBeChangedUnlimitedly = $proposal->canEditProposedProcedure();
 $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 $voting = $amendment->getVotingData();
 ?>
@@ -60,7 +62,31 @@ $voting = $amendment->getVotingData();
             <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
         </button>
     </h2>
-    <div class="holder">
+<?php
+if (count($amendment->proposals) > 1) {
+    ?>
+    <section class="proposalHistory">
+        <div class="versionList">
+            <?= Yii::t('amend', 'proposal_close') ?>:
+            <ol>
+                <?php
+                foreach ($amendment->proposals as $itProp) {
+                    if ($itProp->id === $proposal->id) {
+                        echo '<li>Version ' . $itProp->version . '</li>';
+                    } else {
+                        $versionLink = UrlHelper::createAmendmentUrl($amendment, 'show', ['proposalVersion' => $itProp->id]);
+                        $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
+                        echo '<li>' . Html::a(Html::encode($versionName), $versionLink) . '</li>';
+                    }
+                }
+                ?>
+            </ol>
+        </div>
+    </section>
+    <?php
+}
+?>
+<div class="holder">
         <section class="statusForm">
             <h3><?= Yii::t('amend', 'proposal_status_title') ?></h3>
 
@@ -70,7 +96,7 @@ $voting = $amendment->getVotingData();
                 ?>
                 <label class="proposalStatus<?= $statusId ?>">
                     <input type="radio" name="proposalStatus" value="<?= $statusId ?>"<?php
-                    if ($amendment->proposalStatus == intval($statusId)) {
+                    if ($proposal->proposalStatus == intval($statusId)) {
                         $foundStatus = true;
                         echo ' checked';
                     }
@@ -91,11 +117,11 @@ $voting = $amendment->getVotingData();
             <div class="visibilitySettings showIfStatusSet">
                 <h3><?= Yii::t('amend', 'proposal_publicity') ?></h3>
                 <label>
-                    <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null), ['disabled' => $limitedDisabled]) ?>
+                    <?= Html::checkbox('proposalVisible', ($proposal->visibleFrom !== null), ['disabled' => $limitedDisabled]) ?>
                     <?= Yii::t('amend', 'proposal_visible') ?>
                 </label>
                 <label>
-                    <?= Html::checkbox('setPublicExplanation', ($amendment->proposalExplanation !== null), ['disabled' => $limitedDisabled]) ?>
+                    <?= Html::checkbox('setPublicExplanation', ($proposal->explanation !== null), ['disabled' => $limitedDisabled]) ?>
                     <?= Yii::t('amend', 'proposal_public_expl_set') ?>
                 </label>
             </div>
@@ -175,17 +201,17 @@ $voting = $amendment->getVotingData();
                 <h3><?= Yii::t('amend', 'proposal_noti') ?></h3>
                 <div class="notificationStatus">
                     <?php
-                    if ($amendment->proposalUserStatus !== null) {
-                        if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                    if ($proposal->userStatus !== null) {
+                        if ($proposal->userStatus == Amendment::STATUS_ACCEPTED) {
                             echo '<span class="glyphicon glyphicon glyphicon-ok accepted" aria-hidden="true"></span>';
                             echo Yii::t('amend', 'proposal_user_accepted');
-                        } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
+                        } elseif ($proposal->userStatus == Amendment::STATUS_REJECTED) {
                             echo '<span class="glyphicon glyphicon glyphicon-remove rejected" aria-hidden="true"></span>';
                             echo Yii::t('amend', 'proposal_user_rejected');
                         } else {
                             echo 'Error: unknown response of the proposer';
                         }
-                    } elseif ($amendment->proposalFeedbackHasBeenRequested()) {
+                    } elseif ($proposal->proposalFeedbackHasBeenRequested()) {
                         $msg  = Yii::t('amend', 'proposal_notified');
                         $date = Tools::formatMysqlDateTime($amendment->proposalNotification, false);
                         echo str_replace('%DATE%', $date, $msg);
@@ -202,8 +228,8 @@ $voting = $amendment->getVotingData();
                             </button>
                         </div>
                         <?php
-                    } elseif ($amendment->proposalStatus !== null) {
-                        if ($amendment->proposalAllowsUserFeedback()) {
+                    } elseif ($proposal->proposalStatus !== null) {
+                        if ($proposal->proposalAllowsUserFeedback()) {
                             $msg = Yii::t('amend', 'proposal_notify_w_feedback');
                         } else {
                             $msg = Yii::t('amend', 'proposal_notify_o_feedback');
@@ -223,43 +249,8 @@ $voting = $amendment->getVotingData();
         </div>
         <section class="proposalCommentForm">
             <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
-            <ol class="commentList">
-                <?php
-                $commentTypes = [IAdminComment::TYPE_PROPOSED_PROCEDURE];
-                foreach ($amendment->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
-                    $user = $adminComment->getMyUser();
-                    ?>
-                    <li class="comment" data-id="<?= $adminComment->id ?>">
-                        <div class="header">
-                            <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
-                            <?php
-                            if (User::isCurrentUser($user)) {
-                                $url = UrlHelper::createAmendmentUrl($amendment, 'del-proposal-comment');
-                                echo '<button type="button" data-url="' . Html::encode($url) . '" ';
-                                echo 'class="btn-link delComment">';
-                                echo '<span class="glyphicon glyphicon-trash"></span></button>';
-                            }
-                            ?>
-                            <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
-                        </div>
-                        <div class="comment">
-                            <?php
-                            if ($adminComment->status == IAdminComment::TYPE_PROPOSED_PROCEDURE) {
-                                echo '<div class="overv">' . Yii::t('amend', 'proposal_comment_overview') . '</div>';
-                            }
-                            ?>
-                            <?= HTMLTools::textToHtmlWithLink($adminComment->text) ?>
-                        </div>
-                    </li>
-                    <?php
-                }
-                ?>
-            </ol>
 
-            <textarea name="text" placeholder="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
-                      title="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
-                      class="form-control" rows="1"></textarea>
-            <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
+            <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
         </section>
     </div>
     <section class="proposalTags">
@@ -358,7 +349,7 @@ $voting = $amendment->getVotingData();
         <?php
         echo Html::textarea(
             'proposalExplanation',
-            $amendment->proposalExplanation ?: '',
+            $proposal->explanation ?: '',
             [
                 'title' => Yii::t('amend', 'proposal_public_expl_title'),
                 'class' => 'form-control',
@@ -375,7 +366,7 @@ $voting = $amendment->getVotingData();
                 $title = $collidingAmendment->getShortTitle();
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
                 echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
-                if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
+                if ($collidingAmendment->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . Yii::t('amend', 'proposal_voting') . ')';
                 }
                 echo '</li>';
@@ -404,7 +395,7 @@ $voting = $amendment->getVotingData();
             </div>
         </div>
         <?php
-        $defaultText = \app\models\notifications\AmendmentProposedProcedure::getDefaultText($amendment);
+        $defaultText = \app\models\notifications\AmendmentProposedProcedure::getDefaultText($proposal);
         echo Html::textarea(
             'proposalNotificationText',
             $defaultText,
@@ -418,7 +409,7 @@ $voting = $amendment->getVotingData();
         <div class="submitRow">
             <button type="button" name="notificationSubmit" class="btn btn-success btn-sm">
                 <?php
-                if ($amendment->proposalAllowsUserFeedback()) {
+                if ($proposal->proposalAllowsUserFeedback()) {
                     echo Yii::t('amend', 'proposal_notify_w_feedback');
                 } else {
                     echo Yii::t('amend', 'proposal_notify_o_feedback');
@@ -428,9 +419,21 @@ $voting = $amendment->getVotingData();
         </div>
     </section>
     <section class="saving showIfChanged">
-        <button class="btn btn-primary btn-sm">
-            <?= Yii::t('amend', 'proposal_save_changes') ?>
-        </button>
+        <div class="versionSelect">
+            <label>
+                <input type="radio" name="newVersion" value="current">
+                <?= Yii::t('amend', 'proposal_version_edit') ?>
+            </label>
+            <label>
+                <input type="radio" name="newVersion" value="new">
+                <?= Yii::t('amend', 'proposal_version_new') ?>
+            </label>
+        </div>
+        <div class="submit">
+            <button class="btn btn-primary btn-sm">
+                <?= Yii::t('amend', 'proposal_save_changes') ?>
+            </button>
+        </div>
     </section>
     <section class="saved">
         <?= Yii::t('base', 'saved') ?>

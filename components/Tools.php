@@ -364,9 +364,9 @@ class Tools
         };
     }
 
-    public static function formatMysqlDateTime(string $mysqlDate, bool $allowRelativeDates = true): string
+    public static function formatMysqlDateTime(?string $mysqlDate, bool $allowRelativeDates = true): string
     {
-        if (strlen($mysqlDate) === 0) {
+        if ($mysqlDate === null || strlen($mysqlDate) === 0) {
             return '-';
         }
 

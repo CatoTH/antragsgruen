@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\consultationLog\ProposedProcedureAgreement;
 use app\components\{RequestContext, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, IComment, Consultation, User};
 use app\models\events\AmendmentEvent;
@@ -328,13 +329,22 @@ trait AmendmentActionsTrait
     private function setProposalAgreement(Amendment $amendment, int $status): void
     {
         $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
-        if (!$amendment->canSeeProposedProcedure($procedureToken) || !$amendment->proposalFeedbackHasBeenRequested()) {
+        $proposal = $amendment->getProposalByToken($procedureToken);
+        if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }
 
-        $amendment->proposalUserStatus = $status;
-        $amendment->save();
+        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id)->jsonSerialize();
+        if ($status === Amendment::STATUS_ACCEPTED) {
+            ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);
+        }
+        if ($status === Amendment::STATUS_REJECTED) {
+            ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_REJECT_PROPOSAL, $amendment->id, $data);
+        }
+
+        $proposal->userStatus = $status;
+        $proposal->save();
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
 

@@ -2,12 +2,13 @@
 
 namespace app\models\forms;
 
-use app\models\db\{Amendment, AmendmentSection, IMotion, Motion, MotionSection};
+use app\models\db\{Amendment, AmendmentSection, IMotion, IProposal, Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
 
 class ProposedChangeForm
 {
     protected IMotion $imotion;
+    protected IProposal $proposal;
 
     /** @var AmendmentSection[] */
     protected array $proposalSections;
@@ -15,16 +16,17 @@ class ProposedChangeForm
     public function __construct(IMotion $imotion)
     {
         $this->imotion = $imotion;
+        $this->proposal = $imotion->getLatestProposal();
         $this->initProposal();
     }
 
     protected function initProposal(): void
     {
-        if ($this->imotion->getMyProposalReference() && in_array($this->imotion->getMyProposalReference()->status, [
+        if ($this->proposal->getMyProposalReference() && in_array($this->proposal->getMyProposalReference()->status, [
             Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT,
             Motion::STATUS_PROPOSED_MODIFIED_MOTION,
         ])) {
-            $this->proposalSections = $this->imotion->getMyProposalReference()->getActiveSections();
+            $this->proposalSections = $this->proposal->getMyProposalReference()->getActiveSections();
             return;
         }
         $this->proposalSections = [];
@@ -84,7 +86,7 @@ class ProposedChangeForm
 
     private function getProposalAmendmentObject(): Amendment
     {
-        $reference = $this->imotion->getMyProposalReference();
+        $reference = $this->proposal->getMyProposalReference();
         if ($reference && in_array($reference->status, [
             Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT,
             Motion::STATUS_PROPOSED_MODIFIED_MOTION,
@@ -130,8 +132,8 @@ class ProposedChangeForm
                 die();
             }
         }
-        $this->imotion->proposalReferenceId = $propAmend->id;
-        $this->imotion->proposalStatus = Amendment::STATUS_MODIFIED_ACCEPTED;
-        $this->imotion->save();
+        $this->proposal->proposalReferenceId = $propAmend->id;
+        $this->proposal->proposalStatus = Amendment::STATUS_MODIFIED_ACCEPTED;
+        $this->proposal->save();
     }
 }

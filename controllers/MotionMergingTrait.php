@@ -84,7 +84,7 @@ trait MotionMergingTrait
         $amendmentIds = [];
         foreach ($amendments as $amendment) {
             if ($amendment['version'] === 'prop') {
-                $amendmentIds[] = $this->consultation->getAmendment($amendment['id'])->getMyProposalReference()->id;
+                $amendmentIds[] = $this->consultation->getAmendment($amendment['id'])->getLatestProposal()->getMyProposalReference()->id;
             } else {
                 $amendmentIds[] = $amendment['id'];
             }
@@ -125,7 +125,7 @@ trait MotionMergingTrait
 
         $knownAmendments = array_map('intval', explode(',', $knownAmendments));
         $amendments = Init::getMotionAmendmentsForMerging($motion);
-        $proposedAlternative = $motion->getAlternativeProposaltextReference();
+        $proposedAlternative = $motion->getLatestProposal()->getAlternativeProposaltextReference();
         if ($proposedAlternative && $proposedAlternative['motion']->id === $motion->id) {
             $amendments[] = $proposedAlternative['modification'];
         }
@@ -137,7 +137,7 @@ trait MotionMergingTrait
                 $newAmendmentsStaticData[]           = Init::getJsAmendmentStaticData($amendment);
                 $newAmendmentsStatus[$amendment->id] = [
                     'status'     => $amendment->status,
-                    'version'    => ($amendment->hasAlternativeProposaltext(false) ? Init::TEXT_VERSION_PROPOSAL : Init::TEXT_VERSION_ORIGINAL),
+                    'version'    => ($amendment->getLatestProposal()->hasAlternativeProposaltext(false) ? Init::TEXT_VERSION_PROPOSAL : Init::TEXT_VERSION_ORIGINAL),
                     'votingData' => $amendment->getVotingData()->jsonSerialize(),
                 ];
             }

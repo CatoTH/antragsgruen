@@ -46,7 +46,12 @@ echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
             echo '<div class="alert alert-info">' . $msgAlert . '</div>';
         }
 
-        echo $this->render('_set_proposed_procedure', ['motion' => $motion, 'context' => 'edit', 'msgAlert' => null]);
+        echo $this->render('_set_proposed_procedure', [
+            'motion' => $motion,
+            'proposal' => $motion->getLatestProposal(),
+            'context' => 'edit',
+            'msgAlert' => null,
+        ]);
 
         echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'edit-proposed-change'), 'post', [
             'id'                        => 'proposedChangeTextForm',

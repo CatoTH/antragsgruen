@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment, User};
+use app\models\db\{Amendment, AmendmentProposal, User};
 use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
@@ -20,7 +20,8 @@ $consultation = $amendment->getMyConsultation();
 $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
-$hasPpAdminbox = ($hasPp && $amendment->canEditLimitedProposedProcedure());
+$hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedProposedProcedure());
+$activeProposal = ($procedureToken ? $amendment->getProposalByToken($procedureToken) ?? $amendment->getLatestProposal() : $amendment->getLatestProposal());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -172,12 +173,13 @@ if ($hasPp) {
 
         echo $this->render('_set_proposed_procedure', [
             'amendment' => $amendment,
+            'proposal' => $activeProposal,
             'context'   => 'view',
             'msgAlert'  => null,
         ]);
     }
-    if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->canSeeProposedProcedure($procedureToken)) {
-        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment, 'procedureToken' => $procedureToken]);
+    if ($activeProposal->proposalFeedbackHasBeenRequested() && $activeProposal->canSeeProposedProcedure($procedureToken)) {
+        echo $this->render('@app/views/shared/_view_agree_to_proposal', ['imotion' => $amendment, 'proposal' => $activeProposal, 'procedureToken' => $procedureToken]);
     }
 }
 
@@ -191,7 +193,10 @@ if ($amendment->status === Amendment::STATUS_DRAFT) {
     <?php
 }
 
-echo $this->render('_view_text', ['amendment' => $amendment, 'procedureToken' => $procedureToken]);
+echo $this->render('_view_text', [
+    'amendment' => $amendment,
+    'proposal' => $activeProposal,
+]);
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
 $supporters    = $amendment->getSupporters(true);

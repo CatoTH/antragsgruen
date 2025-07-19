@@ -1,6 +1,6 @@
 <?php
 
-use app\models\db\{ConsultationSettingsMotionSection, Motion, User};
+use app\models\db\{ConsultationSettingsMotionSection, Motion, MotionProposal, User};
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
@@ -9,14 +9,14 @@ use yii\helpers\Html;
 
 /**
  * @var Motion $motion
- * @var string $procedureToken
+ * @var MotionProposal $proposal
  * @var CommentForm $commentForm
  * @var int[] $openedComments
  */
 
 $sections  = $motion->getSortedSections(false, true);
 
-$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections() && $procedureToken === null);
+$useCache = ($commentForm === null && count($openedComments) === 0 && !$motion->hasNonPublicSections() && !$proposal);
 if (User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion)) &&
     count($motion->getActiveSections(ISectionType::TYPE_TEXT_EDITORIAL)) > 0
 ) {
@@ -39,7 +39,7 @@ $cache->setIsBulky(true);
 $cache->setIsSynchronized(true);
 $cache->setSkipCache(!$useCache);
 
-echo $cache->getCached(function () use ($motion, $sections, $commentForm, $procedureToken, $openedComments) {
+echo $cache->getCached(function () use ($motion, $sections, $commentForm, $proposal, $openedComments) {
     $titleSection = $motion->getTitleSection();
 
     // Hint: Once a PDF or a Video comes in, we don't use two-column mode anymore, as that would look strange
@@ -47,7 +47,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $proce
     $main = $right = '';
     $bottom = '';
 
-    $ppSections = LayoutHelper::getVisibleProposedProcedureSections($motion, $procedureToken);
+    $ppSections = LayoutHelper::getVisibleProposedProcedureSections($motion, $proposal);
     if (!LayoutHelper::showProposedProceduresInline($motion)) {
         foreach ($ppSections as $ppSection) {
             $ppSection['section']->setTitlePrefix($ppSection['title']);
