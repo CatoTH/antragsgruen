@@ -335,7 +335,7 @@ trait AmendmentActionsTrait
             return;
         }
 
-        $data = (new ProposedProcedureAgreement(true, $proposal->id))->jsonSerialize();
+        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id)->jsonSerialize();
         if ($status === Amendment::STATUS_ACCEPTED) {
             ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);
         }

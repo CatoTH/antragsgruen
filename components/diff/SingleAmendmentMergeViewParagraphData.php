@@ -4,7 +4,6 @@ namespace app\components\diff;
 
 use app\components\HTMLTools;
 use app\models\db\Amendment;
-use app\models\db\AmendmentProposal;
 use app\models\sectionTypes\ISectionType;
 
 class SingleAmendmentMergeViewParagraphData

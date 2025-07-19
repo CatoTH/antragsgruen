@@ -11,16 +11,16 @@ class ProposedProcedureAgreement implements \JsonSerializable
     use JsonConfigTrait;
 
     public bool $byUser;
+    public int $version;
     public int $procedureId;
 
-    public function __construct(bool $byUser, int $procedureId)
+    public static function create(bool $byUser, int $version, int $procedureId): ProposedProcedureAgreement
     {
-        $this->byUser = $byUser;
-        $this->procedureId = $procedureId;
-    }
+        $object = new self(null);
+        $object->byUser = $byUser;
+        $object->version = $version;
+        $object->procedureId = $procedureId;
 
-    public function jsonSerialize(): array
-    {
-        return get_object_vars($this);
+        return $object;
     }
 }

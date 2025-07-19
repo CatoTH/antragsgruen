@@ -11,16 +11,16 @@ class ProposedProcedureUserNotification implements \JsonSerializable
     use JsonConfigTrait;
 
     public string $text;
+    public int $version;
     public int $procedureId;
 
-    public function __construct(string $text, int $procedureId)
+    public static function create(string $text, int $version, int $procedureId): ProposedProcedureUserNotification
     {
-        $this->text = $text;
-        $this->procedureId = $procedureId;
-    }
+        $object = new ProposedProcedureUserNotification(null);
+        $object->text = $text;
+        $object->version = $version;
+        $object->procedureId = $procedureId;
 
-    public function jsonSerialize(): array
-    {
-        return get_object_vars($this);
+        return $object;
     }
 }

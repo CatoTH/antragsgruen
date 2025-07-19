@@ -361,7 +361,7 @@ trait MotionActionsTrait
         $proposal->userStatus = $status;
         $proposal->save();
 
-        $data = (new ProposedProcedureAgreement(true, $proposal->id))->jsonSerialize();
+        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id)->jsonSerialize();
         if ($status === Motion::STATUS_ACCEPTED) {
             ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id, $data);
         }
@@ -488,11 +488,13 @@ trait MotionActionsTrait
         if (!$proposal->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
+
+        $proposal->save(); // Make sure we know the ID
         $canChangeProposalUnlimitedly = $proposal->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
-        $ppChanges = new ProposedProcedureChange(null);
+        $ppChanges = ProposedProcedureChange::create($proposal->id, $proposal->version);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
             $originalMotionId = $motion->id;
@@ -594,7 +596,7 @@ trait MotionActionsTrait
                 $proposal->notifiedAt = date('Y-m-d H:i:s');
                 $proposal->save();
 
-                $data = (new ProposedProcedureUserNotification($this->getHttpRequest()->post('text'), $proposal->id))->jsonSerialize();
+                $data = ProposedProcedureUserNotification::create($this->getHttpRequest()->post('text'), $proposal->version, $proposal->id)->jsonSerialize();
                 ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_NOTIFY_PROPOSAL, $motion->id, $data);
 
                 $response['success'] = true;
@@ -614,7 +616,7 @@ trait MotionActionsTrait
             $proposal->userStatus = Motion::STATUS_ACCEPTED;
             $proposal->save();
 
-            $data = (new ProposedProcedureAgreement(false, $proposal->id))->jsonSerialize();
+            $data = ProposedProcedureAgreement::create(false, $proposal->version, $proposal->id)->jsonSerialize();
             ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id, $data);
 
             $response['success'] = true;

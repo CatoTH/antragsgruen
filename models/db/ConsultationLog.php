@@ -2,6 +2,9 @@
 
 namespace app\models\db;
 
+use app\models\consultationLog\ProposedProcedureAgreement;
+use app\models\consultationLog\ProposedProcedureChange;
+use app\models\consultationLog\ProposedProcedureUserNotification;
 use app\models\settings\AntragsgruenApp;
 use app\components\{Tools, UrlHelper};
 use yii\db\{ActiveQuery, ActiveRecord};
@@ -609,8 +612,29 @@ class ConsultationLog extends ActiveRecord
             case self::MOTION_PUBLISH_PROPOSAL:
                 $str = \Yii::t('structure', 'activity_MOTION_PUBLISH_PROPOSAL');
                 return $this->formatLogEntryUser($str, '');
+            case self::MOTION_NOTIFY_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureUserNotification($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_MOTION_NOTIFY_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                return $this->formatLogEntryUser($str, '');
+            case self::MOTION_ACCEPT_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_MOTION_ACCEPT_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                return $this->formatLogEntryUser($str, '');
+            case self::MOTION_REJECT_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_MOTION_REJECT_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                return $this->formatLogEntryUser($str, '');
             case self::MOTION_SET_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
+                $version = (string) ($data->version ?? '-');
                 $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output
                 return $this->formatLogEntryUser($str, '');
             case self::MOTION_VOTE_ACCEPTED:
@@ -684,9 +708,30 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
                 return $this->formatLogEntryAmendment($str);
+            case self::AMENDMENT_NOTIFY_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureUserNotification($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_AMENDMENT_NOTIFY_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                return $this->formatLogEntryUser($str, '');
+            case self::AMENDMENT_ACCEPT_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_AMENDMENT_ACCEPT_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                return $this->formatLogEntryUser($str, '');
+            case self::AMENDMENT_REJECT_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_AMENDMENT_REJECT_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                return $this->formatLogEntryUser($str, '');
             case self::AMENDMENT_SET_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
+                $version = (string) ($data->version ?? '-');
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
+                $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output
                 return $this->formatLogEntryAmendment($str);
             case self::VOTING_OPEN:

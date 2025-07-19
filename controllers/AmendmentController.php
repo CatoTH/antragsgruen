@@ -2,10 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\consultationLog\ProposedProcedureAgreement;
-use app\models\consultationLog\ProposedProcedureChange;
+use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureChange, ProposedProcedureUserNotification};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\models\consultationLog\ProposedProcedureUserNotification;
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\http\{BinaryFileResponse,
     HtmlErrorResponse,
@@ -15,8 +13,8 @@ use app\models\http\{BinaryFileResponse,
     ResponseInterface,
     RestApiExceptionResponse,
     RestApiResponse};
-use app\components\{HTMLTools, IMotionStatusFilter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, ISupporter, Motion, User};
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, ISupporter, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
@@ -468,11 +466,13 @@ class AmendmentController extends Base
         if (!$proposal->canEditLimitedProposedProcedure()) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
+
+        $proposal->save(); // Make sure we know the ID
         $canChangeProposalUnlimitedly = $proposal->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
-        $ppChanges = new ProposedProcedureChange(null);
+        $ppChanges = ProposedProcedureChange::create($proposal->id, $proposal->version);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
             $originalProposalStatus = $proposal->proposalStatus;
@@ -574,7 +574,7 @@ class AmendmentController extends Base
                 $proposal->notifiedAt = date('Y-m-d H:i:s');
                 $proposal->save();
 
-                $data = (new ProposedProcedureUserNotification($this->getHttpRequest()->post('text'), $proposal->id))->jsonSerialize();
+                $data = ProposedProcedureUserNotification::create($this->getHttpRequest()->post('text'), $proposal->version, $proposal->id)->jsonSerialize();
                 ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_NOTIFY_PROPOSAL, $amendment->id, $data);
 
                 $amendment->flushCacheItems(['procedure']);
@@ -596,7 +596,7 @@ class AmendmentController extends Base
             $proposal->save();
             $amendment->flushCacheItems(['procedure']);
 
-            $data = (new ProposedProcedureAgreement(false, $proposal->id))->jsonSerialize();
+            $data = ProposedProcedureAgreement::create(false, $proposal->version, $proposal->id)->jsonSerialize();
             ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);
 
             $response['success'] = true;

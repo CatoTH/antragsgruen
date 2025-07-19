@@ -288,7 +288,10 @@ class AmendmentController extends AdminBase
                 $plugin::setAmendmentExtraSettingsFromForm($amendment, $post);
             }
 
-            $ppChanges = new ProposedProcedureChange(null);
+            $proposal = $amendment->getLatestProposal();
+            $proposal->save(); // Make sure there is an ID
+
+            $ppChanges = ProposedProcedureChange::create($proposal->id, $proposal->version);
             try {
                 $amendment->setProposalVotingPropertiesFromRequest(
                     $this->getHttpRequest()->post('votingStatus', null),

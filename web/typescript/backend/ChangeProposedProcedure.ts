@@ -114,6 +114,7 @@ export class ChangeProposedProcedure {
                     let $content = $(ret['html']);
                     this.$widget.children().remove();
                     this.$widget.append($content.children());
+                    this.$widget.data('proposal-id', $content.data('proposal-id'));
                     this.reinitAfterReload();
                     this.$widget.addClass('showSaved').removeClass('isChanged');
                     if (ret['proposalStr']) {
