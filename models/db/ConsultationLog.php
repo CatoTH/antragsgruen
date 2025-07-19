@@ -6,7 +6,7 @@ use app\models\consultationLog\ProposedProcedureAgreement;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\consultationLog\ProposedProcedureUserNotification;
 use app\models\settings\AntragsgruenApp;
-use app\components\{Tools, UrlHelper};
+use app\components\{HTMLTools, Tools, UrlHelper};
 use yii\db\{ActiveQuery, ActiveRecord};
 use yii\helpers\Html;
 
@@ -233,6 +233,9 @@ class ConsultationLog extends ActiveRecord
         return $query->all();
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
     private static function getLogForActionTypes(int $consultationId, int $referenceId, bool $showUserInvisible, array $actionTypes): array
     {
         $query = self::find();
@@ -246,6 +249,9 @@ class ConsultationLog extends ActiveRecord
         return $query->all();
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
     private static function getLogForUser(int $consultationId, int $userId, bool $showUserInvisible, array $actionTypes): array
     {
         $query = self::find();
@@ -259,16 +265,25 @@ class ConsultationLog extends ActiveRecord
         return $query->all();
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
     public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible): array
     {
         return self::getLogForActionTypes($consultationId, $motionId, $showUserInvisible, self::MOTION_ACTION_TYPES);
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
     public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible): array
     {
         return self::getLogForActionTypes($consultationId, $amendmentId, $showUserInvisible, self::AMENDMENT_ACTION_TYPES);
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
     public static function getLogForProposedProcedure(IMotion $imotion): array
     {
         if (is_a($imotion, Amendment::class)) {
@@ -277,19 +292,34 @@ class ConsultationLog extends ActiveRecord
             $actions = self::MOTION_PROPOSAL_EVENTS;
         }
 
-        return self::getLogForActionTypes(
-            $imotion->getMyConsultation()->id,
-            $imotion->id,
-            true,
-            $actions
-        );
+        return self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, $actions);
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
+    public static function getProposalNotification(IMotion $imotion): array
+    {
+        if (is_a($imotion, Amendment::class)) {
+            $action = ConsultationLog::AMENDMENT_NOTIFY_PROPOSAL;
+        } else {
+            $action = ConsultationLog::MOTION_NOTIFY_PROPOSAL;
+        }
+
+        return self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, [$action]);
+    }
+
+    /**
+     * @return ConsultationLog[]
+     */
     public static function getLogForUserId(int $consultationId, int $userId): array
     {
         return self::getLogForUser($consultationId, $userId, true, self::USER_ACTION_TYPES);
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
     public static function getLogForUserGroupId(int $consultationId, int $userGroupId): array
     {
         return self::getLogForActionTypes($consultationId, $userGroupId, true, self::USER_GROUP_ACTION_TYPES);
@@ -617,6 +647,9 @@ class ConsultationLog extends ActiveRecord
                 $version = (string) ($data->version ?? '-');
                 $str = \Yii::t('structure', 'activity_MOTION_NOTIFY_PROPOSAL');
                 $str = str_replace('%VERSION%', $version, $str);
+                if ($data && $data->text) {
+                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                }
                 return $this->formatLogEntryUser($str, '');
             case self::MOTION_ACCEPT_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
@@ -713,6 +746,9 @@ class ConsultationLog extends ActiveRecord
                 $version = (string) ($data->version ?? '-');
                 $str = \Yii::t('structure', 'activity_AMENDMENT_NOTIFY_PROPOSAL');
                 $str = str_replace('%VERSION%', $version, $str);
+                if ($data && $data->text) {
+                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                }
                 return $this->formatLogEntryUser($str, '');
             case self::AMENDMENT_ACCEPT_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);

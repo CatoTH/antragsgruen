@@ -203,7 +203,7 @@ if ($hasPp) {
         ]);
     }
     if ($activeProposal->proposalFeedbackHasBeenRequested() && $activeProposal->canSeeProposedProcedure($procedureToken)) {
-        echo $this->render('_view_agree_to_proposal', ['motion' => $motion, 'proposal' => $activeProposal, 'procedureToken' => $procedureToken]);
+        echo $this->render('@app/views/shared/_view_agree_to_proposal', ['imotion' => $motion, 'proposal' => $activeProposal, 'procedureToken' => $procedureToken]);
     }
 }
 

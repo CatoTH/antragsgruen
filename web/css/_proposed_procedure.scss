@@ -181,6 +181,9 @@
       box-shadow: none;
       font-size: 12px;
     }
+    blockquote {
+      font-size: 12px;
+    }
     button {
       margin-top: -1px;
       width: 100%;
@@ -539,6 +542,19 @@
     > * {
       flex: 1;
       padding: 10px;
+    }
+  }
+  .comment {
+    padding: 10px;
+  }
+  .agreement {
+    display: flex;
+    > * {
+      flex: 1;
+      padding: 10px;
+    }
+    .agree {
+      text-align: right;
     }
   }
   .hint {
