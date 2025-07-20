@@ -640,6 +640,7 @@ trait MotionActionsTrait
             }
 
             $response['success'] = true;
+            $response['proposalId'] = $proposal->id;
             $response['comment'] = [
                 'username'      => $adminComment->getMyUser()->name,
                 'id'            => $adminComment->id,

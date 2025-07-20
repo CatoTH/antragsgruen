@@ -374,6 +374,9 @@ export class ChangeProposedProcedure {
                     $commentList.append($comment);
                     $commentWidget.find('textarea').val('');
                     $commentList[0].scrollTop = $commentList[0].scrollHeight;
+
+                    this.$widget.data('proposal-id', ev.proposalId);
+                    this.version = ev.proposalId;
                 } else {
                     alert('Could not save: ' + JSON.stringify(ev));
                 }

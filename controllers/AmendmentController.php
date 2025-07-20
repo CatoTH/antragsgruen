@@ -623,6 +623,7 @@ class AmendmentController extends Base
             $amendment->flushCacheItems(['procedure']);
 
             $response['success'] = true;
+            $response['proposalId'] = $proposal->id;
             $response['comment'] = [
                 'username'      => $adminComment->getMyUser()->name,
                 'id'            => $adminComment->id,
