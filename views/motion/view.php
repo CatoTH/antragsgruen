@@ -198,7 +198,7 @@ if ($hasPp) {
         echo $this->render('_set_proposed_procedure', [
             'motion' => $motion,
             'proposal' => $activeProposal,
-            'context'   => 'view',
+            'context'  => 'view',
             'msgAlert' => null,
         ]);
     }

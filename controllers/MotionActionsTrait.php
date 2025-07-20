@@ -624,6 +624,7 @@ trait MotionActionsTrait
                 'motion'   => $motion,
                 'proposal' => $proposal,
                 'msgAlert' => $msgAlert,
+                'context'  => $this->getHttpRequest()->post('context', 'view'),
             ]);
         }
 

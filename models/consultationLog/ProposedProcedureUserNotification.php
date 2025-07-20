@@ -12,14 +12,14 @@ class ProposedProcedureUserNotification implements \JsonSerializable
 
     public string $text;
     public int $version;
-    public int $procedureId;
+    public int $proposalId;
 
-    public static function create(string $text, int $version, int $procedureId): ProposedProcedureUserNotification
+    public static function create(string $text, int $version, int $proposalId): ProposedProcedureUserNotification
     {
         $object = new ProposedProcedureUserNotification(null);
         $object->text = $text;
         $object->version = $version;
-        $object->procedureId = $procedureId;
+        $object->proposalId = $proposalId;
 
         return $object;
     }

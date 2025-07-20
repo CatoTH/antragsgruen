@@ -551,6 +551,22 @@ class ConsultationLog extends ActiveRecord
         return $str;
     }
 
+    private function formatLogEntryProposalAcceptance(string $template): string
+    {
+        $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
+        $version = (string) ($data->version ?? '-');
+        if ($data && !$data->byUser) {
+            $template .= '_admin';
+        }
+
+        $str = \Yii::t('structure', $template);
+        $str = str_replace('%VERSION%', $version, $str);
+        if ($data && $data->comment) {
+            $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->comment) . '</blockquote>';
+        }
+        return $this->formatLogEntryUser($str, '');
+    }
+
     private static function amendmentId2Prefix(int $amendmentId): ?string
     {
         $row = (new \yii\db\Query())
@@ -661,17 +677,9 @@ class ConsultationLog extends ActiveRecord
                 }
                 return $this->formatLogEntryUser($str, '');
             case self::MOTION_ACCEPT_PROPOSAL:
-                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
-                $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_MOTION_ACCEPT_PROPOSAL');
-                $str = str_replace('%VERSION%', $version, $str);
-                return $this->formatLogEntryUser($str, '');
+                return $this->formatLogEntryProposalAcceptance('activity_MOTION_ACCEPT_PROPOSAL');
             case self::MOTION_REJECT_PROPOSAL:
-                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
-                $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_MOTION_REJECT_PROPOSAL');
-                $str = str_replace('%VERSION%', $version, $str);
-                return $this->formatLogEntryUser($str, '');
+                return $this->formatLogEntryProposalAcceptance('activity_MOTION_REJECT_PROPOSAL');
             case self::MOTION_SET_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
                 $version = (string) ($data->version ?? '-');
@@ -760,17 +768,9 @@ class ConsultationLog extends ActiveRecord
                 }
                 return $this->formatLogEntryUser($str, '');
             case self::AMENDMENT_ACCEPT_PROPOSAL:
-                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
-                $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_AMENDMENT_ACCEPT_PROPOSAL');
-                $str = str_replace('%VERSION%', $version, $str);
-                return $this->formatLogEntryUser($str, '');
+                return $this->formatLogEntryProposalAcceptance('activity_AMENDMENT_ACCEPT_PROPOSAL');
             case self::AMENDMENT_REJECT_PROPOSAL:
-                $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
-                $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_AMENDMENT_REJECT_PROPOSAL');
-                $str = str_replace('%VERSION%', $version, $str);
-                return $this->formatLogEntryUser($str, '');
+                return $this->formatLogEntryProposalAcceptance('activity_AMENDMENT_REJECT_PROPOSAL');
             case self::AMENDMENT_SET_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
                 $version = (string) ($data->version ?? '-');
