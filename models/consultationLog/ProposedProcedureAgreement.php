@@ -12,14 +12,16 @@ class ProposedProcedureAgreement implements \JsonSerializable
 
     public bool $byUser;
     public int $version;
-    public int $procedureId;
+    public int $proposalId;
+    public ?string $comment;
 
-    public static function create(bool $byUser, int $version, int $procedureId): ProposedProcedureAgreement
+    public static function create(bool $byUser, int $version, int $proposalId, ?string $comment): ProposedProcedureAgreement
     {
         $object = new self(null);
         $object->byUser = $byUser;
         $object->version = $version;
-        $object->procedureId = $procedureId;
+        $object->proposalId = $proposalId;
+        $object->comment = $comment;
 
         return $object;
     }

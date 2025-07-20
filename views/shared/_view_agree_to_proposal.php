@@ -1,22 +1,24 @@
 <?php
 
-use app\models\db\Amendment;
-use app\models\db\ConsultationLog;
-use app\models\proposedProcedure\ActivityConsultationLog;
+use app\components\HTMLTools;
+use app\components\Tools;
+use app\models\consultationLog\ProposedProcedureAgreement;
+use app\models\consultationLog\ProposedProcedureUserNotification;
+use app\models\db\{ConsultationLog, IMotion, IProposal};
 use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
- * @var \app\models\db\IMotion $imotion
- * @var \app\models\db\IProposal $proposal
+ * @var IMotion $imotion
+ * @var IProposal $proposal
  * @var string|null $procedureToken
  */
 
 echo Html::beginForm('', 'post', ['class' => 'agreeToProposal']);
-$agreed = ($proposal->userStatus === \app\models\db\IMotion::STATUS_ACCEPTED);
-$disagreed = ($proposal->userStatus === \app\models\db\IMotion::STATUS_REJECTED);
+$agreed = ($proposal->userStatus === IMotion::STATUS_ACCEPTED);
+$disagreed = ($proposal->userStatus === IMotion::STATUS_REJECTED);
 
-$notifications = ConsultationLog::getProposalNotification($imotion);
+$notifications = ConsultationLog::getProposalNotification($imotion, $proposal->id, ConsultationLog::SORT_ASC);
 
 ?>
     <h2><?= Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
@@ -41,21 +43,41 @@ $notifications = ConsultationLog::getProposalNotification($imotion);
                 if (!$notification->data) {
                     continue;
                 }
-                $data = new \app\models\consultationLog\ProposedProcedureUserNotification($notification->data);
-                echo '<article>';
-                echo '<div>' . \app\components\Tools::formatMysqlDateTime($notification->actionTime) . '</div>';
-                echo '<blockquote>' . \app\components\HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
-                echo '</article>';
+                if (in_array($notification->actionType, [ConsultationLog::MOTION_NOTIFY_PROPOSAL, ConsultationLog::AMENDMENT_NOTIFY_PROPOSAL])) {
+                    $data = new ProposedProcedureUserNotification($notification->data);
+                    echo '<article>';
+                    echo '<div>' . Tools::formatMysqlDateTime($notification->actionTime) . '</div>';
+                    echo '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                    echo '</article>';
+                } else {
+                    $data = new ProposedProcedureAgreement($notification->data);
+                    echo '<article>';
+                    echo '<div>' . Tools::formatMysqlDateTime($notification->actionTime) . '</div>';
+                    if (in_array($notification->actionType, [ConsultationLog::MOTION_ACCEPT_PROPOSAL, ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL])) {
+                        echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
+                        echo Yii::t('amend', 'proposal_user_agreed');
+                    }
+                    if (in_array($notification->actionType, [ConsultationLog::MOTION_REJECT_PROPOSAL, ConsultationLog::AMENDMENT_REJECT_PROPOSAL])) {
+                        echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
+                        echo Yii::t('amend', 'proposal_user_disagreed');
+                    }
+                    echo '<blockquote>' . HTMLTools::textToHtmlWithLink($data->comment) . '</blockquote>';
+                    echo '</article>';
+                }
             }
             ?>
         </div>
     </div>
-    <div class="comment">
-        <label for="proposalAgreeComment">Kommentar:</label>
-        <textarea class="form-control" name="comment" id="proposalAgreeComment">
-
-        </textarea>
-    </div>
+    <?php
+    if (!$agreed && !$disagreed) {
+        ?>
+        <div class="comment">
+            <label for="proposalAgreeComment"><?= Yii::t('amend', 'proposal_user_comment') ?>:</label>
+            <textarea class="form-control" name="comment" id="proposalAgreeComment"></textarea>
+        </div>
+        <?php
+    }
+    ?>
     <div class="agreement">
         <?php
         if ($agreed) {

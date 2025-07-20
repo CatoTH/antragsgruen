@@ -357,6 +357,7 @@ return [
                                     "Hint: if you forward the link mentioned just now, the receiving person will be able to see and accept the proposal.\n\n" .
                                     "Greetings,\n" .
                                     "  The Antragsgrün-Team",
+    'proposal_user_comment'      => 'Comment',
     'proposal_user_agree'        => 'I agree with the proposal',
     'proposal_user_agreed'       => 'You agreed to the proposal',
     'proposal_user_disagree'     => 'I disagree',

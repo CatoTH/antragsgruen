@@ -386,6 +386,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
                                     "Hinweis: wenn du den eben genannten Link weiterleitest, kann die empfangende Person den Vorschlag damit ebenfalls einsehen und ggf. bestätigen.\n\n" .
                                     "Mit freundlichen Grüßen,\n" .
                                     "  Das Antragsgrün-Team",
+    'proposal_user_comment'      => 'Kommentar',
     'proposal_user_agree'        => 'Ich stimme dem Vorschlag zu',
     'proposal_user_agreed'       => 'Du hast dem Verfahrensvorschlag zugestimmt',
     'proposal_user_disagree'     => 'Ich stimme NICHT zu',

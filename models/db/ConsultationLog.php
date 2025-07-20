@@ -191,6 +191,9 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_PUBLISH_PROPOSAL,
     ];
 
+    public const SORT_ASC = 'ASC';
+    public const SORT_DESC = 'DESC';
+
     private ?Motion $motion = null;
     private ?Amendment $amendment = null;
     private ?int $amendmentId = null;
@@ -236,8 +239,9 @@ class ConsultationLog extends ActiveRecord
     /**
      * @return ConsultationLog[]
      */
-    private static function getLogForActionTypes(int $consultationId, int $referenceId, bool $showUserInvisible, array $actionTypes): array
+    private static function getLogForActionTypes(int $consultationId, int $referenceId, bool $showUserInvisible, array $actionTypes, string $sort): array
     {
+        $sortSql = ($sort === self::SORT_ASC) ? 'ASC' : 'DESC';
         $query = self::find();
         $query->where(['consultationId' => $consultationId]);
         $query->andWhere(['actionReferenceId' => $referenceId]);
@@ -245,7 +249,7 @@ class ConsultationLog extends ActiveRecord
             $query->andWhere(['NOT IN', 'actionType', self::USER_INVISIBLE_EVENTS]);
         }
         $query->andWhere(['IN', 'actionType', $actionTypes]);
-        $query->orderBy('actionTime DESC');
+        $query->orderBy('actionTime ' . $sort);
         return $query->all();
     }
 
@@ -268,23 +272,23 @@ class ConsultationLog extends ActiveRecord
     /**
      * @return ConsultationLog[]
      */
-    public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible): array
+    public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible, string $sort = self::SORT_DESC): array
     {
-        return self::getLogForActionTypes($consultationId, $motionId, $showUserInvisible, self::MOTION_ACTION_TYPES);
+        return self::getLogForActionTypes($consultationId, $motionId, $showUserInvisible, self::MOTION_ACTION_TYPES, $sort);
     }
 
     /**
      * @return ConsultationLog[]
      */
-    public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible): array
+    public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible, string $sort = self::SORT_DESC): array
     {
-        return self::getLogForActionTypes($consultationId, $amendmentId, $showUserInvisible, self::AMENDMENT_ACTION_TYPES);
+        return self::getLogForActionTypes($consultationId, $amendmentId, $showUserInvisible, self::AMENDMENT_ACTION_TYPES, $sort);
     }
 
     /**
      * @return ConsultationLog[]
      */
-    public static function getLogForProposedProcedure(IMotion $imotion): array
+    public static function getLogForProposedProcedure(IMotion $imotion, string $sort = self::SORT_DESC): array
     {
         if (is_a($imotion, Amendment::class)) {
             $actions = self::AMENDMENT_PROPOSAL_EVENTS;
@@ -292,21 +296,26 @@ class ConsultationLog extends ActiveRecord
             $actions = self::MOTION_PROPOSAL_EVENTS;
         }
 
-        return self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, $actions);
+        return self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, $actions, $sort);
     }
 
     /**
      * @return ConsultationLog[]
      */
-    public static function getProposalNotification(IMotion $imotion): array
+    public static function getProposalNotification(IMotion $imotion, ?int $proposalId, string $sort): array
     {
         if (is_a($imotion, Amendment::class)) {
-            $action = ConsultationLog::AMENDMENT_NOTIFY_PROPOSAL;
+            $actions = [ConsultationLog::AMENDMENT_NOTIFY_PROPOSAL, ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, ConsultationLog::AMENDMENT_REJECT_PROPOSAL];
         } else {
-            $action = ConsultationLog::MOTION_NOTIFY_PROPOSAL;
+            $actions = [ConsultationLog::MOTION_NOTIFY_PROPOSAL, ConsultationLog::MOTION_ACCEPT_PROPOSAL, ConsultationLog::MOTION_REJECT_PROPOSAL];
         }
 
-        return self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, [$action]);
+        $actions = self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, $actions, $sort);
+
+        return array_values(array_filter($actions, function(ConsultationLog $action) use ($proposalId) {
+            $data = new ProposedProcedureAgreement($action->data);
+            return ($proposalId === null || $data->proposalId === $proposalId);
+        }));
     }
 
     /**
@@ -320,9 +329,9 @@ class ConsultationLog extends ActiveRecord
     /**
      * @return ConsultationLog[]
      */
-    public static function getLogForUserGroupId(int $consultationId, int $userGroupId): array
+    public static function getLogForUserGroupId(int $consultationId, int $userGroupId, string $sort = self::SORT_DESC): array
     {
-        return self::getLogForActionTypes($consultationId, $userGroupId, true, self::USER_GROUP_ACTION_TYPES);
+        return self::getLogForActionTypes($consultationId, $userGroupId, true, self::USER_GROUP_ACTION_TYPES, $sort);
     }
 
     public function rules(): array

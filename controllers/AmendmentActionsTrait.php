@@ -326,8 +326,9 @@ trait AmendmentActionsTrait
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'support_finish_done'));
     }
 
-    private function setProposalAgreement(Amendment $amendment, int $status): void
+    private function setProposalAgreement(Amendment $amendment, int $status, ?string $comment): void
     {
+        $consultation  = $amendment->getMyConsultation();
         $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
         $proposal = $amendment->getProposalByToken($procedureToken);
         if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
@@ -335,12 +336,12 @@ trait AmendmentActionsTrait
             return;
         }
 
-        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id)->jsonSerialize();
+        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id, $comment)->jsonSerialize();
         if ($status === Amendment::STATUS_ACCEPTED) {
-            ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);
+            ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);
         }
         if ($status === Amendment::STATUS_REJECTED) {
-            ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_REJECT_PROPOSAL, $amendment->id, $data);
+            ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_REJECT_PROPOSAL, $amendment->id, $data);
         }
 
         $proposal->userStatus = $status;
@@ -413,9 +414,9 @@ trait AmendmentActionsTrait
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {
-            $this->setProposalAgreement($amendment, Amendment::STATUS_ACCEPTED);
+            $this->setProposalAgreement($amendment, Amendment::STATUS_ACCEPTED, $post['comment'] ?? null);
         } elseif (isset($post['setProposalDisagree'])) {
-            $this->setProposalAgreement($amendment, Amendment::STATUS_REJECTED);
+            $this->setProposalAgreement($amendment, Amendment::STATUS_REJECTED, $post['comment'] ?? null);
         } elseif (isset($post['savePrivateNote'])) {
             $this->savePrivateNote($amendment);
         }

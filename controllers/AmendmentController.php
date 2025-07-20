@@ -596,7 +596,7 @@ class AmendmentController extends Base
             $proposal->save();
             $amendment->flushCacheItems(['procedure']);
 
-            $data = ProposedProcedureAgreement::create(false, $proposal->version, $proposal->id)->jsonSerialize();
+            $data = ProposedProcedureAgreement::create(false, $proposal->version, $proposal->id, null)->jsonSerialize();
             ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);
 
             $response['success'] = true;

@@ -349,7 +349,7 @@ trait MotionActionsTrait
         }
     }
 
-    private function setProposalAgreement(Motion $motion, int $status): void
+    private function setProposalAgreement(Motion $motion, int $status, ?string $comment): void
     {
         $procedureToken = $this->getHttpRequest()->get('procedureToken');
         $proposal = $motion->getProposalByToken($procedureToken);
@@ -361,7 +361,7 @@ trait MotionActionsTrait
         $proposal->userStatus = $status;
         $proposal->save();
 
-        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id)->jsonSerialize();
+        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id, $comment)->jsonSerialize();
         if ($status === Motion::STATUS_ACCEPTED) {
             ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id, $data);
         }
@@ -447,9 +447,9 @@ trait MotionActionsTrait
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($motion, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {
-            $this->setProposalAgreement($motion, Motion::STATUS_ACCEPTED);
+            $this->setProposalAgreement($motion, Motion::STATUS_ACCEPTED, $post['comment'] ?? null);
         } elseif (isset($post['setProposalDisagree'])) {
-            $this->setProposalAgreement($motion, Motion::STATUS_REJECTED);
+            $this->setProposalAgreement($motion, Motion::STATUS_REJECTED, $post['comment'] ?? null);
         } elseif (isset($post['savePrivateNote'])) {
             $this->savePrivateNote($motion);
         }
@@ -616,7 +616,7 @@ trait MotionActionsTrait
             $proposal->userStatus = Motion::STATUS_ACCEPTED;
             $proposal->save();
 
-            $data = ProposedProcedureAgreement::create(false, $proposal->version, $proposal->id)->jsonSerialize();
+            $data = ProposedProcedureAgreement::create(false, $proposal->version, $proposal->id, null)->jsonSerialize();
             ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_ACCEPT_PROPOSAL, $motion->id, $data);
 
             $response['success'] = true;
