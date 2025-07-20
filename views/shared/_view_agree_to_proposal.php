@@ -106,6 +106,6 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
             </button>
         </div>
     </div>
-    <input type="hidden" name="procedureToken" value="<?= Html::encode($procedureToken) ?>">
+    <input type="hidden" name="procedureToken" value="<?= Html::encode($proposal->publicToken) ?>">
 <?php
 echo Html::endForm();

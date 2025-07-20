@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\proposedProcedure\Agenda;
-use app\models\settings\{AntragsgruenApp, Privileges, MotionSection as MotionSectionSettings};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
 use app\components\{diff\AmendmentSectionFormatter,
     diff\DiffRenderer,
     HashedStaticCache,
@@ -920,8 +920,13 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getLatestProposal(): AmendmentProposal
     {
+        $isAdmin = (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($this)));
+
         $max = null;
         foreach ($this->proposals as $proposal) {
+            if (!$isAdmin && $proposal->visibleFrom === null && !$proposal->canSeeProposedProcedure(null)) {
+                continue;
+            }
             if ($proposal->version > ($max?->version ?: 0)) {
                 $max = $proposal;
             }

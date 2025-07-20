@@ -351,7 +351,7 @@ trait MotionActionsTrait
 
     private function setProposalAgreement(Motion $motion, int $status, ?string $comment): void
     {
-        $procedureToken = $this->getHttpRequest()->get('procedureToken');
+        $procedureToken = $this->getHttpRequest()->post('procedureToken');
         $proposal = $motion->getProposalByToken($procedureToken);
         if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');

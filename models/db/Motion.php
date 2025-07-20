@@ -875,9 +875,13 @@ class Motion extends IMotion implements IRSSItem
 
     public function getLatestProposal(): MotionProposal
     {
-        // @TODO Different view for users and admins
+        $isAdmin = (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($this)));
+
         $max = null;
         foreach ($this->proposals as $proposal) {
+            if (!$isAdmin && $proposal->visibleFrom === null && !$proposal->canSeeProposedProcedure(null)) {
+                continue;
+            }
             if ($proposal->version > ($max?->version ?: 0)) {
                 $max = $proposal;
             }

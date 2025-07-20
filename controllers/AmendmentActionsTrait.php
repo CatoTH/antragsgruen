@@ -329,7 +329,7 @@ trait AmendmentActionsTrait
     private function setProposalAgreement(Amendment $amendment, int $status, ?string $comment): void
     {
         $consultation  = $amendment->getMyConsultation();
-        $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
+        $procedureToken = $this->getHttpRequest()->post('procedureToken');
         $proposal = $amendment->getProposalByToken($procedureToken);
         if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
