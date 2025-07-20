@@ -537,7 +537,7 @@
     padding: 5px 10px;
     background-color: #ded;
   }
-  .holder {
+  .holder, .agreeSubmit, .agreement {
     display: flex;
     > * {
       flex: 1;
@@ -548,11 +548,11 @@
     padding: 10px;
   }
   .agreement {
-    display: flex;
-    > * {
-      flex: 1;
-      padding: 10px;
+    .agreed {
+      color: green;
     }
+  }
+  .agreeSubmit {
     .agree {
       text-align: right;
     }
@@ -567,9 +567,18 @@
       font-weight: bold;
     }
   }
-  .agreement {
-    .agreed {
-      color: green;
+  .updateDecision {
+    text-align: right;
+  }
+
+  &.notUpdating {
+    .showWhenUpdating {
+      display: none;
+    }
+  }
+  &.updating {
+    .agreement {
+      display: none;
     }
   }
 }

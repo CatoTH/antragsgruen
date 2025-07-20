@@ -8,6 +8,16 @@ class IMotionShow {
         });
     }
 
+    public initAgreeToProposal()
+    {
+        console.log($(".agreeToProposal .btnUpdateDecision").length);
+        $(".agreeToProposal .btnUpdateDecision").on("click", (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            $(".agreeToProposal").removeClass("notUpdating").addClass("updating");
+        });
+    }
+
     public initExpandableList()
     {
         document.querySelectorAll('.expandableList').forEach((el: HTMLDivElement) => {

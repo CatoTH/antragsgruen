@@ -1,9 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\models\consultationLog\ProposedProcedureAgreement;
-use app\models\consultationLog\ProposedProcedureUserNotification;
+use app\components\{HTMLTools, Tools};
+use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureUserNotification};
 use app\models\db\{ConsultationLog, IMotion, IProposal};
 use yii\helpers\Html;
 
@@ -14,9 +12,10 @@ use yii\helpers\Html;
  * @var string|null $procedureToken
  */
 
-echo Html::beginForm('', 'post', ['class' => 'agreeToProposal']);
+echo Html::beginForm('', 'post', ['class' => 'agreeToProposal notUpdating']);
 $agreed = ($proposal->userStatus === IMotion::STATUS_ACCEPTED);
 $disagreed = ($proposal->userStatus === IMotion::STATUS_REJECTED);
+$hasDecision = $agreed || $disagreed;
 
 $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->id, ConsultationLog::SORT_ASC);
 
@@ -51,6 +50,9 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
                     echo '</article>';
                 } else {
                     $data = new ProposedProcedureAgreement($notification->data);
+                    if (!$data->byUser) {
+                        continue;
+                    }
                     echo '<article>';
                     echo '<div>' . Tools::formatMysqlDateTime($notification->actionTime) . '</div>';
                     if (in_array($notification->actionType, [ConsultationLog::MOTION_ACCEPT_PROPOSAL, ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL])) {
@@ -61,7 +63,9 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
                         echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
                         echo Yii::t('amend', 'proposal_user_disagreed');
                     }
-                    echo '<blockquote>' . HTMLTools::textToHtmlWithLink($data->comment) . '</blockquote>';
+                    if ($data && $data->comment) {
+                        echo '<blockquote>' . HTMLTools::textToHtmlWithLink($data->comment) . '</blockquote>';
+                    }
                     echo '</article>';
                 }
             }
@@ -69,42 +73,38 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
         </div>
     </div>
     <?php
-    if (!$agreed && !$disagreed) {
-        ?>
-        <div class="comment">
-            <label for="proposalAgreeComment"><?= Yii::t('amend', 'proposal_user_comment') ?>:</label>
-            <textarea class="form-control" name="comment" id="proposalAgreeComment"></textarea>
-        </div>
-        <?php
+    if ($hasDecision) {
+        echo '<div class="agreement"><div>';
+    }
+    if ($agreed) {
+        echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
+        echo Yii::t('amend', 'proposal_user_agreed');
+    }
+    if ($disagreed) {
+        echo '<span class="agreed glyphicon glyphicon-remove" aria-hidden="true"></span> ';
+        echo Yii::t('amend', 'proposal_user_disagreed');
+    }
+    if ($hasDecision) {
+        echo '</div><div class="updateDecision">';
+        echo '<button class="btn btn-default btnUpdateDecision">Entscheidung aktualisieren</button>';
+        echo '</div></div>';
     }
     ?>
-    <div class="agreement">
-        <?php
-        if ($agreed) {
-            echo '<div>';
-            echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
-            echo Yii::t('amend', 'proposal_user_agreed');
-            echo '</div>';
-        } elseif ($disagreed) {
-            echo '<div>';
-            echo '<span class="agreed glyphicon glyphicon-remove" aria-hidden="true"></span> ';
-            echo Yii::t('amend', 'proposal_user_disagreed');
-            echo '</div>';
-        } else {
-            ?>
-            <div class="disagree">
-                <button type="submit" name="setProposalDisagree" class="btn btn-danger">
-                    <?= Yii::t('amend', 'proposal_user_disagree') ?>
-                </button>
-            </div>
-            <div class="agree">
-                <button type="submit" name="setProposalAgree" class="btn btn-success">
-                    <?= Yii::t('amend', 'proposal_user_agree') ?>
-                </button>
-            </div>
-            <?php
-        }
-        ?>
+    <div class="comment<?= $hasDecision ? ' showWhenUpdating' : '' ?>">
+        <label for="proposalAgreeComment"><?= Yii::t('amend', 'proposal_user_comment') ?>:</label>
+        <textarea class="form-control" name="comment" id="proposalAgreeComment"></textarea>
+    </div>
+    <div class="agreeSubmit<?= $hasDecision ? ' showWhenUpdating' : '' ?>">
+        <div class="disagree">
+            <button type="submit" name="setProposalDisagree" class="btn btn-danger">
+                <?= Yii::t('amend', 'proposal_user_disagree') ?>
+            </button>
+        </div>
+        <div class="agree">
+            <button type="submit" name="setProposalAgree" class="btn btn-success">
+                <?= Yii::t('amend', 'proposal_user_agree') ?>
+            </button>
+        </div>
     </div>
     <input type="hidden" name="procedureToken" value="<?= Html::encode($procedureToken) ?>">
 <?php
