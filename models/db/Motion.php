@@ -1411,10 +1411,11 @@ class Motion extends IMotion implements IRSSItem
 
     public function getAgendaApiBaseObject(): array
     {
-        if ($this->getLatestProposal()->isProposalPublic()) {
-            $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
+        $propsal = $this->getLatestProposal();
+        if ($propsal->isProposalPublic()) {
+            $procedure = Agenda::formatProposedProcedure($this, $propsal, Agenda::FORMAT_HTML);
         } elseif ($this->status === IMotion::STATUS_MOVED) {
-            $procedure = \app\views\consultation\LayoutHelper::getMotionMovedStatusHtml($this);
+            $procedure = LayoutHelper::getMotionMovedStatusHtml($this);
         } else {
             $procedure = null;
         }

@@ -2,7 +2,8 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, IMotion, VotingBlock};
+use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, IMotion, IProposal, VotingBlock};
+use app\components\HashedStaticCache;
 use app\models\exceptions\Internal;
 use app\models\IMotionList;
 use app\models\sectionTypes\TextSimpleCommon;
@@ -34,70 +35,59 @@ class Agenda
         }
     }
 
-    public static function formatProposedAmendmentProcedure(IMotion $imotion, int $format): string
+    public static function formatProposedAmendmentProcedure(IMotion $imotion, IProposal $proposal, int $format): string
     {
-        $proposal = $imotion->getLatestProposal();
+        $cache = HashedStaticCache::getInstance('formatProposedAmendmentProcedure', [$imotion->id, $proposal->id]);
+        if ($format !== self::FORMAT_HTML || $proposal->proposalStatus === IMotion::STATUS_OBSOLETED_BY_AMENDMENT) {
+            $cache->setSkipCache(true);
+        }
 
-        if ($format === Agenda::FORMAT_HTML && $proposal->proposalStatus !== IMotion::STATUS_OBSOLETED_BY_AMENDMENT) {
-            // Flushing an amendment's cache does not work when a modified version of an amendment is edited
-            // that is replacing this one -> we disable the cache in this case
-            $cached = $imotion->getCacheItem('procedure.formatted');
-            if ($cached !== null) {
-                return $cached;
+        return $cache->getCached(function () use ($imotion, $proposal, $format) {
+            /** @var Amendment|null $toShowAmendment */
+            $toShowAmendment = null;
+            if ($proposal->hasAlternativeProposaltext()) {
+                $toShowAmendment = $proposal->getMyProposalReference();
             }
-        }
+            if ($imotion->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($imotion, Amendment::class)) {
+                $toShowAmendment = $imotion;
+            }
 
-        /** @var Amendment|null $toShowAmendment */
-        $toShowAmendment = null;
-        if ($proposal->hasAlternativeProposaltext()) {
-            $toShowAmendment = $proposal->getMyProposalReference();
-        }
-        if ($imotion->status === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($imotion, Amendment::class)) {
-            $toShowAmendment = $imotion;
-        }
-
-        $proposalStr = '';
-        if ($toShowAmendment) {
-            /** @var AmendmentSection[] $sections */
-            $sections = $toShowAmendment->getSortedSections(false);
-            foreach ($sections as $section) {
-                try {
-                    $firstLine    = $section->getFirstLineNumber();
-                    $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-                    $originalData = $section->getOriginalMotionSection()?->getData() ?? '';
-                    $newData      = $section->data;
-                    if ($originalData === $newData) {
-                        continue;
+            $proposalStr = '';
+            if ($toShowAmendment) {
+                /** @var AmendmentSection[] $sections */
+                $sections = $toShowAmendment->getSortedSections(false);
+                foreach ($sections as $section) {
+                    try {
+                        $firstLine    = $section->getFirstLineNumber();
+                        $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+                        $originalData = $section->getOriginalMotionSection()?->getData() ?? '';
+                        $newData      = $section->data;
+                        if ($originalData === $newData) {
+                            continue;
+                        }
+                        if ($format === static::FORMAT_ODS) {
+                            $proposalStr .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                        } else {
+                            $proposalStr .= $section->getSectionType()->getAmendmentPlainHtml();
+                        }
+                    } catch (Internal $e) {
+                        $proposalStr .= '<p>@INTERNAL ERROR@</p>';
                     }
-                    if ($format === static::FORMAT_ODS) {
-                        $proposalStr .= TextSimpleCommon::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
-                    } else {
-                        $proposalStr .= $section->getSectionType()->getAmendmentPlainHtml();
-                    }
-                } catch (Internal $e) {
-                    $proposalStr .= '<p>@INTERNAL ERROR@</p>';
                 }
             }
-        }
-
-        if ($format === Agenda::FORMAT_HTML && $proposal->proposalStatus !== Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
-            $imotion->setCacheItem('procedure.formatted', $proposalStr);
-        }
-
-        return $proposalStr;
+            return $proposalStr;
+        });
     }
 
-    public static function formatProposedProcedure(IMotion $item, int $format): string
+    public static function formatProposedProcedure(IMotion $imotion, IProposal $proposal, int $format): string
     {
-        $proposal = $item->getLatestProposal();
-
         $proposalStr = '<p>' . trim($proposal->getFormattedProposalStatus()) . '</p>';
         if ($proposal->explanation) {
             $proposalStr .= '<p class="explanation">' . Html::encode($proposal->explanation) . '</p>';
         }
 
-        if ($item->status !== IMotion::STATUS_WITHDRAWN) {
-            $proposalStr .= static::formatProposedAmendmentProcedure($item, $format);
+        if ($imotion->status !== IMotion::STATUS_WITHDRAWN) {
+            $proposalStr .= static::formatProposedAmendmentProcedure($imotion, $proposal, $format);
         }
 
         return $proposalStr;

@@ -4,19 +4,17 @@ namespace app\models\db;
 
 use app\models\exceptions\NotFound;
 use app\models\layoutHooks\Layout;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, Tools};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
 use app\models\quorumType\IQuorumType;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp, Permissions, PrivilegeQueryContext, Privileges};
+use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp, Permissions, Privileges};
 use app\models\supportTypes\SupportBase;
 use app\models\votings\VotingItemGroup;
-use app\views\consultation\LayoutHelper;
 use yii\base\InvalidConfigException;
 use yii\db\{ActiveQueryInterface, ActiveRecord};
-use yii\helpers\Html;
 
 /**
  * @property string $titlePrefix

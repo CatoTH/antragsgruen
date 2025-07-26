@@ -10,7 +10,6 @@ class IMotionShow {
 
     public initAgreeToProposal()
     {
-        console.log($(".agreeToProposal .btnUpdateDecision").length);
         $(".agreeToProposal .btnUpdateDecision").on("click", (ev) => {
             ev.preventDefault();
             ev.stopPropagation();

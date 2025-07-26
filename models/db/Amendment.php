@@ -1365,8 +1365,9 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getAgendaApiBaseObject(): array
     {
-        if ($this->getLatestProposal()->isProposalPublic()) {
-            $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
+        $proposal = $this->getLatestProposal();
+        if ($proposal->isProposalPublic()) {
+            $procedure = Agenda::formatProposedProcedure($this, $proposal, Agenda::FORMAT_HTML);
         } else {
             $procedure = null;
         }

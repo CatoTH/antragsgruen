@@ -25,6 +25,8 @@ use yii\helpers\Html;
  */
 abstract class IProposal extends ActiveRecord
 {
+    use CacheTrait;
+
     abstract function getMyIMotion(): IMotion;
 
     public function getMyConsultation(): Consultation

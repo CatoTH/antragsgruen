@@ -96,9 +96,6 @@ export class ChangeProposedProcedure {
     }
 
     private performCallWithReload(data: object) {
-
-        console.log(data);
-
         data['context'] = this.context;
 
         if (data['version'] === undefined) {
