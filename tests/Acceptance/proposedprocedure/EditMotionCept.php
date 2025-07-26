@@ -9,6 +9,10 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->gotoConsultationHome();
+
+// Remove relicts from previous test cases
+$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
+
 $I->loginAsProposalAdmin();
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
 

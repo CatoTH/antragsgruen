@@ -22,6 +22,25 @@
     margin-top: -2px;
   }
 
+  .proposalHistory {
+    border-bottom: solid 1px #ded;
+    display: flex;
+    .versionList {
+      flex: 1;
+      padding: 5px 10px;
+    }
+    .versionList > ol {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      > li {
+        display: inline-block;
+        margin: 0 20px 0 0;
+      }
+    }
+  }
+
   .holder {
     display: flex;
     > * {
@@ -162,6 +181,9 @@
       box-shadow: none;
       font-size: 12px;
     }
+    blockquote {
+      font-size: 12px;
+    }
     button {
       margin-top: -1px;
       width: 100%;
@@ -194,11 +216,37 @@
     vertical-align: middle;
     display: none;
   }
+  .saving {
+    width: 100%;
+    flex-direction: row;
+    > * {
+      flex: 1;
+    }
+    .versionSelect {
+      text-align: left;
+      padding: 10px;
+    }
+    .submit {
+      text-align: right;
+      padding-right: 10px;
+    }
+    label, input {
+      margin: 0;
+      line-height: 20px;
+      vertical-align: top;
+    }
+    label {
+      padding-right: 10px;
+    }
+  }
   .showIfChanged {
     display: none;
   }
   &.isChanged .showIfChanged {
     display: block;
+    &.saving {
+      display: flex;
+    }
   }
   &.isChanged .hideIfChanged {
     display: none;
@@ -489,11 +537,24 @@
     padding: 5px 10px;
     background-color: #ded;
   }
-  .holder {
+  .holder, .agreeSubmit, .agreement {
     display: flex;
     > * {
       flex: 1;
       padding: 10px;
+    }
+  }
+  .comment {
+    padding: 10px;
+  }
+  .agreement {
+    .agreed {
+      color: green;
+    }
+  }
+  .agreeSubmit {
+    .agree {
+      text-align: right;
     }
   }
   .hint {
@@ -506,9 +567,18 @@
       font-weight: bold;
     }
   }
-  .agreement {
-    .agreed {
-      color: green;
+  .updateDecision {
+    text-align: right;
+  }
+
+  &.notUpdating {
+    .showWhenUpdating {
+      display: none;
+    }
+  }
+  &.updating {
+    .agreement {
+      display: none;
     }
   }
 }

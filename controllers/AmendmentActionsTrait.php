@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\consultationLog\ProposedProcedureAgreement;
 use app\components\{RequestContext, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, IComment, Consultation, User};
 use app\models\events\AmendmentEvent;
@@ -325,16 +326,26 @@ trait AmendmentActionsTrait
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'support_finish_done'));
     }
 
-    private function setProposalAgreement(Amendment $amendment, int $status): void
+    private function setProposalAgreement(Amendment $amendment, int $status, ?string $comment): void
     {
-        $procedureToken = RequestContext::getWebRequest()->get('procedureToken');
-        if (!$amendment->canSeeProposedProcedure($procedureToken) || !$amendment->proposalFeedbackHasBeenRequested()) {
+        $consultation  = $amendment->getMyConsultation();
+        $procedureToken = $this->getHttpRequest()->post('procedureToken');
+        $proposal = $amendment->getProposalByToken($procedureToken);
+        if (!$proposal->canAgreeToProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }
 
-        $amendment->proposalUserStatus = $status;
-        $amendment->save();
+        $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id, $comment)->jsonSerialize();
+        if ($status === Amendment::STATUS_ACCEPTED) {
+            ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);
+        }
+        if ($status === Amendment::STATUS_REJECTED) {
+            ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_REJECT_PROPOSAL, $amendment->id, $data);
+        }
+
+        $proposal->userStatus = $status;
+        $proposal->save();
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
 
@@ -403,9 +414,9 @@ trait AmendmentActionsTrait
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {
-            $this->setProposalAgreement($amendment, Amendment::STATUS_ACCEPTED);
+            $this->setProposalAgreement($amendment, Amendment::STATUS_ACCEPTED, $post['comment'] ?? null);
         } elseif (isset($post['setProposalDisagree'])) {
-            $this->setProposalAgreement($amendment, Amendment::STATUS_REJECTED);
+            $this->setProposalAgreement($amendment, Amendment::STATUS_REJECTED, $post['comment'] ?? null);
         } elseif (isset($post['savePrivateNote'])) {
             $this->savePrivateNote($amendment);
         }

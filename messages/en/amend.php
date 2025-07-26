@@ -320,6 +320,10 @@ return [
     'proposal_status_title'      => 'Proposed status',
     'proposal_close'             => 'Close',
     'proposal_open'              => 'Edit proposed procedure',
+    'proposal_version_x'         => 'Version %VERSION%',
+    'proposal_versions'          => 'Versions',
+    'proposal_version_edit'      => 'Edit current version',
+    'proposal_version_new'       => 'Create new version',
     'proposal_reset'             => 'Reset',
     'proposal_status_na'         => 'not set',
     'proposal_user_accepted'     => 'Agrees to the proposed procedure',
@@ -353,6 +357,7 @@ return [
                                     "Hint: if you forward the link mentioned just now, the receiving person will be able to see and accept the proposal.\n\n" .
                                     "Greetings,\n" .
                                     "  The Antragsgrün-Team",
+    'proposal_user_comment'      => 'Comment',
     'proposal_user_agree'        => 'I agree with the proposal',
     'proposal_user_agreed'       => 'You agreed to the proposal',
     'proposal_user_disagree'     => 'I disagree',

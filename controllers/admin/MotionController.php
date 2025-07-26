@@ -172,7 +172,10 @@ class MotionController extends AdminBase
                 $votingData->setFromPostData($post['votes']);
                 $motion->setVotingData($votingData);
 
-                $ppChanges = new ProposedProcedureChange(null);
+                $proposal = $motion->getLatestProposal();
+                $proposal->save(); // Make sure there is an ID
+
+                $ppChanges = ProposedProcedureChange::create($proposal->version, $proposal->id);
                 try {
                     $motion->setProposalVotingPropertiesFromRequest(
                         $this->getHttpRequest()->post('votingStatus', null),

@@ -96,7 +96,7 @@ class MotionShow {
         $paragraphs.each((i, el) => {
             new MotionParagraph($(el));
         });
-        
+
         let sComm = window.location.hash.split('#comm');
         if (sComm.length == 2) {
             $('#comment' + sComm[1]).scrollintoview({top_offset: -100});
@@ -112,6 +112,7 @@ class MotionShow {
 
         const common = new IMotionShow();
         common.initContactShow();
+        common.initAgreeToProposal();
         common.initAmendmentTextMode();
         common.initCmdEnterSubmit();
         common.initDelSubmit();

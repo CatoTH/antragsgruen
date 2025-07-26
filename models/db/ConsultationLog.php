@@ -2,8 +2,11 @@
 
 namespace app\models\db;
 
+use app\models\consultationLog\ProposedProcedureAgreement;
+use app\models\consultationLog\ProposedProcedureChange;
+use app\models\consultationLog\ProposedProcedureUserNotification;
 use app\models\settings\AntragsgruenApp;
-use app\components\{Tools, UrlHelper};
+use app\components\{HTMLTools, Tools, UrlHelper};
 use yii\db\{ActiveQuery, ActiveRecord};
 use yii\helpers\Html;
 
@@ -39,6 +42,7 @@ class ConsultationLog extends ActiveRecord
     public const MOTION_SET_PROPOSAL        = 35;
     public const MOTION_NOTIFY_PROPOSAL     = 36;
     public const MOTION_ACCEPT_PROPOSAL     = 31;
+    public const MOTION_REJECT_PROPOSAL     = 50;
     public const MOTION_PUBLISH_PROPOSAL    = 30;
     public const MOTION_VOTE_ACCEPTED       = 39;
     public const MOTION_VOTE_REJECTED       = 40;
@@ -60,6 +64,7 @@ class ConsultationLog extends ActiveRecord
     public const AMENDMENT_SET_PROPOSAL     = 37;
     public const AMENDMENT_NOTIFY_PROPOSAL  = 38;
     public const AMENDMENT_ACCEPT_PROPOSAL  = 32;
+    public const AMENDMENT_REJECT_PROPOSAL  = 51;
     public const AMENDMENT_PUBLISH_PROPOSAL = 29;
     public const AMENDMENT_VOTE_ACCEPTED    = 41;
     public const AMENDMENT_VOTE_REJECTED    = 42;
@@ -90,6 +95,7 @@ class ConsultationLog extends ActiveRecord
         self::MOTION_SET_PROPOSAL,
         self::MOTION_NOTIFY_PROPOSAL,
         self::MOTION_ACCEPT_PROPOSAL,
+        self::MOTION_REJECT_PROPOSAL,
         self::MOTION_PUBLISH_PROPOSAL,
         self::MOTION_VOTE_ACCEPTED,
         self::MOTION_VOTE_REJECTED,
@@ -114,6 +120,7 @@ class ConsultationLog extends ActiveRecord
         self::AMENDMENT_SET_PROPOSAL,
         self::AMENDMENT_NOTIFY_PROPOSAL,
         self::AMENDMENT_ACCEPT_PROPOSAL,
+        self::AMENDMENT_REJECT_PROPOSAL,
         self::AMENDMENT_PUBLISH_PROPOSAL,
         self::AMENDMENT_VOTE_ACCEPTED,
         self::AMENDMENT_VOTE_REJECTED,
@@ -168,6 +175,25 @@ class ConsultationLog extends ActiveRecord
         self::USER_REMOVE_FROM_GROUP,
     ];
 
+    private const MOTION_PROPOSAL_EVENTS = [
+        self::MOTION_SET_PROPOSAL,
+        self::MOTION_NOTIFY_PROPOSAL,
+        self::MOTION_ACCEPT_PROPOSAL,
+        self::MOTION_REJECT_PROPOSAL,
+        self::MOTION_PUBLISH_PROPOSAL,
+    ];
+
+    private const AMENDMENT_PROPOSAL_EVENTS = [
+        self::AMENDMENT_SET_PROPOSAL,
+        self::AMENDMENT_NOTIFY_PROPOSAL,
+        self::AMENDMENT_ACCEPT_PROPOSAL,
+        self::AMENDMENT_REJECT_PROPOSAL,
+        self::AMENDMENT_PUBLISH_PROPOSAL,
+    ];
+
+    public const SORT_ASC = 'ASC';
+    public const SORT_DESC = 'DESC';
+
     private ?Motion $motion = null;
     private ?Amendment $amendment = null;
     private ?int $amendmentId = null;
@@ -210,8 +236,12 @@ class ConsultationLog extends ActiveRecord
         return $query->all();
     }
 
-    private static function getLogForActionTypes(int $consultationId, int $referenceId, bool $showUserInvisible, array $actionTypes): array
+    /**
+     * @return ConsultationLog[]
+     */
+    private static function getLogForActionTypes(int $consultationId, int $referenceId, bool $showUserInvisible, array $actionTypes, string $sort): array
     {
+        $sortSql = ($sort === self::SORT_ASC) ? 'ASC' : 'DESC';
         $query = self::find();
         $query->where(['consultationId' => $consultationId]);
         $query->andWhere(['actionReferenceId' => $referenceId]);
@@ -219,10 +249,13 @@ class ConsultationLog extends ActiveRecord
             $query->andWhere(['NOT IN', 'actionType', self::USER_INVISIBLE_EVENTS]);
         }
         $query->andWhere(['IN', 'actionType', $actionTypes]);
-        $query->orderBy('actionTime DESC');
+        $query->orderBy('actionTime ' . $sort);
         return $query->all();
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
     private static function getLogForUser(int $consultationId, int $userId, bool $showUserInvisible, array $actionTypes): array
     {
         $query = self::find();
@@ -236,24 +269,69 @@ class ConsultationLog extends ActiveRecord
         return $query->all();
     }
 
-    public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible): array
+    /**
+     * @return ConsultationLog[]
+     */
+    public static function getLogForMotion(int $consultationId, int $motionId, bool $showUserInvisible, string $sort = self::SORT_DESC): array
     {
-        return self::getLogForActionTypes($consultationId, $motionId, $showUserInvisible, self::MOTION_ACTION_TYPES);
+        return self::getLogForActionTypes($consultationId, $motionId, $showUserInvisible, self::MOTION_ACTION_TYPES, $sort);
     }
 
-    public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible): array
+    /**
+     * @return ConsultationLog[]
+     */
+    public static function getLogForAmendment(int $consultationId, int $amendmentId, bool $showUserInvisible, string $sort = self::SORT_DESC): array
     {
-        return self::getLogForActionTypes($consultationId, $amendmentId, $showUserInvisible, self::AMENDMENT_ACTION_TYPES);
+        return self::getLogForActionTypes($consultationId, $amendmentId, $showUserInvisible, self::AMENDMENT_ACTION_TYPES, $sort);
     }
 
+    /**
+     * @return ConsultationLog[]
+     */
+    public static function getLogForProposedProcedure(IMotion $imotion, string $sort = self::SORT_DESC): array
+    {
+        if (is_a($imotion, Amendment::class)) {
+            $actions = self::AMENDMENT_PROPOSAL_EVENTS;
+        } else {
+            $actions = self::MOTION_PROPOSAL_EVENTS;
+        }
+
+        return self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, $actions, $sort);
+    }
+
+    /**
+     * @return ConsultationLog[]
+     */
+    public static function getProposalNotification(IMotion $imotion, ?int $proposalId, string $sort): array
+    {
+        if (is_a($imotion, Amendment::class)) {
+            $actions = [ConsultationLog::AMENDMENT_NOTIFY_PROPOSAL, ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, ConsultationLog::AMENDMENT_REJECT_PROPOSAL];
+        } else {
+            $actions = [ConsultationLog::MOTION_NOTIFY_PROPOSAL, ConsultationLog::MOTION_ACCEPT_PROPOSAL, ConsultationLog::MOTION_REJECT_PROPOSAL];
+        }
+
+        $actions = self::getLogForActionTypes($imotion->getMyConsultation()->id, $imotion->id, true, $actions, $sort);
+
+        return array_values(array_filter($actions, function(ConsultationLog $action) use ($proposalId) {
+            $data = new ProposedProcedureAgreement($action->data);
+            return ($proposalId === null || $data->proposalId === $proposalId);
+        }));
+    }
+
+    /**
+     * @return ConsultationLog[]
+     */
     public static function getLogForUserId(int $consultationId, int $userId): array
     {
         return self::getLogForUser($consultationId, $userId, true, self::USER_ACTION_TYPES);
     }
 
-    public static function getLogForUserGroupId(int $consultationId, int $userGroupId): array
+    /**
+     * @return ConsultationLog[]
+     */
+    public static function getLogForUserGroupId(int $consultationId, int $userGroupId, string $sort = self::SORT_DESC): array
     {
-        return self::getLogForActionTypes($consultationId, $userGroupId, true, self::USER_GROUP_ACTION_TYPES);
+        return self::getLogForActionTypes($consultationId, $userGroupId, true, self::USER_GROUP_ACTION_TYPES, $sort);
     }
 
     public function rules(): array
@@ -473,6 +551,22 @@ class ConsultationLog extends ActiveRecord
         return $str;
     }
 
+    private function formatLogEntryProposalAcceptance(string $template): string
+    {
+        $data = ($this->data ? new ProposedProcedureAgreement($this->data) : null);
+        $version = (string) ($data->version ?? '-');
+        if ($data && !$data->byUser) {
+            $template .= '_admin';
+        }
+
+        $str = \Yii::t('structure', $template);
+        $str = str_replace('%VERSION%', $version, $str);
+        if ($data && $data->comment) {
+            $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->comment) . '</blockquote>';
+        }
+        return $this->formatLogEntryUser($str, '');
+    }
+
     private static function amendmentId2Prefix(int $amendmentId): ?string
     {
         $row = (new \yii\db\Query())
@@ -573,8 +667,24 @@ class ConsultationLog extends ActiveRecord
             case self::MOTION_PUBLISH_PROPOSAL:
                 $str = \Yii::t('structure', 'activity_MOTION_PUBLISH_PROPOSAL');
                 return $this->formatLogEntryUser($str, '');
+            case self::MOTION_NOTIFY_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureUserNotification($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_MOTION_NOTIFY_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                if ($data && $data->text) {
+                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                }
+                return $this->formatLogEntryUser($str, '');
+            case self::MOTION_ACCEPT_PROPOSAL:
+                return $this->formatLogEntryProposalAcceptance('activity_MOTION_ACCEPT_PROPOSAL');
+            case self::MOTION_REJECT_PROPOSAL:
+                return $this->formatLogEntryProposalAcceptance('activity_MOTION_REJECT_PROPOSAL');
             case self::MOTION_SET_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
+                $version = (string) ($data->version ?? '-');
                 $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output
                 return $this->formatLogEntryUser($str, '');
             case self::MOTION_VOTE_ACCEPTED:
@@ -648,9 +758,25 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
                 return $this->formatLogEntryAmendment($str);
+            case self::AMENDMENT_NOTIFY_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureUserNotification($this->data) : null);
+                $version = (string) ($data->version ?? '-');
+                $str = \Yii::t('structure', 'activity_AMENDMENT_NOTIFY_PROPOSAL');
+                $str = str_replace('%VERSION%', $version, $str);
+                if ($data && $data->text) {
+                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                }
+                return $this->formatLogEntryUser($str, '');
+            case self::AMENDMENT_ACCEPT_PROPOSAL:
+                return $this->formatLogEntryProposalAcceptance('activity_AMENDMENT_ACCEPT_PROPOSAL');
+            case self::AMENDMENT_REJECT_PROPOSAL:
+                return $this->formatLogEntryProposalAcceptance('activity_AMENDMENT_REJECT_PROPOSAL');
             case self::AMENDMENT_SET_PROPOSAL:
+                $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
+                $version = (string) ($data->version ?? '-');
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
                 $str = $this->formatLogEntryUser($str, '');
+                $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output
                 return $this->formatLogEntryAmendment($str);
             case self::VOTING_OPEN:

@@ -34,10 +34,11 @@ class SingleAmendmentMergeViewParagraphData
         $diffRenderer      = new DiffRenderer();
         $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
 
+        $proposal = $amendment->getLatestProposal();
         $modifiedSections = [];
-        if ($amendment->hasAlternativeProposaltext(false)) {
+        if ($proposal->hasAlternativeProposaltext(false)) {
             /** @var Amendment $modifiedAmend */
-            $modifiedAmend = $amendment->getAlternativeProposaltextReference()['modification'];
+            $modifiedAmend = $proposal->getAlternativeProposaltextReference()['modification'];
             foreach ($modifiedAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $modifiedSections[$section->sectionId] = $section;
             }

@@ -186,19 +186,20 @@ foreach ($amendments as $amendmentGroup) {
     }
 
     foreach ($amendmentGroup['amendments'] as $amendment) {
+        /** @var Amendment $amendment */
         $row++;
 
         // $sheet->getRowDimension($row)->setRowHeight(5, 'cm');
 
         $initiatorNames   = [];
-        $initiatorContacs = [];
+        $initiatorContacts = [];
         foreach ($amendment->getInitiators() as $supp) {
             $initiatorNames[] = $supp->getNameWithResolutionDate(false);
             if ($supp->contactEmail != '') {
-                $initiatorContacs[] = $supp->contactEmail;
+                $initiatorContacts[] = $supp->contactEmail;
             }
             if ($supp->contactPhone != '') {
-                $initiatorContacs[] = $supp->contactPhone;
+                $initiatorContacts[] = $supp->contactPhone;
             }
         }
         $affectedLines = $amendment->getAffectedLines();
@@ -208,7 +209,7 @@ foreach ($amendments as $amendmentGroup) {
         }
         $sheet->setCellValue($COL_PREFIX . $row, $amendment->getFormattedTitlePrefix());
         $sheet->setCellValue($COL_INITIATOR . $row, implode(', ', $initiatorNames));
-        $sheet->setCellValue($COL_CONTACT . $row, implode(', ', $initiatorContacs));
+        $sheet->setCellValue($COL_CONTACT . $row, implode(', ', $initiatorContacts));
         if ($affectedLines['from'] === $affectedLines['to']) {
             $sheet->setCellValue($COL_FIRST_LINE . $row, $affectedLines['from']);
         } else {
@@ -235,9 +236,9 @@ foreach ($amendments as $amendmentGroup) {
         $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
         $sheet->setCellValue($COL_REASON . $row, $htmlHelper->toRichTextObject($changeExplanation));
 
-        $proposal = $amendment->getFormattedProposalStatus();
-        if ($amendment->hasAlternativeProposaltext()) {
-            $reference = $amendment->getMyProposalReference();
+        $proposal = $amendment->getLatestProposal()->getFormattedProposalStatus();
+        if ($amendment->getLatestProposal()->hasAlternativeProposaltext()) {
+            $reference = $amendment->getLatestProposal()->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
             $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {

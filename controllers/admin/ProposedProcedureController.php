@@ -174,8 +174,9 @@ class ProposedProcedureController extends AdminBase
         if ($this->getPostValue('visible', 0)) {
             $motion->setProposalPublished();
         } else {
-            $motion->proposalVisibleFrom = null;
-            $motion->save();
+            $proposal = $motion->getLatestProposal();
+            $proposal->visibleFrom = null;
+            $proposal->save();
         }
 
         return new JsonResponse([
@@ -198,8 +199,9 @@ class ProposedProcedureController extends AdminBase
         if ($this->getPostValue('visible', 0)) {
             $amendment->setProposalPublished();
         } else {
-            $amendment->proposalVisibleFrom = null;
-            $amendment->save();
+            $proposal = $amendment->getLatestProposal();
+            $proposal->visibleFrom = null;
+            $proposal->save();
         }
 
         return new JsonResponse([
@@ -259,7 +261,8 @@ class ProposedProcedureController extends AdminBase
 
         $tags = $this->getPostValues()['tags'];
 
-        $ppChanges = new ProposedProcedureChange(null);
+        $latestProposal = $imotion->getLatestProposal();
+        $ppChanges = ProposedProcedureChange::create($latestProposal->version, $latestProposal->id);
         $imotion->setProposedProcedureTags($tags, $ppChanges);
         if ($ppChanges->hasChanges()) {
             $changeType = (is_a($imotion, Motion::class) ? ConsultationLog::MOTION_SET_PROPOSAL : ConsultationLog::AMENDMENT_SET_PROPOSAL);

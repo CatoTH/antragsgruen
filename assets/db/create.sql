@@ -61,6 +61,25 @@ CREATE TABLE `###TABLE_PREFIX###amendmentAdminComment` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+-- antragsgruen.amendmentProposal definition
+
+CREATE TABLE `###TABLE_PREFIX###amendmentProposal` (
+  `id` BIGINT(20) UNSIGNED NOT NULL,
+  `amendmentId` INT(11) NOT NULL,
+  `version` SMALLINT(6) NOT NULL,
+  `proposalStatus` TINYINT(4) DEFAULT NULL,
+  `proposalReferenceId` INT(11) DEFAULT NULL,
+  `comment` TEXT DEFAULT NULL,
+  `visibleFrom` TIMESTAMP NULL DEFAULT NULL,
+  `notifiedAt` TIMESTAMP NULL DEFAULT NULL,
+  `notifiedText` TEXT DEFAULT NULL,
+  `userStatus` TINYINT(4) DEFAULT NULL,
+  `explanation` TEXT DEFAULT NULL,
+  `publicToken` VARCHAR(150) NOT NULL
+)
+  ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -512,6 +531,27 @@ CREATE TABLE `###TABLE_PREFIX###motionComment` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+--
+-- Table structure for table `motionProposal`
+--
+
+CREATE TABLE `###TABLE_PREFIX###motionProposal` (
+  `id` BIGINT(20) UNSIGNED NOT NULL,
+  `motionId` INT(11) NOT NULL,
+  `version` SMALLINT(6) NOT NULL,
+  `proposalStatus` TINYINT(4) DEFAULT NULL,
+  `proposalReferenceId` INT(11) DEFAULT NULL,
+  `comment` TEXT DEFAULT NULL,
+  `visibleFrom` TIMESTAMP NULL DEFAULT NULL,
+  `notifiedAt` TIMESTAMP NULL DEFAULT NULL,
+  `notifiedText` TEXT DEFAULT NULL,
+  `userStatus` TINYINT(4) DEFAULT NULL,
+  `explanation` TEXT DEFAULT NULL,
+  `publicToken` VARCHAR(150) NOT NULL
+)
+  ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -867,6 +907,14 @@ ALTER TABLE `###TABLE_PREFIX###amendmentComment`
   ADD KEY `fk_amendment_comment_parents` (`parentCommentId`);
 
 --
+-- Indexes for table `amendmentProposal`
+--
+ALTER TABLE `###TABLE_PREFIX###amendmentProposal`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_amendment_proposal` (`amendmentId`),
+  ADD KEY `fk_amendment_proposal_ref` (`proposalReferenceId`);
+
+--
 -- Indexes for table `amendmentSection`
 --
 ALTER TABLE `###TABLE_PREFIX###amendmentSection`
@@ -1038,6 +1086,14 @@ ALTER TABLE `###TABLE_PREFIX###motionComment`
   ADD KEY `fk_motion_comment_parents` (`parentCommentId`);
 
 --
+-- Indexes for table `motionProposal`
+--
+ALTER TABLE `###TABLE_PREFIX###motionProposal`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_motion_proposal` (`motionId`),
+  ADD KEY `fk_motion_proposal_ref` (`proposalReferenceId`);
+
+--
 -- Indexes for table `motionCommentSupporter`
 --
 ALTER TABLE `###TABLE_PREFIX###motionCommentSupporter`
@@ -1202,6 +1258,11 @@ ALTER TABLE `###TABLE_PREFIX###amendmentAdminComment`
 ALTER TABLE `###TABLE_PREFIX###amendmentComment`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `amendmentProposal`
+--
+ALTER TABLE `###TABLE_PREFIX###amendmentProposal`
+    MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `amendmentSupporter`
 --
 ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
@@ -1281,6 +1342,11 @@ ALTER TABLE `###TABLE_PREFIX###motionAdminComment`
 --
 ALTER TABLE `###TABLE_PREFIX###motionComment`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `motionProposal`
+--
+ALTER TABLE `###TABLE_PREFIX###motionProposal`
+    MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motionCommentSupporter`
 --
@@ -1383,6 +1449,13 @@ ALTER TABLE `###TABLE_PREFIX###amendmentComment`
   ADD CONSTRAINT `amendmentComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
   ADD CONSTRAINT `fk_amendment_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `###TABLE_PREFIX###amendmentComment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `amendmentProposal`
+--
+ALTER TABLE `###TABLE_PREFIX###amendmentProposal`
+  ADD CONSTRAINT `fk_amendment_proposal` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
+  ADD CONSTRAINT `fk_amendment_proposal_ref` FOREIGN KEY (`proposalReferenceId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`);
 
 --
 -- Constraints for table `amendmentSection`
@@ -1536,6 +1609,13 @@ ALTER TABLE `###TABLE_PREFIX###motionComment`
   ON UPDATE NO ACTION,
   ADD CONSTRAINT `motionComment_ibfk_1` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
   ADD CONSTRAINT `motionComment_ibfk_2` FOREIGN KEY (`motionId`, `sectionId`) REFERENCES `###TABLE_PREFIX###motionSection` (`motionId`, `sectionId`);
+
+--
+-- Constraints for table `motionProposal`
+--
+ALTER TABLE `###TABLE_PREFIX###motionProposal`
+  ADD CONSTRAINT `fk_motion_proposal` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
+  ADD CONSTRAINT `fk_motion_proposal_ref` FOREIGN KEY (`proposalReferenceId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`);
 
 --
 -- Constraints for table `motionCommentSupporter`

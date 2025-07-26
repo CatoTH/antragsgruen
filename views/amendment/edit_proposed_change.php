@@ -17,6 +17,7 @@ use yii\helpers\Html;
 $controller   = $this->context;
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
+$proposal = $amendment->getLatestProposal();
 
 $this->title        = Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;
@@ -35,7 +36,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'proposal_edit_bread'));
 
 echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
-$collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
+$collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
 
 ?>
     <div class="content">
@@ -51,7 +52,12 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
             echo '<div class="alert alert-info">' . $msgAlert . '</div>';
         }
 
-        echo $this->render('_set_proposed_procedure', ['amendment' => $amendment, 'context' => 'edit', 'msgAlert' => null]);
+        echo $this->render('_set_proposed_procedure', [
+            'amendment' => $amendment,
+            'proposal' => $proposal,
+            'context' => 'edit',
+            'msgAlert' => null,
+        ]);
 
         echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
             'id'                        => 'proposedChangeTextForm',
