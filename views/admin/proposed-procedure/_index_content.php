@@ -131,36 +131,38 @@ foreach ($proposedAgenda as $proposedItem) {
                             continue;
                         }
 
+                        $titlePre = '';
                         if (is_a($item, Amendment::class)) {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-amendment-visible');
                             $saveTagsUrl = UrlHelper::createUrl(['admin/proposed-procedure/save-tags', 'type' => 'amendment', 'id' => $item->id]);
-                            $type          = 'amendment';
-                        } else {
-                            $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-motion-visible');
-                            $saveTagsUrl = UrlHelper::createUrl(['admin/proposed-procedure/save-tags', 'type' => 'motion', 'id' => $item->id]);
-                            $type          = 'motion';
-                        }
+                            $type = 'amendment';
+                            $proposal = $item->getLatestProposal();
 
-                        $titlePre = '';
-                        if (is_a($item, Amendment::class)) {
                             $classes = ['amendment' . $item->id];
                             if ($item->motionId == $currentMotion) {
                                 $titlePre = '↳';
                             }
                         } else {
+                            $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-motion-visible');
+                            $saveTagsUrl = UrlHelper::createUrl(['admin/proposed-procedure/save-tags', 'type' => 'motion', 'id' => $item->id]);
+                            $type = 'motion';
+                            /** @var Motion $item $proposal */
+                            $proposal = $item->getLatestProposal();
+
                             $classes       = ['motion' . $item->id];
                             $currentMotion = $item->id;
                         }
+
                         if ($item->status === IMotion::STATUS_WITHDRAWN) {
                             $classes[] = 'withdrawn';
                         }
                         if ($item->status === IMotion::STATUS_MOVED) {
                             $classes[] = 'moved';
                         }
-                        if ($item->proposalUserStatus === IMotion::STATUS_ACCEPTED) {
+                        if ($proposal->userStatus === IMotion::STATUS_ACCEPTED) {
                             $classes[] = 'accepted';
                         }
-                        if ($item->proposalStatus === IMotion::STATUS_VOTE) {
+                        if ($proposal->proposalStatus === IMotion::STATUS_VOTE) {
                             $classes[] = 'vote';
                         }
                         ?>
@@ -191,7 +193,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             ?>
                             <td class="procedure">
                                 <?php
-                                echo $this->render('_status_icons', ['entry' => $item, 'show_visibility' => false]);
+                                echo $this->render('_status_icons', ['proposal' => $proposal, 'showVisibility' => false]);
                                 echo Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
 
                                 $selectedTags = [];
@@ -239,7 +241,7 @@ foreach ($proposedAgenda as $proposedItem) {
                                 <input type="checkbox" name="visible"
                                        title="<?= Yii::t('con', 'proposal_table_visible') ?>"
                                        data-save-url="<?= Html::encode($setVisibleUrl) ?>"
-                                    <?= ($item->proposalVisibleFrom ? 'checked' : '') ?>>
+                                    <?= ($proposal->visibleFrom ? 'checked' : '') ?>>
                             </td>
                             <?= $this->render('_index_comment', ['item' => $item]) ?>
                         </tr>

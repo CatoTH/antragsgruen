@@ -9,6 +9,10 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
+
+// Remove relicts from previous test cases
+$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
+
 $I->dontSeeElement('#proposedChanges');
 $I->dontSeeElement('#proposedProcedureLink');
 
