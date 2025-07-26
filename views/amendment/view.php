@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * @var string|null $adminEdit
  * @var null|string $supportStatus
  * @var null|CommentForm $commentForm
+ * @var \app\models\db\IProposal $activeProposal
  * @var string|null $procedureToken
  */
 
@@ -21,7 +22,6 @@ $motion = $amendment->getMyMotion();
 $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedProposedProcedure());
-$activeProposal = ($procedureToken ? $amendment->getProposalByToken($procedureToken) ?? $amendment->getLatestProposal() : $amendment->getLatestProposal());
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -178,7 +178,7 @@ if ($hasPp) {
             'msgAlert'  => null,
         ]);
     }
-    if ($activeProposal->proposalFeedbackHasBeenRequested() && $activeProposal->canSeeProposedProcedure($procedureToken)) {
+    if ($activeProposal->proposalFeedbackHasBeenRequested() && $activeProposal->canAgreeToProposedProcedure($procedureToken)) {
         echo $this->render('@app/views/shared/_view_agree_to_proposal', ['imotion' => $amendment, 'proposal' => $activeProposal, 'procedureToken' => $procedureToken]);
     }
 }

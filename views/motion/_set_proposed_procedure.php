@@ -63,15 +63,14 @@ if (count($motion->proposals) > 1) {
     ?>
     <section class="proposalHistory">
         <div class="versionList">
-            <?= Yii::t('amend', 'proposal_close') ?>:
             <ol>
                 <?php
                 foreach ($motion->proposals as $itProp) {
+                    $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
                     if ($itProp->id === $proposal->id) {
-                        echo '<li>Version ' . $itProp->version . '</li>';
+                        echo '<li>' . Html::encode($versionName) . '</li>';
                     } else {
                         $versionLink = UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $itProp->id]);
-                        $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
                         echo '<li>' . Html::a(Html::encode($versionName), $versionLink) . '</li>';
                     }
                 }

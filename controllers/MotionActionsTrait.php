@@ -353,7 +353,7 @@ trait MotionActionsTrait
     {
         $procedureToken = $this->getHttpRequest()->post('procedureToken');
         $proposal = $motion->getProposalByToken($procedureToken);
-        if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
+        if (!$proposal->canAgreeToProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }

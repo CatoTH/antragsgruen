@@ -75,14 +75,6 @@ class MotionProposal extends IProposal
             $this->proposalReferenceId && $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
     }
 
-    public function canSeeProposedProcedure(?string $procedureToken): bool
-    {
-        if ($procedureToken && $this->publicToken === $procedureToken) {
-            return true;
-        }
-        return $this->getMyIMotion()->iAmInitiator();
-    }
-
     /**
      * @return array{motion: Motion, modification: Amendment}|null
      */

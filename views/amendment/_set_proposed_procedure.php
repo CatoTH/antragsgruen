@@ -71,11 +71,11 @@ if (count($amendment->proposals) > 1) {
             <ol>
                 <?php
                 foreach ($amendment->proposals as $itProp) {
+                    $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
                     if ($itProp->id === $proposal->id) {
-                        echo '<li>Version ' . $itProp->version . '</li>';
+                        echo '<li>' . Html::encode($versionName) . '</li>';
                     } else {
-                        $versionLink = UrlHelper::createAmendmentUrl($amendment, 'show', ['proposalVersion' => $itProp->id]);
-                        $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
+                        $versionLink = UrlHelper::createAmendmentUrl($amendment, 'view', ['proposalVersion' => $itProp->id]);
                         echo '<li>' . Html::a(Html::encode($versionName), $versionLink) . '</li>';
                     }
                 }

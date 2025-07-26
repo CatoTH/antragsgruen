@@ -80,7 +80,13 @@ abstract class IProposal extends ActiveRecord
 
     abstract public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool;
 
-    abstract public function canSeeProposedProcedure(?string $procedureToken): bool;
+    public function canAgreeToProposedProcedure(?string $procedureToken): bool
+    {
+        if ($procedureToken && $this->publicToken === $procedureToken) {
+            return true;
+        }
+        return $this->getMyIMotion()->iAmInitiator();
+    }
 
     /**
      * Hint: "Limited" refers to functionality that comes after setting the actual proposed procedure,
