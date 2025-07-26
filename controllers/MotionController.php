@@ -8,6 +8,7 @@ use app\models\db\{Amendment,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
+    IProposal,
     ISupporter,
     Motion,
     MotionSupporter,
@@ -36,7 +37,7 @@ class MotionController extends Base
     public const VIEW_ID_MERGING_STATUS_AJAX = 'merge-amendments-status-ajax';
     public const VIEW_ID_MERGING_PUBLIC_AJAX = 'merge-amendments-public-ajax';
 
-    public function actionView(string $motionSlug, int $commentId = 0, ?string $procedureToken = null): HtmlResponse
+    public function actionView(string $motionSlug, int $commentId = 0, ?string $procedureToken = null, ?int $proposalVersion = null): HtmlResponse
     {
         $this->layout = 'column2';
 
@@ -86,6 +87,7 @@ class MotionController extends Base
             'adminEdit'           => $adminEdit,
             'commentForm'         => null,
             'commentWholeMotions' => $commentWholeMotions,
+            'activeProposal'      => $this->getActiveProposal($motion, $procedureToken, $proposalVersion),
             'procedureToken'      => $procedureToken,
         ];
 
@@ -100,6 +102,21 @@ class MotionController extends Base
         $motionViewParams['supportStatus'] = MotionSupporter::getCurrUserSupportStatus($motion);
 
         return new HtmlResponse($this->render('view', $motionViewParams));
+    }
+
+    private function getActiveProposal(Motion $motion, ?string $procedureToken, ?int $proposalVersion): IProposal
+    {
+        if ($procedureToken) {
+            return $motion->getProposalByToken($procedureToken) ?? $motion->getLatestProposal();
+        }
+        if ($proposalVersion) {
+            foreach ($motion->proposals as $proposal) {
+                if ($proposal->version === $proposalVersion && $proposal->canEditLimitedProposedProcedure()) {
+                    return $proposal;
+                }
+            }
+        }
+        return $motion->getLatestProposal();
     }
 
     public function actionViewChanges(string $motionSlug): ResponseInterface

@@ -331,7 +331,7 @@ trait AmendmentActionsTrait
         $consultation  = $amendment->getMyConsultation();
         $procedureToken = $this->getHttpRequest()->post('procedureToken');
         $proposal = $amendment->getProposalByToken($procedureToken);
-        if (!$proposal->canSeeProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
+        if (!$proposal->canAgreeToProposedProcedure($procedureToken) || !$proposal->proposalFeedbackHasBeenRequested()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to perform this action');
             return;
         }

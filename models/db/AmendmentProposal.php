@@ -73,14 +73,6 @@ class AmendmentProposal extends IProposal
         return false;
     }
 
-    public function canSeeProposedProcedure(?string $procedureToken): bool
-    {
-        if ($procedureToken && $this->publicToken === $procedureToken) {
-            return true;
-        }
-        return $this->getMyIMotion()->iAmInitiator();
-    }
-
     public function rules(): array
     {
         return [

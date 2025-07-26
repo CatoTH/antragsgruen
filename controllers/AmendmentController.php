@@ -14,7 +14,7 @@ use app\models\http\{BinaryFileResponse,
     RestApiExceptionResponse,
     RestApiResponse};
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, ISupporter, User};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, IProposal, ISupporter, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
@@ -158,7 +158,7 @@ class AmendmentController extends Base
         return new RestApiResponse(200, null, $this->renderPartial('rest_get', ['amendment' => $amendment]));
     }
 
-    public function actionView(string $motionSlug, int $amendmentId, int $commentId = 0, ?string $procedureToken = null): ResponseInterface
+    public function actionView(string $motionSlug, int $amendmentId, int $commentId = 0, ?string $procedureToken = null, ?int $proposalVersion = null): ResponseInterface
     {
         $this->layout = 'column2';
 
@@ -184,6 +184,7 @@ class AmendmentController extends Base
             'openedComments' => $openedComments,
             'adminEdit'      => $adminEdit,
             'commentForm'    => null,
+            'activeProposal' => $this->getActiveProposal($amendment, $procedureToken, $proposalVersion),
             'procedureToken' => $procedureToken,
         ];
 
@@ -198,6 +199,21 @@ class AmendmentController extends Base
         $amendmentViewParams['supportStatus'] = AmendmentSupporter::getCurrUserSupportStatus($amendment);
 
         return new HtmlResponse($this->render('view', $amendmentViewParams));
+    }
+
+    private function getActiveProposal(Amendment $amendment, ?string $procedureToken, ?int $proposalVersion): IProposal
+    {
+        if ($procedureToken) {
+            return $amendment->getProposalByToken($procedureToken) ?? $amendment->getLatestProposal();
+        }
+        if ($proposalVersion) {
+            foreach ($amendment->proposals as $proposal) {
+                if ($proposal->version === $proposalVersion && $proposal->canEditLimitedProposedProcedure()) {
+                    return $proposal;
+                }
+            }
+        }
+        return $amendment->getLatestProposal();
     }
 
     public function actionAjaxDiff(string $motionSlug, int $amendmentId): ResponseInterface
