@@ -522,12 +522,17 @@ class AdminMotionFilterForm
             if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
                 if ($this->proposalStatus == 'noresponse') {
                     $proposal = $amend->getLatestProposal();
-                    if ($proposal->notifiedAt === null || $proposal->userStatus == Amendment::STATUS_ACCEPTED) {
+                    if ($proposal->notifiedAt === null || in_array($proposal->userStatus, [Amendment::STATUS_ACCEPTED, Amendment::STATUS_REJECTED])) {
                         $matches = false;
                     }
                 } elseif ($this->proposalStatus === 'accepted') {
                     $proposal = $amend->getLatestProposal();
                     if ($proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_ACCEPTED) {
+                        $matches = false;
+                    }
+                } elseif ($this->proposalStatus === 'rejected') {
+                    $proposal = $amend->getLatestProposal();
+                    if ($proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_REJECTED) {
                         $matches = false;
                     }
                 } else {
@@ -796,7 +801,7 @@ class AdminMotionFilterForm
     public function getProposalStatusList(): array
     {
         $out         = $num = [];
-        $numAccepted = $numNotResponded = 0;
+        $numAccepted = $numRejected = $numNotResponded = 0;
         foreach ($this->allAmendments as $amend) {
             $proposal = $amend->getLatestProposal();
             if (!isset($num[$proposal->proposalStatus])) {
@@ -806,6 +811,8 @@ class AdminMotionFilterForm
             if ($proposal->notifiedAt) {
                 if ($proposal->userStatus === Amendment::STATUS_ACCEPTED) {
                     $numAccepted++;
+                } elseif ($proposal->userStatus === Amendment::STATUS_REJECTED) {
+                    $numRejected++;
                 } else {
                     $numNotResponded++;
                 }
@@ -818,6 +825,9 @@ class AdminMotionFilterForm
         }
         if ($numAccepted > 0) {
             $out['accepted'] = \Yii::t('admin', 'filter_proposal_accepted') . ' (' . $numAccepted . ')';
+        }
+        if ($numRejected > 0) {
+            $out['rejected'] = \Yii::t('admin', 'filter_proposal_rejected') . ' (' . $numRejected . ')';
         }
         if ($numNotResponded > 0) {
             $out['noresponse'] = \Yii::t('admin', 'filter_proposal_noresponse') . ' (' . $numNotResponded . ')';

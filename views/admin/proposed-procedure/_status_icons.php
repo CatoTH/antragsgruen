@@ -17,6 +17,9 @@ if ($proposal->userStatus !== null || isset($amendmentStatusVerbs[$proposal->pro
         if ($proposal->userStatus === \app\models\db\IMotion::STATUS_ACCEPTED) {
             $title = Yii::t('admin', 'list_prop_user_accepted');
             echo '<span class="glyphicon glyphicon-ok accepted" title="' . $title . '"></span>';
+        } elseif ($proposal->userStatus === \app\models\db\IMotion::STATUS_REJECTED) {
+            $title = Yii::t('admin', 'list_prop_user_rejected');
+            echo '<span class="glyphicon glyphicon-remove rejected" title="' . $title . '"></span>';
         } else {
             echo '???'; // Not yet supported
         }
