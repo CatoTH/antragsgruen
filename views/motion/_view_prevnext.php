@@ -1,5 +1,6 @@
 <?php
 
+use app\components\IMotionSorter;
 use app\components\UrlHelper;
 use app\views\motion\LayoutHelper;
 use app\models\db\{Motion, User};
@@ -43,6 +44,7 @@ $html = $cache->getCached(function () use ($motion) {
         usort($motions, function (Motion $a, Motion $b) {
             return $a->getTimestamp() <=> $b->getTimestamp();
         });
+        $motions = \app\components\IMotionSorter::sortIMotions($motions, \app\components\IMotionSorter::SORT_TITLE_PREFIX);
     } else {
         $motions = \app\components\MotionSorter::getSortedIMotionsFlat($consultation, $motionsOrResolutions);
     }
