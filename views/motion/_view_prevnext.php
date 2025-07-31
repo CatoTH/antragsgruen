@@ -28,9 +28,7 @@ $motionsOrResolutions = array_values(array_filter($consultation->motions, fn (Mo
 $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
 if (in_array($motion->status, $invisibleStatuses) && User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::anyRestriction())) {
     $motions = array_values(array_filter($motionsOrResolutions, fn(Motion $motion) => in_array($motion->status, $invisibleStatuses)));
-    usort($motions, function(Motion $a, Motion $b) {
-        return $a->getTimestamp() <=> $b->getTimestamp();
-    });
+    $motions = \app\components\IMotionSorter::sortIMotions($motions, \app\components\IMotionSorter::SORT_TITLE_PREFIX);
 } else {
     $motions = \app\components\MotionSorter::getSortedIMotionsFlat($consultation, $motionsOrResolutions);
 }
