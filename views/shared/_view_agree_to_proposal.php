@@ -36,7 +36,7 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
             }
             ?>
         </div>
-        <div>
+        <div class="commentList">
             <?php
             foreach ($notifications as $notification) {
                 if (!$notification->data) {
@@ -60,7 +60,7 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
                         echo Yii::t('amend', 'proposal_user_agreed');
                     }
                     if (in_array($notification->actionType, [ConsultationLog::MOTION_REJECT_PROPOSAL, ConsultationLog::AMENDMENT_REJECT_PROPOSAL])) {
-                        echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
+                        echo '<span class="disagreed glyphicon glyphicon-remove" aria-hidden="true"></span> ';
                         echo Yii::t('amend', 'proposal_user_disagreed');
                     }
                     if ($data && $data->comment) {

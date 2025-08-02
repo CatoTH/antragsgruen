@@ -88,19 +88,33 @@ $I->see('Voting 1', '.votingTable' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_I
 $I->seeElement('.votingTable' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .motion118');
 
 
-$I->wantTo('agree to the proposal');
+$I->wantTo('accidentally disagree with the proposal');
 $I->loginAsStdUser();
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
 $I->see('Vegetable', '#pp_section_2_0 ins');
-$I->seeElement('.agreeToProposal');
+$I->see('ADDITIONAL TEXT 123', '.agreeToProposal');
+$I->fillField('.agreeToProposal textarea[name=comment]', 'Yes, but with wrong button');
+$I->submitForm('.agreeToProposal', [], 'setProposalDisagree');
+$I->seeElement('.alert-success');
+$I->seeElement('.agreeToProposal .commentList .disagreed');
+$I->dontSeeElement('.agreeToProposal .commentList .agreed');
+$I->see('Yes, but with wrong button', '.agreeToProposal .commentList');
+
+$I->wantTo('redo my decision');
+$I->clickJS('.agreeToProposal .btnUpdateDecision');
+$I->fillField('.agreeToProposal textarea[name=comment]', 'Yes, this time for real');
 $I->submitForm('.agreeToProposal', [], 'setProposalAgree');
 $I->seeElement('.alert-success');
-
+$I->seeElement('.agreeToProposal .commentList .disagreed');
+$I->seeElement('.agreeToProposal .commentList .agreed');
+$I->see('Yes, this time for real', '.agreeToProposal .commentList');
 
 $I->wantTo('see the agreement as admin');
 $I->logout();
 $I->loginAsProposalAdmin();
 $I->seeElement('.notificationSettings .accepted');
+$I->see('Yes, but with wrong button', '#proposedChanges .commentList');
+$I->see('Yes, this time for real', '#proposedChanges .commentList');
 
 
 $I->logout();
