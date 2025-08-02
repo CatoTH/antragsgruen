@@ -60,16 +60,22 @@ $I->wantTo('make the proposal visible and notify the proposer of the amendment')
 $I->executeJS('$("#proposedChanges input[name=proposalVisible]").prop("checked", true).change();');
 $I->executeJS('$("#votingBlockId").val("NEW").trigger("change")');
 $I->fillField('#newBlockTitle', 'Voting 1');
-$I->executeJS('$("#proposedChanges .saving button").click();');
+$I->seeInField('#proposedChanges input[name=newVersion]', 'current');
+$I->clickJS('#proposedChanges .saving button');
 $I->wait(1);
+$I->dontSeeElement('.proposalHistory');
+
 $I->see('Über den Vorschlag informieren und Bestätigung einholen', '#proposedChanges .notificationStatus');
 $I->dontSeeElement('.notifyProposerSection');
-$I->executeJS('$("#proposedChanges button.notifyProposer").click();');
+$I->clickJS('#proposedChanges button.notifyProposer');
 $I->wait(1);
 $I->seeElement('.notifyProposerSection');
-$I->executeJS('$("#proposedChanges button[name=notificationSubmit]").click();');
+$stdText = $I->grabTextFrom('#proposedChanges textarea[name=proposalNotificationText]');
+$I->fillField('#proposedChanges textarea[name=proposalNotificationText]', $stdText . "\nADDITIONAL TEXT 123");
+$I->clickJS('#proposedChanges button[name=notificationSubmit]');
 $I->wait(1);
 $I->see('Der/die Antragsteller*in wurde am');
+$I->see('ADDITIONAL TEXT 123', '#proposedChanges .proposalCommentForm .commentList');
 
 
 $I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId option:selected").text()'));
