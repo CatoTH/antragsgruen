@@ -11,6 +11,7 @@ class AmendmentShow {
 
         const common = new IMotionShow();
         common.initContactShow();
+        common.initAgreeToProposal();
         common.initAmendmentTextMode();
         common.initCmdEnterSubmit();
         common.initDelSubmit();

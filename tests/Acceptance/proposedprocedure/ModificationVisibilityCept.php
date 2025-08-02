@@ -5,13 +5,9 @@
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
-$I->populateDBData1();
+$I->initializeAndGoHome();
 
 $I->wantTo('see my amendments, but not the modified changes');
-$I->gotoConsultationHome();
-
-// Remove relicts from previous test cases
-$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
 
 $I->loginAsStdUser();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 281);

@@ -8,6 +8,7 @@ use app\models\db\{Amendment,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
+    IProposal,
     ISupporter,
     Motion,
     MotionSupporter,
@@ -36,36 +37,20 @@ class MotionController extends Base
     public const VIEW_ID_MERGING_STATUS_AJAX = 'merge-amendments-status-ajax';
     public const VIEW_ID_MERGING_PUBLIC_AJAX = 'merge-amendments-public-ajax';
 
-    public function actionView(string $motionSlug, int $commentId = 0, ?string $procedureToken = null): HtmlResponse
+    public function actionView(string $motionSlug, int $commentId = 0, ?string $procedureToken = null, ?int $proposalVersion = null): HtmlResponse
     {
         $this->layout = 'column2';
 
         $motion = $this->getMotionWithCheck($motionSlug);
         $this->motion = $motion;
         if ($this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
-            $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
+            $adminEdit = UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]);
         } else {
             $adminEdit = null;
         }
 
         if (!$motion->isReadable()) {
             return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => $adminEdit]));
-        }
-
-        $openedComments = [];
-        if ($commentId > 0) {
-            foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                foreach ($section->getTextParagraphObjects(false, true, true) as $paragraph) {
-                    foreach ($paragraph->comments as $comment) {
-                        if ($comment->id == $commentId) {
-                            if (!isset($openedComments[$section->sectionId])) {
-                                $openedComments[$section->sectionId] = [];
-                            }
-                            $openedComments[$section->sectionId][] = $paragraph->paragraphNo;
-                        }
-                    }
-                }
-            }
         }
 
         $textSections = $motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
@@ -82,10 +67,11 @@ class MotionController extends Base
 
         $motionViewParams = [
             'motion'              => $motion,
-            'openedComments'      => $openedComments,
+            'openedComments'      => $this->getOpenedComments($motion, $commentId),
             'adminEdit'           => $adminEdit,
             'commentForm'         => null,
             'commentWholeMotions' => $commentWholeMotions,
+            'activeProposal'      => $this->getActiveProposal($motion, $procedureToken, $proposalVersion),
             'procedureToken'      => $procedureToken,
         ];
 
@@ -100,6 +86,41 @@ class MotionController extends Base
         $motionViewParams['supportStatus'] = MotionSupporter::getCurrUserSupportStatus($motion);
 
         return new HtmlResponse($this->render('view', $motionViewParams));
+    }
+
+    private function getOpenedComments(Motion $motion, int $commentId): array
+    {
+        $openedComments = [];
+        if ($commentId > 0) {
+            foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                foreach ($section->getTextParagraphObjects(false, true, true) as $paragraph) {
+                    foreach ($paragraph->comments as $comment) {
+                        if ($comment->id == $commentId) {
+                            if (!isset($openedComments[$section->sectionId])) {
+                                $openedComments[$section->sectionId] = [];
+                            }
+                            $openedComments[$section->sectionId][] = $paragraph->paragraphNo;
+                        }
+                    }
+                }
+            }
+        }
+        return $openedComments;
+    }
+
+    private function getActiveProposal(Motion $motion, ?string $procedureToken, ?int $proposalVersion): IProposal
+    {
+        if ($procedureToken) {
+            return $motion->getProposalByToken($procedureToken) ?? $motion->getLatestProposal();
+        }
+        if ($proposalVersion) {
+            foreach ($motion->proposals as $proposal) {
+                if ($proposal->version === $proposalVersion && $proposal->canEditLimitedProposedProcedure()) {
+                    return $proposal;
+                }
+            }
+        }
+        return $motion->getLatestProposal();
     }
 
     public function actionViewChanges(string $motionSlug): ResponseInterface

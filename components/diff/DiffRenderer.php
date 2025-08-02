@@ -470,11 +470,11 @@ class DiffRenderer
     public static function getAmendmentInlineChangeData(Amendment $amendment, string $changeId): array
     {
         if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-            return static::getAmendmentInlineChangeData($amendment->proposalReferencedByAmendment, $changeId);
+            return static::getAmendmentInlineChangeData($amendment->proposalReferencedByAmendment->getAmendment(), $changeId);
         }
         if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
             $time = Tools::dateSql2timestamp($amendment->dateCreation) * 1000;
-            $motion = $amendment->proposalReferencedByMotion;
+            $motion = $amendment->proposalReferencedByMotion->getMotion();
             return [
                 'data-cid'              => $changeId,
                 'data-userid'           => '',

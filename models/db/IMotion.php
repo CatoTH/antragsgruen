@@ -2,20 +2,19 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\NotFound;
 use app\models\layoutHooks\Layout;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, Tools};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
 use app\models\quorumType\IQuorumType;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp, Permissions, PrivilegeQueryContext, Privileges};
+use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp, Permissions, Privileges};
 use app\models\supportTypes\SupportBase;
 use app\models\votings\VotingItemGroup;
-use app\views\consultation\LayoutHelper;
 use yii\base\InvalidConfigException;
 use yii\db\{ActiveQueryInterface, ActiveRecord};
-use yii\helpers\Html;
 
 /**
  * @property string $titlePrefix
@@ -27,18 +26,12 @@ use yii\helpers\Html;
  * @property string|null $dateResolution
  * @property string $dateContentModification
  * @property IComment[] $comments
+ * @property IProposal[] $proposals
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationAgendaItem|null $agendaItem
  * @property int $status
  * @property string $statusString
  * @property int $notCommentable
- * @property int|null $proposalStatus
- * @property int|null $proposalReferenceId
- * @property string|null $proposalVisibleFrom
- * @property string|null $proposalComment
- * @property string|null $proposalNotification
- * @property int|null $proposalUserStatus
- * @property string|null $proposalExplanation
  * @property int|null $votingBlockId
  * @property string|null $votingData
  * @property int|null $votingStatus
@@ -255,6 +248,23 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
     }
 
+    abstract public function getLatestProposal(): IProposal;
+
+    public function getProposalByToken(string $token): ?IProposal
+    {
+        foreach ($this->proposals as $proposal) {
+            if ($proposal->publicToken === $token) {
+                return $proposal;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @throws NotFound
+     */
+    abstract public function getProposalById(?int $id): IProposal;
+
     public function isVisible(): bool
     {
         if (!$this->getMyConsultation()) {
@@ -285,16 +295,6 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function isResolution(): bool
     {
         return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
-    }
-
-    public function isProposalPublic(): bool
-    {
-        if (!$this->proposalVisibleFrom) {
-            return false;
-        }
-        $visibleFromTs = Tools::dateSql2timestamp($this->proposalVisibleFrom);
-
-        return ($visibleFromTs <= time());
     }
 
     public function isReadable(): bool
@@ -508,150 +508,6 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function isSupportingPossibleAtThisStatus(): bool;
 
-    public function getMyProposalReference(): ?Amendment
-    {
-        if ($this->proposalReferenceId) {
-            return $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
-        } else {
-            return null;
-        }
-    }
-
-    abstract public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool;
-
-    abstract public function canSeeProposedProcedure(?string $procedureToken): bool;
-
-    /**
-     * Hint: "Limited" refers to functionality that comes after setting the actual proposed procedure,
-     * i.e., internal comments, voting blocks and communication with the proposer
-     */
-    public function canEditLimitedProposedProcedure(): bool
-    {
-        return User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($this)) ||
-               User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
-    }
-
-    public function canEditProposedProcedure(): bool
-    {
-        if (!$this->canEditLimitedProposedProcedure()) {
-            return false;
-        }
-
-        if ($this->isProposalPublic()) {
-            return $this->getMyConsultation()->getSettings()->ppEditableAfterPublication ||
-                   User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
-        } else {
-            return true;
-        }
-    }
-
-    public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
-    {
-        return ($this->hasAlternativeProposaltext(true) && (
-                $this->isProposalPublic() ||
-                User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($this)) ||
-                ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))
-            ));
-    }
-
-    public function proposalAllowsUserFeedback(): bool
-    {
-        if ($this->proposalStatus === null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public function proposalFeedbackHasBeenRequested(): bool
-    {
-        return ($this->proposalAllowsUserFeedback() && $this->proposalNotification !== null);
-    }
-
-    public function getFormattedProposalStatus(bool $includeExplanation = false): string
-    {
-        if ($this->status === self::STATUS_WITHDRAWN) {
-            return '<span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
-        }
-        if ($this->status === self::STATUS_MOVED && is_a($this, Motion::class)) {
-            /** @var Motion $this */
-            return '<span class="moved">' . LayoutHelper::getMotionMovedStatusHtml($this) . '</span>';
-        }
-        if ($this->status === self::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION && is_a($this, Amendment::class)) {
-            // @TODO backlink once we have a link from the moved amendment to the original, not just the other way round
-            return \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION');
-        }
-        $explStr = '';
-        if ($includeExplanation && !$this->isProposalPublic()) {
-            $explStr .= ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') . '</span>';
-        }
-        if ($includeExplanation && $this->proposalExplanation) {
-            $explStr .= '<blockquote class="explanation">' . \Yii::t('con', 'proposal_explanation') . ': ';
-            if (str_contains($this->proposalExplanation, "\n")) {
-                $explStr .= "<br>" . nl2br(Html::encode($this->proposalExplanation));
-            } else {
-                $explStr .= Html::encode($this->proposalExplanation);
-            }
-            $explStr .= '</blockquote>';
-        }
-        if ($this->proposalStatus === null || $this->proposalStatus == 0) {
-            return $explStr;
-        }
-
-        /** @var Consultation $consultation */
-        $consultation = $this->getMyConsultation();
-
-        switch ($this->proposalStatus) {
-            case self::STATUS_ACCEPTED:
-                return '<span class="accepted">' . Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_ACCEPTED)) . '</span>' . $explStr;
-            case self::STATUS_REJECTED:
-                return '<span class="rejected">' . Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_REJECTED)) . '</span>' . $explStr;
-            case self::STATUS_MODIFIED_ACCEPTED:
-                return '<span class="modifiedAccepted">' . Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_MODIFIED_ACCEPTED)) . '</span>' . $explStr;
-            case self::STATUS_REFERRED:
-                return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment) . $explStr;
-            case self::STATUS_OBSOLETED_BY_AMENDMENT:
-                $refAmend = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-                if ($refAmend) {
-                    $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
-
-                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr . $explStr;
-                } else {
-                    return Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_OBSOLETED_BY_AMENDMENT)) . $explStr;
-                }
-            case self::STATUS_OBSOLETED_BY_MOTION:
-                $refMot = $this->getMyConsultation()->getMotion(intval($this->proposalComment));
-                if ($refMot) {
-                    $refMotStr = Html::a($refMot->getTitleWithPrefix(), UrlHelper::createMotionUrl($refMot));
-
-                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refMotStr . $explStr;
-                } else {
-                    return Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_OBSOLETED_BY_MOTION)) . $explStr;
-                }
-            case self::STATUS_CUSTOM_STRING:
-                return Html::encode($this->proposalComment) . $explStr;
-            case self::STATUS_VOTE:
-                $str = Html::encode($consultation->getStatuses()->getProposedProcedureStatusName(self::STATUS_VOTE));
-                if ($this->getMyProposalReference()) {
-                    $str .= ' (' . \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED') . ')';
-                }
-                if ($this->votingStatus === self::STATUS_ACCEPTED) {
-                    $str .= ' (' . \Yii::t('structure', 'STATUS_ACCEPTED') . ')';
-                }
-                if ($this->votingStatus === self::STATUS_REJECTED) {
-                    $str .= ' (' . \Yii::t('structure', 'STATUS_REJECTED') . ')';
-                }
-                $str .= $explStr;
-
-                return $str;
-            default:
-
-                $name = Html::encode($consultation->getStatuses()->getProposedProcedureStatusName($this->proposalStatus) ?? (string) $this->proposalStatus);
-
-                return $name . $explStr;
-        }
-    }
-
     /**
      * @throws FormError
      */
@@ -727,6 +583,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
             }
         }
 
+        $this->save();
         $ppChanges->setVotingBlockChanges($votingBlockPre, $this->votingBlockId);
     }
 

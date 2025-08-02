@@ -350,6 +350,10 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_close'             => 'Schließen',
     'proposal_reset'             => 'Zurücksetzen',
     'proposal_open'              => 'Verfahrensvorschlag bearbeiten',
+    'proposal_version_x'         => 'Version %VERSION%',
+    'proposal_versions'          => 'Versionen',
+    'proposal_version_edit'      => 'Aktuelle Version bearbeiten',
+    'proposal_version_new'       => 'Neue Version anlegen',
     'proposal_status_na'         => 'nicht festgelegt',
     'proposal_user_accepted'     => 'Stimmt dem Verfahrensvorschlag zu',
     'proposal_user_rejected'     => 'Stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
@@ -382,6 +386,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
                                     "Hinweis: wenn du den eben genannten Link weiterleitest, kann die empfangende Person den Vorschlag damit ebenfalls einsehen und ggf. bestätigen.\n\n" .
                                     "Mit freundlichen Grüßen,\n" .
                                     "  Das Antragsgrün-Team",
+    'proposal_user_comment'      => 'Kommentar',
     'proposal_user_agree'        => 'Ich stimme dem Vorschlag zu',
     'proposal_user_agreed'       => 'Du hast dem Verfahrensvorschlag zugestimmt',
     'proposal_user_disagree'     => 'Ich stimme NICHT zu',

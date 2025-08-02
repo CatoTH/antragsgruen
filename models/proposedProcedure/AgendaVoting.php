@@ -46,7 +46,7 @@ class AgendaVoting
             if (!$motion->isVisibleForAdmins()) {
                 continue;
             }
-            if ($motion->isProposalPublic() || $includeNotOnPublicProposalOnes) {
+            if ($motion->getLatestProposal()->isProposalPublic() || $includeNotOnPublicProposalOnes) {
                 $this->items[]   = $motion;
                 $this->itemIds->addMotion($motion);
             }
@@ -60,7 +60,7 @@ class AgendaVoting
             if (!$vAmendment->isVisibleForAdmins()) {
                 continue;
             }
-            if ($vAmendment->isProposalPublic() || $includeNotOnPublicProposalOnes) {
+            if ($vAmendment->getLatestProposal()->isProposalPublic() || $includeNotOnPublicProposalOnes) {
                 $this->items[]  = $vAmendment;
                 $this->itemIds->addAmendment($vAmendment);
             }

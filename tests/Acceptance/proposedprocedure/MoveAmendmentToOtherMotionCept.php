@@ -6,18 +6,14 @@ use app\models\db\IMotion;
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
-$I->populateDBData1();
+$I->initializeAndGoHome();
 
 // Hint: this sets Ä1 to A2 to "is proposed moval" amendment status,
 // and Ä1 to A8 as the regular amendment that is proposed to be moved.
 // The whole flow will maybe be easier in the future, right now it's just a workaround.
 
 $I->wantTo('Set the status of the preplacing amendment (needs to be done first)');
-$I->gotoConsultationHome();
 $I->seeElement('.amendmentRow1');
-
-// Remove relicts from previous test cases
-$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
 
 $page = $I->loginAndGotoMotionList()->gotoAmendmentEdit(1);
 $I->selectOption('#amendmentStatus', IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION);

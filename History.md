@@ -10,8 +10,11 @@
 - The consultation-wide search now also searches for the name of proposers of motions / amendments.
 - The small-screen main menu now also has the full-text search.
 - Several improvements regarding the proposed procedures:
+  - There can be multiple versions of proposed procedures; admins can publish one or notify users about one, and internally already work on a new version of the proposal.
   - When proposers of motions or amendments are being asked for feedback, they can now also reject the proposal.
+  - When accepting or rejecting a proposal, the users can now also provide a comment to the admins, explaining their decision. They can also update their decision later on.
   - When sending the notification about a proposed procedure to the proposer a second time, it is possible to manually enter the notification text, as with the initial notifcation.
+  - The internal notes / comments to a proposed proposed procedure now also log the messages sent to the submitter, the acceptance / rejection of the submitter, and the publication of the proposal.
 
 ### Version 4.15.3 (2025-05.13)
 

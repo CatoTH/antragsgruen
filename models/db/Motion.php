@@ -50,6 +50,7 @@ use yii\helpers\Html;
  * @property MotionComment[] $privateComments
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
+ * @property MotionProposal[] $proposals
  * @property Motion|null $replacedMotion
  * @property Motion[] $replacedByMotions
  * @property VotingBlock|null $votingBlock
@@ -256,6 +257,14 @@ class Motion extends IMotion implements IRSSItem
     {
         $section = $this->getActiveSections(ISectionType::TYPE_PDF_ALTERNATIVE);
         return (count($section) > 0 && $section[0]->getData() !== '' ? $section[0] : null);
+    }
+
+    /**
+     * @return ActiveQuery<MotionProposal[]>
+     */
+    public function getProposals(): ActiveQuery
+    {
+        return $this->hasMany(MotionProposal::class, ['motionId' => 'id']);
     }
 
     /**
@@ -488,7 +497,7 @@ class Motion extends IMotion implements IRSSItem
             if ($includeVoted) {
                 $toBeCheckedStatuses[] = Amendment::STATUS_VOTE;
             }
-            if (in_array($amendment->proposalStatus, $toBeCheckedStatuses)) {
+            if (in_array($amendment->getLatestProposal()->proposalStatus, $toBeCheckedStatuses)) {
                 $amendments[] = $amendment;
             }
         }
@@ -520,14 +529,6 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return false;
-    }
-
-    public function canSeeProposedProcedure(?string $procedureToken): bool
-    {
-        if ($procedureToken && MotionProposedProcedure::getPpOpenAcceptToken($this) === $procedureToken) {
-            return true;
-        }
-        return $this->iAmInitiator();
     }
 
     public function canEditText(): bool
@@ -872,13 +873,55 @@ class Motion extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_UNSCREEN, $this->id);
     }
 
+    public function getLatestProposal(): MotionProposal
+    {
+        $isAdmin = (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($this)));
+
+        $max = null;
+        foreach ($this->proposals as $proposal) {
+            if (!$isAdmin && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
+                continue;
+            }
+            if ($proposal->version > ($max?->version ?: 0)) {
+                $max = $proposal;
+            }
+        }
+
+        if ($max === null) {
+            $max = MotionProposal::createNew($this, 1);
+        }
+
+        return $max;
+    }
+
+    public function getProposalById(?int $id): MotionProposal
+    {
+        if ($id === null) {
+            $latest = $this->getLatestProposal();
+            if ($latest->isNewRecord) {
+                return $latest;
+            } else {
+                return MotionProposal::createNew($this, $latest->version + 1);
+            }
+        } else {
+            foreach ($this->proposals as $proposal) {
+                if ($proposal->id === $id) {
+                    return $proposal;
+                }
+            }
+            throw new NotFound('Proposal not found');
+        }
+    }
+
+
     public function setProposalPublished(): void
     {
-        if ($this->proposalVisibleFrom) {
+        $proposal = $this->getLatestProposal();
+        if ($proposal->visibleFrom) {
             return;
         }
-        $this->proposalVisibleFrom = date('Y-m-d H:i:s');
-        $this->save();
+        $proposal->visibleFrom = date('Y-m-d H:i:s');
+        $proposal->save();
 
         $consultation = $this->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_PUBLISH_PROPOSAL, $this->id);
@@ -1090,8 +1133,9 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($this->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
-            if ($this->isProposalPublic() && $this->proposalStatus) {
-                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($this->getFormattedProposalStatus(true));
+            $proposal = $this->getLatestProposal();
+            if ($proposal->isProposalPublic() && $proposal->proposalStatus) {
+                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($proposal->getFormattedProposalStatus(true));
             }
         }
 
@@ -1202,28 +1246,6 @@ class Motion extends IMotion implements IRSSItem
         return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
     }
 
-    public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool
-    {
-        return in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReferenceId && $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
-    }
-
-    /**
-     * @return array{motion: Motion, modification: Amendment}|null
-     */
-    public function getAlternativeProposaltextReference(): ?array
-    {
-        // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getMyProposalReference()) {
-            return [
-                'motion'    => $this,
-                'modification' => $this->getMyProposalReference(),
-            ];
-        }
-
-        return null;
-    }
-
     // Hint: All statuses selectable except STATUS_VOTE
     public const FOLLOWABLE_PROPOSAL_STATUSES = [
         self::STATUS_MODIFIED_ACCEPTED,
@@ -1240,7 +1262,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function followProposalAndCreateNewVersion(string $versionId, int $acceptStatus = self::STATUS_ACCEPTED, ?array $newInitiators = null): Motion
     {
-        if (!in_array($this->proposalStatus, [self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_CUSTOM_STRING])) {
+        $proposal = $this->getLatestProposal();
+        if (!in_array($proposal->proposalStatus, [self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_CUSTOM_STRING])) {
             throw new FormError('No proposal set');
         }
 
@@ -1263,17 +1286,17 @@ class Motion extends IMotion implements IRSSItem
             }
         }
 
-        $newVersion->status = match ($this->proposalStatus) {
+        $newVersion->status = match ($proposal->proposalStatus) {
             self::STATUS_MODIFIED_ACCEPTED, self::STATUS_ACCEPTED => $acceptStatus,
-            default => $this->proposalStatus,
+            default => $proposal->proposalStatus,
         };
-        if (in_array($this->proposalStatus, [self::STATUS_OBSOLETED_BY_MOTION, self::STATUS_OBSOLETED_BY_AMENDMENT])) {
-            $newVersion->statusString = $this->proposalComment;
+        if (in_array($proposal->proposalStatus, [self::STATUS_OBSOLETED_BY_MOTION, self::STATUS_OBSOLETED_BY_AMENDMENT])) {
+            $newVersion->statusString = $proposal->comment;
         }
-        if ($this->proposalStatus === self::STATUS_CUSTOM_STRING) {
-            $newVersion->statusString = $this->proposalComment;
+        if ($proposal->proposalStatus === self::STATUS_CUSTOM_STRING) {
+            $newVersion->statusString = $proposal->comment;
         }
-        if ($this->proposalStatus === self::STATUS_MODIFIED_ACCEPTED && ($modified = $this->getMyProposalReference())) {
+        if ($proposal->proposalStatus === self::STATUS_MODIFIED_ACCEPTED && ($modified = $proposal->getMyProposalReference())) {
             foreach ($newVersion->sections as $section) {
                 $amendmentSection = $modified->getSection($section->sectionId);
                 if ($amendmentSection) {
@@ -1282,9 +1305,11 @@ class Motion extends IMotion implements IRSSItem
                 }
             }
         }
-        $newVersion->proposalStatus = null;
-        $newVersion->proposalComment = null;
-        $newVersion->save();
+
+        $newProposal = $newVersion->getLatestProposal();
+        $newProposal->proposalStatus = null;
+        $newProposal->comment = null;
+        $newProposal->save();
 
         return $newVersion;
     }
@@ -1386,10 +1411,11 @@ class Motion extends IMotion implements IRSSItem
 
     public function getAgendaApiBaseObject(): array
     {
-        if ($this->isProposalPublic()) {
-            $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
+        $propsal = $this->getLatestProposal();
+        if ($propsal->isProposalPublic()) {
+            $procedure = Agenda::formatProposedProcedure($this, $propsal, Agenda::FORMAT_HTML);
         } elseif ($this->status === IMotion::STATUS_MOVED) {
-            $procedure = \app\views\consultation\LayoutHelper::getMotionMovedStatusHtml($this);
+            $procedure = LayoutHelper::getMotionMovedStatusHtml($this);
         } else {
             $procedure = null;
         }

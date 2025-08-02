@@ -26,7 +26,7 @@ class Init
         $form->toMergeMainIds = [];
         $form->toMergeResolvedIds = [];
 
-        $proposedAlternative = $motion->getAlternativeProposaltextReference();
+        $proposedAlternative = $motion->getLatestProposal()->getAlternativeProposaltextReference();
         if ($proposedAlternative && $proposedAlternative['motion']->id === $motion->id) {
             $form->toMergeMainIds[] = $proposedAlternative['modification']->id;
             $form->toMergeResolvedIds[] = $proposedAlternative['modification']->id;
@@ -38,10 +38,11 @@ class Init
                 $form->toMergeMainIds[] = $amendment->id;
             }
 
-            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
+            $proposal = $amendment->getLatestProposal();
+            if ($proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
                 $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
                 if (isset($postAmendIds[$amendment->id])) {
-                    $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
+                    $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
                 }
             } else {
                 if (isset($postAmendIds[$amendment->id])) {
@@ -68,8 +69,9 @@ class Init
         foreach ($motion->getFilteredAmendments($filter) as $amendment) {
             $form->toMergeMainIds[] = $amendment->id;
 
-            if ($amendment->hasAlternativeProposaltext(false)) {
-                $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
+            $proposal = $amendment->getLatestProposal();
+            if ($proposal->hasAlternativeProposaltext(false)) {
+                $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
                 $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL;
             } else {
                 $form->toMergeResolvedIds[] = $amendment->id;
@@ -123,17 +125,6 @@ class Init
         return array_values(array_filter($motion->amendments, function (Amendment $amendment) use ($hiddenStatuses): bool {
             return !in_array($amendment->status, $hiddenStatuses);
         }));
-    }
-
-    public function resolveAmendmentToProposalId(int $amendmentId): ?int
-    {
-        foreach (static::getMotionAmendmentsForMerging($this->motion) as $amendment) {
-            if ($amendment->id === $amendmentId && $amendment->getMyProposalReference()) {
-                return $amendment->getMyProposalReference()->id;
-            }
-        }
-
-        return null;
     }
 
     public function getRegularSection(MotionSection $section): MotionSection
@@ -190,9 +181,10 @@ class Init
             // ModUs that modify a paragraph unaffected by the original amendment.
             // We need to check that the original amendment is not deleted though.
             // Also be defensive about data inconsistencies when the motion assignment does not match - see https://github.com/CatoTH/antragsgruen/issues/576
-            if ($amendment->proposalReferencedByAmendment && $amendment->motionId === $amendment->proposalReferencedByAmendment->motionId &&
-                !in_array($amendment->proposalReferencedByAmendment->status, $hiddenStatuses)) {
-                $normalAmendments[$amendment->proposalReferencedByAmendment->id] = $amendment->proposalReferencedByAmendment;
+            $referencedByAmendment = $amendment->proposalReferencedByAmendment?->getAmendment();
+            if ($referencedByAmendment && $amendment->motionId === $referencedByAmendment->motionId &&
+                !in_array($referencedByAmendment->status, $hiddenStatuses)) {
+                $normalAmendments[$referencedByAmendment->id] = $referencedByAmendment;
             }
         }
         if (count($normalAmendments) > 0) {
@@ -244,7 +236,7 @@ class Init
             'url'           => UrlHelper::createAmendmentUrl($amendment),
             'oldStatusId'   => $amendment->status,
             'oldStatusName' => $statusesAllNames[$amendment->status] ?? null,
-            'hasProposal'   => ($amendment->getMyProposalReference() !== null),
+            'hasProposal'   => ($amendment->getLatestProposal()->getMyProposalReference() !== null),
             'isMotionModU'  => ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION),
         ];
     }

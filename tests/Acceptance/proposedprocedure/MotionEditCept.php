@@ -6,9 +6,8 @@ use app\models\db\IMotion;
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
-$I->populateDBData1();
+$I->initializeAndGoHome();
 
-$I->gotoConsultationHome();
 $I->loginAsProposalAdmin();
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
 
@@ -20,7 +19,7 @@ $I->dontSeeElement('#pp_section_2_0');
 
 $I->wantTo('write internal comments');
 $I->fillField('#proposedChanges .proposalCommentForm textarea', 'Internal comment!');
-$I->executeJS('$("#proposedChanges .proposalCommentForm button").click();');
+$I->clickJS('#proposedChanges .proposalCommentForm button');
 $I->wait(1);
 $I->see('Internal comment!', '#proposedChanges .proposalCommentForm .commentList');
 
@@ -47,16 +46,22 @@ $I->wantTo('make the proposal visible and notify the proposer of the amendment')
 $I->executeJS('$("#proposedChanges input[name=proposalVisible]").prop("checked", true).change();');
 $I->executeJS('$("#votingBlockId").val("NEW").trigger("change")');
 $I->fillField('#newBlockTitle', 'Voting 1');
+$I->seeInField('#proposedChanges input[name=newVersion]', 'current');
 $I->clickJS('#proposedChanges .saving button');
 $I->wait(1);
+$I->dontSeeElement('.proposalHistory');
+
 $I->see('Über den Vorschlag informieren und Bestätigung einholen', '#proposedChanges .notificationStatus');
 $I->dontSeeElement('.notifyProposerSection');
 $I->clickJS('#proposedChanges button.notifyProposer');
 $I->wait(1);
 $I->seeElement('.notifyProposerSection');
+$stdText = $I->grabTextFrom('#proposedChanges textarea[name=proposalNotificationText]');
+$I->fillField('#proposedChanges textarea[name=proposalNotificationText]', $stdText . "\nADDITIONAL TEXT 123");
 $I->clickJS('#proposedChanges button[name=notificationSubmit]');
 $I->wait(1);
 $I->see('Der/die Antragsteller*in wurde am');
+$I->see('ADDITIONAL TEXT 123', '#proposedChanges .proposalCommentForm .commentList');
 
 
 $I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId option:selected").text()'));
@@ -78,19 +83,33 @@ $I->see('Voting 1', '.votingTable' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_I
 $I->seeElement('.votingTable' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .motion118');
 
 
-$I->wantTo('agree to the proposal');
+$I->wantTo('accidentally disagree with the proposal');
 $I->loginAsStdUser();
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
 $I->see('Vegetable', '#pp_section_2_0 ins');
-$I->seeElement('.agreeToProposal');
+$I->see('ADDITIONAL TEXT 123', '.agreeToProposal');
+$I->fillField('.agreeToProposal textarea[name=comment]', 'Yes, but with wrong button');
+$I->submitForm('.agreeToProposal', [], 'setProposalDisagree');
+$I->seeElement('.alert-success');
+$I->seeElement('.agreeToProposal .commentList .disagreed');
+$I->dontSeeElement('.agreeToProposal .commentList .agreed');
+$I->see('Yes, but with wrong button', '.agreeToProposal .commentList');
+
+$I->wantTo('redo my decision');
+$I->clickJS('.agreeToProposal .btnUpdateDecision');
+$I->fillField('.agreeToProposal textarea[name=comment]', 'Yes, this time for real');
 $I->submitForm('.agreeToProposal', [], 'setProposalAgree');
 $I->seeElement('.alert-success');
-
+$I->seeElement('.agreeToProposal .commentList .disagreed');
+$I->seeElement('.agreeToProposal .commentList .agreed');
+$I->see('Yes, this time for real', '.agreeToProposal .commentList');
 
 $I->wantTo('see the agreement as admin');
 $I->logout();
 $I->loginAsProposalAdmin();
 $I->seeElement('.notificationSettings .accepted');
+$I->see('Yes, but with wrong button', '#proposedChanges .commentList');
+$I->see('Yes, this time for real', '#proposedChanges .commentList');
 
 
 $I->logout();

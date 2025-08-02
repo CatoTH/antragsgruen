@@ -1,26 +1,29 @@
 <?php
 
 /**
- * @var \app\models\db\IMotion $entry
- * @var bool $show_visibility
+ * @var \app\models\db\IProposal $proposal
+ * @var bool $showVisibility
  */
 
-if (!isset($show_visibility)) {
-    $show_visibility = true;
+if (!isset($showVisibility)) {
+    $showVisibility = true;
 }
 
-$amendmentStatusVerbs = $entry->getMyConsultation()->getStatuses()->getStatusesAsVerbs();
+$amendmentStatusVerbs = $proposal->getMyConsultation()->getStatuses()->getStatusesAsVerbs();
 
-if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->proposalStatus])) {
+if ($proposal->userStatus !== null || isset($amendmentStatusVerbs[$proposal->proposalStatus])) {
     echo '<div class="statusIcons proposalStatusIcons">';
-    if ($entry->proposalUserStatus !== null) {
-        if ($entry->proposalUserStatus === \app\models\db\IMotion::STATUS_ACCEPTED) {
+    if ($proposal->userStatus !== null) {
+        if ($proposal->userStatus === \app\models\db\IMotion::STATUS_ACCEPTED) {
             $title = Yii::t('admin', 'list_prop_user_accepted');
             echo '<span class="glyphicon glyphicon-ok accepted" title="' . $title . '"></span>';
+        } elseif ($proposal->userStatus === \app\models\db\IMotion::STATUS_REJECTED) {
+            $title = Yii::t('admin', 'list_prop_user_rejected');
+            echo '<span class="glyphicon glyphicon-remove rejected" title="' . $title . '"></span>';
         } else {
             echo '???'; // Not yet supported
         }
-    } elseif ($entry->proposalFeedbackHasBeenRequested()) {
+    } elseif ($proposal->proposalFeedbackHasBeenRequested()) {
         $title = Yii::t('admin', 'list_prop_user_asked');
         echo '<span class="asked" title="' . $title . '">❓</span>';
     }
@@ -31,8 +34,8 @@ if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->p
     }
     */
 
-    if ($show_visibility) {
-        if ($entry->isProposalPublic()) {
+    if ($showVisibility) {
+        if ($proposal->isProposalPublic()) {
             $title = Yii::t('admin', 'list_prop_visible');
             echo '<span class="glyphicon glyphicon-eye-open visible" title="' . $title . '"></span>';
         } else {

@@ -3,8 +3,9 @@
 namespace app\models\db;
 
 use app\models\exceptions\Internal;
+use app\models\exceptions\NotFound;
 use app\models\proposedProcedure\Agenda;
-use app\models\settings\{AntragsgruenApp, Privileges, MotionSection as MotionSectionSettings};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
 use app\components\{diff\AmendmentSectionFormatter,
     diff\DiffRenderer,
     HashedStaticCache,
@@ -50,8 +51,9 @@ use yii\helpers\Html;
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
- * @property Amendment|null $proposalReferencedByAmendment
- * @property Motion|null $proposalReferencedByMotion
+ * @property AmendmentProposal[] $proposals
+ * @property AmendmentProposal|null $proposalReferencedByAmendment
+ * @property MotionProposal|null $proposalReferencedByMotion
  * @property VotingBlock|null $votingBlock
  * @property User|null $responsibilityUser
  * @property Vote[] $votes
@@ -242,19 +244,27 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<Amendment>
+     * @return ActiveQuery<AmendmentProposal[]>
      */
-    public function getProposalReferencedByAmendment(): ActiveQuery
+    public function getProposals(): ActiveQuery
     {
-        return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
+        return $this->hasMany(AmendmentProposal::class, ['amendmentId' => 'id']);
     }
 
     /**
-     * @return ActiveQuery<Motion>
+     * @return ActiveQuery<AmendmentProposal>
+     */
+    public function getProposalReferencedByAmendment(): ActiveQuery
+    {
+        return $this->hasOne(AmendmentProposal::class, ['proposalReferenceId' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery<MotionProposal>
      */
     public function getProposalReferencedByMotion(): ActiveQuery
     {
-        return $this->hasOne(Motion::class, ['proposalReferenceId' => 'id']);
+        return $this->hasOne(MotionProposal::class, ['proposalReferenceId' => 'id']);
     }
 
     /**
@@ -704,14 +714,6 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    public function canSeeProposedProcedure(?string $procedureToken): bool
-    {
-        if ($procedureToken && AmendmentProposedProcedure::getPpOpenAcceptToken($this) === $procedureToken) {
-            return true;
-        }
-        return $this->iAmInitiator();
-    }
-
     public function canEditText(): bool
     {
         return $this->getPermissionsObject()->amendmentCanEditText($this);
@@ -916,13 +918,54 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
     }
 
+    public function getLatestProposal(): AmendmentProposal
+    {
+        $isAdmin = (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($this)));
+
+        $max = null;
+        foreach ($this->proposals as $proposal) {
+            if (!$isAdmin && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
+                continue;
+            }
+            if ($proposal->version > ($max?->version ?: 0)) {
+                $max = $proposal;
+            }
+        }
+
+        if ($max === null) {
+            $max = AmendmentProposal::createNew($this, 1);
+        }
+
+        return $max;
+    }
+
+    public function getProposalById(?int $id): AmendmentProposal
+    {
+        if ($id === null) {
+            $latest = $this->getLatestProposal();
+            if ($latest->isNewRecord) {
+                return $latest;
+            } else {
+                return AmendmentProposal::createNew($this, $latest->version + 1);
+            }
+        } else {
+            foreach ($this->proposals as $proposal) {
+                if ($proposal->id === $id) {
+                    return $proposal;
+                }
+            }
+            throw new NotFound('Proposal not found');
+        }
+    }
+
     public function setProposalPublished(): void
     {
-        if ($this->proposalVisibleFrom) {
+        $proposal = $this->getLatestProposal();
+        if ($proposal->visibleFrom) {
             return;
         }
-        $this->proposalVisibleFrom = date('Y-m-d H:i:s');
-        $this->save();
+        $proposal->visibleFrom = date('Y-m-d H:i:s');
+        $proposal->save();
 
         $consultation = $this->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_PUBLISH_PROPOSAL, $this->id);
@@ -1090,8 +1133,9 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         if ($this->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
-            if ($this->isProposalPublic() && $this->proposalStatus) {
-                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($this->getFormattedProposalStatus(true));
+            $proposal = $this->getLatestProposal();
+            if ($proposal->isProposalPublic() && $proposal->proposalStatus) {
+                $return[\Yii::t('amend', 'proposed_status')] = strip_tags($proposal->getFormattedProposalStatus(true));
             }
         }
 
@@ -1135,71 +1179,6 @@ class Amendment extends IMotion implements IRSSItem
         return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
     }
 
-    public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool
-    {
-        // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReferenceId && $this->getMyConsultation()->getAmendment($this->proposalReferenceId)) {
-            return true;
-        }
-
-        // This amendment is obsoleted by an amendment with a modification proposal
-        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($obsoletedBy && $internalNestingLevel < 10) {
-                return $obsoletedBy->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
-            }
-        }
-
-        // It was proposed to move this amendment to another motion
-        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
-            $movedTo = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($movedTo) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns the modification proposed and the amendment to which the modification was directly proposed
-     * (which has not to be this very amendment, in case this amendment is obsoleted by another amendment)
-     *
-     * @return array{amendment: Amendment, modification: Amendment}|null
-     */
-    public function getAlternativeProposaltextReference(int $internalNestingLevel = 0): ?array
-    {
-        // This amendment has a direct modification proposal
-        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) && $this->getMyProposalReference()) {
-            return [
-                'amendment'    => $this,
-                'modification' => $this->getMyProposalReference(),
-            ];
-        }
-
-        // This amendment is obsoleted by an amendment with a modification proposal
-        if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
-            $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($obsoletedBy && $internalNestingLevel < 10) {
-                return $obsoletedBy->getAlternativeProposaltextReference($internalNestingLevel + 1);
-            }
-        }
-
-        // It was proposed to move this amendment to another motion
-        if ($this->proposalStatus === Amendment::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
-            $movedTo = $this->getMyConsultation()->getAmendment(intval($this->proposalComment));
-            if ($movedTo) {
-                return [
-                    'amendment'    => $this,
-                    'modification' => $movedTo,
-                ];
-            }
-        }
-
-        return null;
-    }
-
     /*
      * Global alternatives and withdrawn amendments are never selected.
      * For regular amendments, voting results always take precedence.
@@ -1219,7 +1198,7 @@ class Amendment extends IMotion implements IRSSItem
         if (in_array($this->status, [static::STATUS_ACCEPTED, static::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION])) {
             return true;
         }
-        if (in_array($this->status, [static::STATUS_VOTE, static::STATUS_SUBMITTED_SCREENED]) || $this->proposalStatus === static::STATUS_VOTE) {
+        if (in_array($this->status, [static::STATUS_VOTE, static::STATUS_SUBMITTED_SCREENED]) || $this->getLatestProposal()->proposalStatus === static::STATUS_VOTE) {
             if ($this->votingStatus === static::STATUS_ACCEPTED) {
                 return true;
             }
@@ -1231,11 +1210,11 @@ class Amendment extends IMotion implements IRSSItem
         if (!$hasProposals) {
             return true;
         }
-        if ($this->proposalStatus === static::STATUS_ACCEPTED) {
+        if ($this->getLatestProposal()->proposalStatus === static::STATUS_ACCEPTED) {
             return true;
         }
         if (in_array($this->status, [static::STATUS_PROPOSED_MODIFIED_AMENDMENT, static::STATUS_PROPOSED_MODIFIED_MOTION]) ||
-            $this->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
+            $this->getLatestProposal()->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
             return true;
         }
 
@@ -1290,42 +1269,6 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return Layout::getFormattedAmendmentStatus($status, $this);
-    }
-
-    /**
-     * @return Amendment[]
-     * @throws Internal
-     */
-    public function collidesWithOtherProposedAmendments(bool $includeVoted): array
-    {
-        $collidesWith = [];
-
-        if ($this->getMyProposalReference()) {
-            $sections = $this->getMyProposalReference()->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
-        } else {
-            $sections = $this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
-        }
-        $newSections = [];
-        foreach ($sections as $section) {
-            $newSections[$section->sectionId] = $section->data;
-        }
-
-        foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this->id]) as $amendment) {
-            if ($this->globalAlternative || $amendment->globalAlternative) {
-                $collidesWith[] = $amendment;
-                continue;
-            }
-            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
-                if (count($coll) > 0) {
-                    if (!in_array($amendment, $collidesWith, true)) {
-                        $collidesWith[] = $amendment;
-                    }
-                }
-            }
-        }
-
-        return $collidesWith;
     }
 
     public function getLink(bool $absolute = false): string
@@ -1422,8 +1365,9 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getAgendaApiBaseObject(): array
     {
-        if ($this->isProposalPublic()) {
-            $procedure = Agenda::formatProposedProcedure($this, Agenda::FORMAT_HTML);
+        $proposal = $this->getLatestProposal();
+        if ($proposal->isProposalPublic()) {
+            $procedure = Agenda::formatProposedProcedure($this, $proposal, Agenda::FORMAT_HTML);
         } else {
             $procedure = null;
         }

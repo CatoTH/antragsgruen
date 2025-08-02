@@ -7,7 +7,7 @@ use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout};
 use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\{IHtmlToPdfLayout, IPdfWriter, IPDFLayout};
-use app\models\db\{Amendment, AmendmentSection, ISupporter, TexTemplate};
+use app\models\db\{Amendment, AmendmentProposal, AmendmentSection, ISupporter, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
@@ -17,12 +17,12 @@ class LayoutHelper
     /**
      * @return array<array{title: string, section: ISectionType}>
      */
-    public static function getVisibleProposedProcedureSections(Amendment $amendment, ?string $procedureToken): array
+    public static function getVisibleProposedProcedureSections(Amendment $amendment, ?AmendmentProposal $proposal): array
     {
-        if (!$amendment->hasVisibleAlternativeProposaltext($procedureToken)) {
+        if (!$proposal || !$proposal->hasVisibleAlternativeProposaltext()) {
             return [];
         }
-        $reference = $amendment->getAlternativeProposaltextReference();
+        $reference = $proposal->getAlternativeProposaltextReference();
         if (!$reference) {
             return [];
         }
@@ -41,7 +41,7 @@ class LayoutHelper
             } else {
                 $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->getFormattedTitlePrefix();
             }
-            if (!$amendment->isProposalPublic()) {
+            if (!$proposal->isProposalPublic()) {
                 $prefix = '[ADMIN] ' . $prefix;
             }
             $sectionType = $section->getSectionType();
@@ -337,8 +337,8 @@ class LayoutHelper
         $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $amendment->getTitle());
         $doc->addReplace('/\{\{ANTRAGSGRUEN:AGENDA\}\}/siu', ($amendment->getMyAgendaItem() ? $amendment->getMyAgendaItem()->title : ''));
         $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
-        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports && $amendment->proposalStatus !== null && $amendment->isProposalPublic()) {
-            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', \Yii::t('export', 'proposed_procedure') . ': ' . strip_tags($amendment->getFormattedProposalStatus(false)));
+        if ($amendment->getMyMotionType()->getSettingsObj()->showProposalsInExports && $amendment->getLatestProposal()->proposalStatus !== null && $amendment->getLatestProposal()->isProposalPublic()) {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', \Yii::t('export', 'proposed_procedure') . ': ' . strip_tags($amendment->getLatestProposal()?->getFormattedProposalStatus(false)));
         } else {
             $doc->addReplace('/\{\{ANTRAGSGRUEN:STATUS\}\}/siu', '');
         }

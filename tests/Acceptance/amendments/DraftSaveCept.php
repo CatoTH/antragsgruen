@@ -4,12 +4,9 @@
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
-$I->populateDBData1();
+$page = $I->initializeAndGoHome();
 
 $I->wantTo('fill in some text and leave the page');
-
-$page = $I->gotoConsultationHome();
-$I->executeJS('for (var i in localStorage) { localStorage.removeItem(i); }');
 
 $page->gotoAmendmentCreatePage();
 

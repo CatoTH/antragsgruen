@@ -13,6 +13,7 @@ export class ChangeProposedProcedure {
     private $tagsSelect: JQuery;
     private saveUrl: string;
     private context: string;
+    private version: number|null;
     private csrf: string;
     private savingComment: boolean = false;
 
@@ -38,6 +39,7 @@ export class ChangeProposedProcedure {
         this.context = this.$widget.data('context');
         this.saveUrl = this.$widget.attr('action');
         this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
+        this.version = this.$widget.data('proposal-id') ?? null;
     }
 
     private initOpener() {
@@ -94,29 +96,51 @@ export class ChangeProposedProcedure {
     }
 
     private performCallWithReload(data: object) {
-        data['_csrf'] = this.csrf;
         data['context'] = this.context;
 
-        $.post(this.saveUrl, data, (ret) => {
-            if (ret['redirectToUrl']) {
-                window.location.href = ret['redirectToUrl'];
-            } else if (ret['success']) {
-                let $content = $(ret['html']);
-                this.$widget.children().remove();
-                this.$widget.append($content.children());
-                this.reinitAfterReload();
-                this.$widget.addClass('showSaved').removeClass('isChanged');
-                if (ret['proposalStr']) {
-                    this.setGlobalProposedStr(ret['proposalStr']);
+        if (data['version'] === undefined) {
+            data['version'] = this.version;
+        }
+
+        $.ajax({
+            url: this.saveUrl,
+            type: "POST",
+            data: JSON.stringify(data),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            headers: {"X-CSRF-Token": this.csrf},
+            success: ret => {
+                if (ret['redirectToUrl']) {
+                    window.location.href = ret['redirectToUrl'];
+                } else if (ret['success']) {
+                    let $content = $(ret['html']);
+                    this.$widget.children().remove();
+                    this.$widget.append($content.children());
+                    this.$widget.data('proposal-id', $content.data('proposal-id'));
+                    this.reinitAfterReload();
+                    this.$widget.addClass('showSaved').removeClass('isChanged');
+                    if (ret['proposalStr']) {
+                        this.setGlobalProposedStr(ret['proposalStr']);
+                    }
+                    window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
+                } else if (ret['message']) {
+                    alert(ret['message']);
+                } else {
+                    alert('An error occurred');
                 }
-                window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
-            } else if (ret['error']) {
-                alert(ret['error']);
-            } else {
-                alert('An error occurred');
             }
-        }).fail(() => {
-            alert('Could not save');
+        }).catch(function (err) {
+            try {
+                const ret = JSON.parse(err.responseText);
+                if (ret['message']) {
+                    alert(ret['message']);
+                } else {
+                    alert(err.responseText);
+                }
+            } catch (e) {
+                alert(err.responseText);
+            }
         });
     }
 
@@ -125,7 +149,7 @@ export class ChangeProposedProcedure {
             fromName = this.$widget.find('input[name=proposalNotificationFrom]').val(),
             replyTo = this.$widget.find('input[name=proposalNotificationReply]').val();
         this.performCallWithReload({
-            'notifyProposer': '1',
+            'notifyProposer': true,
             'text': text,
             'fromName': fromName,
             'replyTo': replyTo,
@@ -145,10 +169,11 @@ export class ChangeProposedProcedure {
 
     private saveStatus() {
         const selectize = this.$tagsSelect[0] as any
-        let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
+        let newValStr = this.$widget.find('.statusForm input[type=radio]:checked').val() as string|undefined;
+        let newVal = (newValStr === undefined ? null : parseInt(newValStr, 10));
         let data = {
             setStatus: newVal,
-            visible: (this.$visibilityInput.prop('checked') ? 1 : 0),
+            visible: this.$visibilityInput.prop('checked'),
             votingBlockId: this.$votingBlockId.val(),
             votingItemBlockName: this.$widget.find(".votingItemBlockNameRow input").val(),
             tags: selectize.selectize.items,
@@ -186,6 +211,13 @@ export class ChangeProposedProcedure {
 
         if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
             data['proposalExplanation'] = this.$widget.find('textarea[name=proposalExplanation]').val();
+        }
+
+        if (this.$widget.find('input[name=newVersion][value=current]').prop('checked')) {
+            data['version'] = this.version;
+        }
+        if (this.$widget.find('input[name=newVersion][value=new]').prop('checked')) {
+            data['version'] = null;
         }
 
         this.performCallWithReload(data);
@@ -312,29 +344,42 @@ export class ChangeProposedProcedure {
         }
 
         this.savingComment = true;
-        $.post(this.saveUrl, {
-            writeComment: text,
-            _csrf: this.csrf
-        }, (ev) => {
-            if (ev.success) {
-                let delHtml = '';
-                if (ev.comment.delLink) {
-                    delHtml = '<button type="button" data-url="' + ev.comment.delLink + '" class="btn-link delComment">';
-                    delHtml += '<span class="glyphicon glyphicon-trash"></span></button>';
+
+        $.ajax({
+            url: this.saveUrl,
+            type: "POST",
+            data: JSON.stringify({
+                writeComment: text,
+                version: this.version,
+            }),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            headers: {"X-CSRF-Token": this.csrf},
+            success: ev => {
+                if (ev.success) {
+                    let delHtml = '';
+                    if (ev.comment.delLink) {
+                        delHtml = '<button type="button" data-url="' + ev.comment.delLink + '" class="btn-link delComment">';
+                        delHtml += '<span class="glyphicon glyphicon-trash"></span></button>';
+                    }
+                    let $comment = $('<li class="comment"><div class="header"><div class="date"></div>' + delHtml + '<div class="name"></div></div><div class="comment"></div></li>');
+                    $comment.find('.date').text(ev.comment.dateFormatted);
+                    $comment.find('.name').text(ev.comment.username);
+                    $comment.find('.comment').text(ev.comment.text);
+                    $comment.data('id', ev.comment.id);
+                    $commentList.append($comment);
+                    $commentWidget.find('textarea').val('');
+                    $commentList[0].scrollTop = $commentList[0].scrollHeight;
+
+                    this.$widget.data('proposal-id', ev.proposalId);
+                    this.version = ev.proposalId;
+                } else {
+                    alert('Could not save: ' + JSON.stringify(ev));
                 }
-                let $comment = $('<li class="comment"><div class="header"><div class="date"></div>' + delHtml + '<div class="name"></div></div><div class="comment"></div></li>');
-                $comment.find('.date').text(ev.comment.dateFormatted);
-                $comment.find('.name').text(ev.comment.username);
-                $comment.find('.comment').text(ev.comment.text);
-                $comment.data('id', ev.comment.id);
-                $commentList.append($comment);
-                $commentWidget.find('textarea').val('');
-                $commentList[0].scrollTop = $commentList[0].scrollHeight;
-            } else {
-                alert('Could not save: ' + JSON.stringify(ev));
+                this.savingComment = false;
             }
-            this.savingComment = false;
-        }).fail(() => {
+        }).catch(() => {
             alert('Could not save');
             this.savingComment = false;
         });

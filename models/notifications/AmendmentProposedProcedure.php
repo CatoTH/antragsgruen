@@ -1,31 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\notifications;
 
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
-use app\models\db\{Amendment, EMailLog};
-use app\models\settings\AntragsgruenApp;
+use app\models\db\{Amendment, AmendmentProposal, EMailLog};
 
 class AmendmentProposedProcedure
 {
-    public static function getPpOpenAcceptToken(Amendment $amendment): string
+    public function __construct(AmendmentProposal $proposal, ?string $text = null, ?string $fromName = null, ?string $replyTo = null)
     {
-        $base = 'getPpOpenAcceptToken' . AntragsgruenApp::getInstance()->randomSeed . $amendment->motionId . '-' . $amendment->id;
-
-        /** @noinspection PhpUnhandledExceptionInspection */
-        return substr(preg_replace('/[^\w]/siu', '', base64_encode(sodium_crypto_generichash($base))), 0, 20);
-    }
-
-    public function __construct(Amendment $amendment, ?string $text = null, ?string $fromName = null, ?string $replyTo = null)
-    {
+        $amendment = $proposal->getAmendment();
         $initiator = $amendment->getInitiators();
         if (count($initiator) === 0 || !$initiator[0]->getContactOrUserEmail()) {
             return;
         }
 
         if ($text === null || trim($text) === '') {
-            $text = static::getDefaultText($amendment);
+            $text = static::getDefaultText($proposal);
         }
         if ($replyTo === null || trim($replyTo) === '') {
             $replyTo = MailTools::getDefaultReplyTo($amendment, $amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
@@ -46,22 +40,22 @@ class AmendmentProposedProcedure
         );
     }
 
-    public static function getDefaultText(Amendment $amendment): string
+    public static function getDefaultText(AmendmentProposal $proposal): string
     {
-        $initiator = $amendment->getInitiators();
+        $initiator = $proposal->getMyIMotion()->getInitiators();
 
-        $body = match ($amendment->proposalStatus) {
+        $body = match ($proposal->proposalStatus) {
             Amendment::STATUS_ACCEPTED => \Yii::t('amend', 'proposal_email_accepted'),
             Amendment::STATUS_MODIFIED_ACCEPTED => \Yii::t('amend', 'proposal_email_modified'),
             default => \Yii::t('amend', 'proposal_email_other'),
         };
 
-        $procedureToken = static::getPpOpenAcceptToken($amendment);
-        $amendmentLink  = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'view', ['procedureToken' => $procedureToken]));
+        $url = UrlHelper::createAmendmentUrl($proposal->getAmendment(), 'view', ['procedureToken' => $proposal->publicToken]);
+        $amendmentLink  = UrlHelper::absolutizeLink($url);
 
         return str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
-            [$amendmentLink, $amendment->getShortTitle(), $initiator[0]->getGivenNameOrFull()],
+            [$amendmentLink, $proposal->getAmendment()->getShortTitle(), $initiator[0]->getGivenNameOrFull()],
             $body
         );
     }

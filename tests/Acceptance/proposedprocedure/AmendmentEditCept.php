@@ -6,14 +6,12 @@ use app\models\db\IMotion;
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
-$I->populateDBData1();
+$I->initializeAndGoHome();
 
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
+
 $I->dontSeeElement('#proposedChanges');
 $I->dontSeeElement('#proposedProcedureLink');
-
-// Remove relicts from previous test cases
-$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
 
 $I->wantTo('log in');
 $I->gotoConsultationHome();
@@ -56,16 +54,22 @@ $I->wantTo('make the proposal visible and notify the proposer of the amendment')
 $I->executeJS('$("#proposedChanges input[name=proposalVisible]").prop("checked", true).change();');
 $I->executeJS('$("#votingBlockId").val("NEW").trigger("change")');
 $I->fillField('#newBlockTitle', 'Voting 1');
-$I->executeJS('$("#proposedChanges .saving button").click();');
+$I->seeInField('#proposedChanges input[name=newVersion]', 'current');
+$I->clickJS('#proposedChanges .saving button');
 $I->wait(1);
+$I->dontSeeElement('.proposalHistory');
+
 $I->see('Über den Vorschlag informieren und Bestätigung einholen', '#proposedChanges .notificationStatus');
 $I->dontSeeElement('.notifyProposerSection');
-$I->executeJS('$("#proposedChanges button.notifyProposer").click();');
+$I->clickJS('#proposedChanges button.notifyProposer');
 $I->wait(1);
 $I->seeElement('.notifyProposerSection');
-$I->executeJS('$("#proposedChanges button[name=notificationSubmit]").click();');
+$stdText = $I->grabTextFrom('#proposedChanges textarea[name=proposalNotificationText]');
+$I->fillField('#proposedChanges textarea[name=proposalNotificationText]', $stdText . "\nADDITIONAL TEXT 123");
+$I->clickJS('#proposedChanges button[name=notificationSubmit]');
 $I->wait(1);
 $I->see('Der/die Antragsteller*in wurde am');
+$I->see('ADDITIONAL TEXT 123', '#proposedChanges .proposalCommentForm .commentList');
 
 
 $I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId option:selected").text()'));
@@ -75,19 +79,21 @@ $I->wantTo('propose to reject the second amendment');
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 280);
 $I->seeElement('#proposedChanges .collision279');
 $I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_REJECTED . ' input").prop("checked", true).change();');
-$I->executeJS('$("#proposedChanges .saving button").click();');
+$I->clickJS('#proposedChanges .saving button');
 $I->wait(1);
 
 $I->dontSee('Der/die Antragsteller*in wurde am');
 $I->dontSeeElement('.notifyProposerSection');
-$I->executeJS('$("#proposedChanges button.notifyProposer").click();');
+$I->clickJS('#proposedChanges button.notifyProposer');
 // Not making it visible yet
 $I->wait(1);
 $I->seeElement('.notifyProposerSection');
-$I->executeJS('$("#proposedChanges button[name=notificationSubmit]").click();');
+$stdText = $I->grabTextFrom('#proposedChanges textarea[name=proposalNotificationText]');
+$I->fillField('#proposedChanges textarea[name=proposalNotificationText]', $stdText . "\nADDITIONAL TEXT 123");
+$I->clickJS('#proposedChanges button[name=notificationSubmit');
 $I->wait(1);
 $I->see('Der/die Antragsteller*in wurde am');
-
+$I->see('ADDITIONAL TEXT 123', '#proposedChanges .proposalCommentForm .commentList');
 
 $I->wantTo('make the proposal page visible');
 $I->gotoConsultationHome();
@@ -106,21 +112,33 @@ $I->seeElement('.votingTable' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '
 $I->dontSeeElement('.votingTable' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .amendment280');
 
 
-$I->wantTo('agree to the first proposal, but not the second one');
+$I->wantTo('Disagree to one propsal');
 $I->loginAsStdUser();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 280);
 $I->seeElement('.agreeToProposal');
-// Don't agree
+$I->fillField('.agreeToProposal textarea[name=comment]', 'No, disagree');
+$I->submitForm('.agreeToProposal', [], 'setProposalDisagree');
+$I->seeElement('.alert-success');
+$I->seeElement('.agreeToProposal .commentList .disagreed');
+$I->see('No, disagree', '.agreeToProposal .commentList');
+
+
+$I->wantTo('Agree to the second one');
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
 $I->seeElement('.agreeToProposal');
+$I->see('ADDITIONAL TEXT 123', '.agreeToProposal');
 $I->submitForm('.agreeToProposal', [], 'setProposalAgree');
 $I->seeElement('.alert-success');
 
 
-$I->wantTo('see the agreement as admin');
+$I->wantTo('see the agreement / disagreement as admin');
 $I->logout();
 $I->loginAsProposalAdmin();
 $I->seeElement('.notificationSettings .accepted');
+$I->dontSeeElement('.notificationSettings .rejected');
+$I->gotoAmendment(true, 'Testing_proposed_changes-630', 280);
+$I->dontSeeElement('.notificationSettings .accepted');
+$I->seeElement('.notificationSettings .rejected');
 
 $I->wantTo('test the motion list');
 $I->gotoMotionList();
