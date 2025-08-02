@@ -4,14 +4,9 @@
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
-$I->populateDBData1();
+$I->initializeAndGoHome();
 
 $I->wantTo('merge an amendment');
-
-$I->gotoConsultationHome();
-
-// Remove relicts from previous test cases
-$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
 
 $I->loginAsStdAdmin();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 281);

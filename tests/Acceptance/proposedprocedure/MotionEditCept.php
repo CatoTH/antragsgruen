@@ -6,12 +6,7 @@ use app\models\db\IMotion;
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
-$I->populateDBData1();
-
-$I->gotoConsultationHome();
-
-// Remove relicts from previous test cases
-$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
+$I->initializeAndGoHome();
 
 $I->loginAsProposalAdmin();
 $I->gotoMotion(true, 'Testing_proposed_changes-630');

@@ -50,37 +50,16 @@ $consultation = $amendment->getMyConsultation();
 $canBeChangedUnlimitedly = $proposal->canEditProposedProcedure();
 $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 ?>
-    <h2>
-        <?= Yii::t('amend', 'proposal_amend_title') ?>
-        <button class="pull-right btn-link closeBtn" type="button"
-                title="<?= Html::encode(Yii::t('amend', 'proposal_close')) ?>">
-            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-        </button>
-    </h2>
-<?php
-if (count($amendment->proposals) > 1) {
-    ?>
-    <section class="proposalHistory">
-        <div class="versionList">
-            <?= Yii::t('amend', 'proposal_close') ?>:
-            <ol>
-                <?php
-                foreach ($amendment->proposals as $itProp) {
-                    $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
-                    if ($itProp->id === $proposal->id) {
-                        echo '<li>' . Html::encode($versionName) . '</li>';
-                    } else {
-                        $versionLink = UrlHelper::createAmendmentUrl($amendment, 'view', ['proposalVersion' => $itProp->id]);
-                        echo '<li>' . Html::a(Html::encode($versionName), $versionLink) . '</li>';
-                    }
-                }
-                ?>
-            </ol>
-        </div>
-    </section>
-    <?php
-}
-?>
+<h2>
+    <?= Yii::t('amend', 'proposal_amend_title') ?>
+    <button class="pull-right btn-link closeBtn" type="button"
+            title="<?= Html::encode(Yii::t('amend', 'proposal_close')) ?>">
+        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+    </button>
+</h2>
+
+<?= $this->render('../shared/_proposed_procedure_versions', ['imotion' => $amendment, 'proposal' => $proposal]) ?>
+
 <div class="holder">
         <section class="statusForm">
             <h3><?= Yii::t('amend', 'proposal_status_title') ?></h3>

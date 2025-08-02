@@ -81,7 +81,7 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
         echo Yii::t('amend', 'proposal_user_agreed');
     }
     if ($disagreed) {
-        echo '<span class="agreed glyphicon glyphicon-remove" aria-hidden="true"></span> ';
+        echo '<span class="disagreed glyphicon glyphicon-remove" aria-hidden="true"></span> ';
         echo Yii::t('amend', 'proposal_user_disagreed');
     }
     if ($hasDecision) {

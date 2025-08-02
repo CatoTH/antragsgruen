@@ -55,29 +55,9 @@ $voting = $motion->getVotingData();
         <span class="sr-only"><?= Html::encode(Yii::t('amend', 'proposal_close')) ?></span>
     </button>
 </h2>
-<?php
-if (count($motion->proposals) > 1) {
-    ?>
-    <section class="proposalHistory">
-        <div class="versionList">
-            <ol>
-                <?php
-                foreach ($motion->proposals as $itProp) {
-                    $versionName = str_replace('%VERSION%', $itProp->version, Yii::t('amend', 'proposal_version_x'));
-                    if ($itProp->id === $proposal->id) {
-                        echo '<li>' . Html::encode($versionName) . '</li>';
-                    } else {
-                        $versionLink = UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $itProp->id]);
-                        echo '<li>' . Html::a(Html::encode($versionName), $versionLink) . '</li>';
-                    }
-                }
-                ?>
-            </ol>
-        </div>
-    </section>
-    <?php
-}
-?>
+
+<?= $this->render('../shared/_proposed_procedure_versions', ['imotion' => $motion, 'proposal' => $proposal]) ?>
+
 <div class="holder">
     <fieldset class="statusForm">
         <legend class="hidden"><?= Yii::t('amend', 'proposal_status_title') ?></legend>

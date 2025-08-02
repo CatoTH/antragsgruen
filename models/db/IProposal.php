@@ -54,7 +54,7 @@ abstract class IProposal extends ActiveRecord
 
     public function proposalFeedbackHasBeenRequested(): bool
     {
-        return ($this->proposalAllowsUserFeedback() && $this->notifiedAt !== null);
+        return ($this->proposalStatus !== null && $this->notifiedAt !== null);
     }
 
     public function isProposalPublic(): bool
@@ -82,6 +82,9 @@ abstract class IProposal extends ActiveRecord
 
     public function canAgreeToProposedProcedure(?string $procedureToken): bool
     {
+        if (!$this->proposalFeedbackHasBeenRequested()) {
+            return false;
+        }
         if ($procedureToken && $this->publicToken === $procedureToken) {
             return true;
         }

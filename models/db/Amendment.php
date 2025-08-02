@@ -924,7 +924,7 @@ class Amendment extends IMotion implements IRSSItem
 
         $max = null;
         foreach ($this->proposals as $proposal) {
-            if (!$isAdmin && $proposal->visibleFrom === null && !$proposal->canAgreeToProposedProcedure(null)) {
+            if (!$isAdmin && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
                 continue;
             }
             if ($proposal->version > ($max?->version ?: 0)) {

@@ -44,29 +44,13 @@ class MotionController extends Base
         $motion = $this->getMotionWithCheck($motionSlug);
         $this->motion = $motion;
         if ($this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
-            $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
+            $adminEdit = UrlHelper::createUrl(['/admin/motion/update', 'motionId' => $motion->id]);
         } else {
             $adminEdit = null;
         }
 
         if (!$motion->isReadable()) {
             return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => $adminEdit]));
-        }
-
-        $openedComments = [];
-        if ($commentId > 0) {
-            foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                foreach ($section->getTextParagraphObjects(false, true, true) as $paragraph) {
-                    foreach ($paragraph->comments as $comment) {
-                        if ($comment->id == $commentId) {
-                            if (!isset($openedComments[$section->sectionId])) {
-                                $openedComments[$section->sectionId] = [];
-                            }
-                            $openedComments[$section->sectionId][] = $paragraph->paragraphNo;
-                        }
-                    }
-                }
-            }
         }
 
         $textSections = $motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
@@ -83,7 +67,7 @@ class MotionController extends Base
 
         $motionViewParams = [
             'motion'              => $motion,
-            'openedComments'      => $openedComments,
+            'openedComments'      => $this->getOpenedComments($motion, $commentId),
             'adminEdit'           => $adminEdit,
             'commentForm'         => null,
             'commentWholeMotions' => $commentWholeMotions,
@@ -102,6 +86,26 @@ class MotionController extends Base
         $motionViewParams['supportStatus'] = MotionSupporter::getCurrUserSupportStatus($motion);
 
         return new HtmlResponse($this->render('view', $motionViewParams));
+    }
+
+    private function getOpenedComments(Motion $motion, int $commentId): array
+    {
+        $openedComments = [];
+        if ($commentId > 0) {
+            foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                foreach ($section->getTextParagraphObjects(false, true, true) as $paragraph) {
+                    foreach ($paragraph->comments as $comment) {
+                        if ($comment->id == $commentId) {
+                            if (!isset($openedComments[$section->sectionId])) {
+                                $openedComments[$section->sectionId] = [];
+                            }
+                            $openedComments[$section->sectionId][] = $paragraph->paragraphNo;
+                        }
+                    }
+                }
+            }
+        }
+        return $openedComments;
     }
 
     private function getActiveProposal(Motion $motion, ?string $procedureToken, ?int $proposalVersion): IProposal

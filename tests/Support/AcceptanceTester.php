@@ -58,6 +58,15 @@ class AcceptanceTester extends Actor
         'autocomplete'
     ];
 
+    public function initializeAndGoHome(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): ConsultationHomePage
+    {
+        $this->populateDBData1();
+        $page = $this->gotoConsultationHome(true, $subdomain, $path);
+        $this->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
+
+        return $page;
+    }
+
     public function gotoConsultationHome(bool $check = true, string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): ConsultationHomePage
     {
         $page = ConsultationHomePage::openBy(
