@@ -48,17 +48,35 @@ $I->selectOption('#startLayoutType', Consultation::START_LAYOUT_AGENDA);
 $page->saveForm();
 
 $I->gotoConsultationHome();
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Earth");');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
-
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Mars");');
-$I->executeJS('$(".agendaItemEditForm").last().find(".motionType select").val(' . AcceptanceTester::FIRST_FREE_MOTION_TYPE . ');');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+$I->click('.agendaEditLink');
 $I->wait(0.5);
 
+$listData = [];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "Earth",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
+    "children" => [],
+];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "Mars",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => [
+        AcceptanceTester::FIRST_FREE_MOTION_TYPE,
+    ]],
+    "children" => [],
+];
+$newListData = json_encode($listData);
+$I->executeJs('agendaWidget.$refs["agenda-edit-widget"].setAgendaTest(' . $newListData . ');');
+$I->wait(0.3);
+$I->clickJS('.agendaEditWidget .btnSave');
+$I->wait(1);
+
+
 $I->wantTo('test that creating the statute amendment works');
+$I->gotoConsultationHome();
 $I->see('Create a statute amendment', '#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' .motionCreateLink');
 $I->click('#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' .motionCreateLink');
 $I->see('Mars: Statute amendment', 'h1');

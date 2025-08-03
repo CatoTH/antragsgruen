@@ -269,6 +269,21 @@ class LayoutHelper
                 return $amendment->agendaItemId === null;
             }));
         }
+        $return .= self::showMotionSubAmendments($amendments, $hideAmendmendsByDefault, $hasAgenda, $headingLevel);
+        $return .= '</li>' . "\n";
+
+        return $return;
+    }
+
+    private static function showMotionSubAmendments(array $amendments, bool $hideAmendmendsByDefault, bool $hasAgenda, int $headingLevel): string
+    {
+        $return = '';
+        if ($hasAgenda) {
+            $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
+                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
+                return $amendment->agendaItemId === null;
+            }));
+        }
         if (count($amendments) > 0) {
             $h = 'h' . $headingLevel;
             if ($hideAmendmendsByDefault) {
@@ -298,12 +313,11 @@ class LayoutHelper
             }
             $return .= '</ul>';
         }
-        $return .= '</li>' . "\n";
 
         return $return;
     }
 
-    public static function showStatuteAmendment(Amendment $amendment, Consultation $consultation): string
+    public static function showStatuteAmendment(Amendment $amendment, Consultation $consultation, bool $hideAmendmendsByDefault, bool $hasAgenda, int $headingLevel): string
     {
         $return = '';
 
@@ -324,6 +338,18 @@ class LayoutHelper
         $return .= '<li class="' . implode(' ', $classes) . '">';
         $return .= static::getStatuteAmendmentLineContent($amendment, $consultation);
         $return .= "<span class='clearfix'></span>\n";
+
+        $filter = IMotionStatusFilter::onlyUserVisible($consultation, true)
+                                     ->noAmendmentsIfMotionIsMoved();
+        $amendments = MotionSorter::getSortedAmendments($consultation, $amendment->getFilteredAmendingAmendments($filter));
+        if ($hasAgenda) {
+            $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
+                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
+                return $amendment->agendaItemId === null;
+            }));
+        }
+        $return .= self::showMotionSubAmendments($amendments, $hideAmendmendsByDefault, $hasAgenda, $headingLevel);
+
         $return .= '</li>' . "\n";
 
         return $return;
@@ -374,7 +400,7 @@ class LayoutHelper
                     if (is_a($imotion, Motion::class)) {
                         echo static::showMotion($imotion, $consultation, false, true, 4);
                     } elseif (is_a($imotion, Amendment::class)) {
-                        echo static::showStatuteAmendment($imotion, $consultation);
+                        echo static::showStatuteAmendment($imotion, $consultation, false, true, 4);
                     }
 
                     $shownMotions->addVotingItem($imotion);

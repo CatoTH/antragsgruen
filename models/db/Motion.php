@@ -8,8 +8,7 @@ use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
 use app\views\consultation\LayoutHelper;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp, MotionSection as MotionSectionSettings};
-use app\models\notifications\{MotionProposedProcedure,
-    MotionPublished,
+use app\models\notifications\{MotionPublished,
     MotionSubmitted as MotionSubmittedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};

@@ -22,7 +22,7 @@ foreach ($motions as $name => $motns) {
             echo LayoutHelper::showMotion($motion, $consultation, false, false, 3);
         } else {
             /** @var Amendment $motion */
-            echo LayoutHelper::showStatuteAmendment($motion, $consultation);
+            echo LayoutHelper::showStatuteAmendment($motion, $consultation, false, false, 3);
         }
     }
     echo '</ul>';

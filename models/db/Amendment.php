@@ -6,18 +6,11 @@ use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
-use app\components\{diff\AmendmentSectionFormatter,
-    diff\DiffRenderer,
-    HashedStaticCache,
-    RequestContext,
-    RSSExporter,
-    Tools,
-    UrlHelper};
+use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
-use app\models\notifications\{AmendmentProposedProcedure,
-    AmendmentPublished as AmendmentPublishedNotification,
+use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
     AmendmentSubmitted as AmendmentSubmittedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
@@ -442,17 +435,18 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return Amendment[]
      */
-    public function getVisibleAmendingAmendments(bool $includeWithdrawn = true): array
+    public function getFilteredAmendingAmendments(IMotionStatusFilter $filter): array
     {
-        $filtered   = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
-        $amendments = [];
-        foreach ($this->amendingAmendments as $amend) {
-            if (!in_array($amend->status, $filtered)) {
-                $amendments[] = $amend;
-            }
-        }
+        return $filter->filterAmendments($this->amendingAmendments);
+    }
 
-        return $amendments;
+    /**
+     * @return Amendment[]
+     */
+    public function getVisibleAmendments(bool $includeWithdrawn = true): array
+    {
+        $filter = IMotionStatusFilter::onlyUserVisible($this->getMyConsultation(), true);
+        return $this->getFilteredAmendingAmendments($filter);
     }
 
     /**
@@ -876,10 +870,15 @@ class Amendment extends IMotion implements IRSSItem
     public static function getNewNumberForAmendment(Amendment $amendment): string
     {
         if ($amendment->getMyMotionType()->amendmentsOnly) {
-            return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id, $amendment->getPublicTopicTags());
+            if ($amendment->amendingAmendmentId === null) {
+                return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id, $amendment->getPublicTopicTags());
+            } else {
+                $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
+                return $numbering->getAmendmentNumber($amendment, $amendment->amendedAmendment, $amendment->amendedAmendment->amendingAmendments);
+            }
         } else {
             $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
-            return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
+            return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion(), $amendment->getMyMotion()->amendments);
         }
     }
 

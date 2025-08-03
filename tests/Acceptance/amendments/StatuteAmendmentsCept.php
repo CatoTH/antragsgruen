@@ -58,28 +58,84 @@ $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 $I->click('#motionConfirmedForm .btn');
 
 $I->logout();
+$I->gotoConsultationHome();
+$I->see('S1', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->see('Our Statutes', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->click('.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' a');
+$I->dontSeeElement('#sidebar .amendmentCreate');
+
+
+$I->wantTo('Create amendments to statute amendments');
 $I->loginAsStdAdmin();
+$page = $I->gotoStdAdminPage()->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->checkOption('#allowAmendmentsToAmendments');
+$page->saveForm();
+$I->gotoConsultationHome();
+$I->logout();
+$I->loginAsStdUser();
+$I->click('.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' a');
+$I->click('#sidebar .amendmentCreate');
+$I->wait(0.5);
+$I->executeJS('window.newText = CKEDITOR.instances.' . $sectionId . '.getData();');
+$I->executeJS('window.newText = window.newText.replace(/Paragraph/g, "Section");');
+$I->executeJS('CKEDITOR.instances.' . $sectionId . '.setData(window.newText);');
+$I->fillField(['name' => 'Initiator[primaryName]'], 'My Name');
+$I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+$I->submitForm('#amendmentEditForm', [], 'save');
+$I->submitForm('#amendmentConfirmForm', [], 'confirm');
+$I->click('#motionConfirmedForm .btn');
+
+$I->gotoConsultationHome();
+$I->click('.amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1) . ' a');
+$I->see('Paragraph', '#original_section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .inserted');
+$I->see('Article', '#original_section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .deleted');
+$I->see('Section', '#section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .inserted');
+$I->see('Article', '#section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .deleted');
+
 
 
 $I->wantTo('set up an agenda and assign the statute amendment to it');
 
+$I->logout();
+$I->loginAsStdAdmin();
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectOption('#startLayoutType', '4');
+$I->selectOption('#startLayoutType', Consultation::START_LAYOUT_AGENDA_LONG);
 $page->saveForm();
 
 $I->gotoConsultationHome();
 
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Earth");');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+$I->click('.agendaEditLink');
+$I->wait(0.3);
+$I->seeElement('.agendaEditWidget');
 
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Mars");');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+$listData = [];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "Earth",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
+    "children" => [],
+];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "Mars",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
+    "children" => [],
+];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "venus",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
+    "children" => [],
+];
+$newListData = json_encode($listData);
+$I->executeJs('agendaWidget.$refs["agenda-edit-widget"].setAgendaTest(' . $newListData . ');');
+$I->wait(0.3);
+$I->clickJS('.agendaEditWidget .btnSave');
+$I->wait(1);
 
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("venus");');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
 
 $earth = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID;
 $mars = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1;
@@ -87,9 +143,11 @@ $venus = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 2;
 
 
 $I->wantTo('check the home pages (with no agenda item assigned)');
+$I->gotoConsultationHome();
 $I->seeElement('.consultationIndex');
 $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
-$I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->see('S1', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->see('Ä1', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));
 
 foreach (Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $page = $I->gotoStdAdminPage()->gotoAppearance();
@@ -97,7 +155,17 @@ foreach (Consultation::getStartLayouts() as $layoutId => $layoutTitle) {
     $page->saveForm();
     $I->gotoConsultationHome();
     $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
-    $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+    $I->see('S1', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+    if ($layoutId === Consultation::START_LAYOUT_TAGS) {
+        $I->see('Ä1', '.amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));
+    } elseif ($layoutId === Consultation::START_LAYOUT_AGENDA_HIDE_AMEND) {
+        $I->clickJS('.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .amendmentsToggler button');
+        $I->see('Ä1', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));
+    } elseif ($layoutId === Consultation::START_LAYOUT_DISCUSSION_TAGS) {
+        $I->dontSeeElement('.amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1)); // Amendments are not shown
+    } else {
+        $I->see('Ä1', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));
+    }
 }
 
 
@@ -163,5 +231,5 @@ $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 $I->click('#motionConfirmedForm .btn');
 
-$I->see('Our second statutes', '.amendmentLink' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));
-$I->see('S2', '.amendmentLink' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1));
+$I->see('Our second statutes', '.amendmentLink' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 2));
+$I->see('S2', '.amendmentLink' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 2));

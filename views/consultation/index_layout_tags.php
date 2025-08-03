@@ -1,7 +1,7 @@
 <?php
 
 use app\models\sectionTypes\ISectionType;
-use app\components\{MotionSorter, UrlHelper};
+use app\components\{IMotionStatusFilter, MotionSorter, UrlHelper};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\db\{Amendment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion};
 use yii\helpers\Html;
@@ -235,42 +235,40 @@ foreach ($tagIds as $tagId) {
         }
         echo '</tr>';
 
-        if (is_a($imotion, Motion::class)) {
-            $amends = MotionSorter::getSortedAmendments($consultation, $imotion->getVisibleAmendments());
-            foreach ($amends as $amend) {
-                $classes = ['amendment'];
-                if ($amend->status === Amendment::STATUS_WITHDRAWN) {
-                    $classes[] = 'withdrawn';
-                }
-                echo '<tr class="' . implode(' ', $classes) . '">';
-                if (!$consultation->getSettings()->hideTitlePrefix) {
-                    echo '<td class="prefixCol">' . Html::encode($amend->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST)) . '</td>';
-                }
-                echo '<td class="titleCol"><div class="titleLink">';
-                $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($imotion->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST));
-                echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
-                if ($amend->status === Amendment::STATUS_WITHDRAWN) {
-                    echo ' <span class="status">(' . Html::encode($consultation->getStatuses()->getStatusName($amend->status)) . ')</span>';
-                }
-                echo '</div></td>';
-                if (!$isResolutionList) {
-                    echo '<td class="initiatorRow">';
-                    $initiators = [];
-                    foreach ($amend->getInitiators() as $init) {
-                        if ($init->personType === ISupporter::PERSON_NATURAL) {
-                            $initiators[] = $init->name;
-                        } else {
-                            $initiators[] = $init->organization;
-                        }
-                    }
-                    echo Html::encode(implode(', ', $initiators));
-                    if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {
-                        echo ', ' . Html::encode($consultation->getStatuses()->getStatusName($amend->status));
-                    }
-                    echo '</td>';
-                }
-                echo '</tr>';
+        $amends = MotionSorter::getSortedAmendments($consultation, $imotion->getVisibleAmendments());
+        foreach ($amends as $amend) {
+            $classes = ['amendment', 'amendmentRow' . $amend->id];
+            if ($amend->status === Amendment::STATUS_WITHDRAWN) {
+                $classes[] = 'withdrawn';
             }
+            echo '<tr class="' . implode(' ', $classes) . '">';
+            if (!$consultation->getSettings()->hideTitlePrefix) {
+                echo '<td class="prefixCol">' . Html::encode($amend->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST)) . '</td>';
+            }
+            echo '<td class="titleCol"><div class="titleLink">';
+            $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($imotion->getFormattedTitlePrefix(LayoutHooks::CONTEXT_MOTION_LIST));
+            echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
+            if ($amend->status === Amendment::STATUS_WITHDRAWN) {
+                echo ' <span class="status">(' . Html::encode($consultation->getStatuses()->getStatusName($amend->status)) . ')</span>';
+            }
+            echo '</div></td>';
+            if (!$isResolutionList) {
+                echo '<td class="initiatorRow">';
+                $initiators = [];
+                foreach ($amend->getInitiators() as $init) {
+                    if ($init->personType === ISupporter::PERSON_NATURAL) {
+                        $initiators[] = $init->name;
+                    } else {
+                        $initiators[] = $init->organization;
+                    }
+                }
+                echo Html::encode(implode(', ', $initiators));
+                if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {
+                    echo ', ' . Html::encode($consultation->getStatuses()->getStatusName($amend->status));
+                }
+                echo '</td>';
+            }
+            echo '</tr>';
         }
     }
     echo '</table>

@@ -2,6 +2,7 @@
 
 return [
     'amendment'                         => 'Änderungsantrag',
+    'amendment_prefix'                  => 'Ä',
     'amendments'                        => 'Änderungsanträge',
     'motion'                            => 'Antrag',
     'initiator'                         => 'Antragsteller*in',
@@ -27,6 +28,8 @@ return [
     'created_on'                        => 'Angelegt',
     'pprocedure_title_own'              => 'Verfahrensvorschlag',
     'pprocedure_title_other'            => 'Verfahrensvorschlag zu',
+    'statute_original_title'            => 'Ursprünglicher Antrag',
+    'statute_amending_title'            => 'Geänderter Antrag',
     'original_title'                    => 'Original-Änderungsantrag',
     'comments_title'                    => 'Kommentare',
     'comments_screening_queue_1'        => '1 Kommentar wartet auf Freischaltung',

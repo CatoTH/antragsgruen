@@ -1,7 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 namespace app\models\amendmentNumbering;
 
-use app\models\db\{Amendment, Motion};
+use app\models\db\{Amendment, IMotion};
 
 class ByLine extends IAmendmentNumbering
 {
@@ -16,15 +19,18 @@ class ByLine extends IAmendmentNumbering
         return 2;
     }
 
-    public function getAmendmentNumber(Amendment $amendment, Motion $motion, int $lineStrLen = 3): string
+    /**
+     * @param Amendment[] $otherAmendments
+     */
+    public function getAmendmentNumber(Amendment $amendment, IMotion $baseImotion, array $otherAmendments): string
     {
         $line = (string)$amendment->getFirstDiffLine();
-        while (grapheme_strlen($line) < $lineStrLen) {
+        while (grapheme_strlen($line) < 3) {
             $line = '0' . $line;
         }
-        $revBase = $motion->titlePrefix . '-' . $line;
+        $revBase = $baseImotion->titlePrefix . '-' . $line;
         $maxRev  = 0;
-        foreach ($motion->amendments as $amend) {
+        foreach ($otherAmendments as $amend) {
             if ($amend->titlePrefix) {
                 $x = explode($revBase, $amend->titlePrefix);
                 if (count($x) === 2) {

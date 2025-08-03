@@ -102,6 +102,7 @@ abstract class ISectionType
 
     public function getTitle(): string
     {
+
         $title = $this->section->getSettings()->title;
         if ($this->titlePrefix !== null) {
             $title = $this->titlePrefix . ': ' . $title;

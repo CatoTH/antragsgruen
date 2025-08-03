@@ -1,5 +1,6 @@
 <?php
 
+use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
 use app\models\db\{Amendment, AmendmentProposal, User};
 use app\models\forms\CommentForm;
@@ -207,7 +208,7 @@ $loginlessSupported = \app\models\db\AmendmentSupporter::getMyLoginlessSupportId
 echo MotionLayoutHelper::printSupportingSection($amendment, $supporters, $supportPolicy, $supportType, $loginlessSupported);
 echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
-$amendingAmendments = $amendment->getVisibleAmendingAmendments();
+$amendingAmendments = $amendment->getVisibleAmendments();
 if (count($amendingAmendments) > 0) {
     echo '<section class="amendments" aria-labelledby="amendmentsTitle">' .
         '<h2 class="green" id="amendmentsTitle">' . Yii::t('amend', 'amending_amendments') . '</h2>
