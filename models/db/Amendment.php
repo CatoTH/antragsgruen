@@ -6,18 +6,11 @@ use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
-use app\components\{diff\AmendmentSectionFormatter,
-    diff\DiffRenderer,
-    HashedStaticCache,
-    RequestContext,
-    RSSExporter,
-    Tools,
-    UrlHelper};
+use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
-use app\models\notifications\{AmendmentProposedProcedure,
-    AmendmentPublished as AmendmentPublishedNotification,
+use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
     AmendmentSubmitted as AmendmentSubmittedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
@@ -442,17 +435,9 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return Amendment[]
      */
-    public function getVisibleAmendingAmendments(bool $includeWithdrawn = true): array
+    public function getFilteredAmendingAmendments(IMotionStatusFilter $filter): array
     {
-        $filtered   = $this->getMyConsultation()->getStatuses()->getInvisibleAmendmentStatuses($includeWithdrawn);
-        $amendments = [];
-        foreach ($this->amendingAmendments as $amend) {
-            if (!in_array($amend->status, $filtered)) {
-                $amendments[] = $amend;
-            }
-        }
-
-        return $amendments;
+        return $filter->filterAmendments($this->amendingAmendments);
     }
 
     /**

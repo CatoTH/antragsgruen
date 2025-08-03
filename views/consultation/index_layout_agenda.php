@@ -21,7 +21,7 @@ $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
 ]));
 $hideAmendmentsByDefault = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND);
 
-$items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
+$items = ConsultationAgendaItem::getItemsByParent($consultation, null);
 
 echo '<section class="sectionAgenda" aria-labelledby="sectionAgendaTitle">';
 echo '<h2 class="green" id="sectionAgendaTitle">';
@@ -61,7 +61,7 @@ if ($longVersion) {
                     echo LayoutHelper::showMotion($imotion, $consultation, $hideAmendmentsByDefault, true, 3);
                 } else {
                     /** @var Amendment $imotion */
-                    echo LayoutHelper::showStatuteAmendment($imotion, $consultation);
+                    echo LayoutHelper::showStatuteAmendment($imotion, $consultation,  $hideAmendmentsByDefault, true, 3);
                 }
                 $shownIMotions->addVotingItem($imotion);
             }
@@ -95,7 +95,7 @@ if (count($otherMotions) > 0) {
             echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmentsByDefault, true, 3);
         } else {
             /** @var Amendment $motion */
-            echo LayoutHelper::showStatuteAmendment($motion, $consultation);
+            echo LayoutHelper::showStatuteAmendment($motion, $consultation,   $hideAmendmentsByDefault, true, 3);
         }
     }
     echo '</ul>';

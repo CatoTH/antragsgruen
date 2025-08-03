@@ -143,13 +143,13 @@ class MotionSorter
 
     /**
      * @param IMotion[] $motions
-     * @return array{string: array<IMotion>}
+     * @return array<string, array<IMotion>>
      */
     public static function getSortedMotionsStd(Consultation $consultation, array $motions): array
     {
-        /** @var array{string: array<IMotion>} $motionsSorted */
+        /** @var array<string, array<IMotion>> $motionsSorted */
         $motionsSorted   = [];
-        /** @var array{string: array<IMotion>} $motionsNoPrefix */
+        /** @var array<string, array<IMotion>> $motionsNoPrefix */
         $motionsNoPrefix = [];
 
         $invisible   = $consultation->getStatuses()->getInvisibleMotionStatuses();
@@ -190,7 +190,7 @@ class MotionSorter
 
     /**
      * @param IMotion[] $imotions
-     * @return array|array[]
+     * @return array<string, array<string, IMotion>>
      */
     public static function getSortedIMotionsAgenda(Consultation $consultation, array $imotions): array
     {
@@ -248,7 +248,6 @@ class MotionSorter
             case \app\models\settings\Consultation::START_LAYOUT_AGENDA:
             case \app\models\settings\Consultation::START_LAYOUT_AGENDA_LONG:
                 return static::getSortedIMotionsAgenda($consultation, $imotions);
-            // @TODO Tags?
             default:
                 return static::getSortedMotionsStd($consultation, $imotions);
         }
@@ -301,7 +300,9 @@ class MotionSorter
             }
             if ($mot->getMyMotionType()->amendmentsOnly) {
                 foreach ($mot->amendments as $amendment) {
-                    $motions[] = $amendment;
+                    if ($amendment->amendingAmendmentId === null) {
+                        $motions[] = $amendment;
+                    }
                 }
             } elseif ($mot->isResolution()) {
                 if (count(MotionRepository::getReplacedByMotionsWithinConsultation($mot)) === 0) {

@@ -9,6 +9,8 @@
 - The export functions for motions in the admin list now allow to combine one or multiple motion types, with all motion types being selected by default.
 - The consultation-wide search now also searches for the name of proposers of motions / amendments.
 - The small-screen main menu now also has the full-text search.
+- Amendments to Statute Amendments are now better supported:
+  - On the home page, those amendments are now shown like regular amendments, not like stand-alone motions.
 - Several improvements regarding the proposed procedures:
   - There can be multiple versions of proposed procedures; admins can publish one or notify users about one, and internally already work on a new version of the proposal.
   - When proposers of motions or amendments are being asked for feedback, they can now also reject the proposal.
