@@ -11,6 +11,7 @@
 - The small-screen main menu now also has the full-text search.
 - Amendments to Statute Amendments are now better supported:
   - On the home page, those amendments are now shown like regular amendments, not like stand-alone motions.
+  - These amendments now show the base statute amendment and the changed version next to each other, for easier comparison.
 - Several improvements regarding the proposed procedures:
   - There can be multiple versions of proposed procedures; admins can publish one or notify users about one, and internally already work on a new version of the proposal.
   - When proposers of motions or amendments are being asked for feedback, they can now also reject the proposal.

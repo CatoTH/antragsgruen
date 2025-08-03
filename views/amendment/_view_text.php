@@ -10,6 +10,7 @@ use app\models\db\{Amendment, AmendmentProposal, AmendmentSection};
 use app\views\amendment\LayoutHelper;
 
 $consultation = $amendment->getMyConsultation();
+$isAmendingOtherAmendment = ($amendment->getMyMotionType()->amendmentsOnly && $amendment->amendedAmendment);
 
 $ppSections = LayoutHelper::getVisibleProposedProcedureSections($amendment, $proposal);
 $hasProposedChange = (count($ppSections) > 0);
@@ -29,10 +30,24 @@ if ($amendment->changeEditorial !== '') {
 
 /** @var AmendmentSection[] $sections */
 $sections = $amendment->getSortedSections(false);
-$prefix   = ($hasProposedChange ? Yii::t('amend', 'original_title') : null);
+if ($isAmendingOtherAmendment) {
+    $prefix = Yii::t('amend', 'statute_amending_title');
+} else {
+    $prefix = ($hasProposedChange ? Yii::t('amend', 'original_title') : null);
+}
 foreach ($sections as $section) {
-    $section->getSectionType()->setTitlePrefix($prefix);
-    echo $section->getSectionType()->getAmendmentFormatted();
+    $sectionType = $section->getSectionType();
+    $sectionType->setTitlePrefix($prefix);
+    echo $sectionType->getAmendmentFormatted();
+
+    if ($isAmendingOtherAmendment) {
+        /** @var Amendment $amendedAmendment */
+        $amendedAmendment = $amendment->amendedAmendment;
+        $originalSection = $amendedAmendment->getSection($section->sectionId);
+        $originalSectionType = $originalSection->getSectionType();
+        $originalSectionType->setTitlePrefix(Yii::t('amend', 'statute_original_title'));
+        echo $originalSectionType->getAmendmentFormatted('original_');
+    }
 }
 
 

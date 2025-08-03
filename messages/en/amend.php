@@ -29,6 +29,8 @@ return [
     'created_on'             => 'Created',
     'pprocedure_title_own'   => 'Proposed procedure',
     'pprocedure_title_other' => 'Proposed procedure for',
+    'statute_original_title' => 'Original change',
+    'statute_amending_title' => 'Amended change',
     'original_title'         => 'Original amendmenty',
     'comments_title'         => 'Comments',
     'comment_screen_queue_1' => '1 comment waiting for reviewing',
