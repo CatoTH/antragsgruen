@@ -159,7 +159,7 @@ class AmendmentNumberingTest extends DBTestBase
         $sorter = new PerMotionEnglish();
         $out = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
-        $this->assertEquals('A2 A8', $out);
+        $this->assertEquals('A2 Ä8', $out);
     }
 
     public function testPerMotionNumberingEnglish2(): void
@@ -168,12 +168,12 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $existingAmendment = Amendment::findOne(276);
-        $existingAmendment->titlePrefix = 'M2 A9';
+        $existingAmendment->titlePrefix = 'M2 Ä9';
         $existingAmendment->save();
 
         $sorter = new PerMotionEnglish();
         $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
-        $this->assertEquals('A2 A10', $out);
+        $this->assertEquals('A2 Ä10', $out);
     }
 }

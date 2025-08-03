@@ -49,6 +49,7 @@ $page->saveForm();
 
 $I->gotoConsultationHome();
 $I->click('.agendaEditLink');
+$I->wait(0.5);
 
 $listData = [];
 $listData[] = [

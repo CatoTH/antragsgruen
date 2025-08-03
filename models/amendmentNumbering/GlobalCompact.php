@@ -38,7 +38,7 @@ class GlobalCompact extends IAmendmentNumbering
         $prefixNorm = trim(mb_strtoupper($prefix));
         foreach ($motion->getMyConsultation()->motions as $mot) {
             foreach ($mot->amendments as $amend) {
-                $amendPrefixNorm = trim(mb_strtoupper($amend->titlePrefix));
+                $amendPrefixNorm = trim(mb_strtoupper($amend->titlePrefix ?? ''));
                 if ($amendPrefixNorm != '' && $amendPrefixNorm === $prefixNorm) {
                     if ($ignore === null || $ignore->id != $amend->id) {
                         return $amend;
