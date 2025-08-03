@@ -2,6 +2,7 @@
 
 return [
     'amendment'                         => 'Änderungsantrag',
+    'amendment_prefix'                  => 'Ä',
     'amendments'                        => 'Änderungsanträge',
     'motion'                            => 'Antrag',
     'initiator'                         => 'Antragsteller*in',

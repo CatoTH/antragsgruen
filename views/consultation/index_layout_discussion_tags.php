@@ -1,7 +1,7 @@
 <?php
 
 use app\components\{MotionSorter, Tools, UrlHelper};
-use app\models\db\{Consultation, ConsultationSettingsTag, IMotion, Motion};
+use app\models\db\{Amendment, Consultation, ConsultationSettingsTag, IMotion, Motion};
 use yii\helpers\Html;
 
 /**
@@ -126,26 +126,27 @@ if (count($comments) > 0) {
         <div class="motionListFiltered">
             <?php
             echo '<ul class="motionList motionListFilterTags">';
-            foreach ($imotions as $motion) {
-                $status = $motion->getFormattedStatus();
+            foreach ($imotions as $imotion) {
+                $status = $imotion->getFormattedStatus();
 
                 $cssClasses   = ['sortitem', 'motion'];
-                $cssClasses[] = 'motionRow' . $motion->id;
-                foreach ($motion->getPublicTopicTags() as $tag) {
+                if (is_a($imotion, Motion::class)) {
+                    $cssClasses[] = 'motionRow' . $imotion->id;
+                }
+                if (is_a($imotion, Amendment::class)) {
+                    $cssClasses[] = 'amendmentRow' . $imotion->id;
+                }
+                foreach ($imotion->getPublicTopicTags() as $tag) {
                     $cssClasses[] = 'tag' . $tag->id;
                 }
 
-                $commentCount   = $motion->getNumOfAllVisibleComments(false);
-                if (is_a($motion, Motion::class)) {
-                    $amendmentCount = count($motion->getVisibleAmendments(false));
-                } else {
-                    $amendmentCount = 0;
-                }
+                $commentCount   = $imotion->getNumOfAllVisibleComments(false);
+                $amendmentCount = count($imotion->getVisibleAmendments(false));
 
                 echo '<li class="' . implode(' ', $cssClasses) . '" ' .
-                     'data-created="' . $motion->getTimestamp() . '" ' .
-                     'data-title="' . Html::encode($motion->title) . '" ' .
-                     'data-title-prefix="' . Html::encode($motion->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION_LIST)) . '" ' .
+                     'data-created="' . $imotion->getTimestamp() . '" ' .
+                     'data-title="' . Html::encode($imotion->title) . '" ' .
+                     'data-title-prefix="' . Html::encode($imotion->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION_LIST)) . '" ' .
                      'data-num-comments="' . $commentCount . '" ' .
                      'data-num-amendments="' . $amendmentCount . '">';
                 echo '<p class="stats">';
@@ -159,26 +160,26 @@ if (count($comments) > 0) {
                 echo '</p>' . "\n";
                 echo '<p class="title">' . "\n";
 
-                if (is_a($motion, Motion::class)) {
-                    $motionUrl = UrlHelper::createMotionUrl($motion);
-                    $className = 'motionLink' . $motion->id;
+                if (is_a($imotion, Motion::class)) {
+                    $motionUrl = UrlHelper::createMotionUrl($imotion);
+                    $className = 'motionLink' . $imotion->id;
                 } else {
-                    /** @var \app\models\db\Amendment $motionUrl */
-                    $motionUrl = UrlHelper::createAmendmentUrl($motion);
-                    $className = 'amendmentLink' . $motion->id;
+                    /** @var Amendment $motionUrl */
+                    $motionUrl = UrlHelper::createAmendmentUrl($imotion);
+                    $className = 'amendmentLink' . $imotion->id;
                 }
                 echo '<a href="' . Html::encode($motionUrl) . '" class="' . $className . '">';
 
-                echo ' <span class="motionTitle">' . Html::encode($motion->getTitleWithPrefix()) . '</span>';
+                echo ' <span class="motionTitle">' . Html::encode($imotion->getTitleWithPrefix()) . '</span>';
 
                 echo '</a>';
                 echo "</p>\n";
                 echo '<p class="info">';
-                echo Html::encode($motion->getInitiatorsStr()) . ', ';
-                echo Tools::formatMysqlDate($motion->dateCreation);
+                echo Html::encode($imotion->getInitiatorsStr()) . ', ';
+                echo Tools::formatMysqlDate($imotion->dateCreation);
                 echo '</p>';
                 $abstract = null;
-                foreach ($motion->getSortedSections(true) as $section) {
+                foreach ($imotion->getSortedSections(true) as $section) {
                     if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE &&
                         $section->getSettings()->maxLen !== 0) {
                         $abstract = \app\components\HTMLTools::toPlainText($section->getData(), true);

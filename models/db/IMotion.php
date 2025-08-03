@@ -596,6 +596,11 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     }
 
     /**
+     * @return Amendment[]
+     */
+    abstract function getVisibleAmendments(bool $includeWithdrawn = true): array;
+
+    /**
      * @param null|int $parentId - null == only root level comments
      *
      * @return IComment[]

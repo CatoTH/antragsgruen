@@ -1,7 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 namespace app\models\amendmentNumbering;
 
-use app\models\db\{Amendment, Motion};
+use app\models\db\{Amendment, IMotion, Motion};
 
 class GlobalCompact extends IAmendmentNumbering
 {
@@ -15,16 +18,19 @@ class GlobalCompact extends IAmendmentNumbering
         return 1;
     }
 
-    public function getAmendmentNumber(Amendment $amendment, Motion $motion): string
+    /**
+     * @param Amendment[] $otherAmendments
+     */
+    public function getAmendmentNumber(Amendment $amendment, IMotion $baseImotion, array $otherAmendments): string
     {
         $prefixes = [];
-        foreach ($motion->getMyConsultation()->motions as $mot) {
+        foreach ($baseImotion->getMyConsultation()->motions as $mot) {
             foreach ($mot->amendments as $amend) {
                 $prefixes[] = $amend->titlePrefix;
             }
         }
         $maxRev = static::getMaxTitlePrefixNumber($prefixes);
-        return 'Ä' . ($maxRev + 1);
+        return \Yii::t('amend', 'amendment_prefix') . ($maxRev + 1);
     }
 
     public function findAmendmentWithPrefix(Motion $motion, string $prefix, ?Amendment $ignore = null): ?Amendment

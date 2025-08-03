@@ -38,7 +38,7 @@ class AmendmentNumberingTest extends DBTestBase
 
         $sorter = new GlobalCompact();
         $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
-        $out    = $sorter->getAmendmentNumber($amend, $motion);
+        $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
 
@@ -48,7 +48,7 @@ class AmendmentNumberingTest extends DBTestBase
 
         $sorter = new GlobalCompact();
         $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
-        $out    = $sorter->getAmendmentNumber($amend, $motion);
+        $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
 
@@ -58,7 +58,7 @@ class AmendmentNumberingTest extends DBTestBase
 
         $sorter = new GlobalCompact();
         $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
-        $out    = $sorter->getAmendmentNumber($amend, $motion);
+        $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
     }
@@ -72,7 +72,7 @@ class AmendmentNumberingTest extends DBTestBase
 
         $sorter = new PerMotionCompact();
         $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
-        $out    = $sorter->getAmendmentNumber($amend, $motion);
+        $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
 
@@ -82,7 +82,7 @@ class AmendmentNumberingTest extends DBTestBase
 
         $sorter = new PerMotionCompact();
         $expect = 'Ä2';
-        $out    = $sorter->getAmendmentNumber($amend, $motion);
+        $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
 
@@ -92,7 +92,7 @@ class AmendmentNumberingTest extends DBTestBase
 
         $sorter = new PerMotionCompact();
         $expect = 'Ä1';
-        $out    = $sorter->getAmendmentNumber($amend, $motion);
+        $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
     }
@@ -105,7 +105,7 @@ class AmendmentNumberingTest extends DBTestBase
         $amendment              = Amendment::findOne(3);
         $amendment->titlePrefix = '';
 
-        $out    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion());
+        $out    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion(), $amendment->getMyMotion()->amendments);
         $expect = 'A2-009';
 
         $this->assertEquals($expect, $out);
@@ -114,7 +114,7 @@ class AmendmentNumberingTest extends DBTestBase
         $amendment              = Amendment::findOne(272);
         $amendment->titlePrefix = '';
 
-        $out    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion());
+        $out    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion(), $amendment->getMyMotion()->amendments);
         $expect = 'A2-027';
 
         $this->assertEquals($expect, $out);
@@ -128,7 +128,7 @@ class AmendmentNumberingTest extends DBTestBase
             }
         }
 
-        $out    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion());
+        $out    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion(), $amendment->getMyMotion()->amendments);
         $expect = 'A2-027-2';
 
         $this->assertEquals($expect, $out);
@@ -145,7 +145,7 @@ class AmendmentNumberingTest extends DBTestBase
                 $amend->titlePrefix = 'A2-027-2';
             }
         }
-        $out                    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion());
+        $out                    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion(), $amendment->getMyMotion()->amendments);
         $expect                 = 'A2-027-3';
 
         $this->assertEquals($expect, $out);
@@ -157,7 +157,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $sorter = new PerMotionEnglish();
-        $out = $sorter->getAmendmentNumber($amend, $motion);
+        $out = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals('A2 A8', $out);
     }
@@ -172,7 +172,7 @@ class AmendmentNumberingTest extends DBTestBase
         $existingAmendment->save();
 
         $sorter = new PerMotionEnglish();
-        $out    = $sorter->getAmendmentNumber($amend, $motion);
+        $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals('A2 A10', $out);
     }

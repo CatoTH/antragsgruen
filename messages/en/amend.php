@@ -2,6 +2,7 @@
 
 return [
     'amendment'              => 'Amendment',
+    'amendment_prefix'       => 'AM',
     'amendments'             => 'Amendments',
     'motion'                 => 'Motion',
     'initiator'              => 'Proposer',

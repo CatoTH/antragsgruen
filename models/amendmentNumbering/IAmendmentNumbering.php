@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\amendmentNumbering;
 
 use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
-use app\models\db\{Motion, Amendment};
+use app\models\db\{IMotion, Motion, Amendment};
 
 abstract class IAmendmentNumbering
 {
@@ -77,7 +79,10 @@ abstract class IAmendmentNumbering
         return $maxRev;
     }
 
-    abstract public function getAmendmentNumber(Amendment $amendment, Motion $motion): string;
+    /**
+     * @param Amendment[] $otherAmendments
+     */
+    abstract public function getAmendmentNumber(Amendment $amendment, IMotion $baseImotion, array $otherAmendments): string;
 
     public function findAmendmentWithPrefix(Motion $motion, string $prefix, ?Amendment $ignore = null): ?Amendment
     {

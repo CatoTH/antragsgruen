@@ -441,6 +441,15 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return Amendment[]
+     */
+    public function getVisibleAmendments(bool $includeWithdrawn = true): array
+    {
+        $filter = IMotionStatusFilter::onlyUserVisible($this->getMyConsultation(), true);
+        return $this->getFilteredAmendingAmendments($filter);
+    }
+
+    /**
      * @param array<array{original: string, new: string, firstLine: int}> $sectionData
      * @return array{from: int, to: int}
      * @throws Internal
@@ -861,10 +870,15 @@ class Amendment extends IMotion implements IRSSItem
     public static function getNewNumberForAmendment(Amendment $amendment): string
     {
         if ($amendment->getMyMotionType()->amendmentsOnly) {
-            return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id, $amendment->getPublicTopicTags());
+            if ($amendment->amendingAmendmentId === null) {
+                return $amendment->getMyConsultation()->getNextMotionPrefix($amendment->getMyMotionType()->id, $amendment->getPublicTopicTags());
+            } else {
+                $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
+                return $numbering->getAmendmentNumber($amendment, $amendment->amendedAmendment, $amendment->amendedAmendment->amendingAmendments);
+            }
         } else {
             $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
-            return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
+            return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion(), $amendment->getMyMotion()->amendments);
         }
     }
 

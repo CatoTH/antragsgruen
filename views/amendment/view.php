@@ -208,7 +208,7 @@ $loginlessSupported = \app\models\db\AmendmentSupporter::getMyLoginlessSupportId
 echo MotionLayoutHelper::printSupportingSection($amendment, $supporters, $supportPolicy, $supportType, $loginlessSupported);
 echo MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
-$amendingAmendments = $amendment->getFilteredAmendingAmendments(IMotionStatusFilter::onlyUserVisible($consultation, true));
+$amendingAmendments = $amendment->getVisibleAmendments();
 if (count($amendingAmendments) > 0) {
     echo '<section class="amendments" aria-labelledby="amendmentsTitle">' .
         '<h2 class="green" id="amendmentsTitle">' . Yii::t('amend', 'amending_amendments') . '</h2>
