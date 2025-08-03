@@ -64,22 +64,43 @@ $I->loginAsStdAdmin();
 $I->wantTo('set up an agenda and assign the statute amendment to it');
 
 $page = $I->gotoStdAdminPage()->gotoAppearance();
-$I->selectOption('#startLayoutType', '4');
+$I->selectOption('#startLayoutType', Consultation::START_LAYOUT_AGENDA_LONG);
 $page->saveForm();
 
 $I->gotoConsultationHome();
 
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Earth");');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+$I->click('.agendaEditLink');
+$I->wait(0.3);
+$I->seeElement('.agendaEditWidget');
 
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Mars");');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
+$listData = [];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "Earth",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
+    "children" => [],
+];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "Mars",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
+    "children" => [],
+];
+$listData[] = [
+    "type" => "item",
+    "code" => null,
+    "title" => "venus",
+    "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
+    "children" => [],
+];
+$newListData = json_encode($listData);
+$I->executeJs('agendaWidget.$refs["agenda-edit-widget"].setAgendaTest(' . $newListData . ');');
+$I->wait(0.3);
+$I->clickJS('.agendaEditWidget .btnSave');
+$I->wait(1);
 
-$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("venus");');
-$I->executeJS('$(".agendaItemEditForm").last().trigger("submit");');
 
 $earth = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID;
 $mars = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1;
@@ -87,6 +108,7 @@ $venus = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 2;
 
 
 $I->wantTo('check the home pages (with no agenda item assigned)');
+$I->gotoConsultationHome();
 $I->seeElement('.consultationIndex');
 $I->see('Our statutes', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->see('S1', '.amendmentLink' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
