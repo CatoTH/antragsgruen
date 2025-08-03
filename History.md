@@ -19,6 +19,7 @@
   - When accepting or rejecting a proposal, the users can now also provide a comment to the admins, explaining their decision. They can also update their decision later on.
   - When sending the notification about a proposed procedure to the proposer a second time, it is possible to manually enter the notification text, as with the initial notifcation.
   - The internal notes / comments to a proposed proposed procedure now also log the messages sent to the submitter, the acceptance / rejection of the submitter, and the publication of the proposal.
+  - Searching for specific proposed procedures or responses by the user in the admin list now also considers motions, not only amendments.
 
 ### Version 4.15.3 (2025-05.13)
 

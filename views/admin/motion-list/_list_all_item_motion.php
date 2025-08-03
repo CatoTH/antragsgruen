@@ -88,7 +88,7 @@ if ($colProposals) {
     echo '<td class="proposalCol">';
 
     $proposal = $entry->getLatestProposal();
-    echo $this->render('../proposed-procedure/_status_icons', ['proposal' => $proposal, 'showVisibility' => true]);
+    echo $this->render('../proposed-procedure/_status_icons', ['proposal' => $proposal, 'showVisibility' => true, 'search' => $search]);
 
     $name = $proposal->getFormattedProposalStatus();
     if ($entry->status === Motion::STATUS_MOVED) {

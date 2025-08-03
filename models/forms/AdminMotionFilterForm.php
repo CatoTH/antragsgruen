@@ -227,6 +227,24 @@ class AdminMotionFilterForm
         $filteredMotions = $this->getFilteredMotions();
         $merge = array_merge($filteredMotions, $this->getFilteredAmendments($filteredMotions));
 
+        if ($this->proposalStatus && in_array($this->proposalStatus, ['noresponse', 'accepted', 'rejected'])) {
+            usort($merge, function (IMotion $a, IMotion $b) {
+                $proposal1 = $a->getLatestProposal();
+                $proposal2 = $b->getLatestProposal();
+                if ($proposal1->notifiedAt === null && $proposal2->notifiedAt === null) {
+                    return IMotionSorter::sortTitlePrefix($a, $b);
+                }
+                if ($proposal1->notifiedAt === null) {
+                    return 1;
+                }
+                if ($proposal2->notifiedAt === null) {
+                    return -1;
+                }
+                return $proposal1->notifiedAt <=> $proposal2->notifiedAt;
+            });
+            return $merge;
+        }
+
         return IMotionSorter::sortIMotions($merge, $this->sort);
     }
 
@@ -380,7 +398,7 @@ class AdminMotionFilterForm
                 $matches = false;
             }
 
-            if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
+            if (!$this->matchesProposedProcedure($motion)) {
                 $matches = false;
             }
 
@@ -491,6 +509,37 @@ class AdminMotionFilterForm
         return ($amendment->responsibilityId === $this->responsibility);
     }
 
+    private function matchesProposedProcedure(IMotion $imotion): bool
+    {
+        if ($this->proposalStatus === null || $this->proposalStatus === '') {
+            return true;
+        }
+
+        if ($this->proposalStatus == 'noresponse') {
+            $proposal = $imotion->getLatestProposal();
+            if ($proposal->notifiedAt === null || in_array($proposal->userStatus, [Amendment::STATUS_ACCEPTED, Amendment::STATUS_REJECTED])) {
+                return false;
+            }
+        } elseif ($this->proposalStatus === 'accepted') {
+            $proposal = $imotion->getLatestProposal();
+            if ($proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_ACCEPTED) {
+                return false;
+            }
+        } elseif ($this->proposalStatus === 'rejected') {
+            $proposal = $imotion->getLatestProposal();
+            if ($proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_REJECTED) {
+                return false;
+            }
+        } else {
+            $proposal = $imotion->getLatestProposal();
+            if ($this->proposalStatus != $proposal->proposalStatus) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @param Motion[] $filteredMotions
      * @return Amendment[]
@@ -519,28 +568,8 @@ class AdminMotionFilterForm
                 $matches = false;
             }
 
-            if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
-                if ($this->proposalStatus == 'noresponse') {
-                    $proposal = $amend->getLatestProposal();
-                    if ($proposal->notifiedAt === null || in_array($proposal->userStatus, [Amendment::STATUS_ACCEPTED, Amendment::STATUS_REJECTED])) {
-                        $matches = false;
-                    }
-                } elseif ($this->proposalStatus === 'accepted') {
-                    $proposal = $amend->getLatestProposal();
-                    if ($proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_ACCEPTED) {
-                        $matches = false;
-                    }
-                } elseif ($this->proposalStatus === 'rejected') {
-                    $proposal = $amend->getLatestProposal();
-                    if ($proposal->notifiedAt === null || $proposal->userStatus !== Amendment::STATUS_REJECTED) {
-                        $matches = false;
-                    }
-                } else {
-                    $proposal = $amend->getLatestProposal();
-                    if ($this->proposalStatus != $proposal->proposalStatus) {
-                        $matches = false;
-                    }
-                }
+            if (!$this->matchesProposedProcedure($amend)) {
+                $matches = false;
             }
 
             if (!$this->amendmentMatchesTag($amend)) {
@@ -802,8 +831,8 @@ class AdminMotionFilterForm
     {
         $out         = $num = [];
         $numAccepted = $numRejected = $numNotResponded = 0;
-        foreach ($this->allAmendments as $amend) {
-            $proposal = $amend->getLatestProposal();
+        foreach (array_merge($this->allMotions, $this->allAmendments) as $imotion) {
+            $proposal = $imotion->getLatestProposal();
             if (!isset($num[$proposal->proposalStatus])) {
                 $num[$proposal->proposalStatus] = 0;
             }

@@ -138,7 +138,7 @@ class IMotionSorter
         }
     }
 
-    private static function sortTitlePrefix(IMotion $motion1, IMotion $motion2): int
+    public static function sortTitlePrefix(IMotion $motion1, IMotion $motion2): int
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */

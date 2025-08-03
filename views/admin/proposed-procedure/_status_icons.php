@@ -2,6 +2,7 @@
 
 /**
  * @var \app\models\db\IProposal $proposal
+ * @var \app\models\forms\AdminMotionFilterForm|null $search
  * @var bool $showVisibility
  */
 
@@ -26,6 +27,9 @@ if ($proposal->userStatus !== null || isset($amendmentStatusVerbs[$proposal->pro
     } elseif ($proposal->proposalFeedbackHasBeenRequested()) {
         $title = Yii::t('admin', 'list_prop_user_asked');
         echo '<span class="asked" title="' . $title . '">❓</span>';
+        if ($search && $search->proposalStatus) {
+            echo '(' . \app\components\Tools::formatMysqlDateTime($proposal->notifiedAt) . ')';
+        }
     }
     /*
        else {
