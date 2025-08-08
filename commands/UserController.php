@@ -278,4 +278,27 @@ class UserController extends Controller
             $this->sendWelcomeEmail($consultation, $user, $welcomeTemplate, $password);
         }
     }
+
+    /**
+     * Deletes a user
+     *
+     * Example:
+     * ./yii user/update email:test@example.org
+     */
+    public function actionDelete(string $auth): int
+    {
+        /** @var User|null $user */
+        $user = $this->findUserByAuth($auth);
+        if (!$user) {
+            $this->stderr('User not found: ' . $auth . "\n");
+
+            return 1;
+        }
+
+        $auth = $user->auth;
+        $user->deleteAccount();
+        $this->stdout('User deleted: ' . $auth . "\n");
+
+        return 0;
+    }
 }
