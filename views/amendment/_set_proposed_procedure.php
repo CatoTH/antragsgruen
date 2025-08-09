@@ -106,9 +106,7 @@ $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 
             <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $amendment, 'proposal' => $proposal]) ?>
         </div>
-        <section class="proposalCommentForm">
-            <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
-        </section>
+        <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
     </div>
 
     <?= $this->render('../shared/_proposed_procedure_tags', ['imotion' => $amendment]) ?>

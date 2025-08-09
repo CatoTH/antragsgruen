@@ -105,9 +105,7 @@ $voting = $motion->getVotingData();
 
         <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $motion, 'proposal' => $proposal]) ?>
     </div>
-    <section class="proposalCommentForm">
-        <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $motion]) ?>
-    </section>
+    <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $motion]) ?>
 </div>
 
 <?= $this->render('../shared/_proposed_procedure_tags', ['imotion' => $motion]) ?>

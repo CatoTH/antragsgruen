@@ -404,6 +404,13 @@ export class ChangeProposedProcedure {
         this.$widget.on('click', '.proposalCommentForm button', () => {
             this.doSaveComment();
         });
+        this.$widget.on('click', '.btnMaximizeComments', () => {
+            if (this.$widget[0].classList.contains('maximizedComments')) {
+                this.$widget[0].classList.remove('maximizedComments');
+            } else {
+                this.$widget[0].classList.add('maximizedComments');
+            }
+        });
         this.commentsScrollBottom();
 
         this.$widget.on('keypress', '.proposalCommentForm textarea', (ev) => {

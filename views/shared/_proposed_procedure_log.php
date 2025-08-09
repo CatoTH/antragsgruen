@@ -12,8 +12,15 @@ use yii\helpers\Html;
 $activities = \app\models\proposedProcedure\IActivity::getListFromIMotion($imotion);
 
 ?>
-    <h3><?= Yii::t('amend', 'proposal_activities_title') ?></h3>
+<section class="proposalCommentForm" aria-labelledby="proposalCommentFormTitle">
+    <div class="proposalCommentFormHeader">
+        <h3 id="proposalCommentFormTitle"><?= Yii::t('amend', 'proposal_activities_title') ?></h3>
 
+        <button type="button" title="Projektor-Ansicht (Vollbild)" class="btn btn-link btnMaximizeComments">
+            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+            <span class="sr-only">Projektor-Ansicht (Vollbild)</span>
+        </button>
+    </div>
     <ol class="commentList">
         <?php
         foreach ($activities as $activity) {
@@ -68,5 +75,6 @@ $activities = \app\models\proposedProcedure\IActivity::getListFromIMotion($imoti
     <textarea name="text" placeholder="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
               title="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
               class="form-control" rows="1"></textarea>
-    <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
+    <button class="btn btn-default btn-xs btnSubmit"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
+</section>
 <?php
