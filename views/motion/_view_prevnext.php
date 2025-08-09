@@ -1,10 +1,8 @@
 <?php
 
-use app\components\IMotionSorter;
 use app\components\UrlHelper;
 use app\views\motion\LayoutHelper;
-use app\models\db\{Motion, User};
-use app\models\settings\{PrivilegeQueryContext, Privileges};
+use app\models\db\{Motion};
 use yii\helpers\Html;
 
 /**
@@ -29,38 +27,9 @@ $cache = \app\components\HashedStaticCache::getInstance(LayoutHelper::getPaginat
 $cache->setIsSynchronized(true);
 
 $html = $cache->getCached(function () use ($motion) {
-    $consultation = $motion->getMyConsultation();
+    $prevNext = LayoutHelper::getPrevNextLinks($motion);
 
-    $prevMotion = null;
-    $nextMotion = null;
-
-    // Separate motions from resolutions for pagination
-    $motionsOrResolutions = array_values(array_filter($consultation->motions, fn(Motion $itMotion) => $itMotion->isResolution() === $motion->isResolution()));
-
-    $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
-    if (in_array($motion->status, $invisibleStatuses) && User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY,
-            PrivilegeQueryContext::anyRestriction())) {
-        $motions = array_values(array_filter($motionsOrResolutions, fn(Motion $motion) => in_array($motion->status, $invisibleStatuses)));
-        usort($motions, function (Motion $a, Motion $b) {
-            return $a->getTimestamp() <=> $b->getTimestamp();
-        });
-        $motions = \app\components\IMotionSorter::sortIMotions($motions, \app\components\IMotionSorter::SORT_TITLE_PREFIX);
-    } else {
-        $motions = \app\components\MotionSorter::getSortedIMotionsFlat($consultation, $motionsOrResolutions);
-    }
-    foreach ($motions as $idx => $itMotion) {
-        if ($motion->id !== $itMotion->id) {
-            continue;
-        }
-        if ($idx > 0) {
-            $prevMotion = $motions[$idx - 1];
-        }
-        if ($idx < (count($motions) - 1)) {
-            $nextMotion = $motions[$idx + 1];
-        }
-    }
-
-    if (!$nextMotion && !$prevMotion) {
+    if (!$prevNext['prev'] && !$prevNext['next']) {
         return '';
     }
 
@@ -73,17 +42,17 @@ $html = $cache->getCached(function () use ($motion) {
     }
 
     $html = '<nav class="motionPrevNextLinks ###TOPBOTTOM_CLASS###">';
-    if ($prevMotion) {
+    if ($prevNext['prev']) {
         $html .= '<div class="prev">
-            <a href="' . Html::encode(UrlHelper::createIMotionUrl($prevMotion)) . '">
+            <a href="' . Html::encode(UrlHelper::createIMotionUrl($prevNext['prev'])) . '">
                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                 ' . $prevLabel . '
             </a>
         </div>';
     }
-    if ($nextMotion) {
+    if ($prevNext['next']) {
         $html .= '<div class="next">
-            <a href="' . Html::encode(UrlHelper::createIMotionUrl($nextMotion)) . '">
+            <a href="' . Html::encode(UrlHelper::createIMotionUrl($prevNext['next'])) . '">
                 ' . $nextLabel . '
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             </a>

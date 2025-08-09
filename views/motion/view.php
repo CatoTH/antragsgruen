@@ -80,6 +80,7 @@ $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPOR
 if (User::getCurrentUser()) {
     $fullscreenInitData = json_encode([
         'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+        'pagination' => $consultation->getSettings()->motionPrevNextLinks,
         'init_page' => 'motion-' . $motion->id,
         'init_content_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
     ]);

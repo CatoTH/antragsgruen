@@ -2,6 +2,16 @@
 ob_start();
 ?>
 <main v-if="!isTwoColumnLayout" class="motionTextHolder" :class="{'isAmendment': isAmendment}">
+    <div v-if="imotion.pagination && (imotion.pagination.prev || imotion.pagination.next)" class="paginationHolder">
+        <button v-if="imotion.pagination.prev" type="button" class="btn btn-link btnPrev" @click="onPaginationChange(imotion.pagination.prev)">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <?= Yii::t('motion', 'prevnext_links_prev_generic') ?>
+        </button>
+        <button v-if="imotion.pagination.next" type="button" class="btn btn-link btnNext" @click="onPaginationChange(imotion.pagination.next)">
+            <?= Yii::t('motion', 'prevnext_links_next_generic') ?>
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </button>
+    </div>
     <fullscreen-imotion-header :imotion="imotion"></fullscreen-imotion-header>
     <section v-for="section in nonEmptySections" class="paragraph lineNumbers" :class="[section.type]">
         <h2 v-if="showSectionTitle(section)">{{ section.title }}</h2>
@@ -98,6 +108,9 @@ $htmlHeader = ob_get_clean();
             showSectionTitle: function (section) {
                 return !section.layout_right && ['Image', 'PDFAttachment', 'PDFAlternative'].indexOf(section.type) === -1;
             },
+            onPaginationChange: function (url) {
+                this.$emit('pagination-change', url);
+            }
         }
     });
 </script>

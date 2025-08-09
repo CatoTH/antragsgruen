@@ -12654,6 +12654,16 @@ ul.sidebarActions .deactivatedMsg {
   margin: 0;
   padding: 0;
 }
+.projectorWidget .paginationHolder {
+  display: block;
+  overflow: auto;
+}
+.projectorWidget .paginationHolder .btnPrev {
+  float: left;
+}
+.projectorWidget .paginationHolder .btnNext {
+  float: right;
+}
 .projectorWidget .motionTextFormattings {
   font-size: 1.6vw;
 }
