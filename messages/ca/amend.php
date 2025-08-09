@@ -294,7 +294,7 @@ return [
     'proposal_edit_tags'         => 'Edita les etiquetes',
     'proposal_obsoleted_by'      => 'Gestionat per',
     'proposal_modified_accepted' => 'Modificació',
-    'proposal_comment_title'     => 'Comentari intern',
+    'proposal_activities_title'  => 'Comentari intern',
     'proposal_comment_overview'  => 'Visió general',
     'proposal_comment_placeh'    => 'Nou comentari...',
     'proposal_comment_write'     => 'Escriu',

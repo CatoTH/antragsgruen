@@ -16,6 +16,7 @@ export class ChangeProposedProcedure {
     private version: number|null;
     private csrf: string;
     private savingComment: boolean = false;
+    private isLatestVersion: boolean;
 
     constructor(private $widget: JQuery) {
         this.initElements();
@@ -40,6 +41,7 @@ export class ChangeProposedProcedure {
         this.saveUrl = this.$widget.attr('action');
         this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
         this.version = this.$widget.data('proposal-id') ?? null;
+        this.isLatestVersion = this.$widget[0].classList.contains('latestVersion');
     }
 
     private initOpener() {
@@ -401,6 +403,13 @@ export class ChangeProposedProcedure {
     private initCommentForm() {
         this.$widget.on('click', '.proposalCommentForm button', () => {
             this.doSaveComment();
+        });
+        this.$widget.on('click', '.btnMaximizeComments', () => {
+            if (this.$widget[0].classList.contains('maximizedComments')) {
+                this.$widget[0].classList.remove('maximizedComments');
+            } else {
+                this.$widget[0].classList.add('maximizedComments');
+            }
         });
         this.commentsScrollBottom();
 

@@ -15,8 +15,10 @@ use yii\helpers\Html;
 $collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
+$isLatestVersion = ($proposal->id === $amendment->getLatestProposal()->id);
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
+    'class'                    => ($isLatestVersion ? 'latestVersion' : 'oldVersion'),
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
@@ -104,11 +106,7 @@ $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 
             <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $amendment, 'proposal' => $proposal]) ?>
         </div>
-        <section class="proposalCommentForm">
-            <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
-
-            <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
-        </section>
+        <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
     </div>
 
     <?= $this->render('../shared/_proposed_procedure_tags', ['imotion' => $amendment]) ?>
@@ -226,7 +224,11 @@ echo $this->render('../shared/_proposed_procedure_feedback_form', [
     'proposal' => $proposal,
     'defaultText' => \app\models\notifications\AmendmentProposedProcedure::getDefaultText($proposal),
 ]);
-echo $this->render('../shared/_proposed_procedure_saving', ['imotion' => $amendment, 'proposal' => $proposal]);
+echo $this->render('../shared/_proposed_procedure_saving', [
+    'imotion' => $amendment,
+    'proposal' => $proposal,
+    'isLatestVersion' => $isLatestVersion,
+]);
 
 if ($context !== 'edit' && $canBeChangedUnlimitedly) {
     $classes   = ['statusDetails'];

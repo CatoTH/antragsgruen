@@ -295,7 +295,7 @@ return [
     'proposal_edit_tags'         => 'Wijzig tags',
     'proposal_obsoleted_by'      => 'Behandeld door',
     'proposal_modified_accepted' => 'Modificatie',
-    'proposal_comment_title'     => 'Intern commentaar',
+    'proposal_activities_title'  => 'Intern commentaar',
     'proposal_comment_overview'  => 'Overview',
     'proposal_comment_placeh'    => 'Nieuw commentaar...',
     'proposal_comment_write'     => 'Schrijf',

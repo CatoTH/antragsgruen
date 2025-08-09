@@ -262,7 +262,7 @@ class ProposedProcedureController extends AdminBase
         $tags = $this->getPostValues()['tags'];
 
         $latestProposal = $imotion->getLatestProposal();
-        $ppChanges = ProposedProcedureChange::create($latestProposal->version, $latestProposal->id);
+        $ppChanges = ProposedProcedureChange::create($latestProposal->id, $latestProposal->version);
         $imotion->setProposedProcedureTags($tags, $ppChanges);
         if ($ppChanges->hasChanges()) {
             $changeType = (is_a($imotion, Motion::class) ? ConsultationLog::MOTION_SET_PROPOSAL : ConsultationLog::AMENDMENT_SET_PROPOSAL);

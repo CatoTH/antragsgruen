@@ -12,10 +12,11 @@ use app\components\{IMotionStatusFilter, UrlHelper};
 use app\models\db\{Motion, MotionProposal};
 use yii\helpers\Html;
 
+$isLatestVersion = ($proposal->id === $motion->getLatestProposal()->id);
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
-    'class'                    => 'version' . $motion->version,
+    'class'                    => 'version' . $motion->version . ($isLatestVersion ? ' latestVersion' : ' oldVersion'),
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
@@ -104,11 +105,7 @@ $voting = $motion->getVotingData();
 
         <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $motion, 'proposal' => $proposal]) ?>
     </div>
-    <section class="proposalCommentForm">
-        <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
-
-        <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $motion]) ?>
-    </section>
+    <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $motion]) ?>
 </div>
 
 <?= $this->render('../shared/_proposed_procedure_tags', ['imotion' => $motion]) ?>
@@ -184,7 +181,11 @@ echo $this->render('../shared/_proposed_procedure_feedback_form', [
     'proposal' => $proposal,
     'defaultText' => \app\models\notifications\MotionProposedProcedure::getDefaultText($proposal),
 ]);
-echo $this->render('../shared/_proposed_procedure_saving', ['imotion' => $motion, 'proposal' => $proposal]);
+echo $this->render('../shared/_proposed_procedure_saving', [
+    'imotion' => $motion,
+    'proposal' => $proposal,
+    'isLatestVersion' => $isLatestVersion,
+]);
 
 if ($context !== 'edit' && $canBeChangedUnlimitedly) {
     $classes   = ['statusDetails'];

@@ -171,6 +171,28 @@
       font-style: italic;
     }
   }
+  .btnMaximizeComments {
+    padding: 0;
+    float: right;
+    margin-top: -25px;
+  }
+
+  &.maximizedComments {
+    .statusForm, .middleCol, .proposalTags, .collisions, .showIfChanged, .statusDetails {
+      display: none !important;
+    }
+    .proposalCommentForm {
+      width: 100%;
+    }
+    .commentList {
+      max-height: none;
+
+      li {
+        margin-bottom: 20px;
+      }
+    }
+  }
+
   .proposalCommentForm {
     font-size: 12px;
 
@@ -184,7 +206,7 @@
     blockquote {
       font-size: 12px;
     }
-    button {
+    .btnSubmit {
       margin-top: -1px;
       width: 100%;
     }
