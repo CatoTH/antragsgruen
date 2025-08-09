@@ -5,16 +5,24 @@
  * @var bool $lineNumbers
  */
 
-use app\models\db\{Amendment, ISupporter, MotionSection, MotionSupporter};
+use app\models\db\{Amendment, ISupporter, Motion, MotionSection, MotionSupporter};
 use app\components\UrlHelper;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
+use app\models\sectionTypes\{ISectionType, TextSimple};
 
 $proposedProcedure = null;
 if ($motion->getLatestProposal()->isProposalPublic() && $motion->proposalStatus) {
     $proposedProcedure = [
         'status_id' => $motion->proposalStatus,
         'status_title' => $motion->getLatestProposal()->getFormattedProposalStatus(true),
+    ];
+}
+
+$pagination = null;
+if ($motion->getMyConsultation()->getSettings()->motionPrevNextLinks) {
+    $paginationIMotions = \app\views\motion\LayoutHelper::getPrevNextLinks($motion);
+    $pagination = [
+        'prev' => ($paginationIMotions['prev'] ? UrlHelper::absolutizeLink(UrlHelper::createIMotionUrl($paginationIMotions['prev'], 'rest')) : null),
+        'next' => ($paginationIMotions['next'] ? UrlHelper::absolutizeLink(UrlHelper::createIMotionUrl($paginationIMotions['next'], 'rest')) : null),
     ];
 }
 
@@ -76,6 +84,7 @@ $json = [
     }, $motion->getVisibleAmendmentsSorted()),
     'url_json' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
     'url_html' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)),
+    'pagination' => $pagination,
 ];
 
 echo json_encode($json);

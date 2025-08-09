@@ -1111,4 +1111,46 @@ class LayoutHelper
             $doc->addHtmlTextBlock('<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>', false);
         }
     }
+
+    /**
+     * @return array{prev: IMotion|null, next: IMotion|null}
+     */
+    public static function getPrevNextLinks(Motion $motion): array
+    {
+        $consultation = $motion->getMyConsultation();
+
+        $prevMotion = null;
+        $nextMotion = null;
+
+        // Separate motions from resolutions for pagination
+        $motionsOrResolutions = array_values(array_filter($consultation->motions, fn(Motion $itMotion) => $itMotion->isResolution() === $motion->isResolution()));
+
+        $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
+        if (in_array($motion->status, $invisibleStatuses) && User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY,
+                PrivilegeQueryContext::anyRestriction())) {
+            $motions = array_values(array_filter($motionsOrResolutions, fn(Motion $motion) => in_array($motion->status, $invisibleStatuses)));
+            usort($motions, function (Motion $a, Motion $b) {
+                return $a->getTimestamp() <=> $b->getTimestamp();
+            });
+            $motions = \app\components\IMotionSorter::sortIMotions($motions, \app\components\IMotionSorter::SORT_TITLE_PREFIX);
+        } else {
+            $motions = \app\components\MotionSorter::getSortedIMotionsFlat($consultation, $motionsOrResolutions);
+        }
+        foreach ($motions as $idx => $itMotion) {
+            if ($motion->id !== $itMotion->id) {
+                continue;
+            }
+            if ($idx > 0) {
+                $prevMotion = $motions[$idx - 1];
+            }
+            if ($idx < (count($motions) - 1)) {
+                $nextMotion = $motions[$idx + 1];
+            }
+        }
+
+        return [
+            'prev' => $prevMotion,
+            'next' => $nextMotion,
+        ];
+    }
 }

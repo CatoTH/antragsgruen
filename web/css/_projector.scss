@@ -126,6 +126,17 @@ $fullscreenHeaderHeight: 36px;
     padding: 0;
   }
 
+  .paginationHolder {
+    display: block;
+    overflow: auto;
+    .btnPrev {
+      float: left;
+    }
+    .btnNext {
+      float: right;
+    }
+  }
+
   .motionTextFormattings {
     font-size: 1.6vw;
   }
