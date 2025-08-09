@@ -3,7 +3,7 @@
 namespace app\models\mergeAmendments;
 
 use app\components\{IMotionStatusFilter, UrlHelper, diff\amendmentMerger\ParagraphMerger};
-use app\models\db\{Amendment, Motion, MotionSection};
+use app\models\db\{Amendment, AmendmentProposal, Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
 
 class Init
@@ -18,6 +18,18 @@ class Init
     private array $toMergeMainIds;
     /** @var int[] */
     private array $toMergeResolvedIds;
+
+    public static function resolveProposalToUse(Amendment $amendment, ?string $textVersions): ?AmendmentProposal
+    {
+        $useProposal = null;
+        foreach ($amendment->proposals as $proposal) {
+            $formId = static::TEXT_VERSION_PROPOSAL . $proposal->id;
+            if ($proposal->hasAlternativeProposaltext(false) && $textVersions === $formId) {
+                $useProposal = $proposal;
+            }
+        }
+        return $useProposal;
+    }
 
     public static function fromInitForm(Motion $motion, array $postAmendIds, array $textVersions): Init
     {
@@ -38,12 +50,9 @@ class Init
                 $form->toMergeMainIds[] = $amendment->id;
             }
 
-            $proposal = $amendment->getLatestProposal();
-            if ($proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
-                $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
-                if (isset($postAmendIds[$amendment->id])) {
-                    $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
-                }
+            $useProposal = self::resolveProposalToUse($amendment, $textVersions[$amendment->id] ?? null);
+            if ($useProposal) {
+                $form->toMergeResolvedIds[] = $useProposal->getMyProposalReference()->id;
             } else {
                 if (isset($postAmendIds[$amendment->id])) {
                     $form->toMergeResolvedIds[] = $amendment->id;
@@ -72,7 +81,7 @@ class Init
             $proposal = $amendment->getLatestProposal();
             if ($proposal->hasAlternativeProposaltext(false)) {
                 $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
-                $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL;
+                $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL; // @TODO
             } else {
                 $form->toMergeResolvedIds[] = $amendment->id;
             }
@@ -228,6 +237,7 @@ class Init
     public static function getJsAmendmentStaticData(Amendment $amendment): array
     {
         $statusesAllNames = $amendment->getMyConsultation()->getStatuses()->getStatusNames();
+        $proposalsWithReference = array_values(array_filter($amendment->proposals, fn ($prop) => $prop->getMyProposalReference() !== null));
 
         return [
             'id'            => $amendment->id,
@@ -236,7 +246,10 @@ class Init
             'url'           => UrlHelper::createAmendmentUrl($amendment),
             'oldStatusId'   => $amendment->status,
             'oldStatusName' => $statusesAllNames[$amendment->status] ?? null,
-            'hasProposal'   => ($amendment->getLatestProposal()->getMyProposalReference() !== null),
+            'proposals'     => array_map(fn (AmendmentProposal $proposal) => [
+                'version' => $proposal->version,
+                'formId' => static::TEXT_VERSION_PROPOSAL . $proposal->id,
+            ], $proposalsWithReference),
             'isMotionModU'  => ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION),
         ];
     }

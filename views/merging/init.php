@@ -1,6 +1,6 @@
 <?php
 
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\{Draft, Init};
 use yii\helpers\Html;
@@ -141,25 +141,35 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                             }
                             echo '</td>';
                         }
-                        if ($amend->getLatestProposal()->hasAlternativeProposaltext(false)) {
-                            echo '<td class="colText hasAlternative">';
+
+                        /** @var \app\models\db\AmendmentProposal[] $proposalsWithAlternativeText */
+                        $proposalsWithAlternativeText = array_values(array_filter($amend->proposals, function (\app\models\db\AmendmentProposal $amendProposal) {
+                            return $amendProposal->hasAlternativeProposaltext(false);
+                        }));
+                        $needsLabels = (count($amend->proposals) > 1);
+
+                        echo '<td class="colText hasAlternative">';
+                        if (count($proposalsWithAlternativeText) > 0) {
                             echo '<label class="textOriginal">';
                             echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_ORIGINAL . '"> ';
                             echo Yii::t('amend', 'merge_amtable_text_orig') . ' ';
-                            echo \app\components\HTMLTools::amendmentDiffTooltip($amend, 'bottom');
+                            echo HTMLTools::amendmentDiffTooltip($amend, 'bottom');
                             echo '</label>';
 
-                            echo '<label class="textProposal">';
-                            echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_PROPOSAL . '" checked>';
-                            echo ' ' . Yii::t('amend', 'merge_amtable_text_prop') . ' ';
-                            echo \app\components\HTMLTools::amendmentDiffTooltip($amend->getLatestProposal()->getMyProposalReference(), 'bottom');
-                            echo '</label>';
-                            echo '</td>';
+                            foreach ($proposalsWithAlternativeText as $proposal) {
+                                echo '<label class="textProposal">';
+                                echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_PROPOSAL . $proposal->id . '" checked>';
+                                echo ' ' . Yii::t('amend', 'merge_amtable_text_prop') . ' ';
+                                if ($needsLabels) {
+                                    echo $proposal->version . ' ';
+                                }
+                                echo HTMLTools::amendmentDiffTooltip($proposal->getMyProposalReference(), 'bottom');
+                                echo '</label>';
+                            }
                         } else {
-                            echo '<td class="colText hasAlternative">';
-                            echo \app\components\HTMLTools::amendmentDiffTooltip($amend, 'bottom');
-                            echo '</td>';
+                            echo HTMLTools::amendmentDiffTooltip($amend, 'bottom');
                         }
+                        echo '</td>';
                         echo '</tr>' . "\n";
                     }
                     ?>
@@ -209,7 +219,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                 $mergeUrl = UrlHelper::createAmendmentUrl($amendment, 'merge');
                 ?>
                 <li>
-                    <?= \app\components\HTMLTools::amendmentDiffTooltip($amendment, 'right') ?>
+                    <?= HTMLTools::amendmentDiffTooltip($amendment, 'right') ?>
                     <a href="<?= Html::encode($mergeUrl) ?>">
                         <span class="merge"><?= Yii::t('amend', 'merge_merge') ?>:</span>
                         <span class="title"><?= Html::encode($amendment->getShortTitle()) ?></span>

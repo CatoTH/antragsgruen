@@ -10,10 +10,7 @@ const STATUS_PROCESSED = 17;
 const STATUS_ADOPTED = 8;
 const STATUS_COMPLETED = 9;
 
-enum AMENDMENT_VERSION {
-    ORIGINAL = 'orig',
-    PROPOSED_PROCEDURE = 'prop',
-}
+type AMENDMENT_VERSION = string;
 
 interface VotingData {
     votesYes: number;
@@ -693,6 +690,7 @@ class MotionMergeAmendmentsParagraph {
                             AmendmentStatuses.setVotesData(amendmentId, eventData[2]);
                             break;
                         case 'set-version':
+                            console.log("set version", eventData[2]);
                             doAfterAskIfChanged(() => {
                                 // Do this no matter what - not only if it's unchanged
                                 AmendmentStatuses.setVersion(amendmentId, eventData[2]);

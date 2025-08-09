@@ -137,8 +137,7 @@ class Draft implements \JsonSerializable
         foreach ($amendments as $amendment) {
             $draft->amendmentStatuses[$amendment->id] = $amendment->status;
 
-            $proposal = $amendment->getLatestProposal();
-            if ($proposal->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id])) {
+            if (Init::resolveProposalToUse($amendment, $textVersions[$amendment->id] ?? null)) {
                 $draft->amendmentVersions[$amendment->id] = $textVersions[$amendment->id];
             } else {
                 $draft->amendmentVersions[$amendment->id] = Init::TEXT_VERSION_ORIGINAL;
