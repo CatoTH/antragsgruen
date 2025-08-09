@@ -39,15 +39,15 @@ ob_start();
                 <?= Yii::t('amend', 'merge_amend_show') ?>
             </a>
         </li>
-        <li v-if="amendment.hasProposal" class="divider"></li>
-        <li v-if="amendment.hasProposal" class="versionorig" v-bind:class="version == 'orig' ? 'selected' : ''">
+        <li v-if="amendment.proposals.length > 0" class="divider"></li>
+        <li v-if="amendment.proposals.length > 0" class="versionorig" v-bind:class="version == 'orig' ? 'selected' : ''">
             <a href="#" class="setVersion" v-on:click="setVersion($event, 'orig')">
                 <?= Yii::t('amend', 'merge_amtable_text_orig') ?>
             </a>
         </li>
-        <li v-if="amendment.hasProposal" class="versionprop" v-bind:class="version == 'prop' ? 'selected' : ''">
-            <a href="#" class="setVersion" v-on:click="setVersion($event, 'prop')">
-                <?= Yii::t('amend', 'merge_amtable_text_prop') ?>
+        <li v-for="proposal in amendment.proposals" class="versionprop" v-bind:class="version == proposal.formId ? 'selected' : ''">
+            <a href="#" class="setVersion" v-on:click="setVersion($event, proposal.formId)">
+                <?= Yii::t('amend', 'merge_amtable_text_prop') ?> {{ proposal.version }}
             </a>
         </li>
         <li class="divider dividerLabeled" data-label="<?= Html::encode(Yii::t('amend', 'merge_status_set')) ?>:"></li>
