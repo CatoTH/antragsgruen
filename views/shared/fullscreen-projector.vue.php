@@ -19,7 +19,7 @@ ob_start();
         <h1 v-if="imotion" class="hidden">{{ imotion.title_with_prefix }}</h1>
     </header>
 
-    <fullscreen-imotion v-if="imotion" :imotion="imotion"></fullscreen-imotion>
+    <fullscreen-imotion v-if="imotion" :imotion="imotion" @paginationChange="onPaginationChange($event)"></fullscreen-imotion>
 
     <fullscreen-speech v-if="dropdownSelection === 'speech'" :initQueue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
 
@@ -210,6 +210,9 @@ $htmlMain = ob_get_clean();
             },
             getImotionAmendmentLinks: function (imotion) {
                 return imotion.amendment_links ? imotion.amendment_links : [];
+            },
+            onPaginationChange: function (url) {
+                this.loadIMotion(url);
             }
         },
         created() {
