@@ -12,6 +12,8 @@ use yii\helpers\Html;
 $activities = \app\models\proposedProcedure\IActivity::getListFromIMotion($imotion);
 
 ?>
+    <h3><?= Yii::t('amend', 'proposal_activities_title') ?></h3>
+
     <ol class="commentList">
         <?php
         foreach ($activities as $activity) {

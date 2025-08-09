@@ -106,8 +106,6 @@ $voting = $motion->getVotingData();
         <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $motion, 'proposal' => $proposal]) ?>
     </div>
     <section class="proposalCommentForm">
-        <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
-
         <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $motion]) ?>
     </section>
 </div>
@@ -185,7 +183,11 @@ echo $this->render('../shared/_proposed_procedure_feedback_form', [
     'proposal' => $proposal,
     'defaultText' => \app\models\notifications\MotionProposedProcedure::getDefaultText($proposal),
 ]);
-echo $this->render('../shared/_proposed_procedure_saving', ['imotion' => $motion, 'proposal' => $proposal]);
+echo $this->render('../shared/_proposed_procedure_saving', [
+    'imotion' => $motion,
+    'proposal' => $proposal,
+    'isLatestVersion' => $isLatestVersion,
+]);
 
 if ($context !== 'edit' && $canBeChangedUnlimitedly) {
     $classes   = ['statusDetails'];

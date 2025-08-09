@@ -4,6 +4,7 @@
  * @var Yii\web\View $this
  * @var IMotion $imotion
  * @var IProposal $proposal
+ * @var bool $isLatestVersion
  */
 
 use app\models\db\{IMotion, IProposal};
@@ -21,9 +22,23 @@ use app\models\db\{IMotion, IProposal};
         </label>
     </div>
     <div class="submit">
-        <button class="btn btn-primary btn-sm">
-            <?= Yii::t('amend', 'proposal_save_changes') ?>
-        </button>
+        <?php
+        if ($isLatestVersion) {
+            ?>
+            <button type="button" class="btn btn-primary btn-sm">
+                <?= Yii::t('amend', 'proposal_save_changes') ?>
+            </button>
+            <?php
+        } else {
+            ?>
+            <div class="editOldVersion">
+                <button type="button" class="btn btn-default btn-sm">
+                    Alte Version nachträglich bearbeiten
+                </button>
+            </div>
+            <?php
+        }
+        ?>
     </div>
 </section>
 <section class="saved">

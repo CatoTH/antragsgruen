@@ -45,7 +45,7 @@ return [
     'confirmed_visible' => 'Podnijeli ste amandman. Vidljiv je odmah.', // Original: You submitted the amendment. It is visible immediately.
     'confirmed_screening' => 'Podnijeli ste amandman. Sada će se pregledati.', // Original: You submitted the amendment. It will now be reviewed.
     'screened_hint' => 'Objavljeno', // Original: Published
-    'amend_for' => ' do ', // Original:  to 
+    'amend_for' => ' do ', // Original:  to
     'create_select_statutes' => 'Postoji više od jednog odjeljka koji treba izmijeniti. Odaberite koji želite promijeniti.', // Original: There is more than one section to amend. Please choose which one you want to change.
     'create_explanation' => 'Molimo vas da izmijenite predlog kako želite. Objasnite u odjeljku &quot;Razlog&quot; u nastavku. <br>', // Original: Please amend the motion as you like. Explain in the  &quot;Reason&quot; section below.<br>
     'create_explanation_statutes' => 'Molimo vas da izmijenite statut kako želite. Objasnite u odjeljku &quot;Razlog&quot; u nastavku.', // Original: Please amend the statutes as you like. Explain in the &quot;Reason&quot; section below.
@@ -199,7 +199,7 @@ return [
     'comments_please_log_in' => 'Prijavite se da biste objavili komentar', // Original: Please log in to post a comment
     'confirmed_support_phase' => "Kreirli ste amandman. <br>\nDa bi zvanično bio podnijet, potrebno je najmanje <strong>%MIN% pristalica</strong>%ADD_REQUIREMENT%. <br>\nPošaljite sledeći link da bi dobili podršku za vaš amandman:",
     'confirmed_support_phase_addfemale' => ', uključujući % MIN% žena', // Original: , including %MIN% women
-    'confirmed_support_phase_ww' => '', // Original: 
+    'confirmed_support_phase_ww' => '', // Original:
     'submitted_adminnoti_title' => 'Novi amandman', // Original: New amendment
 	'submitted_adminnoti_body' => "Novi amandman je podnešen.\nPredlog: %TITLE%\nPredlagač: %INITIATOR%\nLink: %LINK%",
     'submitted_screening_email' => "Zdravo,\n\nUpravo ste podnijeli amandman. Sada će biti pregledan, a zatim objavljen. Bićete obavešteni odvojeno, kada se to desi.\n\nAmandman možete vidjeti ovde: %LINK%",
@@ -210,7 +210,7 @@ return [
         <li><strong>Traženje podržavaoac:</strong> Pronaći ćete link koji možete poslati zainteresovanim osobama. Svatko može pristupiti ovoj stranici putem ove poveznice. Svi koji imaju potrebne privilegije mogu ovdje podržati ovaj amandman.</li>
         <li><strong>Podnesite predlog:</strong> Nakon što %MIN% ljudi podrže amandman, primit ćete obavijest e-poštom. Sada ga možete službeno poslati. Nakon podnošenja, amandman i dalje može dobiti podršku ljudi.</li>
         </ol>', // Original: Amendment submissions by individuals require at least %MIN% supporters to proceed. Please follow this procedure:<br><ol>         <li><strong>Create a draft:</strong> Enter the amendment and your contact data on this page. Please confirm on the following page that you want to create it.</li>         <li><strong>Finding supporters:</strong> You will find a link that you can send to interested persons. Everyone can access this page given this link. Everyone having the necessary privileges can support this amendment here.</li>         <li><strong>Submit the motion:</strong> Once %MIN% people support the amendment, you will receive a notification by e-mail. Now you can officially submit it. Once submitted, the amendment can still receive support from people.</li>         </ol>
-    'merge_explanation' => 'Tekst, uključujući sve amandmane unutar teksta, prikazan je ovdje. ', // Original: The text, including all amendments within the text, is shown here. 
+    'merge_explanation' => 'Tekst, uključujući sve amandmane unutar teksta, prikazan je ovdje. ', // Original: The text, including all amendments within the text, is shown here.
     'merge_init_explanation' => '<p>Možete Kreiraj novu verziju ovog predloga koja uključuje predložene amandmane.</p>
             <p>Možete spojiti jedan amandman ili sve amandmane odjednom. Za potonje možete isključiti i neke amandmane koji su odbijeni ili uzrokuju previše sukoba s drugim amandmanima.</p>
             <p>Izvorni predlog i amandmani i dalje će biti dostupni, ali označeni kao zastarjeli.</p>', // Original: <p>You can create a new version of this motion that includes the proposed amendments.</p>             <p>You can either merge a single amendment, or all amendments at once. For the latter, you can also exclude some amendments that have been rejected or are causing too many conflicts with other amendments.</p>             <p>The original motion and the amendments will still be available, but marked as obsolete.</p>
@@ -287,7 +287,7 @@ return [
     'proposal_edit_tags' => 'Uređivanje oznaka', // Original: Edit tags
     'proposal_obsoleted_by' => 'Upravlja', // Original: Handled by
     'proposal_modified_accepted' => 'Modifikacija', // Original: Modification
-    'proposal_comment_title' => 'Interni komentar', // Original: Internal comment
+    'proposal_activities_title' => 'Interni komentar', // Original: Internal comment
     'proposal_comment_overview' => 'Pregled', // Original: Overview
     'proposal_comment_placeh' => 'Novi komentar...', // Original: New comment...
     'proposal_comment_write' => 'Pisati', // Original: Write

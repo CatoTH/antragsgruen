@@ -16,6 +16,7 @@ export class ChangeProposedProcedure {
     private version: number|null;
     private csrf: string;
     private savingComment: boolean = false;
+    private isLatestVersion: boolean;
 
     constructor(private $widget: JQuery) {
         this.initElements();
@@ -40,6 +41,7 @@ export class ChangeProposedProcedure {
         this.saveUrl = this.$widget.attr('action');
         this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
         this.version = this.$widget.data('proposal-id') ?? null;
+        this.isLatestVersion = this.$widget[0].classList.contains('latestVersion');
     }
 
     private initOpener() {

@@ -107,8 +107,6 @@ $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
             <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $amendment, 'proposal' => $proposal]) ?>
         </div>
         <section class="proposalCommentForm">
-            <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
-
             <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
         </section>
     </div>
@@ -228,7 +226,11 @@ echo $this->render('../shared/_proposed_procedure_feedback_form', [
     'proposal' => $proposal,
     'defaultText' => \app\models\notifications\AmendmentProposedProcedure::getDefaultText($proposal),
 ]);
-echo $this->render('../shared/_proposed_procedure_saving', ['imotion' => $amendment, 'proposal' => $proposal]);
+echo $this->render('../shared/_proposed_procedure_saving', [
+    'imotion' => $amendment,
+    'proposal' => $proposal,
+    'isLatestVersion' => $isLatestVersion,
+]);
 
 if ($context !== 'edit' && $canBeChangedUnlimitedly) {
     $classes   = ['statusDetails'];
