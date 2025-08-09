@@ -11,7 +11,7 @@ class ProposedProcedureChange implements \JsonSerializable
     use JsonConfigTrait;
 
     public int $version;
-    public int $procedureId;
+    public int $proposalId;
 
     public ?int $proposalStatusFrom = null;
     public ?int $proposalStatusTo = null;
@@ -33,11 +33,11 @@ class ProposedProcedureChange implements \JsonSerializable
 
     private bool $hasChanges = false;
 
-    public static function create(int $version, int $procedureId): ProposedProcedureChange
+    public static function create(int $proposalId, int $version): ProposedProcedureChange
     {
         $object = new ProposedProcedureChange(null);
         $object->version = $version;
-        $object->procedureId = $procedureId;
+        $object->proposalId = $proposalId;
 
         return $object;
     }

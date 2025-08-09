@@ -15,8 +15,10 @@ use yii\helpers\Html;
 $collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
+$isLatestVersion = ($proposal->id === $amendment->getLatestProposal()->id);
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
+    'class'                    => ($isLatestVersion ? 'latestVersion' : 'oldVersion'),
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),

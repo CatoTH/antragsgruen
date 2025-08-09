@@ -12,10 +12,11 @@ use app\components\{IMotionStatusFilter, UrlHelper};
 use app\models\db\{Motion, MotionProposal};
 use yii\helpers\Html;
 
+$isLatestVersion = ($proposal->id === $motion->getLatestProposal()->id);
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
-    'class'                    => 'version' . $motion->version,
+    'class'                    => 'version' . $motion->version . ($isLatestVersion ? ' latestVersion' : ' oldVersion'),
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
