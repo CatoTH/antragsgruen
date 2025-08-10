@@ -912,6 +912,15 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
+    public function getProposalByVersion(int $version): MotionProposal
+    {
+        foreach ($this->proposals as $proposal) {
+            if ($proposal->version === $version) {
+                return $proposal;
+            }
+        }
+        throw new NotFound('Proposal not found');
+    }
 
     public function setProposalPublished(): void
     {

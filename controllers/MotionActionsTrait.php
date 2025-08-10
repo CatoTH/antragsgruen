@@ -578,7 +578,7 @@ trait MotionActionsTrait
             $response['proposalStr'] = $proposal->getFormattedProposalStatus(true);
 
             if ($proposal->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $proposal->proposalStatus) {
-                $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change');
+                $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'edit-proposed-change', ['proposalVersion' => $proposal->version]);
             } elseif ($motion->id !== $originalMotionId) {
                 // This can happen if a plugin enforces the creation of a new motion when saving
                 $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
@@ -653,33 +653,33 @@ trait MotionActionsTrait
         return new JsonResponse($response);
     }
 
-    public function actionEditProposedChange(string $motionSlug): ResponseInterface
+    public function actionEditProposedChange(string $motionSlug, int $proposalVersion): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             return new HtmlErrorResponse(404, 'Motion not found');
         }
-        $latestProposal = $motion->getLatestProposal();
-        if (!$latestProposal->canEditProposedProcedure()) {
+        $proposal = $motion->getProposalByVersion($proposalVersion);
+        if (!$proposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to edit the proposed procedure');
         }
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
-            $reference = $latestProposal->getMyProposalReference();
+            $reference = $proposal->getMyProposalReference();
             if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
                 foreach ($reference->sections as $section) {
                     $section->delete();
                 }
 
-                $latestProposal->proposalReferenceId = null;
-                $latestProposal->save();
+                $proposal->proposalReferenceId = null;
+                $proposal->save();
 
                 $reference->delete();
             }
             $motion->flushCacheItems(['procedure']);
         }
 
-        $form = new ProposedChangeForm($motion);
+        $form = new ProposedChangeForm($motion, $proposal);
 
         $msgSuccess = null;
         $msgAlert   = null;
@@ -688,20 +688,21 @@ trait MotionActionsTrait
             $form->save($this->getHttpRequest()->post(), $_FILES);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
-            if ($latestProposal->userStatus !== null) {
+            if ($proposal->userStatus !== null) {
                 $this->getHttpSession()->setFlash('info', \Yii::t('amend', 'proposal_user_change_reset'));
             }
-            $latestProposal->userStatus = null;
-            $latestProposal->save();
+            $proposal->userStatus = null;
+            $proposal->save();
             $motion->flushCacheItems(['procedure']);
 
-            return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'view'));
+            return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $proposal->version]));
         }
 
         return new HtmlResponse($this->render('edit_proposed_change', [
             'msgSuccess' => $msgSuccess,
             'msgAlert'   => $msgAlert,
             'motion'     => $motion,
+            'proposal'   => $proposal,
             'form'       => $form,
         ]));
     }

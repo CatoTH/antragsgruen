@@ -13,10 +13,10 @@ class ProposedChangeForm
     /** @var AmendmentSection[] */
     protected array $proposalSections;
 
-    public function __construct(IMotion $imotion)
+    public function __construct(IMotion $imotion, IProposal $proposal)
     {
         $this->imotion = $imotion;
-        $this->proposal = $imotion->getLatestProposal();
+        $this->proposal = $proposal;
         $this->initProposal();
     }
 

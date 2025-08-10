@@ -19,7 +19,7 @@ $I->dontSeeElement('#pp_section_2_0');
 
 $I->wantTo('write internal comments');
 $I->fillField('#proposedChanges .proposalCommentForm textarea', 'Internal comment!');
-$I->clickJS('#proposedChanges .proposalCommentForm button');
+$I->clickJS('#proposedChanges .proposalCommentForm .btnSubmit');
 $I->wait(1);
 $I->see('Internal comment!', '#proposedChanges .proposalCommentForm .commentList');
 
