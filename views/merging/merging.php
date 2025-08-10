@@ -30,7 +30,7 @@ if ($twoCols) {
     //$layout->fullScreen = true;
 }
 
-$title       = str_replace('%TITLE%', $motion->motionType->titleSingular, Yii::t('amend', 'merge_title'));
+$title       = str_replace('%TITLE%', $motion->getMyMotionType()->titleSingular, Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 $amendments = Init::getMotionAmendmentsForMerging($form->motion);

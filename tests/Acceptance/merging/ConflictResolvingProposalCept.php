@@ -14,10 +14,10 @@ $I->loginAsStdAdmin();
 $I->wantTo('Create a proposed procedure that does not conflict, contrary to the base amendment');
 
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 280);
-$I->executeJS('$(".proposedChangesOpener button").click();');
+$I->clickJS('.proposedChangesOpener button');
 $I->seeElement('#proposedChanges');
 $I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input").prop("checked", true).change();');
-$I->executeJS('$("#proposedChanges .saving button").click();');
+$I->clickJS('#proposedChanges .saving button');
 $I->wait(1);
 $I->clickJS('.resetText');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace(/et ea rebum\.<\/p>/, "et ea rebum noconflict.</p>"))');

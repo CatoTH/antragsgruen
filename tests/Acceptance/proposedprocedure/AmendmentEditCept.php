@@ -20,13 +20,13 @@ $I->loginAsProposalAdmin();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
 
 $I->dontSeeElement('#proposedChanges');
-$I->executeJS('$(".proposedChangesOpener button").click();');
+$I->clickJS('.proposedChangesOpener button');
 $I->seeElement('#proposedChanges');
 
 
 $I->wantTo('write internal comments');
 $I->fillField('#proposedChanges .proposalCommentForm textarea', 'Internal comment!');
-$I->executeJS('$("#proposedChanges .proposalCommentForm button").click();');
+$I->clickJS('#proposedChanges .proposalCommentForm .btnSubmit');
 $I->wait(0.5);
 $I->see('Internal comment!', '#proposedChanges .proposalCommentForm .commentList');
 

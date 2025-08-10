@@ -47,16 +47,15 @@ class DraftParagraph
     {
         $resolvedIds = [];
         foreach ($this->amendmentToggles as $amendmentId) {
-            $resolved = false;
-            if (isset($this->textVersions[$amendmentId]) && $this->textVersions[$amendmentId] === Init::TEXT_VERSION_PROPOSAL) {
-                foreach ($motion->amendments as $amendment) {
-                    if ($amendment->id === $amendmentId && $amendment->getLatestProposal()->getMyProposalReference()) {
-                        $resolvedIds[] = $amendment->getLatestProposal()->getMyProposalReference()->id;
-                        $resolved = true;
-                    }
+            $proposal = null;
+            foreach ($motion->amendments as $amendment) {
+                if ($amendment->id === $amendmentId) {
+                    $proposal = Init::resolveProposalToUse($amendment, $this->textVersions[$amendmentId] ?? null);
                 }
             }
-            if (!$resolved) {
+            if ($proposal) {
+                $resolvedIds[] = $proposal->getMyProposalReference()->id;
+            } else {
                 $resolvedIds[] = $amendmentId;
             }
         }
