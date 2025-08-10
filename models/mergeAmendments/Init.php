@@ -19,12 +19,12 @@ class Init
     /** @var int[] */
     private array $toMergeResolvedIds;
 
-    public static function resolveProposalToUse(Amendment $amendment, ?string $textVersions): ?AmendmentProposal
+    public static function resolveProposalToUse(Amendment $amendment, ?string $textVersion): ?AmendmentProposal
     {
         $useProposal = null;
         foreach ($amendment->proposals as $proposal) {
             $formId = static::TEXT_VERSION_PROPOSAL . $proposal->id;
-            if ($proposal->hasAlternativeProposaltext(false) && $textVersions === $formId) {
+            if ($proposal->hasAlternativeProposaltext(false) && $textVersion === $formId) {
                 $useProposal = $proposal;
             }
         }
@@ -81,7 +81,7 @@ class Init
             $proposal = $amendment->getLatestProposal();
             if ($proposal->hasAlternativeProposaltext(false)) {
                 $form->toMergeResolvedIds[] = $proposal->getMyProposalReference()->id;
-                $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL; // @TODO
+                $textVersions[$amendment->id] = static::TEXT_VERSION_PROPOSAL . $proposal->id;
             } else {
                 $form->toMergeResolvedIds[] = $amendment->id;
             }

@@ -8,6 +8,7 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var Motion $motion
+ * @var \app\models\db\MotionProposal $proposal
  * @var \app\models\forms\ProposedChangeForm $form
  * @var null|string $msgSuccess
  * @var null|string $msgAlert
@@ -24,7 +25,7 @@ $layout->fullScreen = true;
 $layout->loadCKEditor();
 $layout->loadSelectize();
 
-$motionUrl = UrlHelper::createMotionUrl($motion);
+$motionUrl = UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $proposal->version]);
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
 $layout->addBreadcrumb(Yii::t('amend', 'proposal_edit_bread'));
 
@@ -34,7 +35,7 @@ echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
 ?>
     <div class="content">
-        <a href="<?= UrlHelper::createMotionUrl($motion) ?>" class="goBackLink">
+        <a href="<?= Html::encode($motionUrl) ?>" class="goBackLink">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             <?= Yii::t('amend', 'proposal_edit_back') ?>
         </a>
@@ -48,12 +49,12 @@ echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
         echo $this->render('_set_proposed_procedure', [
             'motion' => $motion,
-            'proposal' => $motion->getLatestProposal(),
+            'proposal' => $proposal,
             'context' => 'edit',
             'msgAlert' => null,
         ]);
 
-        echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'edit-proposed-change'), 'post', [
+        echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'edit-proposed-change', ['proposalVersion' => $proposal->version]), 'post', [
             'id'                        => 'proposedChangeTextForm',
             'data-antragsgruen-widget'  => 'backend/ProposedChangeEdit',
             //'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),

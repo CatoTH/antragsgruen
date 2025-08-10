@@ -957,6 +957,16 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
+    public function getProposalByVersion(int $version): AmendmentProposal
+    {
+        foreach ($this->proposals as $proposal) {
+            if ($proposal->version === $version) {
+                return $proposal;
+            }
+        }
+        throw new NotFound('Proposal not found');
+    }
+
     public function setProposalPublished(): void
     {
         $proposal = $this->getLatestProposal();

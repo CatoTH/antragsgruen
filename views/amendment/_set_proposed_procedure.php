@@ -240,7 +240,7 @@ if ($context !== 'edit' && $canBeChangedUnlimitedly) {
         <?php
         echo Html::a(
             Yii::t('base', 'edit'),
-            UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'),
+            UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change', ['proposalVersion' => $proposal->version]),
             ['class' => 'editModification']
         );
         ?>

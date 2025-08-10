@@ -197,7 +197,7 @@ if ($context !== 'edit' && $canBeChangedUnlimitedly) {
         <?php
         echo Html::a(
             Yii::t('base', 'edit'),
-            UrlHelper::createMotionUrl($motion, 'edit-proposed-change'),
+            UrlHelper::createMotionUrl($motion, 'edit-proposed-change', ['proposalVersion' => $proposal->version]),
             ['class' => 'editModification']
         );
         ?>

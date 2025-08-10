@@ -8,6 +8,7 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var Amendment $amendment
+ * @var \app\models\db\AmendmentProposal $proposal
  * @var \app\models\forms\ProposedChangeForm $form
  * @var null|string $msgSuccess
  * @var null|string $msgAlert
@@ -17,7 +18,6 @@ use yii\helpers\Html;
 $controller   = $this->context;
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
-$proposal = $amendment->getLatestProposal();
 
 $this->title        = Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;
@@ -26,9 +26,10 @@ $layout->loadCKEditor();
 $layout->loadSelectize();
 
 $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
+$amendmentUrl = UrlHelper::createAmendmentUrl($amendment, 'view', ['proposalVersion' => $proposal->version]);
 $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->getFormattedTitlePrefix() != '') {
-    $layout->addBreadcrumb($amendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendment));
+    $layout->addBreadcrumb($amendment->getFormattedTitlePrefix(), $amendmentUrl);
 } else {
     $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }
@@ -40,7 +41,7 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
 
 ?>
     <div class="content">
-        <a href="<?= UrlHelper::createAmendmentUrl($amendment) ?>" class="goBackLink">
+        <a href="<?= Html::encode($amendmentUrl) ?>" class="goBackLink">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             <?= Yii::t('amend', 'proposal_edit_back') ?>
         </a>
@@ -59,7 +60,7 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
             'msgAlert' => null,
         ]);
 
-        echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
+        echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change', ['proposalVersion' => $proposal->version]), 'post', [
             'id'                        => 'proposedChangeTextForm',
             'data-antragsgruen-widget'  => 'backend/ProposedChangeEdit',
             'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
@@ -149,7 +150,7 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
                     // Keep in sync with AmendmentController::actionEditProposedChangeCheck
                     $title = $collidingAmendment->getShortTitle();
                     $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
-                    if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
+                    if ($collidingAmendment->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                         $title .= ' (' . Yii::t('amend', 'proposal_voting') . ')';
                     }
 

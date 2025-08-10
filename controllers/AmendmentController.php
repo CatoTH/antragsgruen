@@ -551,7 +551,7 @@ class AmendmentController extends Base
                 );
 
                 if ($proposal->proposalStatus === IMotion::STATUS_MODIFIED_ACCEPTED && $originalProposalStatus !== $proposal->proposalStatus) {
-                    $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change');
+                    $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change', ['proposalVersion' => $proposal->version]);
                 }
             } catch (FormError $e) {
                 $response['success'] = false;
@@ -652,35 +652,35 @@ class AmendmentController extends Base
         return new JsonResponse($response);
     }
 
-    public function actionEditProposedChange(string $motionSlug, int $amendmentId): ResponseInterface
+    public function actionEditProposedChange(string $motionSlug, int $amendmentId, int $proposalVersion): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
         if (!$amendment) {
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
-        $latestProposal = $amendment->getLatestProposal();
-        if (!$latestProposal->canEditProposedProcedure()) {
+        $proposal = $amendment->getProposalByVersion($proposalVersion);
+        if (!$proposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
-            $reference = $latestProposal->getMyProposalReference();
+            $reference = $proposal->getMyProposalReference();
             if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 foreach ($reference->sections as $section) {
                     $section->delete();
                 }
 
-                $latestProposal->proposalReferenceId = null;
-                $latestProposal->save();
+                $proposal->proposalReferenceId = null;
+                $proposal->save();
 
                 $reference->delete();
             }
             $amendment->flushCacheItems(['procedure']);
         }
 
-        $form = new ProposedChangeForm($amendment);
+        $form = new ProposedChangeForm($amendment, $proposal);
 
         $msgSuccess = null;
         $msgAlert   = null;
@@ -689,20 +689,21 @@ class AmendmentController extends Base
             $form->save($this->getHttpRequest()->post(), $_FILES);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
-            if ($latestProposal->userStatus !== null) {
+            if ($proposal->userStatus !== null) {
                 $this->getHttpSession()->setFlash('info', \Yii::t('amend', 'proposal_user_change_reset'));
             }
-            $latestProposal->userStatus = null;
-            $latestProposal->save();
+            $proposal->userStatus = null;
+            $proposal->save();
             $amendment->flushCacheItems(['procedure']);
 
-            return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment, 'view'));
+            return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment, 'view', ['proposalVersion' => $proposal->version]));
         }
 
         return new HtmlResponse($this->render('edit_proposed_change', [
             'msgSuccess' => $msgSuccess,
             'msgAlert'   => $msgAlert,
             'amendment'  => $amendment,
+            'proposal'   => $proposal,
             'form'       => $form,
         ]));
     }
