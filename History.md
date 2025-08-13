@@ -14,7 +14,7 @@
 - Amendments to Statute Amendments are now better supported:
   - On the home page, those amendments are now shown like regular amendments, not like stand-alone motions.
   - These amendments now show the base statute amendment and the changed version next to each other, for easier comparison.
-- Several improvements regarding the proposed procedures:
+- Many improvements regarding the proposed procedures:
   - There can be multiple versions of proposed procedures; admins can publish one or notify users about one, and internally already work on a new version of the proposal.
   - When proposers of motions or amendments are being asked for feedback, they can now also reject the proposal.
   - When accepting or rejecting a proposal, the users can now also provide a comment to the admins, explaining their decision. They can also update their decision later on.
@@ -22,6 +22,7 @@
   - The internal notes / comments to a proposed proposed procedure now also log the messages sent to the submitter, the acceptance / rejection of the submitter, and the publication of the proposal.
   - The internal notes / comments field can now be maximized for easier reading.
   - Searching for specific proposed procedures or responses by the user in the admin list now also considers motions, not only amendments.
+  - "Obsoleted by other Motion" and "Obsoleted by other Amendment" can now both be chosen as proposed procedure status.
 
 ### Version 4.15.3 (2025-05.13)
 

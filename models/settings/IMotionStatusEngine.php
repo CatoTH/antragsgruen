@@ -151,8 +151,8 @@ class IMotionStatusEngine
             false,
             !$this->consultation->getSettings()->obsoletedByMotionsShown,
             true,
-            false,
-            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND')
+            true,
+            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_OBSOLETED_BY_AMENDMENT,
@@ -162,7 +162,7 @@ class IMotionStatusEngine
             !$this->consultation->getSettings()->obsoletedByMotionsShown,
             true,
             true,
-            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT')
+            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_CUSTOM_STRING,
