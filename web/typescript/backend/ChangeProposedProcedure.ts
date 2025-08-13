@@ -1,5 +1,6 @@
 const STATUS_REFERRED = 10;
 const STATUS_VOTE = 11;
+const STATUS_OBSOLETED_BY_MOT = 32;
 const STATUS_OBSOLETED_BY_AMEND = 22;
 const STATUS_CUSTOM_STRING = 23;
 const STATUS_PROPOSED_MOVE_TO_OTHER_MOTION = 28;
@@ -185,11 +186,10 @@ export class ChangeProposedProcedure {
             data['proposalComment'] = this.$widget.find('input[name=referredTo]').val();
         }
         if (newVal == STATUS_OBSOLETED_BY_AMEND) {
-            if (this.$widget.find('select[name=obsoletedByAmendment]').length > 0) {
-                data['proposalComment'] = this.$widget.find('select[name=obsoletedByAmendment]').val();
-            } else {
-                data['proposalComment'] = this.$widget.find('select[name=obsoletedByMotion]').val();
-            }
+            data['proposalComment'] = this.$widget.find('select[name=obsoletedByAmendment]').val();
+        }
+        if (newVal == STATUS_OBSOLETED_BY_MOT) {
+            data['proposalComment'] = this.$widget.find('select[name=obsoletedByMotion]').val();
         }
         if (newVal == STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
             if (this.$widget.find('select[name=movedToOtherMotion]').length > 0) {

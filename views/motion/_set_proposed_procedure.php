@@ -110,56 +110,13 @@ $voting = $motion->getVotingData();
 
 <?= $this->render('../shared/_proposed_procedure_tags', ['imotion' => $motion]) ?>
 
-<section class="statusDetails status_<?= Motion::STATUS_OBSOLETED_BY_AMENDMENT ?>">
-    <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
-    <?php
-    $options = ['-'];
-    $filter = IMotionStatusFilter::onlyUserVisible($consultation, false);
-    foreach ($filter->getFilteredConsultationIMotionsSorted() as $otherMotion) {
-        if ($otherMotion->id === $motion->id) {
-            continue;
-        }
-        if (!is_a($otherMotion, Motion::class)) {
-            continue;
-        }
-        foreach ($otherMotion->getVisibleAmendmentsSorted() as $otherAmend) {
-            $options[$otherAmend->id] = $otherAmend->getTitle();
-        }
-    }
-    $attrs = ['id' => 'obsoletedByAmendment', 'disabled' => $limitedDisabled];
-    echo Html::dropDownList('obsoletedByMotion', $preObsoletedBy, $options, $attrs);
-    ?>
-</section>
-<section class="statusDetails status_<?= Motion::STATUS_REFERRED ?>">
-    <label class="headingLabel" for="referredTo"><?= Yii::t('amend', 'proposal_refer_to') ?>...</label>
-    <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
-        <?php if (!$canBeChangedUnlimitedly) echo 'disabled'; ?>
-           class="form-control">
-</section>
-<section class="statusDetails status_<?= Motion::STATUS_CUSTOM_STRING ?>">
-    <label class="headingLabel" for="statusCustomStr"><?= Yii::t('amend', 'proposal_custom_str') ?>:</label>
-    <input type="text" name="statusCustomStr" id="statusCustomStr" value="<?= Html::encode($preCustomStr) ?>"
-        <?php if (!$canBeChangedUnlimitedly) echo 'disabled'; ?>
-           class="form-control">
-</section>
-<section class="statusDetails status_<?= Motion::STATUS_VOTE ?>">
-    <div class="votingStatus">
-        <h3><?= Yii::t('amend', 'proposal_voting_status') ?></h3>
-        <?php
-        foreach ($consultation->getStatuses()->getVotingStatuses() as $statusId => $statusName) {
-            ?>
-            <label>
-                <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php
-                if ($motion->votingStatus == $statusId) {
-                    echo 'checked';
-                }
-                ?>> <?= Html::encode($statusName) ?>
-            </label><br>
-            <?php
-        }
-        ?>
-    </div>
-</section>
+<?= $this->render('../shared/_proposed_procedure_status_details', [
+    'imotion' => $motion,
+    'proposal' => $proposal,
+    'limitedDisabled' => $limitedDisabled,
+    'canBeChangedUnlimitedly' => $canBeChangedUnlimitedly,
+]) ?>
+
 <section class="publicExplanation">
     <h3><?= Yii::t('amend', 'proposal_public_expl_title') ?></h3>
     <?php
