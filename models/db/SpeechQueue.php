@@ -304,6 +304,21 @@ class SpeechQueue extends ActiveRecord
         return $itemsApplied;
     }
 
+    public function randomizeWaitingList(): void
+    {
+        $items = array_values(array_filter($this->items, function (SpeechQueueItem $item) {
+            return $item->dateStarted === null && $item->dateStopped === null;
+        }));
+
+        $position = -1;
+        while (count($items) > 0) {
+            $pos = random_int(0, count($items) - 1);
+            $item = array_splice($items, $pos, 1)[0];
+            $item->position = $position--;
+            $item->save();
+        }
+    }
+
     /**
      * @return ConsultationAgendaItem[]
      */

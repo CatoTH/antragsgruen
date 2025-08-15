@@ -10,6 +10,7 @@
 - The consultation-wide search now also searches for the name of proposers of motions / amendments.
 - The small-screen main menu now also has the full-text search.
 - The projector view now also shows links to the previous / next motions, if activated for the main motion view.
+- Speaking lists now have a function to randomize the waiting list.
 - Amendments are now prefixed with "AM", not "Ä". The prefix can be changed through the language-setting.
 - Amendments to Statute Amendments are now better supported:
   - On the home page, those amendments are now shown like regular amendments, not like stand-alone motions.

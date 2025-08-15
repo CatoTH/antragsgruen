@@ -233,6 +233,24 @@ class SpeechController extends Base
         return new RestApiResponse(200, $apiDto->getAdminApiObject());
     }
 
+    public function actionAdminQueueRandomize(string $queueId): RestApiResponse
+    {
+        $this->handleRestHeaders(['POST'], true);
+        try {
+            $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
+
+        $queue->randomizeWaitingList();
+        $queue->refresh();
+
+        $apiDto = SpeechQueueApi::fromEntity($queue);
+        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+
+        return new RestApiResponse(200, $apiDto->getAdminApiObject());
+    }
+
     /**
      * @param SpeechQueueItem[] $items
      */
