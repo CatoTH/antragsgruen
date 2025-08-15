@@ -54,9 +54,25 @@ if ($longVersion) {
             $itemImotions = $agendaItem->getMyIMotions(IMotionStatusFilter::onlyUserVisible($consultation, true)->noResolutions());
         }
 
-        if (count($itemImotions) > 0) {
+        $user = User::getCurrentUser();
+        $hasSpeechQueues = count($agendaItem->speechQueues) > 0;
+        if (count($itemImotions) > 0 || $hasSpeechQueues) {
             $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
-            echo '<h2 class="green">' . $prefix . Html::encode($agendaItem->title) . '</h2>';
+            echo '<h2 class="green">' . $prefix . Html::encode($agendaItem->title);
+            if ($hasSpeechQueues && $user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
+                echo '<a href="' . Html::encode($agendaItem->speechQueues[0]->getAdminLink()) . '" class="speechAdminLink greenHeaderExtraLink">';
+                echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
+                echo Yii::t('speech', 'goto_admin');
+                echo '</a>';
+            }
+            echo '</h2>';
+        }
+
+        foreach ($agendaItem->speechQueues as $speechQueue) {
+            echo $this->render('@app/views/speech/_index_speech', ['queue' => $speechQueue, 'showHeader' => false]);
+        }
+
+        if (count($itemImotions) > 0) {
             echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
             $itemImotions = MotionSorter::getSortedIMotionsFlat($consultation, $itemImotions);
             foreach ($itemImotions as $imotion) {

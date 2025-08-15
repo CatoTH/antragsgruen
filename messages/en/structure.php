@@ -216,7 +216,7 @@ return [
     'home_layout_std'               => 'No agenda',
     'home_layout_tags'              => 'Tags / categories',
     'home_layout_agenda'            => 'Motions inlined into the agenda',
-    'home_layout_agenda_long'       => 'Motions are below the agenda',
+    'home_layout_agenda_long'       => 'Motions and speaking lists are below the agenda',
     'home_layout_agenda_hide_amend' => 'Motions are below the agenda, amendments hidden',
     'home_layout_discussion_tags'   => 'Comments above motion list, tags / categories with filter',
 
