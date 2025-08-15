@@ -8,6 +8,7 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\SpeechQueue $queue
+ * @var boolean $showHeader
  */
 
 if (!$queue) {
@@ -38,23 +39,29 @@ if ($queue->motionId || $queue->agendaItemId) {
 
 ?>
 <section class="currentSpeechInline currentSpeechPageWidth"
-         aria-labelledby="speechListUserTitle"
+         aria-label="<?= Html::encode($title) ?>"
          data-antragsgruen-widget="frontend/CurrentSpeechList"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"
 >
-    <h2 class="green" id="speechListUserTitle"><?php
-        echo Html::encode($title);
+    <?php
+    if ($showHeader) {
+        ?>
+        <h2 class="green" id="speechListUserTitle"><?php
+            echo Html::encode($title);
 
-        $user = User::getCurrentUser();
-        if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
-            echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink greenHeaderExtraLink">';
-            echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
-            echo Yii::t('speech', 'goto_admin');
-            echo '</a>';
-        }
-        ?></h2>
+            $user = User::getCurrentUser();
+            if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
+                echo '<a href="' . Html::encode($queue->getAdminLink()) . '" class="speechAdminLink greenHeaderExtraLink">';
+                echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
+                echo Yii::t('speech', 'goto_admin');
+                echo '</a>';
+            }
+            ?></h2>
+        <?php
+    }
+    ?>
     <div class="content">
         <div class="currentSpeechList"></div>
     </div>
