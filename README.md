@@ -502,8 +502,9 @@ All endpoints of the API are located under `/rest`. An OpenAPI-based description
 * Create a separate (MySQL/MariaDB-)database for testing (`antragsgruen_tests`)
 * Set up the configuration file: ```
 cp config/config_tests.template.json config/config_tests.json && vi config/config_tests.json```
-* Download [ChromeDriver](https://sites.google.com/chromium.org/driver/) and move the binary into the PATH (e.g. /usr/local/bin/)
-* Download the [Selenium Server](https://www.selenium.dev/downloads/)
+* Download [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/) (either the matching ChromeDriver for your already installed Chrome or the full Chrome Bundle) and move it into any path.
+* Download the [Selenium Server (Grid)](https://www.selenium.dev/downloads/)
+* Copy the [docs/selenium-antragsgruen.toml](docs/selenium-antragsgruen.toml) to the directory that has the downloaded JAR and set the correct path to the ChromeDriver binary in it.
 * For the automated HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automated accessibility validation, [Pa11y](https://pa11y.org/) needs to be installed. (is done by ``npm install``)
 * The host name ``test.antragsgruen.test`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured. If another host name is to be used, it has to be changed in the [config/TEST_DOMAIN](config/TEST_DOMAIN) and [tests/acceptance.suite.yml](tests/acceptance.suite.yml).
@@ -511,7 +512,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 #### Running
 
 * Start Selenium:
-```java -jar selenium-server-4.29.0.jar standalone --config config-antragsgruen.toml```
+```java -jar selenium-server-4.35.0.jar standalone --config selenium-antragsgruen.toml```
 * Run all acceptance tests:
 ```vendor/bin/codecept run Acceptance```
 * Run all unit tests:
