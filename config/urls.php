@@ -96,6 +96,7 @@ $urlRules = [
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin'                                  => '/speech/get-queue-admin',
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/settings'                         => '/speech/post-queue-settings',
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/reset'                            => '/speech/admin-queue-reset',
+    $restBaseCon . '/speech/<queueId:[^\/]+>/admin/randomize'                        => '/speech/admin-queue-randomize',
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item'                             => '/speech/admin-create-item',
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
     $restBaseCon . '/page/<pageSlug:[^\/]+>'                                         => '/pages/get-rest',

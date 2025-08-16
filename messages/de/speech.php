@@ -72,6 +72,7 @@ return [
     'admin_back_to_wait'     => 'Zurück auf die Warteliste',
     'admin_start_proposal'   => 'Vorschlag starten',
     'admin_proposal_nobody'  => 'Kein Vorschlag',
+    'admin_randomize_queues' => 'Warteliste durchmischen',
     'admin_reset'            => 'Redeliste leeren / zurücksetzen',
     'admin_reset_dialog'     => 'Willst du die komplette Liste inklusive der bisherigen Sprecher*innen zurücksetzen?',
 

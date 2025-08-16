@@ -77,6 +77,11 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
                             <?= Yii::t('speech', 'admin_goto_components') ?>
                         </a>
                     </li>
+                    <li class="randomizeQueues">
+                        <button class="btn btn-default btn-sm" type="button" @click="randomizeQueues($event)">
+                            <?= Yii::t('speech', 'admin_randomize_queues') ?>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -215,12 +220,13 @@ $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpee
 </article>
 
 <?php
-$html             = ob_get_clean();
-$setStatusUrl     = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
-$itemPerformOpUrl = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
-$createItemUrl    = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
-$resetQueueUrl    = UrlHelper::createUrl(['/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
-$pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
+$html              = ob_get_clean();
+$setStatusUrl      = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
+$itemPerformOpUrl  = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
+$createItemUrl     = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
+$resetQueueUrl     = UrlHelper::createUrl(['/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
+$randomizeQueueUrl = UrlHelper::createUrl(['/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
+$pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 ?>
 
 <script>
@@ -228,6 +234,7 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
     const setStatusUrl = <?= json_encode($setStatusUrl) ?>;
     const createItemUrl = <?= json_encode($createItemUrl) ?>;
     const resetQueueUrl = <?= json_encode($resetQueueUrl) ?>;
+    const randomizeQueueUrl = <?= json_encode($randomizeQueueUrl) ?>;
     const itemPerformOperationUrl = <?= json_encode($itemPerformOpUrl) ?>;
     const resetConfirmation = <?= json_encode(Yii::t('speech', 'admin_reset_dialog')) ?>;
 
@@ -459,6 +466,16 @@ $pollUrl          = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' =
                         document.getElementById('sidebar').childNodes.item(0).innerHTML = data['sidebar'][0];
                         // @TODO Secondary sidebar
                     }
+                }).catch(function (err) {
+                    alert(err.responseText);
+                });
+            },
+            randomizeQueues: function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                const widget = this;
+                $.post(randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), { _csrf: widget.csrf }, function (data) {
+                    widget.queue = data;
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
