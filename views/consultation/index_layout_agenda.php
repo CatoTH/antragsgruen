@@ -38,6 +38,9 @@ echo '</h2>';
 
 echo '<div class="agendaHolder">';
 $shownIMotions = LayoutHelper::showAgendaList($items, $consultation, $isResolutionList, true);
+if (count($consultation->agendaItems) === 0) {
+    echo '<div class="content noMotionsYet">' . Yii::t('con', 'no_agenda_yet') . '</div>';
+}
 echo '</div>';
 
 

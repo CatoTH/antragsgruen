@@ -16,6 +16,7 @@ return [
     'resolutions'          => 'Resolutons',
     'no_motions_yet'       => 'No motions yet',
     'no_resolutions_yet'   => 'No resolutions yet.',
+    'no_agenda_yet'        => 'No agenda yet.',
     'My Amendments'        => 'My amendments',
     'Agenda'               => 'Agenda',
     'Other Motions'        => 'Other motions',
