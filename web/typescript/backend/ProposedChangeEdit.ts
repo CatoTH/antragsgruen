@@ -43,7 +43,6 @@ export class ProposedChangeEdit {
     }
 
     private initCollisionDetection() {
-        console.log("Initializing CollisionDetection", this.$form.data('collision-check-url'));
         if (!this.$form.data('collision-check-url')) {
             // Motions do not support collision detection yet
             return;
@@ -53,8 +52,20 @@ export class ProposedChangeEdit {
         let lastCheckedContent = null;
 
         window.setInterval(() => {
+            this.$form.find('.wysiwyg-textarea').find('.texteditor').each(function () {
+                const $text = $(this),
+                    // WYSWYG-Editor adds some linebreaks, so let's just ignore them.
+                    currentText = window['CKEDITOR']['instances'][$text.attr('id')].getData().replace(/\n/g, ""),
+                    originalText = $text.data('original-html').replace(/\n/g, "", "");
+
+                if (currentText === originalText) {
+                    $text.parents('.wysiwyg-textarea').find('.modifiedActions').addClass('hidden');
+                } else {
+                    $text.parents('.wysiwyg-textarea').find('.modifiedActions').removeClass('hidden');
+                }
+            });
+
             let sectionData = this.getTextConsolidatedSections();
-            console.log(sectionData);
             if (JSON.stringify(sectionData) === lastCheckedContent) {
                 return;
             }
