@@ -105,7 +105,7 @@ class AmendmentProposal extends IProposal
      * @return Amendment[]
      * @throws Internal
      */
-    public function collidesWithOtherProposedAmendments(bool $includeVoted): array
+    public function collidesWithOtherProposedAmendments(): array
     {
         $collidesWith = [];
         $myAmendment = $this->getAmendment();
@@ -120,7 +120,7 @@ class AmendmentProposal extends IProposal
             $newSections[$section->sectionId] = $section->data;
         }
 
-        foreach ($myAmendment->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$myAmendment->id]) as $amendment) {
+        foreach ($myAmendment->getMyMotion()->getAmendmentsForCollissionDetection([$myAmendment->id]) as $amendment) {
             if ($myAmendment->globalAlternative || $amendment->globalAlternative) {
                 $collidesWith[] = $amendment;
                 continue;

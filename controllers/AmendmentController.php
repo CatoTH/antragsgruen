@@ -719,7 +719,7 @@ class AmendmentController extends Base
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
-        $checkAgainstAmendments = $amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]);
+        $checkAgainstAmendments = $amendment->getMyMotion()->getAmendmentsForCollissionDetection([$amendment->id]);
         if (count($checkAgainstAmendments) > 100) {
             return new JsonResponse([
                 'error' => 'Too many amendments to check for collisions (max. 100)',

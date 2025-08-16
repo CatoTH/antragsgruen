@@ -7,12 +7,11 @@
  * @var string $context
  */
 
-use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\components\{IMotionStatusFilter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentProposal, Motion, User};
+use app\components\{IMotionStatusFilter, UrlHelper};
+use app\models\db\{Amendment, AmendmentProposal};
 use yii\helpers\Html;
 
-$collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
+$collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 $isLatestVersion = ($proposal->id === $amendment->getLatestProposal()->id);
@@ -143,8 +142,24 @@ $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
         <ul>
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
-                $title = $collidingAmendment->getShortTitle();
-                $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
+                if ($collidingAmendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
+                    $collidingProposal = $collidingAmendment->proposalReferencedByMotion;
+                    /** @var \app\models\db\Motion $originalMotion */
+                    $originalMotion = $collidingProposal->getMyIMotion();
+                    $versionTitle = str_replace('%VERSION%', ($proposal->version ?? ''), Yii::t('amend', 'proposal_version_x_long'));
+                    $title = ($originalMotion->getFormattedTitlePrefix() ?? '') . ' (' . $versionTitle . ')';
+                    $url   = UrlHelper::createMotionUrl($originalMotion);
+                } elseif ($collidingAmendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+                    $collidingProposal = $collidingAmendment->proposalReferencedByAmendment;
+                    /** @var Amendment $originalAmendment */
+                    $originalAmendment = $collidingProposal->getMyIMotion();
+                    $versionTitle = str_replace('%VERSION%', ($proposal->version ?? ''), Yii::t('amend', 'proposal_version_x_long'));
+                    $title = $originalAmendment->getShortTitle() . ' (' . $versionTitle . ')';
+                    $url = UrlHelper::createAmendmentUrl($originalAmendment);
+                } else {
+                    $title = $collidingAmendment->getShortTitle();
+                    $url = UrlHelper::createAmendmentUrl($collidingAmendment);
+                }
                 echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
                 if ($collidingAmendment->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . Yii::t('amend', 'proposal_voting') . ')';

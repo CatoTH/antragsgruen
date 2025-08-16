@@ -324,6 +324,7 @@ return [
     'proposal_status_title'      => 'Proposed status',
     'proposal_close'             => 'Close',
     'proposal_open'              => 'Edit proposed procedure',
+    'proposal_version_x_long'    => 'Proposed procedure version %VERSION%',
     'proposal_version_x'         => 'Version %VERSION%',
     'proposal_versions'          => 'Versions',
     'proposal_version_edit'      => 'Edit current version',

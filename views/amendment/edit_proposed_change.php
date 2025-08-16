@@ -37,7 +37,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'proposal_edit_bread'));
 
 echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
-$collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
+$collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
 
 ?>
     <div class="content">
