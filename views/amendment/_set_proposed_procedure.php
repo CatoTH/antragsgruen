@@ -142,25 +142,8 @@ $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
         <ul>
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
-                if ($collidingAmendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
-                    $collidingProposal = $collidingAmendment->proposalReferencedByMotion;
-                    /** @var \app\models\db\Motion $originalMotion */
-                    $originalMotion = $collidingProposal->getMyIMotion();
-                    $versionTitle = str_replace('%VERSION%', ($proposal->version ?? ''), Yii::t('amend', 'proposal_version_x_long'));
-                    $title = ($originalMotion->getFormattedTitlePrefix() ?? '') . ' (' . $versionTitle . ')';
-                    $url   = UrlHelper::createMotionUrl($originalMotion);
-                } elseif ($collidingAmendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-                    $collidingProposal = $collidingAmendment->proposalReferencedByAmendment;
-                    /** @var Amendment $originalAmendment */
-                    $originalAmendment = $collidingProposal->getMyIMotion();
-                    $versionTitle = str_replace('%VERSION%', ($proposal->version ?? ''), Yii::t('amend', 'proposal_version_x_long'));
-                    $title = $originalAmendment->getShortTitle() . ' (' . $versionTitle . ')';
-                    $url = UrlHelper::createAmendmentUrl($originalAmendment);
-                } else {
-                    $title = $collidingAmendment->getShortTitle();
-                    $url = UrlHelper::createAmendmentUrl($collidingAmendment);
-                }
-                echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
+                $urlTitle = AmendmentProposal::getAmendmentTitleUrlConsideringProposals($collidingAmendment);
+                echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a(Html::encode($urlTitle['title']), $urlTitle['url']);
                 if ($collidingAmendment->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . Yii::t('amend', 'proposal_voting') . ')';
                 }

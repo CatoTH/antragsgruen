@@ -479,30 +479,6 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param null|int[] $exclude
-     * @return Amendment[]
-     */
-    public function getAmendmentsForCollissionDetection(?array $exclude = null): array
-    {
-        $amendments = [];
-        foreach ($this->amendments as $amendment) {
-            if ($exclude && in_array($amendment->id, $exclude)) {
-                continue;
-            }
-            if ($amendment->markForMergingByDefault(true)) {
-                $amendments[] = $amendment;
-                if ($amendment->getLatestProposal()->hasAlternativeProposaltext(false)) {
-                    /** @var Amendment $proposedChange */
-                    $proposedChange = $amendment->getLatestProposal()->getMyProposalReference();
-                    $amendments[] = $proposedChange;
-                }
-            }
-        }
-
-        return $amendments;
-    }
-
-    /**
      * @return Amendment[]
      */
     public function getVisibleAmendmentsSorted(bool $includeWithdrawn = true): array

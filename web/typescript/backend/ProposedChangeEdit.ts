@@ -1,5 +1,5 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
-import {MotionMergeChangeActions} from "../frontend/MotionMergeAmendments";
+import {MotionMergeChangeActions} from "../shared/MotionMergeChangeActions";
 
 export class ProposedChangeEdit {
     private hasChanged: boolean = false;
@@ -43,6 +43,7 @@ export class ProposedChangeEdit {
     }
 
     private initCollisionDetection() {
+        console.log("Initializing CollisionDetection", this.$form.data('collision-check-url'));
         if (!this.$form.data('collision-check-url')) {
             // Motions do not support collision detection yet
             return;
@@ -53,6 +54,7 @@ export class ProposedChangeEdit {
 
         window.setInterval(() => {
             let sectionData = this.getTextConsolidatedSections();
+            console.log(sectionData);
             if (JSON.stringify(sectionData) === lastCheckedContent) {
                 return;
             }
