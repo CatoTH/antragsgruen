@@ -809,4 +809,5 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'agenda_show_times' => 'Enter fixed times',
     'agenda_move_aria' => 'Move item',
     'agenda_back' => 'Back to the home page',
+    'agenda_admin_intro' => 'This page allows editing the agenda. To actually show it on the home page, please choose an appropriate home page view at "%LINK%".'
 ];
