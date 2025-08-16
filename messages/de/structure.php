@@ -215,7 +215,7 @@ return [
 
     'home_layout_std'               => 'Keine Tagesordnung',
     'home_layout_agenda'            => 'Anträge innerhalb der Tagesordnung',
-    'home_layout_agenda_long'       => 'Anträge unter der Tagesordnung',
+    'home_layout_agenda_long'       => 'Anträge und Redelisten unter der Tagesordnung',
     'home_layout_agenda_hide_amend' => 'Anträge unter der TO, ÄAs eingeklappt',
     'home_layout_tags'              => 'Themen / Schlagworte als Liste',
     'home_layout_discussion_tags'   => 'Kommentare über Antragsliste, Themen / Schlagworte mit Filter',

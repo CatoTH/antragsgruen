@@ -234,6 +234,14 @@
   }
 }
 
+.sectionAgenda .currentSpeechInline .content {
+  padding-bottom: 15px;
+}
+.currentSpeechInline + .motionListBelowAgenda {
+  border-top: solid 1px $colorLinksLight;
+  padding-top: 15px;
+}
+
 .motionListBelowAgenda {
   .motion {
     padding: 12px 30px 17px 30px;
