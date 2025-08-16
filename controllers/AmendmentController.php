@@ -13,8 +13,8 @@ use app\models\http\{BinaryFileResponse,
     ResponseInterface,
     RestApiExceptionResponse,
     RestApiResponse};
-use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, IProposal, ISupporter, User};
+use app\components\{diff\AmendmentCollissionDetector, HTMLTools, Tools, UrlHelper};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentProposal, AmendmentSupporter, ConsultationLog, IMotion, IProposal, ISupporter, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
@@ -719,7 +719,7 @@ class AmendmentController extends Base
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
-        $checkAgainstAmendments = $amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]);
+        $checkAgainstAmendments = AmendmentCollissionDetector::getHeuristicallyRelevantAmendments($amendment->getMyMotion(), [$amendment->id]);
         if (count($checkAgainstAmendments) > 100) {
             return new JsonResponse([
                 'error' => 'Too many amendments to check for collisions (max. 100)',
@@ -732,32 +732,24 @@ class AmendmentController extends Base
             $newSections[$sectionId] = HTMLTools::cleanSimpleHtml($section);
         }
 
-        /** @var Amendment[] $collidesWith */
-        $collidesWith = [];
-        foreach ($checkAgainstAmendments as $compAmend) {
-            foreach ($compAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
-                if (count($coll) > 0 && !in_array($compAmend, $collidesWith, true)) {
-                    $collidesWith[] = $compAmend;
-                }
-            }
-        }
+        $collidesWith = AmendmentCollissionDetector::getAmendmentsCollidingWithSections($checkAgainstAmendments, $newSections);
 
         return new JsonResponse([
             'error' => null,
             'collisions' => array_map(function (Amendment $amend) {
                 // Keep in sync with edit_proposed_change.php
-                $title = $amend->getShortTitle();
+                $urlTitle = AmendmentProposal::getAmendmentTitleUrlConsideringProposals($amend);
                 if ($amend->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
-                    $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
+                    $urlTitle['title'] .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
-                $html = '<li>' . Html::a($title, UrlHelper::createAmendmentUrl($amend), ['target' => '_blank']);
+
+                $html = '<li>' . Html::a(Html::encode($urlTitle['title']), $urlTitle['url'], ['target' => '_blank']);
                 $html .= HTMLTools::amendmentDiffTooltip($amend, 'top', 'fixedBottom');
                 $html .= '</li>';
 
                 return [
                     'id'    => $amend->id,
-                    'title' => $amend->getShortTitle(),
+                    'title' => $urlTitle['title'],
                     'html'  => $html,
                 ];
             }, $collidesWith),

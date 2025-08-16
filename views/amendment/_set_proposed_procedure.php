@@ -7,12 +7,11 @@
  * @var string $context
  */
 
-use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\components\{IMotionStatusFilter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentProposal, Motion, User};
+use app\components\{IMotionStatusFilter, UrlHelper};
+use app\models\db\{Amendment, AmendmentProposal};
 use yii\helpers\Html;
 
-$collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
+$collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 $isLatestVersion = ($proposal->id === $amendment->getLatestProposal()->id);
@@ -143,9 +142,8 @@ $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
         <ul>
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
-                $title = $collidingAmendment->getShortTitle();
-                $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
-                echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
+                $urlTitle = AmendmentProposal::getAmendmentTitleUrlConsideringProposals($collidingAmendment);
+                echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a(Html::encode($urlTitle['title']), $urlTitle['url']);
                 if ($collidingAmendment->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . Yii::t('amend', 'proposal_voting') . ')';
                 }

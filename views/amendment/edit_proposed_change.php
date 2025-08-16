@@ -1,5 +1,6 @@
 <?php
 
+use app\models\db\AmendmentProposal;
 use app\components\{diff\Diff, diff\DiffRenderer, HTMLTools, UrlHelper};
 use app\models\db\Amendment;
 use app\models\sectionTypes\ISectionType;
@@ -37,7 +38,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'proposal_edit_bread'));
 
 echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
-$collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
+$collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
 
 ?>
     <div class="content">
@@ -148,13 +149,12 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments(true);
                 <?php
                 foreach ($collidingAmendments as $collidingAmendment) {
                     // Keep in sync with AmendmentController::actionEditProposedChangeCheck
-                    $title = $collidingAmendment->getShortTitle();
-                    $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
+                    $urlTitle = AmendmentProposal::getAmendmentTitleUrlConsideringProposals($collidingAmendment);
                     if ($collidingAmendment->getLatestProposal()->proposalStatus == Amendment::STATUS_VOTE) {
-                        $title .= ' (' . Yii::t('amend', 'proposal_voting') . ')';
+                        $urlTitle['title'] .= ' (' . Yii::t('amend', 'proposal_voting') . ')';
                     }
 
-                    echo '<li>' . Html::a($title, $url, ['target' => '_blank']);
+                    echo '<li>' . Html::a(Html::encode($urlTitle['title']), $urlTitle['url'], ['target' => '_blank']);
                     echo HTMLTools::amendmentDiffTooltip($collidingAmendment, 'top', 'fixedBottom');
                     echo '</li>';
                 }

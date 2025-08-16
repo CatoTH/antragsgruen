@@ -354,6 +354,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_close'             => 'Schließen',
     'proposal_reset'             => 'Zurücksetzen',
     'proposal_open'              => 'Verfahrensvorschlag bearbeiten',
+    'proposal_version_x_long'    => 'Verfahrensvorschlag Version %VERSION%',
     'proposal_version_x'         => 'Version %VERSION%',
     'proposal_versions'          => 'Versionen',
     'proposal_version_edit'      => 'Aktuelle Version bearbeiten',

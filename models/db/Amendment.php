@@ -1195,7 +1195,7 @@ class Amendment extends IMotion implements IRSSItem
      * If there is one, it depends on if either the amendment, the proposed procedure or the vote was set as accepted,
      * or is set as "modified accepted".
      */
-    public function markForMergingByDefault(bool $hasProposals): bool
+    public function markForMergingByDefault(bool $anyAmendmentHasProposals): bool
     {
         if ($this->globalAlternative) {
             return false;
@@ -1216,14 +1216,10 @@ class Amendment extends IMotion implements IRSSItem
             }
         }
 
-        if (!$hasProposals) {
+        if (!$anyAmendmentHasProposals) {
             return true;
         }
-        if ($this->getLatestProposal()->proposalStatus === static::STATUS_ACCEPTED) {
-            return true;
-        }
-        if (in_array($this->status, [static::STATUS_PROPOSED_MODIFIED_AMENDMENT, static::STATUS_PROPOSED_MODIFIED_MOTION]) ||
-            $this->getLatestProposal()->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
+        if (in_array($this->getLatestProposal()->proposalStatus, [static::STATUS_MODIFIED_ACCEPTED, static::STATUS_ACCEPTED])) {
             return true;
         }
 

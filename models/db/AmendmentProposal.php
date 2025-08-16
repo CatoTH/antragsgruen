@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
-use app\models\notifications\AmendmentProposedProcedure;
-use app\models\SectionedParagraph;
+use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
-use app\components\{diff\AmendmentRewriter, diff\ArrayMatcher, diff\Diff, diff\DiffRenderer, HTMLTools, LineSplitter};
+use app\components\diff\AmendmentCollissionDetector;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
-use yii\db\ActiveRecord;
 
 /**
  * @property int $amendmentId
@@ -99,15 +97,12 @@ class AmendmentProposal extends IProposal
         return $proposal;
     }
 
-
-
     /**
      * @return Amendment[]
      * @throws Internal
      */
-    public function collidesWithOtherProposedAmendments(bool $includeVoted): array
+    public function collidesWithOtherProposedAmendments(): array
     {
-        $collidesWith = [];
         $myAmendment = $this->getAmendment();
 
         if ($this->getMyProposalReference()) {
@@ -120,22 +115,13 @@ class AmendmentProposal extends IProposal
             $newSections[$section->sectionId] = $section->data;
         }
 
-        foreach ($myAmendment->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$myAmendment->id]) as $amendment) {
-            if ($myAmendment->globalAlternative || $amendment->globalAlternative) {
-                $collidesWith[] = $amendment;
-                continue;
-            }
-            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
-                if (count($coll) > 0) {
-                    if (!in_array($amendment, $collidesWith, true)) {
-                        $collidesWith[] = $amendment;
-                    }
-                }
-            }
+        $checkAgainstAmendments = AmendmentCollissionDetector::getHeuristicallyRelevantAmendments($myAmendment->getMyMotion(), [$myAmendment->id]);
+        if ($myAmendment->globalAlternative) {
+            // Global Alternatives are assumed to always collide with everything
+            return $checkAgainstAmendments;
         }
 
-        return $collidesWith;
+        return AmendmentCollissionDetector::getAmendmentsCollidingWithSections($checkAgainstAmendments, $newSections);
     }
 
     /**
@@ -174,5 +160,35 @@ class AmendmentProposal extends IProposal
         }
 
         return null;
+    }
+
+    /**
+     * @return array{title: string, url: string}
+     */
+    public static function getAmendmentTitleUrlConsideringProposals(Amendment $amendment): array
+    {
+        if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_MOTION) {
+            $proposal = $amendment->proposalReferencedByMotion;
+            /** @var Motion $originalMotion */
+            $originalMotion = $proposal->getMyIMotion();
+            $versionTitle = str_replace('%VERSION%', ((string) $proposal->version), \Yii::t('amend', 'proposal_version_x_long'));
+            $title = ($originalMotion->getFormattedTitlePrefix() ?? '') . ' (' . $versionTitle . ')';
+            $url   = UrlHelper::createMotionUrl($originalMotion);
+        } elseif ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+            $proposal = $amendment->proposalReferencedByAmendment;
+            /** @var Amendment $originalAmendment */
+            $originalAmendment = $proposal->getMyIMotion();
+            $versionTitle = str_replace('%VERSION%', ((string) $proposal->version), \Yii::t('amend', 'proposal_version_x_long'));
+            $title = $originalAmendment->getShortTitle() . ' (' . $versionTitle . ')';
+            $url = UrlHelper::createAmendmentUrl($originalAmendment);
+        } else {
+            $title = $amendment->getShortTitle();
+            $url = UrlHelper::createAmendmentUrl($amendment);
+        }
+
+        return [
+            'title' => $title,
+            'url' => $url,
+        ];
     }
 }

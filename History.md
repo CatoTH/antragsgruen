@@ -23,6 +23,7 @@
   - The internal notes / comments field can now be maximized for easier reading.
   - Searching for specific proposed procedures or responses by the user in the admin list now also considers motions, not only amendments.
   - "Obsoleted by other Motion" and "Obsoleted by other Amendment" can now both be chosen as proposed procedure status.
+  - When editing the modified version of a proposed procedure, more amendments are checked for collissions.
 
 ### Version 4.15.3 (2025-05.13)
 

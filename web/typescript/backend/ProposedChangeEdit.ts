@@ -1,5 +1,5 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
-import {MotionMergeChangeActions} from "../frontend/MotionMergeAmendments";
+import {MotionMergeChangeActions} from "../shared/MotionMergeChangeActions";
 
 export class ProposedChangeEdit {
     private hasChanged: boolean = false;
@@ -52,6 +52,19 @@ export class ProposedChangeEdit {
         let lastCheckedContent = null;
 
         window.setInterval(() => {
+            this.$form.find('.wysiwyg-textarea').find('.texteditor').each(function () {
+                const $text = $(this),
+                    // WYSWYG-Editor adds some linebreaks, so let's just ignore them.
+                    currentText = window['CKEDITOR']['instances'][$text.attr('id')].getData().replace(/\n/g, ""),
+                    originalText = $text.data('original-html').replace(/\n/g, "", "");
+
+                if (currentText === originalText) {
+                    $text.parents('.wysiwyg-textarea').find('.modifiedActions').addClass('hidden');
+                } else {
+                    $text.parents('.wysiwyg-textarea').find('.modifiedActions').removeClass('hidden');
+                }
+            });
+
             let sectionData = this.getTextConsolidatedSections();
             if (JSON.stringify(sectionData) === lastCheckedContent) {
                 return;
