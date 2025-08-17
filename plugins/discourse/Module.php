@@ -14,9 +14,9 @@ class Module extends ModuleBase
         parent::init();
 
         Event::on(Motion::class, Motion::EVENT_PUBLISHED_FIRST, [OnSubmittedHandler::class, 'onMotionPublished'], null, false);
-        Event::on(Motion::class, Motion::EVENT_SUBMITTED, [OnSubmittedHandler::class, 'onMotionSubmitted'], null, false);
+        Event::on(Motion::class, Motion::EVENT_CREATED, [OnSubmittedHandler::class, 'onMotionSubmitted'], null, false);
         Event::on(Amendment::class, Amendment::EVENT_PUBLISHED_FIRST, [OnSubmittedHandler::class, 'onAmendmentPublished'], null, false);
-        Event::on(Amendment::class, Amendment::EVENT_SUBMITTED, [OnSubmittedHandler::class, 'onAmendmentSubmitted'], null, false);
+        Event::on(Amendment::class, Amendment::EVENT_CREATED, [OnSubmittedHandler::class, 'onAmendmentSubmitted'], null, false);
     }
 
     public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation): array

@@ -86,6 +86,7 @@ return [
     'motion_supp_auth_ww_name'    => 'Grünes-Netz-Benutzer*innenname',
     'motion_date_resolution'      => 'Beschlossen am',
     'motion_date_created'         => 'Angelegt am',
+    'motion_date_submitted'       => 'Eingereicht am',
     'motion_date_publication'     => 'Veröffentlicht am',
     'motion_prefix'               => 'Antragskürzel',
     'motion_prefix_hint'          => 'z.B. "A1", "S1"',

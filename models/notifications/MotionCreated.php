@@ -7,7 +7,7 @@ use app\models\db\{EMailLog, ISupporter, Motion};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
 use yii\helpers\Html;
 
-class MotionSubmitted extends Base implements IEmailAdmin
+class MotionCreated extends Base implements IEmailAdmin
 {
     public function __construct(
         protected Motion $motion

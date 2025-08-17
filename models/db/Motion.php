@@ -9,7 +9,7 @@ use app\models\proposedProcedure\Agenda;
 use app\views\consultation\LayoutHelper;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp, MotionSection as MotionSectionSettings};
 use app\models\notifications\{MotionPublished,
-    MotionSubmitted as MotionSubmittedNotification,
+    MotionCreated as MotionCreatedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
 use app\components\{HashedStaticCache, IMotionStatusFilter, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
@@ -60,7 +60,7 @@ use yii\helpers\Html;
  */
 class Motion extends IMotion implements IRSSItem
 {
-    public const EVENT_SUBMITTED = 'submitted';
+    public const EVENT_CREATED = 'created';
     public const EVENT_PUBLISHED = 'published';
     public const EVENT_PUBLISHED_FIRST = 'published_first';
     public const EVENT_MERGED = 'merged'; // Called on the newly created motion
@@ -73,7 +73,7 @@ class Motion extends IMotion implements IRSSItem
 
         $this->on(static::EVENT_PUBLISHED, [$this, 'onPublish'], null, false);
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
-        $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
+        $this->on(static::EVENT_CREATED, [$this, 'setInitialCreated'], null, false);
         $this->on(static::EVENT_MERGED, [$this, 'onMerged'], null, false);
     }
 
@@ -810,22 +810,23 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    public function setInitialSubmitted(): void
+    public function setInitialCreated(): void
     {
         if ($this->needsCollectionPhase()) {
             $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
         } elseif ($this->getMyConsultation()->getSettings()->screeningMotions) {
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+            $this->dateSubmission = date('Y-m-d H:i:s');
         } else {
             $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+            $this->dateSubmission = date('Y-m-d H:i:s');
             if ($this->titlePrefix === '' && !$this->getMyMotionType()->amendmentsOnly) {
                 $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId, $this->getPublicTopicTags());
             }
         }
-        $this->dateCreation = date('Y-m-d H:i:s');
         $this->save();
 
-        new MotionSubmittedNotification($this);
+        new MotionCreatedNotification($this);
     }
 
     public function setScreened(): void

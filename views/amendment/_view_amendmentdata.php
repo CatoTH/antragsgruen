@@ -66,10 +66,18 @@ if ($amendment->dateResolution) {
         'content' => Tools::formatMysqlDate($amendment->dateResolution),
     ];
 }
-$amendmentData[] = [
-    'title'   => Yii::t('amend', ($amendment->isSubmitted() ? 'submitted_on' : 'created_on')),
-    'content' => Tools::formatMysqlDateTime($amendment->dateCreation),
-];
+
+if ($amendment->isSubmitted() && $amendment->dateSubmission) {
+    $amendmentData[] = [
+        'title' => Yii::t('amend', 'submitted_on'),
+        'content' => Tools::formatMysqlDateTime($amendment->dateCreation),
+    ];
+} else {
+    $amendmentData[] = [
+        'title' => Yii::t('amend', 'created_on'),
+        'content' => Tools::formatMysqlDateTime($amendment->dateCreation),
+    ];
+}
 
 MotionLayoutHelper::addTagsRow($amendment, $amendment->getPublicTopicTags(), $amendmentData);
 

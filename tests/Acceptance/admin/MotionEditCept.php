@@ -25,6 +25,7 @@ $I->fillField('#motionStatusString', 'völlig erschöpft');
 $I->fillField('#motionTitle', 'Neuer Titel');
 $I->fillField('#motionTitlePrefix', 'A2neu');
 $I->fillField('#motionDateCreation', '01.01.2015 01:02');
+$I->fillField('#motionDateSubmission', '01.02.2015 01:02');
 $I->fillField('#motionDateResolution', '02.03.2015 04:05');
 $I->fillField('#motionNoteInternal', 'Test 123');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData() + "<p>Test 123</p>");');
@@ -62,7 +63,8 @@ $I->click('.sidebarActions .view');
 $I->see(mb_strtoupper('A2neu: Neuer Titel'));
 $I->see('Test 123');
 $I->see('02.03.2015');
-$I->see('01.01.2015');
+$I->see('01.02.2015');
+$I->dontSee('01.01.2015');
 $I->see('Erledigt (völlig erschöpft)');
 $I->see('Wui helfgod Wiesn1');
 

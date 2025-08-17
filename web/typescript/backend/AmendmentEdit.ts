@@ -24,6 +24,9 @@ export class AmendmentEdit {
         $("#amendmentDateCreationHolder").datetimepicker({
             locale: this.lang
         });
+        $("#amendmentDateSubmissionHolder").datetimepicker({
+            locale: this.lang
+        });
         $("#amendmentDateResolutionHolder").datetimepicker({
             locale: this.lang
         });

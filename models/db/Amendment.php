@@ -11,7 +11,7 @@ use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
-    AmendmentSubmitted as AmendmentSubmittedNotification,
+    AmendmentCreated as AmendmentCreatedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
 use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
 use app\models\supportTypes\SupportBase;
@@ -53,7 +53,7 @@ use yii\helpers\Html;
  */
 class Amendment extends IMotion implements IRSSItem
 {
-    public const EVENT_SUBMITTED       = 'submitted';
+    public const EVENT_CREATED         = 'created';
     public const EVENT_PUBLISHED       = 'published';
     public const EVENT_PUBLISHED_FIRST = 'published_first';
 
@@ -67,7 +67,7 @@ class Amendment extends IMotion implements IRSSItem
 
         $this->on(static::EVENT_PUBLISHED, [$this, 'onPublish'], null, false);
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
-        $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
+        $this->on(static::EVENT_CREATED, [$this, 'setInitialCreated'], null, false);
     }
 
     public static function tableName(): string
@@ -882,21 +882,23 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    public function setInitialSubmitted(): void
+    public function setInitialCreated(): void
     {
         if ($this->needsCollectionPhase()) {
             $this->status = Amendment::STATUS_COLLECTING_SUPPORTERS;
         } elseif ($this->getMyConsultation()->getSettings()->screeningAmendments) {
             $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
+            $this->dateSubmission = date('Y-m-d H:i:s');
         } else {
             $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
+            $this->dateSubmission = date('Y-m-d H:i:s');
             if ($this->titlePrefix === '') {
                 $this->titlePrefix = Amendment::getNewNumberForAmendment($this);
             }
         }
         $this->save();
 
-        new AmendmentSubmittedNotification($this);
+        new AmendmentCreatedNotification($this);
     }
 
     public function setScreened(): void
