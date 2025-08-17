@@ -249,6 +249,7 @@ class AmendmentController extends AdminBase
             $amendment->dateCreation      = Tools::dateBootstraptime2sql($amdat['dateCreation']);
             $amendment->noteInternal      = $amdat['noteInternal'];
             $amendment->globalAlternative = (isset($amdat['globalAlternative']) ? 1 : 0);
+            $amendment->dateSubmission    = null;
             $amendment->dateResolution    = null;
             $amendment->notCommentable = (isset($amdat['notCommentable']) ? 1 : 0);
 
@@ -265,6 +266,9 @@ class AmendmentController extends AdminBase
                 Amendment::EXTRA_DATA_VIEW_MODE_FULL,
                 (isset($amdat['viewMode']) && $amdat['viewMode'] === '1')
             );
+            if ($amdat['dateSubmission'] !== '') {
+                $amendment->dateSubmission = Tools::dateBootstraptime2sql($amdat['dateSubmission']);
+            }
             if ($amdat['dateResolution'] !== '') {
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }

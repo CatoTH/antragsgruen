@@ -216,6 +216,23 @@ if (count($consultation->agendaItems) > 0) {
     </div>
 
     <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="amendmentDateSubmission">
+            <?= Yii::t('admin', 'motion_date_submitted') ?>:
+        </label>
+        <div class="middleColumn">
+            <div class="input-group date" id="amendmentDateSubmissionHolder">
+                <?php
+                $locale = Tools::getCurrentDateLocale();
+                $date   = Tools::dateSql2bootstraptime($amendment->dateSubmission);
+                ?>
+                <input type="text" class="form-control" name="amendment[dateSubmission]" id="amendmentDateSubmission"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stdTwoCols">
         <label class="leftColumn control-label" for="amendmentDateResolution">
             <?= Yii::t('admin', 'amend_resoluted_on') ?>:
         </label>

@@ -16,6 +16,9 @@ export class MotionEdit {
         $("#motionDateCreationHolder").datetimepicker({
             locale: lang
         });
+        $("#motionDateSubmissionHolder").datetimepicker({
+            locale: lang
+        });
         $("#motionDatePublicationHolder").datetimepicker({
             locale: lang
         });

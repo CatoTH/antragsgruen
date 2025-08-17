@@ -286,6 +286,22 @@ $date   = Tools::dateSql2bootstraptime($motion->dateCreation);
     </div>
 
 <?php
+$date   = Tools::dateSql2bootstraptime($motion->dateSubmission);
+?>
+    <div class="stdTwoCols">
+        <label class="leftColumn control-label" for="motionDateSubmission">
+            <?= Yii::t('admin', 'motion_date_submitted') ?>:
+        </label>
+        <div class="rightColumn">
+            <div class="input-group date" id="motionDateSubmissionHolder">
+                <input type="text" class="form-control" name="motion[dateSubmission]" id="motionDateSubmission"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+            </div>
+        </div>
+    </div>
+
+<?php
 $date = Tools::dateSql2bootstraptime($motion->datePublication);
 ?>
     <div class="stdTwoCols">
