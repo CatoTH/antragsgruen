@@ -1,6 +1,6 @@
 <?php
 
-use app\components\Tools;
+use app\components\{RequestContext, Tools};
 use app\models\db\{ConsultationMotionType, ISupporter};
 use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, InitiatorForm};
 use app\models\supportTypes\SupportBase;
@@ -239,12 +239,16 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $canInitiate
 
 if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $canInitiateAsPerson) {
     $genderChoices = array_merge(['' => ''], SupportBase::getGenderSelection());
+    $genderPreselected = $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER);
+    if (!$genderPreselected && !$allowOther) {
+        $genderPreselected = RequestContext::getSession()->get('user_gender');
+    }
     ?>
     <div class="stdTwoCols genderRow">
         <label class="leftColumn" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>
         <div class="middleColumn">
             <?php
-            echo Html::dropDownList('Initiator[gender]', $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER), $genderChoices, [
+            echo Html::dropDownList('Initiator[gender]', $genderPreselected, $genderChoices, [
                 'id' => 'initiatorGender',
                 'class' => 'stdDropdown',
             ]);

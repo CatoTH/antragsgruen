@@ -260,6 +260,8 @@ trait MotionActionsTrait
             $gender = '';
         }
 
+        $this->getHttpSession()->set('user_gender', $gender);
+
         $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga, $gender, $nonPublic);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
     }

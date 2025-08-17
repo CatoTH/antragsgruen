@@ -1,5 +1,6 @@
 <?php
 
+use app\components\RequestContext;
 use app\models\db\User;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
@@ -67,10 +68,12 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
                 ['' => Yii::t('initiator', 'gender') . ':'],
                 SupportBase::getGenderSelection()
             );
+
+            $genderPreselected = RequestContext::getSession()->get('user_gender');
             echo '<div class="colGender">';
             echo Html::dropDownList(
                 'motionSupportGender',
-                '',
+                $genderPreselected,
                 $genderChoices,
                 ['id' => 'motionSupportGender', 'class' => 'stdDropdown']
             );
