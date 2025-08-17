@@ -467,6 +467,10 @@ abstract class SupportBase
 
         $posCount = 0;
 
+        if (!$otherInitiator && isset($post['Initiator']['gender'])) {
+            RequestContext::getWebApplication()->session->set('user_gender', $post['Initiator']['gender']);
+        }
+
         $init->setAttributes($post['Initiator']);
         $init->motionId = $motion->id;
         $init->role     = MotionSupporter::ROLE_INITIATOR;

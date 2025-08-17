@@ -230,6 +230,8 @@ trait AmendmentActionsTrait
             $gender = '';
         }
 
+        $this->getHttpSession()->set('user_gender', $gender);
+
         $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga, $gender, $nonPublic);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SUPPORT, $amendment->id);
     }
