@@ -272,7 +272,7 @@ class AmendmentController extends Base
         }
 
         if ($this->isPostSet('confirm')) {
-            $amendment->trigger(Amendment::EVENT_SUBMITTED, new AmendmentEvent($amendment));
+            $amendment->trigger(Amendment::EVENT_CREATED, new AmendmentEvent($amendment));
 
             if ($amendment->status === Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));

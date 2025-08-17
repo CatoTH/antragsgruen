@@ -111,10 +111,17 @@ if ($motion->dateResolution) {
 }
 
 if ($motion->version === Motion::VERSION_DEFAULT && $motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
-    $motionData[] = [
-        'title'   => Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
-        'content' => Tools::formatMysqlDateTime($motion->dateCreation, false),
-    ];
+    if ($motion->isSubmitted() && $motion->dateSubmission) {
+        $motionData[] = [
+            'title'   => Yii::t('motion', 'submitted_on'),
+            'content' => Tools::formatMysqlDateTime($motion->dateSubmission, false),
+        ];
+    } else {
+        $motionData[] = [
+            'title'   => Yii::t('motion', 'created_on'),
+            'content' => Tools::formatMysqlDateTime($motion->dateCreation, false),
+        ];
+    }
 }
 
 MotionLayoutHelper::addTagsRow($motion, $motion->getPublicTopicTags(), $motionData);

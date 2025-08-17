@@ -207,7 +207,7 @@ class MotionController extends Base
         }
 
         if ($this->isPostSet('confirm')) {
-            $motion->trigger(Motion::EVENT_SUBMITTED, new MotionEvent($motion));
+            $motion->trigger(Motion::EVENT_CREATED, new MotionEvent($motion));
 
             if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));

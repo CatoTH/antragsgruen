@@ -22,6 +22,7 @@ use yii\db\{ActiveQueryInterface, ActiveRecord};
  * @property int|null $agendaItemId
  * @property IMotionSection[] $sections
  * @property string $dateCreation
+ * @property string|null $dateSubmission
  * @property string|null $datePublication
  * @property string|null $dateResolution
  * @property string $dateContentModification

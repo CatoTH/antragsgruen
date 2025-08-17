@@ -12,7 +12,7 @@ use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
 
-class AmendmentSubmitted extends Base implements IEmailAdmin
+class AmendmentCreated extends Base implements IEmailAdmin
 {
     public function __construct(
         protected Amendment $amendment
