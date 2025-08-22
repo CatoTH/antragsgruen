@@ -29,19 +29,25 @@ class SpeechController extends Base
 
     // *** User-facing methods ***
 
-    public function actionGetQueue(string $queueId): RestApiResponse
+    public function actionGetQueue(string $queueIds): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
 
         $user       = User::getCurrentUser();
         $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
 
-        $queue = $this->getQueue(intval($queueId));
-        if (!$queue) {
-            return $this->returnRestResponseFromException(new \Exception('Queue not found'));
+        $response = [];
+
+        $queueIds = array_map('intval', explode(',', $queueIds));
+        foreach ($queueIds as $queueId) {
+            $queue = $this->getQueue($queueId);
+            if (!$queue) {
+                return $this->returnRestResponseFromException(new \Exception('Queue not found'));
+            }
+            $response[] = SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser);
         }
 
-        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser));
+        return new RestApiResponse(200, $response);
     }
 
     public function actionRegister(string $queueId): RestApiResponse
