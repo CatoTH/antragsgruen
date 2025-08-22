@@ -81,7 +81,7 @@ MotionLayoutHelper::addVotingResultsRow($motion->getVotingData(), $motionData);
 
 if (!$motion->isResolution()) {
     $proposalAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($motion));
-    if (($motion->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
+    if ((($motion->isProposalPublic() || $consultation->urlPath === 'hv') && $motion->proposalStatus) || $proposalAdmin) {
         $motionData[] = [
             'rowClass' => 'proposedStatusRow',
             'title'    => Yii::t('amend', 'proposed_status'),

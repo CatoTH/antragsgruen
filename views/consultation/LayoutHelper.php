@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\consultation;
 
+use app\plugins\dbwv\Module;
 use app\components\{HashedStaticCache, HTMLTools, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\IMotionList;
 use app\models\settings\{AntragsgruenApp, Consultation as ConsultationSettings, Privileges};
@@ -31,6 +32,9 @@ class LayoutHelper
         }
         if (!in_array($type, ['index_layout_std', 'index_layout_tags', 'index_layout_agenda', 'index_layout_discussion_tags'])) {
             // Disable cache for plugin homepages, to prevent accidental over-caching
+            $cache->setSkipCache(true);
+        }
+        if (!Module::currentUserCanSeeMotions(UrlHelper::getCurrentConsultation())) {
             $cache->setSkipCache(true);
         }
 
@@ -65,6 +69,10 @@ class LayoutHelper
             $cache->setIsSynchronized(true);
             $cache->setIsBulky(true);
         } else {
+            $cache->setSkipCache(true);
+        }
+
+        if (!Module::currentUserCanSeeMotions(UrlHelper::getCurrentConsultation())) {
             $cache->setSkipCache(true);
         }
 

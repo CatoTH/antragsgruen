@@ -190,8 +190,8 @@ class TextSimple extends TextSimpleCommon
 
         $title = $this->getTitle();
         if ($title == \Yii::t('motion', 'motion_text')) {
-            $titPattern = \Yii::t('amend', 'amendment_for_prefix');
-            $title = str_replace('%PREFIX%', $section->getMotion()->getFormattedTitlePrefix(), $titPattern);
+            //$titPattern = \Yii::t('amend', 'amendment_for_prefix');
+            //$title = str_replace('%PREFIX%', $section->getMotion()->getFormattedTitlePrefix(), $titPattern);
         }
         $str = '<h2 class="green">' . Html::encode($title) . '</h2>';
 

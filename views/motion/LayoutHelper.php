@@ -146,7 +146,7 @@ class LayoutHelper
         return $motion->getMyConsultation()->getSettings()->proposalProcedureInline
                && count($motion->getVisibleAmendments()) === 0
                && count($motion->comments) === 0
-               && $motion->isProposalPublic();
+               && ($motion->isProposalPublic() || $motion->getMyConsultation()->urlPath === 'hv');
     }
 
     public static function addVotingResultsRow(VotingData $votingData, array &$rows): void
@@ -835,6 +835,7 @@ class LayoutHelper
         $cache = HashedStaticCache::getInstance($motion->getPdfCacheKey(), null);
         $cache->setIsBulky(true);
         $cache->setIsSynchronized(true);
+        $cache->setSkipCache(true);
 
         return $cache->getCached(function () use ($motion) {
             $exporter = new Html2PdfConverter(AntragsgruenApp::getInstance());

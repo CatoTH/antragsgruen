@@ -373,7 +373,7 @@ class StdHooks extends Hooks
             }
 
             if (get_class(RequestContext::getController()) === UserController::class) {
-                $backUrl = UrlHelper::createUrl('/consultation/index');
+                $backUrl = UrlHelper::homeUrl();
             } else {
                 $backUrl = RequestContext::getWebRequest()->url;
             }

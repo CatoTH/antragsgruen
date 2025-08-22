@@ -548,6 +548,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function hasVisibleAlternativeProposaltext(?string $procedureToken): bool
     {
         return ($this->hasAlternativeProposaltext(true) && (
+                $this->getMyConsultation()->urlPath === 'hv' ||
                 $this->isProposalPublic() ||
                 User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::imotion($this)) ||
                 ($this->proposalFeedbackHasBeenRequested() && $this->canSeeProposedProcedure($procedureToken))

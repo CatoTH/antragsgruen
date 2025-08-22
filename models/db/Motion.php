@@ -888,7 +888,7 @@ class Motion extends IMotion implements IRSSItem
     public function onPublishFirst(): void
     {
         UserNotification::notifyNewMotion($this);
-        new MotionPublished($this);
+        //new MotionPublished($this);
     }
 
     public function setTextFixedIfNecessary(bool $save = true): void
@@ -1046,7 +1046,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($this->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
-            if ($this->isProposalPublic() && $this->proposalStatus) {
+            if (($this->isProposalPublic() || $this->getMyConsultation()->urlPath === 'hv') && $this->proposalStatus) {
                 $return[\Yii::t('amend', 'proposed_status')] = strip_tags($this->getFormattedProposalStatus(true));
             }
         }

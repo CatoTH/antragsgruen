@@ -49,7 +49,7 @@ foreach ($consultation->motionTypes as $motionType) {
 
 $colMark        = $privilegeProposals || $privilegeScreening || $privilegeDelete || $search->hasAdditionalActions();
 $colAction      = $privilegeScreening || $privilegeDelete;
-$colProposals   = $privilegeProposals && $hasProposedProcedures;
+$colProposals   = $hasProposedProcedures;
 $colResponsible = $privilegeProposals && $hasResponsibilities;
 $colDate        = in_array('date', $consultation->getSettings()->adminListAdditionalFields);
 
