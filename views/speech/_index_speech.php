@@ -9,6 +9,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var \app\models\db\SpeechQueue $queue
  * @var boolean $showHeader
+ * @var int $headingLevel
  */
 
 if (!$queue) {
@@ -48,7 +49,7 @@ if ($queue->motionId || $queue->agendaItemId) {
     <?php
     if ($showHeader) {
         ?>
-        <h2 class="green" id="speechListUserTitle"><?php
+        <h<?=$headingLevel?> class="green" id="speechListUserTitle"><?php
             echo Html::encode($title);
 
             $user = User::getCurrentUser();
@@ -58,7 +59,7 @@ if ($queue->motionId || $queue->agendaItemId) {
                 echo Yii::t('speech', 'goto_admin');
                 echo '</a>';
             }
-            ?></h2>
+            ?></h<?=$headingLevel?>>
         <?php
     }
     ?>

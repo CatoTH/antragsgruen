@@ -54,9 +54,13 @@ if ($longVersion) {
             $itemImotions = $agendaItem->getMyIMotions(IMotionStatusFilter::onlyUserVisible($consultation, true)->noResolutions());
         }
 
-        $user = User::getCurrentUser();
         $hasSpeechQueues = count($agendaItem->speechQueues) > 0;
-        if (count($itemImotions) > 0 || $hasSpeechQueues) {
+        $hasIMotionQueues = count($itemImotions) > 0;
+
+        // Hint: if there are no Motions/Amendments, but speaking lists,
+        // the header is shown withing the speaking list section, so we can dynamically hide it when the list is disabled.
+        if ($hasIMotionQueues) {
+            $user = User::getCurrentUser();
             $prefix = ($isResolutionList ? Yii::t('con', 'resolutions') . ': ' : '');
             echo '<h2 class="green">' . $prefix . Html::encode($agendaItem->title);
             if ($hasSpeechQueues && $user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
@@ -69,7 +73,11 @@ if ($longVersion) {
         }
 
         foreach ($agendaItem->speechQueues as $speechQueue) {
-            echo $this->render('@app/views/speech/_index_speech', ['queue' => $speechQueue, 'showHeader' => false]);
+            echo $this->render('@app/views/speech/_index_speech', [
+                'queue' => $speechQueue,
+                'showHeader' => !$hasIMotionQueues,
+                'headingLevel' => 3,
+            ]);
         }
 
         if (count($itemImotions) > 0) {
