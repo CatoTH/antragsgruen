@@ -199,9 +199,10 @@ class SpeechController extends Base
                 $this->consultation->setSettings($settings);
                 $this->consultation->save();
             }
-
+        }
+        if ($queue->isActive && $queue->agendaItemId === null) {
             foreach ($this->consultation->speechQueues as $otherQueue) {
-                if ($otherQueue->id !== $queue->id) {
+                if ($otherQueue->id !== $queue->id && $otherQueue->agendaItemId === null) {
                     $otherQueue->isActive = 0;
                     $otherQueue->save();
                 }

@@ -55,7 +55,10 @@ class SpeechQueue
 
         $dto->otherActiveName = null;
         foreach ($entity->getMyConsultation()->speechQueues as $otherQueue) {
-            if ($otherQueue->isActive && $otherQueue->id !== $entity->id) {
+            if ($entity->agendaItemId !== null) {
+                continue; // There can be multiple active queues for agenda items, so no need to detect them
+            }
+            if ($otherQueue->isActive && $otherQueue->id !== $entity->id && $otherQueue->agendaItemId === null) {
                 $dto->otherActiveName = $otherQueue->getTitle();
             }
         }
@@ -103,6 +106,7 @@ class SpeechQueue
 
         return [
             'id' => $this->id,
+            'is_active' => $this->isActive,
             'is_open' => $this->settings->isOpen,
             'have_applied' => $haveApplied,
             'allow_custom_names' => $this->settings->allowCustomNames,
