@@ -92,7 +92,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                         widget.liveConnected = connectionEvent;
                     }
                     if (speechEvent !== null) {
-                        this.setData(speechEvent);
+                        this.setData([speechEvent]);
                     }
                 });
             }
