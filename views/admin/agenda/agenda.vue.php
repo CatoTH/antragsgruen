@@ -43,7 +43,7 @@ ob_start();
     </div>
 
     <div class="deleteHolder">
-        <button class="btn btn-link btnDelete" type="button" @click="removeItem()" title="<?= Yii::t('admin', 'agenda_del') ?>">
+        <button class="btn btn-link btnDelete" type="button" @click="removeItem()" title="<?= Yii::t('con', 'agenda_del') ?>">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
         </button>
     </div>
@@ -106,7 +106,7 @@ ob_start();
             <v-datetime-picker v-model="item.date" type="date" :locale="locale" />
 
             <div class="deleteHolder">
-                <button class="btn btn-link btnDelete" type="button" @click="removeItem(item)" title="<?= Yii::t('admin', 'agenda_del') ?>">
+                <button class="btn btn-link btnDelete" type="button" @click="removeItem(item)" title="<?= Yii::t('con', 'agenda_del') ?>">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </button>
             </div>
