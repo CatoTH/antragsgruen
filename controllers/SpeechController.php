@@ -29,19 +29,25 @@ class SpeechController extends Base
 
     // *** User-facing methods ***
 
-    public function actionGetQueue(string $queueId): RestApiResponse
+    public function actionGetQueue(string $queueIds): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
 
         $user       = User::getCurrentUser();
         $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
 
-        $queue = $this->getQueue(intval($queueId));
-        if (!$queue) {
-            return $this->returnRestResponseFromException(new \Exception('Queue not found'));
+        $response = [];
+
+        $queueIds = array_map('intval', explode(',', $queueIds));
+        foreach ($queueIds as $queueId) {
+            $queue = $this->getQueue($queueId);
+            if (!$queue) {
+                return $this->returnRestResponseFromException(new \Exception('Queue not found'));
+            }
+            $response[] = SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser);
         }
 
-        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser));
+        return new RestApiResponse(200, $response);
     }
 
     public function actionRegister(string $queueId): RestApiResponse
@@ -193,9 +199,10 @@ class SpeechController extends Base
                 $this->consultation->setSettings($settings);
                 $this->consultation->save();
             }
-
+        }
+        if ($queue->isActive && $queue->agendaItemId === null) {
             foreach ($this->consultation->speechQueues as $otherQueue) {
-                if ($otherQueue->id !== $queue->id) {
+                if ($otherQueue->id !== $queue->id && $otherQueue->agendaItemId === null) {
                     $otherQueue->isActive = 0;
                     $otherQueue->save();
                 }

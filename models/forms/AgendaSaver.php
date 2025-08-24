@@ -59,12 +59,6 @@ class AgendaSaver
             $settings->inProposedProcedures = $apiItem->settings->inProposedProcedures;
             $dbItem->setSettingsObj($settings);
 
-            if ($apiItem->settings->hasSpeakingList) {
-                $dbItem->addSpeakingListIfNotExistant();
-            } else {
-                $dbItem->removeSpeakingListsIfPossible();
-            }
-
             if ($apiItem->date && preg_match('/^\d{4}-\d{2}-\d{2}$/', $apiItem->date)) {
                 $dbItem->time = $apiItem->date;
             } elseif ($apiItem->time && preg_match('/^\d+:\d{2}$/', $apiItem->time)) {
@@ -86,6 +80,12 @@ class AgendaSaver
             }
 
             $dbItem->save();
+
+            if ($apiItem->settings->hasSpeakingList) {
+                $dbItem->addSpeakingListIfNotExistant();
+            } else {
+                $dbItem->removeSpeakingListsIfPossible();
+            }
 
             $recNewIds = $this->saveAgendaFromApiRec($dbItem, $apiItem->children);
             $newIds = array_merge($newIds, $recNewIds);

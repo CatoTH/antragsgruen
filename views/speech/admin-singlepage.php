@@ -16,6 +16,8 @@ $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
 if ($queue->motion) {
     $layout->addBreadcrumb($queue->motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($queue->motion));
+} elseif ($queue->agendaItem) {
+    $layout->addBreadcrumb(Yii::t('admin', 'index_site_agenda'), UrlHelper::createUrl(['/admin/agenda/index']));
 } else {
     $layout->addBreadcrumb(Yii::t('speech', 'speaking_bc'), UrlHelper::createUrl(['/consultation/speech']));
 }

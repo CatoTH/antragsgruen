@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 
-$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueId' => 'QUEUEID']);
+$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
 $registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
 $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
@@ -13,12 +13,116 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
     const msgPersonsWaiting1 = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>;
     const msgPersonsWaitingX = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>;
 
+    const SPEECH_POLLER = new (function () {
+        this.timeOffset = 0;
+        this.liveConnected = null;
+
+        this.listeners = [];
+
+        this.recalcTimeOffset = function(serverTime) {
+            const browserTime = (new Date()).getTime();
+            this.timeOffset = browserTime - serverTime.getTime();
+        };
+
+        this.registerListener = function(queueId, widget, highFrequency) {
+            this.listeners.push({
+                queueId,
+                widget,
+                highFrequency
+            });
+        };
+
+        this.unregisterListener = function(widget) {
+            this.listeners = this.listeners.filter(listener => listener.widget !== widget);
+        };
+
+        this.reloadData = function () {
+            const widget = this;
+            if (widget.liveConnected) {
+                return;
+            }
+
+            const queues = [];
+            this.listeners.forEach(listener => {
+                if (queues.indexOf(listener.queueId) === -1) {
+                    queues.push(listener.queueId);
+                }
+            });
+
+            if (queues.length === 0) {
+                console.log("No listeners registered");
+                return;
+            }
+
+            $.get(
+                pollUrl.replace(/QUEUEIDS/, queues.join(",")),
+                this.setData.bind(this)
+            ).catch(function(err) {
+                console.error("Could not load speech queue data from backend", err);
+            });
+        };
+
+        this.pollReloadData = function () {
+            let reloadTimer = 3000;
+            if (this.listeners.find(listener => listener.highFrequency)) {
+                reloadTimer = 1000;
+            }
+
+            const widget = this;
+
+            window.setTimeout(function () {
+                widget.reloadData();
+                widget.pollReloadData();
+            }, reloadTimer);
+        }
+
+        this.startPolling = function() {
+            this.recalcTimeOffset(new Date());
+
+            this.pollReloadData();
+
+            const widget = this;
+            this.timerId = window.setInterval(function () {
+                widget.recalcRemainingTime();
+            }, 100);
+
+            if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
+                window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'speech', (connectionEvent, speechEvent) => {
+                    if (connectionEvent !== null) {
+                        widget.liveConnected = connectionEvent;
+                    }
+                    if (speechEvent !== null) {
+                        this.setData([speechEvent]);
+                    }
+                });
+            }
+        };
+
+        this.setData = function(data) {
+            data.forEach(queue => {
+                this.listeners.forEach(listener => {
+                    if (listener.queueId === queue.id) {
+                        listener.widget.setData(queue);
+                    }
+                });
+            });
+        };
+
+        this.recalcRemainingTime = function () {
+            this.listeners.forEach(listener => {
+               listener.widget.recalcRemainingTime();
+            });
+        };
+
+        this.startPolling();
+    })();
+
+
     const SPEECH_COMMON_MIXIN = {
         data() {
             return {
+                highFrequency: false,
                 queue: null,
-                pollingId: null,
-                liveConnected: false,
                 timerId: null,
                 timeOffset: 0, // milliseconds the browser is ahead of the server time
                 remainingSpeakingTime: null
@@ -28,6 +132,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
             initQueue: {
                 handler(newVal) {
                     this.queue = newVal;
+                    this.startPolling();
                 },
                 immediate: true
             }
@@ -145,49 +250,18 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
                 this.recalcTimeOffset(new Date(data['current_time']));
                 this.recalcRemainingTime();
             },
-            reloadData: function () {
-                const widget = this;
-                if (!widget.queue) {
-                    return;
-                }
-                if (widget.liveConnected) {
-                    return;
-                }
-
-                $.get(
-                    pollUrl.replace(/QUEUEID/, widget.queue.id),
-                    this.setData.bind(this)
-                ).catch(function(err) {
-                    console.error("Could not load speech queue data from backend", err);
-                });
+            setHighFrequency: function(highFrequency) {
+                this.highFrequency = highFrequency;
             },
-            startPolling: function (highfrequency) {
-                this.recalcTimeOffset(new Date());
-                const reloadTimer = (highfrequency ? 1000 : 3000);
-
-                const widget = this;
-                this.pollingId = window.setInterval(function () {
-                    widget.reloadData();
-                }, reloadTimer);
-
-                this.timerId = window.setInterval(function () {
-                    widget.recalcRemainingTime();
-                }, 100);
-
-                if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
-                    window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'speech', (connectionEvent, speechEvent) => {
-                        if (connectionEvent !== null) {
-                            widget.liveConnected = connectionEvent;
-                        }
-                        if (speechEvent !== null) {
-                            this.setData(speechEvent);
-                        }
-                    });
+            startPolling: function () {
+                if (!this.queue) {
+                    console.log("No queue set");
+                    return;
                 }
+                SPEECH_POLLER.registerListener(this.queue.id, this, this.highFrequency);
             },
             stopPolling: function () {
-                window.clearInterval(this.pollingId);
-                window.clearInterval(this.timerId);
+                SPEECH_POLLER.unregisterListener(this);
             }
         }
     };

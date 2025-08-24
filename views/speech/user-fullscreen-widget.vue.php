@@ -88,7 +88,8 @@ $html = ob_get_clean();
         props: ['initQueue', 'csrf', 'user', 'title'],
         mixins: [SPEECH_COMMON_MIXIN],
         beforeMount() {
-            this.startPolling(true);
+            this.setHighFrequency(true);
+            this.startPolling();
         },
         beforeUnmount() {
             this.stopPolling();

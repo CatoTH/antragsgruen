@@ -609,6 +609,10 @@
 
 // Used on the home page
 .currentSpeechInline {
+  &:has(.disabledSpeechQueue) {
+    display: none;
+  }
+
   .remainingTime {
     padding-left: 26px;
     margin-top: 10px;

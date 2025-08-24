@@ -8,7 +8,7 @@ $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request-
 ob_start();
 ?>
 
-<article class="speechUser">
+<article class="speechUser" :class="{'disabledSpeechQueue': !queue.is_active }">
     <div class="activeSpeaker">
         <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>
         <span v-if="activeSpeaker" class="existing">
