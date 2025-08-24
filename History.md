@@ -2,8 +2,12 @@
 
 ## Version 4.16.0 [not released yet]
 
-- Editing the agenda is now done on a separate page, allowing better caching and removing long-legacy JS-Libraries.
-- The permission to edit the agenda can now be granted independent of other permissions.
+- The agenda and speaking lists were improved in several ways:
+  - Each agenda item can now have its dedicated speaking list.
+  - Multiple speaking lists can be open at the same time, if they are assigned to different agenda items.
+  - Editing the agenda is now done on a separate page, allowing better caching and removing long-legacy JS-Libraries.
+  - The permission to edit the agenda can now be granted independent of other permissions.
+  - Speaking lists now have a function to randomize the waiting list.
 - An optional mechanism for background job execution is introduced, making it possible to send e-mails asynchronously (therefore not blocking regular requests).
 - The deadline circle at the top of the homepage now also shows dates if more than one future deadline exists. It can also be deactivated entirely.
 - The export functions for motions in the admin list now allow to combine one or multiple motion types, with all motion types being selected by default.
@@ -11,7 +15,6 @@
 - The small-screen main menu now also has the full-text search.
 - The projector view now also shows links to the previous / next motions, if activated for the main motion view.
 - When collecting support before official motion/amendment submission, the "Submitted" date field now refers to the time of final submission, not initial creation.
-- Speaking lists now have a function to randomize the waiting list.
 - Amendments are now prefixed with "AM", not "Ä". The prefix can be changed through the language-setting.
 - Amendments to Statute Amendments are now better supported:
   - On the home page, those amendments are now shown like regular amendments, not like stand-alone motions.

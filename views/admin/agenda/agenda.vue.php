@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use app\components\Tools;
+use app\components\UrlHelper;
 
 $simpleDeadlineMotions = '';
 $locale = Tools::getCurrentDateLocale();
@@ -42,7 +43,13 @@ ob_start();
         </ul>
     </div>
 
-    <div class="deleteHolder">
+    <div class="addLinkHolder">
+        <a v-for="list in modelValue.settings.speaking_lists" :href="speakingAdminLink(list)"
+           title="<?= Yii::t('admin', 'agenda_speeking_link') ?>">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            <span class="sr-only"><?= Yii::t('admin', 'agenda_speeking_link') ?></span>
+        </a>
+
         <button class="btn btn-link btnDelete" type="button" @click="removeItem()" title="<?= Yii::t('con', 'agenda_del') ?>">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
         </button>
@@ -52,6 +59,7 @@ ob_start();
 $html = ob_get_clean();
 ?>
 <script>
+    const speechAdminUrlTemplate = <?= json_encode(UrlHelper::createUrl(['/consultation/admin-speech', 'queue' => 'QUEUE'])) ?>;
     __setVueComponent('agenda', 'component', 'agenda-edit-item-row', {
         template: <?= json_encode($html) ?>,
         props: {
@@ -63,8 +71,6 @@ $html = ob_get_clean();
         },
         data() {
             return {}
-        },
-        computed: {
         },
         methods: {
             hasProposedProcedure: function() {
@@ -78,6 +84,9 @@ $html = ob_get_clean();
             },
             removeItem: function() {
                 this.$emit('remove');
+            },
+            speakingAdminLink: function(list) {
+                return speechAdminUrlTemplate.replace(/QUEUE/, list);
             }
         },
         mounted: function () {
