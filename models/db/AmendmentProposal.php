@@ -191,4 +191,16 @@ class AmendmentProposal extends IProposal
             'url' => $url,
         ];
     }
+
+    public function setPublished(): void
+    {
+        if ($this->visibleFrom) {
+            return;
+        }
+        $this->visibleFrom = date('Y-m-d H:i:s');
+        $this->save();
+
+        $consultation = $this->getMyConsultation();
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_PUBLISH_PROPOSAL, $this->id);
+    }
 }

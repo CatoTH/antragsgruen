@@ -171,10 +171,10 @@ class ProposedProcedureController extends AdminBase
             ]);
         }
 
+        $proposal = $motion->getLatestProposal();
         if ($this->getPostValue('visible', 0)) {
-            $motion->setProposalPublished();
+            $proposal->setPublished();
         } else {
-            $proposal = $motion->getLatestProposal();
             $proposal->visibleFrom = null;
             $proposal->save();
         }
@@ -196,10 +196,11 @@ class ProposedProcedureController extends AdminBase
             ]);
         }
 
+        $proposal = $amendment->getLatestProposal();
+
         if ($this->getPostValue('visible', 0)) {
-            $amendment->setProposalPublished();
+            $proposal->setPublished();
         } else {
-            $proposal = $amendment->getLatestProposal();
             $proposal->visibleFrom = null;
             $proposal->save();
         }
