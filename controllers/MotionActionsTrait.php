@@ -541,7 +541,7 @@ trait MotionActionsTrait
                         // Reload the page, to update section titles and permissions to edit the proposed procedure
                         $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
                     }
-                    $motion->setProposalPublished();
+                    $proposal->setPublished();
                 } else {
                     $proposal->visibleFrom = null;
                 }

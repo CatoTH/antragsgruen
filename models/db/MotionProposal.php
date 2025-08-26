@@ -90,4 +90,16 @@ class MotionProposal extends IProposal
 
         return null;
     }
+
+    public function setPublished(): void
+    {
+        if ($this->visibleFrom) {
+            return;
+        }
+        $this->visibleFrom = date('Y-m-d H:i:s');
+        $this->save();
+
+        $consultation = $this->getMyConsultation();
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_PUBLISH_PROPOSAL, $this->id);
+    }
 }

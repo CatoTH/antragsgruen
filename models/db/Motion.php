@@ -897,19 +897,6 @@ class Motion extends IMotion implements IRSSItem
         throw new NotFound('Proposal not found');
     }
 
-    public function setProposalPublished(): void
-    {
-        $proposal = $this->getLatestProposal();
-        if ($proposal->visibleFrom) {
-            return;
-        }
-        $proposal->visibleFrom = date('Y-m-d H:i:s');
-        $proposal->save();
-
-        $consultation = $this->getMyConsultation();
-        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_PUBLISH_PROPOSAL, $this->id);
-    }
-
     public function setDeleted(): void
     {
         $this->status = Motion::STATUS_DELETED;

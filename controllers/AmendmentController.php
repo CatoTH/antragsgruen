@@ -531,9 +531,9 @@ class AmendmentController extends Base
                 if ($this->getHttpRequest()->post('visible', 0)) {
                     if ($proposal->visibleFrom === null) {
                         // Reload the page, to update section titles and permissions to edit the proposed procedure
-                        $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'view');
+                        $response['redirectToUrl'] = UrlHelper::createAmendmentUrl($amendment, 'view', ['proposalVersion' => $proposal->version]);
                     }
-                    $amendment->setProposalPublished();
+                    $proposal->setPublished();
                 } else {
                     $proposal->visibleFrom = null;
                 }
