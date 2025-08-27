@@ -1133,7 +1133,8 @@ class LayoutHelper
         $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
         if (in_array($motion->status, $invisibleStatuses) && User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY,
                 PrivilegeQueryContext::anyRestriction())) {
-            $motions = array_values(array_filter($motionsOrResolutions, fn(Motion $motion) => in_array($motion->status, $invisibleStatuses)));
+            //$motions = array_values(array_filter($motionsOrResolutions, fn(Motion $motion) => in_array($motion->status, $invisibleStatuses)));
+            $motions = array_values(array_filter($motionsOrResolutions, fn(Motion $itMotion) => $itMotion->version === $motion->version));
             usort($motions, function (Motion $a, Motion $b) {
                 return $a->getTimestamp() <=> $b->getTimestamp();
             });
