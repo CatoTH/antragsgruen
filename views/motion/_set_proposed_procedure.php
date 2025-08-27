@@ -14,9 +14,14 @@ use yii\helpers\Html;
 
 $isLatestVersion = ($proposal->id === $motion->getLatestProposal()->id);
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
+$classes = ['version' . $motion->version];
+$classes[] = ($isLatestVersion ? 'latestVersion' : 'oldVersion');
+if ($proposal->isNewRecord) {
+    $classes[] = 'new';
+}
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
-    'class'                    => 'version' . $motion->version . ($isLatestVersion ? ' latestVersion' : ' oldVersion'),
+    'class'                    => implode(' ', $classes),
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
@@ -145,7 +150,7 @@ echo $this->render('../shared/_proposed_procedure_saving', [
 ]);
 
 if ($context !== 'edit' && $canBeChangedUnlimitedly) {
-    $classes   = ['statusDetails'];
+    $classes   = ['statusDetails', 'statusModifiedLink'];
     $classes[] = 'status_' . Motion::STATUS_MODIFIED_ACCEPTED;
     $classes[] = 'status_' . Motion::STATUS_VOTE;
     ?>

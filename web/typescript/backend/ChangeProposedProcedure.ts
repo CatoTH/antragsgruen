@@ -18,6 +18,7 @@ export class ChangeProposedProcedure {
     private csrf: string;
     private savingComment: boolean = false;
     private isLatestVersion: boolean;
+    private isNewVersion: boolean; // Not saved yet
 
     constructor(private $widget: JQuery) {
         this.initElements();
@@ -43,6 +44,7 @@ export class ChangeProposedProcedure {
         this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
         this.version = this.$widget.data('proposal-id') ?? null;
         this.isLatestVersion = this.$widget[0].classList.contains('latestVersion');
+        this.isNewVersion = this.$widget[0].classList.contains('new');
     }
 
     private initOpener() {
@@ -229,6 +231,9 @@ export class ChangeProposedProcedure {
         let newVal = parseInt(this.$widget.find('.statusForm input[type=radio]:checked').val() as string, 10);
         this.$statusDetails.addClass('hidden');
         this.$statusDetails.filter('.status_' + newVal.toString(10)).removeClass('hidden');
+        if (this.isNewVersion) {
+            this.$statusDetails.filter('.statusModifiedLink').addClass('hidden');
+        }
         if (newVal === 0) {
             this.$widget.addClass('noStatus');
         } else {

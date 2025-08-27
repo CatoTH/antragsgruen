@@ -15,9 +15,13 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 $isLatestVersion = ($proposal->id === $amendment->getLatestProposal()->id);
+$classes = [($isLatestVersion ? 'latestVersion' : 'oldVersion')];
+if ($proposal->isNewRecord) {
+    $classes[] = 'new';
+}
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
-    'class'                    => ($isLatestVersion ? 'latestVersion' : 'oldVersion'),
+    'class'                    => implode(' ', $classes),
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
@@ -167,7 +171,7 @@ echo $this->render('../shared/_proposed_procedure_saving', [
 ]);
 
 if ($context !== 'edit' && $canBeChangedUnlimitedly) {
-    $classes   = ['statusDetails'];
+    $classes   = ['statusDetails', 'statusModifiedLink'];
     $classes[] = 'status_' . Amendment::STATUS_MODIFIED_ACCEPTED;
     $classes[] = 'status_' . Amendment::STATUS_VOTE;
     ?>
