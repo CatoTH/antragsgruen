@@ -193,7 +193,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             ?>
                             <td class="procedure">
                                 <?php
-                                echo $this->render('_status_icons', ['proposal' => $proposal, 'showVisibility' => false]);
+                                echo $this->render('_status_icons', ['proposal' => $proposal, 'showVisibility' => false, 'search' => null]);
                                 echo Agenda::formatProposedProcedure($item, $proposal, Agenda::FORMAT_HTML);
 
                                 $selectedTags = [];
