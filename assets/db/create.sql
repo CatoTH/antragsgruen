@@ -356,7 +356,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationText` (
   `motionTypeId`   int(11)           DEFAULT NULL,
   `consultationId` int(11)           DEFAULT NULL,
   `siteId`         int(11)           DEFAULT NULL,
-  `category`       varchar(20)  NOT NULL,
+  `category`       varchar(128)  NOT NULL,
   `textId`         varchar(100) NOT NULL,
   `menuPosition`   int(11)           DEFAULT NULL,
   `policyRead`     text              DEFAULT NULL,

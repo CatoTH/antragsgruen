@@ -92,7 +92,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m241027_074032_pages_policies', '1730015023'),
   ('m241201_100317_background_jobs', '1733052690'),
   ('m250608_180000_multiple_proposals', '1751805105'),
-  ('m250817_080222_date_submission', '1755418040')
+  ('m250817_080222_date_submission', '1755418040'),
+  ('m250829_055949_increase_category_length', '1756447301')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;
