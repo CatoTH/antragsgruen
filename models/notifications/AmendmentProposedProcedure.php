@@ -25,6 +25,8 @@ class AmendmentProposedProcedure
             $replyTo = MailTools::getDefaultReplyTo($amendment, $amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
         }
 
+        $acceptLink = UrlHelper::createAmendmentUrl($proposal->getAmendment(), 'view', ['procedureToken' => $proposal->publicToken]);
+
         /** @noinspection PhpUnhandledExceptionInspection */
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
@@ -34,7 +36,7 @@ class AmendmentProposedProcedure
             str_replace('%PREFIX%', $amendment->getShortTitle(), \Yii::t('amend', 'proposal_email_title')),
             $text,
             '',
-            null,
+            ['%LINK%' => UrlHelper::absolutizeLink($acceptLink)],
             $fromName,
             $replyTo
         );
@@ -50,12 +52,9 @@ class AmendmentProposedProcedure
             default => \Yii::t('amend', 'proposal_email_other'),
         };
 
-        $url = UrlHelper::createAmendmentUrl($proposal->getAmendment(), 'view', ['procedureToken' => $proposal->publicToken]);
-        $amendmentLink  = UrlHelper::absolutizeLink($url);
-
         return str_replace(
-            ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
-            [$amendmentLink, $proposal->getAmendment()->getShortTitle(), $initiator[0]->getGivenNameOrFull()],
+            ['%NAME%', '%NAME_GIVEN%'],
+            [$proposal->getAmendment()->getShortTitle(), $initiator[0]->getGivenNameOrFull()],
             $body
         );
     }

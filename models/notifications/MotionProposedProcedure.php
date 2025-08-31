@@ -25,6 +25,8 @@ class MotionProposedProcedure
             $replyTo = MailTools::getDefaultReplyTo($motion, $motion->getMyConsultation(), \app\models\db\User::getCurrentUser());
         }
 
+        $acceptLink = UrlHelper::createMotionUrl($motion, 'view', ['procedureToken' => $proposal->publicToken]);
+
         /** @noinspection PhpUnhandledExceptionInspection */
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
@@ -34,7 +36,7 @@ class MotionProposedProcedure
             str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('motion', 'proposal_email_title')),
             $text,
             '',
-            null,
+            ['%LINK%' => UrlHelper::absolutizeLink($acceptLink)],
             $fromName,
             $replyTo
         );
@@ -52,12 +54,9 @@ class MotionProposedProcedure
             default => \Yii::t('motion', 'proposal_email_other'),
         };
 
-        $url = UrlHelper::createMotionUrl($motion, 'view', ['procedureToken' => $proposal->publicToken]);
-        $motionLink     = UrlHelper::absolutizeLink($url);
-
         return str_replace(
-            ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
-            [$motionLink, $motion->getTitleWithPrefix(), $initiatorName],
+            ['%NAME%', '%NAME_GIVEN%'],
+            [$motion->getTitleWithPrefix(), $initiatorName],
             $body
         );
     }

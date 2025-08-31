@@ -671,7 +671,8 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_MOTION_NOTIFY_PROPOSAL');
                 $str = str_replace('%VERSION%', $version, $str);
                 if ($data && $data->text) {
-                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                    $messageText = str_replace('%LINK%', '<em>https://....</em>', HTMLTools::textToHtmlWithLink($data->text));
+                    $str .= '<blockquote>' . $messageText . '</blockquote>';
                 }
                 return $this->formatLogEntryUser($str, '');
             case self::MOTION_ACCEPT_PROPOSAL:
@@ -768,7 +769,8 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_AMENDMENT_NOTIFY_PROPOSAL');
                 $str = str_replace('%VERSION%', $version, $str);
                 if ($data && $data->text) {
-                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                    $messageText = str_replace('%LINK%', '<em>https://....</em>', HTMLTools::textToHtmlWithLink($data->text));
+                    $str .= '<blockquote>' . $messageText . '</blockquote>';
                 }
                 return $this->formatLogEntryUser($str, '');
             case self::AMENDMENT_ACCEPT_PROPOSAL:
