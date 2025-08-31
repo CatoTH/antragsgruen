@@ -37,7 +37,7 @@ $I->dontSeeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPT
 $I->dontSeeElement('#proposedChanges .saving');
 $I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input").prop("checked", true).change();');
 $I->wait(0.1);
-$I->seeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
+$I->dontSeeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->seeElement('#proposedChanges .saving');
 $I->clickJS('#proposedChanges .saving button');
 $I->wait(1);
@@ -51,6 +51,7 @@ $I->seeElement('.alert-success');
 $I->wait(1);
 
 $I->wantTo('make the proposal visible and notify the proposer of the amendment');
+$I->seeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->executeJS('$("#proposedChanges input[name=proposalVisible]").prop("checked", true).change();');
 $I->executeJS('$("#votingBlockId").val("NEW").trigger("change")');
 $I->fillField('#newBlockTitle', 'Voting 1');
