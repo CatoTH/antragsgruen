@@ -360,6 +360,11 @@ trait MotionActionsTrait
             return;
         }
 
+        if ($proposal->userStatus === Amendment::STATUS_ACCEPTED && $status === Amendment::STATUS_REJECTED) {
+            // No undoing accepting
+            return;
+        }
+
         $proposal->userStatus = $status;
         $proposal->save();
 
@@ -491,12 +496,13 @@ trait MotionActionsTrait
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
+        $proposalIsNew = $proposal->isNewRecord;
         $proposal->save(); // Make sure we know the ID
         $canChangeProposalUnlimitedly = $proposal->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
-        $ppChanges = ProposedProcedureChange::create($proposal->id, $proposal->version);
+        $ppChanges = ProposedProcedureChange::create($proposalIsNew, $proposal->id, $proposal->version);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
             $originalMotionId = $motion->id;
@@ -661,10 +667,20 @@ trait MotionActionsTrait
         if (!$motion) {
             return new HtmlErrorResponse(404, 'Motion not found');
         }
-        $proposal = $motion->getProposalByVersion($proposalVersion);
+        if ($this->getHttpRequest()->post('newVersion', null) === 'new') {
+            $oldProposal = $motion->getProposalByVersion($proposalVersion);
+            $proposal = $motion->getProposalById(null); // Create a new one
+            $proposal->proposalStatus = $oldProposal->proposalStatus;
+        } else {
+            $proposal = $motion->getProposalByVersion($proposalVersion);
+        }
+
         if (!$proposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to edit the proposed procedure');
         }
+
+        $isNewProposal = $proposal->isNewRecord;
+        $proposal->save();
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
             $reference = $proposal->getMyProposalReference();
@@ -677,6 +693,10 @@ trait MotionActionsTrait
                 $proposal->save();
 
                 $reference->delete();
+
+                $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
+                $ppChanges->setProposalTextChanged();
+                ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
             }
             $motion->flushCacheItems(['procedure']);
         }
@@ -696,6 +716,10 @@ trait MotionActionsTrait
             $proposal->userStatus = null;
             $proposal->save();
             $motion->flushCacheItems(['procedure']);
+
+            $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
+            $ppChanges->setProposalTextChanged();
+            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
 
             return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $proposal->version]));
         }

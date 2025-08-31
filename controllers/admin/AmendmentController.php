@@ -293,9 +293,10 @@ class AmendmentController extends AdminBase
             }
 
             $proposal = $amendment->getLatestProposal();
+            $proposalIsNew = $proposal->isNewRecord;
             $proposal->save(); // Make sure there is an ID
 
-            $ppChanges = ProposedProcedureChange::create($proposal->id, $proposal->version);
+            $ppChanges = ProposedProcedureChange::create($proposalIsNew, $proposal->id, $proposal->version);
             try {
                 $amendment->setProposalVotingPropertiesFromRequest(
                     $this->getHttpRequest()->post('votingStatus', null),

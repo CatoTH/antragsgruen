@@ -367,6 +367,7 @@ return [
     'proposal_user_agreed'       => 'You agreed to the proposal',
     'proposal_user_disagree'     => 'I disagree',
     'proposal_user_disagreed'    => 'You disagreed with the proposal',
+    'proposal_user_agreement_amend' => 'Update decision',
     'proposal_user_saved'        => 'Your decision has been saved',
     'proposal_user_change_reset' => 'As the proposed procedure has changed, the decision by the proposer has been reset.',
 ];

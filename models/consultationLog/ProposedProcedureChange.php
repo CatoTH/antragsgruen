@@ -10,6 +10,7 @@ class ProposedProcedureChange implements \JsonSerializable
 {
     use JsonConfigTrait;
 
+    public bool $isNew = false;
     public int $version;
     public int $proposalId;
 
@@ -31,13 +32,16 @@ class ProposedProcedureChange implements \JsonSerializable
     public ?int $votingBlockIdFrom = null;
     public ?int $votingBlockIdTo = null;
 
+    public bool $proposalTextChanged = false;
+
     private bool $hasChanges = false;
 
-    public static function create(int $proposalId, int $version): ProposedProcedureChange
+    public static function create(bool $isNew, int $proposalId, int $version): ProposedProcedureChange
     {
         $object = new ProposedProcedureChange(null);
         $object->version = $version;
         $object->proposalId = $proposalId;
+        $object->isNew = $isNew;
 
         return $object;
     }
@@ -92,6 +96,11 @@ class ProposedProcedureChange implements \JsonSerializable
         $this->proposalTagsFrom = $from;
         $this->proposalTagsTo = $to;
         $this->hasChanges = true;
+    }
+
+    public function setProposalTextChanged(): void
+    {
+        $this->proposalTextChanged = true;
     }
 
     public function hasChanges(): bool {

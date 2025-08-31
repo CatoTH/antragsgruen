@@ -483,12 +483,13 @@ class AmendmentController extends Base
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
+        $proposalIsNew = $proposal->isNewRecord;
         $proposal->save(); // Make sure we know the ID
         $canChangeProposalUnlimitedly = $proposal->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
-        $ppChanges = ProposedProcedureChange::create($proposal->id, $proposal->version);
+        $ppChanges = ProposedProcedureChange::create($proposalIsNew, $proposal->id, $proposal->version);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
             $originalProposalStatus = $proposal->proposalStatus;
@@ -659,11 +660,21 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
-        $proposal = $amendment->getProposalByVersion($proposalVersion);
+
+        if ($this->getHttpRequest()->post('newVersion', null) === 'new') {
+            $oldProposal = $amendment->getProposalByVersion($proposalVersion);
+            $proposal = $amendment->getProposalById(null); // Create a new one
+            $proposal->proposalStatus = $oldProposal->proposalStatus;
+        } else {
+            $proposal = $amendment->getProposalByVersion($proposalVersion);
+        }
+
         if (!$proposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 
+        $isNewProposal = $proposal->isNewRecord;
+        $proposal->save();
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
             $reference = $proposal->getMyProposalReference();
@@ -676,6 +687,10 @@ class AmendmentController extends Base
                 $proposal->save();
 
                 $reference->delete();
+
+                $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
+                $ppChanges->setProposalTextChanged();
+                ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendmentId, $ppChanges->jsonSerialize());
             }
             $amendment->flushCacheItems(['procedure']);
         }
@@ -695,6 +710,10 @@ class AmendmentController extends Base
             $proposal->userStatus = null;
             $proposal->save();
             $amendment->flushCacheItems(['procedure']);
+
+            $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
+            $ppChanges->setProposalTextChanged();
+            ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendmentId, $ppChanges->jsonSerialize());
 
             return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment, 'view', ['proposalVersion' => $proposal->version]));
         }

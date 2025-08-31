@@ -2,9 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\consultationLog\ProposedProcedureAgreement;
-use app\models\consultationLog\ProposedProcedureChange;
-use app\models\consultationLog\ProposedProcedureUserNotification;
+use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureChange, ProposedProcedureUserNotification};
 use app\models\settings\AntragsgruenApp;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use yii\db\{ActiveQuery, ActiveRecord};
@@ -673,7 +671,8 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_MOTION_NOTIFY_PROPOSAL');
                 $str = str_replace('%VERSION%', $version, $str);
                 if ($data && $data->text) {
-                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                    $messageText = str_replace('%LINK%', '<em>https://....</em>', HTMLTools::textToHtmlWithLink($data->text));
+                    $str .= '<blockquote>' . $messageText . '</blockquote>';
                 }
                 return $this->formatLogEntryUser($str, '');
             case self::MOTION_ACCEPT_PROPOSAL:
@@ -683,7 +682,13 @@ class ConsultationLog extends ActiveRecord
             case self::MOTION_SET_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
                 $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
+                if ($data->isNew) {
+                    $str = \Yii::t('structure', 'activity_MOTION_NEW_PROPOSAL');
+                } elseif ($data->proposalTextChanged) {
+                    $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL_TEXT');
+                } else {
+                    $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
+                }
                 $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output
                 return $this->formatLogEntryUser($str, '');
@@ -764,7 +769,8 @@ class ConsultationLog extends ActiveRecord
                 $str = \Yii::t('structure', 'activity_AMENDMENT_NOTIFY_PROPOSAL');
                 $str = str_replace('%VERSION%', $version, $str);
                 if ($data && $data->text) {
-                    $str .= '<blockquote>' . HTMLTools::textToHtmlWithLink($data->text) . '</blockquote>';
+                    $messageText = str_replace('%LINK%', '<em>https://....</em>', HTMLTools::textToHtmlWithLink($data->text));
+                    $str .= '<blockquote>' . $messageText . '</blockquote>';
                 }
                 return $this->formatLogEntryUser($str, '');
             case self::AMENDMENT_ACCEPT_PROPOSAL:
@@ -774,7 +780,13 @@ class ConsultationLog extends ActiveRecord
             case self::AMENDMENT_SET_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
                 $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
+                if ($data->isNew) {
+                    $str = \Yii::t('structure', 'activity_AMENDMENT_NEW_PROPOSAL');
+                } elseif ($data->proposalTextChanged) {
+                    $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL_TEXT');
+                } else {
+                    $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
+                }
                 $str = $this->formatLogEntryUser($str, '');
                 $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output

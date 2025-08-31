@@ -13,11 +13,11 @@ use app\models\db\{IMotion, IProposal};
 <section class="saving showIfChanged">
     <div class="versionSelect">
         <label>
-            <input type="radio" name="newVersion" value="current" <?= ($proposal->userStatus !== null ? '' : 'checked') ?>>
+            <input type="radio" name="newVersion" value="current" <?= ($proposal->editingShouldCreateNewVersion() ? '' : 'checked') ?>>
             <?= Yii::t('amend', 'proposal_version_edit') ?>
         </label>
         <label>
-            <input type="radio" name="newVersion" value="new" class="newVersionNew" <?= ($proposal->userStatus !== null ? 'checked' : '') ?>>
+            <input type="radio" name="newVersion" value="new" class="newVersionNew" <?= ($proposal->editingShouldCreateNewVersion() ? 'checked' : '') ?>>
             <?= Yii::t('amend', 'proposal_version_new') ?>
         </label>
     </div>

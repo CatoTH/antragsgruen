@@ -129,14 +129,32 @@ echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
         }
 
         ?>
-        <div class="save-row">
-            <button class="btn btn-default pull-right" type="submit" name="reset">
-                <?= Yii::t('amend', 'proposal_reset') ?>
-            </button>
-            <button class="btn btn-primary" type="submit" name="save">
-                <?= Yii::t('base', 'save') ?>
-            </button>
+
+        <div class="proposalTextSaveRow">
+            <div class="versionSelectHolder">
+                <label>
+                    <input type="radio" name="newVersion" value="current" <?= ($proposal->editingShouldCreateNewVersion() ? '' : 'checked') ?>>
+                    <?= Yii::t('amend', 'proposal_version_edit') ?>
+                </label>
+                <label>
+                    <input type="radio" name="newVersion" value="new" class="newVersionNew" <?= ($proposal->editingShouldCreateNewVersion() ? 'checked' : '') ?>>
+                    <?= Yii::t('amend', 'proposal_version_new') ?>
+                </label>
+            </div>
+
+            <div class="resetHolder">
+                <button class="btn btn-primary" type="submit" name="save">
+                    <?= Yii::t('base', 'save') ?>
+                </button>
+            </div>
+
+            <div class="saveHolder">
+                <button class="btn btn-default pull-right" type="submit" name="reset">
+                    <?= Yii::t('amend', 'proposal_reset') ?>
+                </button>
+            </div>
         </div>
+
         <?php /*
         <aside id="collisionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
             <h2><?= Yii::t('amend', 'proposal_conflict_title') ?>:</h2>
