@@ -1,15 +1,14 @@
 <?php
 
-use app\models\db\AmendmentProposal;
 use app\components\{diff\Diff, diff\DiffRenderer, HTMLTools, UrlHelper};
-use app\models\db\Amendment;
+use app\models\db\{Amendment, AmendmentProposal};
 use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
  * @var Amendment $amendment
- * @var \app\models\db\AmendmentProposal $proposal
+ * @var AmendmentProposal $proposal
  * @var \app\models\forms\ProposedChangeForm $form
  * @var null|string $msgSuccess
  * @var null|string $msgAlert
@@ -135,13 +134,29 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
         }
 
         ?>
-        <div class="save-row">
-            <button class="btn btn-default pull-right" type="submit" name="reset">
-                <?= Yii::t('amend', 'proposal_reset') ?>
-            </button>
-            <button class="btn btn-primary" type="submit" name="save">
-                <?= Yii::t('base', 'save') ?>
-            </button>
+        <div class="proposalTextSaveRow">
+            <div class="versionSelectHolder">
+                <label>
+                    <input type="radio" name="newVersion" value="current" <?= ($proposal->editingShouldCreateNewVersion() ? '' : 'checked') ?>>
+                    <?= Yii::t('amend', 'proposal_version_edit') ?>
+                </label>
+                <label>
+                    <input type="radio" name="newVersion" value="new" class="newVersionNew" <?= ($proposal->editingShouldCreateNewVersion() ? 'checked' : '') ?>>
+                    <?= Yii::t('amend', 'proposal_version_new') ?>
+                </label>
+            </div>
+
+            <div class="resetHolder">
+                <button class="btn btn-primary" type="submit" name="save">
+                    <?= Yii::t('base', 'save') ?>
+                </button>
+            </div>
+
+            <div class="saveHolder">
+                <button class="btn btn-default pull-right" type="submit" name="reset">
+                    <?= Yii::t('amend', 'proposal_reset') ?>
+                </button>
+            </div>
         </div>
         <aside id="collisionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
             <h2><?= Yii::t('amend', 'proposal_conflict_title') ?>:</h2>

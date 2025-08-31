@@ -308,6 +308,33 @@
     text-align: center;
     margin: 0 0 40px 0;
   }
+
+  .proposalTextSaveRow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .versionSelectHolder {
+      flex-basis: 40%;
+      text-align: left;
+    }
+
+    .resetHolder {
+      flex-basis: 30%;
+      text-align: center;
+    }
+
+    .saveHolder {
+      flex-basis: 40%;
+      text-align: right;
+    }
+
+    label {
+      font-weight: normal;
+      margin-right: 20px;
+    }
+  }
+
   #collisionIndicator {
     position: fixed;
     bottom: 0;

@@ -660,11 +660,21 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
-        $proposal = $amendment->getProposalByVersion($proposalVersion);
+
+        if ($this->getHttpRequest()->post('newVersion', null) === 'new') {
+            $oldProposal = $amendment->getProposalByVersion($proposalVersion);
+            $proposal = $amendment->getProposalById(null); // Create a new one
+            $proposal->proposalStatus = $oldProposal->proposalStatus;
+        } else {
+            $proposal = $amendment->getProposalByVersion($proposalVersion);
+        }
+
         if (!$proposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to change the proposed procedure');
         }
 
+        $isNewProposal = $proposal->isNewRecord;
+        $proposal->save();
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
             $reference = $proposal->getMyProposalReference();
@@ -678,7 +688,7 @@ class AmendmentController extends Base
 
                 $reference->delete();
 
-                $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+                $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
                 $ppChanges->setProposalTextChanged();
                 ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendmentId, $ppChanges->jsonSerialize());
             }
@@ -701,7 +711,7 @@ class AmendmentController extends Base
             $proposal->save();
             $amendment->flushCacheItems(['procedure']);
 
-            $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+            $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
             $ppChanges->setProposalTextChanged();
             ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendmentId, $ppChanges->jsonSerialize());
 

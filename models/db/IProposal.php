@@ -203,4 +203,9 @@ abstract class IProposal extends ActiveRecord
                 return $name . $explStr;
         }
     }
+
+    public function editingShouldCreateNewVersion(): bool
+    {
+        return $this->userStatus !== null;
+    }
 }

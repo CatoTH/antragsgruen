@@ -667,10 +667,20 @@ trait MotionActionsTrait
         if (!$motion) {
             return new HtmlErrorResponse(404, 'Motion not found');
         }
-        $proposal = $motion->getProposalByVersion($proposalVersion);
+        if ($this->getHttpRequest()->post('newVersion', null) === 'new') {
+            $oldProposal = $motion->getProposalByVersion($proposalVersion);
+            $proposal = $motion->getProposalById(null); // Create a new one
+            $proposal->proposalStatus = $oldProposal->proposalStatus;
+        } else {
+            $proposal = $motion->getProposalByVersion($proposalVersion);
+        }
+
         if (!$proposal->canEditProposedProcedure()) {
             return new HtmlErrorResponse(403, 'Not permitted to edit the proposed procedure');
         }
+
+        $isNewProposal = $proposal->isNewRecord;
+        $proposal->save();
 
         if ($this->getHttpRequest()->post('reset', null) !== null) {
             $reference = $proposal->getMyProposalReference();
@@ -684,7 +694,7 @@ trait MotionActionsTrait
 
                 $reference->delete();
 
-                $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+                $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
                 $ppChanges->setProposalTextChanged();
                 ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
             }
@@ -707,7 +717,7 @@ trait MotionActionsTrait
             $proposal->save();
             $motion->flushCacheItems(['procedure']);
 
-            $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+            $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
             $ppChanges->setProposalTextChanged();
             ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
 
