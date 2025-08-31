@@ -338,6 +338,11 @@ trait AmendmentActionsTrait
             return;
         }
 
+        if ($proposal->userStatus === Amendment::STATUS_ACCEPTED && $status === Amendment::STATUS_REJECTED) {
+            // No undoing accepting
+            return;
+        }
+
         $data = ProposedProcedureAgreement::create(true, $proposal->version, $proposal->id, $comment)->jsonSerialize();
         if ($status === Amendment::STATUS_ACCEPTED) {
             ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL, $amendment->id, $data);

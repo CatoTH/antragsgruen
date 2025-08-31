@@ -396,6 +396,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_user_agreed'       => 'Du hast dem Verfahrensvorschlag zugestimmt',
     'proposal_user_disagree'     => 'Ich stimme NICHT zu',
     'proposal_user_disagreed'    => 'Du hast dem Verfahrensvorschlag nicht zugestimmt',
+    'proposal_user_agreement_amend' => 'Entscheidung aktualisieren',
     'proposal_user_saved'        => 'Deine Entscheidung wurde gespeichert',
     'proposal_user_change_reset' => 'Da sich der Verfahrensvorschlag geändert hat, wurde die Entscheidung der Antragsteller*in zurückgesetzt.',
 ];

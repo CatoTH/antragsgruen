@@ -86,7 +86,7 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
     }
     if ($hasDecision) {
         echo '</div><div class="updateDecision">';
-        echo '<button class="btn btn-default btnUpdateDecision">Entscheidung aktualisieren</button>';
+        echo '<button class="btn btn-default btnUpdateDecision">' . Yii::t('amend', 'proposal_user_agreement_amend') . '</button>';
         echo '</div></div>';
     }
     ?>
@@ -95,11 +95,17 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
         <textarea class="form-control" name="comment" id="proposalAgreeComment"></textarea>
     </div>
     <div class="agreeSubmit<?= $hasDecision ? ' showWhenUpdating' : '' ?>">
-        <div class="disagree">
-            <button type="submit" name="setProposalDisagree" class="btn btn-danger">
-                <?= Yii::t('amend', 'proposal_user_disagree') ?>
-            </button>
-        </div>
+        <?php
+        if (!$agreed) {
+            ?>
+            <div class="disagree">
+                <button type="submit" name="setProposalDisagree" class="btn btn-danger">
+                    <?= Yii::t('amend', 'proposal_user_disagree') ?>
+                </button>
+            </div>
+            <?php
+        }
+        ?>
         <div class="agree">
             <button type="submit" name="setProposalAgree" class="btn btn-success">
                 <?= Yii::t('amend', 'proposal_user_agree') ?>

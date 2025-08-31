@@ -360,6 +360,11 @@ trait MotionActionsTrait
             return;
         }
 
+        if ($proposal->userStatus === Amendment::STATUS_ACCEPTED && $status === Amendment::STATUS_REJECTED) {
+            // No undoing accepting
+            return;
+        }
+
         $proposal->userStatus = $status;
         $proposal->save();
 
