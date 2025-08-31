@@ -491,12 +491,13 @@ trait MotionActionsTrait
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }
 
+        $proposalIsNew = $proposal->isNewRecord;
         $proposal->save(); // Make sure we know the ID
         $canChangeProposalUnlimitedly = $proposal->canEditProposedProcedure();
 
         $response = [];
         $msgAlert = null;
-        $ppChanges = ProposedProcedureChange::create($proposal->id, $proposal->version);
+        $ppChanges = ProposedProcedureChange::create($proposalIsNew, $proposal->id, $proposal->version);
 
         if ($this->getHttpRequest()->post('setStatus', null) !== null) {
             $originalMotionId = $motion->id;

@@ -683,7 +683,11 @@ class ConsultationLog extends ActiveRecord
             case self::MOTION_SET_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
                 $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
+                if ($data->isNew) {
+                    $str = \Yii::t('structure', 'activity_MOTION_NEW_PROPOSAL');
+                } else {
+                    $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
+                }
                 $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output
                 return $this->formatLogEntryUser($str, '');
@@ -774,7 +778,11 @@ class ConsultationLog extends ActiveRecord
             case self::AMENDMENT_SET_PROPOSAL:
                 $data = ($this->data ? new ProposedProcedureChange($this->data) : null);
                 $version = (string) ($data->version ?? '-');
-                $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
+                if ($data->isNew) {
+                    $str = \Yii::t('structure', 'activity_AMENDMENT_NEW_PROPOSAL');
+                } else {
+                    $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
+                }
                 $str = $this->formatLogEntryUser($str, '');
                 $str = str_replace('%VERSION%', $version, $str);
                 // @TODO More detailed output
