@@ -46,12 +46,13 @@ ob_start();
     <div class="addLinkHolder">
         <a v-for="list in modelValue.settings.speaking_lists" :href="speakingAdminLink(list)"
            title="<?= Yii::t('admin', 'agenda_speeking_link') ?>">
-            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
             <span class="sr-only"><?= Yii::t('admin', 'agenda_speeking_link') ?></span>
         </a>
 
         <button class="btn btn-link btnDelete" type="button" @click="removeItem()" title="<?= Yii::t('con', 'agenda_del') ?>">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            <span class="sr-only"><?= Yii::t('con', 'agenda_del') ?></span>
         </button>
     </div>
 </div>

@@ -422,6 +422,7 @@ class ConsultationAgendaItem extends ActiveRecord
         }
         $speakingList = SpeechQueue::createWithSubqueues($this->getMyConsultation(), false);
         $speakingList->agendaItemId = $this->id;
+        $speakingList->isActive = 1;
         $speakingList->save();
     }
 
