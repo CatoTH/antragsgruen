@@ -677,6 +677,10 @@ class AmendmentController extends Base
                 $proposal->save();
 
                 $reference->delete();
+
+                $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+                $ppChanges->setProposalTextChanged();
+                ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendmentId, $ppChanges->jsonSerialize());
             }
             $amendment->flushCacheItems(['procedure']);
         }
@@ -696,6 +700,10 @@ class AmendmentController extends Base
             $proposal->userStatus = null;
             $proposal->save();
             $amendment->flushCacheItems(['procedure']);
+
+            $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+            $ppChanges->setProposalTextChanged();
+            ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SET_PROPOSAL, $amendmentId, $ppChanges->jsonSerialize());
 
             return new RedirectResponse(UrlHelper::createAmendmentUrl($amendment, 'view', ['proposalVersion' => $proposal->version]));
         }

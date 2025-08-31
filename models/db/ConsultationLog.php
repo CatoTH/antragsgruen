@@ -2,9 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\consultationLog\ProposedProcedureAgreement;
-use app\models\consultationLog\ProposedProcedureChange;
-use app\models\consultationLog\ProposedProcedureUserNotification;
+use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureChange, ProposedProcedureUserNotification};
 use app\models\settings\AntragsgruenApp;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use yii\db\{ActiveQuery, ActiveRecord};
@@ -685,6 +683,8 @@ class ConsultationLog extends ActiveRecord
                 $version = (string) ($data->version ?? '-');
                 if ($data->isNew) {
                     $str = \Yii::t('structure', 'activity_MOTION_NEW_PROPOSAL');
+                } elseif ($data->proposalTextChanged) {
+                    $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL_TEXT');
                 } else {
                     $str = \Yii::t('structure', 'activity_MOTION_SET_PROPOSAL');
                 }
@@ -780,6 +780,8 @@ class ConsultationLog extends ActiveRecord
                 $version = (string) ($data->version ?? '-');
                 if ($data->isNew) {
                     $str = \Yii::t('structure', 'activity_AMENDMENT_NEW_PROPOSAL');
+                } elseif ($data->proposalTextChanged) {
+                    $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL_TEXT');
                 } else {
                     $str = \Yii::t('structure', 'activity_AMENDMENT_SET_PROPOSAL');
                 }

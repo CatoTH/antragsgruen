@@ -678,6 +678,10 @@ trait MotionActionsTrait
                 $proposal->save();
 
                 $reference->delete();
+
+                $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+                $ppChanges->setProposalTextChanged();
+                ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
             }
             $motion->flushCacheItems(['procedure']);
         }
@@ -697,6 +701,10 @@ trait MotionActionsTrait
             $proposal->userStatus = null;
             $proposal->save();
             $motion->flushCacheItems(['procedure']);
+
+            $ppChanges = ProposedProcedureChange::create(false, $proposal->id, $proposal->version);
+            $ppChanges->setProposalTextChanged();
+            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
 
             return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'view', ['proposalVersion' => $proposal->version]));
         }

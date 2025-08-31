@@ -32,6 +32,8 @@ class ProposedProcedureChange implements \JsonSerializable
     public ?int $votingBlockIdFrom = null;
     public ?int $votingBlockIdTo = null;
 
+    public bool $proposalTextChanged = false;
+
     private bool $hasChanges = false;
 
     public static function create(bool $isNew, int $proposalId, int $version): ProposedProcedureChange
@@ -94,6 +96,11 @@ class ProposedProcedureChange implements \JsonSerializable
         $this->proposalTagsFrom = $from;
         $this->proposalTagsTo = $to;
         $this->hasChanges = true;
+    }
+
+    public function setProposalTextChanged(): void
+    {
+        $this->proposalTextChanged = true;
     }
 
     public function hasChanges(): bool {
