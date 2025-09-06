@@ -53,6 +53,7 @@ return [
     'pp_changes'            => 'Vorgeschlagener Text',
     'pp_explanation'        => 'Erklärung',
     'pp_admin_site'         => 'Übersicht (intern)',
+    'pp_admin_site_wo_comm' => 'Übersicht (intern, ohne Kommentare)',
     'pp_public_site'        => 'Übersicht (öfftl.)',
     'pp_ods_comments'       => 'Kommentare',
     'pp_ods_all'            => 'ODS-Export: Alles',

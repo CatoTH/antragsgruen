@@ -10,6 +10,7 @@ use yii\helpers\Html;
  * @var bool $expandAll
  * @var null|string $expandId
  * @var null|int $tagId
+ * @var bool $comments
  */
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -20,7 +21,7 @@ $layout->fullScreen = true;
 $consultation = $controller->consultation;
 
 $this->title = Yii::t('con', 'proposal_title_internal');
-$layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('/admin/motion-list/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl(['/admin/motion-list/index', 'comments' => ($comments ? 1 : 0)]));
 $layout->addBreadcrumb(Yii::t('con', 'proposal_bc'));
 $layout->loadBootstrapToggle();
 $layout->loadSelectize();
@@ -28,7 +29,7 @@ $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
-$reloadOptions = ['admin/proposed-procedure/index-ajax'];
+$reloadOptions = ['admin/proposed-procedure/index-ajax', 'comments' => ($comments ? 1 : 0)];
 if ($expandId) {
     $reloadOptions['expandId'] = $expandId;
 }
@@ -96,6 +97,7 @@ echo Html::beginForm('', 'post', [
             'expandAll'      => $expandAll,
             'expandId'       => $expandId,
             'tagId'          => $tagId,
+            'comments'       => $comments,
         ]) ?>
     </div>
 <?php

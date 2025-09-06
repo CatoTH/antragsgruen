@@ -16,7 +16,7 @@ class ProposedProcedureController extends AdminBase
         Privileges::PRIVILEGE_CHANGE_PROPOSALS
     ];
 
-    public function actionIndex(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null): HtmlResponse
+    public function actionIndex(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null, ?bool $comments = true): HtmlResponse
     {
         $this->activateFunctions();
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
@@ -33,10 +33,11 @@ class ProposedProcedureController extends AdminBase
             'expandAll' => $this->consultation->getSettings()->pProcedureExpandAll,
             'expandId' => $expandId,
             'tagId' => $tagId,
+            'comments' => $comments,
         ]));
     }
 
-    public function actionIndexAjax(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null): JsonResponse
+    public function actionIndexAjax(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null, ?bool $comments = true): JsonResponse
     {
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
@@ -50,8 +51,9 @@ class ProposedProcedureController extends AdminBase
         $html = $this->renderPartial('_index_content', [
             'proposedAgenda' => $proposalFactory->create(),
             'expandAll'      => $this->consultation->getSettings()->pProcedureExpandAll,
-            'expandId'       => ($expandId ? intval($expandId) : null),
-            'tagId'          => ($tagId ? intval($tagId) : null),
+            'expandId'       => $expandId ?: null,
+            'tagId'          => $tagId ?: null,
+            'comments'       => $comments,
         ]);
 
         return new JsonResponse([
@@ -61,12 +63,9 @@ class ProposedProcedureController extends AdminBase
         ]);
     }
 
-    public function actionOds(int $agendaItemId = 0, int $comments = 0, int $onlypublic = 0): BinaryFileResponse
+    public function actionOds(int $agendaItemId = 0, bool $comments = false, bool $onlypublic = false): BinaryFileResponse
     {
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
-
-        $comments = ($comments === 1);
-        $onlypublic = ($onlypublic === 1);
 
         $filename = 'proposed-procedure';
         if ($agendaItemId) {
