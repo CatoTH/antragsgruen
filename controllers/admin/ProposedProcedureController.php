@@ -94,7 +94,7 @@ class ProposedProcedureController extends AdminBase
     public function actionSaveMotionComment(): JsonResponse
     {
         $motionId = $this->getPostValue('id');
-        $text = $this->getPostValue('text');
+        $text = $this->getPostValue('comment');
 
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {

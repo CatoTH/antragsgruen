@@ -135,30 +135,40 @@ export class ProposedProcedureOverview {
     }
 
     private submitComment($commentTd: JQuery) {
-        let data = {
-            '_csrf': this.csrf,
-            'comment': $commentTd.find('textarea').val(),
-            'id': $commentTd.parents('.item').data('id'),
-        };
-        $.post($commentTd.data('post-url'), data, (ret) => {
-            if (!ret['success']) {
-                if (ret['error']) {
-                    alert(ret['error']);
+        $.ajax({
+            url: $commentTd.data('post-url'),
+            type: "POST",
+            data: JSON.stringify({
+                'comment': $commentTd.find('textarea').val(),
+                'id': $commentTd.parents('.item').data('id'),
+            }),
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            headers: {"X-CSRF-Token": this.csrf},
+            success: ret => {
+                console.log(ret);
+                if (!ret['success']) {
+                    if (ret['error']) {
+                        alert(ret['error']);
+                    }
+                    return;
                 }
-                return;
-            }
-            let $comment = $commentTd.find('.template').clone();
-            $comment.find('.date').text(ret['date_str']);
-            $comment.find('.name').text(ret['user_str']);
-            $comment.find('.comment').html(ret['text']);
-            $comment.removeClass('template');
-            $comment.insertBefore($commentTd.find('.template'));
-            window.setTimeout(() => {
-                $commentTd.find(".commentList")[0].scrollTop = $commentTd.find(".commentList")[0].scrollHeight;
-            }, 1);
+                let $comment = $commentTd.find('.template').clone();
+                $comment.find('.date').text(ret['date_str']);
+                $comment.find('.name').text(ret['user_str']);
+                $comment.find('.comment').html(ret['text']);
+                $comment.removeClass('template');
+                $comment.insertBefore($commentTd.find('.template'));
+                window.setTimeout(() => {
+                    $commentTd.find(".commentList")[0].scrollTop = $commentTd.find(".commentList")[0].scrollHeight;
+                }, 1);
 
-            $commentTd.find('textarea').val('');
-            $commentTd.removeClass('writing');
+                $commentTd.find('textarea').val('');
+                $commentTd.removeClass('writing');
+            }
+        }).catch(() => {
+            alert('Could not save');
         });
     }
 
