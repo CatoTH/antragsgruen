@@ -24,8 +24,14 @@ $consultation = $controller->consultation;
     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportProcedureBtn">
         <li class="exportLink linkProcedureIntern">
             <?php
-            $url = UrlHelper::createUrl('admin/proposed-procedure/index');
+            $url = UrlHelper::createUrl(['admin/proposed-procedure/index', 'comments' => 1]);
             echo Html::a(Yii::t('export', 'pp_admin_site'), $url);
+            ?>
+        </li>
+        <li class="exportLink linkProcedureInternWoComm">
+            <?php
+            $url = UrlHelper::createUrl(['admin/proposed-procedure/index', 'comments' => 0]);
+            echo Html::a(Yii::t('export', 'pp_admin_site_wo_comm'), $url);
             ?>
         </li>
         <li class="exportLink linkProcedurePublic">

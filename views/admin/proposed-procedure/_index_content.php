@@ -12,6 +12,7 @@ use yii\helpers\Html;
  * @var bool $expandAll
  * @var null|string $expandId
  * @var null|string $tagId
+ * @var bool $comments
  */
 
 /** @var \app\controllers\Base $controller */
@@ -120,7 +121,11 @@ foreach ($proposedAgenda as $proposedItem) {
                         <?php } ?>
                         <th class="procedure"><?= Yii::t('con', 'proposal_table_proposal') ?></th>
                         <th class="visible"><?= Yii::t('con', 'proposal_table_visible') ?></th>
-                        <th class="comments"><?= Yii::t('con', 'proposal_table_comment') ?></th>
+                        <?php
+                        if ($comments) {
+                            ?>
+                            <th class="comments"><?= Yii::t('con', 'proposal_table_comment') ?></th>
+                        <?php } ?>
                     </tr>
                     </thead>
                     <tbody>
@@ -243,7 +248,11 @@ foreach ($proposedAgenda as $proposedItem) {
                                        data-save-url="<?= Html::encode($setVisibleUrl) ?>"
                                     <?= ($proposal->visibleFrom ? 'checked' : '') ?>>
                             </td>
-                            <?= $this->render('_index_comment', ['item' => $item]) ?>
+                            <?php
+                            if ($comments) {
+                                echo $this->render('_index_comment', ['item' => $item]);
+                            }
+                            ?>
                         </tr>
                         <?php
                     }
