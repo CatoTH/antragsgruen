@@ -338,8 +338,8 @@ trait AmendmentActionsTrait
             return;
         }
 
-        if ($proposal->userStatus === Amendment::STATUS_ACCEPTED && $status === Amendment::STATUS_REJECTED) {
-            // No undoing accepting
+        if ($proposal->userStatus === Amendment::STATUS_ACCEPTED) {
+            // No changing once accepted
             return;
         }
 

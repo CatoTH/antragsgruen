@@ -85,9 +85,15 @@ $notifications = ConsultationLog::getProposalNotification($imotion, $proposal->i
         echo Yii::t('amend', 'proposal_user_disagreed');
     }
     if ($hasDecision) {
-        echo '</div><div class="updateDecision">';
+        echo '</div>';
+    }
+    if ($hasDecision && !$agreed) {
+        echo '<div class="updateDecision">';
         echo '<button class="btn btn-default btnUpdateDecision">' . Yii::t('amend', 'proposal_user_agreement_amend') . '</button>';
-        echo '</div></div>';
+        echo '</div>';
+    }
+    if ($hasDecision) {
+        echo '</div>';
     }
     ?>
     <div class="comment<?= $hasDecision ? ' showWhenUpdating' : '' ?>">
