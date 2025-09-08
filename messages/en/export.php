@@ -53,7 +53,7 @@ return [
     'pp_changes'            => 'Proposed version',
     'pp_explanation'        => 'Explanation',
     'pp_admin_site'         => 'Overview (internal)',
-    'pp_admin_site_wo_comm' => 'Overview (internal, wo/ comments)',
+    'pp_admin_site_minimal' => 'Overview (internal, wo/ comments)',
     'pp_public_site'        => 'Overview (public)',
     'pp_ods_comments'       => 'Comments',
     'pp_ods_all'            => 'ODS-Export: Everything',

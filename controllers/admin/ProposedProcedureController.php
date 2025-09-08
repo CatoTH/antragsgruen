@@ -16,7 +16,7 @@ class ProposedProcedureController extends AdminBase
         Privileges::PRIVILEGE_CHANGE_PROPOSALS
     ];
 
-    public function actionIndex(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null, ?bool $comments = true): HtmlResponse
+    public function actionIndex(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null, ?bool $minimal = true): HtmlResponse
     {
         $this->activateFunctions();
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
@@ -33,11 +33,11 @@ class ProposedProcedureController extends AdminBase
             'expandAll' => $this->consultation->getSettings()->pProcedureExpandAll,
             'expandId' => $expandId,
             'tagId' => $tagId,
-            'comments' => $comments,
+            'minimal' => $minimal,
         ]));
     }
 
-    public function actionIndexAjax(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null, ?bool $comments = true): JsonResponse
+    public function actionIndexAjax(int $agendaItemId = 0, ?int $expandId = null, ?int $tagId = null, ?bool $minimal = true): JsonResponse
     {
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
@@ -53,7 +53,7 @@ class ProposedProcedureController extends AdminBase
             'expandAll'      => $this->consultation->getSettings()->pProcedureExpandAll,
             'expandId'       => $expandId ?: null,
             'tagId'          => $tagId ?: null,
-            'comments'       => $comments,
+            'minimal'        => $minimal,
         ]);
 
         return new JsonResponse([

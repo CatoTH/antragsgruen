@@ -12,7 +12,7 @@ use yii\helpers\Html;
  * @var bool $expandAll
  * @var null|string $expandId
  * @var null|string $tagId
- * @var bool $comments
+ * @var bool $minimal
  */
 
 /** @var \app\controllers\Base $controller */
@@ -42,7 +42,11 @@ if ($tagId !== null) {
     }
 }
 
-$allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+if ($minimal) {
+    $allTags = [];
+} else {
+    $allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
+}
 
 // Hint: there are probably a lot more motions/amendments than tags. So to limit the amount of queries,
 // it's faster to iterate over the tags than to iterate over motions/amendments.
@@ -120,10 +124,10 @@ foreach ($proposedAgenda as $proposedItem) {
                             <th class="responsibility"><?= Yii::t('con', 'proposal_table_response') ?></th>
                         <?php } ?>
                         <th class="procedure"><?= Yii::t('con', 'proposal_table_proposal') ?></th>
-                        <th class="visible"><?= Yii::t('con', 'proposal_table_visible') ?></th>
                         <?php
-                        if ($comments) {
+                        if (!$minimal) {
                             ?>
+                            <th class="visible"><?= Yii::t('con', 'proposal_table_visible') ?></th>
                             <th class="comments"><?= Yii::t('con', 'proposal_table_comment') ?></th>
                         <?php } ?>
                     </tr>
@@ -201,27 +205,29 @@ foreach ($proposedAgenda as $proposedItem) {
                                 echo $this->render('_status_icons', ['proposal' => $proposal, 'showVisibility' => false, 'search' => null]);
                                 echo Agenda::formatProposedProcedure($item, $proposal, Agenda::FORMAT_HTML);
 
-                                $selectedTags = [];
-                                if (count($item->getProposedProcedureTags()) > 0) {
-                                    $tags = [];
-                                    foreach ($item->getProposedProcedureTags() as $tag) {
-                                        $tags[] = Html::encode($tag->title);
-                                        $selectedTags[] = $tag->id;
+                                if (!$minimal) {
+                                    $selectedTags = [];
+                                    if (count($item->getProposedProcedureTags()) > 0) {
+                                        $tags = [];
+                                        foreach ($item->getProposedProcedureTags() as $tag) {
+                                            $tags[] = Html::encode($tag->title);
+                                            $selectedTags[] = $tag->id;
+                                        }
+                                        echo '<div class="tagNames">';
+                                        echo implode(', ', $tags);
+                                        echo '<button class="btn btn-sm btn-link tagEditOpener" type="button" title="' . Yii::t('amend',
+                                                'proposal_edit_tags') . '">';
+                                        echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
+                                        echo '</button>';
+                                        echo '</div>';
+                                    } else {
+                                        echo '<div class="noTags">';
+                                        echo '<button class="btn btn-sm btn-link tagEditOpener" type="button">';
+                                        echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
+                                        echo ' ' . Yii::t('amend', 'proposal_edit_tags');
+                                        echo '</button>';
+                                        echo '</div>';
                                     }
-                                    echo '<div class="tagNames">';
-                                    echo implode(', ', $tags);
-                                    echo '<button class="btn btn-sm btn-link tagEditOpener" type="button" title="' . Yii::t('amend', 'proposal_edit_tags') . '">';
-                                    echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
-                                    echo '</button>';
-                                    echo '</div>';
-                                } else {
-                                    echo '<div class="noTags">';
-                                    echo '<button class="btn btn-sm btn-link tagEditOpener" type="button">';
-                                    echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
-                                    echo ' ' . Yii::t('amend', 'proposal_edit_tags');
-                                    echo '</button>';
-                                    echo '</div>';
-                                }
                                 ?>
                                 <div class="selectize-wrapper tagsSelector hidden">
                                     <select class="proposalTagsSelect" name="proposalTags[]" multiple="multiple" id="proposalTagsSelect">
@@ -241,7 +247,13 @@ foreach ($proposedAgenda as $proposedItem) {
                                         </button>
                                     </div>
                                 </div>
+                                    <?php
+                                }
+                                ?>
                             </td>
+                            <?php
+                            if (!$minimal) {
+                            ?>
                             <td class="visible">
                                 <input type="checkbox" name="visible"
                                        title="<?= Yii::t('con', 'proposal_table_visible') ?>"
@@ -249,7 +261,6 @@ foreach ($proposedAgenda as $proposedItem) {
                                     <?= ($proposal->visibleFrom ? 'checked' : '') ?>>
                             </td>
                             <?php
-                            if ($comments) {
                                 echo $this->render('_index_comment', ['item' => $item]);
                             }
                             ?>

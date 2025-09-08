@@ -10,7 +10,7 @@ use yii\helpers\Html;
  * @var bool $expandAll
  * @var null|string $expandId
  * @var null|int $tagId
- * @var bool $comments
+ * @var bool $minimal
  */
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -21,7 +21,7 @@ $layout->fullScreen = true;
 $consultation = $controller->consultation;
 
 $this->title = Yii::t('con', 'proposal_title_internal');
-$layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl(['/admin/motion-list/index', 'comments' => ($comments ? 1 : 0)]));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl(['/admin/motion-list/index', 'minimal' => ($minimal ? 1 : 0)]));
 $layout->addBreadcrumb(Yii::t('con', 'proposal_bc'));
 $layout->loadBootstrapToggle();
 $layout->loadSelectize();
@@ -29,7 +29,7 @@ $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
-$reloadOptions = ['admin/proposed-procedure/index-ajax', 'comments' => ($comments ? 1 : 0)];
+$reloadOptions = ['admin/proposed-procedure/index-ajax', 'minimal' => ($minimal ? 1 : 0)];
 if ($expandId) {
     $reloadOptions['expandId'] = $expandId;
 }
@@ -68,6 +68,9 @@ echo Html::beginForm('', 'post', [
         </div>
     </section>
 
+<?php
+if (!$minimal) {
+    ?>
     <section class="motionListFilter content" id="motionListSorter" aria-labelledby="motionListSorterTitle">
         <?php
         $tags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
@@ -89,6 +92,9 @@ echo Html::beginForm('', 'post', [
             </div>
         </div>
     </section>
+    <?php
+}
+?>
 
     <div class="reloadContent">
         <?= $controller->showErrors() ?>
@@ -97,7 +103,7 @@ echo Html::beginForm('', 'post', [
             'expandAll'      => $expandAll,
             'expandId'       => $expandId,
             'tagId'          => $tagId,
-            'comments'       => $comments,
+            'minimal'        => $minimal,
         ]) ?>
     </div>
 <?php
