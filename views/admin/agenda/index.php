@@ -46,7 +46,7 @@ echo '<h1>' . Yii::t('admin', 'agenda_title') . '</h1>';
 ?>
 
 <div class="content">
-    <a href="<?= Html::encode(UrlHelper::createUrl('/consultation/home')) ?>" class="backHomeLink">
+    <a href="<?= Html::encode(UrlHelper::homeUrl()) ?>" class="backHomeLink">
         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
         <?= Yii::t('admin', 'agenda_back') ?>
     </a>
