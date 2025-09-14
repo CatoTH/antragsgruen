@@ -360,7 +360,7 @@ class MotionMergeAmendmentsTextarea {
             MotionMergeChangeActions.insertAccept(el);
         });
         this.$holder.find(".ice-del").each((i, el) => {
-            MotionMergeChangeActions.deleteAccept(el);
+            MotionMergeChangeActions.deleteAccept(el, false);
         });
         this.onChanged();
         window.setTimeout(() => {

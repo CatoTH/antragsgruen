@@ -13,7 +13,7 @@ export class MotionMergeChangeActions {
             MotionMergeChangeActions.insertAccept(node, onFinished);
         }
         if ($node.hasClass("ice-del")) {
-            MotionMergeChangeActions.deleteAccept(node, onFinished);
+            MotionMergeChangeActions.deleteAccept(node, true, onFinished);
         }
     }
 
@@ -81,7 +81,7 @@ export class MotionMergeChangeActions {
         if (onFinished) onFinished();
     }
 
-    public static deleteAccept(node: Element, onFinished: () => void = null) {
+    public static deleteAccept(node: Element, delayed: boolean, onFinished: () => void = null) {
         let name = node.nodeName.toLowerCase(),
             $removeEl: JQuery;
         if (name == 'li') {
@@ -91,13 +91,18 @@ export class MotionMergeChangeActions {
         }
 
         if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
-            $removeEl.css("overflow", "hidden").height($removeEl.height());
-            $removeEl.animate({"height": "0"}, 250, () => {
+            const doDel = () => {
                 $removeEl.remove();
                 $(".collidingParagraph:empty").remove();
                 MotionMergeChangeActions.removeEmptyParagraphs();
                 if (onFinished) onFinished();
-            });
+            }
+            if (delayed) {
+                $removeEl.css("overflow", "hidden").height($removeEl.height());
+                $removeEl.animate({"height": "0"}, 250, () => doDel);
+            } else {
+                doDel();
+            }
         } else {
             $removeEl.remove();
             if (onFinished) onFinished();
