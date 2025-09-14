@@ -106,7 +106,7 @@ export class ProposedChangeEdit {
                 MotionMergeChangeActions.insertAccept(el);
             });
             $cloned.find('.ice-del').each((i, el) => {
-                MotionMergeChangeActions.deleteAccept(el);
+                MotionMergeChangeActions.deleteAccept(el, false);
             });
 
             sections[sectionId] = $cloned.html();
