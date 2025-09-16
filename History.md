@@ -30,6 +30,7 @@
   - "Obsoleted by other Motion" and "Obsoleted by other Amendment" can now both be chosen as proposed procedure status.
   - When editing the modified version of a proposed procedure, more amendments are checked for collissions.
   - The internal proposed procedure list can also be opened minimalized, without showing admin comments and tags.
+- Bugfix: The maximum length of a section could be set to an invalid value.
 
 ### Version 4.15.3 (2025-05.13)
 

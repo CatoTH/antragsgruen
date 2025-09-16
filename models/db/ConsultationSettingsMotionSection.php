@@ -101,7 +101,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         $this->positionRight = (isset($data['positionRight']) && intval($data['positionRight']) === 1 ? 1 : 0);
         $this->printTitle    = (isset($data['printTitle']) && intval($data['printTitle']) === 1 ? 1 : 0);
         if (isset($data['maxLenSet'])) {
-            $this->maxLen = $data['maxLenVal'];
+            $this->maxLen = intval($data['maxLenVal']);
             if (isset($data['maxLenSoft'])) {
                 $this->maxLen *= -1;
             }
