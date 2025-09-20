@@ -129,6 +129,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         } else {
             $settings->explanationHtml = null;
         }
+        if ($this->type === ISectionType::TYPE_CHOICE) {
+            $settings->choiceType = ($data['choiceType'] === MotionSectionSettings::CHOICE_TYPE_SELECT ? MotionSectionSettings::CHOICE_TYPE_SELECT : MotionSectionSettings::CHOICE_TYPE_RADIO);
+            $settings->choices = isset($data['options']) && is_array($data['options']) ? $data['options'] : [];
+        }
         $settings->showInHtml = (isset($data['showInHtml']) || !in_array($this->type, [ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_TITLE]));
         $settings->isRtl = isset($data['isRtl']);
         $this->setSettingsObj($settings);

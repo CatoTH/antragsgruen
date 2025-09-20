@@ -23,6 +23,7 @@ const TYPE_PDF_ATTACHMENT = 5;
 const TYPE_PDF_ALTERNATIVE = 6;
 const TYPE_VIDEO_EMBED = 7;
 const TYPE_TEXT_EDITORIAL = 8;
+const TYPE_CHOICE = 9;
 
 const TYPE_TABULAR_SELECT = 4;
 
@@ -224,9 +225,22 @@ class MotionTypeEdit {
         });
     }
 
+    private initOptionsSelectize($el: any) {
+        $el.selectize({
+            create: true,
+            plugins: ["remove_button"],
+            render: {
+                option_create: (data, escape) => {
+                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                }
+            }
+        });
+    }
+
     private initSectionList() {
         let $list = $('#sectionsList'),
-            newCounter = 0;
+            newCounter = 0,
+            widget = this;
 
         $list.data("sortable", Sortable.create(<HTMLElement>$list[0], {
             handle: '.drag-handle',
@@ -246,7 +260,8 @@ class MotionTypeEdit {
         $list.on('change', '.sectionType', function () {
             let $li = $(this).parents('li').first(),
                 val = parseInt($(this).val() as string);
-            $li.removeClass('title textHtml textSimple textEditorial image tabularData pdfAlternative pdfAttachment videoEmbed');
+
+            $li.removeClass('title textHtml textSimple textEditorial image choice tabularData pdfAlternative pdfAttachment videoEmbed');
             if (val === TYPE_TITLE) {
                 $li.addClass('title');
             } else if (val === TYPE_TEXT_SIMPLE) {
@@ -257,6 +272,8 @@ class MotionTypeEdit {
                 $li.addClass('textEditorial');
             } else if (val === TYPE_IMAGE) {
                 $li.addClass('image');
+            } else if (val === TYPE_CHOICE) {
+                $li.addClass('choice');
             } else if (val === TYPE_TABULAR) {
                 $li.addClass('tabularData');
                 if ($li.find('.tabularDataRow ul > li').length == 0) {
@@ -318,6 +335,9 @@ class MotionTypeEdit {
                 handle: '.drag-data-handle',
                 animation: 150
             }));
+
+            widget.initOptionsSelectize($newObj.find('.choicesRow select'));
+            $newObj.find('.hasExplanation input').trigger('change');
         });
 
         let dataNewCounter = 0;
@@ -331,16 +351,7 @@ class MotionTypeEdit {
             $ul.append($row);
             $row.find('input').trigger('focus');
 
-            const $selecionList: any = $row.find('.selectOptions select');
-            $selecionList.selectize({
-                create: true,
-                plugins: ["remove_button"],
-                render: {
-                    option_create: (data, escape) => {
-                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
-                    }
-                }
-            });
+            widget.initOptionsSelectize($row.find('.selectOptions select') as any);
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
@@ -370,18 +381,7 @@ class MotionTypeEdit {
             }
         });
         $list.find(".tabularTypeSelect").trigger("change");
-        $list.find('.selectOptions select').each(function () {
-            let $selecionList: any = $(this);
-            $selecionList.selectize({
-                create: true,
-                plugins: ["remove_button"],
-                render: {
-                    option_create: (data, escape) => {
-                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
-                    }
-                }
-            });
-        });
+        widget.initOptionsSelectize($list.find('.selectOptions select, .choicesRow select'));
     }
 }
 

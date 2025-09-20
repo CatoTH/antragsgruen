@@ -9,6 +9,7 @@ return [
     'section_pdf_attachment'  => 'PDF attachment',
     'section_pdf_alternative' => 'PDF alternative',
     'section_video_embed'     => 'Embedded video',
+    'section_api_choice'      => 'Choice of different options',
 
     'amend_number_permotion' => 'Ä1 for M1 (Numbering per motion)',
     'amend_number_global'    => 'Ä1 for M1 (Global numbering)',

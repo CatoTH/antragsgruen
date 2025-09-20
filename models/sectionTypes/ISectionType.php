@@ -24,6 +24,7 @@ abstract class ISectionType
     public const TYPE_PDF_ALTERNATIVE = 6;
     public const TYPE_VIDEO_EMBED     = 7;
     public const TYPE_TEXT_EDITORIAL  = 8;
+    public const TYPE_CHOICE          = 9;
 
     protected const TYPE_API_TITLE = 'Title';
     protected const TYPE_API_TEXT_SIMPLE = 'TextSimple';
@@ -34,6 +35,7 @@ abstract class ISectionType
     protected const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
     protected const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
     protected const TYPE_API_TEXT_EDITORIAL = 'VideoEmbed';
+    protected const TYPE_API_CHOICE = 'Choice';
 
     protected IMotionSection $section;
     protected bool $absolutizeLinks = false;
@@ -57,6 +59,7 @@ abstract class ISectionType
             static::TYPE_TEXT_HTML       => \Yii::t('structure', 'section_html'),
             static::TYPE_TEXT_EDITORIAL  => \Yii::t('structure', 'section_editorial'),
             static::TYPE_IMAGE           => \Yii::t('structure', 'section_image'),
+            static::TYPE_CHOICE          => \Yii::t('structure', 'section_api_choice'),
             static::TYPE_TABULAR         => \Yii::t('structure', 'section_tabular'),
             static::TYPE_PDF_ATTACHMENT  => \Yii::t('structure', 'section_pdf_attachment'),
             static::TYPE_PDF_ALTERNATIVE => \Yii::t('structure', 'section_pdf_alternative'),
@@ -76,6 +79,7 @@ abstract class ISectionType
             static::TYPE_PDF_ALTERNATIVE => static::TYPE_API_PDF_ALTERNATIVE,
             static::TYPE_PDF_ATTACHMENT => static::TYPE_API_PDF_ATTACHMENT,
             static::TYPE_VIDEO_EMBED => static::TYPE_API_VIDEO_EMBED,
+            static::TYPE_CHOICE => static::TYPE_API_CHOICE,
             default => 'Unknown',
         };
     }

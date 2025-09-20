@@ -687,6 +687,9 @@ label.legend {
     margin: 10px 0 30px;
     padding: 0;
     overflow: auto;
+    &.choice {
+      overflow: visible; // For the drop-down
+    }
     border: solid 1px #afa;
     border-radius: 4px;
     background-color: #c0ffc0;
@@ -794,6 +797,15 @@ label.legend {
       }
     }
 
+    .choicesRow {
+      display: none;
+      padding: 0 10px 10px 10px;
+    }
+    .choiceType {
+      display: none;
+      margin-bottom: 10px;
+    }
+
     .showInHtml {
       display: none;
     }
@@ -885,6 +897,20 @@ label.legend {
 
     &.image {
       .imageMaxSize {
+        display: block;
+      }
+
+      .commentRow {
+        display: none;
+      }
+
+      .lineNumbersLabel, .fixedWidthLabel, .isRtlLabel, .maxLength {
+        display: none;
+      }
+    }
+
+    &.choice {
+      .choicesRow, .choiceType {
         display: block;
       }
 

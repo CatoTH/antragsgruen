@@ -679,6 +679,9 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_tab_p'        => 'Angabe',
     'motion_section_rowdel'       => 'Angabe entfernen',
     'motion_section_options'      => 'Auswahlmöglichkeiten',
+    'motion_section_choicetype'   => 'Auswahltyp',
+    'motion_section_choice_radio' => 'Radio-Auswahlfelder',
+    'motion_section_choice_select'=> 'Dropdown-Auswahl',
 
     'todo_title'            => 'To Do',
     'todo_from'             => 'Von',
