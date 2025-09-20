@@ -631,6 +631,9 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_section_tab_p'        => 'Title',
     'motion_section_rowdel'       => 'Remove row',
     'motion_section_options'      => 'Options',
+    'motion_section_choicetype'   => 'Choice type',
+    'motion_section_choice_radio' => 'Radio-fields',
+    'motion_section_choice_select'=> 'Dropdown-selection',
 
     'todo_title'            => 'To Do',
     'todo_from'             => 'By',
