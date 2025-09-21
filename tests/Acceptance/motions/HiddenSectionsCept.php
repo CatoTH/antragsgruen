@@ -42,6 +42,7 @@ $I->wantTo('Create a motion');
 $I->gotoConsultationHome();
 $I->click('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 $I->see('nur für dich und Administrierende', '#section_holder_54');
+$I->checkOption("//input[@name='tags[]'][@value='1']");
 $I->fillField('#sections_' . AcceptanceTester::FIRST_FREE_MOTION_SECTION, 'New motion');
 $I->executeJS('CKEDITOR.instances.sections_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . '_wysiwyg.setData("<p>Public text</p>")');
 $I->executeJS('CKEDITOR.instances.sections_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 2) . '_wysiwyg.setData("<p>Reason</p>")');

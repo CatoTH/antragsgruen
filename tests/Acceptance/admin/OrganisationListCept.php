@@ -35,6 +35,7 @@ $I->seeInField('.editOrganisationModal input', 'Working group: education');
 $I->wantTo('see the organisations when creating motions');
 
 $I->gotoConsultationHome()->gotoMotionCreatePage();
+$I->checkOption("//input[@name='tags[]'][@value='1']");
 $I->fillField(['name' => 'sections[1]'], 'Testing motion');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
 $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><strong>Test 2</strong></p>");');
