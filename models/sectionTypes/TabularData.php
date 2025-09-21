@@ -25,10 +25,10 @@ class TabularData extends ISectionType
 
         foreach ($rows as $row) {
             $id = 'sections_' . $type->id . '_' . $row->rowId;
-            $str .= '<div class="form-group">';
-            $str .= '<label for="' . $id . '" class="col-md-3 control-label">';
+            $str .= '<div class="form-group stdTwoCols">';
+            $str .= '<label for="' . $id . '" class="leftColumn control-label">';
             $str .= Html::encode($row->title) . ':</label>';
-            $str .= '<div class="col-md-9">';
+            $str .= '<div class="rightColumn">';
             $nameId = 'name="sections[' . $type->id . '][' . $row->rowId . ']" id="' . $id . '"';
             $dat    = $data['rows'][$row->rowId] ?? '';
             $str .= $row->getFormField($nameId, $dat, $type->required);
