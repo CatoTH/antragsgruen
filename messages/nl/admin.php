@@ -286,7 +286,6 @@ return [
     'con_organisation_add'    => 'New organisation',
     'con_multiple_topics'     => 'Allow multiple topics per motion',
     'con_allow_set_tags'      => 'Proposers can set the topics themselves',
-    'con_amendment_tags'      => 'Topics for individual amendments',
     'con_title_amendments'    => 'Amendments',
     'con_amend_number'        => 'Numbering',
     'con_amend_screening'     => '<strong>Screening</strong> of amendments',

@@ -17,6 +17,7 @@
 - When collecting support before official motion/amendment submission, the "Submitted" date field now refers to the time of final submission, not initial creation.
 - Motion types now support a section type "Choices", to have the submitter of a document choose for a given set of options, via radio-buttons or a dropdown-menu.
 - Amendments are now prefixed with "AM", not "Ä". The prefix can be changed through the language-setting.
+- Amendments have a separate list of tags that users can choose from, different from the tags available for motions.
 - Amendments to Statute Amendments are now better supported:
   - On the home page, those amendments are now shown like regular amendments, not like stand-alone motions.
   - These amendments now show the base statute amendment and the changed version next to each other, for easier comparison.

@@ -93,7 +93,7 @@ trait AmendmentActionsTrait
         if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
-        foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+        foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT) as $tag) {
             if ($tag->id === intval($this->getHttpRequest()->post('tagId'))) {
                 $amendment->link('tags', $tag);
             }
@@ -108,7 +108,7 @@ trait AmendmentActionsTrait
         if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($amendment))) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
-        foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+        foreach ($amendment->getMyConsultation()->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT) as $tag) {
             if ($tag->id === intval($this->getHttpRequest()->post('tagId'))) {
                 $amendment->unlink('tags', $tag, true);
             }

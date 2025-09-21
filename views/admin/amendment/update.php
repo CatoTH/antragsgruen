@@ -261,14 +261,14 @@ if (count($consultation->agendaItems) > 0) {
         </div>
     </div>
 
-<?php if (count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) { ?>
+<?php if (count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT)) > 0) { ?>
     <div class="stdTwoCols">
         <label class="leftColumn control-label">
             <?= Yii::t('admin', 'motion_topics') ?>:
         </label>
         <div class="rightColumn tagList">
             <?php
-            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT) as $tag) {
                 echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
                 foreach ($amendment->getPublicTopicTags() as $mtag) {
                     if ($mtag->id == $tag->id) {

@@ -234,6 +234,13 @@
       font-size: 0.9em;
     }
   }
+  .tagsSelect {
+    label {
+      font-weight: normal;
+      display: inline-block;
+      margin-right: 15px;
+    }
+  }
   .submitHolder {
     text-align: right;
   }

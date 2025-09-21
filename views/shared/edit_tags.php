@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /**
  * @var int[] $tagIds
  * @var Consultation $consultation
+ * @var int $type
  */
 
 if (!$consultation->getSettings()->allowUsersToSetTags) {
@@ -14,7 +15,7 @@ if (!$consultation->getSettings()->allowUsersToSetTags) {
 
 /** @var ConsultationSettingsTag[] $tags */
 $tags = [];
-foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+foreach ($consultation->getSortedTags($type) as $tag) {
     $tags[$tag->id] = $tag;
 }
 
@@ -38,14 +39,27 @@ if ($consultation->getSettings()->allowMultipleTags) {
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '">';
 } else {
     $selected = (count($tagIds) > 0 ? $tagIds[0] : 0);
-    $tagOptions = [];
-    foreach ($tags as $tag) {
-        $tagOptions[$tag->id] = $tag->title;
+    if (count($tags) > 3) {
+        $tagOptions = [];
+        foreach ($tags as $tag) {
+            $tagOptions[$tag->id] = $tag->getNormalizedName();
+        }
+        echo '<div class="form-group">';
+        echo '<label class="legend" for="tagSelect">' . Yii::t('motion', 'tag_tags') . '</label><div style="position: relative;">';
+        echo Html::dropDownList('tags[]', $selected, $tagOptions, ['id' => 'tagSelect', 'class' => 'stdDropdown']);
+        echo '</div>';
+        echo '</div>';
+    } else {
+        echo '<div class="form-group tagsSelect">';
+        foreach ($tags as $tag) {
+            echo '<label class="tagLabel">';
+            echo '<input type="radio" name="tags[]" required value="' . Html::encode($tag->id) . '"';
+            if (in_array($tag->id, $tagIds)) {
+                echo ' checked="checked"';
+            }
+            echo '> ' . Html::encode($tag->title);
+            echo '</label>';
+        }
+        echo '</div>';
     }
-    echo '<div class="form-group">';
-    echo '<label class="legend" for="tagSelect">' . Yii::t('motion', 'tag_tags') . '</label><div style="position: relative;">';
-    echo Html::dropDownList('tags[]', $selected, $tagOptions, ['id' => 'tagSelect', 'class' => 'stdDropdown']);
-    echo '</div>';
-    echo '</div>';
 }
-
