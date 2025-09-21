@@ -843,14 +843,12 @@ class AdminMotionFilterForm
 
     private function getTagList(): array
     {
-        $tagsProposed = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);
-        $tagsPublic = $this->consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
+        $allTagTypes = [ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE];
         $tagIds = [];
-        foreach ($tagsProposed as $tag) {
-            $tagIds[] = $tag->id;
-        }
-        foreach ($tagsPublic as $tag) {
-            $tagIds[] = $tag->id;
+        foreach ($allTagTypes as $tagType) {
+            foreach ($this->consultation->getSortedTags($tagType) as $tag) {
+                $tagIds[] = $tag->id;
+            }
         }
 
         $motionIds = array_map(fn(Motion $motion): int => $motion->id, $this->allMotions);
@@ -858,7 +856,7 @@ class AdminMotionFilterForm
         $stats = ConsultationSettingsTag::getIMotionStats($tagIds, $motionIds, $amendmentIds);
         $tagStruct = ConsultationSettingsTag::getTagStructure(
             $this->consultation,
-            [ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE, ConsultationSettingsTag::TYPE_PUBLIC_TOPIC],
+            $allTagTypes,
             null,
             $stats
         );

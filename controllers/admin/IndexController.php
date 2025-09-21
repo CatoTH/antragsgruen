@@ -242,11 +242,10 @@ class IndexController extends AdminBase
         }
 
         $existingTagsById = [];
-        foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
-            $existingTagsById[$tag->id] = $tag;
-        }
-        foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE) as $tag) {
-            $existingTagsById[$tag->id] = $tag;
+        foreach ([ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE] as $tagType) {
+            foreach ($consultation->getSortedTags($tagType) as $tag) {
+                $existingTagsById[$tag->id] = $tag;
+            }
         }
 
         $pos = 0;

@@ -9,6 +9,7 @@
  */
 
 use app\components\UrlHelper;
+use app\models\db\ConsultationSettingsTag;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
@@ -111,7 +112,11 @@ if (count($form->motionType->agendaItems) > 0 && !$isAmendmentsOnly) {
 
 
 if (!$isAmendmentsOnly) {
-    echo $this->render('@app/views/shared/edit_tags', ['consultation' => $consultation, 'tagIds' => $form->tags]);
+    echo $this->render('@app/views/shared/edit_tags', [
+        'consultation' => $consultation,
+        'tagIds' => $form->tags,
+        'type' => ConsultationSettingsTag::TYPE_PUBLIC_TOPIC,
+    ]);
 }
 
 foreach ($form->sections as $section) {
