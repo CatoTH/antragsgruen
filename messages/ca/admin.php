@@ -286,7 +286,6 @@ return [
     'con_organisation_add'    => 'Nova organització',
     'con_multiple_topics'     => 'Permetre múltiples temes per resolució',
     'con_allow_set_tags'      => 'Els proposants poden establir els temes ells mateixos',
-    'con_amendment_tags'      => 'Temes per a esmenes individuals',
     'con_title_amendments'    => 'Esmenes',
     'con_amend_number'        => 'Numeració',
     'con_amend_screening'     => '<strong>Revisió</strong> d\'esmenes',

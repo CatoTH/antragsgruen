@@ -187,7 +187,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     {
         $tags = [];
         foreach ($this->tags as $tag) {
-            if ($tag->type === ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) {
+            if ($tag->type === ConsultationSettingsTag::TYPE_PUBLIC_TOPIC || $tag->type === ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT) {
                 $tags[] = $tag;
             }
         }

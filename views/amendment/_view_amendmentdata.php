@@ -2,7 +2,7 @@
 
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Amendment, User};
+use app\models\db\{Amendment, ConsultationSettingsTag, User};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -71,7 +71,7 @@ $amendmentData[] = [
     'content' => Tools::formatMysqlDateTime($amendment->dateCreation),
 ];
 
-MotionLayoutHelper::addTagsRow($amendment, $amendment->getPublicTopicTags(), $amendmentData);
+MotionLayoutHelper::addTagsRow($amendment, $amendment->getPublicTopicTags(), $amendmentData, ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT);
 
 $amendmentData = \app\models\layoutHooks\Layout::getAmendmentViewData($amendmentData, $amendment);
 

@@ -24,6 +24,7 @@ class ConsultationSettingsTag extends ActiveRecord
 {
     public const TYPE_PUBLIC_TOPIC = 0;
     public const TYPE_PROPOSED_PROCEDURE = 1;
+    public const TYPE_PUBLIC_AMENDMENT = 2;
 
     public static function tableName(): string
     {

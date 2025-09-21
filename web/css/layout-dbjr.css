@@ -11239,6 +11239,11 @@ body.usingMouse .motionData .delTagForm button:focus {
   margin-left: 10px;
   font-size: 0.9em;
 }
+.motionEditForm .tagsSelect label, .motionEditForm .tagsSelect .label {
+  font-weight: normal;
+  display: inline-block;
+  margin-right: 15px;
+}
 .motionEditForm .submitHolder {
   text-align: right;
 }

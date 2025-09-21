@@ -289,7 +289,6 @@ return [
     'con_organisation_add' => 'Nova organizacija', // Original: New organisation
     'con_multiple_topics' => 'Dopuštanje više tema po predlogu', // Original: Allow multiple topics per motion
     'con_allow_set_tags' => 'Predlagači mogu sami postaviti teme', // Original: Proposers can set the topics themselves
-    'con_amendment_tags' => 'Teme za pojedinačne amandmane', // Original: Topics for individual amendments
     'con_title_amendments' => 'Dopune', // Original: Amendments
     'con_amend_number' => 'Numerisanje', // Original: Numbering
     'con_amend_screening' => 'Administratori moraju <strong>pregledati</strong> amandmane prije objave', // Original: Admins need to <strong>review</strong> amendments before publication
@@ -565,7 +564,7 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'motion_type_created_msg' => 'Vrsta predloga je stvorena pčela. Možete ga detaljnije konfigurirati u nastavku.', // Original: The motion type has bee created. You can configure it in more detail below.
     'motion_type_del_caller' => 'Brisanje vrste predloga', // Original: Delete motion type
     'motion_type_del_btn' => 'Izbriši', // Original: Delete
-    'motion_type_not_deletable' => 'Ova vrsta predloga ne može se (još) izbrisati. ', // Original: This motion type cannot be deleted (yet). 
+    'motion_type_not_deletable' => 'Ova vrsta predloga ne može se (još) izbrisati. ', // Original: This motion type cannot be deleted (yet).
     'motion_type_deleted_head' => 'Vrsta predloga izbrisana', // Original: Motion type deleted
     'motion_type_deleted_msg' => 'Vrsta predloga uspješno je izbrisana.', // Original: The motion type has been successfully deleted.
     'motion_type_supp_form' => 'Obrazac', // Original: Form

@@ -191,11 +191,11 @@ class LayoutHelper
     /**
      * @param ConsultationSettingsTag[] $selectedTags
      */
-    public static function addTagsRow(IMotion $imotion, array $selectedTags, array &$rows): void
+    public static function addTagsRow(IMotion $imotion, array $selectedTags, array &$rows, int $tagType): void
     {
         $consultation = $imotion->getMyConsultation();
         $admin = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::imotion($imotion));
-        if ($admin && count($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC)) > 0) {
+        if ($admin && count($consultation->getSortedTags($tagType)) > 0) {
             $tags = [];
             $used_tag_ids = [];
             foreach ($selectedTags as $tag) {
@@ -214,7 +214,7 @@ class LayoutHelper
             $content .= '<select name="tagId" title="' . \Yii::t('motion', 'tag_select') . '" class="form-control">
         <option>-</option>';
 
-            foreach ($consultation->getSortedTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC) as $tag) {
+            foreach ($consultation->getSortedTags($tagType) as $tag) {
                 if (!in_array($tag->id, $used_tag_ids)) {
                     $content .= '<option value="' . intval($tag->id) . '">' . Html::encode($tag->title) . '</option>';
                 }
