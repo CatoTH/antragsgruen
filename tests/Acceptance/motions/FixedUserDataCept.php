@@ -28,6 +28,7 @@ $I->assertEquals('readonly', $readonly);
 $I->wantTo('submit a motion with a fake name');
 
 $I->executeJS('$("#initiatorPrimaryName").val("Some fake name")');
+$I->checkOption("//input[@name='tags[]'][@value='1']");
 $I->seeInField('#initiatorPrimaryName', 'Some fake name');
 
 $I->fillField(['name' => 'sections[1]'], 'Test motion');

@@ -50,7 +50,8 @@ if ($consultation->getSettings()->allowMultipleTags) {
         echo '</div>';
         echo '</div>';
     } else {
-        echo '<div class="form-group tagsSelect">';
+        echo '<fieldset class="form-group tagsSelect">';
+        echo '<legend class="legend" id="tagSelect">' .  Yii::t('motion', 'tag_tags') . '</legend>';
         foreach ($tags as $tag) {
             echo '<label class="tagLabel">';
             echo '<input type="radio" name="tags[]" required value="' . Html::encode($tag->id) . '"';
@@ -60,6 +61,6 @@ if ($consultation->getSettings()->allowMultipleTags) {
             echo '> ' . Html::encode($tag->title);
             echo '</label>';
         }
-        echo '</div>';
+        echo '</fieldset>';
     }
 }

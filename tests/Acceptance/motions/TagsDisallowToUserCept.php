@@ -23,6 +23,6 @@ $I->logout();
 $page = $I->gotoMotionCreatePage();
 $I->dontSeeElement('#tagSelect');
 
-$page->fillInValidSampleData();
+$page->fillInValidSampleData(selectTag: false);
 $page->saveForm();
 $I->submitForm('#motionConfirmForm', [], 'confirm');
