@@ -11,6 +11,7 @@ use yii\helpers\Html;
 
 $tagTypes = [
     ConsultationSettingsTag::TYPE_PUBLIC_TOPIC,
+    ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT,
     ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE,
 ];
 
@@ -24,6 +25,10 @@ $tagTypes = [
             <label class="btn btn-sm btn-default active">
                 <input type="radio" name="tagType" value="<?= ConsultationSettingsTag::TYPE_PUBLIC_TOPIC ?>" autocomplete="off" checked>
                 <?= Yii::t('admin', 'con_topics_public') ?>
+            </label>
+            <label class="btn btn-sm btn-default">
+                <input type="radio" name="tagType" value="<?= ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT ?>" autocomplete="off">
+                <?= Yii::t('admin', 'con_topics_amendment') ?>
             </label>
             <label class="btn btn-sm btn-default">
                 <input type="radio" name="tagType" value="<?= ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE ?>" autocomplete="off">
@@ -105,17 +110,6 @@ $tagTypes = [
                 ['id' => 'allowMultipleTags']
             );
             echo ' ' . Yii::t('admin', 'con_multiple_topics');
-            ?>
-        </label></div>
-    <div><label>
-            <?php
-            $handledSettings[] = 'amendmentsHaveTags';
-            echo Html::checkbox(
-                'settings[amendmentsHaveTags]',
-                $settings->amendmentsHaveTags,
-                ['id' => 'amendmentsHaveTags']
-            );
-            echo ' ' . Yii::t('admin', 'con_amendment_tags');
             ?>
         </label></div>
 </section>

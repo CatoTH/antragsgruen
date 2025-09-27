@@ -9,6 +9,7 @@ return [
     'section_pdf_attachment'  => 'PDF-Anhang',
     'section_pdf_alternative' => 'Alternatives PDF',
     'section_video_embed'     => 'Eingebettetes Video',
+    'section_api_choice'      => 'Auswahl aus mehreren Optionen',
 
     'amend_number_permotion' => 'Ä1 zu A1 (Zählung pro Antrag)',
     'amend_number_global'    => 'Ä1 zu A1 (Globale Zählung)',

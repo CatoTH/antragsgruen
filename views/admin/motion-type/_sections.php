@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\settings\MotionSection;
 use app\models\sectionTypes\{ISectionType, TabularDataType};
 use yii\helpers\Html;
 
@@ -105,6 +106,28 @@ $sName = 'sections[' . $sectionId . ']';
                         <input type="number" name="<?= $sName ?>[imgMaxHeight]" value="<?= $settings->imgMaxHeight > 0 ? $settings->imgMaxHeight : '' ?>"
                                title="Height in cm" size="4" class="form-control">
                         cm
+                    </div>
+                </fieldset>
+
+                <fieldset class="choiceType">
+                    <legend><?= Yii::t('admin', 'motion_section_choicetype') ?></legend>
+                    <div>
+                        <label>
+                            <?= Html::radio(
+                                $sName . '[choiceType]',
+                                ($settings->choiceType === MotionSection::CHOICE_TYPE_SELECT),
+                                ['value' => MotionSection::CHOICE_TYPE_SELECT],
+                            ) ?>
+                            <?= Yii::t('admin', 'motion_section_choice_select') ?>
+                        </label><br>
+                        <label>
+                            <?= Html::radio(
+                                $sName . '[choiceType]',
+                                ($settings->choiceType === MotionSection::CHOICE_TYPE_RADIO),
+                                ['value' => MotionSection::CHOICE_TYPE_RADIO],
+                            ) ?>
+                            <?= Yii::t('admin', 'motion_section_choice_radio') ?>
+                        </label>
                     </div>
                 </fieldset>
 
@@ -213,6 +236,19 @@ $sName = 'sections[' . $sectionId . ']';
                       name="<?= $sName ?>[explanationHtml]" class="form-control" rows="2"><?php
                 echo Html::encode($section->getSettingsObj()->explanationHtml ?? '');
             ?></textarea>
+        </div>
+
+        <div class="choicesRow">
+            <div class="description"><?= Yii::t('admin', 'motion_section_options') ?>:</div>
+            <div class="selectize-wrapper">
+                <select class="tags" name="<?= $sName ?>[options][]" multiple="multiple">
+                    <?php
+                    foreach ($section->getSettingsObj()->choices ?? [] as $option) {
+                        echo '<option value="' . Html::encode($option) . '" selected>' . Html::encode($option) . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
         </div>
 
         <?php

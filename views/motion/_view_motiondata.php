@@ -3,7 +3,7 @@
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\components\{HTMLTools, MotionNumbering, Tools, UrlHelper};
-use app\models\db\{Motion, MotionSupporter, User, Consultation};
+use app\models\db\{ConsultationSettingsTag, Motion, MotionSupporter, User, Consultation};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -124,7 +124,7 @@ if ($motion->version === Motion::VERSION_DEFAULT && $motionDataMode === \app\mod
     }
 }
 
-MotionLayoutHelper::addTagsRow($motion, $motion->getPublicTopicTags(), $motionData);
+MotionLayoutHelper::addTagsRow($motion, $motion->getPublicTopicTags(), $motionData, ConsultationSettingsTag::TYPE_PUBLIC_TOPIC);
 
 if (count($motionHistory) > 1) {
     $historyIsOpen = ($motionHistory[count($motionHistory) - 1]->id !== $motion->id);

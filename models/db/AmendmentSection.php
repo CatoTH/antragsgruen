@@ -15,7 +15,7 @@ use app\models\sectionTypes\ISectionType;
  * @property string $dataRaw
  * @property int $public
  * @property string $cache
- * @property string $metadata
+ * @property string|null $metadata
  */
 class AmendmentSection extends IMotionSection
 {

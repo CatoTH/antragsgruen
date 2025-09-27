@@ -60,6 +60,9 @@ class AmendmentEditForm
                     $amendmentSections[$section->sectionId]->dataRaw = $data;
                 }
             }
+            foreach ($amendment->getPublicTopicTags() as $tag) {
+                $this->tags[] = $tag->id;
+            }
         }
         $this->sections = [];
         foreach ($motion->getMyMotionType()->motionSections as $sectionType) {
@@ -257,7 +260,7 @@ class AmendmentEditForm
             $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
             if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
+                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, $this->tags);
             }
 
             foreach ($this->sections as $section) {
@@ -336,7 +339,7 @@ class AmendmentEditForm
             }
 
             if ($amendment->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
+                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, $this->tags);
             }
 
             if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {

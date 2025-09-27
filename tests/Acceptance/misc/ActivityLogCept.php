@@ -12,13 +12,13 @@ $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 
 $I->click('#sidebar .activitylog a');
-$I->see('Änderungsantrag Ä2 eingereicht');
+$I->see('Änderungsantrag Ä2 veröffentlicht');
 $I->dontSee('Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet');
 $I->see('Testuser hat den Änderungsantrag Ä3');
 
 $I->gotoMotionList()->gotoMotionEdit(118);
 $I->click('.sidebarActions .activity');
-$I->see('Testuser hat den Antrag eingereicht');
+$I->see('Testuser hat den Antrag veröffentlicht');
 $I->see('Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet');
 
 $I->gotoMotionList()->gotoAmendmentEdit(281);

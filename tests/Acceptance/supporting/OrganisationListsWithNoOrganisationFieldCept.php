@@ -54,6 +54,7 @@ $page = $I->gotoMotionCreatePage();
 $I->wait(1);
 
 $I->seeInField('#initiatorPrimaryName', 'Test User2');
+$I->checkOption("//input[@name='tags[]'][@value='1']");
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
 $page->saveForm();
 

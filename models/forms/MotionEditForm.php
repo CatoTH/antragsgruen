@@ -42,6 +42,11 @@ class MotionEditForm
     {
         $this->motionType = $motionType;
         $this->agendaItem = $agendaItem;
+        if ($motion) {
+            foreach ($motion->getPublicTopicTags() as $tag) {
+                $this->tags[] = $tag->id;
+            }
+        }
         $this->setSection($motion);
     }
 

@@ -517,6 +517,9 @@ class DiffRenderer
             }
             $classes = explode(' ', $node->getAttribute('class'));
             $classes = array_merge($classes, ['ice-ins', 'ice-cts', 'appendHint']);
+            foreach ($amendment->getPublicTopicTags() as $tag) {
+                $classes[] = 'tag-' . $tag->getNameBasedCSSClass();
+            }
             if (count($params) > 2 && $params[2] === 'COLLISION') {
                 $classes[] = 'appendedCollision';
                 $node->setAttribute('data-appended-collision', '1');
@@ -533,6 +536,9 @@ class DiffRenderer
             }
             $classes = explode(' ', $node->getAttribute('class'));
             $classes = array_merge($classes, ['ice-del', 'ice-cts', 'appendHint']);
+            foreach ($amendment->getPublicTopicTags() as $tag) {
+                $classes[] = 'tag-' . $tag->getNameBasedCSSClass();
+            }
             if (count($params) > 2 && $params[2] === 'COLLISION') {
                 $classes[] = 'appendedCollision';
                 $node->setAttribute('data-appended-collision', '1');

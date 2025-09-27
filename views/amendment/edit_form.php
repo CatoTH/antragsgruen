@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\ConsultationSettingsTag;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
@@ -114,10 +115,11 @@ if ($consultation->getSettings()->editorialAmendments || $globalAlternatives) {
 
 echo '<div class="content">';
 
-
-if ($consultation->getSettings()->amendmentsHaveTags) {
-    echo $this->render('@app/views/shared/edit_tags', ['consultation' => $consultation, 'tagIds' => $form->tags]);
-}
+echo $this->render('@app/views/shared/edit_tags', [
+    'consultation' => $consultation,
+    'tagIds' => $form->tags,
+    'type' => ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT,
+]);
 
 if ($consultation->getSettings()->editorialAmendments) { ?>
     <div class="form-group wysiwyg-textarea hidden" id="sectionHolderEditorial"

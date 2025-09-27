@@ -31,7 +31,6 @@ return [
     'list_export_amend_attach'    => 'Mit Änderungsvorschlägen als Anhang',
     'list_export_amend_embed'     => 'Mit Änderungsvorschlägen im Text',
     'con_topic_del_warn'      => 'Es gibt Anträge oder Änderungsvorschläge, die diesem Thema zugeordnet sind. Wenn dieses Thema gelöscht wird, wird auch diese Themenzuordnung entfernt.',
-    'con_amendment_tags'      => 'Themen-Angabe für einzelne Änderungsvorschläge',
     'con_title_amendments'    => 'Änderungsvorschläge',
     'con_amend_screening'     => '<strong>Freischaltung</strong> von Änderungsvorschlägen',
     'con_amend_editorial'     => '<strong>Redaktionelle Änderungsvorschläge</strong> zulassen <small>(ein separates Textfeld für Anmerkungen an die Antragskommission)</small>',

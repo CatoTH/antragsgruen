@@ -4,6 +4,7 @@ namespace app\models\db;
 use app\components\yii\DBConnection;
 use app\models\settings\{AntragsgruenApp, Tag};
 use yii\db\{ActiveQuery, ActiveRecord};
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @property int|null $id
@@ -24,6 +25,7 @@ class ConsultationSettingsTag extends ActiveRecord
 {
     public const TYPE_PUBLIC_TOPIC = 0;
     public const TYPE_PROPOSED_PROCEDURE = 1;
+    public const TYPE_PUBLIC_AMENDMENT = 2;
 
     public static function tableName(): string
     {
@@ -152,6 +154,11 @@ class ConsultationSettingsTag extends ActiveRecord
     public function getNormalizedName(): string
     {
         return static::normalizeName($this->title);
+    }
+
+    public function getNameBasedCSSClass(): string
+    {
+        return (new AsciiSlugger())->slug($this->getNormalizedName());
     }
 
     /**

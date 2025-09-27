@@ -9,14 +9,14 @@ use yii\base\InvalidConfigException;
 use yii\db\{ActiveQueryInterface, ActiveRecord};
 
 /**
- * @property integer $id
- * @property integer $userId
- * @property integer $paragraph
- * @property integer $parentCommentId
+ * @property int $id
+ * @property int $userId
+ * @property int $paragraph
+ * @property int|null $parentCommentId
  * @property string $text
  * @property string $dateCreation
  * @property string $name
- * @property integer $status
+ * @property int $status
  * @property User $user
  * @property IComment $parentComment
  * @property IComment[] $replies

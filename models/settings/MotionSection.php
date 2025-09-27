@@ -9,8 +9,15 @@ class MotionSection implements \JsonSerializable
     public const PUBLIC_NO = 0;
     public const PUBLIC_YES = 1;
 
+    public const CHOICE_TYPE_SELECT = 'select';
+    public const CHOICE_TYPE_RADIO = 'radio';
+
     public int $imgMaxWidth = 0;
     public int $imgMaxHeight = 0;
+
+    public string $choiceType = self::CHOICE_TYPE_SELECT;
+    /** @param string[] $choices */
+    public ?array $choices = null;
 
     public bool $showInHtml = false; // Used for titles and PDF-alternatives
     public int $public = MotionSection::PUBLIC_YES;

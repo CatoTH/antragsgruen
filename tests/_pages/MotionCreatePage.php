@@ -24,8 +24,11 @@ class MotionCreatePage extends BasePage
         }
     }
 
-    public function fillInValidSampleData(string $title = 'Testantrag 1'): void
+    public function fillInValidSampleData(string $title = 'Testantrag 1', bool $selectTag = true): void
     {
+        if ($selectTag) {
+            $this->actor->checkOption("//input[@name='tags[]'][@value='1']");
+        }
         $this->actor->fillField(['name' => 'sections[1]'], $title);
         $this->actor->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
         $this->actor->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><strong>Test 2</strong></p>");');

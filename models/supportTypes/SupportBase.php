@@ -266,6 +266,8 @@ abstract class SupportBase
                 $sup->motionId = $motion->id;
                 if (isset($preCreatedByAdmin[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
+                }
+                if (isset($preNonPublic[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
                 }
                 $sup->save();
@@ -303,6 +305,8 @@ abstract class SupportBase
                 $sup->amendmentId = $amendment->id;
                 if (isset($preCreatedByAdmin[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
+                }
+                if (isset($preNonPublic[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
                 }
                 $sup->save();
