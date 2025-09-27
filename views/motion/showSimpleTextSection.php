@@ -64,7 +64,11 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             $amendment = $consultation->getAmendment($amendmentSection->amendmentId);
             $amLink    = UrlHelper::createAmendmentUrl($amendment);
             $firstline = $amendmentSection->firstAffectedLine;
-            echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
+            $sectionClasses = ["amendment", "amendment" . $amendment->id];
+            foreach ($amendment->getPublicTopicTags() as $tag) {
+                $sectionClasses[] = "tag-" . $tag->getNameBasedCSSClass();
+            }
+            echo '<li class="' . implode(" ", $sectionClasses) . '" data-first-line="' . $firstline . '">';
             echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
             echo ($amendment->getFormattedTitlePrefix() ? Html::encode($amendment->titlePrefix) : '&nbsp;');
             echo \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment);
@@ -122,6 +126,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo '<div class="text motionTextFormattings textAmendment hidden amendment' . $amendment->id;
         if ($section->getSettings()->fixedWidth) {
             echo ' fixedWidthFont';
+        }
+        foreach ($amendment->getPublicTopicTags() as $tag) {
+            echo ' tag-' . $tag->getNameBasedCSSClass();
         }
         echo '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
         echo '<div class="preamble"><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';

@@ -109,16 +109,16 @@ export class AntragsgruenEditor {
 
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
-                'h1 h2 h3 h4(ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +
-                'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved,decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
-                'li[value,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +
-                'ul[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,moved);' +
+                'h1 h2 h3 h4(ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*,moved);' +
+                'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*,moved,decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
+                'li[value,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*,moved);' +
+                'ul[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*,moved);' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'div [data-*](collidingParagraph,hasCollisions,moved);' +
-                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,collidingParagraphHead,moved){border,margin,padding};' +
-                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,underline' + strikeClass + ',subscript,superscript' + autocolorizeClass + ');' +
-                'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision);' +
-                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision);';
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*,collidingParagraphHead,moved){border,margin,padding};' +
+                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*,underline' + strikeClass + ',subscript,superscript' + autocolorizeClass + ');' +
+                'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*);' +
+                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint,appendedCollision,tag-*);';
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul;' +

@@ -89,8 +89,9 @@ abstract class TextSimpleCommon extends Text {
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
+        $amendment = $section->getAmendment();
 
-        if ($section->getAmendment()->globalAlternative) {
+        if ($amendment->globalAlternative) {
             return $this->getAmendmentFormattedGlobalAlternative();
         }
 
@@ -103,7 +104,7 @@ abstract class TextSimpleCommon extends Text {
             return '';
         }
 
-        $viewFullMode = ($section->getAmendment()->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true || !$this->defaultOnlyDiff);
+        $viewFullMode = ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true || !$this->defaultOnlyDiff);
         $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<h2 class="green">' . Html::encode($title);
@@ -122,10 +123,13 @@ abstract class TextSimpleCommon extends Text {
         if ($section->getSettings()->fixedWidth) {
             $wrapStart .= ' fixedWidthFont';
         }
+        foreach ($amendment->getPublicTopicTags() as $tag) {
+            $wrapStart .= ' tag-' . $tag->getNameBasedCSSClass();
+        }
         $wrapStart .= '" dir="' . ($section->getSettings()->getSettingsObj()->isRtl ? 'rtl' : 'ltr') . '">';
         $wrapEnd   = '</div></section>';
-        if ($this->motionContext && $section->getAmendment() && $section->getAmendment()->motionId !== $this->motionContext->id) {
-            $linkMotion = $section->getAmendment()->getMyMotion();
+        if ($this->motionContext && $amendment->motionId !== $this->motionContext->id) {
+            $linkMotion = $amendment->getMyMotion();
         } else {
             $linkMotion = null;
         }
@@ -146,8 +150,8 @@ abstract class TextSimpleCommon extends Text {
         }
         $str .= '</div>';
 
-        $str       .= '</div>';
-        $str       .= '</div>';
+        $str .= '</div>';
+        $str .= '</div>';
 
         return $str;
     }
