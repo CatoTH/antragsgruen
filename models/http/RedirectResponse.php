@@ -17,7 +17,7 @@ class RedirectResponse implements ResponseInterface
     private string $url;
     private int $status;
 
-    public function __construct(string $url, int $status = 302)
+    public function __construct(string|SafeUrl $url, int $status = 302)
     {
         $this->url = $this->sanitizeRedirect($url);
         $this->status = $status;
@@ -35,8 +35,12 @@ class RedirectResponse implements ResponseInterface
         return null;
     }
 
-    private function sanitizeRedirect(string $url): string
+    private function sanitizeRedirect(string|SafeUrl $url): string
     {
+        if ($url instanceof SafeUrl) {
+            return $url->getUrl();
+        }
+
         $filtered = filter_var($url, FILTER_SANITIZE_URL);
         if (!$filtered) {
             return '/';
