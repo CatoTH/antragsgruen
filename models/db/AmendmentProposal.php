@@ -24,9 +24,6 @@ class AmendmentProposal extends IProposal
     {
         $current = Consultation::getCurrent();
         if ($current) {
-            if ($this->amendmentId === null) {
-                return $current;
-            }
             $amend = $current->getAmendment($this->amendmentId);
             if ($amend) {
                 return $current;
@@ -81,14 +78,12 @@ class AmendmentProposal extends IProposal
 
     public function getAmendment(): ?Amendment
     {
-        if ($this->amendmentId === null) {
-            return null;
-        }
         return $this->getCachedConsultation()->getAmendment($this->amendmentId);
     }
 
     public static function createNew(Amendment $amendment, int $version): AmendmentProposal
     {
+        $amendment->id !== null ?: throw new Internal("Amendment not initialized");
         $proposal = new AmendmentProposal();
         $proposal->version = $version;
         $proposal->amendmentId = $amendment->id;

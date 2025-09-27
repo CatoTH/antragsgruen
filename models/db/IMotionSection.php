@@ -12,7 +12,7 @@ use yii\db\ActiveRecord;
  * @property string|null $dataRaw
  * @property int $public
  * @property int $sectionId
- * @property string $metadata
+ * @property string|null $metadata
  */
 abstract class IMotionSection extends ActiveRecord
 {

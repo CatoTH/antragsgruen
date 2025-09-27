@@ -33,9 +33,6 @@ class MotionProposal extends IProposal
     {
         $current = Consultation::getCurrent();
         if ($current) {
-            if ($this->motionId === null) {
-                return $current;
-            }
             $mot = $current->getMotion($this->motionId);
             if ($mot) {
                 return $current;
@@ -48,14 +45,12 @@ class MotionProposal extends IProposal
 
     public function getMotion(): ?Motion
     {
-        if ($this->motionId === null) {
-            return null;
-        }
         return $this->getCachedConsultation()->getMotion($this->motionId);
     }
 
     public static function createNew(Motion $motion, int $version): MotionProposal
     {
+        $motion->id !== null ?: throw new Internal("Motion not initialized");
         $proposal = new MotionProposal();
         $proposal->version = $version;
         $proposal->motionId = $motion->id;

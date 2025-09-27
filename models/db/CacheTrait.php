@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 /**
- * @property string $cache
+ * @property string|null $cache
  * @method save($runValidation = true, $attributeNames = null)
  */
 trait CacheTrait

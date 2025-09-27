@@ -105,7 +105,7 @@ abstract class IQuorumType
         $votes = $votingBlock->getVotesForVotingItem($votingItem);
         $count = 0;
         foreach ($votes as $vote) {
-            if ($vote->userId !== null && $this->userIsRelevantForQuorum($votingBlock, $vote->getUser())) {
+            if ($this->userIsRelevantForQuorum($votingBlock, $vote->getUser())) {
                 $count++;
             }
         }

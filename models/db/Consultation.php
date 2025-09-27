@@ -21,7 +21,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property string $wordingBase
  * @property string $adminEmail
  * @property string $dateCreation
- * @property string $dateDeletion
+ * @property string|null $dateDeletion
  * @property string $settings
  *
  * @property Site $site

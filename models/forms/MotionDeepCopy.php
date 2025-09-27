@@ -19,7 +19,7 @@ use app\models\db\{Amendment,
     MotionSection,
     MotionSupporter};
 use app\components\UrlHelper;
-use app\models\exceptions\FormError;
+use app\models\exceptions\{FormError, Internal};
 
 class MotionDeepCopy
 {
@@ -110,6 +110,7 @@ class MotionDeepCopy
     {
         $latestProposal = $amendment->getLatestProposal();
         if (!$latestProposal->isNewRecord) {
+            $amendment->id !== null ?: throw new Internal("Amendment not initialized");
             $newProposal = new AmendmentProposal();
             $newProposal->setAttributes($latestProposal->getAttributes(), false);
             $newProposal->id = null;
@@ -123,6 +124,7 @@ class MotionDeepCopy
     {
         $latestProposal = $motion->getLatestProposal();
         if (!$latestProposal->isNewRecord) {
+            $motion->id !== null ?: throw new Internal("Motion not initialized");
             $newProposal = new MotionProposal();
             $newProposal->setAttributes($latestProposal->getAttributes(), false);
             $newProposal->id = null;
