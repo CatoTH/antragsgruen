@@ -81,7 +81,8 @@ $html = ob_get_clean();
                 return this.modelValue.settings.motion_types.indexOf(motionType.id) !== -1;
             },
             onMotionTypeChange(event) {
-                this.modelValue.settings.motion_types = (event.target.value ? [parseInt(event.target.value)] : null);
+                const hasValue = event.target.value && event.target.value !== '-';
+                this.modelValue.settings.motion_types = (hasValue ? [parseInt(event.target.value)] : []);
             },
             removeItem: function() {
                 this.$emit('remove');
