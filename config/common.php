@@ -65,7 +65,7 @@ $components = [
         'traceLevel' => YII_DEBUG ? 3 : 0,
         'targets'    => [
             [
-                'class'  => 'yii\log\FileTarget',
+                'class'  => 'app\components\yii\LoggerFileTarget',
                 'levels' => ['error', 'warning'],
                 'except' => [
                     'yii\web\HttpException:404',
