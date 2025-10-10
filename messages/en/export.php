@@ -46,6 +46,7 @@ return [
     'filename_amendments'   => 'Amendment',
     'filename_motions'      => 'Motion',
     'incl_inactive'         => 'Incl. inactive',
+    'incl_replaced'         => 'Draft &amp; Replaced versions',
     'btn_openslides'        => 'Openslides',
     'btn_amendments'        => 'Amendments',
     'motion_by'             => 'by',

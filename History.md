@@ -11,6 +11,7 @@
 - An optional mechanism for background job execution is introduced, making it possible to send e-mails asynchronously (therefore not blocking regular requests).
 - The deadline circle at the top of the homepage now also shows dates if more than one future deadline exists. It can also be deactivated entirely.
 - The export functions for motions in the admin list now allow to combine one or multiple motion types, with all motion types being selected by default.
+- The export function now also optionally allows to export old versions of motions and amendments to old versions.
 - The consultation-wide search now also searches for the name of proposers of motions / amendments.
 - The small-screen main menu now also has the full-text search.
 - The projector view now also shows links to the previous / next motions, if activated for the main motion view.

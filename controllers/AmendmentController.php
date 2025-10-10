@@ -65,10 +65,11 @@ class AmendmentController extends Base
         );
     }
 
-    public function actionPdfcollection(int $inactive = 0): ResponseInterface
+    public function actionPdfcollection(bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
-        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
         if (count($amendments) === 0) {
             return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));

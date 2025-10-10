@@ -1268,6 +1268,10 @@ label.legend {
       font-size: 12px;
       line-height: 1.2;
     }
+    li.checkbox {
+      white-space: nowrap;
+      padding-right: 10px;
+    }
   }
 
   a.disabled {
