@@ -116,7 +116,10 @@ $doc->drawBorder(1, $firstCol, 2, $LAST_COL, 1.5);
 
 $row = 3;
 
-foreach ($amendments as $amendmentGroup) {
+foreach ($amendments as $j => $amendmentGroup) {
+
+    file_put_contents('/tmp/amendments-processing.log', 'Group ' . $j . ' of ' . count($amendmentGroup) . PHP_EOL, FILE_APPEND);
+
     $motion = $amendmentGroup['motion'];
     if ($motion->getMyMotionType()->amendmentsOnly) {
         continue;
