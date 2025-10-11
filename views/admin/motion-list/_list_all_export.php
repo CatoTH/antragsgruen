@@ -21,8 +21,8 @@ $hasOpenslides = $consultation->getSettings()->openslidesExportEnabled;
 $hasInactiveFunctionality = (!$hasResponsibilities || !$hasProposedProcedures || !$hasOpenslides);
 
 $getExportLinkLi = function ($title, $route, $motionTypeIds, $cssClass) use ($search) {
-    $params     = array_merge($route, ['motionTypeId' => $motionTypeIds, 'inactive' => '0']);
-    $paramsTmpl = array_merge($route, ['motionTypeId' => ($motionTypeIds ? 'MOTIONTYPES' : null), 'inactive' => 'INACTIVE']);
+    $params     = array_merge($route, ['motionTypeId' => $motionTypeIds, 'inactive' => '0', 'replaced' => '0']);
+    $paramsTmpl = array_merge($route, ['motionTypeId' => ($motionTypeIds ? 'MOTIONTYPES' : null), 'inactive' => 'INACTIVE', 'replaced' => 'REPLACED']);
     if (!$search->isDefaultSettings()) {
         $params = array_merge($params, $search->getSearchUrlParams());
         $paramsTmpl = array_merge($paramsTmpl, $search->getSearchUrlParams());
@@ -68,7 +68,7 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('admin', 'list_new') ?>
-                <span class="caret"></span>
+                <span class="caret" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="newMotionBtn">
                 <?php
@@ -132,6 +132,10 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                         <input type="checkbox" class="inactive" name="inactive">
                         <?= Yii::t('export', 'incl_inactive') ?>
                     </label></li>
+                <li class="checkbox"><label>
+                        <input type="checkbox" class="replaced" name="replaced">
+                        <?= Yii::t('export', 'incl_replaced') ?>
+                    </label></li>
                 <li role="separator" class="divider"></li>
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
@@ -185,12 +189,16 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
             <button class="btn btn-default dropdown-toggle" type="button" id="exportAmendmentsBtn"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <?= Yii::t('export', 'btn_amendments') ?>
-                <span class="caret"></span>
+                <span class="caret" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="exportAmendmentsBtn">
                 <li class="checkbox"><label>
                         <input type="checkbox" class="inactive" name="inactive">
                         <?= Yii::t('export', 'incl_inactive') ?>
+                    </label></li>
+                <li class="checkbox"><label>
+                        <input type="checkbox" class="replaced" name="replaced">
+                        <?= Yii::t('export', 'incl_replaced') ?>
                     </label></li>
                 <li role="separator" class="divider"></li>
                 <?php
@@ -232,7 +240,7 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                 <button class="btn btn-default dropdown-toggle" type="button" id="exportOpenslidesBtn"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <?= Yii::t('export', 'btn_openslides') ?>
-                    <span class="caret"></span>
+                    <span class="caret" aria-hidden="true"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportOpenslidesBtn">
                     <!--

@@ -227,7 +227,7 @@ class AdminMotionFilterForm
         $filteredMotions = $this->getFilteredMotions();
         $merge = array_merge($filteredMotions, $this->getFilteredAmendments($filteredMotions));
 
-        if ($this->proposalStatus && in_array($this->proposalStatus, ['noresponse', 'accepted', 'rejected'])) {
+        if (in_array($this->proposalStatus, ['noresponse', 'accepted', 'rejected'])) {
             usort($merge, function (IMotion $a, IMotion $b) {
                 $proposal1 = $a->getLatestProposal();
                 $proposal2 = $b->getLatestProposal();

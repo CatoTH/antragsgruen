@@ -23,23 +23,25 @@ class AmendmentController extends AdminBase
         Privileges::PRIVILEGE_MOTION_INITIATORS,
     ];
 
-    public function actionOdslist(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
+    public function actionOdslist(bool $textCombined = false, bool $inactive = false, bool $replaced = false): BinaryFileResponse
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
-        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
         $ods = $this->renderPartial('ods_list', [
             'amendments'   => $amendments,
             'textCombined' => $textCombined,
         ]);
 
-        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true,'amendments');
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'amendments');
     }
 
-    public function actionXlsxList(bool $textCombined = false, int $inactive = 0): BinaryFileResponse
+    public function actionXlsxList(bool $textCombined = false, bool $inactive = false, bool $replaced = false): BinaryFileResponse
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
-        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
         $ods = $this->renderPartial('xlsx_list', [
             'amendments'   => $amendments,
@@ -49,33 +51,36 @@ class AmendmentController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_XLSX, $ods, true,'amendments');
     }
 
-    public function actionOdslistShort(int $textCombined = 0, int $inactive = 0, int $maxLen = 2000): BinaryFileResponse
+    public function actionOdslistShort(bool $textCombined = false, bool $inactive = false, bool $replaced = false, int $maxLen = 2000): BinaryFileResponse
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
-        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
         $ods = $this->renderPartial('ods_list_short', [
             'amendments'   => $amendments,
-            'textCombined' => ($textCombined === 1),
+            'textCombined' => $textCombined,
             'maxLen'       => $maxLen,
         ]);
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'amendments');
     }
 
-    public function actionPdflist(int $inactive = 0): HtmlResponse
+    public function actionPdflist(bool $inactive = false, bool $replaced = false): HtmlResponse
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
-        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
         return new HtmlResponse(
             $this->render('pdf_list', ['consultation' => $this->consultation, 'amendments' => $amendments])
         );
     }
 
-    public function actionPdfziplist(int $inactive = 0): BinaryFileResponse
+    public function actionPdfziplist(bool $inactive = false, bool $replaced = false): BinaryFileResponse
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
-        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
         $zip = new ZipWriter();
         foreach ($amendments as $amendmentGroup) {
@@ -98,10 +103,11 @@ class AmendmentController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'amendments_pdf');
     }
 
-    public function actionOdtziplist(int $inactive = 0): BinaryFileResponse
+    public function actionOdtziplist(bool $inactive = false, bool $replaced = false): BinaryFileResponse
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
-        $amendments = $search->getAmendmentsForExport($this->consultation, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
         $zip       = new ZipWriter();
         foreach ($amendments as $amendmentGroup) {

@@ -46,6 +46,7 @@ return [
     'filename_amendments'   => 'Aenderungsantraege',
     'filename_motions'      => 'Antraege',
     'incl_inactive'         => 'Inaktive',
+    'incl_replaced'         => 'Entwürfe &amp; Ersetze Versionen',
     'btn_openslides'        => 'Openslides',
     'btn_amendments'        => 'Änderungsanträge',
     'motion_by'             => 'von',

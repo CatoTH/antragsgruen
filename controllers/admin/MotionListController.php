@@ -318,10 +318,11 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ODS, $ods, true, 'motions');
     }
 
-    public function actionMotionOdslist(string $motionTypeId, bool $textCombined = false, int $inactive = 0): ResponseInterface
+    public function actionMotionOdslist(string $motionTypeId, bool $textCombined = false, bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = $this->getSearchForm($this->consultation->motions);
-        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, $inactive);
 
         $filename = Tools::sanitizeFilename(\Yii::t('export', 'motions'), false);
         $ods = $this->renderPartial('ods_list', [
@@ -350,10 +351,11 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_CSV, $csv, true, $filename);
     }
 
-    public function actionMotionCommentsXlsx(string $motionTypeId, int $inactive = 0): ResponseInterface
+    public function actionMotionCommentsXlsx(string $motionTypeId, bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = $this->getSearchForm($this->consultation->motions);
-        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, $inactive);
 
         $filename = Tools::sanitizeFilename(\Yii::t('export', 'comments'), false);
         $xlsx = $this->renderPartial('xlsx_comments', [
@@ -362,10 +364,11 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_XLSX, $xlsx, true, $filename);
     }
 
-    public function actionMotionPdfziplist(?string $motionTypeId = null, int $inactive = 0): ResponseInterface
+    public function actionMotionPdfziplist(?string $motionTypeId = null, bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = $this->getSearchForm($this->consultation->motions);
-        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, $inactive);
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -399,10 +402,11 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_pdf');
     }
 
-    public function actionMotionOdtziplist(?string $motionTypeId = null, int $inactive = 0): ResponseInterface
+    public function actionMotionOdtziplist(?string $motionTypeId = null, bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = $this->getSearchForm($this->consultation->motions);
-        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, $inactive);
 
         $zip = new ZipWriter();
         foreach ($imotions as $imotion) {
@@ -421,10 +425,11 @@ class MotionListController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'motions_odt');
     }
 
-    public function actionMotionOdtall(?string $motionTypeId = null, int $inactive = 0): ResponseInterface
+    public function actionMotionOdtall(?string $motionTypeId = null, bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = $this->getSearchForm($this->consultation->motions);
-        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, ($inactive === 1));
+        $search->showReplaced = $replaced;
+        $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, $inactive);
 
         $doc = $imotions[0]->getMyMotionType()->createOdtTextHandler();
 

@@ -74,6 +74,7 @@ export class MotionList {
             let $dd = $(this),
                 recalcLinks = function () {
                     const inactive = ($dd.find("input[name=inactive]").prop("checked") ? 1 : 0);
+                    const replaced = ($dd.find("input[name=replaced]").prop("checked") ? 1 : 0);
                     const motionTypes = [];
                     $dd.find("input[name=motionType]:checked").each(function () {
                         motionTypes.push($(this).val());
@@ -88,6 +89,7 @@ export class MotionList {
                         }
 
                         link = link.replace("INACTIVE", inactive);
+                        link = link.replace("REPLACED", replaced);
                         link = link.replace("MOTIONTYPES", motionTypes.join(","));
                         $(this).attr("href", link);
                     });
