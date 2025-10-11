@@ -46,6 +46,7 @@ if ($hasAgendaItems) {
 }
 $COL_PREFIX     = $currCol++;
 $COL_INITIATOR  = $currCol++;
+$COL_SUPPORTERS = $currCol++;
 $COL_FIRST_LINE = $currCol++;
 $COL_STATUS     = $currCol++;
 $COL_CHANGE     = $currCol++;
@@ -81,6 +82,9 @@ $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 
 $doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
 $doc->setColumnWidth($COL_INITIATOR, 6);
+
+$doc->setCell(2, $COL_SUPPORTERS, Spreadsheet::TYPE_TEXT, 'Unterstützer*innen');
+$doc->setColumnWidth($COL_SUPPORTERS, 6);
 
 $doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, Yii::t('export', 'line'));
 $doc->setColumnWidth($COL_FIRST_LINE, 3);
@@ -163,6 +167,12 @@ foreach ($amendments as $amendmentGroup) {
                 $initiatorContacts[] = $supp->contactPhone;
             }
         }
+
+        $supporterNames = [];
+        foreach ($amendment->getSupporters() as $supp) {
+            $supporterNames[] = $supp->getNameWithResolutionDate(false);
+        }
+
         $firstLine = $amendment->getFirstDiffLine();
 
         if ($hasAgendaItems && $motion->agendaItem) {
@@ -170,6 +180,7 @@ foreach ($amendments as $amendmentGroup) {
         }
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->getFormattedTitlePrefix());
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
+        $doc->setCell($row, $COL_SUPPORTERS, Spreadsheet::TYPE_TEXT, implode(', ', $supporterNames));
         $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacts));
         $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
         $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_HTML, $amendment->getFormattedStatus());

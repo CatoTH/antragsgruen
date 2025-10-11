@@ -60,6 +60,7 @@ foreach ($imotionByType as $byType) {
     }
     $COL_PREFIX = $currCol++;
     $COL_INITIATOR = $currCol++;
+    $COL_SUPPORTERS = $currCol++;
     $COL_TEXTS = [];
     if ($textCombined) {
         $COL_TEXTS[] = $currCol++;
@@ -105,6 +106,9 @@ foreach ($imotionByType as $byType) {
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
     $doc->setColumnWidth($COL_INITIATOR, 6);
 
+    $doc->setCell($row, $COL_SUPPORTERS, Spreadsheet::TYPE_TEXT, 'Unterstützer*innen');
+    $doc->setColumnWidth($COL_SUPPORTERS, 6);
+
     if ($textCombined) {
         $doc->setCell($row, $COL_TEXTS[0], Spreadsheet::TYPE_TEXT, Yii::t('export', 'text'));
         $doc->setColumnWidth($COL_TEXTS[0], 10);
@@ -149,11 +153,17 @@ foreach ($imotionByType as $byType) {
             }
         }
 
+        $supporterNames = [];
+        foreach ($imotion->getSupporters() as $supp) {
+            $supporterNames[] = $supp->getNameWithResolutionDate(false);
+        }
+
         if ($hasAgendaItems && is_a($imotion, Motion::class) && $imotion->agendaItem) {
             $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $imotion->agendaItem->getShownCode(true));
         }
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $imotion->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION_LIST));
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
+        $doc->setCell($row, $COL_SUPPORTERS, Spreadsheet::TYPE_TEXT, implode(', ', $supporterNames));
         $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacts));
 
         if ($hasResponsibilities) {
