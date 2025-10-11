@@ -118,7 +118,7 @@ $row = 3;
 
 foreach ($amendments as $j => $amendmentGroup) {
 
-    file_put_contents('/tmp/amendments-processing.log', 'Group ' . $j . ' of ' . count($amendmentGroup) . PHP_EOL, FILE_APPEND);
+    file_put_contents('/tmp/amendments-processing.log', 'Group ' . $j . ' of ' . count($amendments) . PHP_EOL, FILE_APPEND);
 
     $motion = $amendmentGroup['motion'];
     if ($motion->getMyMotionType()->amendmentsOnly) {
