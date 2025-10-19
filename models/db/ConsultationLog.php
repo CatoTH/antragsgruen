@@ -312,7 +312,7 @@ class ConsultationLog extends ActiveRecord
 
         return array_values(array_filter($actions, function(ConsultationLog $action) use ($proposalId) {
             $data = new ProposedProcedureAgreement($action->data);
-            return ($proposalId === null || $data->proposalId === $proposalId);
+            return ($proposalId === null || (isset($data->proposalId) && $data->proposalId === $proposalId));
         }));
     }
 
