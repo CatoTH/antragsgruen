@@ -239,7 +239,7 @@ class PagesController extends Base
                 $group = new ConsultationFileGroup();
                 $group->consultationId = $this->consultation->id;
                 $group->consultationTextId = $page->id;
-                $group->title = $page->title;
+                $group->title = $page->title ?? '-';
                 $group->parentGroupId = null;
                 $group->position = 0;
                 $group->save();
