@@ -144,8 +144,8 @@ class StdHooks extends Hooks
         ]);
         $html .= '<h2 id="sidebarSearchTitleSmall">' . \Yii::t('con', 'sb_search') . '</h2>
 <div class="input-group">
-      <label for="searchQuery" class="sr-only">' . \Yii::t('con', 'sb_search_query') . '</label>
-      <input type="text" class="form-control query" name="query" id="searchQuery"
+      <label for="searchQuerySmall" class="sr-only">' . \Yii::t('con', 'sb_search_query') . '</label>
+      <input type="text" class="form-control query" name="query" id="searchQuerySmall"
         placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required>
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit" title="' . Html::encode(\Yii::t('con', 'sb_search_do')) . '">

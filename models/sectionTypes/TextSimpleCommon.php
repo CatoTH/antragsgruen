@@ -107,7 +107,7 @@ abstract class TextSimpleCommon extends Text {
         $viewFullMode = ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true || !$this->defaultOnlyDiff);
         $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str .= '<h2 class="green">' . Html::encode($title);
+        $str .= '<div class="greenHeader"><h2>' . Html::encode($title) . '</h2>';
         $str .= '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
           <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
             <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
@@ -116,8 +116,8 @@ abstract class TextSimpleCommon extends Text {
           <ul class="dropdown-menu dropdown-menu-right">
           <li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' . \Yii::t('amend', 'textmode_only_changed') . '</a></li>
           <li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' . \Yii::t('amend', 'textmode_full_text') . '</a></li>
-          </ul>';
-        $str .= '</h2>';
+          </ul></div>';
+        $str .= '</div>';
         $str       .= '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
         if ($section->getSettings()->fixedWidth) {
