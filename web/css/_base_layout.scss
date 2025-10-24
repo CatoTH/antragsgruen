@@ -231,6 +231,9 @@ body > footer {
     width: 50%;
     text-align: right;
   }
+  a {
+    color: darken($colorLinksLight, 10%); // Compensate for darker background
+  }
 }
 
 .stickyAdminDebugFooter {
