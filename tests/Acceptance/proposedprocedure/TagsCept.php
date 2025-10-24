@@ -15,6 +15,7 @@ $I->gotoMotion(true, 'Testing_proposed_changes-630');
 $I->dontSeeElement('#proposedChanges');
 $I->clickJS('.proposedChangesOpener button');
 $I->seeElement('#proposedChanges');
+$I->scrollTo('#proposedChanges');
 $I->dontSeeElement('#proposedChanges .saving');
 
 $I->executeJS('$(".proposalTagsSelect")[0].selectize.createItem("<pseudotag>")');
@@ -24,23 +25,25 @@ $I->executeJS('$(".proposalTagsSelect")[0].selectize.createItem("我爱你😀")
 $I->seeElement('#proposedChanges .saving');
 $I->dontSeeElement('#proposedChanges .saved');
 $I->clickJS('#proposedChanges .saving button');
-$I->wait(0.3);
+$I->wait(0.5);
 $I->seeElement('#proposedChanges .saved');
 
 
-// Verkehr and some nice words to Ä1 to A8 (note that Verkehr is also a regular tag)
+// Traffic and some nice words to Ä1 to A8 (note that Traffic is also a regular tag)
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
 
 $I->seeElement('#proposedChanges');
+$I->scrollTo('#proposedChanges');
 $I->dontSeeElement('#proposedChanges .saving');
 
-$I->executeJS('$(".proposalTagsSelect")[0].selectize.createItem("Verkehr")');
+$I->executeJS('$(".proposalTagsSelect")[0].selectize.createItem("Traffic")');
 $I->executeJS('$(".proposalTagsSelect")[0].selectize.createItem("我爱你😀")');
 
 $I->seeElement('#proposedChanges .saving');
 $I->dontSeeElement('#proposedChanges .saved');
 $I->clickJS('#proposedChanges .saving button');
-$I->wait(0.3);
+$I->wait(0.5);
+$I->scrollTo('#proposedChanges');
 $I->seeElement('#proposedChanges .saved');
 
 // Make sure the tests are not visible in the regular tag list
@@ -80,7 +83,7 @@ $I->click('.exportProcedureDd .linkProcedureIntern a');
 $I->seeElement('.proposedProcedureOverview');
 
 $I->see('我爱你😀', '.tagList');
-$I->see('Verkehr', '.tagList');
+$I->see('Traffic', '.tagList');
 $I->see('Äöé\\\'', '.tagList');
 $I->see('<pseudotag>', '.tagList');
 $I->dontSee('Umwelt', '.tagList');

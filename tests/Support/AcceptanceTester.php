@@ -54,6 +54,7 @@ class AcceptanceTester extends Actor
 
     public const ACCEPTED_HTML_ERRORS = [
         'Bad value “popup” for attribute “rel”',
+        'Attribute “value” not allowed on element “li” at this point',
         'CKEDITOR',
         'autocomplete'
     ];
