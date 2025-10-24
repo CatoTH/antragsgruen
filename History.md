@@ -34,6 +34,7 @@
   - When editing the modified version of a proposed procedure, more amendments are checked for collissions.
   - The internal proposed procedure list can also be opened minimalized, without showing admin comments and tags.
 - Bugfix: The maximum length of a section could be set to an invalid value.
+- Bugfix: In Yes/No-votings, the overall number of votes was not shown correctly.
 
 ### Version 4.15.3 (2025-05.13)
 
