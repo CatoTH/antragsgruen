@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.16.0 [not released yet]
+## Version 4.16.0 (2025-10-26)
 
 - The agenda and speaking lists were improved in several ways:
   - Each agenda item can now have its dedicated speaking list.
@@ -36,7 +36,7 @@
 - Bugfix: The maximum length of a section could be set to an invalid value.
 - Bugfix: In Yes/No-votings, the overall number of votes was not shown correctly.
 
-### Version 4.15.3 (2025-05.13)
+### Version 4.15.3 (2025-05-13)
 
 - For votings, it is now possible to set if the e-mail-address, the name or the organization of the voters is to be displayed (if at all).
 - On speaking list, it is now possible to not show the list of applicants in the publicly visible speaking list view.
