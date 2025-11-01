@@ -383,7 +383,10 @@ class StdHooks extends Hooks
                     UrlHelper::createUrl('/user/myaccount'),
                     ['id' => 'myAccountLink']
                 );
-                $out  .= '<li>' . $link . '</li>';
+
+                if (!User::getCurrentUser()->getSettingsObj()->preventAccountPage) {
+                    $out .= '<li>' . $link . '</li>';
+                }
 
                 $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => $backUrl]);
                 $logoutTitle = \Yii::t('base', 'menu_logout');
