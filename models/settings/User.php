@@ -12,6 +12,7 @@ class User implements \JsonSerializable
     public ?array $voteWeightByConsultation = null;
     public bool $enforceTwoFactorAuthentication = false;
     public bool $preventPasswordChange = false;
+    public bool $preventAccountPage = false;
     public bool $forcePasswordChange = false;
 
     /** @var array<array{type: non-empty-string, secret: non-empty-string}>|null */
