@@ -381,7 +381,7 @@ class Base extends Controller
             }
         }
 
-        if (!in_array($user->getAuthType(), $this->site->getSettings()->loginMethods)) {
+        if ($this->site && !in_array($user->getAuthType(), $this->site->getSettings()->loginMethods)) {
             $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
             return true;
         }
