@@ -366,18 +366,26 @@ class Base extends Controller
         if (!$this->consultation->getSettings()->forceLogin) {
             return false;
         }
-        if (RequestContext::getYiiUser()->getIsGuest()) {
+
+        $user = User::getCurrentUser();
+        if ($user === null || RequestContext::getYiiUser()->getIsGuest()) {
             $this->redirect(UrlHelper::createUrl(['/user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return true;
         }
+
         if ($this->consultation->getSettings()->managedUserAccounts) {
-            $user = User::getCurrentUser();
             if (count($user->getUserGroupsForConsultation($this->consultation)) === 0 &&
                 !$this->allowAccessToProtectedPage($user)) {
                 $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
                 return true;
             }
         }
+
+        if (!in_array($user->getAuthType(), $this->site->getSettings()->loginMethods)) {
+            $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
+            return true;
+        }
+
         return false;
     }
 

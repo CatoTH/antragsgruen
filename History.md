@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.16.1 [Not released yet]
+
+- Bugfix: Validate the login method used by logged in user.
+
 ## Version 4.16.0 (2025-10-26)
 
 - The agenda and speaking lists were improved in several ways:
