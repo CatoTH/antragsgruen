@@ -198,6 +198,23 @@ class MotionSorter
     }
 
     /**
+     * @param string[] $usedKeys
+     */
+    private static function getUnusedSortKey(IMotion $imotion, array $usedKeys): string
+    {
+        if (!in_array($imotion->titlePrefix, $usedKeys)) {
+            return (string)$imotion->titlePrefix; // Hint: for amendments, can still be null at the moment
+        }
+
+        $i = 1;
+        while (in_array($imotion->titlePrefix . ' (' . $i . ')', $usedKeys)) {
+            $i++;
+        }
+
+        return $imotion->titlePrefix . ' (' . $i . ')';
+    }
+
+    /**
      * @param IMotion[] $imotions
      * @return array<string, array<string, IMotion>>
      */
@@ -225,17 +242,18 @@ class MotionSorter
                 if (!isset($motionsSorted['agenda' . $agendaItem->id])) {
                     $motionsSorted['agenda' . $agendaItem->id] = [];
                 }
-                $key                                             = $agendaMotion->titlePrefix;
+                $key = self::getUnusedSortKey($agendaMotion, array_keys($motionsSorted['agenda' . $agendaItem->id]));
                 $motionsSorted['agenda' . $agendaItem->id][$key] = $agendaMotion;
-                $foundMotionIds[]                                = $agendaMotion->id;
+                $foundMotionIds[] = self::getSortId($agendaMotion);
             }
         }
         foreach ($imotions as $motion) {
-            if (!in_array($motion->id, $foundMotionIds)) {
+            if (!in_array(self::getSortId($motion), $foundMotionIds)) {
                 if (!isset($motionsSorted['noAgenda'])) {
                     $motionsSorted['noAgenda'] = [];
                 }
-                $motionsSorted['noAgenda'][$motion->titlePrefix] = $motion;
+                $key = self::getUnusedSortKey($motion, array_keys($motionsSorted['noAgenda']));
+                $motionsSorted['noAgenda'][$key] = $motion;
             }
         }
 
