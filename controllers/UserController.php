@@ -358,10 +358,6 @@ class UserController extends Base
             /** @var User|null $user */
             $user = User::findOne(['auth' => 'email:' . $email]);
 
-            if ($user->getSettingsObj()->preventAccountPage) {
-                return new RedirectResponse(UrlHelper::homeUrl());
-            }
-
             if (Captcha::needsCaptcha($email) && !Captcha::checkEnteredCaptcha($this->getRequestValue('captcha'))) {
                 $msg = \Yii::t('user', 'login_err_captcha');
                 $this->getHttpSession()->setFlash('error', $msg);
@@ -370,6 +366,8 @@ class UserController extends Base
                 $this->getHttpSession()->setFlash('error', $msg);
             } elseif ($user->getSettingsObj()->preventPasswordChange) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_pwd_fixed'));
+            } elseif ($user->getSettingsObj()->preventAccountPage) {
+                return new RedirectResponse(UrlHelper::homeUrl());
             } else {
                 try {
                     $user->sendRecoveryMail();
