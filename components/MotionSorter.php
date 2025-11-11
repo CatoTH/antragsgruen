@@ -188,6 +188,15 @@ class MotionSorter
         return $motionsSorted;
     }
 
+    private static function getSortId(IMotion $imotion): string
+    {
+        if (is_a($imotion, Motion::class)) {
+            return 'motion-' . $imotion->id;
+        } else {
+            return 'amendment-' . $imotion->id;
+        }
+    }
+
     /**
      * @param IMotion[] $imotions
      * @return array<string, array<string, IMotion>>
@@ -199,8 +208,7 @@ class MotionSorter
         $motionIdsToBeSorted = [];
 
         foreach ($imotions as $imotion) {
-            $motionIdsToBeSorted[] = $imotion->id;
-            // @TODO A differenciation between motions and amendments will be necessary
+            $motionIdsToBeSorted[] = self::getSortId($imotion);
         }
 
         $statuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
@@ -208,7 +216,7 @@ class MotionSorter
         foreach ($items as $agendaItem) {
             $agendaMotions = $agendaItem->getMyIMotions(IMotionStatusFilter::onlyUserVisible($consultation, true));
             foreach ($agendaMotions as $agendaMotion) {
-                if (!in_array($agendaMotion->id, $motionIdsToBeSorted)) {
+                if (!in_array(self::getSortId($agendaMotion), $motionIdsToBeSorted)) {
                     continue;
                 }
                 if (!self::imotionIsVisibleOnHomePage($agendaMotion, $statuses)) {

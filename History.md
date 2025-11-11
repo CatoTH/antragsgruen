@@ -2,6 +2,7 @@
 
 ## Version 4.16.1 [Not released yet]
 
+- Bugfix: The amendment admin page could break if an agenda-based home page was set up.
 - Bugfix: Validate the login method used by logged in user.
 
 ## Version 4.16.0 (2025-10-26)
