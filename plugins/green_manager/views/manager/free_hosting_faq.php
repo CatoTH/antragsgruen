@@ -25,7 +25,8 @@ $layout->fullWidth        = true;
     <h2>Who qualifies for free hosting?</h2>
 
     <p>
-        We provide free hosting for green parties in Europe. This includes all member parties of the European Green
+        We provide free hosting for green parties in Europe and Canada.
+        This includes all member parties of the European Green
         Party as well as all members of the Federation of Young European Greens, including local groups and working
         groups. In doubt, we take a rather liberal approach here – so if you want to use it for any organization that
         feels associated with the green party, just go ahead (or contact us and ask).
@@ -41,7 +42,7 @@ $layout->fullWidth        = true;
         infrastructure to ensure maximum availability.
     </p>
 
-    <h2>What about other languages than english, german and french?</h2>
+    <h2>What about other languages than English and German?</h2>
 
     <p>
         We’re very interested in including further translations into this software. We’re taking an open-source-approach

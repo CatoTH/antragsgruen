@@ -173,7 +173,6 @@ $controller->layoutParams->addInlineCss('
         <p><strong>Ansprechpartner für Anpassungen</strong>:<br>
             Tobias Hößl<br>
             <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a><br>
-            <a href="tel:+4915156024223">+49 151 56024223</a>
     </div>
 </section>
 
