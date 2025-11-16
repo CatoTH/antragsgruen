@@ -31,17 +31,17 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
 <div class="content infoSite">
     <p>
-        Discuss.green offers a clear and efficient tool for the administration of motions, resolutions, amendments and candidacies,
-        specifically designed for conventions and congresses of parties, social initiatives and organizations.
+        Antragsgrün is an easy-to-use online tool for NGOs, political parties, and social initiatives to collaboratively discuss resolutions, party platforms, and amendments.<br>
+        It helps to manage candidacies and supports meetings by providing online votings, speaking lists, and many more features.
     </p>
 
     <p>
-        It has been created for managing both national and regional congresses of the German Greens
-        and is by now used by a variety of organizations within and beyond the green party.
+        It was originally created for managing regional congresses of the German Greens, but was quickly adopted
+        on the federal and European level too, and is by now used by a variety of organizations within and beyond the green party.
     </p>
 
     <p>
-        It's available as open source and we provide free hosting for all green parties.
+        It's available as open source and we provide free hosting for Green parties.
     </p>
 </div>
 
@@ -66,7 +66,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         <a href="https://edinburghgreens.discuss.green/" target="_blank">Edinburgh</a>,
         non-green parties like the Austrian NEOS or the Dutch Volt,
         and civil organizations like the <a href="https://yfj-votes.motion.tools/" target="_blank">European Youth Forum</a> or the
-        <a href="https://tooldoku.dbjr.de/category/antragsgruen/" target="_blank">German Federal Youth Council</a>.
+        <a href="https://ga.cdnee.org" target="_blank">Cooperation &amp; Developement Network Eastern Europe</a>.
     </p>
 </div>
 
@@ -109,7 +109,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     </ul>
 
     <p style="text-align: center; font-weight: bold;">
-        <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>">
+        <a href="https://motion.tools/help">
             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             Manual / Detailed description of the functionality
         </a>
@@ -120,9 +120,9 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 <div class="content">
     <p>Discuss.green / Antragsgrün is open source software and can be installed on any web server that supports PHP and MySQL.</p>
     <p>
-        For european green parties, we provide <strong>free hosting</strong> of sites on this domain.
+        For European and Canadian Green parties, we provide <strong>free hosting</strong> of sites on this domain.
         You can start using or evaluating this tool by answering a couple of questions about your use case and providing
-        a valid e-mail-address. Creating your own instance only takes two minutes.
+        a valid e-mail-address. Creating your own instance only takes about two minutes.
     </p>
 
     <div class="downloadCreate">
@@ -137,9 +137,9 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     </div>
 
     <p>
-        <strong>About internationalization:</strong> We provide an english and german version,
-        as well as a nearly-completele french version. If you are interested in helping translate this tool
-        in other languages, please contact us.
+        <strong>About internationalization:</strong> We provide an English and German version,
+        as well as nearly-completele versions in French and other community-contributed languages.
+        If you are interested in helping translate this tool in other languages, please contact us.
     </p>
     <p>
         <a href="<?= Html::encode(UrlHelper::createUrl('manager/free-hosting')) ?>">
@@ -161,6 +161,5 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     </p>
     <ul>
         <li>E-Mail: <a href="mailto:info@discuss.green">info@discuss.green</a></li>
-        <li>Phone: +49-1515-6024223</li>
     </ul>
 </div>
