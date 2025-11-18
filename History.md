@@ -3,6 +3,7 @@
 ## Version 4.16.1 [Not released yet]
 
 - Bugfix: The amendment admin page could break if an agenda-based home page was set up.
+- Bugfix: The view cache of proposed procedures (used on the admin page) was not updated when modified adoptions were changed retrospectively.
 - Bugfix: Amendments with the same prefix could not be shown on the home page when they were assigned to the same agenda item.
 - Bugfix: Validate the login method used by logged in user.
 

@@ -710,7 +710,7 @@ class AmendmentController extends Base
             }
             $proposal->userStatus = null;
             $proposal->save();
-            $amendment->flushCacheItems(['procedure']);
+            $proposal->flushViewCaches();
 
             $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
             $ppChanges->setProposalTextChanged();
