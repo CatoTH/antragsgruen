@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\db;
 
 use app\components\UrlHelper;
+use app\models\proposedProcedure\Agenda;
 use app\models\settings\AntragsgruenApp;
 use app\components\diff\AmendmentCollissionDetector;
 use app\models\exceptions\Internal;
@@ -74,6 +75,28 @@ class AmendmentProposal extends IProposal
             [['amendmentId'], 'required'],
             [['amendmentId'], 'number'],
         ];
+    }
+
+    public function flushViewCaches(): void
+    {
+        $amendment = $this->getAmendment();
+        if ($amendment?->getMyMotion()) {
+            $amendment->getMyMotion()->flushViewCache();
+            Agenda::getProposedAmendmentProcedureCache($amendment, $this)->flushCache();
+        }
+    }
+
+    /**
+     * @param bool $runValidation
+     * @param null $attributeNames
+     *
+     * @return bool
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $result = parent::save($runValidation, $attributeNames);
+        $this->flushViewCaches();
+        return $result;
     }
 
     public function getAmendment(): ?Amendment

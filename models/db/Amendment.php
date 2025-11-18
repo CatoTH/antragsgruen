@@ -2,13 +2,11 @@
 
 namespace app\models\db;
 
-use app\models\exceptions\Internal;
-use app\models\exceptions\NotFound;
+use app\models\exceptions\{Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
 use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
     AmendmentCreated as AmendmentCreatedNotification,
