@@ -35,9 +35,14 @@ class Agenda
         }
     }
 
+    public static function getProposedAmendmentProcedureCache(IMotion $imotion, IProposal $proposal): HashedStaticCache
+    {
+        return HashedStaticCache::getInstance('formatProposedAmendmentProcedure', [$imotion->id, $proposal->id]);
+    }
+
     public static function formatProposedAmendmentProcedure(IMotion $imotion, IProposal $proposal, int $format): string
     {
-        $cache = HashedStaticCache::getInstance('formatProposedAmendmentProcedure', [$imotion->id, $proposal->id]);
+        $cache = self::getProposedAmendmentProcedureCache($imotion, $proposal);
         if ($format !== self::FORMAT_HTML || $proposal->proposalStatus === IMotion::STATUS_OBSOLETED_BY_AMENDMENT) {
             $cache->setSkipCache(true);
         }

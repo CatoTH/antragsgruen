@@ -715,7 +715,7 @@ trait MotionActionsTrait
             }
             $proposal->userStatus = null;
             $proposal->save();
-            $motion->flushCacheItems(['procedure']);
+            $proposal->flushViewCaches();
 
             $ppChanges = ProposedProcedureChange::create($isNewProposal, $proposal->id, $proposal->version);
             $ppChanges->setProposalTextChanged();
