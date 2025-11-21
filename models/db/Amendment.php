@@ -917,13 +917,15 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
     }
 
-    public function getLatestProposal(): AmendmentProposal
+    public function getLatestProposal(bool $skipVisibilityCheck = false): AmendmentProposal
     {
-        $isAdmin = (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($this)));
+        if (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($this))) {
+            $skipVisibilityCheck = true;
+        }
 
         $max = null;
         foreach ($this->proposals as $proposal) {
-            if (!$isAdmin && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
+            if (!$skipVisibilityCheck && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
                 continue;
             }
             if ($proposal->version > ($max?->version ?: 0)) {
