@@ -249,7 +249,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
     }
 
-    abstract public function getLatestProposal(): IProposal;
+    abstract public function getLatestProposal(bool $skipVisibilityCheck = false): IProposal;
 
     public function getProposalByToken(string $token): ?IProposal
     {

@@ -6,6 +6,7 @@
 - Bugfix: The view cache of proposed procedures (used on the admin page) was not updated when modified adoptions were changed retrospectively.
 - Bugfix: Amendments with the same prefix could not be shown on the home page when they were assigned to the same agenda item.
 - Bugfix: Validate the login method used by logged in user.
+- Bugfix: If a proposed procedure is that an amendment is obsoleted by a different modified amendment, whose proposal is not visible yet, users whose feedback was requested could not see that modified amendment.
 
 ## Version 4.16.0 (2025-10-26)
 
