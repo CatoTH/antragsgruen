@@ -61,7 +61,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <p>
         It was originally created for managing regional congresses of the German Greens, but was quickly adopted
-        on the federal and European level too, and is by now used by a variety of organizations within and beyond the green party.
+        on the Federal and European level, as well as by organizations beyond the family of Green parties.
     </p>
 
     <p>
