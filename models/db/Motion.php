@@ -847,13 +847,15 @@ class Motion extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_UNSCREEN, $this->id);
     }
 
-    public function getLatestProposal(): MotionProposal
+    public function getLatestProposal(bool $skipVisibilityCheck = false): MotionProposal
     {
-        $isAdmin = (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($this)));
+        if (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($this))) {
+            $skipVisibilityCheck = true;
+        }
 
         $max = null;
         foreach ($this->proposals as $proposal) {
-            if (!$isAdmin && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
+            if (!$skipVisibilityCheck && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
                 continue;
             }
             if ($proposal->version > ($max?->version ?: 0)) {

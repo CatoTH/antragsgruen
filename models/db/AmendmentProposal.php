@@ -54,7 +54,7 @@ class AmendmentProposal extends IProposal
         if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $obsoletedBy = $consultation->getAmendment(intval($this->comment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
-                return $obsoletedBy->getLatestProposal()->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
+                return $obsoletedBy->getLatestProposal(true)->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
             }
         }
 
@@ -162,7 +162,7 @@ class AmendmentProposal extends IProposal
         if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY_AMENDMENT) {
             $obsoletedBy = $this->getMyConsultation()->getAmendment(intval($this->comment));
             if ($obsoletedBy && $internalNestingLevel < 10) {
-                return $obsoletedBy->getLatestProposal()->getAlternativeProposaltextReference($internalNestingLevel + 1);
+                return $obsoletedBy->getLatestProposal(true)->getAlternativeProposaltextReference($internalNestingLevel + 1);
             }
         }
 
