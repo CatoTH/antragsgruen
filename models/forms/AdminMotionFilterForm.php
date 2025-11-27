@@ -833,10 +833,12 @@ class AdminMotionFilterForm
         $numAccepted = $numRejected = $numNotResponded = 0;
         foreach (array_merge($this->allMotions, $this->allAmendments) as $imotion) {
             $proposal = $imotion->getLatestProposal();
-            if (!isset($num[$proposal->proposalStatus])) {
-                $num[$proposal->proposalStatus] = 0;
+            if ($proposal->proposalStatus !== null) {
+                if (!isset($num[$proposal->proposalStatus])) {
+                    $num[$proposal->proposalStatus] = 0;
+                }
+                $num[$proposal->proposalStatus]++;
             }
-            $num[$proposal->proposalStatus]++;
             if ($proposal->notifiedAt) {
                 if ($proposal->userStatus === Amendment::STATUS_ACCEPTED) {
                     $numAccepted++;

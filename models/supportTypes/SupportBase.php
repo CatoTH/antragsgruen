@@ -303,10 +303,10 @@ abstract class SupportBase
         foreach ($supportersAndInitiators as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
                 $sup->amendmentId = $amendment->id;
-                if (isset($preCreatedByAdmin[$sup->userId])) {
+                if ($sup->userId !== null && isset($preCreatedByAdmin[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
                 }
-                if (isset($preNonPublic[$sup->userId])) {
+                if ($sup->userId !== null && isset($preNonPublic[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
                 }
                 $sup->save();
