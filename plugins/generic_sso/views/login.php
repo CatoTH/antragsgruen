@@ -13,10 +13,10 @@ use yii\helpers\Html;
 
 echo '<section class="loginGenericSso">';
 echo '<h2 class="green">' . Html::encode($providerName) . '</h2>';
-echo '<div class="content row">';
+echo '<div class="content">';
 
 $action = AntragsgruenApp::getInstance()->domainPlain . 'sso-login';
-echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'ssoLoginForm']);
+echo Html::beginForm($action, 'post', ['id' => 'ssoLoginForm']);
 
 $absoluteBack = UrlHelper::absolutizeLink($backUrl);
 echo '<input type="hidden" name="backUrl" value="' . Html::encode($absoluteBack) . '">';
@@ -26,12 +26,12 @@ echo Html::encode($buttonText);
 echo '</button>';
 
 echo Html::endForm();
+echo '</div>';
 
 if (!empty($description)) {
-    echo '<div class="ssoLoginHint col-sm-8">';
+    echo '<div class="ssoLoginHint">';
     echo Html::encode($description);
     echo '</div>';
 }
 
-echo '</div>';
 echo '</section>';

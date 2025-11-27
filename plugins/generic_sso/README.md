@@ -165,6 +165,108 @@ $config = [
 ];
 ```
 
+### Translation and Customization
+
+The plugin supports multi-language content through Antragsgrün's translation system.
+
+#### Translatable Strings
+
+The following UI elements are translatable:
+
+- **Provider Name**: The title shown above the login button
+- **Button Text**: The text displayed on the login button
+- **Description**: Optional explanatory text shown below the form
+
+#### Using Translations
+
+**Option 1: Use default translations (recommended)**
+
+Simply omit `providerName`, `buttonText`, and `description` from your configuration:
+
+```json
+{
+  "enabled": true,
+  "protocol": "oidc",
+  "providerId": "my-sso",
+  "oidc": {
+    "clientId": "...",
+    "clientSecret": "..."
+  }
+}
+```
+
+The plugin automatically displays text in the user's selected language using defaults from:
+- `plugins/generic_sso/messages/de/generic_sso.php` (German)
+- `plugins/generic_sso/messages/en/generic_sso.php` (English)
+- `plugins/generic_sso/messages/fr/generic_sso.php` (French)
+- `plugins/generic_sso/messages/nl/generic_sso.php` (Dutch)
+
+**Option 2: Override via configuration**
+
+Provide specific values in `config/generic_sso.json`:
+
+```json
+{
+  "enabled": true,
+  "protocol": "oidc",
+  "providerId": "my-company-sso",
+  "providerName": "Acme Corp Login",
+  "buttonText": "Sign in with Acme",
+  "description": "Use your Acme employee credentials.",
+  "oidc": { ... }
+}
+```
+
+Configuration values take precedence over translations.
+
+**Option 3: Customize via Admin Panel**
+
+Administrators can customize translations for their specific consultation:
+
+1. Navigate to **Admin Panel** → **Settings** → **Translation**
+2. Select category: **generic_sso**
+3. Customize the following keys:
+   - `login_provider_name` - Provider name/title
+   - `login_button` - Login button text
+   - `login_description` - Description/help text
+
+Changes are immediately visible and consultation-specific (don't affect other consultations).
+
+#### Supported Languages
+
+The plugin provides translations for:
+- **German (de)** - Primary language
+- **English (en)** - International language
+- **French (fr)** - For Swiss/French users
+- **Dutch (nl)** - For Dutch users
+
+To add additional languages, create a new file at:
+```
+plugins/generic_sso/messages/{language_code}/generic_sso.php
+```
+
+Example for Spanish (`plugins/generic_sso/messages/es/generic_sso.php`):
+
+```php
+<?php
+return [
+    'login_provider_name' => 'Inicio de sesión SSO',
+    'login_button' => 'Iniciar sesión con SSO',
+    'login_description' => 'Será redirigido a la página de inicio de sesión de su organización.',
+];
+```
+
+#### Translation Priority
+
+When displaying text, the plugin uses this priority order:
+
+1. **Configuration values** (if provided in `config/generic_sso.json`)
+2. **Admin panel overrides** (if customized per consultation)
+3. **Translation files** (language-specific defaults)
+4. **Translation key name** (fallback if translation missing)
+
+This ensures backward compatibility while providing maximum flexibility.
+
 ### Provider-Specific Examples
 
 #### Keycloak

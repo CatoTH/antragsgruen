@@ -90,6 +90,20 @@
   }
 }
 
+.loginGenericSso {
+  #ssoLoginForm {
+    @media (min-width: $screenMinWith) {
+      width: 400px;
+    }
+  }
+
+  .ssoLoginHint {
+    margin-top: 15px;
+    font-size: 0.85em;
+    color: #666;
+  }
+}
+
 .accountDeleteForm .submit {
   display: flex;
   width: 100%;

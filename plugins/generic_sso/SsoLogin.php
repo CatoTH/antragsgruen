@@ -6,7 +6,7 @@ namespace app\plugins\generic_sso;
 
 use app\components\{LoginProviderInterface, RequestContext, UrlHelper};
 use app\models\db\{ConsultationUserGroup, User};
-use app\models\settings\AntragsgruenApp;
+use app\models\settings\{AntragsgruenApp, Site as SiteSettings};
 use app\plugins\generic_sso\{OidcProvider, SamlProvider};
 use yii\helpers\Url;
 
@@ -51,12 +51,13 @@ class SsoLogin implements LoginProviderInterface
 
     public function getId(): string
     {
-        return $this->config['providerId'] ?? 'generic-sso';
+        return (string)SiteSettings::LOGIN_EXTERNAL;
     }
 
     public function getName(): string
     {
-        return $this->config['providerName'] ?? 'SSO Login';
+        // Use config value if provided, otherwise use translation
+        return $this->config['providerName'] ?? \Yii::t('generic_sso', 'login_provider_name');
     }
 
     public function renderLoginForm(string $backUrl, bool $active): string
@@ -68,8 +69,8 @@ class SsoLogin implements LoginProviderInterface
         return \Yii::$app->controller->renderPartial('@app/plugins/generic_sso/views/login', [
             'backUrl' => $backUrl,
             'providerName' => $this->getName(),
-            'buttonText' => $this->config['buttonText'] ?? 'Login with SSO',
-            'description' => $this->config['description'] ?? '',
+            'buttonText' => $this->config['buttonText'] ?? \Yii::t('generic_sso', 'login_button'),
+            'description' => $this->config['description'] ?? \Yii::t('generic_sso', 'login_description'),
         ]);
     }
 

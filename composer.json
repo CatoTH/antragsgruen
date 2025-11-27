@@ -30,6 +30,7 @@
     "endroid/qr-code": "^5.0",
     "firebase/php-jwt": "^6.8",
     "guzzlehttp/guzzle": "^7.7",
+    "league/oauth2-client": "^2.9",
     "paragonie/sodium_compat": "^2.0",
     "phpoffice/phpspreadsheet": "^4.4",
     "predis/predis": "^3.0",
