@@ -12,6 +12,7 @@ env:
   {php: '8.2', experimental: false},
   {php: '8.3', experimental: false},
   {php: '8.4', experimental: false},
+  {php: '8.5', experimental: false},
   "
   php-ext: curl, dom, fileinfo, iconv, intl, mbstring, mysql, pdo, zip
 
