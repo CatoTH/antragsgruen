@@ -1017,7 +1017,9 @@ class Motion extends IMotion implements IRSSItem
         }
 
         $motionTitle = (grapheme_strlen($this->title) > 70 ? (string)grapheme_substr($this->title, 0, 70) : $this->title);
-        $title = (new AsciiSlugger())->slug($motionTitle);
+        $slugger = new AsciiSlugger();
+        // Suppress: Using null as an array offset is deprecated, use an empty string instead in vendor/symfony/string/Slugger/AsciiSlugger.php:126
+        $title = @$slugger->slug($motionTitle);
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $random = \Yii::$app->getSecurity()->generateRandomKey(2);

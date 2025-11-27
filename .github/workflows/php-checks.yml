@@ -122,6 +122,6 @@ jobs:
 
       - name: Run unittest.
         run: |
-          vendor/bin/codecept clean
-          vendor/bin/codecept build
+          php -d register_argc_argv=On vendor/bin/codecept clean
+          php -d register_argc_argv=On vendor/bin/codecept build
           php -d register_argc_argv=On vendor/bin/codecept run Unit
