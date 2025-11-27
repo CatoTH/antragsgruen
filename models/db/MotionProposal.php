@@ -7,6 +7,7 @@ namespace app\models\db;
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\AntragsgruenApp;
 use app\models\exceptions\Internal;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * @property int $motionId
@@ -23,6 +24,21 @@ class MotionProposal extends IProposal
         return [
             [['motionId'], 'required'],
             [['motionId'], 'number'],
+        ];
+    }
+
+    public function behaviors(): array
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::class,
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+            ],
         ];
     }
 

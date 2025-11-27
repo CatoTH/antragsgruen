@@ -10,6 +10,7 @@ use app\models\settings\AntragsgruenApp;
 use app\components\diff\AmendmentCollissionDetector;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * @property int $amendmentId
@@ -74,6 +75,21 @@ class AmendmentProposal extends IProposal
         return [
             [['amendmentId'], 'required'],
             [['amendmentId'], 'number'],
+        ];
+    }
+
+    public function behaviors(): array
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::class,
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+            ],
         ];
     }
 
