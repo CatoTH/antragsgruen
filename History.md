@@ -7,6 +7,7 @@
 - Bugfix: Amendments with the same prefix could not be shown on the home page when they were assigned to the same agenda item.
 - Bugfix: Validate the login method used by logged in user.
 - Bugfix: If a proposed procedure is that an amendment is obsoleted by a different modified amendment, whose proposal is not visible yet, users whose feedback was requested could not see that modified amendment.
+- Bugfix: Depending on database engine, creating a proposed procedure and publishing it right away lead to an internal error.
 
 ## Version 4.16.0 (2025-10-26)
 
