@@ -117,8 +117,8 @@ jobs:
 
       - name: Validate config of codecept.
         run: |
-          vendor/bin/codecept --version
-          vendor/bin/codecept config:validate
+          php -d register_argc_argv=On vendor/bin/codecept --version
+          php -d register_argc_argv=On vendor/bin/codecept config:validate
 
       - name: Run unittest.
         run: |
