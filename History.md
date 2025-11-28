@@ -1,6 +1,15 @@
 # Version history
 
-## Version 4.16.0 [not released yet]
+## Version 4.16.1 [Not released yet]
+
+- Bugfix: The amendment admin page could break if an agenda-based home page was set up.
+- Bugfix: The view cache of proposed procedures (used on the admin page) was not updated when modified adoptions were changed retrospectively.
+- Bugfix: Amendments with the same prefix could not be shown on the home page when they were assigned to the same agenda item.
+- Bugfix: Validate the login method used by logged in user.
+- Bugfix: If a proposed procedure is that an amendment is obsoleted by a different modified amendment, whose proposal is not visible yet, users whose feedback was requested could not see that modified amendment.
+- Bugfix: Depending on database engine, creating a proposed procedure and publishing it right away lead to an internal error.
+
+## Version 4.16.0 (2025-10-26)
 
 - The agenda and speaking lists were improved in several ways:
   - Each agenda item can now have its dedicated speaking list.
@@ -34,8 +43,9 @@
   - When editing the modified version of a proposed procedure, more amendments are checked for collissions.
   - The internal proposed procedure list can also be opened minimalized, without showing admin comments and tags.
 - Bugfix: The maximum length of a section could be set to an invalid value.
+- Bugfix: In Yes/No-votings, the overall number of votes was not shown correctly.
 
-### Version 4.15.3 (2025-05.13)
+### Version 4.15.3 (2025-05-13)
 
 - For votings, it is now possible to set if the e-mail-address, the name or the organization of the voters is to be displayed (if at all).
 - On speaking list, it is now possible to not show the list of applicants in the publicly visible speaking list view.

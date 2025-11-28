@@ -115,7 +115,7 @@ ob_start();
                                     {{ groupedVoting[0].vote_results[0][answer.api_id] }}
                                 </td>
                                 <td class="voteCountTotal total" v-if="voting.answers.length > 1">
-                                    {{ groupedVoting[0].vote_results[0].yes + groupedVoting[0].vote_results[0].no + groupedVoting[0].vote_results[0].abstention }}
+                                    {{ getAbsoluteNumberOfVotes(groupedVoting[0].vote_results[0]) }}
                                 </td>
                             </tr>
                             </tbody>

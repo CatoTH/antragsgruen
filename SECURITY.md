@@ -6,8 +6,8 @@ The latest stable version and the current work-in-progress version are supported
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 4.15.x  | :white_check_mark: |
-| < 4.15  | :x:                |
+| 4.16.x  | :white_check_mark: |
+| < 4.16  | :x:                |
 
 ## Reporting a Vulnerability
 

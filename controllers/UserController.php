@@ -351,7 +351,7 @@ class UserController extends Base
         return new RedirectResponse($backUrl, RedirectResponse::REDIRECT_TEMPORARY);
     }
 
-    public function actionRecovery(string $email = '', string $code = ''): HtmlResponse
+    public function actionRecovery(string $email = '', string $code = ''): ResponseInterface
     {
         if ($this->isPostSet('send')) {
             $email = $this->getRequestValue('email');
@@ -366,6 +366,8 @@ class UserController extends Base
                 $this->getHttpSession()->setFlash('error', $msg);
             } elseif ($user->getSettingsObj()->preventPasswordChange) {
                 $this->getHttpSession()->setFlash('error', \Yii::t('user', 'err_pwd_fixed'));
+            } elseif ($user->getSettingsObj()->preventAccountPage) {
+                return new RedirectResponse(UrlHelper::homeUrl());
             } else {
                 try {
                     $user->sendRecoveryMail();
@@ -412,6 +414,11 @@ class UserController extends Base
     {
         $this->forceLogin();
         $user = User::getCurrentUser();
+
+        if ($user->getSettingsObj()->preventAccountPage) {
+            return new RedirectResponse(UrlHelper::homeUrl());
+        }
+
         try {
             $user->changeEmailAddress($email, $code);
             $this->getHttpSession()->setFlash('success', \Yii::t('user', 'emailchange_done'));
@@ -421,12 +428,16 @@ class UserController extends Base
         return new RedirectResponse(UrlHelper::createUrl('user/myaccount'));
     }
 
-    public function actionMyaccount(): HtmlResponse
+    public function actionMyaccount(): ResponseInterface
     {
         $this->forceLogin();
 
         $user     = User::getCurrentUser();
         $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+
+        if ($user->getSettingsObj()->preventAccountPage) {
+            return new RedirectResponse(UrlHelper::homeUrl());
+        }
 
         $params = AntragsgruenApp::getInstance();
 
@@ -595,10 +606,15 @@ class UserController extends Base
         ]));
     }
 
-    public function actionDataExport(): JsonResponse
+    public function actionDataExport(): ResponseInterface
     {
         $this->forceLogin();
         $user = User::getCurrentUser();
+
+        if ($user->getSettingsObj()->preventAccountPage) {
+            return new RedirectResponse(UrlHelper::homeUrl());
+        }
+
 
         $this->getHttpResponse()->format = Response::FORMAT_RAW;
         $this->getHttpResponse()->headers->add('Content-Type', 'application/json');

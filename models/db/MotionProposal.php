@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
-use app\models\notifications\AmendmentProposedProcedure;
-use app\models\SectionedParagraph;
+use app\models\proposedProcedure\Agenda;
 use app\models\settings\AntragsgruenApp;
-use app\components\{diff\AmendmentRewriter, diff\ArrayMatcher, diff\Diff, diff\DiffRenderer, HTMLTools, LineSplitter};
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\ISectionType;
-use yii\db\ActiveRecord;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * @property int $motionId
@@ -29,6 +26,44 @@ class MotionProposal extends IProposal
             [['motionId'], 'number'],
         ];
     }
+
+    public function behaviors(): array
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::class,
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+            ],
+        ];
+    }
+
+    public function flushViewCaches(): void
+    {
+        $motion = $this->getMotion();
+        if ($motion) {
+            $motion->flushViewCache();
+            Agenda::getProposedAmendmentProcedureCache($motion, $this)->flushCache();
+        }
+    }
+
+    /**
+     * @param bool $runValidation
+     * @param null $attributeNames
+     *
+     * @return bool
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $result = parent::save($runValidation, $attributeNames);
+        $this->flushViewCaches();
+        return $result;
+    }
+
     public function getCachedConsultation(): ?Consultation
     {
         $current = Consultation::getCurrent();

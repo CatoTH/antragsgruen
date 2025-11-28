@@ -165,8 +165,7 @@ $controller->layoutParams->addInlineCss('
 
         <p><strong>Contact for support</strong>:<br>
             Tobias Hößl<br>
-            <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a><br>
-            <a href="tel:+4915156024223">+49 151 56024223</a>
+            <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a>
     </div>
 </section>
 
@@ -215,7 +214,6 @@ $controller->layoutParams->addInlineCss('
         </p>
         <ul>
             <li>E-Mail: <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a></li>
-            <li>Phone: +49-1515-6024223</li>
         </ul>
     </div>
 </section>

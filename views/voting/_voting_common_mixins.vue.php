@@ -146,6 +146,13 @@ use app\models\policies\UserGroups;
             }
         },
         methods: {
+            getAbsoluteNumberOfVotes(resultList) {
+                let absolute = 0;
+                this.voting.answers.forEach(answer => {
+                    absolute += resultList[answer.api_id];
+                });
+                return absolute;
+            },
             itemIsAccepted: function (groupedItem) {
                 return groupedItem[0].voting_status === this.VOTING_STATUS_ACCEPTED;
             },

@@ -23,16 +23,16 @@ $sidebarActionFont: "PT Sans Bold", sans-serif;
 $createMotionBtnColor: $secondary-600;
 $bookmarkAmendmentBackground: #afcb08;
 $bookmarkCommentColor: $secondary-600;
-$headingFont: "GrueneType", sans-serif;
+$headingFont: "PT Sans Bold", sans-serif;
 $headingPrimaryText: #ffffff;
 $headingPrimaryBackground: $tanne;
 $headingPrimarySize: 30px;
 $headingSecondaryText: #ffffff;
 $headingSecondaryBackground: $primary-600;
-$headingSecondarySize: 20px;
+$headingSecondarySize: 18px;
 $headingTertiaryText: #444;
 $headingTertiaryBackground: $grashalm;
-$headingTertiarySize: 15px;
+$headingTertiarySize: 14px;
 $headingFontUppercase: false;
 $uppercaseTitles: false;
 $menuFont: "PT Sans Bold", sans-serif;
@@ -41,10 +41,10 @@ $menuActive: #ddd;
 $bodyFont: "PT Sans", sans-serif;
 $font-size-base: 14px;
 $textColor: #484649;
-$colorLinks: $klee;
+$colorLinks: $tanne;
 $colorLinksLight: $klee;
 $colorDelLink: #FF7777;
-$linkTextDecoration: none;
+$linkTextDecoration: underline;
 $motionFixedFont: "VeraMono", Consolas, Courier, sans-serif;
 $motionFixedFontColor: #222;
 $motionStdFontSize: 16px;
@@ -161,7 +161,7 @@ body {
     display: block;
     width: 80px;
     height: 80px;
-    background-image: url(Sonnenblume_RGB_gelb.svg);
+    background-image: url(Sonnenblume_RGB_gelb_2025.svg);
     background-repeat: no-repeat;
 
     @media screen and (max-width: 479px) {
@@ -197,10 +197,10 @@ body {
       color: white;
       font-size: 42px;
       line-height: 48px;
-      font-style: italic;
+      font-style: normal;
+      font-weight: normal;
       text-shadow: none;
-      font-family: $headingFont;
-      text-transform: uppercase;
+      font-family: "GrueneTypeNeue", sans-serif;
     }
     .consultationTitle {
       margin-top: 5px;
@@ -251,19 +251,46 @@ body {
   }
 }
 
-a:hover {
-  text-decoration: underline;
-  text-underline-offset: 8px;
-}
-
-#sidebar .nav-list > li a:hover {
-  text-decoration: underline;
-  text-underline-offset: 8px;
-}
-#sidebarSmall .nav li a {
+#page a {
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
   color: $colorLinks;
-  &:hover {
-    text-decoration: underline;
-    text-underline-offset: 8px;
+  position: relative;
+  z-index: 1;
+
+  &:hover::before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: calc(var(--mark-overlap) * -1);
+    right: calc(var(--mark-overlap) * -1);
+    bottom: 0;
+
+    --mark-height: 0.8em;
+    --mark-color: #fff17a;
+    --mark-skew: calc(var(--mark-height) / 100 * 22.6);
+    --mark-overlap: 0.3em;
+    color: rgb(0, 34, 22);
+    background-image: linear-gradient(to bottom right,transparent 0 50%,var(--mark-color) 50% 100%),linear-gradient(var(--mark-color),var(--mark-color)),linear-gradient(to top left,transparent 50%,var(--mark-color) 50%);
+    background-size: calc(var(--mark-skew)) calc(var(--mark-height)),calc(100% - var(--mark-skew) * 2 + .5px) var(--mark-height),calc(var(--mark-skew)) var(--mark-height);
+    background-position: 0 100%,bottom,100% 100%;
+    background-repeat: no-repeat;
   }
 }
+
+#page {
+  ul.sidebarActions li a, ul.sidebarActions li > span, ul.sidebarActions button {
+    color: white;
+  }
+  ul.sidebarActions li a:hover::before {
+    display: none
+  }
+  ul.sidebarActions li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+.navbar .nav li a {
+  text-transform: none;
+}
+

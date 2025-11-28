@@ -46,7 +46,7 @@ class ArrayMatcher
         if (count($toMatchArr) === 0) {
             return [$emptyArray($spaceToFill)];
         }
-        if ($spaceToFill >= 10) {
+        if ($spaceToFill >= 8) {
             // @TODO Find a better solution for this
             // As the number of variants grows exponentially with the number of elements to fill, we need
             // a fallback for this kind of situation. Better a suboptimal solution than a broken site.

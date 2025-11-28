@@ -2,13 +2,11 @@
 
 namespace app\models\db;
 
-use app\models\exceptions\Internal;
-use app\models\exceptions\NotFound;
+use app\models\exceptions\{Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
 use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
     AmendmentCreated as AmendmentCreatedNotification,
@@ -919,13 +917,15 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
     }
 
-    public function getLatestProposal(): AmendmentProposal
+    public function getLatestProposal(bool $skipVisibilityCheck = false): AmendmentProposal
     {
-        $isAdmin = (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($this)));
+        if (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($this))) {
+            $skipVisibilityCheck = true;
+        }
 
         $max = null;
         foreach ($this->proposals as $proposal) {
-            if (!$isAdmin && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
+            if (!$skipVisibilityCheck && !$proposal->isProposalPublic() && !$proposal->canAgreeToProposedProcedure(null)) {
                 continue;
             }
             if ($proposal->version > ($max?->version ?: 0)) {
