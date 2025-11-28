@@ -20,7 +20,10 @@
     "urlLogout": "https://your-idp.com/oauth2/logout",
     "issuer": "https://your-idp.com",
     "scopes": ["openid", "profile", "email", "groups"],
-    "pkce": true
+    "pkce": true,
+    "authorizationParams": {
+      "prompt": "consent"
+    }
   },
   "saml": {
     "authSource": "generic-sso-sp",
@@ -80,6 +83,20 @@
       "urlResourceOwnerDetails": "https://your-domain.auth0.com/userinfo",
       "urlLogout": "https://your-domain.auth0.com/v2/logout",
       "issuer": "https://your-domain.auth0.com/"
+    },
+    "logto": {
+      "urlAuthorize": "https://your-logto-domain.com/oidc/auth",
+      "urlAccessToken": "https://your-logto-domain.com/oidc/token",
+      "urlResourceOwnerDetails": "https://your-logto-domain.com/oidc/me",
+      "urlUserInfo": "https://your-logto-domain.com/oidc/me",
+      "urlLogout": "https://your-logto-domain.com/oidc/session/end",
+      "issuer": "https://your-logto-domain.com/oidc",
+      "scopes": ["openid", "profile", "email"],
+      "pkce": true,
+      "authorizationParams": {
+        "prompt": "consent"
+      },
+      "note": "Logto requires exact redirect URI match. Ensure the redirect URI is added in Logto Console > Applications > Your App > Redirect URIs"
     }
   },
   "samlProviderExamples": {

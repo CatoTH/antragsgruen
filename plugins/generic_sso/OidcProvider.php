@@ -44,8 +44,11 @@ class OidcProvider
     {
         $scopes = $this->config['scopes'] ?? ['openid', 'profile', 'email'];
 
+        // Ensure scopes are space-separated string for OIDC compliance
+        $scopeString = is_array($scopes) ? implode(' ', $scopes) : $scopes;
+
         $options = array_merge([
-            'scope' => $scopes,
+            'scope' => $scopeString,
         ], $options);
 
         return $this->provider->getAuthorizationUrl($options);
@@ -57,6 +60,42 @@ class OidcProvider
     public function getState(): string
     {
         return $this->provider->getState();
+    }
+
+    /**
+     * Get the PKCE code verifier (if PKCE is enabled)
+     */
+    public function getPkceCode(): ?string
+    {
+        // Access protected property via reflection
+        try {
+            $reflection = new \ReflectionClass($this->provider);
+            $property = $reflection->getProperty('pkceCode');
+            $property->setAccessible(true);
+            return $property->getValue($this->provider);
+        } catch (\Exception $e) {
+            error_log('Failed to get PKCE code: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Set the PKCE code verifier (restore from session)
+     */
+    public function setPkceCode(?string $pkceCode): void
+    {
+        if (!$pkceCode) {
+            return;
+        }
+
+        try {
+            $reflection = new \ReflectionClass($this->provider);
+            $property = $reflection->getProperty('pkceCode');
+            $property->setAccessible(true);
+            $property->setValue($this->provider, $pkceCode);
+        } catch (\Exception $e) {
+            error_log('Failed to set PKCE code: ' . $e->getMessage());
+        }
     }
 
     /**

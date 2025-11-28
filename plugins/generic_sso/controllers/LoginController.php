@@ -55,6 +55,16 @@ class LoginController extends Base
     {
         if ($error) {
             $errorDescription = $this->getQueryValue('error_description', $error);
+            $errorUri = $this->getQueryValue('error_uri', '');
+
+            // Enhanced error logging
+            error_log('SSO Callback Error: ' . $error);
+            error_log('SSO Error Description: ' . $errorDescription);
+            if ($errorUri) {
+                error_log('SSO Error URI: ' . $errorUri);
+            }
+            error_log('SSO Callback URL: ' . \Yii::$app->request->getAbsoluteUrl());
+
             $this->showErrorpage(
                 403,
                 'SSO Authentication Error: ' . Html::encode($errorDescription)

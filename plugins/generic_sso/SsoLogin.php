@@ -96,8 +96,25 @@ class SsoLogin implements LoginProviderInterface
 
         if (!$code) {
             // Start authentication flow
-            $authUrl = $provider->getAuthorizationUrl();
+            // Add any additional authorization parameters from config
+            $authOptions = [];
+            if (isset($oidcConfig['authorizationParams'])) {
+                $authOptions = $oidcConfig['authorizationParams'];
+            }
+
+            $authUrl = $provider->getAuthorizationUrl($authOptions);
+
+            // Store state and PKCE verifier in session
             \Yii::$app->session->set('oauth2state', $provider->getState());
+
+            // Store PKCE code if PKCE is enabled
+            if (isset($oidcConfig['pkce']) && $oidcConfig['pkce']) {
+                $pkceCode = $provider->getPkceCode();
+                if ($pkceCode) {
+                    \Yii::$app->session->set('oauth2pkce', $pkceCode);
+                }
+            }
+
             \Yii::$app->response->redirect($authUrl);
             \Yii::$app->end();
         }
@@ -106,10 +123,20 @@ class SsoLogin implements LoginProviderInterface
         $sessionState = \Yii::$app->session->get('oauth2state');
         if (!$state || $state !== $sessionState) {
             \Yii::$app->session->remove('oauth2state');
+            \Yii::$app->session->remove('oauth2pkce');
             throw new \Exception('Invalid state parameter');
         }
 
         \Yii::$app->session->remove('oauth2state');
+
+        // Restore PKCE code verifier if it was stored
+        if (isset($oidcConfig['pkce']) && $oidcConfig['pkce']) {
+            $pkceCode = \Yii::$app->session->get('oauth2pkce');
+            if ($pkceCode) {
+                $provider->setPkceCode($pkceCode);
+                \Yii::$app->session->remove('oauth2pkce');
+            }
+        }
 
         // Exchange code for access token
         $token = $provider->getAccessToken($code);
@@ -225,6 +252,11 @@ class SsoLogin implements LoginProviderInterface
 
         // Set fixed data to prevent user modification
         $user->fixedData = User::FIXED_NAME;
+
+        // Prevent SSO users from changing password (managed by SSO provider)
+        $userSettings = $user->getSettingsObj();
+        $userSettings->preventPasswordChange = true;
+        $user->setSettingsObj($userSettings);
 
         if (!$user->save()) {
             $errors = json_encode($user->getErrors());
