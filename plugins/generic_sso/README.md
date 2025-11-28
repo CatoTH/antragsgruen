@@ -83,9 +83,6 @@ Edit `config/generic_sso.json` with your IdP settings (see Configuration section
   "enabled": true,
   "protocol": "oidc",
   "providerId": "my-company-sso",
-  "providerName": "Company SSO",
-  "buttonText": "Login with Company Account",
-  "description": "You will be redirected to your company login page.",
   "singleLogout": true,
   "syncGroups": true,
   "oidc": {
@@ -128,8 +125,6 @@ $config = OidcProvider::discover('https://idp.example.com');
   "enabled": true,
   "protocol": "saml",
   "providerId": "company-saml",
-  "providerName": "Company SAML SSO",
-  "buttonText": "Login with SAML",
   "singleLogout": true,
   "syncGroups": true,
   "saml": {
@@ -177,23 +172,7 @@ The following UI elements are translatable:
 - **Button Text**: The text displayed on the login button
 - **Description**: Optional explanatory text shown below the form
 
-#### Using Translations
-
-**Option 1: Use default translations (recommended)**
-
-Simply omit `providerName`, `buttonText`, and `description` from your configuration:
-
-```json
-{
-  "enabled": true,
-  "protocol": "oidc",
-  "providerId": "my-sso",
-  "oidc": {
-    "clientId": "...",
-    "clientSecret": "..."
-  }
-}
-```
+#### Customizing Translations
 
 The plugin automatically displays text in the user's selected language using defaults from:
 - `plugins/generic_sso/messages/de/generic_sso.php` (German)
@@ -201,36 +180,16 @@ The plugin automatically displays text in the user's selected language using def
 - `plugins/generic_sso/messages/fr/generic_sso.php` (French)
 - `plugins/generic_sso/messages/nl/generic_sso.php` (Dutch)
 
-**Option 2: Override via configuration**
+**To customize the login text** (e.g., "Login with Acme" instead of "SSO Login"):
 
-Provide specific values in `config/generic_sso.json`:
+1. Go to **Admin Panel** → **Translation**
+2. Select the **generic_sso** category
+3. Customize these strings:
+   - `login_provider_name` - Title shown above the login button
+   - `login_button` - Text on the login button
+   - `login_description` - Optional explanatory text
 
-```json
-{
-  "enabled": true,
-  "protocol": "oidc",
-  "providerId": "my-company-sso",
-  "providerName": "Acme Corp Login",
-  "buttonText": "Sign in with Acme",
-  "description": "Use your Acme employee credentials.",
-  "oidc": { ... }
-}
-```
-
-Configuration values take precedence over translations.
-
-**Option 3: Customize via Admin Panel**
-
-Administrators can customize translations for their specific consultation:
-
-1. Navigate to **Admin Panel** → **Settings** → **Translation**
-2. Select category: **generic_sso**
-3. Customize the following keys:
-   - `login_provider_name` - Provider name/title
-   - `login_button` - Login button text
-   - `login_description` - Description/help text
-
-Changes are immediately visible and consultation-specific (don't affect other consultations).
+Changes apply per-consultation and support multiple languages, just like all other Antragsgrün text customization.
 
 #### Supported Languages
 

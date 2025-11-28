@@ -56,8 +56,20 @@ class SsoLogin implements LoginProviderInterface
 
     public function getName(): string
     {
-        // Use config value if provided, otherwise use translation
-        return $this->config['providerName'] ?? \Yii::t('generic_sso', 'login_provider_name');
+        return $this->getTranslation('login_provider_name', 'SSO Login');
+    }
+
+    private function getTranslation(string $key, string $fallback): string
+    {
+        $lang = \Yii::$app->language;
+        $file = \Yii::getAlias('@app/plugins/generic_sso/messages/' . $lang . '/generic_sso.php');
+
+        if (file_exists($file)) {
+            $translations = include($file);
+            return $translations[$key] ?? $fallback;
+        }
+
+        return $fallback;
     }
 
     public function renderLoginForm(string $backUrl, bool $active): string
@@ -69,8 +81,8 @@ class SsoLogin implements LoginProviderInterface
         return \Yii::$app->controller->renderPartial('@app/plugins/generic_sso/views/login', [
             'backUrl' => $backUrl,
             'providerName' => $this->getName(),
-            'buttonText' => $this->config['buttonText'] ?? \Yii::t('generic_sso', 'login_button'),
-            'description' => $this->config['description'] ?? \Yii::t('generic_sso', 'login_description'),
+            'buttonText' => $this->getTranslation('login_button', 'Login with SSO'),
+            'description' => $this->getTranslation('login_description', ''),
         ]);
     }
 

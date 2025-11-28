@@ -1,12 +1,7 @@
 {
-  "_comment_translations": "The providerName, buttonText, and description fields are optional. If omitted, the plugin uses translatable defaults from plugins/generic_sso/messages/{lang}/generic_sso.php. Administrators can customize these strings per-consultation via Admin Panel > Translation.",
-
   "enabled": true,
   "protocol": "oidc",
   "providerId": "generic-sso",
-  "providerName": "SSO Login",
-  "buttonText": "Login with SSO",
-  "description": "You will be redirected to your organization's login page. Your password is never shared with this application.",
   "singleLogout": true,
   "syncGroups": true,
   "oidc": {
