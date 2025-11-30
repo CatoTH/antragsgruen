@@ -158,7 +158,10 @@ class ConsultationSettingsTag extends ActiveRecord
 
     public function getNameBasedCSSClass(): string
     {
-        return (new AsciiSlugger())->slug($this->getNormalizedName());
+        $slugger = new AsciiSlugger();
+
+        // Suppress: Using null as an array offset is deprecated, use an empty string instead in vendor/symfony/string/Slugger/AsciiSlugger.php:126
+        return @$slugger->slug($this->getNormalizedName());
     }
 
     /**
