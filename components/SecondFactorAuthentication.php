@@ -302,7 +302,9 @@ class SecondFactorAuthentication
         }
 
         $url = $totp->getProvisioningUri();
-        return Builder::create()
+
+        // Hint: endroid/qr-code is (in the used PHP-8.1-compatible version) not yet compatible with 8.5
+        return @Builder::create()
                          ->writer(new PngWriter())
                          ->writerOptions([])
                          ->data($url)
