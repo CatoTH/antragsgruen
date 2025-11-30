@@ -1,13 +1,15 @@
 DELETE FROM cl USING consultationLog cl JOIN consultation c ON cl.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM mt USING motionTag mt JOIN motion m ON mt.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM amt USING amendmentTag amt JOIN amendment a ON amt.amendmentId = a.id JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
+DELETE FROM mp USING motionProposal mp JOIN motion m ON mp.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM mc USING motionComment mc JOIN motion m ON mc.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
+DELETE FROM amp USING amendmentProposal amp JOIN amendment a ON amp.amendmentId = a.id JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM amc USING amendmentComment amc JOIN amendment a ON amc.amendmentId = a.id JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM mc USING motionAdminComment mc JOIN motion m ON mc.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM amc USING amendmentAdminComment amc JOIN amendment a ON amc.amendmentId = a.id JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
-DELETE FROM cfg USING consultationFileGroup cfg JOIN consultation c ON cfg.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM cf USING consultationFile cf JOIN consultation c ON cf.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM cf USING consultationFile cf JOIN site s ON cf.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
+DELETE FROM cfg USING consultationFileGroup cfg JOIN consultation c ON cfg.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM ms USING motionSupporter ms JOIN motion m ON ms.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM ams USING amendmentSupporter ams JOIN amendment a ON ams.amendmentId = a.id JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM ams USING amendmentSection ams JOIN amendment a ON ams.amendmentId = a.id JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
@@ -16,6 +18,7 @@ UPDATE motion m JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.
 DELETE FROM v USING vote v JOIN votingBlock vb ON v.votingBlockId = vb.id JOIN consultation c ON vb.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 UPDATE motion m JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id SET m.votingBlockId = NULL WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 UPDATE amendment a JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id SET a.votingBlockId = NULL WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
+UPDATE amendment a JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id SET a.amendingAmendmentId = NULL WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM a USING amendment a JOIN motion m ON a.motionId = m.id JOIN consultation c ON m.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM vq USING votingQuestion vq JOIN consultation c ON vq.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM vb USING votingBlock vb JOIN consultation c ON vb.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
@@ -33,6 +36,8 @@ DELETE FROM ug USING userGroup ug JOIN consultationUserGroup cug ON ug.groupId =
 DELETE FROM cug USING consultationUserGroup cug JOIN consultation c ON cug.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM un USING userNotification un JOIN consultation c ON un.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 UPDATE site SET site.currentConsultationId = NULL WHERE site.subdomain IS NULL AND site.dateDeletion IS NOT NULL;
+DELETE FROM usc USING userConsultationScreening usc JOIN consultation c ON usc.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
+DELETE FROM bc USING backgroundJob bc JOIN consultation c ON bc.consultationId = c.id JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM c USING consultation c JOIN site s ON c.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM ug USING userGroup ug JOIN consultationUserGroup cug ON ug.groupId = cug.id JOIN site s ON cug.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
 DELETE FROM cug USING consultationUserGroup cug JOIN site s ON cug.siteId = s.id WHERE s.subdomain IS NULL AND s.dateDeletion IS NOT NULL;
