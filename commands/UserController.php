@@ -15,6 +15,7 @@ class UserController extends Controller
     public ?string $organization = null;
     public ?string $password = null;
     public ?string $welcomeFile = null;
+    public ?string $siteSubdomain = null;
     public ?string $consultationPath = null;
 
     public bool $forcePasswordChange = false;
@@ -26,8 +27,8 @@ class UserController extends Controller
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create', 'create-or-update' => ['consultationPath', 'groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange', 'fixedName', 'fixedOrganization'],
-            'update' => ['consultationPath', 'groupIds', 'organization', 'password', 'welcomeFile'],
+            'create', 'create-or-update' => ['siteSubdomain', 'consultationPath', 'groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange', 'fixedName', 'fixedOrganization'],
+            'update' => ['siteSubdomain', 'consultationPath', 'groupIds', 'organization', 'password', 'welcomeFile'],
             default => [],
         };
     }
@@ -43,7 +44,11 @@ class UserController extends Controller
     private function getAndSetConsultation(): Consultation
     {
         $consultation = null;
-        $site = Site::findOne(['subdomain' => AntragsgruenApp::getInstance()->siteSubdomain]);
+        if ($this->siteSubdomain) {
+            $site = Site::findOne(['subdomain' => $this->siteSubdomain]);
+        } else {
+            $site = Site::findOne(['subdomain' => AntragsgruenApp::getInstance()->siteSubdomain]);
+        }
         if ($this->consultationPath) {
             foreach ($site->consultations as $siteConsultation) {
                 if ($siteConsultation->urlPath === $this->consultationPath) {
