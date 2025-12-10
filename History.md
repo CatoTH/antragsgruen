@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.16.2 [not released yet]
+
+- Bugfix: The activity log showed rejected proposed procedure activities.
+
 ### Version 4.16.1 (2025-12-07)
 
 - Warning: This version is not yet compatible with PHP 8.5. Please wait for the next release before upgrading to PHP 8.5.
