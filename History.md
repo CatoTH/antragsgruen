@@ -3,6 +3,7 @@
 ### Version 4.16.2 [not released yet]
 
 - Bugfix: The activity log showed rejected proposed procedure activities.
+- Bugfix: It was not possible to save a motion that was not submitted but already had a resolution date.
 
 ### Version 4.16.1 (2025-12-07)
 
