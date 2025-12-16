@@ -5,7 +5,7 @@ namespace app\commands;
 use app\models\db\MotionSection;
 use yii\console\Controller;
 
-class MoveBinaryContentToFileController extends Controller
+class BinaryContentController extends Controller
 {
     private function moveSingleFile(int $motionId, int $sectionId): void
     {
@@ -16,7 +16,7 @@ class MoveBinaryContentToFileController extends Controller
         }
     }
 
-    private function revertFileOffload(string $fromBasepath, int $motionId, int $sectionId): void
+    private function importFile(string $fromBasepath, int $motionId, int $sectionId): void
     {
         $section = MotionSection::findOne(['motionId' => $motionId, 'sectionId' => $sectionId]);
         if ($section->data) {
@@ -24,17 +24,21 @@ class MoveBinaryContentToFileController extends Controller
         }
 
         $file = $section->getExternallySavedFile($fromBasepath);
-        if ($file) {
+        if ($file && file_exists($file)) {
             $content = file_get_contents($file);
             if ($content) {
-                $section->setData($content);
-                $section->save();
-                echo "- Set content: $motionId $sectionId\n";
+                try {
+                    $section->setData($content);
+                    $section->save();
+                    echo "- Set content: $motionId $sectionId\n";
+                } catch (\Throwable $exception) {
+                    echo "- FAILED: $motionId $sectionId: " . $exception->getMessage() . "\n";
+                }
             }
         }
     }
 
-    public function actionDo(): void
+    public function actionMoveToFile(): void
     {
         $comm = \Yii::$app->db->createCommand('SELECT a.motionId, a.sectionId FROM motionSection a JOIN consultationSettingsMotionSection b ON a.sectionId = b.id WHERE b.type IN (3, 5, 6)');
         $sections  = $comm->queryAll();
@@ -46,7 +50,7 @@ class MoveBinaryContentToFileController extends Controller
         }
     }
 
-    public function actionRevert(string $fromBasepath): void
+    public function actionImportAllFromFile(string $fromBasepath): void
     {
         $comm = \Yii::$app->db->createCommand('SELECT a.motionId, a.sectionId FROM motionSection a JOIN consultationSettingsMotionSection b ON a.sectionId = b.id WHERE b.type IN (3, 5, 6)');
         $sections  = $comm->queryAll();
@@ -54,12 +58,12 @@ class MoveBinaryContentToFileController extends Controller
             if (($i % 100) === 0) {
                 echo "- " . ($i + 1) . " / " . count($sections) . "\n";
             }
-            $this->revertFileOffload($fromBasepath, intval($section['motionId']), intval($section['sectionId']));
+            $this->importFile($fromBasepath, intval($section['motionId']), intval($section['sectionId']));
         }
     }
 
-    public function actionRevertSection(string $fromBasepath, int $motionId, int $sectionId): void
+    public function actionImportSectionFromFile(string $fromBasepath, int $motionId, int $sectionId): void
     {
-        $this->revertFileOffload($fromBasepath, $motionId, $sectionId);
+        $this->importFile($fromBasepath, $motionId, $sectionId);
     }
 }
