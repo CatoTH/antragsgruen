@@ -28,6 +28,7 @@
     "colinodell/json5": "^3.0",
     "doctrine/annotations": "^1.14.3",
     "endroid/qr-code": "^5.0",
+    "ezyang/htmlpurifier": "dev-main as v4.19.1",
     "firebase/php-jwt": "^6.8",
     "guzzlehttp/guzzle": "^7.7",
     "paragonie/sodium_compat": "^2.0",
@@ -125,6 +126,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/CatoTH/php-simple-captcha.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/CatoTH/htmlpurifier.git"
     }
   ]
 }
