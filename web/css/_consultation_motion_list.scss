@@ -357,6 +357,7 @@ $agendaMarginPerLevel: 50px;
   ul.motions {
     list-style-type: none;
     padding: 0;
+    clear: both; // clears the "add motion"-button, which would be affecting the "add entry" line
     @media (min-width: $screenMinWith) {
       margin: 0 0 0 50px;
     }
