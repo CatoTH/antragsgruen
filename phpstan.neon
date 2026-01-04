@@ -6,6 +6,7 @@
 parameters:
     level: 7
     reportUnmatchedIgnoredErrors: false
+    tipsOfTheDay: false
     ignoreErrors:
       - identifier: missingType.iterableValue # Issues because Yii's ActiveRecords are recognized as Iterables
     scanDirectories:

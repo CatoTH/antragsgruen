@@ -2,6 +2,7 @@
 
 /** @var \Codeception\Scenario $scenario */
 
+use OTPHP\InternalClock;
 use OTPHP\TOTP;
 use Tests\Support\AcceptanceTester;
 
@@ -34,7 +35,7 @@ $I->seeElement('.forcedTfaForm');
 $src = $I->executeJS('return document.querySelector(".tfaqr").src');
 $I->assertStringContainsString('data:image/png;base64,', $src);
 
-$otp = TOTP::createFromSecret(trim((string) file_get_contents(__DIR__ . '/../../config/2fa.secret')));
+$otp = TOTP::createFromSecret(trim((string) file_get_contents(__DIR__ . '/../../config/2fa.secret')), new InternalClock());
 
 $correct2fa = $otp->now();
 $I->fillField("//input[@name='set2fa']", $correct2fa);
