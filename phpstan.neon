@@ -24,3 +24,6 @@ parameters:
       - commands
       - plugins
       - views/pdfLayouts
+
+includes:
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
