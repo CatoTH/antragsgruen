@@ -419,7 +419,7 @@ export class ChangeProposedProcedure {
         this.commentsScrollBottom();
 
         this.$widget.on('keypress', '.proposalCommentForm textarea', (ev) => {
-            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
+            if (ev.originalEvent['metaKey'] && ev.originalEvent.key === 'Enter') {
                 this.doSaveComment();
             }
         });

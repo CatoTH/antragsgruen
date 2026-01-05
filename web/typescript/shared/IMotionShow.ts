@@ -63,7 +63,7 @@ class IMotionShow {
 
     public initCmdEnterSubmit() {
         $(document).on('keypress', 'form textarea', (ev) => {
-            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
+            if (ev.originalEvent['metaKey'] && ev.originalEvent.key === 'Enter') {
                 let $textarea = $(ev.currentTarget);
                 $textarea.parents("form").first().find("button[type=submit]").trigger("click");
             }

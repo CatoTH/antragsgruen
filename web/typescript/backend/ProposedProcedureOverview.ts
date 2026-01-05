@@ -70,7 +70,7 @@ export class ProposedProcedureOverview {
         });
 
         this.$widget.on('keypress', 'textarea', (ev) => {
-            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
+            if (ev.originalEvent['metaKey'] && ev.originalEvent.key === 'Enter') {
                 let $textarea = $(ev.currentTarget);
                 this.submitComment($textarea.parents('td').first());
             }
