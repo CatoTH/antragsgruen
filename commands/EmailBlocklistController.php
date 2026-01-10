@@ -8,6 +8,8 @@ use app\models\db\EMailBlocklist;
 use yii\console\Controller;
 
 /**
+ * @extends Controller<\yii\console\Application>
+ *
  * Add or remove e-mail-addresses from the blocklist
  */
 class EmailBlocklistController extends Controller

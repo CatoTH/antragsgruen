@@ -10,8 +10,9 @@ use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
 /**
+ * @extends Controller<\yii\console\Application>
+ *
  * Tool to fix some problems (usually only during development)
- * @package app\commands
  */
 class BugfixController extends Controller
 {

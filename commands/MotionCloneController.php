@@ -8,6 +8,9 @@ use app\models\forms\MotionDeepCopy;
 use app\models\db\{Consultation, Motion, Site};
 use yii\console\{Controller, ExitCode};
 
+/**
+ * @extends Controller<\yii\console\Application>
+ */
 class MotionCloneController extends Controller
 {
     public function actionCopyToOtherConsultation(int $motionId, string $siteSubdomain, string $newConsultationUrl, int $newMotionTypeId): int

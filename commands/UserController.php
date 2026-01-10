@@ -9,6 +9,9 @@ use app\models\settings\AntragsgruenApp;
 use app\models\db\{Consultation, ConsultationUserGroup, Site, User};
 use yii\console\Controller;
 
+/**
+ * @extends Controller<\yii\console\Application>
+ */
 class UserController extends Controller
 {
     public ?string $groupIds = null;
