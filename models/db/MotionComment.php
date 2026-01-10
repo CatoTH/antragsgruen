@@ -87,7 +87,7 @@ class MotionComment extends IComment
     }
 
     /**
-     * @return ActiveQuery<MotionSection[]>
+     * @return ActiveQuery<MotionSection>
      */
     public function getSection(): ActiveQuery
     {
@@ -105,7 +105,7 @@ class MotionComment extends IComment
     }
 
     /**
-     * @return ActiveQuery<MotionComment>
+     * @return ActiveQuery<MotionComment[]>
      */
     public function getReplies(): ActiveQuery
     {

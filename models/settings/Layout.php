@@ -9,7 +9,6 @@ use app\models\db\Consultation;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\{Hooks, StdHooks};
-use app\plugins\ModuleBase;
 use yii\base\Action;
 use yii\helpers\Html;
 use yii\web\{AssetBundle, Controller, View};
@@ -348,6 +347,10 @@ class Layout
         $this->addJs('npm/vue-draggable-plus.iife.js');
     }
 
+    /**
+     * @param View $view
+     * @param Controller<\app\components\yii\Application> $controller
+     */
     public function registerPluginAssets(View $view, Controller $controller): void
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {

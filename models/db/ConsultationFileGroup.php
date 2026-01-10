@@ -44,7 +44,7 @@ class ConsultationFileGroup extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationFileGroup[]>
+     * @return ActiveQuery<ConsultationFileGroup>
      */
     public function getParentGroup(): ActiveQuery
     {
