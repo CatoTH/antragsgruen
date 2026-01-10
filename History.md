@@ -1,7 +1,8 @@
 # Version history
 
-### Version 4.16.2 [not released yet]
+### Version 4.16.2 (2026-01-10)
 
+- This release is compatible with PHP 8.5
 - Bugfix: The activity log showed rejected proposed procedure activities.
 - Bugfix: It was not possible to save a motion that was not submitted but already had a resolution date.
 - Bugfix: Several layout issues were fixed.

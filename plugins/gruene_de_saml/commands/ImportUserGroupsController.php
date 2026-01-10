@@ -4,8 +4,12 @@ namespace app\plugins\gruene_de_saml\commands;
 
 use app\models\db\ConsultationUserGroup;
 use app\plugins\gruene_de_saml\Module;
+use yii\console\Controller;
 
-class ImportUserGroupsController extends \yii\console\Controller
+/**
+ * @extends Controller<\yii\console\Application>
+ */
+class ImportUserGroupsController extends Controller
 {
     public $defaultAction = 'import-groups';
 
