@@ -49,7 +49,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<Consultation[]>
+     * @return ActiveQuery<Consultation>
      */
     public function getConsultations(): ActiveQuery
     {
@@ -57,7 +57,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationUserGroup[]>
+     * @return ActiveQuery<ConsultationUserGroup>
      */
     public function getUserGroups(): ActiveQuery
     {
@@ -65,7 +65,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<TexTemplate[]>
+     * @return ActiveQuery<TexTemplate>
      */
     public function getTexTemplates(): ActiveQuery
     {
@@ -73,7 +73,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationFile[]>
+     * @return ActiveQuery<ConsultationFile>
      */
     public function getFiles(): ActiveQuery
     {
@@ -92,7 +92,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationText[]>
+     * @return ActiveQuery<ConsultationText>
      */
     public function getTexts(): ActiveQuery
     {

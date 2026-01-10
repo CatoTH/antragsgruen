@@ -116,7 +116,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<Motion[]>
+     * @return ActiveQuery<Motion>
      */
     public function getMotions(): ActiveQuery
     {
@@ -259,7 +259,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationText[]>
+     * @return ActiveQuery<ConsultationText>
      */
     public function getTexts(): ActiveQuery
     {
@@ -267,7 +267,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationAgendaItem[]>
+     * @return ActiveQuery<ConsultationAgendaItem>
      */
     public function getAgendaItems(): ActiveQuery
     {
@@ -275,7 +275,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationUserGroup[]>
+     * @return ActiveQuery<ConsultationUserGroup>
      */
     public function getUserGroups(): ActiveQuery
     {
@@ -283,7 +283,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<UserConsultationScreening[]>
+     * @return ActiveQuery<UserConsultationScreening>
      */
     public function getScreeningUsers(): ActiveQuery
     {
@@ -320,7 +320,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationFile[]>
+     * @return ActiveQuery<ConsultationFile>
      */
     public function getFiles(): ActiveQuery
     {
@@ -328,7 +328,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationFileGroup[]>
+     * @return ActiveQuery<ConsultationFileGroup>
      */
     public function getFileGroups(): ActiveQuery
     {
@@ -352,7 +352,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationSettingsTag[]>
+     * @return ActiveQuery<ConsultationSettingsTag>
      */
     public function getTags(): ActiveQuery
     {
@@ -360,7 +360,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<VotingBlock[]>
+     * @return ActiveQuery<VotingBlock>
      */
     public function getVotingBlocks(): ActiveQuery
     {
@@ -379,7 +379,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<VotingQuestion[]>
+     * @return ActiveQuery<VotingQuestion>
      */
     public function getVotingQuestions(): ActiveQuery
     {
@@ -397,7 +397,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationLog[]>
+     * @return ActiveQuery<ConsultationLog>
      */
     public function getLogEntries(): ActiveQuery
     {
@@ -405,7 +405,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationMotionType[]>
+     * @return ActiveQuery<ConsultationMotionType>
      */
     public function getMotionTypes(): ActiveQuery
     {
@@ -414,7 +414,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<SpeechQueue[]>
+     * @return ActiveQuery<SpeechQueue>
      */
     public function getSpeechQueues(): ActiveQuery
     {
@@ -444,7 +444,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<UserNotification[]>
+     * @return ActiveQuery<UserNotification>
      */
     public function getUserNotifications(): ActiveQuery
     {

@@ -129,7 +129,7 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return ActiveQuery<MotionComment[]>
+     * @return ActiveQuery<MotionComment>
      */
     public function getComments(): ActiveQuery
     {

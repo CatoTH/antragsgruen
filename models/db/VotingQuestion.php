@@ -48,7 +48,7 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
     }
 
     /**
-     * @return ActiveQuery<Vote[]>
+     * @return ActiveQuery<Vote>
      */
     public function getVotes(): ActiveQuery
     {

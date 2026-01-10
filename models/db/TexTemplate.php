@@ -31,7 +31,7 @@ class TexTemplate extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationMotionType[]>
+     * @return ActiveQuery<ConsultationMotionType>
      */
     public function getMotionTypes(): ActiveQuery
     {

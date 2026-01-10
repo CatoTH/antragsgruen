@@ -68,7 +68,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationAgendaItem[]>
+     * @return ActiveQuery<ConsultationAgendaItem>
      */
     public function getChildItems(): ActiveQuery
     {
@@ -101,7 +101,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<Motion[]>
+     * @return ActiveQuery<Motion>
      */
     public function getMotions(): ActiveQuery
     {
@@ -110,7 +110,7 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<SpeechQueue[]>
+     * @return ActiveQuery<SpeechQueue>
      */
     public function getSpeechQueues(): ActiveQuery
     {
