@@ -5,6 +5,9 @@ namespace app\commands;
 use app\models\db\MotionSection;
 use yii\console\Controller;
 
+/**
+ * @extends Controller<\yii\console\Application>
+ */
 class BinaryContentController extends Controller
 {
     private function moveSingleFile(int $motionId, int $sectionId): void

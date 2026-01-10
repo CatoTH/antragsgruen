@@ -52,7 +52,7 @@ class AgendaSaver
 
             $dbItem->parentItemId = $parentItem?->id;
             $dbItem->position = $position;
-            $dbItem->title = grapheme_substr($apiItem->title, 0, 250);
+            $dbItem->title = (string) grapheme_substr($apiItem->title, 0, 250);
             $dbItem->code  = ($apiItem->code !== null ? mb_substr($apiItem->code, 0, 20) : ConsultationAgendaItem::CODE_AUTO);
 
             $settings = $dbItem->getSettingsObj();

@@ -51,7 +51,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<Motion[]>
+     * @return ActiveQuery<Motion>
      */
     public function getMotions(): ActiveQuery
     {
@@ -60,7 +60,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<Amendment[]>
+     * @return ActiveQuery<Amendment>
      */
     public function getAmendments(): ActiveQuery
     {
@@ -77,7 +77,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationSettingsTag[]>
+     * @return ActiveQuery<ConsultationSettingsTag>
      */
     public function getChildTags(): ActiveQuery
     {

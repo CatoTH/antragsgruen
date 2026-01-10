@@ -86,7 +86,7 @@ class AmendmentComment extends IComment
     }
 
     /**
-     * @return ActiveQuery<AmendmentComment[]>
+     * @return ActiveQuery<AmendmentComment>
      */
     public function getReplies(): ActiveQuery
     {

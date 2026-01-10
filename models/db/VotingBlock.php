@@ -111,7 +111,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<Amendment[]>
+     * @return ActiveQuery<Amendment>
      */
     public function getAmendments(): ActiveQuery
     {
@@ -120,7 +120,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<Motion[]>
+     * @return ActiveQuery<Motion>
      */
     public function getMotions(): ActiveQuery
     {
@@ -129,7 +129,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<VotingQuestion[]>
+     * @return ActiveQuery<VotingQuestion>
      */
     public function getQuestions(): ActiveQuery
     {
@@ -155,7 +155,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<Vote[]>
+     * @return ActiveQuery<Vote>
      */
     public function getVotes(): ActiveQuery
     {

@@ -9,6 +9,8 @@ use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
 /**
+ * @extends Controller<\yii\console\Application>
+ *
  * Functions to create and destroy the database, and to fill it with initial data
  */
 class DatabaseController extends Controller

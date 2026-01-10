@@ -36,7 +36,7 @@ class ConsultationFileGroup extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationFile[]>
+     * @return ActiveQuery<ConsultationFile>
      */
     public function getFiles(): ActiveQuery
     {
@@ -44,7 +44,7 @@ class ConsultationFileGroup extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationFileGroup[]>
+     * @return ActiveQuery<ConsultationFileGroup>
      */
     public function getParentGroup(): ActiveQuery
     {
@@ -52,7 +52,7 @@ class ConsultationFileGroup extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationFileGroup[]>
+     * @return ActiveQuery<ConsultationFileGroup>
      */
     public function getChildGroups(): ActiveQuery
     {

@@ -62,7 +62,7 @@ class ConsultationUserGroup extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<User[]>
+     * @return ActiveQuery<User>
      */
     public function getUsers(): ActiveQuery
     {

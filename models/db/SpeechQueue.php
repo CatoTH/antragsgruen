@@ -61,7 +61,7 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<SpeechSubqueue[]>
+     * @return ActiveQuery<SpeechSubqueue>
      */
     public function getSubqueues(): ActiveQuery
     {
@@ -69,7 +69,7 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<SpeechQueueItem[]>
+     * @return ActiveQuery<SpeechQueueItem>
      */
     public function getItems(): ActiveQuery
     {

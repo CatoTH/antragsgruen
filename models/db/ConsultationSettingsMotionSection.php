@@ -59,7 +59,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<MotionSection[]>
+     * @return ActiveQuery<MotionSection>
      */
     public function getSections(): ActiveQuery
     {
