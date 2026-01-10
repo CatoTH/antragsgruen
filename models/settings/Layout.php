@@ -492,7 +492,7 @@ class Layout
     }
 
     /**
-     * @param Action<Base>|null $action
+     * @param Action<mixed>|null $action
      */
     public function isRobotsIndex(?Action $action): bool
     {

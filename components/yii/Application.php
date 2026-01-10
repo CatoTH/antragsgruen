@@ -1,21 +1,17 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace app\components\yii;
 
-use Yii;
 
-
+/**
+ * @extends \yii\web\Application<\app\models\db\User>
+ */
 class Application extends \yii\web\Application
 {
     /**
      * @inheritdoc
      */
-    public function coreComponents()
+    public function coreComponents(): array
     {
         return array_merge(parent::coreComponents(), [
             'user'         => ['class' => User::class],

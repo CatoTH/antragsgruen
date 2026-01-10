@@ -10,6 +10,9 @@ final class RequestContext
 {
     private static ?DbUser $overrideUser = null;
 
+    /**
+     * @return Application<DbUser>
+     */
     public static function getWebApplication(): Application
     {
         /** @var Application<DbUser> $app */

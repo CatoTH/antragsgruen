@@ -15,7 +15,7 @@ use yii\helpers\Html;
 use yii\web\{Controller, Request, Response, Session};
 
 /**
- * @extends Controller<\yii\web\Application>
+ * @extends Controller<\app\components\yii\Application>
  */
 class Base extends Controller
 {
