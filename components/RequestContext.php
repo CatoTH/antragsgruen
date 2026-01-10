@@ -12,7 +12,7 @@ final class RequestContext
 
     public static function getWebApplication(): Application
     {
-        /** @var Application $app */
+        /** @var Application<DbUser> $app */
         $app = \Yii::$app;
 
         return $app;
@@ -28,7 +28,10 @@ final class RequestContext
      */
     public static function getYiiUser(): YiiUser
     {
-        return self::getWebApplication()->user;
+        /** @var \app\components\yii\User $user */
+        $user = self::getWebApplication()->user;
+
+        return $user;
     }
 
     public static function getDbUser(): ?DbUser

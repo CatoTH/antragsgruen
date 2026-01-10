@@ -492,10 +492,13 @@ class Layout
     }
 
     /**
-     * @param Action<Base> $action
+     * @param Action<Base>|null $action
      */
-    public function isRobotsIndex(Action $action): bool
+    public function isRobotsIndex(?Action $action): bool
     {
+        if (!$action) {
+            return false;
+        }
         $visible = $this->isRobotsIndexDefault($action);
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $override = $plugin::getRobotsIndexOverride($this->consultation, $action, $visible);
