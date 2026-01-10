@@ -6,7 +6,7 @@ use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseExc
 use app\models\forms\LoginUsernamePasswordForm;
 use app\plugins\ModuleBase;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
-use app\components\{ConsultationAccessPassword, RequestContext, SecondFactorAuthentication, UrlHelper};
+use app\components\{ConsultationAccessPassword, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, repostory\MotionRepository, Site, User};
 use Yii;
@@ -35,7 +35,7 @@ class Base extends Controller
 
     /**
      * @param string $cid the ID of this controller.
-     * @param Module $module the module that this controller belongs to.
+     * @param Application $module the module that this controller belongs to.
      * @param array $config name-value pairs that will be used to initialize the object properties.
      */
     public function __construct($cid, $module, $config = [])
@@ -47,7 +47,7 @@ class Base extends Controller
     }
 
     /**
-     * @param \yii\base\Action<static> $action
+     * @param \yii\base\Action<$this> $action
      * @throws Internal
      * @throws \Exception
      * @throws \yii\base\ExitException
