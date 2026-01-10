@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\models\settings\VotingData;
 
 /**
- * @property int|null $votingBlockId
+ * @phpstan-property int|null $votingBlockId
  */
 interface IVotingItem
 {
