@@ -8,16 +8,14 @@ use app\models\db\Consultation;
 use app\models\settings\Consultation as ConsultationSettings;
 use app\models\exceptions\Internal;
 use app\views\pdfLayouts\IPdfWriter;
-use Doctrine\Common\Annotations\AnnotationReader;
 use setasign\Fpdi\FpdiException;
 use setasign\Fpdi\PdfParser\StreamReader;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\{ArrayDenormalizer, DateTimeNormalizer, ObjectNormalizer};
-use Symfony\Component\Serializer\{Serializer, SerializerInterface};
+use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, Serializer, SerializerInterface};
 
 class Tools
 {
@@ -26,7 +24,7 @@ class Tools
     public static function getSerializer(): SerializerInterface
     {
         if (!isset(self::$serializer)) {
-            $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+            $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
             $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
             $encoders = [new JsonEncoder()];
             $normalizers = [

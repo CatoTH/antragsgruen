@@ -68,7 +68,7 @@ class LiveTools
         }
 
         $serializer = Tools::getSerializer();
-        $json = $serializer->serialize($queue, 'json', ['live']);
+        $json = $serializer->serialize($queue, 'json');
 
         if ($debug) {
             echo $json . "\n";
@@ -90,7 +90,7 @@ class LiveTools
         }
 
         $serializer = Tools::getSerializer();
-        $json = $serializer->serialize($agendaItem, 'json', ['live']);
+        $json = $serializer->serialize($agendaItem, 'json');
 
         if ($debug) {
             echo $json . "\n";

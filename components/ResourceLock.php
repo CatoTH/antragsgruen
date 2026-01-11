@@ -59,11 +59,7 @@ final class ResourceLock
 
     private static function acquireReadLock(string $resourceId): void {
         $lock = static::getLockFactory()->createLock($resourceId, 15);
-        if ($lock instanceof SharedLockInterface) {
-            $lock->acquireRead(true);
-        } else {
-            $lock->acquire(true);
-        }
+        $lock->acquireRead(true);
         static::$acquiredLocks[$resourceId] = $lock;
     }
 
