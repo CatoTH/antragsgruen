@@ -509,6 +509,11 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function isSupportingPossibleAtThisStatus(): bool;
 
+    public function getVotingBlockId(): ?int
+    {
+        return $this->votingBlockId;
+    }
+
     /**
      * @throws FormError
      */
