@@ -209,7 +209,7 @@ class VotingMethods
                 $item->removeFromVotingBlock($votingBlock, true);
             }
         } else {
-            if ($item->votingBlockId === $votingBlock->id) {
+            if ($item->getVotingBlockId() === $votingBlock->id) {
                 $item->removeFromVotingBlock($votingBlock, true);
             }
         }
