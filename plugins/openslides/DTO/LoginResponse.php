@@ -4,38 +4,38 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides\DTO;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class LoginResponse
 {
     /**
      * @var int
-     * @SerializedName("user_id")
      */
+    #[SerializedName('user_id')]
     private $userId;
 
     /**
      * @var bool
-     * @SerializedName("guest_enabled")
      */
+    #[SerializedName('guest_enabled')]
     private $guestEnabled;
 
     /**
      * @var User
-     * @SerializedName("user")
      */
+    #[SerializedName('user')]
     private $user;
 
     /**
      * @var string
-     * @SerializedName("auth_type")
      */
+    #[SerializedName('auth_type')]
     private $authType;
 
     /**
      * @var array
-     * @SerializedName("permissions")
      */
+    #[SerializedName('permissions')]
     private $permissions;
 
     public function getUserId(): int

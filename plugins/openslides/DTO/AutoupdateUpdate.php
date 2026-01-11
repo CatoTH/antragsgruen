@@ -4,39 +4,38 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides\DTO;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class AutoupdateUpdate
 {
     /**
      * @var AutoupdateChangedData
-     * @SerializedName("changed")
      */
+    #[SerializedName('changed')]
     private $changed;
 
     /**
      * @var array
-     * @SerializedName("deleted")
      */
+    #[SerializedName('deleted')]
     private $deleted;
 
     /**
      * @var int
-     * @SerializedName("from_change_id")
      */
+    #[SerializedName('from_change_id')]
     private $fromChangeId;
 
     /**
      * @var int
-     * @SerializedName("to_change_id")
-     *
      */
+    #[SerializedName('to_change_id')]
     private $toChangeId;
 
     /**
      * @var bool
-     * @SerializedName("all_data")
      */
+    #[SerializedName('all_data')]
     private $allData;
 
     public function getChanged(): AutoupdateChangedData

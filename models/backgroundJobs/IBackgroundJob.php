@@ -6,7 +6,7 @@ namespace app\models\backgroundJobs;
 
 use app\components\Tools;
 use app\models\db\{Consultation, Site};
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 abstract class IBackgroundJob
 {
@@ -35,25 +35,19 @@ abstract class IBackgroundJob
         return $serializer->serialize($this, 'json');
     }
 
-    /**
-     * @Ignore
-     */
+    #[Ignore]
     public function getConsultation(): ?Consultation
     {
         return $this->consultation;
     }
 
-    /**
-     * @Ignore
-     */
+    #[Ignore]
     public function getSite(): ?Site
     {
         return $this->site;
     }
 
-    /**
-     * @Ignore
-     */
+    #[Ignore]
     public function getId(): ?int
     {
         return $this->id;
