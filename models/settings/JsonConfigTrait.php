@@ -3,7 +3,7 @@
 namespace app\models\settings;
 
 use app\models\exceptions\{ConfigurationError, FormError};
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 trait JsonConfigTrait
 {
@@ -37,8 +37,8 @@ trait JsonConfigTrait
     /**
      * @param \ReflectionClass<self> $reflectionClass
      * @throws \ReflectionException
-     * @Ignore()
      */
+    #[Ignore]
     protected function setPropertyFromJson(string $key, mixed $val, \ReflectionClass $reflectionClass): void
     {
         $setterMethod = 'set' . ucfirst($key);
@@ -61,8 +61,8 @@ trait JsonConfigTrait
 
     /**
      * @throws ConfigurationError
-     * @Ignore()
      */
+    #[Ignore]
     protected function setPropertiesFromJSON(null|string|array $data): void
     {
         if (!$data) {

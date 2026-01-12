@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides\DTO;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class User
 {
@@ -20,32 +20,32 @@ class User
 
     /**
      * @var string
-     * @SerializedName("default_password")
      */
+    #[SerializedName('default_password')]
     private $defaultPassword;
 
     /**
      * @var string
-     * @SerializedName("vote_weight")
      */
+    #[SerializedName('vote_weight')]
     private $voteWeight;
 
     /**
      * @var int[]
-     * @SerializedName("vote_delegated_from_users_id")
      */
+    #[SerializedName('vote_delegated_from_users_id')]
     private $voteDelegatedFromUsersId;
 
     /**
      * @var int|null
-     * @SerializedName("vote_delegated_to_id")
      */
+    #[SerializedName('vote_delegated_to_id')]
     private $voteDelegatedToId;
 
     /**
      * @var bool
-     * @SerializedName("is_active")
      */
+    #[SerializedName('is_active')]
     private $isActive;
 
     /**
@@ -55,32 +55,32 @@ class User
 
     /**
      * @var string|null
-     * @SerializedName("last_email_send")
      */
+    #[SerializedName('last_email_send')]
     private $lastEmailSend;
 
     /**
      * @var bool
-     * @SerializedName("is_committee")
      */
+    #[SerializedName('is_committee')]
     private $isCommittee;
 
     /**
      * @var bool
-     * @SerializedName("is_present")
      */
+    #[SerializedName('is_present')]
     private $isPresent;
 
     /**
      * @var string
-     * @SerializedName("first_name")
      */
+    #[SerializedName('first_name')]
     private $firstName;
 
     /**
      * @var string
-     * @SerializedName("last_name")
      */
+    #[SerializedName('last_name')]
     private $lastName;
 
     /**
@@ -95,8 +95,8 @@ class User
 
     /**
      * @var int[]
-     * @SerializedName("groups_id")
      */
+    #[SerializedName('groups_id')]
     private $groupsId;
 
     /**
@@ -106,20 +106,20 @@ class User
 
     /**
      * @var string
-     * @SerializedName("about_me")
      */
+    #[SerializedName('about_me')]
     private $aboutMe;
 
     /**
      * @var string
-     * @SerializedName("structure_level")
      */
+    #[SerializedName('structure_level')]
     private $structureLevel;
 
     /**
      * @var string
-     * @SerializedName("auth_level")
      */
+    #[SerializedName('auth_level')]
     private $authType;
 
     public function getId(): int

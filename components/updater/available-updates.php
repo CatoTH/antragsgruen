@@ -22,17 +22,10 @@ foreach ($success as $msg) {
 
         <?php
 
-        if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+        if (version_compare(PHP_VERSION, '8.2.0', '<')) {
             echo '<br><br><div class="alert alert-danger">' .
-                'You are using PHP version ' . PHP_VERSION . '. Please upgrade to PHP 8.1 or higher soon, ' .
-                'as PHP 8.0 and below <a href="https://secure.php.net/supported-versions.php">will not be supported after November 2023</a> anymore. ' .
-                'Also, the next version of Antragsgrün will not support PHP 7 anymore, so at the <em>very least</em> an upgrade to PHP 8.0 will be necessary.' .
-                '</div>';
-        } elseif (version_compare(PHP_VERSION, '8.1.0', '<')) {
-            echo '<br><br><div class="alert alert-danger">' .
-                'You are using PHP version ' . PHP_VERSION . '. Please upgrade to PHP 8.1 or higher soon, ' .
-                'as PHP 8.0 and below <a href="https://secure.php.net/supported-versions.php">will not be supported after November 2023</a> anymore. ' .
-                'Also, Antragsgrün runs seriously faster with newer versions.' .
+                'You are using PHP version ' . PHP_VERSION . '. Please upgrade to PHP 8.2 or higher soon, ' .
+                'as PHP 8.0 and below <a href="https://secure.php.net/supported-versions.php">will not be supported after November 2023</a> anymore.' .
                 '</div>';
         } elseif (!extension_loaded('sodium')) {
             echo '<br><br><div class="alert alert-info">' .

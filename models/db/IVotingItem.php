@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\db;
 
 use app\models\settings\VotingData;
 
-/**
- * @property int|null $votingBlockId
- */
 interface IVotingItem
 {
     public function getAgendaApiBaseObject(): array;
+    public function getVotingBlockId(): ?int;
     public function getVotingData(): VotingData;
     public function setVotingData(VotingData $data): void;
     public function setVotingResult(int $votingResult): void;

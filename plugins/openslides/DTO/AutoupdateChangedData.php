@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace app\plugins\openslides\DTO;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class AutoupdateChangedData
 {
     /**
      * @var null|User[]
-     * @SerializedName("users/user")
      */
+    #[SerializedName('users/user')]
     private $usersUsers;
 
     /**
      * @var null|Usergroup[]
-     * @SerializedName("users/group")
      */
+    #[SerializedName('users/group')]
     private $usersGroups = [];
 
 

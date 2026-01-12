@@ -7,7 +7,7 @@ namespace app\models\api;
 use app\components\CookieUser;
 use app\models\db\User;
 use app\models\settings\SpeechQueue as SpeechQueueSettings;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 class SpeechQueue
 {
@@ -24,8 +24,8 @@ class SpeechQueue
 
     /**
      * @return SpeechQueueActiveSlot[]
-     * @Ignore
      */
+    #[Ignore]
     private static function getActiveSlots(\app\models\db\SpeechQueue $entity): array
     {
         $slots = [];
@@ -68,8 +68,8 @@ class SpeechQueue
 
     /**
      * @return SpeechSubqueue[]
-     * @Ignore()
      */
+    #[Ignore]
     private static function getSubqueues(\app\models\db\SpeechQueue $entity): array
     {
         $subqueues = [];
@@ -119,9 +119,7 @@ class SpeechQueue
         ];
     }
 
-    /**
-     * @Ignore()
-     */
+    #[Ignore]
     public function getAdminApiObject(): array
     {
         return [

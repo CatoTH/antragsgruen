@@ -15,7 +15,7 @@
   "homepage": "https://antragsgruen.de/",
   "minimum-stability": "stable",
   "require": {
-    "php": ">=8.1.0",
+    "php": ">=8.2.0",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-fileinfo": "*",
@@ -26,10 +26,9 @@
     "ext-zip": "*",
     "catoth/html2opendocument": "0.19",
     "colinodell/json5": "^3.0",
-    "doctrine/annotations": "^1.14.3",
     "endroid/qr-code": "^5.0",
     "ezyang/htmlpurifier": "dev-main as v4.19.1",
-    "firebase/php-jwt": "^6.8",
+    "firebase/php-jwt": "^7.0",
     "guzzlehttp/guzzle": "^7.7",
     "paragonie/sodium_compat": "^2.0",
     "phpoffice/phpspreadsheet": "^5.0",
@@ -38,15 +37,15 @@
     "scssphp/scssphp": "^2.0",
     "setasign/fpdi": "^2.3.7",
     "spomky-labs/otphp": "^11.4",
-    "symfony/amazon-mailer": "^5.4.23",
-    "symfony/lock": "^5.4.22",
-    "symfony/mailer": "^5.4.22",
-    "symfony/mailjet-mailer": "^5.4.23",
+    "symfony/amazon-mailer": "^6.4",
+    "symfony/lock": "^6.4",
+    "symfony/mailer": "^6.4",
+    "symfony/mailjet-mailer": "^6.4",
     "symfony/polyfill-iconv": "^1.27",
-    "symfony/property-access": "^5.4.22",
-    "symfony/serializer": "^5.4.24",
-    "symfony/string": "^5.4.22",
-    "symfony/translation-contracts": "^2.5.2",
+    "symfony/property-access": "^6.4",
+    "symfony/serializer": "^6.4",
+    "symfony/string": "^6.4",
+    "symfony/translation-contracts": "^3.0",
     "tecnickcom/tcpdf": "^6.6.2",
     "tijsverkoyen/css-to-inline-styles": "^2.3",
     "yiisoft/yii2": "~2.0.47",
@@ -67,20 +66,13 @@
   },
   "conflict": {
     "psr/cache": ">=3.0.0",
-    "symfony/browser-kit": "<=5.4.0|>=6.0.0",
-    "symfony/config": "<=5.4.0|>=6.0.0",
-    "symfony/console": "<=5.4.0|>=6.0.0",
-    "symfony/css-selector": "<=5.4.0|>=6.0.0",
-    "symfony/dependency-injection": "<=5.4.0|>=6.0.0",
-    "symfony/dom-crawler": "<=5.4.0|>=6.0.0",
-    "symfony/event-dispatcher": "<=5.4.0|>=6.0.0",
-    "symfony/filesystem": "<=5.4.0|>=6.0.0",
-    "symfony/finder": "<=5.4.0|>=6.0.0",
-    "symfony/http-client": "<=5.4.0|>=6.0.0",
-    "symfony/mime": "<=5.4.0|>=6.0.0",
-    "symfony/process": "<=5.4.0|>=6.0.0",
-    "symfony/property-info": "<=5.4.0|>=6.0.0",
-    "symfony/yaml": "<=5.4.0|>=6.0.0"
+    "symfony/config": ">=7.0.0",
+    "symfony/console": ">=7.0.0",
+    "symfony/dependency-injection": ">=7.0.0",
+    "symfony/filesystem": ">=7.0.0",
+    "symfony/finder": ">=7.0.0",
+    "symfony/var-exporter": ">=7.0.0",
+    "symfony/yaml": ">=7.0.0"
   },
   "autoload": {
     "psr-4": {
@@ -99,12 +91,13 @@
   },
   "config": {
     "platform": {
-      "php": "8.1.28"
+      "php": "8.2.30"
     },
     "optimize-autoloader": true,
     "sort-packages": true,
     "allow-plugins": {
       "simplesamlphp/composer-module-installer": true,
+      "simplesamlphp/composer-xmlprovider-installer": true,
       "yiisoft/yii2-composer": true
     }
   },
