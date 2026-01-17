@@ -7,6 +7,9 @@ use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
+/**
+ * @extends Controller<\yii\console\Application>
+ */
 class AdminController extends Controller
 {
     private function getConsultationFromParams(string $subdomain, string $consultation): ?Consultation

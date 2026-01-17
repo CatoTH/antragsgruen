@@ -1,7 +1,15 @@
 # Version history
 
-## Version 4.16.1 [Not released yet]
+### Version 4.16.2 (2026-01-10)
 
+- This release is compatible with PHP 8.5
+- Bugfix: The activity log showed rejected proposed procedure activities.
+- Bugfix: It was not possible to save a motion that was not submitted but already had a resolution date.
+- Bugfix: Several layout issues were fixed.
+
+### Version 4.16.1 (2025-12-07)
+
+- Warning: This version is not yet compatible with PHP 8.5. Please wait for the next release before upgrading to PHP 8.5.
 - Bugfix: The amendment admin page could break if an agenda-based home page was set up.
 - Bugfix: The view cache of proposed procedures (used on the admin page) was not updated when modified adoptions were changed retrospectively.
 - Bugfix: Amendments with the same prefix could not be shown on the home page when they were assigned to the same agenda item.

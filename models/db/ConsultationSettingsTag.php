@@ -51,7 +51,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<Motion[]>
+     * @return ActiveQuery<Motion>
      */
     public function getMotions(): ActiveQuery
     {
@@ -60,7 +60,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<Amendment[]>
+     * @return ActiveQuery<Amendment>
      */
     public function getAmendments(): ActiveQuery
     {
@@ -77,7 +77,7 @@ class ConsultationSettingsTag extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery<ConsultationSettingsTag[]>
+     * @return ActiveQuery<ConsultationSettingsTag>
      */
     public function getChildTags(): ActiveQuery
     {
@@ -158,7 +158,10 @@ class ConsultationSettingsTag extends ActiveRecord
 
     public function getNameBasedCSSClass(): string
     {
-        return (new AsciiSlugger())->slug($this->getNormalizedName());
+        $slugger = new AsciiSlugger();
+
+        // Suppress: Using null as an array offset is deprecated, use an empty string instead in vendor/symfony/string/Slugger/AsciiSlugger.php:126
+        return @$slugger->slug($this->getNormalizedName());
     }
 
     /**

@@ -8,10 +8,10 @@ on:
 
 env:
   php: "
-  {php: '8.1', experimental: false},
   {php: '8.2', experimental: false},
   {php: '8.3', experimental: false},
   {php: '8.4', experimental: false},
+  {php: '8.5', experimental: false},
   "
   php-ext: curl, dom, fileinfo, iconv, intl, mbstring, mysql, pdo, zip
 
@@ -116,11 +116,11 @@ jobs:
 
       - name: Validate config of codecept.
         run: |
-          vendor/bin/codecept --version
-          vendor/bin/codecept config:validate
+          php -d register_argc_argv=On vendor/bin/codecept --version
+          php -d register_argc_argv=On vendor/bin/codecept config:validate
 
       - name: Run unittest.
         run: |
-          vendor/bin/codecept clean
-          vendor/bin/codecept build
-          vendor/bin/codecept run Unit
+          php -d register_argc_argv=On vendor/bin/codecept clean
+          php -d register_argc_argv=On vendor/bin/codecept build
+          php -d register_argc_argv=On vendor/bin/codecept run Unit

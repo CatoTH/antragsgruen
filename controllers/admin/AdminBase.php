@@ -18,7 +18,7 @@ class AdminBase extends Base
     ];
 
     /**
-     * @param \yii\base\Action<static> $action
+     * @param \yii\base\Action<$this> $action
      *
      * @throws \yii\web\BadRequestHttpException|ResponseException
      */

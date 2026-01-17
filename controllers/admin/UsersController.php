@@ -14,7 +14,7 @@ class UsersController extends AdminBase
     private UserGroupAdminMethods $userGroupAdminMethods;
 
     /**
-     * @param \yii\base\Action<static> $action
+     * @param \yii\base\Action<$this> $action
      */
     public function beforeAction($action): bool
     {

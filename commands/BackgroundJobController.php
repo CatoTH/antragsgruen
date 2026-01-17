@@ -11,6 +11,8 @@ use yii\console\Controller;
 
 /**
  * Run background commends
+ *
+ * @extends Controller<\yii\console\Application>
  */
 class BackgroundJobController extends Controller
 {

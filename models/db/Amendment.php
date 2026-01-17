@@ -112,7 +112,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * This returns the amendments amending this amendment
-     * @return ActiveQuery<Amendment[]>
+     * @return ActiveQuery<Amendment>
      */
     public function getAmendingAmendments(): ActiveQuery
     {
@@ -121,7 +121,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<AmendmentComment[]>
+     * @return ActiveQuery<AmendmentComment>
      */
     public function getComments(): ActiveQuery
     {
@@ -131,7 +131,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<AmendmentComment[]>
+     * @return ActiveQuery<AmendmentComment>
      */
     public function getPrivateComments(): ActiveQuery
     {
@@ -178,7 +178,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<AmendmentSupporter[]>
+     * @return ActiveQuery<AmendmentSupporter>
      */
     public function getAmendmentSupporters(): ActiveQuery
     {
@@ -186,7 +186,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<ConsultationSettingsTag[]>
+     * @return ActiveQuery<ConsultationSettingsTag>
      */
     public function getTags(): ActiveQuery
     {
@@ -195,7 +195,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<AmendmentSection[]>
+     * @return ActiveQuery<AmendmentSection>
      */
     public function getSections(): ActiveQuery
     {
@@ -235,7 +235,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<AmendmentProposal[]>
+     * @return ActiveQuery<AmendmentProposal>
      */
     public function getProposals(): ActiveQuery
     {
@@ -276,7 +276,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<Vote[]>
+     * @return ActiveQuery<Vote>
      */
     public function getVotes(): ActiveQuery
     {

@@ -65,6 +65,7 @@ class MotionDeepCopy
         $newMotion->version = $newVersion;
         $newMotion->votingBlockId = null;
         $newMotion->parentMotionId = ($linkMotions ? $motion->id : null);
+        $newMotion->save();
 
         if (in_array(self::SKIP_PROPOSED_PROCEDURE, $skip)) {
             self::resetVotingData($newMotion);

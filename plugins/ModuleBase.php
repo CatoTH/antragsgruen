@@ -30,6 +30,7 @@ class ModuleBase extends Module
     }
 
     /**
+     * @param Controller<\app\components\yii\Application> $controller
      * @return AssetBundle[]
      */
     public static function getActiveAssetBundles(Controller $controller): array

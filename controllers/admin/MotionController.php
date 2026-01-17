@@ -262,7 +262,7 @@ class MotionController extends AdminBase
                 $motion->dateCreation = $roundedDate;
             }
 
-            if ($modat['dateResolution'] !== '') {
+            if ($modat['dateSubmission'] !== '') {
                 $roundedDate = Tools::dateBootstraptime2sql($modat['dateSubmission']);
                 if (substr($roundedDate, 0, 16) !== substr($motion->dateSubmission, 0, 16)) {
                     $motion->dateSubmission = $roundedDate;

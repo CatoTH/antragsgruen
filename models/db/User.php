@@ -154,7 +154,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<MotionComment[]>
+     * @return ActiveQuery<MotionComment>
      */
     public function getMotionComments(): ActiveQuery
     {
@@ -162,7 +162,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<MotionSupporter[]>
+     * @return ActiveQuery<MotionSupporter>
      */
     public function getMotionSupports(): ActiveQuery
     {
@@ -170,7 +170,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<AmendmentComment[]>
+     * @return ActiveQuery<AmendmentComment>
      */
     public function getAmendmentComments(): ActiveQuery
     {
@@ -178,7 +178,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<AmendmentSupporter[]>
+     * @return ActiveQuery<AmendmentSupporter>
      */
     public function getAmendmentSupports(): ActiveQuery
     {
@@ -186,7 +186,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<EMailLog[]>
+     * @return ActiveQuery<EMailLog>
      */
     public function getEmailLogs(): ActiveQuery
     {
@@ -194,7 +194,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<ConsultationLog[]>
+     * @return ActiveQuery<ConsultationLog>
      */
     public function getLogEntries(): ActiveQuery
     {
@@ -202,7 +202,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<ConsultationUserGroup[]>
+     * @return ActiveQuery<ConsultationUserGroup>
      */
     public function getUserGroups(): ActiveQuery
     {
@@ -210,7 +210,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<UserConsultationScreening[]>
+     * @return ActiveQuery<UserConsultationScreening>
      */
     public function getConsultationScreenings(): ActiveQuery
     {
@@ -286,7 +286,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<UserNotification[]>
+     * @return ActiveQuery<UserNotification>
      */
     public function getNotifications(): ActiveQuery
     {
@@ -294,7 +294,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery<Vote[]>
+     * @return ActiveQuery<Vote>
      */
     public function getVotes(): ActiveQuery
     {

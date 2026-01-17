@@ -47,8 +47,13 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
             ->andWhere(VotingBlock::tableName() . '.votingStatus != ' . VotingBlock::STATUS_DELETED);
     }
 
+    public function getVotingBlockId(): ?int
+    {
+        return $this->votingBlockId;
+    }
+
     /**
-     * @return ActiveQuery<Vote[]>
+     * @return ActiveQuery<Vote>
      */
     public function getVotes(): ActiveQuery
     {

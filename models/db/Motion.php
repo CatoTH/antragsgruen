@@ -114,7 +114,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<MotionComment[]>
+     * @return ActiveQuery<MotionComment>
      */
     public function getComments(): ActiveQuery
     {
@@ -124,7 +124,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<MotionComment[]>
+     * @return ActiveQuery<MotionComment>
      */
     public function getPrivateComments(): ActiveQuery
     {
@@ -174,7 +174,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<MotionSupporter[]>
+     * @return ActiveQuery<MotionSupporter>
      */
     public function getMotionSupporters(): ActiveQuery
     {
@@ -182,7 +182,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<Amendment[]>
+     * @return ActiveQuery<Amendment>
      */
     public function getAmendments(): ActiveQuery
     {
@@ -191,7 +191,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<ConsultationSettingsTag[]>
+     * @return ActiveQuery<ConsultationSettingsTag>
      */
     public function getTags(): ActiveQuery
     {
@@ -200,7 +200,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<MotionSection[]>
+     * @return ActiveQuery<MotionSection>
      */
     public function getSections(): ActiveQuery
     {
@@ -259,7 +259,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<MotionProposal[]>
+     * @return ActiveQuery<MotionProposal>
      */
     public function getProposals(): ActiveQuery
     {
@@ -300,7 +300,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<VotingBlock[]>
+     * @return ActiveQuery<VotingBlock>
      */
     public function getAssignedVotingBlocks(): ActiveQuery
     {
@@ -308,7 +308,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<Vote[]>
+     * @return ActiveQuery<Vote>
      */
     public function getVotes(): ActiveQuery
     {
@@ -316,7 +316,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<Motion[]>
+     * @return ActiveQuery<Motion>
      */
     public function getReplacedByMotions(): ActiveQuery
     {
@@ -325,7 +325,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ActiveQuery<SpeechQueue[]>
+     * @return ActiveQuery<SpeechQueue>
      */
     public function getSpeechQueues(): ActiveQuery
     {
@@ -1017,7 +1017,9 @@ class Motion extends IMotion implements IRSSItem
         }
 
         $motionTitle = (grapheme_strlen($this->title) > 70 ? (string)grapheme_substr($this->title, 0, 70) : $this->title);
-        $title = (new AsciiSlugger())->slug($motionTitle);
+        $slugger = new AsciiSlugger();
+        // Suppress: Using null as an array offset is deprecated, use an empty string instead in vendor/symfony/string/Slugger/AsciiSlugger.php:126
+        $title = @$slugger->slug($motionTitle);
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $random = \Yii::$app->getSecurity()->generateRandomKey(2);

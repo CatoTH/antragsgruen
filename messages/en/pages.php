@@ -33,8 +33,8 @@ return [
             <li><a href="https://reederapp.com/">Reeder</a> (macOS, iOS)</li>
             <li><a href="https://www.vienna-rss.com/">Vienna</a> (macOS)</li>
             <li><a href="https://www.microsoft.com/en-us/p/newsflow/9nblggh58s5r">Newsflow</a> (Windows)</li>
-            <li><a href="https://feedly.com/">Feedly</a> (Web-Dienst)</li>
-            <li><a href="https://feedbin.com/">Feedbin</a> (Web-Dienst)</li>
+            <li><a href="https://feedly.com/">Feedly</a> (Web Service)</li>
+            <li><a href="https://feedbin.com/">Feedbin</a> (Web Service)</li>
         </ul>',
 
     'images_browse_title' => 'Browse images uploaded for this consultation',

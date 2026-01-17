@@ -8,6 +8,9 @@ use app\components\HTMLTools;
 use app\models\SectionedParagraph;
 use yii\console\Controller;
 
+/**
+ * @extends Controller<\yii\console\Application>
+ */
 class PerformanceTestController extends Controller
 {
     private function getmicrotime(): int

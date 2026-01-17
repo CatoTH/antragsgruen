@@ -8,6 +8,7 @@ use app\controllers\{MotionController, PagesController, SpeechController, UserCo
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
 use Endroid\QrCode\Label\Font\FontInterface;
+use OTPHP\InternalClock;
 use app\models\http\{RedirectResponse, ResponseInterface};
 use app\models\settings\AntragsgruenApp;
 use Endroid\QrCode\Builder\Builder;
@@ -53,16 +54,17 @@ class SecondFactorAuthentication
         if (YII_ENV === 'test') {
             /** @var non-empty-string $secret */
             $secret = trim((string) file_get_contents(__DIR__ . '/../tests/config/2fa.secret'));
-            $otp = TOTP::createFromSecret($secret);
+            $otp = TOTP::createFromSecret($secret, new InternalClock());
         } else {
             $data = $this->session->get(self::SESSION_KEY_2FA_SETUP_KEY);
             if ($data && $data['user'] === $user->id && $data['time'] > time() - self::TIMEOUT_2FA_SESSION) {
-                $otp = TOTP::createFromSecret($data['secret']);
+                $otp = TOTP::createFromSecret($data['secret'], new InternalClock());
             } else {
-                $otp = TOTP::generate();
+                $otp = TOTP::generate(new InternalClock());
             }
         }
-        $otp->setLabel(AntragsgruenApp::getInstance()->mailFromName ?: 'Antragsgrün');
+        /** @var TOTP $otp */
+        $otp = $otp->withLabel(AntragsgruenApp::getInstance()->mailFromName ?: 'Antragsgrün');
 
         $this->session->set(self::SESSION_KEY_2FA_SETUP_KEY, [
             'user' => $user->id,
@@ -115,7 +117,7 @@ class SecondFactorAuthentication
             throw new \RuntimeException(\Yii::t('user', 'err_2fa_empty'));
         }
 
-        $otp = TOTP::createFromSecret($data['secret']);
+        $otp = TOTP::createFromSecret($data['secret'], new InternalClock());
         if (!$this->checkOtp($otp, $secondFactor)) {
             throw new \RuntimeException(\Yii::t('user', 'err_2fa_incorrect'));
         }
@@ -135,7 +137,7 @@ class SecondFactorAuthentication
         }
 
         foreach ($userSettings->secondFactorKeys as $index => $key) {
-            $totp = TOTP::createFromSecret($key['secret']);
+            $totp = TOTP::createFromSecret($key['secret'], new InternalClock());
             if ($this->checkOtp($totp, $secondFactor)) {
                 $keys = $userSettings->secondFactorKeys;
                 unset ($keys[$index]);
@@ -215,7 +217,7 @@ class SecondFactorAuthentication
             return null;
         }
         foreach ($userSettings->secondFactorKeys as $key) {
-            $totp = TOTP::createFromSecret($key['secret']);
+            $totp = TOTP::createFromSecret($key['secret'], new InternalClock());
             if ($this->checkOtp($totp, $secondFactor)) {
                 return $user;
             }
@@ -269,7 +271,7 @@ class SecondFactorAuthentication
             throw new \RuntimeException(\Yii::t('user', 'err_2fa_empty'));
         }
 
-        $otp = TOTP::createFromSecret($data['secret']);
+        $otp = TOTP::createFromSecret($data['secret'], new InternalClock());
         if (!$this->checkOtp($otp, $secondFactor)) {
             throw new \RuntimeException(\Yii::t('user', 'err_2fa_incorrect'));
         }
@@ -302,7 +304,9 @@ class SecondFactorAuthentication
         }
 
         $url = $totp->getProvisioningUri();
-        return Builder::create()
+
+        // Hint: endroid/qr-code is (in the used PHP-8.1-compatible version) not yet compatible with 8.5
+        return @Builder::create()
                          ->writer(new PngWriter())
                          ->writerOptions([])
                          ->data($url)

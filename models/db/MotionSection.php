@@ -73,21 +73,21 @@ class MotionSection extends IMotionSection
         ]);
     }
 
-    private function getExternallySavedFile(): string
+    public function getExternallySavedFile(string $binaryFilePath): string
     {
         $app = AntragsgruenApp::getInstance();
         $path = $app->binaryFilePath;
-        if (!str_ends_with($path, '/')) {
-            $path .= '/';
+        if (!str_ends_with($binaryFilePath, '/')) {
+            $binaryFilePath .= '/';
         }
-        $path .= ($this->sectionId % 100);
-        if (!file_exists($path)) {
-            mkdir($path, 0700, true);
+        $binaryFilePath .= ($this->sectionId % 100);
+        if (!file_exists($binaryFilePath)) {
+            mkdir($binaryFilePath, 0700, true);
         }
-        $path .= '/';
-        $path .= 'motion-section-' . intval($this->motionId) . '-' . intval($this->sectionId);
+        $binaryFilePath .= '/';
+        $binaryFilePath .= 'motion-section-' . intval($this->motionId) . '-' . intval($this->sectionId);
 
-        return $path;
+        return $binaryFilePath;
     }
 
     private ?string $toSaveDataSpool = null;
@@ -95,7 +95,7 @@ class MotionSection extends IMotionSection
     public function onSaved(): void
     {
         if ($this->hasExternallySavedData() && $this->toSaveDataSpool !== null) {
-            $filepath = $this->getExternallySavedFile();
+            $filepath = $this->getExternallySavedFile((string) AntragsgruenApp::getInstance()->binaryFilePath);
             file_put_contents($filepath, $this->toSaveDataSpool);
         }
     }
@@ -129,7 +129,7 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return ActiveQuery<MotionComment[]>
+     * @return ActiveQuery<MotionComment>
      */
     public function getComments(): ActiveQuery
     {
@@ -229,7 +229,7 @@ class MotionSection extends IMotionSection
             if ($this->toSaveDataSpool !== null) {
                 return $this->toSaveDataSpool;
             }
-            $filepath = $this->getExternallySavedFile();
+            $filepath = $this->getExternallySavedFile((string) AntragsgruenApp::getInstance()->binaryFilePath);
             if (file_exists($filepath)) {
                 return (string) file_get_contents($filepath);
             } else {
@@ -500,14 +500,15 @@ class MotionSection extends IMotionSection
 
     public function overrideSectionId(ConsultationSettingsMotionSection $section): bool
     {
-        $oldFilePath = ($this->hasExternallySavedData() ? $this->getExternallySavedFile() : null);
+        $binaryFilePath = AntragsgruenApp::getInstance()->binaryFilePath;
+        $oldFilePath = ($this->hasExternallySavedData() ? $this->getExternallySavedFile((string) $binaryFilePath) : null);
 
         $this->fixedSectionType = $section;
         $this->sectionId        = $section->id;
         $success = $this->save();
 
         if ($success && $this->hasExternallySavedData()) {
-            $newFilePath = $this->getExternallySavedFile();
+            $newFilePath = $this->getExternallySavedFile((string) $binaryFilePath);
             if (file_exists($oldFilePath)) {
                 rename($oldFilePath, $newFilePath);
             }

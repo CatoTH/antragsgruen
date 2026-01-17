@@ -6,6 +6,7 @@
 parameters:
     level: 7
     reportUnmatchedIgnoredErrors: false
+    tipsOfTheDay: false
     ignoreErrors:
       - identifier: missingType.iterableValue # Issues because Yii's ActiveRecords are recognized as Iterables
     scanDirectories:
@@ -24,3 +25,6 @@ parameters:
       - commands
       - plugins
       - views/pdfLayouts
+
+includes:
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon

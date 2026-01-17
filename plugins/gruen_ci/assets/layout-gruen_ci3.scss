@@ -98,15 +98,12 @@ body {
 
 .well {
   h1 {
-    font-style: italic;
     text-shadow: none;
   }
   h2.green, h3.green {
-    font-style: italic;
     text-shadow: none;
   }
   .nav-header {
-    font-style: italic;
     text-shadow: none;
   }
   .greenHeaderExtraLink {
@@ -251,35 +248,44 @@ body {
   }
 }
 
-#page a {
-  text-decoration-line: underline;
-  text-underline-offset: 4px;
-  color: $colorLinks;
-  position: relative;
-  z-index: 1;
-
-  &:hover::before {
-    content: "";
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: calc(var(--mark-overlap) * -1);
-    right: calc(var(--mark-overlap) * -1);
-    bottom: 0;
-
-    --mark-height: 0.8em;
-    --mark-color: #fff17a;
-    --mark-skew: calc(var(--mark-height) / 100 * 22.6);
-    --mark-overlap: 0.3em;
-    color: rgb(0, 34, 22);
-    background-image: linear-gradient(to bottom right,transparent 0 50%,var(--mark-color) 50% 100%),linear-gradient(var(--mark-color),var(--mark-color)),linear-gradient(to top left,transparent 50%,var(--mark-color) 50%);
-    background-size: calc(var(--mark-skew)) calc(var(--mark-height)),calc(100% - var(--mark-skew) * 2 + .5px) var(--mark-height),calc(var(--mark-skew)) var(--mark-height);
-    background-position: 0 100%,bottom,100% 100%;
-    background-repeat: no-repeat;
-  }
-}
-
 #page {
+  a {
+    text-decoration-line: underline;
+    text-underline-offset: 4px;
+    color: $colorLinks;
+    position: relative;
+    z-index: 1;
+
+    &:hover::before {
+      content: "";
+      z-index: -1;
+      position: absolute;
+      top: 0;
+      left: calc(var(--mark-overlap) * -1);
+      right: calc(var(--mark-overlap) * -1);
+      bottom: 0;
+
+      --mark-height: 0.8em;
+      --mark-color: #fff17a;
+      --mark-skew: calc(var(--mark-height) / 100 * 22.6);
+      --mark-overlap: 0.3em;
+      color: rgb(0, 34, 22);
+      background-image: linear-gradient(to bottom right,transparent 0 50%,var(--mark-color) 50% 100%),linear-gradient(var(--mark-color),var(--mark-color)),linear-gradient(to top left,transparent 50%,var(--mark-color) 50%);
+      background-size: calc(var(--mark-skew)) calc(var(--mark-height)),calc(100% - var(--mark-skew) * 2 + .5px) var(--mark-height),calc(var(--mark-skew)) var(--mark-height);
+      background-position: 0 100%,bottom,100% 100%;
+      background-repeat: no-repeat;
+    }
+  }
+
+  a.btn, a.createMotion {
+    color: #fff;
+    text-decoration: none;
+
+    &:hover::before {
+      display: none;
+    }
+  }
+
   ul.sidebarActions li a, ul.sidebarActions li > span, ul.sidebarActions button {
     color: white;
   }

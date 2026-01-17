@@ -101,7 +101,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<Motion[]>
+     * @return ActiveQuery<Motion>
      */
     public function getMotions(): ActiveQuery
     {
@@ -110,7 +110,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<ConsultationText[]>
+     * @return ActiveQuery<ConsultationText>
      */
     public function getConsultationTexts(): ActiveQuery
     {
@@ -126,7 +126,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<ConsultationSettingsMotionSection[]>
+     * @return ActiveQuery<ConsultationSettingsMotionSection>
      */
     public function getMotionSections(): ActiveQuery
     {
@@ -146,7 +146,7 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     /**
-     * @return ActiveQuery<ConsultationAgendaItem[]>
+     * @return ActiveQuery<ConsultationAgendaItem>
      */
     public function getAgendaItems(): ActiveQuery
     {

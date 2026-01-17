@@ -9,6 +9,9 @@ use app\models\api\SpeechQueue;
 use app\models\db\{Consultation, Site};
 use yii\console\Controller;
 
+/**
+ * @extends Controller<\yii\console\Application>
+ */
 class LiveController extends Controller
 {
     /**
