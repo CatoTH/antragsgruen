@@ -30,7 +30,6 @@
     "ezyang/htmlpurifier": "dev-main as v4.19.1",
     "firebase/php-jwt": "^7.0",
     "guzzlehttp/guzzle": "^7.7",
-    "league/oauth2-client": "^2.9",
     "paragonie/sodium_compat": "^2.0",
     "phpoffice/phpspreadsheet": "^5.0",
     "predis/predis": "^3.0",
@@ -88,6 +87,7 @@
   "suggest": {
     "yiisoft/yii2-redis": "Allows using redis for caching",
     "simplesamlphp/simplesamlphp": "Allowed Single Sign On Authentication using SAML",
+    "league/oauth2-client": "Allows Single Sign On Authentication using OIDC",
     "predis/predis": "If simplesaml should store its data to redis"
   },
   "config": {
