@@ -758,7 +758,7 @@ class LayoutHelper
         if ($motion->isResolution()) {
             $names                = $motion->getMyConsultation()->getStatuses()->getStatusNames();
             $content->titleRaw    = $motion->title;
-            $content->titlePrefix = $names[$motion->status] . "\n";
+            $content->titlePrefix = $names[$motion->status] . " " . $motion->getFormattedTitlePrefix() . "\n";
             $content->titleLong   = $names[$motion->status] . ': ' . $motion->getTitleWithIntro();
             $content->title       = $motion->getTitleWithIntro();
         } else {
