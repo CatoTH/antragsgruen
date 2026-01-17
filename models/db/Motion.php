@@ -1139,7 +1139,7 @@ class Motion extends IMotion implements IRSSItem
                 $status .= Html::encode($statusNames[$this->status]);
             }
         } else {
-            $status .= Html::encode($statusNames[$this->status] . '???');
+            $status .= Html::encode($statusNames[$this->status] ?? '???');
         }
         if ($statusString) {
             $status .= ' <small>(' . Html::encode($statusString) . ')</string>';
