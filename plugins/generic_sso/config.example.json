@@ -1,0 +1,102 @@
+{
+  "enabled": true,
+  "protocol": "oidc",
+  "providerId": "generic-sso",
+  "singleLogout": true,
+  "syncGroups": true,
+  "oidc": {
+    "clientId": "your-client-id",
+    "clientSecret": "your-client-secret",
+    "redirectUri": "https://your-antragsgruen-domain.com/sso-callback",
+    "urlAuthorize": "https://your-idp.com/oauth2/authorize",
+    "urlAccessToken": "https://your-idp.com/oauth2/token",
+    "urlResourceOwnerDetails": "https://your-idp.com/oauth2/userinfo",
+    "urlUserInfo": "https://your-idp.com/oauth2/userinfo",
+    "urlLogout": "https://your-idp.com/oauth2/logout",
+    "issuer": "https://your-idp.com",
+    "scopes": ["openid", "profile", "email", "groups"],
+    "pkce": true,
+    "authorizationParams": {
+      "prompt": "consent"
+    }
+  },
+  "saml": {
+    "authSource": "generic-sso-sp",
+    "requiredAttributes": ["mail", "uid"]
+  },
+  "attributeMapping": {
+    "email": "email",
+    "username": "preferred_username",
+    "givenName": "given_name",
+    "familyName": "family_name",
+    "organization": "organization",
+    "groups": "groups"
+  },
+  "groupMapping": {
+    "admin": "administrators",
+    "users": "members"
+  },
+  "oidcProviderExamples": {
+    "keycloak": {
+      "urlAuthorize": "https://keycloak.example.com/realms/your-realm/protocol/openid-connect/auth",
+      "urlAccessToken": "https://keycloak.example.com/realms/your-realm/protocol/openid-connect/token",
+      "urlResourceOwnerDetails": "https://keycloak.example.com/realms/your-realm/protocol/openid-connect/userinfo",
+      "urlLogout": "https://keycloak.example.com/realms/your-realm/protocol/openid-connect/logout",
+      "issuer": "https://keycloak.example.com/realms/your-realm"
+    },
+    "okta": {
+      "urlAuthorize": "https://your-domain.okta.com/oauth2/v1/authorize",
+      "urlAccessToken": "https://your-domain.okta.com/oauth2/v1/token",
+      "urlResourceOwnerDetails": "https://your-domain.okta.com/oauth2/v1/userinfo",
+      "urlLogout": "https://your-domain.okta.com/oauth2/v1/logout",
+      "issuer": "https://your-domain.okta.com"
+    },
+    "azure_ad": {
+      "urlAuthorize": "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize",
+      "urlAccessToken": "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
+      "urlResourceOwnerDetails": "https://graph.microsoft.com/oidc/userinfo",
+      "urlLogout": "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/logout",
+      "issuer": "https://login.microsoftonline.com/{tenant}/v2.0",
+      "attributeMapping": {
+        "email": "email",
+        "username": "preferred_username",
+        "givenName": "given_name",
+        "familyName": "family_name",
+        "groups": "groups"
+      }
+    },
+    "google": {
+      "urlAuthorize": "https://accounts.google.com/o/oauth2/v2/auth",
+      "urlAccessToken": "https://oauth2.googleapis.com/token",
+      "urlResourceOwnerDetails": "https://openidconnect.googleapis.com/v1/userinfo",
+      "issuer": "https://accounts.google.com",
+      "scopes": ["openid", "profile", "email"]
+    },
+    "auth0": {
+      "urlAuthorize": "https://your-domain.auth0.com/authorize",
+      "urlAccessToken": "https://your-domain.auth0.com/oauth/token",
+      "urlResourceOwnerDetails": "https://your-domain.auth0.com/userinfo",
+      "urlLogout": "https://your-domain.auth0.com/v2/logout",
+      "issuer": "https://your-domain.auth0.com/"
+    },
+    "logto": {
+      "urlAuthorize": "https://your-logto-domain.com/oidc/auth",
+      "urlAccessToken": "https://your-logto-domain.com/oidc/token",
+      "urlResourceOwnerDetails": "https://your-logto-domain.com/oidc/me",
+      "urlUserInfo": "https://your-logto-domain.com/oidc/me",
+      "urlLogout": "https://your-logto-domain.com/oidc/session/end",
+      "issuer": "https://your-logto-domain.com/oidc",
+      "scopes": ["openid", "profile", "email"],
+      "pkce": true,
+      "authorizationParams": {
+        "prompt": "consent"
+      },
+      "note": "Logto requires exact redirect URI match. Ensure the redirect URI is added in Logto Console > Applications > Your App > Redirect URIs"
+    }
+  },
+  "samlProviderExamples": {
+    "note": "SAML configuration is done in SimpleSAMLphp config directory",
+    "authSource": "The name of the SP configuration in SimpleSAMLphp authsources.php",
+    "simpleSamlConfigPath": "/path/to/simplesamlphp/config"
+  }
+}
