@@ -63,20 +63,32 @@ class OidcProvider
     }
 
     /**
-     * Get the PKCE code verifier (if PKCE is enabled)
+     * Access PKCE code property via reflection (internal helper)
      */
-    public function getPkceCode(): ?string
+    private function accessPkceProperty(string $operation, ?string $value = null): ?string
     {
-        // Access protected property via reflection
         try {
             $reflection = new \ReflectionClass($this->provider);
             $property = $reflection->getProperty('pkceCode');
             $property->setAccessible(true);
-            return $property->getValue($this->provider);
+
+            if ($operation === 'get') {
+                return $property->getValue($this->provider);
+            } elseif ($operation === 'set' && $value !== null) {
+                $property->setValue($this->provider, $value);
+            }
         } catch (\Exception $e) {
-            error_log('Failed to get PKCE code: ' . $e->getMessage());
-            return null;
+            \Yii::error("Failed to {$operation} PKCE code: " . $e->getMessage());
         }
+        return null;
+    }
+
+    /**
+     * Get the PKCE code verifier (if PKCE is enabled)
+     */
+    public function getPkceCode(): ?string
+    {
+        return $this->accessPkceProperty('get');
     }
 
     /**
@@ -84,17 +96,8 @@ class OidcProvider
      */
     public function setPkceCode(?string $pkceCode): void
     {
-        if (!$pkceCode) {
-            return;
-        }
-
-        try {
-            $reflection = new \ReflectionClass($this->provider);
-            $property = $reflection->getProperty('pkceCode');
-            $property->setAccessible(true);
-            $property->setValue($this->provider, $pkceCode);
-        } catch (\Exception $e) {
-            error_log('Failed to set PKCE code: ' . $e->getMessage());
+        if ($pkceCode) {
+            $this->accessPkceProperty('set', $pkceCode);
         }
     }
 
@@ -138,9 +141,16 @@ class OidcProvider
     }
 
     /**
-     * Parse and verify ID Token (JWT)
+     * Parse ID Token claims (JWT payload) without signature verification
+     *
+     * NOTE: This method does NOT verify the JWT signature. It only extracts claims.
+     * For security-critical operations, rely on the getUserInfo() method which uses
+     * a validated access token to fetch user information from the userinfo endpoint.
+     *
+     * To implement proper JWT signature verification, use a library like firebase/php-jwt
+     * or lcobucci/jwt and verify against the provider's JWKS endpoint.
      */
-    public function verifyIdToken(string $idToken): ?array
+    public function parseIdTokenClaims(string $idToken): ?array
     {
         try {
             // Split JWT into parts
@@ -149,7 +159,7 @@ class OidcProvider
                 return null;
             }
 
-            // Decode payload (second part)
+            // Decode payload (second part) - WARNING: NOT VERIFYING SIGNATURE
             $payload = base64_decode(strtr($parts[1], '-_', '+/'));
             $claims = json_decode($payload, true);
 
@@ -157,27 +167,30 @@ class OidcProvider
                 return null;
             }
 
-            // Basic validation
+            // Basic validation (without signature verification)
             if (isset($claims['exp']) && $claims['exp'] < time()) {
-                throw new \Exception('ID Token has expired');
+                \Yii::warning('ID Token has expired');
+                return null;
             }
 
             if (isset($claims['iss']) && isset($this->config['issuer'])) {
                 if ($claims['iss'] !== $this->config['issuer']) {
-                    throw new \Exception('Invalid issuer');
+                    \Yii::warning('Invalid issuer in ID token');
+                    return null;
                 }
             }
 
             if (isset($claims['aud'])) {
                 $audiences = is_array($claims['aud']) ? $claims['aud'] : [$claims['aud']];
                 if (!in_array($this->config['clientId'], $audiences)) {
-                    throw new \Exception('Invalid audience');
+                    \Yii::warning('Invalid audience in ID token');
+                    return null;
                 }
             }
 
             return $claims;
         } catch (\Exception $e) {
-            error_log('ID Token verification failed: ' . $e->getMessage());
+            \Yii::error('ID Token parsing failed: ' . $e->getMessage());
             return null;
         }
     }
@@ -193,18 +206,27 @@ class OidcProvider
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
         curl_close($ch);
 
         if ($httpCode !== 200 || !$response) {
-            throw new \Exception('Failed to discover OIDC configuration');
+            $errorMsg = 'Failed to discover OIDC configuration';
+            if ($error) {
+                $errorMsg .= ': ' . $error;
+            }
+            throw new \Exception($errorMsg);
         }
 
-        $config = json_decode($response, true);
-        if (!$config) {
-            throw new \Exception('Invalid OIDC discovery document');
+        try {
+            $config = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new \Exception('Invalid OIDC discovery document: ' . $e->getMessage());
         }
 
         return [

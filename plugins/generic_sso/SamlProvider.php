@@ -52,13 +52,8 @@ class SamlProvider
      */
     public function getAttribute(string $name, $default = null)
     {
-        $attributes = $this->getAttributes();
-
-        if (isset($attributes[$name]) && is_array($attributes[$name])) {
-            return $attributes[$name][0] ?? $default;
-        }
-
-        return $attributes[$name] ?? $default;
+        $values = $this->getAttributeValues($name);
+        return $values[0] ?? $default;
     }
 
     /**
@@ -68,11 +63,11 @@ class SamlProvider
     {
         $attributes = $this->getAttributes();
 
-        if (isset($attributes[$name]) && is_array($attributes[$name])) {
-            return $attributes[$name];
+        if (!isset($attributes[$name])) {
+            return [];
         }
 
-        return isset($attributes[$name]) ? [$attributes[$name]] : [];
+        return is_array($attributes[$name]) ? $attributes[$name] : [$attributes[$name]];
     }
 
     /**
@@ -167,7 +162,7 @@ class SamlProvider
 
             foreach ($this->config['requiredAttributes'] as $required) {
                 if (!isset($attributes[$required]) || empty($attributes[$required])) {
-                    error_log("SAML: Missing required attribute: {$required}");
+                    \Yii::error("SAML: Missing required attribute: {$required}");
                     return false;
                 }
             }

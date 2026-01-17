@@ -16,6 +16,13 @@ use yii\helpers\Url;
  */
 class SsoLogin implements LoginProviderInterface
 {
+    private const DEFAULT_CONFIG = [
+        'protocol' => 'oidc',
+        'enabled' => false,
+    ];
+
+    private const GROUP_PREFIX = Module::AUTH_KEY_GROUPS . ':';
+
     private array $config;
     private string $protocol;
 
@@ -33,20 +40,16 @@ class SsoLogin implements LoginProviderInterface
         $configFile = __DIR__ . '/../../config/generic_sso.json';
 
         if (!file_exists($configFile)) {
-            return [
-                'protocol' => 'oidc',
-                'enabled' => false,
-            ];
+            return self::DEFAULT_CONFIG;
         }
 
-        $config = json_decode(file_get_contents($configFile), true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            error_log('Generic SSO: Invalid configuration file: ' . json_last_error_msg());
-            return ['protocol' => 'oidc', 'enabled' => false];
+        try {
+            $config = json_decode((string)file_get_contents($configFile), true, 512, JSON_THROW_ON_ERROR);
+            return $config;
+        } catch (\JsonException $e) {
+            \Yii::error('Generic SSO: Invalid configuration file: ' . $e->getMessage());
+            return self::DEFAULT_CONFIG;
         }
-
-        return $config;
     }
 
     public function getId(): string
@@ -56,20 +59,7 @@ class SsoLogin implements LoginProviderInterface
 
     public function getName(): string
     {
-        return $this->getTranslation('login_provider_name', 'SSO Login');
-    }
-
-    private function getTranslation(string $key, string $fallback): string
-    {
-        $lang = \Yii::$app->language;
-        $file = \Yii::getAlias('@app/plugins/generic_sso/messages/' . $lang . '/generic_sso.php');
-
-        if (file_exists($file)) {
-            $translations = include($file);
-            return $translations[$key] ?? $fallback;
-        }
-
-        return $fallback;
+        return \Yii::t('generic_sso', 'login_provider_name');
     }
 
     public function renderLoginForm(string $backUrl, bool $active): string
@@ -81,9 +71,30 @@ class SsoLogin implements LoginProviderInterface
         return \Yii::$app->controller->renderPartial('@app/plugins/generic_sso/views/login', [
             'backUrl' => $backUrl,
             'providerName' => $this->getName(),
-            'buttonText' => $this->getTranslation('login_button', 'Login with SSO'),
-            'description' => $this->getTranslation('login_description', ''),
+            'buttonText' => \Yii::t('generic_sso', 'login_button'),
+            'description' => \Yii::t('generic_sso', 'login_description'),
         ]);
+    }
+
+    /**
+     * Store PKCE code in session if enabled
+     */
+    private function storePkceSession(OidcProvider $provider, array $oidcConfig): void
+    {
+        if (($oidcConfig['pkce'] ?? false) && $pkceCode = $provider->getPkceCode()) {
+            \Yii::$app->session->set('oauth2pkce', $pkceCode);
+        }
+    }
+
+    /**
+     * Restore PKCE code from session if enabled
+     */
+    private function restorePkceSession(OidcProvider $provider, array $oidcConfig): void
+    {
+        if (($oidcConfig['pkce'] ?? false) && $pkceCode = \Yii::$app->session->get('oauth2pkce')) {
+            $provider->setPkceCode($pkceCode);
+            \Yii::$app->session->remove('oauth2pkce');
+        }
     }
 
     /**
@@ -118,14 +129,7 @@ class SsoLogin implements LoginProviderInterface
 
             // Store state and PKCE verifier in session
             \Yii::$app->session->set('oauth2state', $provider->getState());
-
-            // Store PKCE code if PKCE is enabled
-            if (isset($oidcConfig['pkce']) && $oidcConfig['pkce']) {
-                $pkceCode = $provider->getPkceCode();
-                if ($pkceCode) {
-                    \Yii::$app->session->set('oauth2pkce', $pkceCode);
-                }
-            }
+            $this->storePkceSession($provider, $oidcConfig);
 
             \Yii::$app->response->redirect($authUrl);
             \Yii::$app->end();
@@ -142,25 +146,21 @@ class SsoLogin implements LoginProviderInterface
         \Yii::$app->session->remove('oauth2state');
 
         // Restore PKCE code verifier if it was stored
-        if (isset($oidcConfig['pkce']) && $oidcConfig['pkce']) {
-            $pkceCode = \Yii::$app->session->get('oauth2pkce');
-            if ($pkceCode) {
-                $provider->setPkceCode($pkceCode);
-                \Yii::$app->session->remove('oauth2pkce');
-            }
-        }
+        $this->restorePkceSession($provider, $oidcConfig);
 
         // Exchange code for access token
         $token = $provider->getAccessToken($code);
 
-        // Get user information
+        // Get user information from userinfo endpoint (this is the secure method)
         $userInfo = $provider->getUserInfo($token);
 
-        // Verify ID token if present
+        // Optionally parse ID token claims (for additional user info only, not for authentication)
+        // Note: This does not verify the JWT signature, so it should not be relied upon for security
         if (isset($token->getValues()['id_token'])) {
-            $idTokenClaims = $provider->verifyIdToken($token->getValues()['id_token']);
+            $idTokenClaims = $provider->parseIdTokenClaims($token->getValues()['id_token']);
             if ($idTokenClaims) {
-                $userInfo = array_merge($userInfo, $idTokenClaims);
+                // Merge claims, but userInfo takes precedence (since it's verified)
+                $userInfo = array_merge($idTokenClaims, $userInfo);
             }
         }
 
@@ -211,6 +211,9 @@ class SsoLogin implements LoginProviderInterface
             throw new \Exception('Unsupported protocol: ' . $this->protocol);
         }
 
+        // Regenerate session ID to prevent session fixation
+        \Yii::$app->session->regenerateID(true);
+
         // Login the user
         RequestContext::getYiiUser()->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
 
@@ -234,6 +237,11 @@ class SsoLogin implements LoginProviderInterface
         // Validate required fields
         if (empty($userData['email'])) {
             throw new \Exception('Email is required but not provided by SSO provider');
+        }
+
+        // Validate email format
+        if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new \Exception('Invalid email address provided by SSO provider: ' . $userData['email']);
         }
 
         if (empty($userData['username'])) {
@@ -306,35 +314,40 @@ class SsoLogin implements LoginProviderInterface
      */
     private function getAttributeValue(array $attributes, $sourceField)
     {
-        // Handle dot notation for nested attributes (e.g., "address.country")
-        if (is_string($sourceField) && strpos($sourceField, '.') !== false) {
-            $parts = explode('.', $sourceField);
-            $value = $attributes;
+        $value = $this->resolveNestedAttribute($attributes, $sourceField);
 
-            foreach ($parts as $part) {
-                if (is_array($value) && isset($value[$part])) {
-                    $value = $value[$part];
-                } else {
-                    return null;
-                }
-            }
-
-            return $value;
+        if ($value === null) {
+            return null;
         }
 
-        // Direct attribute access
-        if (isset($attributes[$sourceField])) {
-            $value = $attributes[$sourceField];
-
-            // Handle array values (common in SAML)
-            if (is_array($value) && count($value) === 1 && isset($value[0])) {
-                return $value[0];
-            }
-
-            return $value;
+        // Normalize single-element arrays (common in SAML)
+        if (is_array($value) && count($value) === 1 && isset($value[0])) {
+            return $value[0];
         }
 
-        return null;
+        return $value;
+    }
+
+    /**
+     * Resolve nested attribute using dot notation
+     */
+    private function resolveNestedAttribute(array $attributes, $sourceField)
+    {
+        if (!is_string($sourceField)) {
+            return null;
+        }
+
+        $parts = explode('.', $sourceField);
+        $value = $attributes;
+
+        foreach ($parts as $part) {
+            if (!is_array($value) || !isset($value[$part])) {
+                return null;
+            }
+            $value = $value[$part];
+        }
+
+        return $value;
     }
 
     /**
@@ -375,7 +388,6 @@ class SsoLogin implements LoginProviderInterface
         }
 
         $groupMapping = $this->config['groupMapping'] ?? [];
-        $groupPrefix = Module::AUTH_KEY_GROUPS . ':';
 
         // Map provider groups to external IDs
         $newGroupIds = [];
@@ -383,17 +395,17 @@ class SsoLogin implements LoginProviderInterface
             // If group mapping is configured, use it
             if (!empty($groupMapping) && isset($groupMapping[$group])) {
                 $mappedGroup = $groupMapping[$group];
-                $newGroupIds[] = $groupPrefix . $mappedGroup;
+                $newGroupIds[] = self::GROUP_PREFIX . $mappedGroup;
             } else {
                 // Otherwise use the group name as-is
-                $newGroupIds[] = $groupPrefix . $group;
+                $newGroupIds[] = self::GROUP_PREFIX . $group;
             }
         }
 
         // Get current SSO-managed groups
         $oldGroupIds = [];
         foreach ($user->userGroups as $userGroup) {
-            if ($userGroup->externalId && str_starts_with($userGroup->externalId, $groupPrefix)) {
+            if ($userGroup->externalId && str_starts_with($userGroup->externalId, self::GROUP_PREFIX)) {
                 $oldGroupIds[] = $userGroup->externalId;
 
                 // Remove groups that are no longer present
@@ -436,10 +448,9 @@ class SsoLogin implements LoginProviderInterface
         }
 
         $organizations = [];
-        $groupPrefix = Module::AUTH_KEY_GROUPS . ':';
 
         foreach ($user->userGroups as $userGroup) {
-            if ($userGroup->externalId && str_starts_with($userGroup->externalId, $groupPrefix)) {
+            if ($userGroup->externalId && str_starts_with($userGroup->externalId, self::GROUP_PREFIX)) {
                 $organizations[] = $userGroup;
             }
         }
@@ -503,7 +514,7 @@ class SsoLogin implements LoginProviderInterface
                 // Note: SAML logout typically redirects, so this may not return
             }
         } catch (\Exception $e) {
-            error_log('SAML logout failed: ' . $e->getMessage());
+            \Yii::error('SAML logout failed: ' . $e->getMessage());
         }
 
         return $backUrl;

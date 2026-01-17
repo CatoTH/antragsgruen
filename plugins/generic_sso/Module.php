@@ -14,6 +14,20 @@ class Module extends ModuleBase
 
     private static ?LoginProviderInterface $loginProvider = null;
 
+    public function init(): void
+    {
+        parent::init();
+
+        // Register translation category
+        \Yii::$app->i18n->translations['generic_sso'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'basePath' => '@app/plugins/generic_sso/messages',
+            'fileMap' => [
+                'generic_sso' => 'generic_sso.php',
+            ],
+        ];
+    }
+
     public static function getDedicatedLoginProvider(): ?LoginProviderInterface
     {
         if (self::$loginProvider === null) {
