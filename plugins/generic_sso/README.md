@@ -549,7 +549,7 @@ For issues, please check:
 
 ## License
 
-Same as Antragsgrün (likely GPL or similar - check main repository).
+AGPL-3.0-only (same as Antragsgrün)
 
 ## Credits
 
