@@ -87,6 +87,7 @@
   "suggest": {
     "yiisoft/yii2-redis": "Allows using redis for caching",
     "simplesamlphp/simplesamlphp": "Allowed Single Sign On Authentication using SAML",
+    "league/oauth2-client": "Allows Single Sign On Authentication using OIDC",
     "predis/predis": "If simplesaml should store its data to redis"
   },
   "config": {
