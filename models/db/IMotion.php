@@ -289,6 +289,9 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     public function isProposalPublic(): bool
     {
+        //         if ($this->getMyConsultation()->urlPath === 'hv') {
+        //            return true;
+        //        }
         if (!$this->proposalVisibleFrom) {
             return false;
         }

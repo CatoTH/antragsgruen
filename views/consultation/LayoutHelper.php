@@ -30,6 +30,10 @@ class LayoutHelper
         if ($type === 'index_layout_agenda' && User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             $cache->setSkipCache(true);
         }
+        if (!Module::currentUserCanSeeMotions(UrlHelper::getCurrentConsultation())) {
+            // Prevent accidental exposure / creation of cache
+            $cache->setSkipCache(true);
+        }
         if (!in_array($type, ['index_layout_std', 'index_layout_tags', 'index_layout_agenda', 'index_layout_discussion_tags'])) {
             // Disable cache for plugin homepages, to prevent accidental over-caching
             $cache->setSkipCache(true);
@@ -69,6 +73,11 @@ class LayoutHelper
             $cache->setIsSynchronized(true);
             $cache->setIsBulky(true);
         } else {
+            $cache->setSkipCache(true);
+        }
+
+        if (!Module::currentUserCanSeeMotions(UrlHelper::getCurrentConsultation())) {
+            // Prevent accidental exposure / creation of cache
             $cache->setSkipCache(true);
         }
 

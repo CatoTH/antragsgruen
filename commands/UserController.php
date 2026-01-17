@@ -272,7 +272,7 @@ class UserController extends Controller
             }
         }
 
-        $this->stdout('Updated the user: ' . $user->auth);
+        $this->stdout('Updated the user: ' . $user->auth . "\n");
 
         if ($welcomeTemplate) {
             $this->sendWelcomeEmail($consultation, $user, $welcomeTemplate, $password);
