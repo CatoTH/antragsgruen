@@ -42,9 +42,17 @@ export class EditorialEdit {
 
     private async save(ev) {
         ev.preventDefault();
+
+        const author = (this.metadataEdit.querySelector('.author') as HTMLInputElement).value;
+        if (!author) {
+            alert("Kein Autor angegeben");
+            return;
+        }
+
         let postData = {
             'data': this.editor.getEditor().getData(),
-            'author': (this.metadataEdit.querySelector('.author') as HTMLInputElement).value,
+            'author': author,
+            'erledigt': ((this.metadataEdit.querySelector('.erledigt') as HTMLInputElement).checked ? 1 : 0),
             'updateDate': ((this.metadataEdit.querySelector('.updateDate') as HTMLInputElement).checked ? 1 : 0),
         };
         const csrf = (this.form.querySelector('input[name=_csrf]') as HTMLInputElement).value;

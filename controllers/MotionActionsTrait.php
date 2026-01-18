@@ -700,6 +700,30 @@ trait MotionActionsTrait
         );
         $section->save();
 
+
+        if ($this->getPostValue('erledigt', 0) > 0) {
+            $erledigt = false;
+            foreach ($motion->tags as $tag) {
+                if ($tag->getNormalizedName() === 'erledigt') {
+                    $erledigt = true;
+                }
+            }
+            if (!$erledigt) {
+                $tag = $motion->getMyConsultation()->getExistingTagOrCreate(
+                    ConsultationSettingsTag::TYPE_PUBLIC_TOPIC,
+                    'Erledigt',
+                    999
+                );
+                $motion->link('tags', $tag);
+            }
+        } else {
+            foreach ($motion->tags as $tag) {
+                if ($tag->getNormalizedName() === 'erledigt') {
+                    $motion->unlink('tags', $tag, true);
+                }
+            }
+        }
+
         return new JsonResponse([
             'success' => true,
             'html' => $section->getData(),

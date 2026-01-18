@@ -61,6 +61,17 @@ if ($editUrl) {
 }
 echo '</span></td>';
 echo '<td>';
+if ($consultation->urlPath === \app\plugins\dbwv\Module::CONSULTATION_URL_SACHSTAND) {
+    $erledigt = false;
+    foreach ($entry->tags as $tag) {
+        if ($tag->getNormalizedName() === 'erledigt') {
+            $erledigt = true;
+        }
+    }
+    if ($erledigt) {
+        echo '✔';
+    }
+} else {
 
 $versionNames = $search->getVersionNames();
 if (count($versionNames) > 0 && isset($versionNames[$entry->version])) {
@@ -82,7 +93,7 @@ if (count($todos) > 0) {
     echo Html::encode(implode(', ', $todos));
     echo '</div>';
 }
-
+}
 echo '</td>';
 if ($colDate) {
     echo '<td class="dateCol">';

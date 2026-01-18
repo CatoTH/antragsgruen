@@ -104,7 +104,10 @@ if ($search->sort === IMotionSorter::SORT_TITLE) {
     echo Html::a(Yii::t('admin', 'list_title'), $url);
 }
 echo '</th><th>';
-if ($search->sort === IMotionSorter::SORT_STATUS) {
+
+if ($consultation->urlPath === \app\plugins\dbwv\Module::CONSULTATION_URL_SACHSTAND) {
+    echo 'Erledigt?';
+} elseif ($search->sort === IMotionSorter::SORT_STATUS) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_status') . '</span>';
 } else {
     $url = $search->getCurrentUrl(['Search[sort]' => IMotionSorter::SORT_STATUS]);

@@ -6795,7 +6795,6 @@ body > footer .version {
   text-indent: 0;
   font-size: 16px;
   line-height: 18px;
-  -webkit-hyphens: auto;
   hyphens: auto;
 }
 .motionList .motion > .title .pdfLink {
@@ -8792,8 +8791,7 @@ body.fullscreen .currentSpeechFooter {
   margin-left: 0;
   text-rendering: optimizeLegibility;
   font-size: 14px;
-  -webkit-hyphens: auto;
-          hyphens: auto;
+  hyphens: auto;
 }
 .motionTextFormattings span.underline {
   border-bottom: solid 1px black;
@@ -9621,8 +9619,7 @@ body.fullscreen .currentSpeechFooter {
 .motionTextFormattings.fixedWidthFont {
   font-family: "VeraMono", Consolas, Courier, sans-serif;
   color: #222;
-  -webkit-hyphens: none;
-          hyphens: none;
+  hyphens: none;
 }
 @media (min-width: 800px) {
   .motionTextFormattings .lineNumber {
@@ -10243,9 +10240,6 @@ iframe.pdfViewer {
 }
 .sectionType8 .textHolder {
   clear: both;
-}
-.sectionType8 .toolbarBelowTitle {
-  margin-top: -22px;
 }
 .sectionType8 .editorialHeader {
   padding-top: 5px;
