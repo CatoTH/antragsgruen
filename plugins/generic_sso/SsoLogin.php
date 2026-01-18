@@ -82,7 +82,9 @@ class SsoLogin implements LoginProviderInterface
     private function storePkceSession(OidcProvider $provider, array $oidcConfig): void
     {
         if (($oidcConfig['pkce'] ?? false) && $pkceCode = $provider->getPkceCode()) {
-            \Yii::$app->session->set('oauth2pkce', $pkceCode);
+            /** @var \yii\web\Application $app */
+            $app = \Yii::$app;
+            $app->session->set('oauth2pkce', $pkceCode);
         }
     }
 
@@ -91,9 +93,11 @@ class SsoLogin implements LoginProviderInterface
      */
     private function restorePkceSession(OidcProvider $provider, array $oidcConfig): void
     {
-        if (($oidcConfig['pkce'] ?? false) && $pkceCode = \Yii::$app->session->get('oauth2pkce')) {
+        /** @var \yii\web\Application $app */
+        $app = \Yii::$app;
+        if (($oidcConfig['pkce'] ?? false) && $pkceCode = $app->session->get('oauth2pkce')) {
             $provider->setPkceCode($pkceCode);
-            \Yii::$app->session->remove('oauth2pkce');
+            $app->session->remove('oauth2pkce');
         }
     }
 
@@ -114,8 +118,12 @@ class SsoLogin implements LoginProviderInterface
         $provider = new OidcProvider($oidcConfig);
 
         // Check if we have a code (callback from provider)
-        $code = \Yii::$app->request->get('code');
-        $state = \Yii::$app->request->get('state');
+        /** @var \yii\web\Application $app */
+        $app = \Yii::$app;
+        /** @var \yii\web\Request $request */
+        $request = $app->request;
+        $code = $request->get('code');
+        $state = $request->get('state');
 
         if (!$code) {
             // Start authentication flow
@@ -128,22 +136,24 @@ class SsoLogin implements LoginProviderInterface
             $authUrl = $provider->getAuthorizationUrl($authOptions);
 
             // Store state and PKCE verifier in session
-            \Yii::$app->session->set('oauth2state', $provider->getState());
+            $app->session->set('oauth2state', $provider->getState());
             $this->storePkceSession($provider, $oidcConfig);
 
-            \Yii::$app->response->redirect($authUrl);
+            /** @var \yii\web\Response $response */
+            $response = $app->response;
+            $response->redirect($authUrl);
             \Yii::$app->end();
         }
 
         // Validate state to prevent CSRF
-        $sessionState = \Yii::$app->session->get('oauth2state');
+        $sessionState = $app->session->get('oauth2state');
         if (!$state || $state !== $sessionState) {
-            \Yii::$app->session->remove('oauth2state');
-            \Yii::$app->session->remove('oauth2pkce');
+            $app->session->remove('oauth2state');
+            $app->session->remove('oauth2pkce');
             throw new \Exception('Invalid state parameter');
         }
 
-        \Yii::$app->session->remove('oauth2state');
+        $app->session->remove('oauth2state');
 
         // Restore PKCE code verifier if it was stored
         $this->restorePkceSession($provider, $oidcConfig);
@@ -156,8 +166,9 @@ class SsoLogin implements LoginProviderInterface
 
         // Optionally parse ID token claims (for additional user info only, not for authentication)
         // Note: This does not verify the JWT signature, so it should not be relied upon for security
-        if (isset($token->getValues()['id_token'])) {
-            $idTokenClaims = $provider->parseIdTokenClaims($token->getValues()['id_token']);
+        $tokenValues = $token->getValues();
+        if (isset($tokenValues['id_token'])) {
+            $idTokenClaims = $provider->parseIdTokenClaims($tokenValues['id_token']);
             if ($idTokenClaims) {
                 // Merge claims, but userInfo takes precedence (since it's verified)
                 $userInfo = array_merge($idTokenClaims, $userInfo);
@@ -212,7 +223,9 @@ class SsoLogin implements LoginProviderInterface
         }
 
         // Regenerate session ID to prevent session fixation
-        \Yii::$app->session->regenerateID(true);
+        /** @var \yii\web\Application $app */
+        $app = \Yii::$app;
+        $app->session->regenerateID(true);
 
         // Login the user
         RequestContext::getYiiUser()->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
@@ -311,6 +324,8 @@ class SsoLogin implements LoginProviderInterface
 
     /**
      * Get attribute value from nested structure
+     * @param mixed $sourceField
+     * @return mixed
      */
     private function getAttributeValue(array $attributes, $sourceField)
     {
@@ -330,6 +345,8 @@ class SsoLogin implements LoginProviderInterface
 
     /**
      * Resolve nested attribute using dot notation
+     * @param mixed $sourceField
+     * @return mixed
      */
     private function resolveNestedAttribute(array $attributes, $sourceField)
     {
@@ -383,7 +400,7 @@ class SsoLogin implements LoginProviderInterface
      */
     private function syncUserGroups(User $user, array $groups): void
     {
-        if (!$this->config['syncGroups'] ?? false) {
+        if (!($this->config['syncGroups'] ?? false)) {
             return;
         }
 

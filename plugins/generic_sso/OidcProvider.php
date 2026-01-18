@@ -160,7 +160,10 @@ class OidcProvider
             }
 
             // Decode payload (second part) - WARNING: NOT VERIFYING SIGNATURE
-            $payload = base64_decode(strtr($parts[1], '-_', '+/'));
+            $payload = base64_decode(strtr($parts[1], '-_', '+/'), true);
+            if ($payload === false || $payload === '') {
+                return null;
+            }
             $claims = json_decode($payload, true);
 
             if (!$claims) {
@@ -215,7 +218,7 @@ class OidcProvider
         $error = curl_error($ch);
         curl_close($ch);
 
-        if ($httpCode !== 200 || !$response) {
+        if ($httpCode !== 200 || !$response || !is_string($response)) {
             $errorMsg = 'Failed to discover OIDC configuration';
             if ($error) {
                 $errorMsg .= ': ' . $error;

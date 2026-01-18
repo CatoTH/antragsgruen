@@ -49,6 +49,8 @@ class SamlProvider
 
     /**
      * Get a single attribute value
+     * @param mixed $default
+     * @return mixed
      */
     public function getAttribute(string $name, $default = null)
     {
@@ -85,13 +87,11 @@ class SamlProvider
 
     /**
      * Get the SAML authentication data
+     * @param string $name The name of the auth data item to retrieve
+     * @return mixed
      */
-    public function getAuthData(?string $name = null)
+    public function getAuthData(string $name)
     {
-        if ($name === null) {
-            return $this->samlClient->getAuthData();
-        }
-
         return $this->samlClient->getAuthData($name);
     }
 

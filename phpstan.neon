@@ -9,6 +9,14 @@ parameters:
     tipsOfTheDay: false
     ignoreErrors:
       - identifier: missingType.iterableValue # Issues because Yii's ActiveRecords are recognized as Iterables
+      # Generic SSO plugin uses optional dependencies (league/oauth2-client, simplesamlphp/simplesamlphp)
+      -
+          message: '#(has unknown class|on an unknown class|Instantiated class|has invalid (return |parameter )?type|Cannot import type alias) (League\\OAuth2\\Client|SimpleSAML)#'
+          path: plugins/generic_sso/*
+      # Yii framework generic type parameter for web application context
+      -
+          message: '#PHPDoc tag @var for variable \$app contains generic class yii\\web\\Application but does not specify its types#'
+          path: plugins/generic_sso/*
     scanDirectories:
       - vendor
     scanFiles:

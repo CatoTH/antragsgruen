@@ -35,7 +35,9 @@ class LoginController extends Base
         $backUrl = $this->validateBackUrl($backUrl);
 
         // Store backUrl in session for callback
-        \Yii::$app->session->set('sso_back_url', $backUrl);
+        /** @var \yii\web\Application $app */
+        $app = \Yii::$app;
+        $app->session->set('sso_back_url', $backUrl);
 
         $this->performLoginAndRedirect($backUrl);
     }
@@ -45,9 +47,14 @@ class LoginController extends Base
      */
     public function actionCallback(string $code = '', string $state = '', string $error = ''): void
     {
+        /** @var \yii\web\Application $app */
+        $app = \Yii::$app;
+        /** @var \yii\web\Request $request */
+        $request = $app->request;
+
         if ($error) {
-            $errorDescription = \Yii::$app->request->get('error_description', $error);
-            $errorUri = \Yii::$app->request->get('error_uri', '');
+            $errorDescription = $request->get('error_description', $error);
+            $errorUri = $request->get('error_uri', '');
 
             // Log error details
             \Yii::error('SSO Callback Error: ' . $error);
@@ -64,7 +71,7 @@ class LoginController extends Base
         }
 
         // Retrieve the stored backUrl
-        $backUrl = \Yii::$app->session->get('sso_back_url', UrlHelper::homeUrl());
+        $backUrl = $app->session->get('sso_back_url', UrlHelper::homeUrl());
 
         $this->performLoginAndRedirect($backUrl);
     }
@@ -85,7 +92,11 @@ class LoginController extends Base
         }
 
         // Check if it's an absolute URL to the same host
-        $currentHost = \Yii::$app->request->getHostInfo();
+        /** @var \yii\web\Application $app */
+        $app = \Yii::$app;
+        /** @var \yii\web\Request $request */
+        $request = $app->request;
+        $currentHost = $request->getHostInfo();
         if (strpos($backUrl, $currentHost) === 0) {
             return $backUrl;
         }
@@ -105,13 +116,17 @@ class LoginController extends Base
             $loginProvider->performLoginAndReturnUser();
 
             // Retrieve and clear the stored backUrl
-            $finalBackUrl = \Yii::$app->session->get('sso_back_url', $defaultBackUrl);
-            \Yii::$app->session->remove('sso_back_url');
+            /** @var \yii\web\Application $app */
+            $app = \Yii::$app;
+            $finalBackUrl = $app->session->get('sso_back_url', $defaultBackUrl);
+            $app->session->remove('sso_back_url');
 
             // Validate again before redirect
             $finalBackUrl = $this->validateBackUrl($finalBackUrl);
 
-            $this->redirect($finalBackUrl);
+            /** @var \yii\web\Response $response */
+            $response = $app->response;
+            $response->redirect($finalBackUrl);
         } catch (\Exception $e) {
             \Yii::error('SSO Login Error: ' . $e->getMessage());
             \Yii::error('Stack trace: ' . $e->getTraceAsString());
