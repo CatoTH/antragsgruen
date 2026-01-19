@@ -60,8 +60,8 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
                 <input type="checkbox" name="erledigt" class="erledigt" <?= ($erledigt) ? 'checked' : '' ?>>
                 Erledigt
             </label>
-            <label>
-                <input type="checkbox" name="updateDate" class="updateDate" checked>
+            <label style="display: none;">
+                <input type="checkbox" name="updateDate" class="updateDate" checked required>
                 <?= Yii::t('motion', 'editorial_update_date') ?>
             </label>
         </div>
