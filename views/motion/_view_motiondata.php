@@ -119,7 +119,7 @@ if ($motion->version === Motion::VERSION_DEFAULT && $motionDataMode === \app\mod
 
 MotionLayoutHelper::addTagsRow($motion, $motion->getPublicTopicTags(), $motionData);
 
-if (count($motionHistory) > 1) {
+if (count($motionHistory) > 1 && User::getCurrentUser()?->email !== \app\plugins\dbwv\Module::LEITANTRAG_LESE_ACCOUNT) {
     $historyIsOpen = ($motionHistory[count($motionHistory) - 1]->id !== $motion->id);
     $historyContent = '<div class="fullHistory' . ($historyIsOpen ? '' : ' hidden') . '">';
     $historyMotionIds = array_map(fn(Motion $motion) => $motion->id, $motionHistory);
