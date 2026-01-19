@@ -17,16 +17,6 @@ $metadataView = '<div class="metadataView">';
 $metadataView .= $sectionType->getFormattedSectionMetadata(true);
 $metadataView .= '</div>';
 
-if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
-    echo '<div class="toolbarBelowTitle">' . $metadataView . '</div>';
-}
-
-echo '<div class="textHolder stdPadding motionTextFormattings" id="section_' . $section->sectionId . '_content">';
-
-echo $section->getData();
-
-echo '</div>';
-
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
     /** @var \app\controllers\MotionController $controller */
     $controller = $this->context;
@@ -45,7 +35,18 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
             $erledigt = true;
         }
     }
+} else {
+    echo '<div class="toolbarBelowTitle">' . $metadataView . '</div>';
+}
 
+echo '<div class="textHolder stdPadding motionTextFormattings" id="section_' . $section->sectionId . '_content">';
+
+echo $section->getData();
+
+echo '</div>';
+
+
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
     ?>
     <div class="editorialHeader toolbarBelowTitle">
 
@@ -72,10 +73,7 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
         </button>
     </div>
     <?php
-}
-
-
-if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
+    
     echo '<div class="saveRow hidden">';
     echo '<button class="btn btn-primary submitBtn" type="submit">';
     echo Yii::t('base', 'save') . '</button></div>';
