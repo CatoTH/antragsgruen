@@ -57,10 +57,12 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
                 <span><?= Yii::t('motion', 'editorial_author') ?>:</span>
                 <input type="text" name="author" required class="form-control author" value="<?= Html::encode($metadata['author'] ?? '') ?>">
             </label>
+            <!--
             <label>
                 <input type="checkbox" name="erledigt" class="erledigt" <?= ($erledigt) ? 'checked' : '' ?>>
                 Erledigt
             </label>
+            -->
             <label style="display: none;">
                 <input type="checkbox" name="updateDate" class="updateDate" checked required>
                 <?= Yii::t('motion', 'editorial_update_date') ?>
@@ -73,7 +75,7 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
         </button>
     </div>
     <?php
-    
+
     echo '<div class="saveRow hidden">';
     echo '<button class="btn btn-primary submitBtn" type="submit">';
     echo Yii::t('base', 'save') . '</button></div>';
