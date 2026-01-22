@@ -97,21 +97,134 @@ class AntragsgruenApp implements \JsonSerializable
     }
 
     /**
-     * @param string|null $data
+     * Constructor - loads configuration from JSON and/or environment variables
+     * 
+     * Configuration loading follows this precedence (highest to lowest):
+     * 1. config.json values (if provided)
+     * 2. Environment variables (fallback)
+     * 3. Installer mode defaults (if no config at all)
+     * 
+     * This allows backwards compatibility with config.json while supporting
+     * modern containerized deployments using environment variables.
+     * 
+     * @param string|null $data JSON configuration string
      * @throws \Exception
+     * @see EnvironmentConfigLoader
      */
     public function __construct($data)
     {
-        $this->setPropertiesFromJSON($data);
-
-        if ($data === '' || $data === null) {
-            // No configuration set, e.g. in installer
-            require_once(__DIR__ . '/../../components/UrlHelper.php');
-
-            $this->resourceBase = $_SERVER['SCRIPT_NAME'];
-            $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
-            $this->domainPlain  = UrlHelper::getCurrentScheme() . '://' . $_SERVER['HTTP_HOST'] . '/';
+        // Phase 1: Load from JSON if provided (backwards compatibility)
+        if ($data && $data !== '' && $data !== '{}') {
+            $this->setPropertiesFromJSON($data);
         }
+
+        // Phase 2: Apply environment variable configuration
+        // Only sets values that are not already configured from JSON
+        $this->applyEnvironmentConfig();
+
+        // Phase 3: Installer mode fallback (no config at all)
+        if (!$this->hasMinimalConfig()) {
+            $this->applyInstallerDefaults();
+        }
+    }
+
+    /**
+     * Apply configuration from environment variables
+     * 
+     * This method loads configuration from environment variables using the
+     * EnvironmentConfigLoader. It only sets values that haven't been
+     * configured from config.json, ensuring config.json takes precedence.
+     * 
+     * @see EnvironmentConfigLoader
+     */
+    private function applyEnvironmentConfig(): void
+    {
+        // Load environment config loader
+        require_once(__DIR__ . '/EnvironmentConfigLoader.php');
+
+        // Database configuration
+        if ($this->dbConnection === null) {
+            $dbConfig = EnvironmentConfigLoader::getDatabaseConfig();
+            if ($dbConfig !== null) {
+                $this->dbConnection = $dbConfig;
+            }
+        }
+
+        // Redis configuration
+        if ($this->redis === null) {
+            $redisConfig = EnvironmentConfigLoader::getRedisConfig();
+            if ($redisConfig !== null) {
+                $this->redis = $redisConfig;
+            }
+        }
+
+        // Mail service configuration
+        // Check if still at default value
+        if ($this->mailService === ['transport' => 'sendmail']) {
+            $mailConfig = EnvironmentConfigLoader::getMailServiceConfig();
+            if ($mailConfig !== null) {
+                $this->mailService = $mailConfig;
+            }
+        }
+
+        // Application-level configuration
+        $appConfig = EnvironmentConfigLoader::getApplicationConfig();
+        foreach ($appConfig as $key => $value) {
+            // Only apply if property is not already set or is at default value
+            if (property_exists($this, $key)) {
+                $currentValue = $this->$key;
+                
+                // Apply if null, empty string, or at known default values
+                if ($currentValue === null || 
+                    $currentValue === '' || 
+                    ($key === 'domainPlain' && $currentValue === 'http://antragsgruen.local/')) {
+                    $this->$key = $value;
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if minimal required configuration is present
+     * 
+     * Minimal config requires either:
+     * - Database connection configured, OR
+     * - We're in installer mode (no config needed yet)
+     * 
+     * @return bool True if sufficient config exists
+     */
+    private function hasMinimalConfig(): bool
+    {
+        // If we have database config, we're good
+        if ($this->dbConnection !== null) {
+            return true;
+        }
+
+        // Check if installer mode is active
+        $installingFile = __DIR__ . '/../../config/INSTALLING';
+        if (file_exists($installingFile)) {
+            return false; // Installer needs defaults
+        }
+
+        // If we got here, we don't have config but also not installing
+        // This is okay - might be running installer for first time
+        return false;
+    }
+
+    /**
+     * Apply defaults for installer mode
+     * 
+     * When no configuration is available (no config.json and no environment
+     * variables), apply sensible defaults for the web-based installer.
+     */
+    private function applyInstallerDefaults(): void
+    {
+        require_once(__DIR__ . '/../../components/UrlHelper.php');
+
+        $this->resourceBase = $_SERVER['SCRIPT_NAME'] ?? '/';
+        $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
+        $this->domainPlain = UrlHelper::getCurrentScheme() . '://' . 
+                            ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/';
     }
 
     public function setCaptcha(?array $captcha): void
