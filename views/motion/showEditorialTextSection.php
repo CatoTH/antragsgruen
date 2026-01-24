@@ -28,13 +28,6 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
         'class'                    => 'editorialEditForm',
         'data-antragsgruen-widget' => 'frontend/EditorialEdit',
     ]);
-
-    $erledigt = false;
-    foreach ($motion->getPublicTopicTags() as $tag) {
-        if ($tag->getNormalizedName() === 'erledigt') {
-            $erledigt = true;
-        }
-    }
 } else {
     echo '<div class="toolbarBelowTitle">' . $metadataView . '</div>';
 }
@@ -47,6 +40,7 @@ echo '</div>';
 
 
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
+    $erledigt = $motion->status === \app\models\db\Motion::STATUS_RESOLUTION_PRELIMINARY;
     ?>
     <div class="editorialHeader toolbarBelowTitle">
 
@@ -57,8 +51,8 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
                 <span><?= Yii::t('motion', 'editorial_author') ?>:</span>
                 <input type="text" name="author" required class="form-control author" value="<?= Html::encode($metadata['author'] ?? '') ?>">
             </label>
-            <label style="display: none;">
-                <input type="checkbox" name="erledigt" class="erledigt" <?= ($erledigt && false) ? 'checked' : '' ?>>
+            <label>
+                <input type="checkbox" name="erledigt" class="erledigt" <?= ($erledigt ? 'checked' : '') ?>>
                 Erledigt
             </label>
             <label style="display: none;">

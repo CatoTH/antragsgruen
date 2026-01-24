@@ -69,6 +69,8 @@ if (count($initiators) > 0 && !$motion->isResolution()) {
     ];
 }
 
+var_dump($motion->status);
+
 if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL || $motion->status !== Motion::STATUS_SUBMITTED_SCREENED) {
     $motionData[] = [
         'rowClass' => 'statusRow',

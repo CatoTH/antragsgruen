@@ -62,13 +62,7 @@ if ($editUrl) {
 echo '</span></td>';
 echo '<td>';
 if ($consultation->urlPath === \app\plugins\dbwv\Module::CONSULTATION_URL_SACHSTAND) {
-    $erledigt = false;
-    foreach ($entry->tags as $tag) {
-        if ($tag->getNormalizedName() === 'erledigt') {
-            $erledigt = true;
-        }
-    }
-    if ($erledigt) {
+    if ($entry->status === Motion::STATUS_RESOLUTION_PRELIMINARY) {
         echo '✔';
     }
 } else {
