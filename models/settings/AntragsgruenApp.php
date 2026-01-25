@@ -49,6 +49,7 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $xdvipdfmx = null; // @TODO OBSOLETE
     public ?string $lualatexPath = null;
     public ?string $weasyprintPath = null;
+    public ?string $pdfunitePath = null;
     public bool $pdfExportConcat = true;
     public mixed $pdfExportIntegFrame = false; // Type: mixed, can be ether int or array
     public array $localMessages = [];
@@ -114,7 +115,7 @@ class AntragsgruenApp implements \JsonSerializable
     public function __construct($data)
     {
         // Phase 1: Load from JSON if provided (backwards compatibility)
-        if ($data && $data !== '' && $data !== '{}') {
+        if ($data && $data !== '{}') {
             $this->setPropertiesFromJSON($data);
         }
 
@@ -130,11 +131,11 @@ class AntragsgruenApp implements \JsonSerializable
 
     /**
      * Apply configuration from environment variables
-     * 
+     *
      * This method loads configuration from environment variables using the
      * EnvironmentConfigLoader. It only sets values that haven't been
      * configured from config.json, ensuring config.json takes precedence.
-     * 
+     *
      * @see EnvironmentConfigLoader
      */
     private function applyEnvironmentConfig(): void
@@ -170,18 +171,47 @@ class AntragsgruenApp implements \JsonSerializable
         // Application-level configuration
         $appConfig = EnvironmentConfigLoader::getApplicationConfig();
         foreach ($appConfig as $key => $value) {
-            // Only apply if property is not already set or is at default value
-            if (property_exists($this, $key)) {
-                $currentValue = $this->$key;
-                
-                // Apply if null, empty string, or at known default values
-                if ($currentValue === null || 
-                    $currentValue === '' || 
-                    ($key === 'domainPlain' && $currentValue === 'http://antragsgruen.local/')) {
-                    $this->$key = $value;
-                }
+            // Only apply if property exists and is at default value
+            if (property_exists($this, $key) && $this->isPropertyAtDefaultValue($key)) {
+                $this->$key = $value;
             }
         }
+    }
+
+    /**
+     * Check if a property is at its default value
+     *
+     * This is used to determine if environment variables should override
+     * the current value. If a property is at its default, it means it
+     * wasn't explicitly set in config.json.
+     *
+     * @param string $key Property name
+     * @return bool True if property is at default value
+     */
+    private function isPropertyAtDefaultValue(string $key): bool
+    {
+        $currentValue = $this->$key;
+
+        // Map of property names to their default values
+        $defaults = [
+            'domainPlain' => 'http://antragsgruen.local/',
+            'baseLanguage' => 'en',
+            'resourceBase' => '/',
+            'tablePrefix' => '',
+            'mailFromName' => 'Antragsgrün',
+            'mailFromEmail' => '',
+            'prependWWWToSubdomain' => true,
+            'allowRegistration' => true,
+            'confirmEmailAddresses' => true,
+        ];
+
+        // Check against known defaults
+        if (array_key_exists($key, $defaults)) {
+            return $currentValue === $defaults[$key];
+        }
+
+        // For properties not in the defaults map, check if null or empty string
+        return $currentValue === null || $currentValue === '';
     }
 
     /**

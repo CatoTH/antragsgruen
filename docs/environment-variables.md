@@ -30,6 +30,7 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `DB_PASSWORD` | No | empty | Database password |
 | `DB_PORT` | No | 3306 | Database port |
 | `DB_CHARSET` | No | utf8mb4 | Character set |
+| `TABLE_PREFIX` or `DB_TABLE_PREFIX` | No | empty | Database table prefix |
 
 ## Redis Configuration
 

@@ -15,18 +15,20 @@ class EnvironmentConfigLoader
 {
     /**
      * Get database configuration from environment variables
-     * 
+     *
      * Required environment variables:
      * - DB_HOST: Database hostname
      * - DB_NAME: Database name
      * - DB_USER: Database username
      * - DB_PASSWORD: Database password (can be empty for local dev)
-     * 
+     *
      * Optional environment variables:
      * - DB_PORT: Database port (default: 3306)
      * - DB_CHARSET: Character set (default: utf8mb4)
-     * - DB_TABLE_PREFIX: Table prefix (default: empty)
-     * 
+     *
+     * Note: Table prefix is configured via TABLE_PREFIX or DB_TABLE_PREFIX
+     * in getApplicationConfig(), not here.
+     *
      * @return array|null Database config array compatible with Yii2, or null if required vars missing
      */
     public static function getDatabaseConfig(): ?array
@@ -34,9 +36,9 @@ class EnvironmentConfigLoader
         $host = self::getEnv('DB_HOST');
         $name = self::getEnv('DB_NAME');
         $user = self::getEnv('DB_USER');
-        
-        // All three are required
-        if (!$host || !$name || !$user) {
+
+        // All three are required (check for null/false, not falsy values)
+        if ($host === null || $name === null || $user === null) {
             return null;
         }
         
@@ -155,14 +157,17 @@ class EnvironmentConfigLoader
             $config['encryption'] = 'ssl';
         } elseif ($config['port'] === 587) {
             $config['encryption'] = 'tls';
+        } else {
+            // Port 25 or other ports - no encryption
+            $config['encryption'] = null;
         }
-        
+
         return $config;
     }
 
     /**
      * Get application-level configuration from environment variables
-     * 
+     *
      * Supported environment variables:
      * - APP_DOMAIN: Domain name (e.g., motion.tools)
      * - APP_PROTOCOL: Protocol (http or https, default: https)
@@ -170,25 +175,32 @@ class EnvironmentConfigLoader
      * - BASE_LANGUAGE: Base language code (en, de, fr, etc.)
      * - RANDOM_SEED: Random seed for security (required in production!)
      * - RESOURCE_BASE: Resource base path (default: /)
+     * - TABLE_PREFIX or DB_TABLE_PREFIX: Database table prefix (default: empty)
      * - MAIL_FROM_EMAIL: Default "from" email address
      * - MAIL_FROM_NAME: Default "from" name
      * - PREPEND_WWW_TO_SUBDOMAIN: Prepend www to subdomain (true/false)
      * - ALLOW_REGISTRATION: Allow user registration (true/false)
      * - CONFIRM_EMAIL_ADDRESSES: Require email confirmation (true/false)
-     * 
+     *
      * @return array Associative array of config key => value pairs
      */
     public static function getApplicationConfig(): array
     {
         $config = [];
-        
+
         // Domain configuration
         $domain = self::getEnv('APP_DOMAIN');
         if ($domain) {
             $protocol = self::getEnv('APP_PROTOCOL', 'https');
             $config['domainPlain'] = rtrim($protocol . '://' . $domain, '/') . '/';
         }
-        
+
+        // Table prefix (support both TABLE_PREFIX and DB_TABLE_PREFIX)
+        $tablePrefix = self::getEnv('TABLE_PREFIX') ?? self::getEnv('DB_TABLE_PREFIX');
+        if ($tablePrefix !== null) {
+            $config['tablePrefix'] = $tablePrefix;
+        }
+
         // Multisite mode
         if (self::hasEnv('MULTISITE_MODE')) {
             $config['multisiteMode'] = self::getBoolEnv('MULTISITE_MODE', false);
