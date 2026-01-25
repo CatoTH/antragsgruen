@@ -110,7 +110,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['DB_HOST'] = 'db.example.com';
         $_ENV['DB_NAME'] = 'production_db';
         $_ENV['DB_USER'] = 'prod_user';
-        $_ENV['DB_PASSWORD'] = 'prod_pass';
+        $_ENV['DB_PASSWORD'] = 'test-prod-password';
         $_ENV['DB_PORT'] = '3307';
         $_ENV['DB_CHARSET'] = 'utf8';
 
@@ -121,7 +121,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $this->assertStringContainsString('3307', $app->dbConnection['dsn']);
         $this->assertStringContainsString('production_db', $app->dbConnection['dsn']);
         $this->assertEquals('prod_user', $app->dbConnection['username']);
-        $this->assertEquals('prod_pass', $app->dbConnection['password']);
+        $this->assertEquals('test-prod-password', $app->dbConnection['password']);
         $this->assertEquals('utf8', $app->dbConnection['charset']);
     }
 
@@ -133,7 +133,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['REDIS_HOST'] = 'redis.production.com';
         $_ENV['REDIS_PORT'] = '6380';
         $_ENV['REDIS_DB'] = '5';
-        $_ENV['REDIS_PASSWORD'] = 'redis_secret';
+        $_ENV['REDIS_PASSWORD'] = 'test-redis-password';
 
         $app = new AntragsgruenApp('{}');
 
@@ -141,7 +141,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $this->assertEquals('redis.production.com', $app->redis['hostname']);
         $this->assertEquals(6380, $app->redis['port']);
         $this->assertEquals(5, $app->redis['database']);
-        $this->assertEquals('redis_secret', $app->redis['password']);
+        $this->assertEquals('test-redis-password', $app->redis['password']);
     }
 
     public function testEnvironmentVariablesForMailServiceDsn(): void
@@ -169,7 +169,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['SMTP_HOST'] = 'mail.example.com';
         $_ENV['SMTP_PORT'] = '465';
         $_ENV['SMTP_USERNAME'] = 'sender@example.com';
-        $_ENV['SMTP_PASSWORD'] = 'smtp_secret';
+        $_ENV['SMTP_PASSWORD'] = 'test-smtp-password';
         $_ENV['SMTP_ENCRYPTION'] = 'ssl';
 
         $app = new AntragsgruenApp('{}');
@@ -178,7 +178,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $this->assertEquals('mail.example.com', $app->mailService['host']);
         $this->assertEquals(465, $app->mailService['port']);
         $this->assertEquals('sender@example.com', $app->mailService['username']);
-        $this->assertEquals('smtp_secret', $app->mailService['password']);
+        $this->assertEquals('test-smtp-password', $app->mailService['password']);
         $this->assertEquals('ssl', $app->mailService['encryption']);
     }
 
@@ -358,16 +358,16 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['DB_HOST'] = 'mariadb';
         $_ENV['DB_NAME'] = 'antragsgruen';
         $_ENV['DB_USER'] = 'antragsgruen';
-        $_ENV['DB_PASSWORD'] = 'secure_password';
+        $_ENV['DB_PASSWORD'] = 'test-db-password-not-real';
         $_ENV['DB_PORT'] = '3306';
         $_ENV['TABLE_PREFIX'] = '';
         $_ENV['REDIS_HOST'] = 'redis';
         $_ENV['REDIS_PORT'] = '6379';
-        $_ENV['MAILER_DSN'] = 'smtp://noreply:smtp_pass@smtp.example.com:587';
+        $_ENV['MAILER_DSN'] = 'smtp://testuser:testpass123@smtp.example.com:587';
         $_ENV['APP_DOMAIN'] = 'motion.tools';
         $_ENV['APP_PROTOCOL'] = 'https';
         $_ENV['BASE_LANGUAGE'] = 'en';
-        $_ENV['RANDOM_SEED'] = 'container-generated-secure-seed';
+        $_ENV['RANDOM_SEED'] = 'test-random-seed-value-for-testing';
         $_ENV['MAIL_FROM_EMAIL'] = 'noreply@motion.tools';
         $_ENV['MAIL_FROM_NAME'] = 'Motion Tools';
         $_ENV['ALLOW_REGISTRATION'] = 'true';
@@ -381,7 +381,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $this->assertEquals('redis', $app->redis['hostname']);
         $this->assertEquals('smtp.example.com', $app->mailService['host']);
         $this->assertEquals('https://motion.tools/', $app->domainPlain);
-        $this->assertEquals('container-generated-secure-seed', $app->randomSeed);
+        $this->assertEquals('test-random-seed-value-for-testing', $app->randomSeed);
         $this->assertTrue($app->allowRegistration);
         $this->assertTrue($app->confirmEmailAddresses);
     }
