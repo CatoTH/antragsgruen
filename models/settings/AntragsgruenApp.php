@@ -203,6 +203,7 @@ class AntragsgruenApp implements \JsonSerializable
             'prependWWWToSubdomain' => true,
             'allowRegistration' => true,
             'confirmEmailAddresses' => true,
+            'multisiteMode' => false,
         ];
 
         // Check against known defaults
@@ -253,8 +254,12 @@ class AntragsgruenApp implements \JsonSerializable
 
         $this->resourceBase = $_SERVER['SCRIPT_NAME'] ?? '/';
         $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
-        $this->domainPlain = UrlHelper::getCurrentScheme() . '://' . 
-                            ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/';
+
+        // Only set domainPlain if it's still at the default value
+        if ($this->domainPlain === 'http://antragsgruen.local/') {
+            $this->domainPlain = UrlHelper::getCurrentScheme() . '://' .
+                                ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/';
+        }
     }
 
     public function setCaptcha(?array $captcha): void

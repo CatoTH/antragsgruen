@@ -35,7 +35,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['DB_HOST'] = 'envhost';
         $_ENV['DB_NAME'] = 'envdb';
         $_ENV['DB_USER'] = 'envuser';
-        $_ENV['DB_PASSWORD'] = 'envpass';
+        $_ENV['DB_PASSWORD'] = 'envpass'; // ggignore
         $_ENV['RANDOM_SEED'] = 'env-seed-12345';
 
         $app = new AntragsgruenApp('{}');
@@ -59,7 +59,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
             'dbConnection' => [
                 'dsn' => 'mysql:host=jsonhost;port=3306;dbname=jsondb',
                 'username' => 'jsonuser',
-                'password' => 'jsonpass',
+                'password' => 'jsonpass', // ggignore
                 'charset' => 'utf8mb4',
                 'emulatePrepare' => true,
             ],
@@ -85,7 +85,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
             'dbConnection' => [
                 'dsn' => 'mysql:host=localhost;port=3306;dbname=testdb',
                 'username' => 'testuser',
-                'password' => 'testpass',
+                'password' => 'testpass', // ggignore
                 'charset' => 'utf8mb4',
                 'emulatePrepare' => true,
             ],
@@ -110,7 +110,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['DB_HOST'] = 'db.example.com';
         $_ENV['DB_NAME'] = 'production_db';
         $_ENV['DB_USER'] = 'prod_user';
-        $_ENV['DB_PASSWORD'] = 'test-prod-password';
+        $_ENV['DB_PASSWORD'] = 'test-prod-password'; // ggignore
         $_ENV['DB_PORT'] = '3307';
         $_ENV['DB_CHARSET'] = 'utf8';
 
@@ -133,7 +133,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['REDIS_HOST'] = 'redis.production.com';
         $_ENV['REDIS_PORT'] = '6380';
         $_ENV['REDIS_DB'] = '5';
-        $_ENV['REDIS_PASSWORD'] = 'test-redis-password';
+        $_ENV['REDIS_PASSWORD'] = 'test-redis-password'; // ggignore
 
         $app = new AntragsgruenApp('{}');
 
@@ -169,7 +169,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['SMTP_HOST'] = 'mail.example.com';
         $_ENV['SMTP_PORT'] = '465';
         $_ENV['SMTP_USERNAME'] = 'sender@example.com';
-        $_ENV['SMTP_PASSWORD'] = 'test-smtp-password';
+        $_ENV['SMTP_PASSWORD'] = 'test-smtp-password'; // ggignore
         $_ENV['SMTP_ENCRYPTION'] = 'ssl';
 
         $app = new AntragsgruenApp('{}');
@@ -299,7 +299,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
             'dbConnection' => [
                 'dsn' => 'mysql:host=oldhost;port=3306;dbname=olddb',
                 'username' => 'olduser',
-                'password' => 'oldpass',
+                'password' => 'oldpass', // ggignore
                 'charset' => 'utf8mb4',
                 'emulatePrepare' => true,
             ],
@@ -358,12 +358,12 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['DB_HOST'] = 'mariadb';
         $_ENV['DB_NAME'] = 'antragsgruen';
         $_ENV['DB_USER'] = 'antragsgruen';
-        $_ENV['DB_PASSWORD'] = 'test-db-password-not-real';
+        $_ENV['DB_PASSWORD'] = 'test-db-password-not-real'; // ggignore
         $_ENV['DB_PORT'] = '3306';
         $_ENV['TABLE_PREFIX'] = '';
         $_ENV['REDIS_HOST'] = 'redis';
         $_ENV['REDIS_PORT'] = '6379';
-        $_ENV['MAILER_DSN'] = 'smtp://testuser:testpass123@smtp.example.com:587';
+        $_ENV['MAILER_DSN'] = 'smtp://testuser:testpass123@smtp.example.com:587'; // ggignore
         $_ENV['APP_DOMAIN'] = 'motion.tools';
         $_ENV['APP_PROTOCOL'] = 'https';
         $_ENV['BASE_LANGUAGE'] = 'en';
