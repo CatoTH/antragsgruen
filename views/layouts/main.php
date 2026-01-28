@@ -37,6 +37,9 @@ $bodyClasses = $layout->bodyCssClasses;
 if ($layout->fullScreen) {
     $bodyClasses[] = 'fullscreen';
 }
+if ($controller->consultation) {
+    $bodyClasses[] = 'consultation-' . $controller->consultation->urlPath;
+}
 
 $title = $layout->formatTitle($this->title ?? '');
 
