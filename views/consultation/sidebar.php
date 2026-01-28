@@ -70,7 +70,7 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
     \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($pinkButtonCreates);
 
     if (count($creatableTypes) > 0) {
-        $html      = '<section class="sidebar-box" aria-labelledby="sidebarCreateNewTitle"><ul class="nav nav-list motions createMotionList">';
+        $html      = '<section class="sidebar-box sidebar-box-new" aria-labelledby="sidebarCreateNewTitle"><ul class="nav nav-list motions createMotionList">';
         $html      .= '<li class="nav-header" id="sidebarCreateNewTitle">' . Yii::t('con', 'create_new') . '</li>';
         $htmlSmall = '<section><h2>' . Yii::t('con', 'create_new') . '</h2><ul>';
         foreach ($creatableTypes as $creatableType) {
@@ -92,7 +92,7 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
 }
 
 
-$html = '<section class="sidebar-box" aria-labelledby="sidebarNewsTitle"><ul class="nav nav-list"><li class="nav-header" id="sidebarNewsTitle">' .
+$html = '<section class="sidebar-box sidebar-box-news" aria-labelledby="sidebarNewsTitle"><ul class="nav nav-list"><li class="nav-header" id="sidebarNewsTitle">' .
     Yii::t('con', 'news') . '</li>';
 $htmlSmall = '<section><h2>' . Yii::t('con', 'news') . '</h2><ul>';
 
@@ -125,7 +125,7 @@ $layout->menusHtmlSmall[] = $htmlSmall;
 
 $closedVotings = VotingBlock::getPublishedClosedVotings($consultation);
 if ($settings->proposalProcedurePage || count($closedVotings) > 0 || $settings->startLayoutResolutions !== \app\models\settings\Consultation::START_LAYOUT_RESOLUTIONS_ABOVE) {
-    $html = '<section class="sidebar-box" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
+    $html = '<section class="sidebar-box sidebar-box-pp" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarPpTitle">' . Yii::t('con', 'sidebar_procedure') . '</li>';
 
     $htmlSmall = '<section><h2>' . Yii::t('con', 'sidebar_procedure') . '</h2><ul>';
@@ -162,7 +162,7 @@ if ($settings->proposalProcedurePage || count($closedVotings) > 0 || $settings->
 }
 
 if ($hasMotions && $settings->sidebarNewMotions) {
-    $html = '<section class="sidebar-box" aria-labelledby="sidebarNewMotionsTitle"><ul class="nav nav-list motions">';
+    $html = '<section class="sidebar-box sidebar-box-motions" aria-labelledby="sidebarNewMotionsTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarNewMotionsTitle">' . Yii::t('con', 'new_motions') . '</li>';
     if (count($newestMotions) === 0) {
         $html .= '<li><i>' . Yii::t('con', 'sb_motions_none') . '</i></li>';
@@ -179,7 +179,7 @@ if ($hasMotions && $settings->sidebarNewMotions) {
 }
 
 if ($hasAmendments && $settings->sidebarNewMotions) {
-    $html = '<section class="sidebar-box" aria-labelledby="sidebarNewAmendmentsTitle"><ul class="nav nav-list amendments">';
+    $html = '<section class="sidebar-box sidebar-box-amendments" aria-labelledby="sidebarNewAmendmentsTitle"><ul class="nav nav-list amendments">';
     $html .= '<li class="nav-header" id="sidebarNewAmendmentsTitle">' . Yii::t('con', 'new_amendments') . '</li>';
     if (count($newestAmendments) == 0) {
         $html .= '<li><i>' . Yii::t('con', 'sb_amends_none') . '</i></li>';
@@ -201,7 +201,7 @@ if ($hasAmendments && $settings->sidebarNewMotions) {
 
 
 if ($hasComments) {
-    $html = '<section class="sidebar-box" aria-labelledby="sidebarNewCommentsTitle"><ul class="nav nav-list comments">' .
+    $html = '<section class="sidebar-box sidebar-box-comments" aria-labelledby="sidebarNewCommentsTitle"><ul class="nav nav-list comments">' .
         '<li class="nav-header" id="sidebarNewCommentsTitle">' . Yii::t('con', 'new_comments') . '</li>';
     if (count($newestComments) == 0) {
         $html .= '<li><i>' . Yii::t('con', 'sb_comm_none') . '</i></li>';
@@ -232,7 +232,7 @@ if ($hasPDF) {
         $menusSmall = [];
 
         $opts = ['class' => 'motionPdfCompilation'];
-        $html = '<section class="sidebar-box" aria-labelledby="sidebarPdfsTitle"><ul class="nav nav-list"><li class="nav-header" id="sidebarPdfsTitle">PDFs</li>';
+        $html = '<section class="sidebar-box sidebar-box-pdfs" aria-labelledby="sidebarPdfsTitle"><ul class="nav nav-list"><li class="nav-header" id="sidebarPdfsTitle">PDFs</li>';
 
         $hasResolutions = false;
         foreach ($consultation->motions as $motion) {
