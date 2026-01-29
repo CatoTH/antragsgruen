@@ -1,3 +1,24 @@
+# Upgrading Antragsgrün
+
+## New in v4.17.0: Environment Variable Configuration
+
+Antragsgrün now supports configuration via environment variables, following the 12-factor app methodology. This is particularly useful for containerized deployments.
+
+**What's new:**
+- Configure database, Redis, SMTP via environment variables
+- No `config.json` file required (but still supported)
+- Better for Docker/Kubernetes deployments
+
+**Backwards compatibility:**
+- Existing `config.json` files continue to work unchanged
+- Environment variables are only used as fallback
+- No action required for existing installations
+
+**For new deployments:**
+See [docs/environment-variables.md](environment-variables.md) for full documentation.
+
+---
+
 ## Update using the web-based updater
 
 Site administrators of an installation will see a Update-Box at the right side of the administration page of a consultation. The box indicates if an update is available. If so, you can switch the whole installation into Update mode. While the update mode is active, the whole site will not be available to other users.
