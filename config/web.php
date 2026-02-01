@@ -8,7 +8,7 @@ if (YII_ENV == 'test') {
     $requestUri = $_SERVER['REQUEST_URI'] ?? '';
     if (str_starts_with($requestUri ?? '', '/std/yfj-test')) {
         $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests_yfj.json';
-    } elseif (str_starts_with($requestUri ?? '', '/std/hv') || str_contains($requestUri, '%2Fstd%2Fhv&subdomain=std')) {
+    } elseif (str_starts_with($requestUri ?? '', '/std/hv') || str_contains($requestUri, '%2Fstd%2Flv-sued&subdomain=std')) {
         $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests_dbwv.json';
     } elseif (str_starts_with($requestUri ?? '', '/std/lv-sued') || str_contains($requestUri, '%2Fstd%2Flv-sued&subdomain=std')) {
         $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests_dbwv.json';
@@ -20,15 +20,33 @@ if (YII_ENV == 'test') {
 } else {
     $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.json';
 }
+
+// Load config.json if it exists, otherwise use empty JSON (will load from environment)
 if (file_exists($configFile)) {
     $config = file_get_contents($configFile);
 } else {
-    $config = '';
+    // No config.json found - will load from environment variables
+    $config = '{}';
+    
+    // Log in development mode for transparency
+    if (defined('YII_DEBUG') && YII_DEBUG) {
+        error_log('[Antragsgrün] No config.json found at ' . $configFile . ', using environment variables');
+    }
 }
+
 try {
     $params = new \app\models\settings\AntragsgruenApp($config);
 } catch (Exception $e) {
-    die('Could not load configuration; probably due to a syntax error in config/config.json?');
+    // Provide helpful error message
+    $message = 'Configuration error: ' . $e->getMessage();
+    if (!file_exists($configFile)) {
+        $message .= "\n\nNo config.json file found. ";
+        $message .= "Either create config/config.json or set configuration via environment variables. ";
+        $message .= "See docs/environment-variables.md for details.";
+    } else {
+        $message .= "\n\nCheck config/config.json for syntax errors.";
+    }
+    die($message);
 }
 
 if (YII_DEBUG === false) {
