@@ -1,5 +1,10 @@
 # Version history
 
+## Version 4.17.0 [not released yet]
+
+- WARNING: if you are using a PHP 8.1 or older, then update to PHP 8.2 or newer first before installing this update!
+- Configuring Antragsgrün via environment variables is now supported, allowing for easier deployment in Docker- and Kubernetes-environments.
+
 ### Version 4.16.2 (2026-01-10)
 
 - This release is compatible with PHP 8.5

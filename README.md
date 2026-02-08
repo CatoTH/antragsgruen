@@ -282,6 +282,12 @@ For command line commands, you can set this variable like this:
 Instead of "antragsgruen_sites", a custom plugin managing the authentication and authorization process and providing the custom home page is necessary for this use case. The default manager [antragsgruen_sites](plugins/antragsgruen_sites/) can be used as an example for this
 
 
+### Deployment using Environment Variables (Docker, Kubernetes)
+
+Instead of configuring Antragsgrün via the traditional `config.json` file, it is also possible to provide most of the supported settings using environment variables.
+
+Please refer to the [Environment Variables Documentation](./docs/environment-variables.md) for more information.
+
 ### Increasing performance by caching in Redis
 
 Redis can be used to cache the changes in amendments, user sessions, and many other aspects of the site. To enable redis, simply add a `redis` configuration key to the `config.json` and point it to your setup:
