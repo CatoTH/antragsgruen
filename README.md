@@ -33,7 +33,7 @@ Installation
 #### Requirements:
 
 - A MySQL/MariaDB-database
-- PHP >= 8.1. Recommended: 8.3+. Required packages for Debian / Ubuntu Linux:
+- PHP >= 8.2. Recommended: 8.4+. Required packages for Debian / Ubuntu Linux:
 
 ```bash
 # Using PHP8-packages from [deb.sury.org](https://deb.sury.org/):
@@ -170,30 +170,6 @@ Add the following settings to your config.json (and adapt them to your needs):
     "weasyprintPath": "/usr/bin/weasyprint"
 }
 ```
-
-### LaTeX/XeTeX-based PDF-rendering (deprecated)
-
-Necessary packets on Linux (Debian):
-```bash
-apt-get install texlive-lang-german texlive-latex-base texlive-latex-recommended \
-                texlive-latex-extra texlive-humanities texlive-fonts-recommended \
-                texlive-xetex texlive-luatex poppler-utils
-```
-
-Necessary packets on Mac OS X:
-* [MacTeX](http://www.tug.org/mactex/)
-* Poppler ([Homebrew](http://brew.sh/)-Package)
-
-Add the following settings to your config.json (and adapt them to your needs):
-
-```json
-{
-    "lualatexPath": "/usr/bin/lualatexPath",
-    "pdfunitePath": "/usr/bin/pdfunite"
-}
-```
-
-When LaTeX complains about `scrlayer2.sty` not found, executing the SQL statement `UPDATE texTemplate SET texLayout = REPLACE(texLayout, 'scrpage2', 'scrlayer-scrpage');` followed by clearing all caches (`./yii cache/flush-all`) should fix this problem.
 
 ## Deployment and Performance Optimization
 
@@ -518,7 +494,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 #### Running
 
 * Start Selenium:
-```java -jar selenium-server-4.35.0.jar standalone --config selenium-antragsgruen.toml```
+```java -jar selenium-server-4.40.0.jar standalone --config selenium-antragsgruen.toml```
 * Run all acceptance tests:
 ```vendor/bin/codecept run Acceptance```
 * Run all unit tests:
