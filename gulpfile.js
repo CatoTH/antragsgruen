@@ -13,7 +13,11 @@ const sass = gulpSass(dartSass);
 
 const tsProject = ts.createProject('tsconfig.json');
 const main_js_files = [
-    "node_modules/bootstrap/dist/js/bootstrap.js",
+    //"node_modules/popper.js/dist/umd/popper.js",
+    "node_modules/entreprise7pro-bootstrap/js/tooltip.js",
+    "node_modules/entreprise7pro-bootstrap/js/dropdown.js",
+    "node_modules/entreprise7pro-bootstrap/js/modal.js",
+    "node_modules/entreprise7pro-bootstrap/js/popover.js",
     "node_modules/bootbox/bootbox.all.js",
     "web/js/jquery.isonscreen.js",
 ];
