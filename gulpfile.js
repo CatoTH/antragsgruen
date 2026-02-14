@@ -18,7 +18,7 @@ const main_js_files = [
     "node_modules/entreprise7pro-bootstrap/js/dropdown.js",
     "node_modules/entreprise7pro-bootstrap/js/modal.js",
     "node_modules/entreprise7pro-bootstrap/js/popover.js",
-    "node_modules/bootbox/bootbox.all.js",
+    "node_modules/bootbox/dist/bootbox.all.js",
     "web/js/jquery.isonscreen.js",
 ];
 
