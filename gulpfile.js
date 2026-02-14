@@ -27,7 +27,6 @@ async function taskCopyFiles() {
     await gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(terser()).pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/corejs-typeahead/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/isotope-layout/dist/isotope.pkgd.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/requirejs/require.js").pipe(terser()).pipe(gulp.dest('./web/npm/'));
