@@ -164,6 +164,26 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         }
         return ANTRAGSGRUEN_STRINGS[category][str];
     };
+
+    $.fn.extend({
+        scrollintoview: function (options) {
+            if ($("body").hasClass('testing')) {
+                // JS-based scrolling seems to disturb chrome / webdriver
+                return;
+            }
+
+            const el = this.eq(0)[0];
+
+            let yOffset = 0;
+            if (options !== undefined && options["top_offset"] !== undefined) {
+                yOffset = -1 * options["top_offset"];
+            }
+
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+            window.scrollTo({top: y, behavior: 'smooth'});
+        }
+    })
 }(jQuery));
 
 // Components defined in HTML templates should be registered here, so the actual Vue app can initialize it on initialization

@@ -15,7 +15,6 @@ const tsProject = ts.createProject('tsconfig.json');
 const main_js_files = [
     "node_modules/bootstrap/dist/js/bootstrap.js",
     "node_modules/bootbox/bootbox.all.js",
-    "web/js/scrollintoview.js",
     "web/js/jquery.isonscreen.js",
 ];
 
