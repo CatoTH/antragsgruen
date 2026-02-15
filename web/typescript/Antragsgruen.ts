@@ -176,7 +176,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
 
             let yOffset = 0;
             if (options !== undefined && options["top_offset"] !== undefined) {
-                yOffset = -1 * options["top_offset"];
+                yOffset = options["top_offset"];
             }
 
             const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;

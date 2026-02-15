@@ -88,7 +88,7 @@ if (User::getCurrentUser()) {
 
     $str = '';
     if ($comment) {
-        $str .= '<blockquote class="privateNote" id="comm' . $comment->id . '">';
+        $str .= '<blockquote class="privateNote" id="privatenote' . $comment->id . '">';
         $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit">' .
                 '</span></button>';
         $str .= HTMLTools::textToHtmlWithLink($comment->text) . '</blockquote>';
