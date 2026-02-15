@@ -10,7 +10,7 @@ class MotionParagraph {
         this.$paraFirstLine = $element.find(".lineNumber").first();
         this.lineHeight = this.$paraFirstLine.height();
 
-        let amends = $element.find(".bookmarks > .amendment");
+        let amends = $element.find(".bookmarks > .amendment").toArray();
         amends = amends.sort(function (el1, el2) {
             return $(el1).data("first-line") - $(el2).data("first-line");
         });
