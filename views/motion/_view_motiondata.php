@@ -201,7 +201,7 @@ if (User::getCurrentUser()) {
 
     $str = '';
     if ($comment) {
-        $str .= '<blockquote class="privateNote" id="comm' . $comment->id . '">';
+        $str .= '<blockquote class="privateNote" id="privatenote' . $comment->id . '">';
         $str .= '<button class="btn btn-link btn-xs btnEdit">';
         $str .= '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
         $str .= '<span class="sr-only">' . Yii::t('motion', 'private_notes_edit') . '</span>';

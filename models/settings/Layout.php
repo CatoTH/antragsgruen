@@ -328,7 +328,7 @@ class Layout
 
     public function loadTypeahead(): void
     {
-        $this->addJs('npm/typeahead.bundle.min.js');
+        $this->addJs('js/typeahead.bundle.min.js');
     }
 
     public function loadSelectize(): void

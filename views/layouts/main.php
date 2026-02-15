@@ -88,7 +88,8 @@ if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
 
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
-echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>';
+echo '<script src="' . $layout->resourceUrl('js/jquery-4.0.0.min.js') . '"></script>';
+//echo '<script src="' . $layout->resourceUrl('js/jquery-migrate-4.0.2.js') . '"></script>';
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {

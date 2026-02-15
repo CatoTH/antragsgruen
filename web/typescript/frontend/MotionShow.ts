@@ -10,7 +10,7 @@ class MotionParagraph {
         this.$paraFirstLine = $element.find(".lineNumber").first();
         this.lineHeight = this.$paraFirstLine.height();
 
-        let amends = $element.find(".bookmarks > .amendment");
+        let amends = $element.find(".bookmarks > .amendment").toArray();
         amends = amends.sort(function (el1, el2) {
             return $(el1).data("first-line") - $(el2).data("first-line");
         });
@@ -100,6 +100,10 @@ class MotionShow {
         let sComm = window.location.hash.split('#comm');
         if (sComm.length == 2) {
             $('#comment' + sComm[1]).scrollintoview({top_offset: -100});
+        }
+        let sNote = window.location.hash.split('#note');
+        if (sNote.length == 2) {
+            $('#privatenote' + sNote[1]).scrollintoview({top_offset: -100});
         }
         const sAmend = window.location.hash.split('#amendment');
         if (sAmend.length == 2) {

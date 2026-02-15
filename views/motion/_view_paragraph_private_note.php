@@ -34,7 +34,7 @@ $noteRepl = [($paragraphNo + 1), $sectionTitle];
     }
     if ($comment) {
         ?>
-        <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>" id="comm<?= $comment->id ?>">
+        <blockquote class="privateParagraph" id="privatenote<?= $comment->id ?>">
             <button class="btn btn-link btn-xs btnEdit">
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                 <span class="sr-only"><?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_edit')) ?></span>

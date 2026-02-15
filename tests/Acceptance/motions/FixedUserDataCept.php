@@ -13,16 +13,16 @@ $I->loginAsFixedDataUser();
 
 $I->seeInField('#initiatorPrimaryName', 'Fixed Data');
 $I->seeInField('#initiatorOrga', 'MotionTools');
-$readonly = $I->executeJS('return $("#initiatorPrimaryName").attr("readonly")');
-$I->assertEquals('readonly', $readonly);
+$readonly = $I->executeJS('return $("#initiatorPrimaryName").prop("readonly")');
+$I->assertEquals(true, $readonly);
 
 $I->checkOption('#personTypeOrga');
-$readonly = $I->executeJS('return $("#initiatorPrimaryName").attr("readonly")');
-$I->assertNotEquals('readonly', $readonly);
+$readonly = $I->executeJS('return $("#initiatorPrimaryName").prop("readonly")');
+$I->assertEquals(false, $readonly);
 
 $I->checkOption('#personTypeNatural');
-$readonly = $I->executeJS('return $("#initiatorPrimaryName").attr("readonly")');
-$I->assertEquals('readonly', $readonly);
+$readonly = $I->executeJS('return $("#initiatorPrimaryName").prop("readonly")');
+$I->assertEquals(true, $readonly);
 
 
 $I->wantTo('submit a motion with a fake name');

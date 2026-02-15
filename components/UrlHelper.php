@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use app\models\db\{Amendment, AmendmentComment, Consultation, IMotion, Motion, MotionComment, Site};
+use app\models\db\{Amendment, AmendmentComment, Consultation, IComment, IMotion, Motion, MotionComment, Site};
 use app\models\exceptions\{FormError, Internal};
 use app\models\settings\AntragsgruenApp;
 use Yii;
@@ -234,11 +234,16 @@ class UrlHelper
 
     public static function createMotionCommentUrl(MotionComment $motionComment): string
     {
+        if ($motionComment->status === IComment::STATUS_PRIVATE) {
+            $id = 'note' . $motionComment->id;
+        } else {
+            $id = 'comm' . $motionComment->id;
+        }
         $params = [
             '/motion/view',
             'motionSlug' => $motionComment->getIMotion()->getMotionSlug(),
             'commentId'  => $motionComment->id,
-            '#'          => 'comm' . $motionComment->id
+            '#'          => $id,
         ];
         return self::createUrl($params, $motionComment->getIMotion()->getMyConsultation());
     }
