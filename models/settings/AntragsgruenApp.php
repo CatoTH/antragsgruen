@@ -49,7 +49,6 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $xdvipdfmx = null; // @TODO OBSOLETE
     public ?string $lualatexPath = null;
     public ?string $weasyprintPath = null;
-    public ?string $pdfunitePath = null;
     public bool $pdfExportConcat = true;
     public mixed $pdfExportIntegFrame = false; // Type: mixed, can be ether int or array
     public array $localMessages = [];
@@ -99,15 +98,15 @@ class AntragsgruenApp implements \JsonSerializable
 
     /**
      * Constructor - loads configuration from JSON and/or environment variables
-     * 
+     *
      * Configuration loading follows this precedence (highest to lowest):
      * 1. config.json values (if provided)
      * 2. Environment variables (fallback)
      * 3. Installer mode defaults (if no config at all)
-     * 
+     *
      * This allows backwards compatibility with config.json while supporting
      * modern containerized deployments using environment variables.
-     * 
+     *
      * @param string|null $data JSON configuration string
      * @throws \Exception
      * @see EnvironmentConfigLoader
@@ -217,11 +216,11 @@ class AntragsgruenApp implements \JsonSerializable
 
     /**
      * Check if minimal required configuration is present
-     * 
+     *
      * Minimal config requires either:
      * - Database connection configured, OR
      * - We're in installer mode (no config needed yet)
-     * 
+     *
      * @return bool True if sufficient config exists
      */
     private function hasMinimalConfig(): bool
@@ -244,7 +243,7 @@ class AntragsgruenApp implements \JsonSerializable
 
     /**
      * Apply defaults for installer mode
-     * 
+     *
      * When no configuration is available (no config.json and no environment
      * variables), apply sensible defaults for the web-based installer.
      */

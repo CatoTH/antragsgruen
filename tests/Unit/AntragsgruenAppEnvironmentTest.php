@@ -231,14 +231,12 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['IMAGE_MAGICK_PATH'] = '/custom/bin/convert';
         $_ENV['WEASYPRINT_PATH'] = '/opt/weasyprint';
         $_ENV['LUALATEX_PATH'] = '/usr/local/texlive/bin/lualatex';
-        $_ENV['PDFUNITE_PATH'] = '/usr/bin/pdfunite';
 
         $app = new AntragsgruenApp('{}');
 
         $this->assertEquals('/custom/bin/convert', $app->imageMagickPath);
         $this->assertEquals('/opt/weasyprint', $app->weasyprintPath);
         $this->assertEquals('/usr/local/texlive/bin/lualatex', $app->lualatexPath);
-        $this->assertEquals('/usr/bin/pdfunite', $app->pdfunitePath);
     }
 
     public function testTablePrefixFromEnvironment(): void

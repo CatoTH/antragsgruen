@@ -66,6 +66,7 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `APP_DOMAIN` | - | Domain name (e.g., motion.tools) |
 | `APP_PROTOCOL` | https | Protocol: http or https |
 | `MULTISITE_MODE` | false | Enable multisite mode |
+| `SITE_SUBDOMAIN` | | If multisite=false, this refers to the one subdomain |
 | `BASE_LANGUAGE` | en | Base language (en, de, fr, etc.) |
 | `RANDOM_SEED` | - | **Required!** Security seed: `openssl rand -base64 32` |
 | `MAIL_FROM_EMAIL` | - | Default from email |
@@ -78,7 +79,6 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `IMAGE_MAGICK_PATH` | Path to ImageMagick convert binary |
 | `WEASYPRINT_PATH` | Path to WeasyPrint binary |
 | `LUALATEX_PATH` | Path to LuaLaTeX binary |
-| `PDFUNITE_PATH` | Path to pdfunite binary |
 
 ## Docker Example
 

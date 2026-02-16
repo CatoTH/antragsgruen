@@ -8,7 +8,17 @@ services:
       context: ./
       dockerfile: docker/php/Dockerfile
     environment:
+      - APP_DOMAIN=localhost:12380
+      - SITE_SUBDOMAIN=stdparteitag
+      - DB_HOST=mysql
+      - DB_NAME=antragsgruen
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - REDIS_HOST=redis
+      - RANDOM_SEED=+g/q03CiiwtWrsp/dRtHEJm5MPmrQjKhPxlx7MhrmqU
       - RABBITMQ_HOST=rabbitmq
+      - WEASYPRINT_PATH=/usr/bin/weasyprint
+      - IMAGE_MAGICK_PATH=/usr/bin/convert
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
