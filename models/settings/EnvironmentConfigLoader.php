@@ -145,8 +145,8 @@ class EnvironmentConfigLoader
             'transport' => 'smtp',
             'host' => $parts['host'] ?? 'localhost',
             'port' => $parts['port'] ?? 587,
-            'username' => isset($parts['user']) ? urldecode($parts['user']) : null,
-            'password' => isset($parts['pass']) ? urldecode($parts['pass']) : null,
+            'username' => isset($parts['user']) ? rawurldecode($parts['user']) : null,
+            'password' => isset($parts['pass']) ? rawurldecode($parts['pass']) : null,
         ];
         
         // Determine encryption from scheme
