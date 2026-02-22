@@ -39,6 +39,7 @@ class AgendaController extends AdminBase
 
             $saver = new AgendaSaver($this->consultation);
             $saver->saveAgendaFromApi($data);
+            $this->consultation->refresh();
         }
 
         $savedAgenda = AgendaItemApi::getItemsFromConsultation($this->consultation);
