@@ -363,6 +363,31 @@ Developing
 - JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though written in TypeScript and loaded via [RequireJS](https://requirejs.org/). For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
 - REST API: The API is documented below. There will be more development regarding the REST API, including authorized endpoints using JWT based authentication.
 
+### Running with Docker Compose
+
+[docker-compose.development.yml](docker-compose.development.yml) provides a basic docker setup to run Antragsgrün in Development mode.
+
+It requires the dependencies (composer, npm, gulp) to be run on the host system and initialized (see "Compiling from source").
+
+Then, you can run:
+```shell
+echo "RANDOM_SEED=$(openssl rand -base64 32)" > .env # One time initialization of a local secret key
+touch config/DEBUG # optional, to enable debug mode
+docker-compose -f docker-compose.development.yml --profile node-helper up
+docker exec -it antragsgruen-web-1 /var/www/antragsgruen/docker/initialize-development-environment.sh
+```
+
+After that, the following URL should be accessible:
+- http://localhost:12380/
+
+Test credentials:
+
+| Username                  | Password      | Description                         |
+| ------------------------- | ------------- | ----------------------------------- |
+| testadmin@example.org     | testadmin     | Admin for the site                  |
+| testuser@example.org      | testuser      | Regular user without privileges     |
+| proposaladmin@example.org | proposaladmin | Allowed to edit proposed procedures |
+
 ### Compiling from source
 
 You can enable debug mode by creating an empty file config/DEBUG.
@@ -382,27 +407,6 @@ After updating the source code from git, do:
 gulp
 ```
 
-### Running with Docker Compose
-
-[docker-compose.development.yml](docker-compose.development.yml) provides a very basic docker setup to run Antragsgrün in Development mode.
-
-It requires the dependencies (composer, npm, gulp) to be run on the host system and initialized (see "Compiling from source").
-Furthermore, it requires entries in your `/etc/hosts`:
-```
-127.0.0.1 stdparteitag.antragsgruen.test
-::1 stdparteitag.antragsgruen.test
-```
-
-Then, you can run:
-```shell
-touch config/DEBUG
-docker-compose -f docker-compose.development.yml up
-docker exec -it antragsgruen-web-1 bash
-./yii database/create-test
-```
-
-After that, the following URL should be accessible:
-- http://stdparteitag.antragsgruen.test:12380/
 
 ### Updating PDF.JS
 

@@ -7,6 +7,7 @@ services:
     build:
       context: ./
       dockerfile: docker/php/Dockerfile
+      target: development
     environment:
       - APP_DOMAIN=localhost:12380
       - SITE_SUBDOMAIN=stdparteitag
@@ -18,7 +19,7 @@ services:
       - MAILER_DISABLED=true
       - MAIL_FROM_EMAIL=noreply@example.org
       - MAIL_FROM_NAME=Motion Tools
-      - RANDOM_SEED=+g/q03CiiwtWrsp/dRtHEJm5MPmrQjKhPxlx7MhrmqU
+      - RANDOM_SEED=${RANDOM_SEED}
       - RABBITMQ_HOST=rabbitmq
       - WEASYPRINT_PATH=/usr/bin/weasyprint
       - IMAGE_MAGICK_PATH=/usr/bin/convert
@@ -59,3 +60,22 @@ services:
       - "15672:15672"
     profiles:
       - live
+
+  gulp-watch:
+    image: 'node:22'
+    volumes:
+      - "./:/var/www/antragsgruen"
+    working_dir: /var/www/antragsgruen
+    command: "npx gulp watch"
+    profiles:
+      - gulp-watch
+
+  node-helper:
+    image: 'node:22'
+    volumes:
+      - "./:/var/www/antragsgruen"
+    working_dir: /var/www/antragsgruen
+    command: sleep infinity
+    profiles:
+      - node-helper
+
