@@ -268,14 +268,12 @@ class EnvironmentConfigLoaderTest extends TestBase
         $_ENV['IMAGE_MAGICK_PATH'] = '/usr/local/bin/convert';
         $_ENV['WEASYPRINT_PATH'] = '/opt/weasyprint/bin/weasyprint';
         $_ENV['LUALATEX_PATH'] = '/usr/bin/lualatex';
-        $_ENV['PDFUNITE_PATH'] = '/usr/bin/pdfunite';
 
         $config = EnvironmentConfigLoader::getApplicationConfig();
 
         $this->assertEquals('/usr/local/bin/convert', $config['imageMagickPath']);
         $this->assertEquals('/opt/weasyprint/bin/weasyprint', $config['weasyprintPath']);
         $this->assertEquals('/usr/bin/lualatex', $config['lualatexPath']);
-        $this->assertEquals('/usr/bin/pdfunite', $config['pdfunitePath']);
     }
 
     public function testBooleanValueParsing(): void
