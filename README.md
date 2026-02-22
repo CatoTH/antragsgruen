@@ -388,6 +388,18 @@ Test credentials:
 | testuser@example.org      | testuser      | Regular user without privileges     |
 | proposaladmin@example.org | proposaladmin | Allowed to edit proposed procedures |
 
+When working with compiled web assets and not having NPM installed locally, you can use the Node containers.
+
+Installing dependencies:
+```shell
+docker exec antragsgruen-node-helper-1 npm ci
+```
+
+To run the watcher that compiles SCSS and TypeScript files, use:
+```shell
+docker-compose -f docker-compose.development.yml --profile node-helper --profile gulp-watch up
+ ```
+
 ### Compiling from source
 
 You can enable debug mode by creating an empty file config/DEBUG.
