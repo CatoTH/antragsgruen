@@ -106,6 +106,9 @@ class AgendaSaver
     {
         foreach ($this->consultation->agendaItems as $agItem) {
             if (!in_array($agItem->id, $newIds)) {
+                foreach ($agItem->speechQueues as $speechQueue) {
+                    $agItem->unlink('speechQueues', $speechQueue);
+                }
                 $agItem->delete();
             }
         }

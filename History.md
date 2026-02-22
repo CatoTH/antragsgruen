@@ -3,6 +3,7 @@
 ### Version 4.16.3 [not released yet]
 
 - Bugfix: If a draft of a motion was created before the submission deadline, that draft could be submitted after the deadline.
+- Bugfix: Deleting agenda items was not possible when a speaking list was attached to it.
 
 ### Version 4.16.2 (2026-01-10)
 
