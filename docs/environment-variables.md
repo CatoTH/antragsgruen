@@ -43,6 +43,12 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 
 ## Mail Configuration
 
+### Disabling E-Mail Sending
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MAILER_DISABLED` | false | Set to true to disable e-mail delivery |
+
 ### Option 1: Symfony Mailer DSN (Recommended)
 
 | Variable | Description |

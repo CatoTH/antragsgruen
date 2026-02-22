@@ -15,6 +15,9 @@ services:
       - DB_USER=root
       - DB_PASSWORD=root
       - REDIS_HOST=redis
+      - MAILER_DISABLED=true
+      - MAIL_FROM_EMAIL=noreply@example.org
+      - MAIL_FROM_NAME=Motion Tools
       - RANDOM_SEED=+g/q03CiiwtWrsp/dRtHEJm5MPmrQjKhPxlx7MhrmqU
       - RABBITMQ_HOST=rabbitmq
       - WEASYPRINT_PATH=/usr/bin/weasyprint

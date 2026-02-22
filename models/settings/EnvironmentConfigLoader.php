@@ -104,6 +104,12 @@ class EnvironmentConfigLoader
      */
     public static function getMailServiceConfig(): ?array
     {
+        if (self::getEnv('MAILER_DISABLED', false)) {
+            return [
+                'transport' => 'none',
+            ];
+        }
+
         // Format 1: Modern DSN format
         $dsn = self::getEnv('MAILER_DSN');
         if ($dsn) {
