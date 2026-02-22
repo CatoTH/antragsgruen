@@ -27,7 +27,7 @@ if (file_exists($configFile)) {
 } else {
     // No config.json found - will load from environment variables
     $config = '{}';
-    
+
     // Log in development mode for transparency
     if (defined('YII_DEBUG') && YII_DEBUG) {
         error_log('[Antragsgrün] No config.json found at ' . $configFile . ', using environment variables');
@@ -117,7 +117,7 @@ if ($params->cookieDomain) {
     ];
 }
 
-if (YII_ENV_DEV && file_exists($configFile) && !str_contains($_SERVER['HTTP_USER_AGENT'], 'pa11y')  ) {
+if (YII_ENV_DEV && !str_contains($_SERVER['HTTP_USER_AGENT'], 'pa11y')) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][]      = 'debug';
     $config['modules']['debug'] = [
