@@ -202,6 +202,12 @@ class MotionController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
+        $policy = $motion->getMyMotionType()->getMotionPolicy();
+        if (!$policy->checkCurrUserMotion()) {
+            // Could be past the deadline of submission by now, or an admin changing the permissions
+            return new HtmlErrorResponse(403, \Yii::t('motion', 'err_create_permission'));
+        }
+
         if ($this->isPostSet('modify')) {
             return new RedirectResponse(UrlHelper::createMotionUrl($motion, 'edit'));
         }
@@ -291,6 +297,7 @@ class MotionController extends Base
     /**
      * @throws Internal
      * @throws \app\models\exceptions\NotFound
+     * @return array{ConsultationMotionType, ConsultationAgendaItem|null}
      */
     private function getMotionTypeForCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): array
     {
@@ -324,18 +331,14 @@ class MotionController extends Base
     public function actionCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): ResponseInterface
     {
         try {
-            $ret = $this->getMotionTypeForCreate(intval($motionTypeId), intval($agendaItemId), intval($cloneFrom));
+            $ret = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId, $cloneFrom);
             list($motionType, $agendaItem) = $ret;
+
         } catch (ExceptionBase $e) {
             $this->getHttpSession()->setFlash('error', $e->getMessage());
 
             return new RedirectResponse(UrlHelper::homeUrl());
         }
-
-        /**
-         * @var ConsultationMotionType $motionType
-         * @var ConsultationAgendaItem|null $agendaItem
-         */
 
         $policy = $motionType->getMotionPolicy();
         if (!$policy->checkCurrUserMotion()) {
