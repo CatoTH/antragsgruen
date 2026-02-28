@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "amd",
+    "target": "es6",
+    "module": "ES2015",
     "moduleResolution": "node",
     "sourceMap": true,
     "removeComments": false,
     "noImplicitAny": false,
     "lib": [
       "dom",
-      "es2015",
-      "scripthost",
-      "es2015.promise"
+      "es6",
+      "scripthost"
     ]
   },
   "exclude": [
