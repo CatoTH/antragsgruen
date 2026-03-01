@@ -4,8 +4,11 @@
 
 - WARNING: if you are using a PHP 8.1 or older, then update to PHP 8.2 or newer first before installing this update!
 - Configuring Antragsgrün via environment variables is now supported, allowing for easier deployment in Docker- and Kubernetes-environments.
-- Bugfix: Deleting agenda items was not possible when a speaking list was attached to it.
+
+### Version 4.16.3 [not released yet]
+
 - Bugfix: If a draft of a motion was created before the submission deadline, that draft could be submitted after the deadline.
+- Bugfix: Deleting agenda items was not possible when a speaking list was attached to it.
 
 ### Version 4.16.2 (2026-01-10)
 
