@@ -283,7 +283,7 @@ body {
 }
 
 #mainContent {
-  a:not(.btn,.list-group-item):not(.dropdown-menu a) {
+  a:not(.btn,.list-group-item,.greenHeaderExtraLink):not(.dropdown-menu a) {
     text-decoration-line: underline;
     text-underline-offset: 4px;
     color: $colorLinks;
