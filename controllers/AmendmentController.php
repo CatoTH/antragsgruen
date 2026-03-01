@@ -267,6 +267,12 @@ class AmendmentController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
+        $policy = $motion->getMyMotionType()->getAmendmentPolicy();
+        if (!$policy->checkCurrUserMotion()) {
+            // Could be past the deadline of submission by now, or an admin changing the permissions
+            return new HtmlErrorResponse(403, \Yii::t('amend', 'err_create_permission'));
+        }
+
         if ($this->isPostSet('modify')) {
             $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionSlug' => $motionSlug];
             return new RedirectResponse(UrlHelper::createUrl($nextUrl));
