@@ -346,7 +346,7 @@ class Amendment extends IMotion implements IRSSItem
     public function getShortTitle(bool $includeMotionPrefix = true): string
     {
         if ($this->getMyMotion()->titlePrefix !== '' && $includeMotionPrefix) {
-            $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix(), $this->getMyMotion()->titlePrefix) === false);
+            $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix() ?? '', $this->getMyMotion()->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
         }
