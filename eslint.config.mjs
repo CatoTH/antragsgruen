@@ -16,6 +16,8 @@ const config = defineConfig(
             globals: {
                 ...globals.browser,
                 ...globals.jquery,
+                "bootbox": "readonly",
+                "__t": "readonly",
             },
         },
         extends: [

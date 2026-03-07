@@ -12,8 +12,8 @@
         "test:unit": "vendor/bin/codecept run Unit",
         "watch": "gulp watch",
         "build": "gulp",
-        "lint": "eslint --no-fix",
-        "lint:fix": "eslint --fix"
+        "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
+        "lint:fix": "eslint --fix 'web/js/**/*.{js,ts}'"
     },
     "engines": {
         "node": ">=22"
