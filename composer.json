@@ -29,7 +29,7 @@
     "doctrine/annotations": "^1.14.3",
     "endroid/qr-code": "^5.0",
     "ezyang/htmlpurifier": "dev-main as v4.19.1",
-    "firebase/php-jwt": "^6.8",
+    "firebase/php-jwt": "^7.0",
     "guzzlehttp/guzzle": "^7.7",
     "paragonie/sodium_compat": "^2.0",
     "phpoffice/phpspreadsheet": "^5.0",
