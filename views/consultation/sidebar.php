@@ -212,11 +212,11 @@ if ($hasComments) {
             $html .= '<strong>' . Html::encode($comment->name) . '</strong>, ';
             $html .= Tools::formatMysqlDateTime($comment->dateCreation);
             if (is_a($comment, \app\models\db\MotionComment::class)) {
-                $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
-                    Html::encode($comment->getIMotion()->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION)) . '</div>';
+                $html .= ' <span class="commentFor">(' . Yii::t('con', 'sb_comm_to') . ' ' .
+                    Html::encode($comment->getIMotion()->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION)) . ')</span>';
             } elseif (is_a($comment, \app\models\db\AmendmentComment::class)) {
-                $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
-                    Html::encode($comment->getIMotion()->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION)) . '</div>';
+                $html .= ' <span class="commentFor">(' . Yii::t('con', 'sb_comm_to') . ' ' .
+                    Html::encode($comment->getIMotion()->getFormattedTitlePrefix(\app\models\layoutHooks\Layout::CONTEXT_MOTION)) . ')</span>';
             }
             $html .= '</a></li>';
         }
