@@ -88,7 +88,13 @@
     "yiisoft/yii2-redis": "Allows using redis for caching",
     "simplesamlphp/simplesamlphp": "Allowed Single Sign On Authentication using SAML",
     "league/oauth2-client": "Allows Single Sign On Authentication using OIDC",
-    "predis/predis": "If simplesaml should store its data to redis"
+    "predis/predis": "If simplesaml should store its data to redis",
+    "open-telemetry/sdk": "OpenTelemetry SDK for the opentelemetry plugin",
+    "open-telemetry/exporter-otlp": "OTLP exporter for the opentelemetry plugin",
+    "open-telemetry/opentelemetry-auto-pdo": "Auto-instruments database queries",
+    "open-telemetry/opentelemetry-auto-curl": "Auto-instruments curl HTTP calls",
+    "open-telemetry/opentelemetry-auto-guzzle": "Auto-instruments Guzzle HTTP calls",
+    "php-http/guzzle7-adapter": "HTTP transport for OTLP exporter"
   },
   "config": {
     "platform": {
