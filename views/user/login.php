@@ -37,7 +37,7 @@ $hasNonUsernamePwdLogin = false;
 ?>
     <h1><?= Yii::t('user', 'login_title') ?></h1>
     <script type="module">
-        import { LoginForm } from '/js/frontend/LoginForm.js';
+        import { LoginForm } from '/js/modules/frontend/LoginForm.js';
         new LoginForm();
     </script>
 <?php
