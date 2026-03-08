@@ -1,11 +1,17 @@
+// @ts-check
+
 export class ResponsibilitySetter {
-    constructor(private $list: JQuery) {
+    /**
+     * @param {JQuery} $list
+     */
+    constructor($list) {
         $list.on("click", ".respHolder .respUser", this.userSelected.bind(this));
         $list.on("click", ".respHolder .respCommentRow button", this.onCommentSaveBtn.bind(this));
         $list.on("keypress", ".respHolder .respCommentRow input[type=text]", this.onKeyPressed.bind(this));
     }
 
-    private userSelected(ev: Event) {
+    /** @param {JQuery.TriggeredEvent} ev */
+    userSelected(ev) {
         ev.preventDefault();
         const $li = $(ev.currentTarget);
         const $row = $li.parents(".respHolder").first();
@@ -26,23 +32,27 @@ export class ResponsibilitySetter {
         });
     }
 
-    private onCommentSaveBtn(ev: Event) {
+    /** @param {JQuery.TriggeredEvent} ev */
+    onCommentSaveBtn(ev) {
         ev.preventDefault();
-        const $row: JQuery = $(ev.currentTarget).parents(".respHolder").first() as JQuery;
+        const $row = $(ev.currentTarget).parents(".respHolder").first();
         this.saveComment($row);
     }
 
-    private onKeyPressed(ev: KeyboardEvent) {
+    /** @param {JQuery.KeyPressEvent} ev */
+    onKeyPressed(ev) {
         if (ev.key === "Enter") {
             ev.preventDefault();
             ev.stopPropagation();
-            const $row: JQuery = $(ev.currentTarget).parents(".respHolder").first() as JQuery;
+            const $row = $(ev.currentTarget).parents(".respHolder").first();
             this.saveComment($row);
         }
     }
 
-    private saveComment($row: JQuery) {
-        const comment = $row.find(".respCommentRow input[type=text]").val() as string;
+    /** @param {JQuery} $row */
+    saveComment($row) {
+        /** @type {string} comment */
+        const comment = $row.find(".respCommentRow input[type=text]").val();
         const url = $row.data("save-url");
 
         $.post(url, {

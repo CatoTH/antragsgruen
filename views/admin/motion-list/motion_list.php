@@ -38,7 +38,13 @@ echo $this->render('_list_all_export', [
     'search' => $search,
 ]);
 
-echo '<div class="content" data-antragsgruen-widget="backend/MotionList">';
+?>
+<script type="module">
+    import { MotionList } from "/js/modules/backend/MotionList.js";
+    new MotionList()
+</script>
+<?php
+echo '<div class="content">';
 
 $route   = ['/admin/motion-list/index'];
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';

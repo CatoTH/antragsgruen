@@ -1,4 +1,6 @@
-import { ResponsibilitySetter } from './ResponsibilitySetter';
+// @ts-check
+
+import { ResponsibilitySetter } from './ResponsibilitySetter.js';
 
 export class MotionList {
     constructor() {
@@ -7,7 +9,7 @@ export class MotionList {
         new ResponsibilitySetter($(".adminMotionTable"));
     }
 
-    private initList() {
+    initList() {
         $(".markAll").on("click", (ev) => {
             $(".adminMotionTable").find("input.selectbox").prop("checked", true);
             ev.preventDefault();
@@ -42,17 +44,18 @@ export class MotionList {
                 cb(matches);
             };
 
-        let options: Twitter.Typeahead.Options = {
+        let options = {
             hint: true,
             highlight: true,
             minLength: 1
         };
-        let datasets:Twitter.Typeahead.Dataset<any>[] = [{
+        /** @type {Twitter.Typeahead.Dataset<any>[]} datasets */
+        let datasets = [{
             name: "supporter",
             source: matcher
         }];
 
-        $select.typeahead<any>(options, datasets);
+        $select.typeahead(options, datasets);
 
         $('.adminMotionTable').colResizable({
             'liveDrag': true,
@@ -61,7 +64,7 @@ export class MotionList {
         });
     }
 
-    private initExportRow() {
+    initExportRow() {
         let $exportRow = $(".motionListExportRow");
         $exportRow.find("li.checkbox").on("click", function (ev) {
             ev.stopPropagation();
@@ -100,7 +103,8 @@ export class MotionList {
         $exportRow.find('[data-toggle="tooltip"]').tooltip();
     }
 
-    private onDeleteClicked(ev) {
+    /** @param {JQuery.ClickEvent} ev */
+    onDeleteClicked(ev) {
         ev.preventDefault();
         let $button = $(ev.target),
             $form = $button.parents("form");

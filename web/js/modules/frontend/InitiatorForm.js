@@ -1,5 +1,4 @@
 // @ts-check
-/// <reference types="jquery" />
 
 const CONTACT_NONE = 0;
 const CONTACT_OPTIONAL = 1;
