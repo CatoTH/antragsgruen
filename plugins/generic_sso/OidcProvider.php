@@ -26,7 +26,7 @@ class OidcProvider
             'redirectUri'             => $config['redirectUri'],
             'urlAuthorize'            => $config['urlAuthorize'],
             'urlAccessToken'          => $config['urlAccessToken'],
-            'urlResourceOwnerDetails' => $config['urlResourceOwnerDetails'],
+            'urlResourceOwnerDetails' => $config['urlResourceOwnerDetails'] ?? $config['urlUserInfo'] ?? '',
         ];
 
         // Add PKCE support if enabled

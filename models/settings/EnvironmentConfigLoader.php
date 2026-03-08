@@ -122,7 +122,7 @@ class EnvironmentConfigLoader
             return null;
         }
 
-        return [
+        $config = [
             'transport' => 'smtp',
             'host' => $host,
             'port' => (int)self::getEnv('SMTP_PORT', '587'),
@@ -130,6 +130,14 @@ class EnvironmentConfigLoader
             'password' => self::getEnv('SMTP_PASSWORD'),
             'encryption' => self::getEnv('SMTP_ENCRYPTION', 'tls'),
         ];
+
+        if (!empty($config['username'])) {
+            $config['authType'] = 'login';
+        } else {
+            $config['authType'] = 'none';
+        }
+
+        return $config;
     }
 
     /**
@@ -166,6 +174,12 @@ class EnvironmentConfigLoader
         } else {
             // Port 25 or other ports - no encryption
             $config['encryption'] = null;
+        }
+
+        if (!empty($config['username'])) {
+            $config['authType'] = 'login';
+        } else {
+            $config['authType'] = 'none';
         }
 
         return $config;

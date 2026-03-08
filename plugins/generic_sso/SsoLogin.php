@@ -269,6 +269,13 @@ class SsoLogin implements LoginProviderInterface
         /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
 
+        if (!$user && !empty($userData['email']) && ($this->config['linkByEmail'] ?? false)) {
+            $user = User::findOne(['email' => $userData['email']]);
+            if ($user) {
+                $user->auth = $auth;  // Link existing account to SSO
+            }
+        }
+
         if (!$user) {
             $user = new User();
             $user->auth = $auth;

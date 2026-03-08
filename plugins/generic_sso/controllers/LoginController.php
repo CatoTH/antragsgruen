@@ -127,6 +127,8 @@ class LoginController extends Base
             /** @var \yii\web\Response $response */
             $response = $app->response;
             $response->redirect($finalBackUrl);
+        } catch (\yii\base\ExitException $e) {
+            throw $e;
         } catch (\Exception $e) {
             \Yii::error('SSO Login Error: ' . $e->getMessage());
             \Yii::error('Stack trace: ' . $e->getTraceAsString());
