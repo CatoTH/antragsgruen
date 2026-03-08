@@ -269,7 +269,7 @@ class SsoLogin implements LoginProviderInterface
         /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
 
-        if (!$user && !empty($userData['email']) && ($this->config['linkByEmail'] ?? false)) {
+        if (!$user && ($this->config['linkByEmail'] ?? false)) {
             // Block linking when the provider explicitly reports the email as unverified.
             // If email_verified is absent (provider doesn't track it), allow linking since
             // the admin already made a trust decision by enabling linkByEmail.
