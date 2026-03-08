@@ -23,6 +23,12 @@ services:
       - RABBITMQ_HOST=rabbitmq
       - WEASYPRINT_PATH=/usr/bin/weasyprint
       - IMAGE_MAGICK_PATH=/usr/bin/convert
+      - OTEL_PHP_AUTOLOAD_ENABLED=true
+      - OTEL_SERVICE_NAME=antragsgruen
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otlp-collector:4318
+      - OTEL_PROPAGATORS=baggage,tracecontext
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
@@ -79,3 +85,9 @@ services:
     profiles:
       - node-helper
 
+  otlp-collector:
+    image: otel/opentelemetry-collector
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "55679:55679"

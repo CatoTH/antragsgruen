@@ -51,6 +51,23 @@ if (defined('INSTALLING_MODE') || YII_ENV == 'test') {
     $params->dbConnection['class'] = 'app\components\yii\DBConnection';
 }
 
+$logTargets = [
+    [
+        'class'  => \app\components\yii\LoggerFileTarget::class,
+        'levels' => ['error', 'warning'],
+        'except' => [
+            'yii\web\HttpException:404',
+            'yii\web\HttpException:400',
+        ],
+    ],
+];
+if (class_exists(\OpenTelemetry\API\Globals::class, true) && getenv('OTEL_PHP_AUTOLOAD_ENABLED') === 'true') {
+    $logTargets[] = [
+        'class' => \app\plugins\opentelemetry\OpenTelemetryLogTarget::class,
+        'levels' => ['error', 'warning', 'info'],
+    ];
+}
+
 $components = [
     'cache'        => [
         'class' => ($params->redis ? 'yii\redis\Cache' : 'yii\caching\FileCache'),
@@ -63,16 +80,7 @@ $components = [
     ],
     'log'          => [
         'traceLevel' => YII_DEBUG ? 3 : 0,
-        'targets'    => [
-            [
-                'class'  => 'app\components\yii\LoggerFileTarget',
-                'levels' => ['error', 'warning'],
-                'except' => [
-                    'yii\web\HttpException:404',
-                    'yii\web\HttpException:400',
-                ],
-            ],
-        ],
+        'targets'    => $logTargets,
     ],
     'db'           => $params->dbConnection,
     'urlManager'   => [
