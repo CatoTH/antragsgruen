@@ -269,6 +269,22 @@ class SsoLogin implements LoginProviderInterface
         /** @var User|null $user */
         $user = User::findOne(['auth' => $auth]);
 
+        if (!$user && ($this->config['linkByEmail'] ?? false)) {
+            // Block linking when the provider explicitly reports the email as unverified.
+            // If email_verified is absent (provider doesn't track it), allow linking since
+            // the admin already made a trust decision by enabling linkByEmail.
+            $emailVerified = $attributes['email_verified'] ?? null;
+            if ($emailVerified === false || $emailVerified === 'false' || $emailVerified === '0') {
+                \Yii::warning('SSO: linkByEmail blocked for ' . $userData['email'] . ' because provider reports email_verified=false');
+            } else {
+                $user = User::findOne(['email' => $userData['email']]);
+                if ($user) {
+                    \Yii::info('SSO: Linking existing account ' . $userData['email'] . ' to auth ' . $auth);
+                    $user->auth = $auth;
+                }
+            }
+        }
+
         if (!$user) {
             $user = new User();
             $user->auth = $auth;

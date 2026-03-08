@@ -124,6 +124,59 @@ stringData:
   MAILER_DSN: "smtp://user:pass@smtp.example.com:587"
 ```
 
+## Pure Environment Variable Deployment
+
+For containerized deployments where no `config.json` file exists, Antragsgrün can be fully configured via environment variables. This is ideal for Docker Compose, Kubernetes, or other orchestration platforms.
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    image: antragsgruen:latest
+    environment:
+      # Database
+      DB_HOST: db
+      DB_NAME: antragsgruen
+      DB_USER: antragsgruen
+      DB_PASSWORD: secret
+      # Application
+      APP_DOMAIN: motion.example.com
+      APP_PROTOCOL: https
+      RANDOM_SEED: "change-me-to-a-random-string"
+      BASE_LANGUAGE: en
+      # Mail (DSN format)
+      MAILER_DSN: "smtp://user:pass@smtp.example.com:587"
+      MAIL_FROM_EMAIL: noreply@example.com
+      MAIL_FROM_NAME: "Motion Tools"
+      # Multisite (optional)
+      MULTISITE_MODE: "true"
+      SITE_SUBDOMAIN: std
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:11
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_DATABASE: antragsgruen
+      MYSQL_USER: antragsgruen
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+```
+
+When no `config.json` is present, the application will:
+1. Read all configuration from environment variables
+2. Skip the installation wizard if required variables (`DB_HOST`, `DB_NAME`, `DB_USER`, `RANDOM_SEED`) are set
+3. Auto-configure mail delivery from `MAILER_DSN` or individual `SMTP_*` variables
+
 ## Backwards Compatibility
 
 Existing `config.json` files continue to work without changes. Environment variables are only used as fallback when values are not present in `config.json`.

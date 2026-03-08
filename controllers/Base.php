@@ -600,7 +600,7 @@ class Base extends Controller
             $consultationId = $this->getConsultationUrlFromBackLink($this->getRequestValue('backUrl'));
         }
         if ($consultationId === '') {
-            $consultationId = $this->site->currentConsultation->urlPath;
+            $consultationId = $this->site->currentConsultation->urlPath ?? '';
         }
 
         if (is_null($this->consultation)) {

@@ -104,7 +104,7 @@ class EnvironmentConfigLoader
      */
     public static function getMailServiceConfig(): ?array
     {
-        if (self::getEnv('MAILER_DISABLED', false)) {
+        if (self::getBoolEnv('MAILER_DISABLED', false)) {
             return [
                 'transport' => 'none',
             ];
@@ -122,14 +122,22 @@ class EnvironmentConfigLoader
             return null;
         }
 
-        return [
+        $config = [
             'transport' => 'smtp',
             'host' => $host,
             'port' => (int)self::getEnv('SMTP_PORT', '587'),
             'username' => self::getEnv('SMTP_USERNAME'),
             'password' => self::getEnv('SMTP_PASSWORD'),
-            'encryption' => self::getEnv('SMTP_ENCRYPTION', 'tls'),
+            'encryption' => self::getEnv('SMTP_ENCRYPTION', 'tls') ?: null,
         ];
+
+        if (!empty($config['username'])) {
+            $config['authType'] = 'login';
+        } else {
+            $config['authType'] = 'none';
+        }
+
+        return $config;
     }
 
     /**
@@ -166,6 +174,12 @@ class EnvironmentConfigLoader
         } else {
             // Port 25 or other ports - no encryption
             $config['encryption'] = null;
+        }
+
+        if (!empty($config['username'])) {
+            $config['authType'] = 'login';
+        } else {
+            $config['authType'] = 'none';
         }
 
         return $config;
