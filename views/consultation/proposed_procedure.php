@@ -25,8 +25,11 @@ $reloadUrl = \app\components\UrlHelper::createUrl('consultation/proposed-procedu
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
 ?>
+<script type="module">
+    import { ProposedProcedureOverview } from "/js/modules/backend/ProposedProcedureOverview.js";
+    new ProposedProcedureOverview(document.querySelector(".proposedProcedureReloadHolder"));
+</script>
 <div class="proposedProcedureReloadHolder"
-     data-antragsgruen-widget="frontend/ProposedProcedureOverview"
      data-reload-url="<?= Html::encode($reloadUrl) ?>">
     <?php
     if ($iAmAdmin) {

@@ -1,22 +1,30 @@
-import { ResponsibilitySetter } from './ResponsibilitySetter';
+// @ts-check
 
-interface ReloadResult {
-    success: boolean;
-    error?: string;
-    html?: string;
-    date?: string;
-}
+import {ResponsibilitySetter} from './ResponsibilitySetter.js';
+
+/**
+ * @typedef {Object} ReloadResult
+ * @property {boolean} success
+ * @property {string|null} error
+ * @property {string|null} html
+ * @property {string|null} date
+ */
 
 export class ProposedProcedureOverview {
-    private csrf: string;
-    private updateUrl: string;
-    private $updateWidget: JQuery;
-    private $proposalList: JQuery;
-    private $dateField: JQuery;
-    private plannedInterval: number = null;
+    /** @type {JQuery} */      $widget
+    /** @type {string} */      csrf;
+    /** @type {string} */      updateUrl;
+    /** @type {JQuery} */      $updateWidget;
+    /** @type {JQuery} */      $proposalList;
+    /** @type {JQuery} */      $dateField;
+    /** @type {number|null} */ plannedInterval = null;
 
-    constructor(private $widget: JQuery) {
-        this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
+    /**
+     * @param {HTMLElement} widget
+     */
+    constructor(widget) {
+        this.$widget = $(widget);
+        this.csrf = this.$widget.find('input[name=_csrf]').val();
         this.$widget.on('change', 'input[name=visible]', this.onVisibleChanged.bind(this));
         this.initComments();
         this.initTagsEdit();
@@ -31,13 +39,13 @@ export class ProposedProcedureOverview {
         });
     }
 
-    private onContentUpdated() {
+    onContentUpdated() {
         this.$widget.find(".commentList").each((i, el) => {
             el.scrollTop = el.scrollHeight;
         });
     }
 
-    private onVisibleChanged(ev) {
+    onVisibleChanged(ev) {
         let $checkbox = $(ev.currentTarget);
 
         let data = {
@@ -55,7 +63,7 @@ export class ProposedProcedureOverview {
         });
     }
 
-    private initComments() {
+    initComments() {
         this.$widget.on('click', '.writingOpener', this.openWriting.bind(this));
 
         this.$widget.on('click', '.submitComment', (ev) => {
@@ -77,13 +85,13 @@ export class ProposedProcedureOverview {
         });
     }
 
-    private initTagsEdit() {
+    initTagsEdit() {
         this.$widget.on('click', '.tagEditOpener', (ev) => {
             const $col = $(ev.currentTarget).parents(".procedure").first();
             $col.find('.noTags, .tagNames').addClass('hidden');
             $col.find('.tagsSelector').removeClass('hidden').addClass('editing');
 
-            const $tagsSelect = $col.find('.tagsSelector select') as any;
+            const $tagsSelect = $col.find('.tagsSelector select');
             $tagsSelect.selectize({
                 create: true,
                 plugins: ["remove_button"],
@@ -101,7 +109,7 @@ export class ProposedProcedureOverview {
             const $btn = $(ev.currentTarget),
                 saveUrl = $btn.data('save-url'),
                 $col = $btn.parents(".procedure").first(),
-                select = $col.find(".tagsSelector select")[0] as any;
+                select = $col.find(".tagsSelector select")[0];
 
             $.ajax({
                 url: saveUrl,
@@ -116,7 +124,8 @@ export class ProposedProcedureOverview {
                         bootbox.alert(data.msg_error);
                     } else {
                         $col.find('.tagsSelector').addClass('hidden').removeClass('editing');
-                        this.reload(() => {});
+                        this.reload(() => {
+                        });
                     }
                 }
             }).catch(function (err) {
@@ -125,16 +134,17 @@ export class ProposedProcedureOverview {
         });
     }
 
-    private openWriting(ev) {
+    openWriting(ev) {
         ev.preventDefault();
         let $btn = $(ev.currentTarget),
             $td = $btn.parents('td').first();
 
         $td.addClass('writing');
-        $td.find('textarea').trigger("focus");;
+        $td.find('textarea').trigger("focus");
+        ;
     }
 
-    private submitComment($commentTd: JQuery) {
+    submitComment($commentTd) {
         $.ajax({
             url: $commentTd.data('post-url'),
             type: "POST",
@@ -173,7 +183,7 @@ export class ProposedProcedureOverview {
     }
 
 
-    private skipReload(): boolean {
+    skipReload() {
         if (this.$widget.find('.respHolder.dropdown.open').length > 0) {
             return true;
         } else if (this.$widget.find('.comments.writing').length > 0) {
@@ -185,7 +195,7 @@ export class ProposedProcedureOverview {
         }
     }
 
-    private reload(cb) {
+    reload(cb) {
         if (this.skipReload()) {
             console.log('No reload, as comment writing is active');
             cb();
@@ -194,7 +204,8 @@ export class ProposedProcedureOverview {
         $.ajax({
             type: "GET",
             url: this.updateUrl,
-            success: (data: ReloadResult) => {
+            /** @param {ReloadResult} data */
+            success: (data) => {
                 if (!data.success) {
                     if (data.error) {
                         alert(data.error);
@@ -213,20 +224,20 @@ export class ProposedProcedureOverview {
         })
     }
 
-    private executeInterval() {
+    executeInterval() {
         this.reload(() => {
             this.plannedInterval = window.setTimeout(this.executeInterval.bind(this), 5000);
         });
     }
 
-    private startInterval() {
+    startInterval() {
         if (this.plannedInterval !== null) {
             return;
         }
         this.plannedInterval = window.setTimeout(this.executeInterval.bind(this), 5000);
     }
 
-    private stopInterval() {
+    stopInterval() {
         if (this.plannedInterval === null) {
             return;
         }
@@ -234,7 +245,7 @@ export class ProposedProcedureOverview {
         this.plannedInterval = null;
     }
 
-    private initUpdateWidget() {
+    initUpdateWidget() {
         this.$updateWidget = this.$widget.find('.autoUpdateWidget');
         this.$proposalList = this.$widget.find('.reloadContent');
         this.$dateField = this.$widget.find('.currentDate .date');
@@ -242,9 +253,10 @@ export class ProposedProcedureOverview {
 
         let $toggle = this.$updateWidget.find('#autoUpdateToggle');
         $toggle.on("change", () => {
-            let active: boolean = $toggle.prop('checked');
+            let active = $toggle.prop('checked');
             if (active) {
-                this.reload(() => {});
+                this.reload(() => {
+                });
                 this.startInterval();
             } else {
                 this.stopInterval();

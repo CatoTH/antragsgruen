@@ -28,6 +28,12 @@ $layout->loadSelectize();
 $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
+?>
+    <script type="module">
+        import { ProposedProcedureOverview } from "/js/modules/backend/ProposedProcedureOverview.js";
+        new ProposedProcedureOverview(document.querySelector(".proposedProcedureReloadHolder"));
+    </script>
+<?php
 
 $reloadOptions = ['admin/proposed-procedure/index-ajax', 'minimal' => ($minimal ? 1 : 0)];
 if ($expandId) {
@@ -39,7 +45,6 @@ if ($tagId) {
 $reloadUrl = UrlHelper::createUrl($reloadOptions);
 echo Html::beginForm('', 'post', [
     'class'                    => 'proposedProcedureReloadHolder',
-    'data-antragsgruen-widget' => 'backend/ProposedProcedureOverview',
     'data-reload-url'          => $reloadUrl,
 ]);
 ?>
