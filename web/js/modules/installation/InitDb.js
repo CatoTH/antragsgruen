@@ -2,7 +2,6 @@
 
 /**
  * @typedef {Object} DbTestResult
- * @typedef {import("jquery").JQuery<HTMLElement>} JQueryEl
  *
  * @property {boolean} success
  * @property {boolean} [alreadyCreated]
@@ -11,7 +10,7 @@
 
 export class InitDb {
 
-    /** @type {JQueryEl} */
+    /** @type {JQuery} */
     $form
 
     /** @type {string} */
@@ -21,7 +20,7 @@ export class InitDb {
     dbTestUrlNotSoPretty
 
     /**
-     * @param {JQueryEl} $form
+     * @param {JQuery} $form
      */
     constructor($form) {
         this.$form = $form

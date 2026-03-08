@@ -50,7 +50,12 @@ $currentUser = \app\models\db\User::getCurrentUser();
 $canInitiateAsPerson = $settings->canInitiateAsPerson($consultation);
 $canInitiateAsOrganization = $settings->canInitiateAsOrganization($consultation);
 
-echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/InitiatorForm"
+echo '
+<script type="module">
+import { InitiatorForm } from "/js/modules/frontend/InitiatorForm.js";
+document.querySelectorAll(".supporterForm").forEach(el => new InitiatorForm(el));
+</script>
+<fieldset class="supporterForm supporterFormStd"
                 data-settings="' . Html::encode(json_encode($settings)) . '"
                 data-organisation-list="' . (count($selectOrganisations) > 0 ? "1" : "0") . '"
                 data-user-data="' . Html::encode(json_encode([

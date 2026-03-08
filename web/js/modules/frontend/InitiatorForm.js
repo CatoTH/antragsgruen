@@ -1,44 +1,55 @@
-// noinspection JSUnusedLocalSymbols
+// @ts-check
+/// <reference types="jquery" />
+
 const CONTACT_NONE = 0;
 const CONTACT_OPTIONAL = 1;
 const CONTACT_REQUIRED = 2;
 
-interface UserData {
-    fixed_name: boolean;
-    fixed_orga: boolean;
-    person_name: string;
-    person_organization: string;
-}
+/**
+ * @typedef {Object} UserData
+ * @property {boolean} fixed_name
+ * @property {boolean} fixed_orga
+ * @property {string} person_name
+ * @property {string} person_organization
+ */
 
-interface InitiatorFormSettings {
-    minSupporters: number;
-    hasOrganizations: boolean;
-    allowMoreSupporters: boolean;
-    skipForOrganizations: boolean;
-    hasResolutionDate: number;
-    contactName: number;
-    contactPhone: number;
-    contactEmail: number;
-    contactGender: number;
-}
+/**
+ * @typedef {Object} InitiatorFormSettings
+ * @property {number} minSupporters
+ * @property {boolean} hasOrganizations
+ * @property {boolean} allowMoreSupporters
+ * @property {boolean} skipForOrganizations
+ * @property {number} hasResolutionDate
+ * @property {number} contactName
+ * @property {number} contactPhone
+ * @property {number} contactEmail
+ * @property {number} contactGender
+ */
 
 export class InitiatorForm {
-    private $supporterAdderRow: JQuery;
-    private $fullTextHolder: JQuery;
-    private $initiatorData: JQuery;
-    private $initiatorAdderRow: JQuery;
-    private $supporterData: JQuery;
-    private $editforms: JQuery;
+    /** @type {JQuery} */      $widget
+    /** @type {JQuery|null} */ $supporterAdderRow = null;
+    /** @type {JQuery|null} */ $fullTextHolder = null;
+    /** @type {JQuery|null} */ $initiatorData = null;
+    /** @type {JQuery|null} */ $initiatorAdderRow = null;
+    /** @type {JQuery|null} */ $supporterData = null;
+    /** @type {JQuery|null} */ $editforms = null;
+    /** @type {JQuery|null} */ $otherInitiator = null;
 
-    private $otherInitiator: JQuery;
-    private otherInitiator = false;
-    private hasOrganisationList: boolean;
-    private userData: UserData;
-    private settings: InitiatorFormSettings;
+    /** @type {boolean} */ otherInitiator = false;
+    /** @type {boolean} */ hasOrganisationList = false;
 
-    private wasPerson: boolean = false;
+    /** @type {UserData|null} */              userData = null;
+    /** @type {InitiatorFormSettings|null} */ settings = null;
+    /** @type {boolean} */                    wasPerson = false;
 
-    constructor(private $widget: JQuery) {
+    /**
+     * @param {HTMLElement} widget
+     */
+    constructor(widget) {
+        const $widget = $(widget);
+        this.$widget = $widget;
+
         this.$editforms = $widget.parents('form').first();
         this.$supporterData = $widget.find('.supporterData');
         this.$initiatorData = $widget.find('.initiatorData');
@@ -57,7 +68,7 @@ export class InitiatorForm {
 
         this.$supporterAdderRow.find('button').on("click", this.supporterAddRow.bind(this));
         this.$supporterData.on('click', '.supporterRow .rowDeleter', this.supporterDelRow.bind(this));
-        this.$supporterData.on('keydown', ' .supporterRow input[type=text]', this.onKeyOnTextfield.bind(this));
+        this.$supporterData.on('keydown', '.supporterRow input[type=text]', this.onKeyOnTextfield.bind(this));
 
         this.initInitiatorAdder();
 
@@ -79,11 +90,12 @@ export class InitiatorForm {
         this.$editforms.on("submit", this.submit.bind(this));
     }
 
-    private onChangeOtherInitiator() {
+    onChangeOtherInitiator() {
         this.otherInitiator = (this.$otherInitiator.val() == 1 || this.$otherInitiator.prop("checked"));
         this.onChangePersonType();
     }
-    private setOrgaNameFromSelect() {
+
+    setOrgaNameFromSelect() {
         if (this.$initiatorData.find('#initiatorPrimaryOrgaName').hasClass('hidden')) {
             // If a organization list is provided, but selecting organizations is disabled for this specific motion type, then this should prevent some edge cases
             return;
@@ -92,7 +104,7 @@ export class InitiatorForm {
         this.$initiatorData.find('#initiatorPrimaryName').val(selectedOrga);
     }
 
-    private onChangePersonType() {
+    onChangePersonType() {
         let isOrganization = false;
         if ($("#personTypeHidden").length > 0 && $("#personTypeHidden").val() == '1') { // PERSON_ORGANIZATION === 1
             isOrganization = true;
@@ -129,7 +141,7 @@ export class InitiatorForm {
         }
     }
 
-    private setFieldsVisibilityOrganization() {
+    setFieldsVisibilityOrganization() {
         this.$initiatorData.addClass('type-organization').removeClass('type-person');
         this.$initiatorData.find('.organizationRow').addClass('hidden');
         this.$initiatorData.find('.contactNameRow').removeClass('hidden');
@@ -139,7 +151,7 @@ export class InitiatorForm {
         $('.supporterData, .supporterDataHead').addClass('hidden');
     }
 
-    private setFieldsReadonlyOrganization() {
+    setFieldsReadonlyOrganization() {
         if (!this.userData.fixed_orga || this.otherInitiator) {
             this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', false);
         } else {
@@ -148,7 +160,7 @@ export class InitiatorForm {
         this.$initiatorData.find('#initiatorOrga').prop('readonly', false);
     }
 
-    private setFieldsVisibilityPerson() {
+    setFieldsVisibilityPerson() {
         this.$initiatorData.removeClass('type-organization').addClass('type-person');
         this.$initiatorData.find('.organizationRow').removeClass('hidden');
         if (this.settings.contactName == CONTACT_REQUIRED) {
@@ -167,7 +179,7 @@ export class InitiatorForm {
         $('.supporterData, .supporterDataHead').removeClass('hidden');
     }
 
-    private setFieldsReadonlyPerson() {
+    setFieldsReadonlyPerson() {
         if (!this.userData.fixed_name || this.otherInitiator) {
             this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', false);
         } else {
@@ -175,43 +187,54 @@ export class InitiatorForm {
         }
     }
 
-    private initInitiatorAdder() {
+    initInitiatorAdder() {
         this.$initiatorAdderRow = this.$initiatorData.find('.moreInitiatorsAdder');
         this.$initiatorAdderRow.find('.adderBtn').on("click", this.initiatorAddRow.bind(this));
         this.$initiatorData.on('click', '.initiatorRow .rowDeleter', this.initiatorDelRow.bind(this));
-
     }
 
-    private initiatorAddRow(ev) {
+    /**
+     * @param {JQuery.ClickEvent} ev
+     */
+    initiatorAddRow(ev) {
         ev.preventDefault();
-        let $newEl = $($('#newInitiatorTemplate').data('html'));
+        const $newEl = $($('#newInitiatorTemplate').data('html'));
         this.$initiatorAdderRow.before($newEl);
     }
 
-    private initiatorDelRow(ev) {
+    /**
+     * @param {JQuery.ClickEvent} ev
+     */
+    initiatorDelRow(ev) {
         ev.preventDefault();
         $(ev.target).parents('.initiatorRow').remove();
     }
 
-    private supporterAddRow(ev) {
+    /**
+     * @param {JQuery.ClickEvent} ev
+     */
+    supporterAddRow(ev) {
         ev.preventDefault();
-        let $newEl = $($('#newSupporterTemplate').data('html'));
+        const $newEl = $($('#newSupporterTemplate').data('html'));
         this.$supporterAdderRow.before($newEl);
     }
 
-    private supporterDelRow(ev) {
+    /**
+     * @param {JQuery.ClickEvent} ev
+     */
+    supporterDelRow(ev) {
         ev.preventDefault();
         $(ev.target).parents('.supporterRow').remove();
     }
 
-    private initMinSupporters() {
+    initMinSupporters() {
         this.$editforms.on("submit", (ev) => {
             if ($('#personTypeOrga').prop('checked')) {
                 return;
             }
             let found = 0;
             this.$supporterData.find('.supporterRow').each((i, el) => {
-                if (($(el).find('input.name').val() as string).trim() !== '') {
+                if (/** @type {string} */ ($(el).find('input.name').val()).trim() !== '') {
                     found++;
                 }
             });
@@ -222,39 +245,42 @@ export class InitiatorForm {
         });
     }
 
-    private fullTextAdderOpen(ev) {
+    /**
+     * @param {JQuery.ClickEvent} ev
+     */
+    fullTextAdderOpen(ev) {
         ev.preventDefault();
         $(ev.target).parent().addClass("hidden");
         $('#supporterFullTextHolder').removeClass("hidden");
     }
 
-    private fullTextAdd() {
-        let lines = (this.$fullTextHolder.find('textarea').val() as string).split(";"),
-            template = $('#newSupporterTemplate').data('html'),
-            getNewElement = () => {
-                let $rows = this.$supporterData.find('.supporterRow');
-                for (let i = 0; i < $rows.length; i++) {
-                    let $row = $rows.eq(i);
-                    if ($row.find(".name").val() == '' && $row.find(".organization").val() == '') return $row;
-                }
-                // No empty row found
-                let $newEl = $(template);
-                if (this.$supporterAdderRow.length > 0) {
-                    this.$supporterAdderRow.before($newEl);
-                } else {
-                    $('.fullTextAdder').before($newEl);
-                }
-                return $newEl;
-            };
+    fullTextAdd() {
+        const lines = (this.$fullTextHolder.find('textarea').val()).split(";");
+        const template = $('#newSupporterTemplate').data('html');
+        const getNewElement = () => {
+            const $rows = this.$supporterData.find('.supporterRow');
+            for (let i = 0; i < $rows.length; i++) {
+                const $row = $rows.eq(i);
+                if ($row.find(".name").val() == '' && $row.find(".organization").val() == '') return $row;
+            }
+            // No empty row found
+            const $newEl = $(template);
+            if (this.$supporterAdderRow.length > 0) {
+                this.$supporterAdderRow.before($newEl);
+            } else {
+                $('.fullTextAdder').before($newEl);
+            }
+            return $newEl;
+        };
         let $firstAffectedRow = null;
         for (let i = 0; i < lines.length; i++) {
             if (lines[i] == '') {
                 continue;
             }
-            let $newEl = getNewElement();
+            const $newEl = getNewElement();
             if ($firstAffectedRow == null) $firstAffectedRow = $newEl;
             if ($newEl.find('input.organization').length > 0) {
-                let parts = lines[i].split(',');
+                const parts = lines[i].split(',');
                 $newEl.find('input.name').val(parts[0].trim());
                 if (parts.length > 1) {
                     $newEl.find('input.organization').val(parts[1].trim());
@@ -269,14 +295,17 @@ export class InitiatorForm {
         }
     }
 
-    private onKeyOnTextfield(ev) {
+    /**
+     * @param {JQuery.KeyDownEvent} ev
+     */
+    onKeyOnTextfield(ev) {
         let $row;
         if (ev.keyCode == 13) { // Enter
             ev.preventDefault();
             ev.stopPropagation();
             $row = $(ev.target).parents('.supporterRow');
             if ($row.next().hasClass('adderRow')) {
-                let $newEl = $($('#newSupporterTemplate').data('html'));
+                const $newEl = $($('#newSupporterTemplate').data('html'));
                 this.$supporterAdderRow.before($newEl);
                 $newEl.find('input[type=text]').first().trigger("focus");
             } else {
@@ -295,7 +324,10 @@ export class InitiatorForm {
         }
     }
 
-    private submit(ev) {
+    /**
+     * @param {JQuery.SubmitEvent} ev
+     */
+    submit(ev) {
         if ($('#personTypeOrga').prop('checked')) {
             if (this.settings.hasResolutionDate === CONTACT_REQUIRED && $('#resolutionDate').val() === '') {
                 ev.preventDefault();
@@ -310,7 +342,7 @@ export class InitiatorForm {
         }
     }
 
-    private initAdminSetUser() {
+    initAdminSetUser() {
         this.$widget.find(".initiatorCurrentUsername .btnEdit").on("click", () => {
             this.$widget.find("input[name=initiatorSet]").val("1");
             this.$widget.find(".initiatorCurrentUsername").addClass('hidden');

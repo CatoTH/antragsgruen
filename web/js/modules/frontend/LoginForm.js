@@ -2,11 +2,8 @@
 
 export class LoginForm {
 
-    /** @type {JQueryEl} */
-    $form;
-
-    /** @type {number} */
-    pwMinLen;
+    /** @type {JQuery} */ $form;
+    /** @type {number} */ pwMinLen;
 
     constructor() {
         this.$form = $("#usernamePasswordForm");

@@ -3,24 +3,15 @@
 import { IMotionShow } from "../shared/IMotionShow.js"
 import { LineNumberHighlighting } from "./LineNumberHighlighting.js";
 
-/** @typedef {import("jquery").JQuery<HTMLElement>} JQueryEl */
-
 /**
  * MotionParagraph handles inline amendments inside a paragraph
  */
 class MotionParagraph {
 
-    /** @type {number|null} */
-    activeAmendmentId = null;
-
-    /** @type {JQueryEl} */
-    $paraFirstLine;
-
-    /** @type {number} */
-    lineHeight;
-
-    /** @type {JQueryEl} */
-    $element;
+    /** @type {number|null} */ activeAmendmentId = null;
+    /** @type {JQuery} */      $paraFirstLine;
+    /** @type {number} */      lineHeight;
+    /** @type {JQuery} */      $element;
 
     /**
      * @param {HTMLElement} element
@@ -44,7 +35,7 @@ class MotionParagraph {
         });
     }
 
-    /** @param {JQueryEl} $amendment */
+    /** @param {JQuery} $amendment */
     initInlineAmendmentPosition = ($amendment) => {
         const firstLine = $amendment.data("first-line");
         let delta = (firstLine - this.$paraFirstLine.data("line-number")) * this.lineHeight;
@@ -78,7 +69,7 @@ class MotionParagraph {
         this.activeAmendmentId = null;
     }
 
-    /** @param {JQueryEl} $amendment */
+    /** @param {JQuery} $amendment */
     toggleInlineAmendmentBehavior = ($amendment) => {
         const $link = $amendment.find("a");
         const amendmentId = $link.data("id");
