@@ -1,7 +1,5 @@
 // @ts-check
 
-/** @typedef {import("jquery").JQuery<HTMLElement>} JQueryEl */
-
 export class LoginForm {
 
     /** @type {JQueryEl} */

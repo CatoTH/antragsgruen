@@ -1,11 +1,14 @@
+// @ts-check
+
 export class LineNumberHighlighting {
     constructor() {
-        let $panel = $(".gotoLineNumerPanel"),
-            $lineInput = $panel.find("input[name=lineNumber]"),
-            panelIsOpen = false;
+        const $panel = $(".gotoLineNumerPanel");
+        const $lineInput = $panel.find("input[name=lineNumber]");
+        let panelIsOpen = false;
+
         window.addEventListener('keydown', (ev) => {
             if (!panelIsOpen && ev.key >= '0' && ev.key <= '9') {
-                let $target = $(ev.target);
+                const $target = $(ev.target);
                 if ($target.is('input, textarea, div.texteditor, .cke_editable') || $target.parents('input, textarea, div.texteditor, .cke_editable').length > 0) {
                     // Typing in an input field, like comments
                     return;
@@ -22,16 +25,17 @@ export class LineNumberHighlighting {
                 $panel.find('.lineNumberNotFound').addClass('hidden');
             }
         });
+
         $panel.on('submit', (ev) => {
             ev.preventDefault();
-            let lineNumber = $lineInput.val();
+            const lineNumber = $lineInput.val();
             if (lineNumber === '') {
                 $panel.removeClass("active");
                 panelIsOpen = false;
                 return;
             }
 
-            let $lineNumber = $(".lineNumber[data-line-number=" + lineNumber + "]");
+            const $lineNumber = $(".lineNumber[data-line-number=" + lineNumber + "]");
             if ($lineNumber.length === 0) {
                 $panel.find('.lineNumberNotFound').removeClass('hidden');
                 return;

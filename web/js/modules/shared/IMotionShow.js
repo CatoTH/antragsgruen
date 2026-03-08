@@ -1,6 +1,7 @@
-class IMotionShow {
-    public initContactShow()
-    {
+// @ts-check
+
+export class IMotionShow {
+    initContactShow() {
         $(".motionData .contactShow").on("click", function (ev) {
             ev.preventDefault();
             $(this).addClass("hidden");
@@ -8,8 +9,7 @@ class IMotionShow {
         });
     }
 
-    public initAgreeToProposal()
-    {
+    initAgreeToProposal() {
         $(".agreeToProposal .btnUpdateDecision").on("click", (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
@@ -17,19 +17,19 @@ class IMotionShow {
         });
     }
 
-    public initExpandableList()
-    {
-        document.querySelectorAll('.expandableList').forEach((el: HTMLDivElement) => {
-            el.querySelector('.btnShowAll').addEventListener('click', () => {
-                el.querySelector('.shortList').classList.add('hidden');
-                el.querySelector('.fullList').classList.remove('hidden');
-                el.querySelector('.btnShowAll').classList.add('hidden');
+    initExpandableList() {
+        document.querySelectorAll('.expandableList').forEach((el) => {
+            /** @type {HTMLElement} */
+            const container = el;
+            container.querySelector('.btnShowAll').addEventListener('click', () => {
+                container.querySelector('.shortList').classList.add('hidden');
+                container.querySelector('.fullList').classList.remove('hidden');
+                container.querySelector('.btnShowAll').classList.add('hidden');
             });
         });
     }
 
-    public initAmendmentTextMode()
-    {
+    initAmendmentTextMode() {
         $('.amendmentTextModeSelector a.showOnlyChanges').on('click', (ev) => {
             const $section = $(ev.target).parents(".motionTextHolder");
             $section.find(".amendmentTextModeSelector .showOnlyChanges").parent().addClass('selected');
@@ -48,10 +48,11 @@ class IMotionShow {
         });
     }
 
-    public initDelSubmit() {
+    initDelSubmit() {
         $("form.delLink").on("submit", (ev) => {
             ev.preventDefault();
-            let form: HTMLFormElement = ev.target as HTMLFormElement;
+            /** @type {HTMLFormElement} */
+            const form = ev.target;
             bootbox.confirm(__t("std", "del_confirm"), function (result) {
                 if (result) {
                     // noinspection JSDeprecatedSymbols
@@ -61,16 +62,16 @@ class IMotionShow {
         });
     }
 
-    public initCmdEnterSubmit() {
+    initCmdEnterSubmit() {
         $(document).on('keypress', 'form textarea', (ev) => {
             if (ev.originalEvent['metaKey'] && ev.originalEvent.key === 'Enter') {
-                let $textarea = $(ev.currentTarget);
+                const $textarea = $(ev.currentTarget);
                 $textarea.parents("form").first().find("button[type=submit]").trigger("click");
             }
         });
     }
 
-    public initDataTableActions() {
+    initDataTableActions() {
         document.querySelectorAll('.tagAdderHolder').forEach(el => {
             el.addEventListener('click', (ev) => {
                 ev.preventDefault();
@@ -80,10 +81,10 @@ class IMotionShow {
         });
 
         document.querySelectorAll('.motionData .btnHistoryOpener').forEach(el => {
-           el.addEventListener('click', () => {
-               document.querySelector('.motionData .historyOpener').classList.add('hidden');
-               document.querySelector('.motionData .fullHistory').classList.remove('hidden');
-           });
+            el.addEventListener('click', () => {
+                document.querySelector('.motionData .historyOpener').classList.add('hidden');
+                document.querySelector('.motionData .fullHistory').classList.remove('hidden');
+            });
         });
     }
 }

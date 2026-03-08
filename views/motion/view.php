@@ -29,7 +29,6 @@ $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestPropos
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->addAMDModule('frontend/MotionShow');
 $layout->loadVue();
 $layout->addFullscreenTemplates();
 if ($hasPp && $hasPpAdminbox) {
@@ -102,6 +101,13 @@ if ($motion->isResolution()) {
 }
 echo $fullscreenButton;
 echo '</div>';
+
+?>
+<script type="module">
+    import { MotionShow } from '/js/modules/frontend/MotionShow.js';
+    new MotionShow();
+</script>
+<?php
 
 if ($consultation->getSettings()->hasSpeechLists) {
     // Should be after h1 (because of CSS border-radius to .well :first-child),

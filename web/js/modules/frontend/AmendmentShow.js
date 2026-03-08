@@ -1,9 +1,11 @@
-import '../shared/IMotionShow';
+// @ts-check
 
-class AmendmentShow {
+import { IMotionShow } from "../shared/IMotionShow.js"
+
+export class AmendmentShow {
     constructor() {
-        let s: string[] = window.location.hash.split('#comm');
-        if (s.length == 2) {
+        let s= window.location.hash.split('#comm');
+        if (s.length === 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
         }
 
@@ -19,7 +21,7 @@ class AmendmentShow {
         common.initExpandableList();
     }
 
-    private initPrivateComments()
+    initPrivateComments()
     {
         $('.privateNoteOpener button').on("click", (ev) => {
             ev.preventDefault();
@@ -35,4 +37,3 @@ class AmendmentShow {
     }
 }
 
-new AmendmentShow();

@@ -1,7 +1,7 @@
 // @ts-check
 
-import '../shared/IMotionShow';
-import { LineNumberHighlighting } from "./LineNumberHighlighting";
+import { IMotionShow } from "../shared/IMotionShow.js"
+import { LineNumberHighlighting } from "./LineNumberHighlighting.js";
 
 /** @typedef {import("jquery").JQuery<HTMLElement>} JQueryEl */
 
@@ -23,9 +23,10 @@ class MotionParagraph {
     $element;
 
     /**
-     * @param {JQueryEl} $element
+     * @param {HTMLElement} element
      */
-    constructor($element) {
+    constructor(element) {
+        const $element = $(element);
         this.$element = $element;
         this.$paraFirstLine = $element.find(".lineNumber").first();
         this.lineHeight = this.$paraFirstLine.height();
@@ -101,7 +102,7 @@ class MotionParagraph {
 /**
  * MotionShow manages the whole motion text page, comments, and amendments
  */
-class MotionShow {
+export class MotionShow {
 
     constructor() {
         new LineNumberHighlighting();
@@ -116,7 +117,7 @@ class MotionShow {
         $paragraphs.filter(':not(.commentsOpened)').find('.comment .hider').trigger("click");
 
         // Initialize MotionParagraph for each paragraph
-        $paragraphs.each((_, el) => new MotionParagraph($(el)));
+        $paragraphs.each((_, el) => new MotionParagraph(el));
 
         // Handle URL hash scroll
         this.scrollFromHash();
@@ -176,7 +177,7 @@ class MotionShow {
         });
     }
 
-    initPrivateComments = () => {
+    initPrivateComments() {
         if ($('.privateParagraph, .privateNote').length > 0) $('.privateParagraphNoteOpener').removeClass('hidden');
 
         $('.privateNoteOpener').on("click", (ev) => {
@@ -231,5 +232,3 @@ class MotionShow {
         $node.parents('.paragraph').first().find('.commentHolder').addClass('hidden');
     }
 }
-
-new MotionShow();
