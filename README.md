@@ -398,7 +398,10 @@ docker exec antragsgruen-node-helper-1 npm ci
 To run the watcher that compiles SCSS and TypeScript files, use:
 ```shell
 docker-compose -f docker-compose.development.yml --profile node-helper --profile gulp-watch up
- ```
+```
+
+The embedded sample OpenTelemetry Collector is reachable under:
+- http://localhost:55679/debug/tracez
 
 ### Compiling from source
 
