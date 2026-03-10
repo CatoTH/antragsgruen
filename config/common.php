@@ -63,7 +63,7 @@ $logTargets = [
 ];
 if (class_exists(\OpenTelemetry\API\Globals::class, true) && getenv('OTEL_PHP_AUTOLOAD_ENABLED') === 'true') {
     $logTargets[] = [
-        'class' => \app\plugins\opentelemetry\OpenTelemetryLogTarget::class,
+        'class' => \app\components\OpenTelemetryLogTarget::class,
         'levels' => ['error', 'warning', 'info'],
     ];
 }
