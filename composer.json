@@ -30,7 +30,13 @@
     "ezyang/htmlpurifier": "dev-main as v4.19.1",
     "firebase/php-jwt": "^7.0",
     "guzzlehttp/guzzle": "^7.7",
+    "open-telemetry/exporter-otlp": "^1.4",
+    "open-telemetry/opentelemetry-auto-curl": "^0.1.0",
+    "open-telemetry/opentelemetry-auto-guzzle": "^1.2",
+    "open-telemetry/opentelemetry-auto-pdo": "^0.3.0",
+    "open-telemetry/sdk": "^1.13",
     "paragonie/sodium_compat": "^2.0",
+    "php-http/guzzle7-adapter": "^1.1",
     "phpoffice/phpspreadsheet": "^5.0",
     "predis/predis": "^3.0",
     "s1syphos/php-simple-captcha": "dev-main#26d63ec7d3da30ea214d796eb613a8b6c2c51d81 as 2.4.0",
@@ -97,8 +103,10 @@
     "optimize-autoloader": true,
     "sort-packages": true,
     "allow-plugins": {
+      "php-http/discovery": true,
       "simplesamlphp/composer-module-installer": true,
       "simplesamlphp/composer-xmlprovider-installer": true,
+      "tbachert/spi": true,
       "yiisoft/yii2-composer": true
     }
   },

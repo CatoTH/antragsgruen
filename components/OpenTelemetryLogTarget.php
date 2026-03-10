@@ -32,7 +32,7 @@ class OpenTelemetryLogTarget extends Target
                 $text = var_export($text, true);
             }
 
-            $severity = self::LEVEL_MAP[$level] ?? Severity::UNSPECIFIED;
+            $severity = self::LEVEL_MAP[$level] ?? Severity::WARN; // Better warn than ignoring it
 
             $logger->emit(
                 (new \OpenTelemetry\API\Logs\LogRecord($text))
