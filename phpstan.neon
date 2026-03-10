@@ -19,6 +19,9 @@ parameters:
           path: plugins/generic_sso/*
     scanDirectories:
       - vendor
+    excludePaths:
+      # Has too many symbols that are not installed by default, and not worth installing them just for this file
+      - components/OpenTelemetryLogTarget.php
     scanFiles:
       - views/motion/LayoutHelper.php
       - views/amendment/LayoutHelper.php
