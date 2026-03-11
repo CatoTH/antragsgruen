@@ -384,9 +384,13 @@ It requires the dependencies (composer, npm, gulp) to be run on the host system 
 
 Then, you can run:
 ```shell
+# initialize the live proxy
+git submodule init
+git submodule update
+
 echo "RANDOM_SEED=$(openssl rand -base64 32)" > .env # One time initialization of a local secret key
 touch config/DEBUG # optional, to enable debug mode
-docker-compose -f docker-compose.development.yml --profile node-helper up
+docker-compose -f docker-compose.development.yml --profile node-helper --profile live up
 docker exec -it antragsgruen-web-1 /var/www/antragsgruen/docker/initialize-development-environment.sh
 ```
 

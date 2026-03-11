@@ -33,6 +33,22 @@ services:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
 
+  live:
+    build:
+      context: ./docker/antragsgruen-live/
+      dockerfile: ./docker/jdk/Dockerfile
+      #target: build - enable this to use JDK image
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    profiles:
+      - live
+
   nginx:
     image: nginx:latest
     ports:
@@ -64,6 +80,11 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 10s
+      retries: 3
     profiles:
       - live
 
