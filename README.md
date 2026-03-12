@@ -388,9 +388,23 @@ Then, you can run:
 git submodule init
 git submodule update
 
+# Create the JWT used for the live proxy - leave passphrase empty
+ssh-keygen -t rsa -b 4096 -m PEM -f config/jwt_bundle.pem
+openssl rsa -in config/jwt_bundle.pem -pubout -outform PEM -out config/jwt_public.key
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in config/jwt_bundle.pem -out config/jwt_private.key -nocrypt
+
+# Create the .env file with all secrets
 echo "RANDOM_SEED=$(openssl rand -base64 32)" > .env # One time initialization of a local secret key
-touch config/DEBUG # optional, to enable debug mode
+echo "ACTUATOR_PASSWORD=$(openssl rand -base64 16)" >> .env # Password for Live Proxy Actuator
+echo "ANTRAGSGRUEN_INSTALLATIONS_0_PUBLIC_KEY=$(sed '1d;$d' config/jwt_public.key | tr -d '\n')" >> .env
+
+# Enable Debug Mode (Optional)
+touch config/DEBUG
+
+# Start Docker Compose
 docker-compose -f docker-compose.development.yml --profile node-helper --profile live up
+
+# One-Time initialization of the libraries and development database
 docker exec -it antragsgruen-web-1 /var/www/antragsgruen/docker/initialize-development-environment.sh
 ```
 

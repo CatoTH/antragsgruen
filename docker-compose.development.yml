@@ -29,6 +29,14 @@ services:
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otlp-collector:4318
       - OTEL_PROPAGATORS=baggage,tracecontext
+      #- JWT_PRIVATE_KEY=/var/www/antragsgruen/config/jwt_private.key
+      #- LIVE_INSTALLATION_ID=std
+      #- LIVE_WS_URI=ws://localhost:8080/websocket
+      #- LIVE_STOMP_JS_URI=http://localhost:8080/stomp.umd.min.js
+      #- LIVE_RABBIT_MQ_URI=http://localhost:15672
+      #- LIVE_RABBIT_MQ_EXCHANGE_NAME=antragsgruen-exchange
+      #- LIVE_RABBIT_MQ_USERNAME=guest
+      #- LIVE_RABBIT_MQ_PASSWORD=guest
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
@@ -40,6 +48,11 @@ services:
       #target: build - enable this to use JDK image
     environment:
       - RABBITMQ_HOST=rabbitmq
+      - ANTRAGSGRUEN_INSTALLATIONS_0_ID=std
+      - ANTRAGSGRUEN_WS_ORIGINS=http://localhost:12380
+      - ANTRAGSGRUEN_INSTALLATIONS_0_PUBLIC_KEY=${ANTRAGSGRUEN_INSTALLATIONS_0_PUBLIC_KEY}
+      - ACTUATOR_USER=admin
+      - ACTUATOR_PASSWORD=${ACTUATOR_PASSWORD}
     env_file: .env
     depends_on:
       rabbitmq:
