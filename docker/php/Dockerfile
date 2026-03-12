@@ -16,6 +16,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
 RUN docker-php-ext-install exif gd intl mysqli pdo_mysql curl xml mbstring zip iconv sysvsem
 
+RUN pecl install opentelemetry protobuf \
+    && docker-php-ext-enable opentelemetry protobuf
+
 RUN apt-get install -y weasyprint imagemagick poppler-utils
 
 RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache

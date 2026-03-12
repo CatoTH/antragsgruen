@@ -280,6 +280,19 @@ Add the following settings to your `config.json` (and adapt them to your needs):
 }
 ```
 
+### OpenTelemetry Integration
+
+OpenTelemetry-Observability requires the PHP OpenTelemetry extension installed, and, optionally (required for PHP 8.5 at the moment) the `protobuf` extension (see the sample [Dockerfile](docker/php/Dockerfile).
+
+Then the libraries:
+```shell
+composer require open-telemetry/sdk open-telemetry/exporter-otlp open-telemetry/opentelemetry-auto-pdo open-telemetry/opentelemetry-auto-curl open-telemetry/opentelemetry-auto-guzzle php-http/guzzle7-adapter
+```
+
+OpenTelemetry could be configured through the `php.ini`, but will practically rather be configured using environment variables. A very simple sample for this is provided in the [docker-compose.development.yml](docker-compose.development.yml).
+
+If you are running the [docker-compose.development.yml](docker-compose.development.yml) for development, a sample collector is included, accessible through http://localhost:55679/debug/tracez .
+
 ### Enable background job processing
 
 Some processes that are potentially blocking or long-running can be executed as background jobs, by using a permanently running worker-job that executes these jobs asynchonously.
@@ -398,7 +411,10 @@ docker exec antragsgruen-node-helper-1 npm ci
 To run the watcher that compiles SCSS and TypeScript files, use:
 ```shell
 docker-compose -f docker-compose.development.yml --profile node-helper --profile gulp-watch up
- ```
+```
+
+The embedded sample OpenTelemetry Collector is reachable under:
+- http://localhost:55679/debug/tracez
 
 ### Compiling from source
 

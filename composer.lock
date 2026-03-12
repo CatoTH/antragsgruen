@@ -220,7 +220,7 @@
             "version": "3.7.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jquery/jquery-dist.git",
+                "url": "git@github.com:jquery/jquery-dist.git",
                 "reference": "fde1f76e2799dd877c176abde0ec836553246991"
             },
             "dist": {
@@ -253,7 +253,7 @@
             "version": "2.0.9",
             "source": {
                 "type": "git",
-                "url": "git@github.com:yiisoft/jquery-pjax.git",
+                "url": "https://github.com/yiisoft/jquery-pjax.git",
                 "reference": "452b56b7124326487fd0d3be6b205fcaa66598a0"
             },
             "dist": {
@@ -1150,16 +1150,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.8.0",
+            "version": "2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "21dc724a0583619cd1652f673303492272778051"
+                "reference": "7d0ed42f28e42d61352a7a79de682e5e67fec884"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/21dc724a0583619cd1652f673303492272778051",
-                "reference": "21dc724a0583619cd1652f673303492272778051",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/7d0ed42f28e42d61352a7a79de682e5e67fec884",
+                "reference": "7d0ed42f28e42d61352a7a79de682e5e67fec884",
                 "shasum": ""
             },
             "require": {
@@ -1175,6 +1175,7 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "http-interop/http-factory-tests": "0.9.0",
+                "jshttp/mime-db": "1.54.0.1",
                 "phpunit/phpunit": "^8.5.44 || ^9.6.25"
             },
             "suggest": {
@@ -1246,7 +1247,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.8.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.9.0"
             },
             "funding": [
                 {
@@ -1262,7 +1263,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-23T21:21:41+00:00"
+            "time": "2026-03-10T16:41:02+00:00"
         },
         {
             "name": "league/uri",
@@ -1957,16 +1958,16 @@
         },
         {
             "name": "predis/predis",
-            "version": "v3.4.1",
+            "version": "v3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/predis/predis.git",
-                "reference": "0850f2f36ee179f0ff96c92c750e1366c6cd754c"
+                "reference": "2033429520d8997a7815a2485f56abe6d2d0e075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/predis/predis/zipball/0850f2f36ee179f0ff96c92c750e1366c6cd754c",
-                "reference": "0850f2f36ee179f0ff96c92c750e1366c6cd754c",
+                "url": "https://api.github.com/repos/predis/predis/zipball/2033429520d8997a7815a2485f56abe6d2d0e075",
+                "reference": "2033429520d8997a7815a2485f56abe6d2d0e075",
                 "shasum": ""
             },
             "require": {
@@ -2008,7 +2009,7 @@
             ],
             "support": {
                 "issues": "https://github.com/predis/predis/issues",
-                "source": "https://github.com/predis/predis/tree/v3.4.1"
+                "source": "https://github.com/predis/predis/tree/v3.4.2"
             },
             "funding": [
                 {
@@ -2016,7 +2017,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-23T19:51:21+00:00"
+            "time": "2026-03-09T20:33:04+00:00"
         },
         {
             "name": "psr/cache",
