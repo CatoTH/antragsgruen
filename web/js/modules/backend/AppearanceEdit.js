@@ -1,5 +1,10 @@
+// @ts-check
+
 export class AppearanceEdit {
-    constructor(private $form: JQuery) {
+    /** @type {JQuery} */ $form
+
+    constructor(form) {
+        this.$form = $(form);
         this.initLogoUpload();
         this.initLayoutChooser();
         this.initTranslationService();
@@ -10,7 +15,7 @@ export class AppearanceEdit {
         $('[data-toggle="tooltip"]').tooltip();
     }
 
-    private initLogoUpload() {
+    initLogoUpload() {
         const $logoRow = this.$form.find('.logoRow'),
             $uploadLabel = $logoRow.find('.uploadCol label .text');
         $logoRow.on('click', '.imageChooserDd ul    a', ev => {
@@ -25,7 +30,7 @@ export class AppearanceEdit {
             $logoRow.find("input[type=file]").val('');
         });
         $logoRow.find("input[type=file]").on("change", () => {
-            const path = ($logoRow.find("input[type=file]").val() as string).split('\\');
+            const path = ($logoRow.find("input[type=file]").val()).split('\\');
             const filename = path[path.length - 1];
             $logoRow.find('input[name=consultationLogo]').val('');
             $logoRow.find(".logoPreview img").addClass('hidden');
@@ -33,7 +38,7 @@ export class AppearanceEdit {
         });
     }
 
-    private initLayoutChooser() {
+    initLayoutChooser() {
         const $inputs = this.$form.find(".thumbnailedLayoutSelector input");
         const $editLink = this.$form.find(".editThemeLink");
         const editLinkDefault = $editLink.attr("href");
@@ -42,13 +47,13 @@ export class AppearanceEdit {
             if ($selected.length === 0) {
                 $selected = $inputs.first();
             }
-            $editLink.attr("href", editLinkDefault.replace(/DEFAULT/, $selected.val() as string));
+            $editLink.attr("href", editLinkDefault.replace(/DEFAULT/, $selected.val()));
         };
         $inputs.on("change", onChange);
         onChange();
     }
 
-    private initTranslationService() {
+    initTranslationService() {
         this.$form.find("#translationService").on('change', (ev) => {
             const checked = $(ev.currentTarget).prop("checked");
             if (checked) {
@@ -61,7 +66,7 @@ export class AppearanceEdit {
         }).trigger("change");
     }
 
-    private initRestApi() {
+    initRestApi() {
         this.$form.find("#apiEnabled").on('change', (ev) => {
             const checked = $(ev.currentTarget).prop("checked");
             if (checked) {
@@ -72,7 +77,7 @@ export class AppearanceEdit {
         }).trigger("change");
     }
 
-    private initSpeechQueues() {
+    initSpeechQueues() {
         this.$form.find("#hasSpeechLists").on('change', (ev) => {
             const checked = $(ev.currentTarget).prop("checked");
             if (checked) {
@@ -92,7 +97,7 @@ export class AppearanceEdit {
         }).trigger("change");
     }
 
-    private initResolutions() {
+    initResolutions() {
         this.$form.find("#showResolutionsCombined").on('change', (ev) => {
             if ($(ev.currentTarget).prop("checked")) {
                 this.$form.find(".showResolutionsSeparateHolder").addClass("hidden");

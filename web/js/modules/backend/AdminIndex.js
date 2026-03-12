@@ -1,12 +1,12 @@
-declare let __t: any;
+// @ts-check
 
-class AdminIndex {
+export class AdminIndex {
     constructor() {
         this.initDelSite();
         this.initUpdates();
     }
 
-    private initDelSite() {
+    initDelSite() {
         let $delForm = $(".delSiteCaller");
         $delForm.find("button").on("click", function (ev) {
             ev.preventDefault();
@@ -21,7 +21,7 @@ class AdminIndex {
         });
     }
 
-    private onSubmitGotoUpdateForm(ev, data) {
+    onSubmitGotoUpdateForm(ev, data) {
         if (data && typeof(data.confirmed) && data.confirmed === true) {
             return;
         }
@@ -36,7 +36,7 @@ class AdminIndex {
         });
     }
 
-    private initUpdates() {
+    initUpdates() {
         let $updateWidget = $('.adminCardUpdates main');
         $.get($updateWidget.data('src'), function(data) {
             $updateWidget.html(data);
@@ -47,5 +47,3 @@ class AdminIndex {
         $updateWidget.on('submit', '.updateForm', this.onSubmitGotoUpdateForm);
     }
 }
-
-new AdminIndex();

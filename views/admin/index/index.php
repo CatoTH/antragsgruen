@@ -20,9 +20,15 @@ $layout     = $controller->layoutParams;
 $this->title = Yii::t('admin', 'index_title');
 $layout->addCSS('css/backend.css');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'));
-$layout->addAMDModule('backend/AdminIndex');
 
 echo '<h1>' . Yii::t('admin', 'index_settings') . '</h1>';
+?>
+    <script type="module">
+        import { AdminIndex } from '/js/modules/backend/AdminIndex.js';
+        new AdminIndex();
+    </script>
+<?php
+
 
 
 echo $controller->showErrors();
