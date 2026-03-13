@@ -18,6 +18,8 @@ const config = defineConfig(
                 ...globals.jquery,
                 "bootbox": "readonly",
                 "CKEDITOR": "readonly",
+                "Sortable": "readonly",
+                "ClipboardJS": "readonly",
                 "__t": "readonly",
             },
         },
