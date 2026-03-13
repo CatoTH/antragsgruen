@@ -1,34 +1,33 @@
-import {MotionSupporterEdit} from "./MotionSupporterEdit";
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
+// @ts-check
+
+import { MotionSupporterEdit } from "./MotionSupporterEdit.js";
+import { AntragsgruenEditor } from "../shared/AntragsgruenEditor.js";
 
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY_MOTION = 32;
 const STATUS_OBSOLETED_BY_AMENDMENT = 22;
 
 export class MotionEdit {
-    private $updateForm: JQuery;
-    private $status: JQuery;
+    /** @type {JQuery} */
+    $updateForm;
+
+    /** @type {JQuery} */
+    $status;
 
     constructor() {
-        let lang = $("html").attr("lang");
+        const lang = $("html").attr("lang");
         this.$updateForm = $("#motionUpdateForm");
         this.$status = $("#motionStatus");
-        $("#motionDateCreationHolder").datetimepicker({
-            locale: lang
-        });
-        $("#motionDateSubmissionHolder").datetimepicker({
-            locale: lang
-        });
-        $("#motionDatePublicationHolder").datetimepicker({
-            locale: lang
-        });
-        $("#motionDateResolutionHolder").datetimepicker({
-            locale: lang
-        });
+
+        $("#motionDateCreationHolder").datetimepicker({ locale: lang });
+        $("#motionDateSubmissionHolder").datetimepicker({ locale: lang });
+        $("#motionDatePublicationHolder").datetimepicker({ locale: lang });
+        $("#motionDateResolutionHolder").datetimepicker({ locale: lang });
         $('#resolutionDateHolder').datetimepicker({
             locale: $('#resolutionDate').data('locale'),
             format: 'L'
         });
+
         $("#motionTextEditCaller").find("button").on('click', () => {
             this.initMotionTextEdit();
         });
@@ -40,7 +39,7 @@ export class MotionEdit {
 
         this.$updateForm.on("submit", function () {
             $(".amendmentCollisionsHolder .amendmentOverrideBlock > .texteditor").each(function () {
-                let text = CKEDITOR.instances[$(this).attr("id")].getData();
+                const text = CKEDITOR.instances[$(this).attr("id")].getData();
                 $(this).parents(".amendmentOverrideBlock").find("> textarea").val(text);
             });
         });
@@ -57,16 +56,17 @@ export class MotionEdit {
         new MotionSupporterEdit($("#motionSupporterHolder"));
     }
 
-    private initSlug() {
+    initSlug() {
         $('.urlSlugHolder .shower button').on("click", (ev) => {
             ev.preventDefault();
             $('.urlSlugHolder .shower').addClass('hidden');
             $('.urlSlugHolder .holder').removeClass('hidden');
         });
     }
-    private initStatus() {
+
+    initStatus() {
         const onChange = () => {
-            const newStatus = parseInt((document.getElementById('motionStatus') as HTMLSelectElement).value, 10);
+            const newStatus = parseInt(/** @type {HTMLSelectElement} */ (document.getElementById('motionStatus')).value, 10);
             console.log(newStatus);
             if (newStatus === STATUS_OBSOLETED_BY_MOTION) {
                 document.querySelector('.motionStatusString').classList.add('hidden');
@@ -85,7 +85,8 @@ export class MotionEdit {
         document.getElementById('motionStatus').addEventListener('change', onChange);
         onChange();
     }
-    private initProtocolFunctions() {
+
+    initProtocolFunctions() {
         const $classHolders = $(".contentProtocolCaller, .protocolHolder"),
             $closer = $(".protocolCloser"),
             $opener = $(".protocolOpener");
@@ -107,7 +108,7 @@ export class MotionEdit {
         });
     }
 
-    private initVotingFunctions() {
+    initVotingFunctions() {
         const $classHolders = $(".contentVotingResultCaller, .votingDataHolder"),
             $closer = $(".votingDataCloser"),
             $opener = $(".votingDataOpener"),
@@ -121,7 +122,7 @@ export class MotionEdit {
         });
 
         this.$status.on('change', () => {
-            if (parseInt(this.$status.val() as string, 10) === STATUS_VOTE) {
+            if (parseInt(/** @type {string} */ (this.$status.val()), 10) === STATUS_VOTE) {
                 $classHolders.addClass('hasVotingStatus');
             } else {
                 $classHolders.removeClass('hasVotingStatus');
@@ -160,23 +161,28 @@ export class MotionEdit {
         }).trigger('change');
     }
 
-    private onSubmitDeleteForm(ev, data) {
-        if (data && typeof(data.confirmed) && data.confirmed === true) {
+    /**
+     * @param {JQuery.TriggeredEvent} ev
+     * @param {any} data
+     */
+    onSubmitDeleteForm(ev, data) {
+        if (data && typeof data.confirmed !== 'undefined' && data.confirmed === true) {
             return;
         }
         ev.preventDefault();
         bootbox.confirm(__t("admin", "delMotionConfirm"), function (result) {
             if (result) {
-                $(".motionDeleteForm").trigger("submit", {'confirmed': true});
+                $(".motionDeleteForm").trigger("submit", { 'confirmed': true });
             }
         });
     }
 
-    private initMotionTextEdit() {
+    initMotionTextEdit() {
         $("#motionTextEditCaller").addClass("hidden");
         $("#motionTextEditHolder").removeClass("hidden");
+
         $(".wysiwyg-textarea").each(function () {
-            let $holder = $(this),
+            const $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
                 ckeditor = new AntragsgruenEditor($textarea.attr("id")),
                 editor = ckeditor.getEditor();
@@ -185,6 +191,7 @@ export class MotionEdit {
                 $textarea.parent().find("textarea").val(editor.getData());
             });
         });
+
         this.$updateForm.append("<input type='hidden' name='edittext' value='1'>");
 
         if ($(".checkAmendmentCollisions").length > 0) {
@@ -197,18 +204,20 @@ export class MotionEdit {
         }
     }
 
-    private loadAmendmentCollisions() {
-        let url = $(".checkAmendmentCollisions").data("url"),
+    loadAmendmentCollisions() {
+        const url = $(".checkAmendmentCollisions").data("url"),
+            /** @type {Object<string, string>} */
             sections = {},
             $holder = $(".amendmentCollisionsHolder");
 
         $("#motionTextEditHolder").children().each(function () {
-            let $this = $(this);
+            const $this = $(this);
             if ($this.hasClass("wysiwyg-textarea")) {
-                let sectionId = $this.attr("id").replace("section_holder_", "");
+                const sectionId = $this.attr("id").replace("section_holder_", "");
                 sections[sectionId] = CKEDITOR.instances[$this.find(".texteditor").attr("id")].getData();
             }
         });
+
         $.post(url, {
             'newSections': sections,
             '_csrf': this.$updateForm.find('> input[name=_csrf]').val()
@@ -219,12 +228,11 @@ export class MotionEdit {
                 $holder.find(".amendmentOverrideBlock > .texteditor").each(function () {
                     new AntragsgruenEditor($(this).attr("id"));
                 });
-                $(".amendmentCollisionsHolder").scrollintoview({top_offset: -50});
+                $(".amendmentCollisionsHolder").scrollintoview({ top_offset: -50 });
             }
 
             $(".checkAmendmentCollisions").hide();
             $(".saveholder .save").prop("disabled", false).show();
-
         });
     }
 }

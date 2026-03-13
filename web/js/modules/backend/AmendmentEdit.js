@@ -1,19 +1,25 @@
-import "./MotionSupporterEdit";
-import { MotionSupporterEdit } from "./MotionSupporterEdit";
-import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
-import editor = CKEDITOR.editor;
-import { AmendmentEditSinglePara } from "../shared/AmendmentEditSinglePara";
+// @ts-check
+
+import { MotionSupporterEdit } from "./MotionSupporterEdit.js";
+import { AntragsgruenEditor } from "../shared/AntragsgruenEditor.js";
+import { AmendmentEditSinglePara } from "../shared/AmendmentEditSinglePara.js";
 
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY_MOTION = 32;
 const STATUS_OBSOLETED_BY_AMENDMENT = 22;
 
 export class AmendmentEdit {
-    private lang: string;
+    /** @type {string} */
+    lang;
 
-    private $updateForm: JQuery;
-    private $status: JQuery;
-    private $editTextCaller: JQuery;
+    /** @type {JQuery} */
+    $updateForm;
+
+    /** @type {JQuery} */
+    $status;
+
+    /** @type {JQuery} */
+    $editTextCaller;
 
     constructor() {
         this.lang = $("html").attr("lang");
@@ -21,15 +27,9 @@ export class AmendmentEdit {
         this.$status = $("#amendmentStatus");
         this.$editTextCaller = $("#amendmentTextEditCaller");
 
-        $("#amendmentDateCreationHolder").datetimepicker({
-            locale: this.lang
-        });
-        $("#amendmentDateSubmissionHolder").datetimepicker({
-            locale: this.lang
-        });
-        $("#amendmentDateResolutionHolder").datetimepicker({
-            locale: this.lang
-        });
+        $("#amendmentDateCreationHolder").datetimepicker({ locale: this.lang });
+        $("#amendmentDateSubmissionHolder").datetimepicker({ locale: this.lang });
+        $("#amendmentDateResolutionHolder").datetimepicker({ locale: this.lang });
         $('#resolutionDateHolder').datetimepicker({
             locale: $('#resolutionDate').data('locale'),
             format: 'L'
@@ -38,21 +38,20 @@ export class AmendmentEdit {
         this.$editTextCaller.find("button").on("click", this.textEditCalled.bind(this));
 
         $('.wysiwyg-textarea .resetText').on("click", (ev) => {
-            let $text: JQuery = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
+            const $text = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
             window['CKEDITOR']['instances'][$text.attr('id')].setData($text.data('original-html'));
-
             $(ev.currentTarget).parents('.modifiedActions').addClass('hidden');
         });
 
         $(".amendmentDeleteForm").on("submit", function (ev, data) {
-            if (data && typeof (data.confirmed) && data.confirmed === true) {
+            if (data && typeof data.confirmed !== 'undefined' && data.confirmed === true) {
                 return;
             }
-            let $form = $(this);
+            const $form = $(this);
             ev.preventDefault();
             bootbox.confirm(__t("admin", "delAmendmentConfirm"), function (result) {
                 if (result) {
-                    $form.trigger("submit", {'confirmed': true});
+                    $form.trigger("submit", { 'confirmed': true });
                 }
             });
         });
@@ -63,18 +62,18 @@ export class AmendmentEdit {
         new MotionSupporterEdit($("#motionSupporterHolder"));
     }
 
-
-    private textEditCalledMultiPara() {
+    textEditCalledMultiPara() {
         $(".wysiwyg-textarea").each(function () {
-            let $holder = $(this),
+            const $holder = $(this),
                 $textarea = $holder.find(".texteditor");
 
-            let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
-                ckeditor: editor = editor.getEditor();
+            const antragsEditor = new AntragsgruenEditor($textarea.attr("id")),
+                /** @type {CKEDITOR.editor} */
+                ckeditor = antragsEditor.getEditor();
 
             $textarea.parents("form").on("submit", function () {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());
-                if (typeof (ckeditor.plugins.lite) != 'undefined') {
+                if (typeof ckeditor.plugins.lite !== 'undefined') {
                     ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
                     $textarea.parent().find("textarea.consolidated").val(ckeditor.getData());
                 }
@@ -82,7 +81,7 @@ export class AmendmentEdit {
         });
     }
 
-    private textEditCalled() {
+    textEditCalled() {
         this.$editTextCaller.addClass("hidden");
         $("#amendmentTextEditHolder").removeClass("hidden");
         if (this.$editTextCaller.data("multiple-paragraphs")) {
@@ -93,9 +92,9 @@ export class AmendmentEdit {
         $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
     }
 
-    private initStatus() {
+    initStatus() {
         const onChange = () => {
-            const newStatus = parseInt((document.getElementById('amendmentStatus') as HTMLSelectElement).value, 10);
+            const newStatus = parseInt(/** @type {HTMLSelectElement} */ (document.getElementById('amendmentStatus')).value, 10);
             if (newStatus === STATUS_OBSOLETED_BY_MOTION) {
                 document.querySelector('.amendmentStatusString').classList.add('hidden');
                 document.querySelector('.amendmentStatusMotion').classList.remove('hidden');
@@ -114,7 +113,7 @@ export class AmendmentEdit {
         onChange();
     }
 
-    private initVotingFunctions() {
+    initVotingFunctions() {
         const $classHolders = $(".contentVotingResultCaller, .votingDataHolder"),
             $closer = $(".votingDataCloser"),
             $opener = $(".votingDataOpener"),
@@ -128,7 +127,7 @@ export class AmendmentEdit {
         });
 
         this.$status.on('change', () => {
-            if (parseInt(this.$status.val() as string, 10) === STATUS_VOTE) {
+            if (parseInt(/** @type {string} */ (this.$status.val()), 10) === STATUS_VOTE) {
                 $classHolders.addClass('hasVotingStatus');
             } else {
                 $classHolders.removeClass('hasVotingStatus');

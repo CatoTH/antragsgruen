@@ -1,7 +1,10 @@
-import {AntragsgruenEditor} from "./AntragsgruenEditor";
+// @ts-check
+
+import { AntragsgruenEditor } from "./AntragsgruenEditor.js";
 
 export class AmendmentEditSinglePara {
-    private $paragraphs: JQuery;
+    /** @type {JQuery} */
+    $paragraphs;
 
     constructor() {
         this.$paragraphs = $(".wysiwyg-textarea.single-paragraph");
@@ -22,7 +25,7 @@ export class AmendmentEditSinglePara {
         });
 
         $(".texteditorBox").each((i, el) => {
-            let $this = $(el),
+            const $this = $(el),
                 sectionId = $this.data("section-id"),
                 paraNo = $this.data("changed-para-no");
             if (paraNo > -1) {
@@ -31,37 +34,50 @@ export class AmendmentEditSinglePara {
         });
     }
 
-    private handleRegularTextField(el: Element) {
-        let $el = $(el),
+    /**
+     * @param {Element} el
+     */
+    handleRegularTextField(el) {
+        const $el = $(el),
             $textarea = $el.find(".texteditor");
 
         if ($el.hasClass("hidden")) {
             return;
         }
-        let aedit = new AntragsgruenEditor($textarea.attr("id")),
+
+        const aedit = new AntragsgruenEditor($textarea.attr("id")),
+            /** @type {CKEDITOR.editor} */
             editor = aedit.getEditor();
+
         $textarea.parents("form").on('submit', () => {
             $textarea.parent().find("textarea.raw").val(editor.getData());
-            if (typeof(editor.plugins.lite) != 'undefined') {
+            if (typeof editor.plugins.lite !== 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
                 $textarea.parent().find("textarea.consolidated").val(editor.getData());
             }
         });
     }
 
-    private revertChanges(para: Element) {
-        let $el = $(para),
+    /**
+     * @param {Element} para
+     */
+    revertChanges(para) {
+        const $el = $(para),
             $para = $el.parents(".wysiwyg-textarea"),
             $textarea = $para.find(".texteditor"),
             id = $textarea.attr("id");
+
         $("#" + id).attr("contenteditable", "false");
         $textarea.html($para.data("original"));
         $para.removeClass("modified");
         this.setModifyable();
     }
 
-    private startEditing(para: Element) {
-        let $para = $(para);
+    /**
+     * @param {Element} para
+     */
+    startEditing(para) {
+        const $para = $(para);
         if (!$para.hasClass('modifyable')) {
             return;
         }
@@ -69,28 +85,31 @@ export class AmendmentEditSinglePara {
         $para.addClass('modified');
         this.setModifyable();
 
-        let $textarea = $para.find(".texteditor"),
-            editor;
-        if (typeof(CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
+        const $textarea = $para.find(".texteditor");
+        /** @type {CKEDITOR.editor} */
+        let editor;
+
+        if (typeof CKEDITOR.instances[$textarea.attr("id")] !== "undefined") {
             editor = CKEDITOR.instances[$textarea.attr("id")];
         } else {
-            let aedit = new AntragsgruenEditor($textarea.attr("id"));
+            const aedit = new AntragsgruenEditor($textarea.attr("id"));
             editor = aedit.getEditor();
         }
+
         $textarea.attr("contenteditable", "true");
         $textarea.parents("form").on('submit', () => {
             $textarea.parent().find("textarea.raw").val(editor.getData());
-            if (typeof(editor.plugins.lite) != 'undefined') {
+            if (typeof editor.plugins.lite !== 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
                 $textarea.parent().find("textarea.consolidated").val(editor.getData());
             }
         });
-        $textarea.trigger("focus");;
+        $textarea.trigger("focus");
     }
 
-    private setModifyable() {
-        let $modified = this.$paragraphs.filter(".modified");
-        if ($modified.length == 0) {
+    setModifyable() {
+        const $modified = this.$paragraphs.filter(".modified");
+        if ($modified.length === 0) {
             this.$paragraphs.addClass('modifyable');
         } else {
             this.$paragraphs.removeClass('modifyable');

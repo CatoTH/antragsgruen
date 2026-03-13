@@ -17,6 +17,7 @@ const config = defineConfig(
                 ...globals.browser,
                 ...globals.jquery,
                 "bootbox": "readonly",
+                "CKEDITOR": "readonly",
                 "__t": "readonly",
             },
         },
