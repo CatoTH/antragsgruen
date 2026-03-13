@@ -1,26 +1,26 @@
-import editor = CKEDITOR.editor;
-import config = CKEDITOR.config;
-import '../shared/PolicySetter';
+import {PolicySetter} from "../shared/PolicySetter.js";
 
 export class ContentPageEdit {
-    private $editCaller: JQuery;
-    private $textHolder: JQuery;
-    private $textSaver: JQuery;
-    private $contentSettings: JQuery;
-    private $downloadableFiles: JQuery;
-    private $policyWidget: JQuery;
-    private $allConsultationsCheckbox: JQuery;
-    private editor: editor;
+    /** @type {JQuery} */          $form;
+    /** @type {JQuery} */          $editCaller;
+    /** @type {JQuery} */          $textHolder;
+    /** @type {JQuery} */          $textSaver;
+    /** @type {JQuery} */          $contentSettings;
+    /** @type {JQuery} */          $downloadableFiles;
+    /** @type {JQuery} */          $policyWidget;
+    /** @type {JQuery} */          $allConsultationsCheckbox;
+    /** @type {CKEDITOR.editor} */ editor;
 
-    constructor(private $form: JQuery) {
-        $form.on("submit", e => e.preventDefault()); // necessary for IE11
+    constructor(form) {
+        this.$form = $(form);
+        this.$form.on("submit", e => e.preventDefault()); // necessary for IE11
         this.$textSaver = $(this.$form.data('save-selector'));
         this.$textHolder = $(this.$form.data('text-selector'));
         this.$editCaller = $(this.$form.data('edit-selector'));
-        this.$contentSettings = $form.find('.contentSettingsToolbar');
-        this.$downloadableFiles = $form.find('.downloadableFiles');
-        this.$allConsultationsCheckbox = $form.find('input[name=allConsultations]');
-        this.$policyWidget = $form.find('.policyWidget');
+        this.$contentSettings = this.$form.find('.contentSettingsToolbar');
+        this.$downloadableFiles = this.$form.find('.downloadableFiles');
+        this.$allConsultationsCheckbox = this.$form.find('input[name=allConsultations]');
+        this.$policyWidget = this.$form.find('.policyWidget');
 
         this.$editCaller.on("click", this.editCalled.bind(this));
         this.$textSaver.addClass('hidden');
@@ -39,7 +39,7 @@ export class ContentPageEdit {
         $(".deletePageForm").on("submit", this.onSubmitDeleteForm.bind(this));
     }
 
-    private editCalled(ev) {
+    editCalled(ev) {
         ev.preventDefault();
         this.$editCaller.addClass('hidden');
         this.$textHolder.attr('contenteditable', "true");
@@ -63,7 +63,7 @@ export class ContentPageEdit {
                 {name: 'styles'},
                 {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']}
             ]
-        } as config);
+        });
         this.editor.on('fileUploadRequest', (evt) => {
             evt.data['requestData']['_csrf'] = this.$form.find('> input[name=_csrf]').val();
         });
@@ -77,10 +77,10 @@ export class ContentPageEdit {
         this.showDownloadableFiles();
     }
 
-    private initContentSettings() {
+    initContentSettings() {
         this.$contentSettings.find('input[name=url]').on('keyup change keypress', (ev) => {
             let $input = $(ev.currentTarget);
-            $input.val(($input.val() as string).replace(/[^\w_\-,\.äöüß]/, ''));
+            $input.val($input.val().replace(/[^\w_\-,.äöüß]/, ''));
         });
         this.$allConsultationsCheckbox.on('change', () => {
             if (this.$allConsultationsCheckbox.prop('checked')) {
@@ -91,10 +91,10 @@ export class ContentPageEdit {
         });
     }
 
-    private initDownloadableFiles() {
+    initDownloadableFiles() {
         const $uploadLabel = this.$downloadableFiles.find(".uploadCol .text");
         this.$downloadableFiles.find("input[type=file]").on("change", () => {
-            const path = (this.$downloadableFiles.find("input[type=file]").val() as string).split('\\');
+            const path = this.$downloadableFiles.find("input[type=file]").val().split('\\');
             const filename = path[path.length - 1];
             $uploadLabel.text(filename);
         });
@@ -111,7 +111,7 @@ export class ContentPageEdit {
         });
     }
 
-    private deleteDownloadableFile(id: string) {
+    deleteDownloadableFile(id) {
         const deleteUrl = this.$form.data("file-delete-url");
         const params = {
 
@@ -132,7 +132,7 @@ export class ContentPageEdit {
         });
     }
 
-    private addUploadedFileCb(data) {
+    addUploadedFileCb(data) {
         const $el = $('<li><a><span class="glyphicon glyphicon-download-alt"></span> <span class="title"></span></a>' +
             '<button type="button" class="btn btn-link deleteFile"><span class="glyphicon glyphicon-trash"></span></button></li>');
         $el.find("a").attr("href", data['url']);
@@ -143,7 +143,7 @@ export class ContentPageEdit {
         this.$downloadableFiles.find(".none").addClass('hidden');
     }
 
-    private hideDownloadableFiles() {
+    hideDownloadableFiles() {
         const hasFiles = (this.$downloadableFiles.find('ul li').length > 0);
         if (!hasFiles) {
             this.$downloadableFiles.addClass('hidden');
@@ -154,16 +154,16 @@ export class ContentPageEdit {
         this.$downloadableFiles.find(".uploadCol .text").text(this.$downloadableFiles.find(".uploadCol .text").data("title"));
     }
 
-    private showDownloadableFiles() {
+    showDownloadableFiles() {
         this.$downloadableFiles.removeClass('hidden');
         this.$downloadableFiles.find('.downloadableFilesUpload').removeClass('hidden');
     }
 
-    private async readUploadableFile(input: HTMLInputElement): Promise<string> {
-        return new Promise((resolve, reject) => {
+    async readUploadableFile(input) {
+        return new Promise((resolve) => {
             const reader = new FileReader();
             reader.onload = function () {
-                const data = reader.result as string;
+                const data = reader.result;
                 const x = data.split(";base64,");
                 if (x.length === 2) {
                     resolve(x[1]);
@@ -180,7 +180,7 @@ export class ContentPageEdit {
         });
     }
 
-    private async save(ev) {
+    async save(ev) {
         ev.preventDefault();
         let data = {
             'data': this.editor.getData(),
@@ -199,11 +199,11 @@ export class ContentPageEdit {
             };
         }
         if (this.$downloadableFiles.length > 0) {
-            const input = this.$downloadableFiles.find("input[type=file]")[0] as HTMLInputElement;
+            const input = this.$downloadableFiles.find("input[type=file]")[0];
             const uploadedFile = await this.readUploadableFile(input);
 
             if (uploadedFile) {
-                const path = (this.$downloadableFiles.find("input[type=file]").val() as string).split('\\');
+                const path = this.$downloadableFiles.find("input[type=file]").val().split('\\');
                 const filename = path[path.length - 1];
                 data['uploadDownloadableFile'] = uploadedFile;
                 data['uploadDownloadableTitle'] = this.$downloadableFiles.find("#downloadableFileTitle").val();
@@ -247,7 +247,7 @@ export class ContentPageEdit {
         })
     }
 
-    private onSubmitDeleteForm(ev, data) {
+    onSubmitDeleteForm(ev, data) {
         if (data && typeof (data.confirmed) && data.confirmed === true) {
             return;
         }

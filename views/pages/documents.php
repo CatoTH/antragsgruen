@@ -44,12 +44,18 @@ $pageData = ConsultationText::getPageData($consultation->site, $consultation, Co
 if ($contentAdmin) {
     $layout->loadCKEditor();
 
+    ?>
+    <script type="module">
+        import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
+        new ContentPageEdit(document.querySelector(".contentEditForm"));
+    </script>
+    <?php
+
     $saveUrl = $pageData->getSaveUrl();
     echo Html::beginForm($saveUrl, 'post', [
         'class' => 'contentEditForm',
         'data-upload-url' => $pageData->getUploadUrl(),
         'data-image-browse-url' => $pageData->getImageBrowseUrl(),
-        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
         'data-text-selector' => '#stdTextHolder',
         'data-save-selector' => '.textSaver',
         'data-edit-selector' => '.editCaller',

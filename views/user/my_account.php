@@ -23,12 +23,17 @@ $consultation = $controller->consultation;
 $this->title = Yii::t('user', 'my_acc_title');
 $layout->addBreadcrumb(Yii::t('user', 'my_acc_bread'));
 $layout->robotsNoindex = true;
-$layout->addAMDModule('frontend/AccountEdit');
 
 $externalAuthenticator = User::getExternalAuthenticator();
 
 $formUrl = UrlHelper::createUrl('user/myaccount');
 echo '<h1>' . Yii::t('user', 'my_acc_title') . '</h1>';
+?>
+    <script type="module">
+        import { AccountEdit } from '/js/modules/frontend/AccountEdit.js';
+        new AccountEdit();
+    </script>
+<?php
 
 
 if ($externalAuthenticator === null) {

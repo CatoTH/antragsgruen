@@ -1,4 +1,4 @@
-class AccountEdit {
+export class AccountEdit {
     constructor() {
         let pwMinLen = $("#userPwd").data("min-len");
 
@@ -23,8 +23,8 @@ class AccountEdit {
         }
 
         $('.userAccountForm').on('submit', function (ev) {
-            let pwd = $("#userPwd").val() as string,
-                pwd2 = $("#userPwd2").val() as string;
+            let pwd = $("#userPwd").val(),
+                pwd2 = $("#userPwd2").val();
             if (pwd != '' || pwd2 != '') {
                 if (pwd.length < pwMinLen) {
                     ev.preventDefault();
@@ -50,5 +50,3 @@ class AccountEdit {
         }
     }
 }
-
-new AccountEdit();
