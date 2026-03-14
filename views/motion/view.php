@@ -377,11 +377,14 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
 
     echo '</section>';
     ?>
-    <script type="module">
-        import { initComments } from '/js/modules/frontend/Comments.js';
-        initComments(document.querySelector(".commentsWidget"));
-    </script>
 <?php
 }
+
+?>
+<script type="module">
+    import { initComments } from '/js/modules/frontend/Comments.js';
+    document.querySelectorAll(".commentsWidget").forEach(widget => initComments(widget));
+</script>
+<?php
 
 echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => false, 'reducedNavigation' => $reducedNavigation]);
