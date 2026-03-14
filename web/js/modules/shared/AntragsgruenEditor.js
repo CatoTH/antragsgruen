@@ -1,5 +1,6 @@
 // @ts-check
 
+
 export class AntragsgruenEditor {
     /** @type {CKEDITOR.editor} */
     editor;
@@ -26,11 +27,11 @@ export class AntragsgruenEditor {
      * @param {string} html
      * @returns {string}
      */
-    static ckeditor_strip(html) {
+    ckeditor_strip(html) {
         const tmp = document.createElement("div");
         tmp.innerHTML = html;
 
-        if (tmp.textContent === '' && typeof tmp.innerText === 'undefined') {
+        if (tmp.textContent == '' && typeof tmp.innerText === 'undefined') {
             return '';
         }
 
@@ -41,20 +42,20 @@ export class AntragsgruenEditor {
      * @param {string} text
      * @returns {number}
      */
-    static ckeditor_charcount(text) {
+    ckeditor_charcount(text) {
         let normalizedText = text
             .replace(/(\r\n|\n|\r)/gm, "")
             .replace(/^\s+|\s+$/g, "")
             .replace("&nbsp;", "");
 
-        normalizedText = AntragsgruenEditor.ckeditor_strip(normalizedText)
+        normalizedText = this.ckeditor_strip(normalizedText)
             .replace(/^([\s\t\r\n]*)$/, "");
 
         return normalizedText.length;
     }
 
     maxLenOnChange() {
-        const currLen = AntragsgruenEditor.ckeditor_charcount(this.editor.getData());
+        const currLen = this.ckeditor_charcount(this.editor.getData());
         this.$currCounter.text(currLen);
 
         if (currLen > this.maxLen) {
@@ -100,7 +101,7 @@ export class AntragsgruenEditor {
      * @param {number}  enterMode
      * @returns {object}
      */
-    static createConfig(title, noStrike, trackChanged, allowDiffFormattings, autocolorize, enterMode) {
+    createConfig(title, noStrike, trackChanged, allowDiffFormattings, autocolorize, enterMode) {
         /** @type {object} */
         const ckeditorConfig = {
             versionCheck: false,
@@ -137,8 +138,8 @@ export class AntragsgruenEditor {
             linkDefaultProtocol: 'https://',
         };
 
-        const strikeEl    = noStrike    ? '' : ' s';
-        const strikeClass = noStrike    ? '' : ',strike';
+        const strikeEl    = noStrike ? '' : ' s';
+        const strikeClass = noStrike ? '' : ',strike';
         const autocolorizeClass = autocolorize ? ',adminTyped1,adminTyped2' : '';
 
         /** @type {string} */
@@ -202,7 +203,7 @@ export class AntragsgruenEditor {
     /**
      * @param {string} id
      */
-    static destroyInstanceById(id) {
+    destroyInstanceById(id) {
         const editor = CKEDITOR.instances[id];
         editor.destroy();
 
@@ -219,20 +220,19 @@ export class AntragsgruenEditor {
         this.$el = $("#" + id);
 
         const initialized = this.$el.data("ckeditor_initialized");
-        if (typeof initialized !== "undefined" && initialized === "1") {
-            console.error("Already initialized: " + id);
+        if (typeof initialized !== "undefined" && initialized === 1) {
             return;
         }
 
         this.$el.data("ckeditor_initialized", "1");
         this.$el.attr("contenteditable", "true");
 
-        const ckeditorConfig = AntragsgruenEditor.createConfig(
+        const ckeditorConfig = this.createConfig(
             this.$el.attr("title"),
-            this.$el.data("no-strike") === '1',
-            this.$el.data('track-changed') === '1',
-            this.$el.data('allow-diff-formattings') === '1',
-            this.$el.data('autocolorize') === '1',
+            this.$el.data("no-strike") === 1,
+            this.$el.data('track-changed') === 1,
+            this.$el.data('allow-diff-formattings') === 1,
+            this.$el.data('autocolorize') === 1,
             this.$el.data('enter-mode') === 'br' ? CKEDITOR.ENTER_BR : CKEDITOR.ENTER_P
         );
         ckeditorConfig.versionCheck = false;

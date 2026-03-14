@@ -1,11 +1,19 @@
-import {DraftSavingEngine} from "../shared/DraftSavingEngine";
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
-import SubmitEvent = JQuery.SubmitEvent;
+import {DraftSavingEngine} from "../shared/DraftSavingEngine.js";
+import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
+
+function onLeavePage() {
+    return __t("std", "leave_changed_page");
+}
 
 export class MotionEditForm {
-    private hasChanged: boolean = false;
+    /** @type {JQuery}  */ $form;
+    /** @type {boolean}  */ hasChanged = false;
 
-    constructor(private $form: JQuery) {
+    /**
+     * @param {HTMLElement} form
+     */
+    constructor(form) {
+        this.$form = $(form);
         $(".input-group.date").datetimepicker({
             locale: $("html").attr('lang'),
             format: 'L'
@@ -14,19 +22,23 @@ export class MotionEditForm {
         $(".wysiwyg-textarea").each(this.initWysiwyg.bind(this));
         $(".form-group.plain-text").each(this.initPlainTextFormGroup.bind(this));
 
-        let $draftHint = $("#draftHint"),
-            draftMotionType = $draftHint.data("motion-type"),
-            draftMotionId = $draftHint.data("motion-id");
+        let draftHint = document.getElementById('draftHint'),
+            draftMotionType = $(draftHint).data("motion-type"),
+            draftMotionId = $(draftHint).data("motion-id");
 
-        new DraftSavingEngine($form, $draftHint, "motion_" + draftMotionType + "_" + draftMotionId);
+        new DraftSavingEngine(form, draftHint, "motion_" + draftMotionType + "_" + draftMotionId);
 
-        $form.on("submit", (ev) => {
-            this.onSubmitCheck(ev, $form)
+        this.$form.on("submit", (ev) => {
+            this.onSubmitCheck(ev, this.$form)
         });
     }
 
-    private onSubmitCheck(ev: SubmitEvent, $form: JQuery): void {
-        let error: boolean = false;
+    /**
+     * @param {JQuery.SubmitEvent} ev
+     * @param {JQuery} $form
+     */
+    onSubmitCheck(ev, $form) {
+        let error = false;
         if (this.checkMultipleTagsError()) {
             error = true;
         }
@@ -44,7 +56,7 @@ export class MotionEditForm {
                     buttons: {
                         submit: {
                             label: encouragement.field.data('encouraged-submit'),
-                            callback: function() {
+                            callback: function () {
                                 encouragement.field.data("skip-encouraged-fields", true);
                                 $form.append('<input type="hidden" name="save" value="1">');
                                 $form.trigger("submit");
@@ -52,21 +64,25 @@ export class MotionEditForm {
                         },
                         fill: {
                             label: encouragement.field.data('encouraged-fill'),
-                            callback: function() {
+                            callback: function () {
                                 encouragement.field.scrollintoview({top_offset: -50});
                             }
                         }
                     }
                 });
             } else {
-                $(window).off("beforeunload", MotionEditForm.onLeavePage);
+                $(window).off("beforeunload", onLeavePage);
             }
         }
     }
 
-    private getEncouragedFieldError($form: JQuery): {field: JQuery, error: string}|null {
-        let result: {field: JQuery, error: string}|null = null;
-        $form.find('.wysiwyg-textarea').each(function() {
+    /**
+     * @param {JQuery} $form
+     */
+    getEncouragedFieldError($form) {
+        //let result: {field: JQuery, error: string}|null = null;
+        let result = null
+        $form.find('.wysiwyg-textarea').each(function () {
             const $field = $(this),
                 $label = $field.find("label.encouraged");
 
@@ -89,8 +105,8 @@ export class MotionEditForm {
         return result;
     }
 
-    private checkMultipleTagsError(): boolean {
-        let $group: JQuery = this.$form.find('.multipleTagsGroup');
+    checkMultipleTagsError() {
+        let $group = this.$form.find('.multipleTagsGroup');
         if ($group.length === 0) {
             return false;
         }
@@ -112,11 +128,7 @@ export class MotionEditForm {
         }
     }
 
-    public static onLeavePage(): string {
-        return __t("std", "leave_changed_page");
-    }
-
-    private initWysiwyg(i, el) {
+    initWysiwyg(i, el) {
         let $holder = $(el),
             $textarea = $holder.find(".texteditor"),
             editor = new AntragsgruenEditor($textarea.attr("id"));
@@ -128,13 +140,13 @@ export class MotionEditForm {
             if (!this.hasChanged) {
                 this.hasChanged = true;
                 if (!$("body").hasClass('testing')) {
-                    $(window).on("beforeunload", MotionEditForm.onLeavePage);
+                    $(window).on("beforeunload", onLeavePage);
                 }
             }
         });
     }
 
-    private initPlainTextFormGroup(i, el) {
+    initPlainTextFormGroup(i, el) {
         let $fieldset = $(el),
             $input = $fieldset.find("input.form-control");
         if ($fieldset.data("max-len") != 0) {
@@ -149,7 +161,7 @@ export class MotionEditForm {
             }
 
             $input.on('keyup change', () => {
-                let currLen = ($input.val() as string).length;
+                let currLen = $input.val().length;
                 $currCounter.text(currLen);
                 if (currLen > maxLen) {
                     $warning.removeClass('hidden');

@@ -31,8 +31,9 @@ const config = defineConfig(
             'no-console': 'off',
             'no-debugger': 'off',
             'no-restricted-globals': ['error', ...ConfusingGlobals],
-            /*
             'no-prototype-builtins': 'off',
+            'no-unused-vars': 'off',
+            /*
             'no-empty': 'off',//todo
             'no-useless-escape': 'off',//todo
             'prefer-const': 'off',//todo

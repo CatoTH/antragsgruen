@@ -1,10 +1,14 @@
 export class DraftSavingEngine {
-    private $html: JQuery;
-    private localKey: string;
-    private isChanged: boolean = false;
+    /** @type {JQuery}  */ $form;
+    /** @type {JQuery}  */ $html;
+    /** @type {JQuery}  */ $draftHint;
+    /** @type {string}  */ localKey;
+    /** @type {boolean} */ isChanged = false;
 
-    constructor(private $form: JQuery, private $draftHint: JQuery, keyBase: string) {
+    constructor(form, draftHint, keyBase) {
         this.$html = $('html');
+        this.$form = $(form);
+        this.$draftHint = $(draftHint);
 
         if (!this.testLocalstorageEnabled()) {
             return;
@@ -14,10 +18,10 @@ export class DraftSavingEngine {
 
         let key;
 
-        $form.append('<input type="hidden" name="draftId" value="' + this.localKey + '">');
+        this.$form.append('<input type="hidden" name="draftId" value="' + this.localKey + '">');
 
         for (key in localStorage) if (localStorage.hasOwnProperty(key)) {
-            if (key.indexOf(keyBase + "_") == 0) {
+            if (key.indexOf(keyBase + "_") === 0) {
                 let data = JSON.parse(localStorage.getItem(key)),
                     lastEdit = new Date(data['lastEdit']),
                     $link = $("<li><button type='button' class='btn-link restore'></button> " +
@@ -59,7 +63,7 @@ export class DraftSavingEngine {
         window.setInterval(this.doBackup.bind(this), 3000);
     }
 
-    private testLocalstorageEnabled(): boolean {
+    testLocalstorageEnabled() {
         try {
             const key = `__storage__test`;
             window.localStorage.setItem(key, null);
@@ -70,7 +74,7 @@ export class DraftSavingEngine {
         }
     }
 
-    private saveInitialData() {
+    saveInitialData() {
         for (let inst in CKEDITOR.instances) {
             if (CKEDITOR.instances.hasOwnProperty(inst)) {
                 $("#" + inst).data("original", CKEDITOR.instances[inst].getData());
@@ -86,7 +90,7 @@ export class DraftSavingEngine {
         });
     }
 
-    private doBackup() {
+    doBackup() {
         let data = {},
             foundChanged = false,
             inst;
@@ -126,7 +130,7 @@ export class DraftSavingEngine {
         }
     }
 
-    private doDelete($li: JQuery) {
+    doDelete($li) {
         localStorage.removeItem($li.data("key"));
         $li.remove();
         if (this.$draftHint.find("ul").children().length == 0) {
@@ -134,14 +138,14 @@ export class DraftSavingEngine {
         }
     }
 
-    private doRestore($li: JQuery) {
+    doRestore($li) {
         let inst,
             restoreKey = $li.data("key"),
             data = JSON.parse(localStorage.getItem(restoreKey));
 
         for (inst in CKEDITOR.instances) {
             if (CKEDITOR.instances.hasOwnProperty(inst)) {
-                if (typeof(data[inst]) != "undefined") {
+                if (typeof (data[inst]) != "undefined") {
                     CKEDITOR.instances[inst].setData(data[inst]);
                 }
             }
@@ -157,13 +161,13 @@ export class DraftSavingEngine {
 
         $(".form-group.plain-text").each((i, el) => {
             let $input = $(el).find("input[type=text]");
-            if (typeof(data[$input.attr("id")]) != "undefined") {
+            if (typeof (data[$input.attr("id")]) != "undefined") {
                 $input.val(data[$input.attr("id")]);
             }
         });
         $(".form-group.amendmentStatus").each((i, el) => {
             let id = $(el).find(".stdDropdown").attr("id");
-            if (typeof(data[id]) != "undefined") {
+            if (typeof (data[id]) != "undefined") {
                 $('#' + id).val(data[id]);
             }
         });
@@ -178,7 +182,7 @@ export class DraftSavingEngine {
         }
     }
 
-    public hasChanges(): boolean {
+    hasChanges() {
         return this.isChanged;
     }
 }

@@ -1,20 +1,29 @@
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
-import {DraftSavingEngine} from "../shared/DraftSavingEngine";
+import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
+import {DraftSavingEngine} from "../shared/DraftSavingEngine.js";
 
 // Keep in sync with ConsultationMotionType.php
 const AMEND_PARAGRAPHS_MULTIPLE = 1;
 const AMEND_PARAGRAPHS_SINGLE_PARAGRAPH = 0;
 const AMEND_PARAGRAPHS_SINGLE_CHANGE = -1;
 
-export class AmendmentEdit {
-    private lang: string;
-    private $spmParagraphs: JQuery;
-    private hasChanged: boolean = false;
-    private isSingleLocationMode = false;
+function onLeavePage() {
+    return __t("std", "leave_changed_page");
+}
 
-    constructor(private $form: JQuery) {
-        let multiParagraphMode = parseInt($form.data("multi-paragraph-mode"), 10);
-        if (typeof(multiParagraphMode) == "undefined") {
+export class AmendmentEdit {
+    /** @type {JQuery}  */ $form;
+    /** @type {string}  */ lang;
+    /** @type {JQuery}  */ $spmParagraphs;
+    /** @type {boolean} */ hasChanged = false;
+    /** @type {boolean} */ isSingleLocationMode = false;
+
+    /**
+     * @param {HTMLElement} form
+     */
+    constructor(form) {
+        this.$form = $(form);
+        let multiParagraphMode = parseInt(this.$form.data("multi-paragraph-mode"), 10);
+        if (typeof (multiParagraphMode) == "undefined") {
             throw "data-multi-paragraph-mode needs to be set";
         }
 
@@ -35,22 +44,22 @@ export class AmendmentEdit {
             this.spmInit();
         }
 
-        let $draftHint = $("#draftHint"),
-            draftMotionId = $draftHint.data("motion-id"),
-            draftAmendmentId = $draftHint.data("amendment-id");
+        let draftHint = document.getElementById('draftHint'),
+            draftMotionId = $(draftHint).data("motion-id"),
+            draftAmendmentId = $(draftHint).data("amendment-id");
 
-        new DraftSavingEngine($form, $draftHint, "motion_" + draftMotionId + "_" + draftAmendmentId);
+        new DraftSavingEngine(form, draftHint, "motion_" + draftMotionId + "_" + draftAmendmentId);
 
-        $form.on("submit", () => {
-            $(window).off("beforeunload", AmendmentEdit.onLeavePage);
+        this.$form.on("submit", () => {
+            $(window).off("beforeunload", onLeavePage);
         });
     }
 
-    private initGlobalAlternative() {
+    initGlobalAlternative() {
 
     }
 
-    private editorialOpenerClicked() {
+    editorialOpenerClicked() {
         let $holder = this.$form.find("#sectionHolderEditorial"),
             $textarea = $holder.find(".texteditor"),
             active = this.$form.find(".editorialChange input").prop("checked");
@@ -58,7 +67,7 @@ export class AmendmentEdit {
         if (active) {
             $holder.removeClass("hidden");
             if (CKEDITOR.instances['amendmentEditorial_wysiwyg'] === undefined) {
-                let editor: AntragsgruenEditor = new AntragsgruenEditor("amendmentEditorial_wysiwyg");
+                let editor = new AntragsgruenEditor("amendmentEditorial_wysiwyg");
                 $textarea.parents("form").on("submit", () => {
                     if (this.$form.find(".editorialChange input").prop("checked")) {
                         $textarea.parent().find("textarea.raw").val(editor.getEditor().getData());
@@ -75,17 +84,17 @@ export class AmendmentEdit {
 
     /* Multi paragraph mode */
 
-    private initMultiParagraphMode() {
+    initMultiParagraphMode() {
         $(".wysiwyg-textarea:not(#sectionHolderEditorial)").each((i, el) => {
             let $holder = $(el),
                 $textarea = $holder.find(".texteditor");
 
-            let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
-                ckeditor: CKEDITOR.editor = editor.getEditor();
+            let editor = new AntragsgruenEditor($textarea.attr("id")),
+                ckeditor = editor.getEditor();
 
             $textarea.parents("form").on("submit", () => {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());
-                if (typeof(ckeditor.plugins.lite) != 'undefined') {
+                if (typeof (ckeditor.plugins.lite) != 'undefined') {
                     ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
                     $textarea.parent().find("textarea.consolidated").val(ckeditor.getData());
                 }
@@ -96,7 +105,7 @@ export class AmendmentEdit {
         });
 
         this.$form.find('.resetText').on("click", (ev) => {
-            let $text: JQuery = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
+            let $text = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
             window['CKEDITOR']['instances'][$text.attr('id')].setData($text.data('original-html'));
 
             $(ev.currentTarget).parents('.modifiedActions').addClass('hidden');
@@ -105,9 +114,9 @@ export class AmendmentEdit {
 
     /* Single paragraph mode */
 
-    private spmSetModifyable() {
+    spmSetModifyable() {
         let $modified = this.$spmParagraphs.filter(".modified");
-        if ($modified.length == 0) {
+        if ($modified.length === 0) {
             this.$spmParagraphs.addClass('modifyable');
         } else {
             this.$spmParagraphs.removeClass('modifyable');
@@ -116,7 +125,10 @@ export class AmendmentEdit {
         }
     }
 
-    private spmOnParaClick(ev) {
+    /**
+     * @param {JQuery.ClickEvent} ev
+     */
+    spmOnParaClick(ev) {
         let $para = $(ev.currentTarget);
         if (!$para.hasClass('modifyable')) {
             return;
@@ -126,7 +138,7 @@ export class AmendmentEdit {
 
         let $textarea = $para.find(".texteditor"),
             editor;
-        if (typeof(CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
+        if (typeof (CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
             editor = CKEDITOR.instances[$textarea.attr("id")];
         } else {
             editor = (new AntragsgruenEditor($textarea.attr("id"))).getEditor();
@@ -142,22 +154,22 @@ export class AmendmentEdit {
             }
 
             $textarea.parent().find("textarea.raw").val(editor.getData());
-            if (typeof(editor.plugins.lite) != 'undefined') {
+            if (typeof (editor.plugins.lite) != 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
                 $textarea.parent().find("textarea.consolidated").val(editor.getData());
             }
         });
 
-        const hasMultipleChanges = (): boolean => {
+        const hasMultipleChanges = () => {
             // Undo / Cmd/Ctrl-Z leaves behind strange characters, that's why we need to take care of some special cases
             let countIns = 0,
                 countDel = 0;
-            $textarea.find(".ice-ins").each(function() {
+            $textarea.find(".ice-ins").each(function () {
                 if ($(this)[0].innerText.length > 0 && $(this)[0].innerText !== "\ufeff") {
                     countIns++;
                 }
             });
-            $textarea.find(".ice-del").each(function() {
+            $textarea.find(".ice-del").each(function () {
                 if ($(this)[0].innerText.length > 0 && $(this)[0].innerText !== "\ufeff") {
                     countDel++;
                 }
@@ -185,13 +197,13 @@ export class AmendmentEdit {
         $textarea.trigger("focus");
     }
 
-    private spmRevert(ev) {
+    spmRevert(ev) {
         ev.preventDefault();
         ev.stopPropagation();
         let $para = $(ev.target).parents(".wysiwyg-textarea"),
             $textarea = $para.find(".texteditor");
 
-        if (typeof(CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
+        if (typeof (CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
             AntragsgruenEditor.destroyInstanceById($textarea.attr("id"));
         }
 
@@ -201,16 +213,16 @@ export class AmendmentEdit {
         this.spmSetModifyable();
     }
 
-    private spmInitNonSingleParas(i, el) {
+    spmInitNonSingleParas(i, el) {
         let $holder = $(el),
             $textarea = $holder.find(".texteditor");
         if ($holder.hasClass("hidden")) {
             return;
         }
-        let editor: CKEDITOR.editor = (new AntragsgruenEditor($textarea.attr("id"))).getEditor();
+        let editor = (new AntragsgruenEditor($textarea.attr("id"))).getEditor();
         $textarea.parents("form").on("submit", () => {
             $textarea.parent().find("textarea.raw").val(editor.getData());
-            if (typeof(editor.plugins.lite) != 'undefined') {
+            if (typeof (editor.plugins.lite) != 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
                 $textarea.parent().find("textarea.consolidated").val(editor.getData());
             }
@@ -220,7 +232,7 @@ export class AmendmentEdit {
         $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
     }
 
-    private spmInit() {
+    spmInit() {
         this.$spmParagraphs = $(".wysiwyg-textarea.single-paragraph");
         this.$spmParagraphs.on("click", this.spmOnParaClick.bind(this));
         this.$spmParagraphs.find(".modifiedActions .revert").on("click", this.spmRevert.bind(this));
@@ -245,16 +257,11 @@ export class AmendmentEdit {
         }
     }
 
-    public static onLeavePage(): string {
-        return __t("std", "leave_changed_page");
-    }
-
-    public onContentChanged() {
-
+    onContentChanged() {
         if (!this.hasChanged) {
             this.hasChanged = true;
             if (!$("body").hasClass('testing')) {
-                $(window).on("beforeunload", AmendmentEdit.onLeavePage);
+                $(window).on("beforeunload", onLeavePage);
             }
         }
     }
