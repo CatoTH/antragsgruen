@@ -154,7 +154,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS && $motionType->maySeeIComments()) {
         if (count($paragraph->comments) > 0 || $motionType->getCommentPolicy()) {
-            echo '<section class="commentHolder" data-antragsgruen-widget="frontend/Comments">';
+            echo '<section class="commentHolder commentsWidget">';
             $motion = $section->getMotion();
             $form   = $commentForm;
 

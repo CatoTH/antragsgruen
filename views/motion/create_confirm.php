@@ -30,7 +30,11 @@ $controller->layoutParams->bodyCssClasses[] = 'createConfirmPage';
 echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
 
 ?>
-    <section class="toolbarBelowTitle versionSwitchtoolbar" data-antragsgruen-widget="frontend/MotionCreateConfirm">
+    <script type="module">
+        import { MotionCreateConfirm } from '/js/modules/frontend/MotionCreateConfirm.js';
+        new MotionCreateConfirm(document.querySelector('.motionCreateToolbar'));
+    </script>
+    <section class="toolbarBelowTitle versionSwitchtoolbar motionCreateToolbar">
         <div class="styleSwitcher">
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn btn-default active">

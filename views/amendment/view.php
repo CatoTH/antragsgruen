@@ -27,7 +27,6 @@ $hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedPropo
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->addAMDModule('frontend/AmendmentShow');
 $layout->loadVue();
 $layout->addFullscreenTemplates();
 if ($hasPp && $hasPpAdminbox) {
@@ -76,6 +75,13 @@ echo '<div class="primaryHeader">';
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 echo $fullscreenButton;
 echo '</div>';
+
+?>
+    <script type="module">
+        import { AmendmentShow } from '/js/modules/frontend/AmendmentShow.js';
+        new AmendmentShow();
+    </script>
+<?php
 
 echo $layout->getMiniMenu('sidebarSmall');
 

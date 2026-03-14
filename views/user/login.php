@@ -23,7 +23,6 @@ $layout     = $controller->layoutParams;
 $this->title = Yii::t('user', 'login_title');
 $layout->addBreadcrumb(Yii::t('user', 'login_title'));
 $layout->robotsNoindex = true;
-$layout->addAMDModule('frontend/LoginForm');
 
 if ($controller->site) {
     $loginMethods = $controller->site->getSettings()->loginMethods;
@@ -35,7 +34,13 @@ $params = AntragsgruenApp::getInstance();
 $externalAuthenticator = User::getExternalAuthenticator();
 $hasNonUsernamePwdLogin = false;
 
-echo '<h1>' . Yii::t('user', 'login_title') . '</h1>';
+?>
+    <h1><?= Yii::t('user', 'login_title') ?></h1>
+    <script type="module">
+        import { LoginForm } from '/js/modules/frontend/LoginForm.js';
+        new LoginForm();
+    </script>
+<?php
 
 $loginText = ConsultationText::getPageData($controller->site, $controller->consultation, ConsultationText::DEFAULT_PAGE_LOGIN_PRE);
 if (trim($loginText->text) !== '') {

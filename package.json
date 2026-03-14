@@ -12,8 +12,8 @@
         "test:unit": "vendor/bin/codecept run Unit",
         "watch": "gulp watch",
         "build": "gulp",
-        "lint": "eslint --no-fix",
-        "lint:fix": "eslint --fix"
+        "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
+        "lint:fix": "eslint --fix 'web/js/**/*.{js,ts}'"
     },
     "engines": {
         "node": ">=22"
@@ -39,13 +39,10 @@
         "gulp-sass": "^6.0.1",
         "gulp-sourcemaps": "^3.0.0",
         "gulp-terser": "^2.1.0",
-        "gulp-typescript": "^5.0.1",
         "gulp-uglify": "^3.0.2",
         "pa11y": "^5.3.1",
         "postcss": "^8.4.5",
-        "sass": "^1.86.3",
-        "typescript": "~5.9.3",
-        "typescript-eslint": "^8.8.1"
+        "sass": "^1.86.3"
     },
     "directories": {
         "bin": "./bin/"

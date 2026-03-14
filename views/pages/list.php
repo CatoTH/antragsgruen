@@ -71,10 +71,13 @@ $foundPageIds = [];
     }
     ?>
 </div>
+<script type="module">
+    import { ContentPageCreate } from '/js/modules/frontend/ContentPageCreate.js';
+    new ContentPageCreate(document.querySelector(".createPageForm"));
+</script>
 <br>
 <?= Html::beginForm('', 'post', [
     'class'                    => 'createPageForm form-inline',
-    'data-antragsgruen-widget' => 'frontend/ContentPageCreate',
 ]) ?>
 <h2 class="green"><?= Yii::t('pages', 'list_add_custom') ?></h2>
 <div class="content">

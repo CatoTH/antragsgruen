@@ -5,13 +5,11 @@ import concat from 'gulp-concat';
 import postcss from 'gulp-postcss';
 import sourcemaps from 'gulp-sourcemaps';
 import terser from 'gulp-terser';
-import ts from 'gulp-typescript';
 // SASS
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 const sass = gulpSass(dartSass);
 
-const tsProject = ts.createProject('tsconfig.json');
 const main_js_files = [
     //"node_modules/popper.js/dist/umd/popper.js",
     "node_modules/entreprise7pro-bootstrap/js/tooltip.js",
@@ -34,16 +32,6 @@ async function taskCopyFiles() {
     await gulp.src("node_modules/vue/dist/vue.global.prod.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/vuedraggable/dist/vuedraggable.umd.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/vue-draggable-plus/dist/vue-draggable-plus.iife.js").pipe(gulp.dest('./web/npm/'));
-}
-
-function taskBuildTypescript() {
-    return gulp.src('web/typescript/**/*.ts')
-        .pipe(sourcemaps.init())
-        .pipe(tsProject())
-        .js
-        .pipe(terser())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('web/js/build/'));
 }
 
 function taskBuildJsMain() {
@@ -174,15 +162,13 @@ function taskWatch() {
     gulp.watch(["web/css/*.scss"], {usePolling: true}, gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], {usePolling: true}, taskBuildPluginCss);
     gulp.watch(["assets/html2pdf/*.scss"], {usePolling: true}, taskBuildHtml2PdfCss);
-    gulp.watch(['web/typescript/**/*.ts'], {usePolling: true}, taskBuildTypescript);
 }
 
 gulp.task('build-js', taskBuildJs);
-gulp.task('build-typescript', taskBuildTypescript);
 gulp.task('build-css', taskBuildCss);
 gulp.task('build-html2pdf-css', taskBuildHtml2PdfCss);
 gulp.task('build-plugin-css', taskBuildPluginCss);
 gulp.task('copy-files', taskCopyFiles);
 gulp.task('watch', taskWatch);
 
-gulp.task('default', gulp.parallel(taskBuildJs, taskBuildTypescript, taskBuildCss, taskCopyFiles, taskBuildPluginCss, taskBuildHtml2PdfCss));
+gulp.task('default', gulp.parallel(taskBuildJs, taskBuildCss, taskCopyFiles, taskBuildPluginCss, taskBuildHtml2PdfCss));

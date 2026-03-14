@@ -29,7 +29,6 @@ $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestPropos
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->addAMDModule('frontend/MotionShow');
 $layout->loadVue();
 $layout->addFullscreenTemplates();
 if ($hasPp && $hasPpAdminbox) {
@@ -102,6 +101,13 @@ if ($motion->isResolution()) {
 }
 echo $fullscreenButton;
 echo '</div>';
+
+?>
+<script type="module">
+    import { MotionShow } from '/js/modules/frontend/MotionShow.js';
+    new MotionShow();
+</script>
+<?php
 
 if ($consultation->getSettings()->hasSpeechLists) {
     // Should be after h1 (because of CSS border-radius to .well :first-child),
@@ -327,7 +333,7 @@ if ($alternativeCommentView) {
 }
 $maySeeComments = $motion->getMyMotionType()->maySeeIComments();
 if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alternativeCommentView) {
-    echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
+    echo '<section class="comments commentsWidget" aria-labelledby="commentsTitle">';
     echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
@@ -370,6 +376,15 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
     echo $form->renderFormOrErrorMessage();
 
     echo '</section>';
+    ?>
+<?php
 }
+
+?>
+<script type="module">
+    import { initComments } from '/js/modules/frontend/Comments.js';
+    document.querySelectorAll(".commentsWidget").forEach(widget => initComments(widget));
+</script>
+<?php
 
 echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => false, 'reducedNavigation' => $reducedNavigation]);

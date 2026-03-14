@@ -57,6 +57,12 @@ echo '<div class="primaryHeader"><h1 class="pageTitle">' . Html::encode($pageDat
 if ($admin) {
     $layout->loadCKEditor();
     $layout->loadSelectize();
+    ?>
+    <script type="module">
+        import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
+        new ContentPageEdit(document.querySelector(".contentEditForm"));
+    </script>
+    <?php
 
     echo Html::beginForm($saveUrl, 'post', [
         'class'                    => 'contentEditForm',
@@ -64,7 +70,6 @@ if ($admin) {
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
         'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
         'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
-        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
         'data-text-selector'       => '#stdTextHolder',
         'data-save-selector'       => '.textSaver',
         'data-edit-selector'       => '.editCaller',
