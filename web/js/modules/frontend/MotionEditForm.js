@@ -1,3 +1,5 @@
+// @ts-check
+
 import {DraftSavingEngine} from "../shared/DraftSavingEngine.js";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
 

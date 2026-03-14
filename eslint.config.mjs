@@ -33,12 +33,12 @@ const config = defineConfig(
             'no-restricted-globals': ['error', ...ConfusingGlobals],
             'no-prototype-builtins': 'off',
             'no-unused-vars': 'off',
+            'promise/no-callback-in-promise': 'off',
             /*
             'no-empty': 'off',//todo
             'no-useless-escape': 'off',//todo
             'prefer-const': 'off',//todo
             'promise/always-return': 'off',//todo
-            'promise/no-callback-in-promise': 'off',//todo
              */
         },
     },

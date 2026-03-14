@@ -1,3 +1,5 @@
+// @ts-check
+
 export class DraftSavingEngine {
     /** @type {JQuery}  */ $form;
     /** @type {JQuery}  */ $html;

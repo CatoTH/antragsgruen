@@ -1,3 +1,5 @@
+// @ts-check
+
 export class AccountEdit {
     constructor() {
         let pwMinLen = $("#userPwd").data("min-len");

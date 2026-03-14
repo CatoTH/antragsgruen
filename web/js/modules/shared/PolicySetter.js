@@ -1,3 +1,5 @@
+// @ts-check
+
 const POLICY_USER_GROUPS = 6;
 
 export class PolicySetter {

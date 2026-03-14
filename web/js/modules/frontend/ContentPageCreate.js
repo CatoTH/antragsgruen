@@ -1,3 +1,5 @@
+// @ts-check
+
 export class ContentPageCreate {
     constructor(form) {
         const $form = $(form);

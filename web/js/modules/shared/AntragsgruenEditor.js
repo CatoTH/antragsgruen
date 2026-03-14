@@ -1,6 +1,5 @@
 // @ts-check
 
-
 export class AntragsgruenEditor {
     /** @type {CKEDITOR.editor} */
     editor;
@@ -203,7 +202,7 @@ export class AntragsgruenEditor {
     /**
      * @param {string} id
      */
-    destroyInstanceById(id) {
+    static destroyInstanceById(id) {
         const editor = CKEDITOR.instances[id];
         editor.destroy();
 

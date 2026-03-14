@@ -10,9 +10,14 @@ use Yii\helpers\Html;
 $simulatedTime = DateTools::getSimulatedTime($consultation);
 $locale        = Tools::getCurrentDateLocale();
 
+?>
+<script type="module">
+    import { deadlineDebugBar } from '/js/modules/frontend/DeadlineDebugBar.js';
+    deadlineDebugBar(document.querySelector('.stickyAdminDebugFooter'));
+</script>
+<?php
 echo Html::beginForm(UrlHelper::createUrl('consultation/debugbar-ajax'), 'post', [
     'class'                    => 'stickyAdminDebugFooter',
-    'data-antragsgruen-widget' => 'frontend/DeadlineDebugBar',
 ]);
 ?>
 <h2 class="headCol">

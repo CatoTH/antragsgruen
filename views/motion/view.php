@@ -333,7 +333,7 @@ if ($alternativeCommentView) {
 }
 $maySeeComments = $motion->getMyMotionType()->maySeeIComments();
 if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alternativeCommentView) {
-    echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
+    echo '<section class="comments commentsWidget" aria-labelledby="commentsTitle">';
     echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
@@ -376,6 +376,12 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
     echo $form->renderFormOrErrorMessage();
 
     echo '</section>';
+    ?>
+    <script type="module">
+        import { initComments } from '/js/modules/frontend/Comments.js';
+        initComments(document.querySelector(".commentsWidget"));
+    </script>
+<?php
 }
 
 echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => false, 'reducedNavigation' => $reducedNavigation]);

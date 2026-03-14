@@ -1,3 +1,5 @@
+// @ts-check
+
 import {PolicySetter} from "../shared/PolicySetter.js";
 
 export class ContentPageEdit {

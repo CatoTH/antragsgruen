@@ -1,3 +1,5 @@
+// @ts-check
+
 export function copyUrlToClipboard(widget) {
     const $widget = $(widget),
         $button = $widget.find("button"),
