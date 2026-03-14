@@ -21,8 +21,6 @@ $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache()
 
 
 $layout->loadVue();
-$layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/speech/user-full-list-widget.vue.php');
 $layout->addFullscreenTemplates();
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('user', 'speech');
@@ -52,6 +50,8 @@ if (User::getCurrentUser()) {
     $fullscreenButton = '';
 }
 
+echo $this->render('@app/views/speech/user-full-list-widget.vue.php');
+
 ?>
 <div class="primaryHeader">
     <h1 id="speechListUserTitle"><?= Html::encode($this->title) ?></h1>
@@ -60,7 +60,6 @@ if (User::getCurrentUser()) {
 
 <section class="currentSpeechFullPage currentSpeechPageWidth"
          aria-labelledby="speechListUserTitle"
-         data-antragsgruen-widget="frontend/CurrentSpeechList"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"

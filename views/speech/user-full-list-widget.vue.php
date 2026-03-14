@@ -227,13 +227,40 @@ ob_start();
 
 <?php
 $html = ob_get_clean();
+$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
+$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
+$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
 
-<script>
-    __setVueComponent('speech', 'component', 'speech-user-full-list-widget', {
+<script type="module">
+    import { getSpeechCommonMixins } from "/js/modules/shared/SpeechCommonMixins.js";
+    const SPEECH_MIXINS = getSpeechCommonMixins(
+        "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>,
+        "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>,
+        <?= json_encode($pollUrl) ?>,
+        <?= json_encode($registerUrl) ?>,
+        <?= json_encode($unregisterUrl) ?>
+    );
+
+    const $element = $(document.querySelector('.currentSpeechFullPage')),
+        $vueEl = $element.find(".currentSpeechList"),
+        data = {
+            queue: $element.data('queue'),
+            user: $element.data('user'),
+            csrf: $("head").find("meta[name=csrf-token]").attr("content"),
+            title: $element.data('title'),
+            adminUrl: $element.data('admin-url'),
+        },
+        widget = Vue.createApp({
+            template: `
+                    <speech-user-full-list-widget :initQueue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-full-list-widget>`,
+            data() { return data }
+        });
+
+    widget.component('speech-user-full-list-widget', {
         template: <?= json_encode($html) ?>,
         props: ['initQueue', 'csrf', 'user', 'title'],
-        mixins: [SPEECH_COMMON_MIXIN],
+        mixins: [SPEECH_MIXINS],
         data() {
             return {
                 registerName: this.user.name,
@@ -248,4 +275,7 @@ $html = ob_get_clean();
             this.stopPolling();
         }
     });
+
+    widget.config.compilerOptions.whitespace = 'condense';
+    widget.mount($vueEl[0]);
 </script>

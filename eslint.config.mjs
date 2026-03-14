@@ -16,6 +16,7 @@ const config = defineConfig(
             globals: {
                 ...globals.browser,
                 ...globals.jquery,
+                ...globals.vue,
                 "bootbox": "readonly",
                 "CKEDITOR": "readonly",
                 "Sortable": "readonly",
