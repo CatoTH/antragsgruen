@@ -1,14 +1,18 @@
-import { AntragsgruenEditor } from '../shared/AntragsgruenEditor';
+// @ts-check
+
+import { AntragsgruenEditor } from '../shared/AntragsgruenEditor.js';
 
 export class EditorialEdit {
-    private readonly editCaller: HTMLDivElement;
-    private readonly textHolder: HTMLDivElement;
-    private readonly metadataView: HTMLDivElement;
-    private readonly metadataEdit: HTMLDivElement;
-    private readonly saveRow: HTMLDivElement;
-    private editor: AntragsgruenEditor;
+    /** @type { HTMLElement } */        form;
+    /** @type { HTMLElement } */        editCaller;
+    /** @type { HTMLElement } */        textHolder;
+    /** @type { HTMLElement } */        metadataView;
+    /** @type { HTMLElement } */        metadataEdit;
+    /** @type { HTMLElement } */        saveRow;
+    /** @type { AntragsgruenEditor } */ editor;
 
-    constructor(_, private form: HTMLFormElement) {
+    constructor(form) {
+        this.form = form;
         this.form.addEventListener('submit', e => e.preventDefault()); // necessary for IE11
 
         this.saveRow = this.form.querySelector('.saveRow');
@@ -26,7 +30,7 @@ export class EditorialEdit {
         }
     }
 
-    private editCalled(ev = null) {
+    editCalled(ev = null) {
         if (ev) {
             ev.preventDefault();
         }
@@ -40,14 +44,14 @@ export class EditorialEdit {
         this.metadataEdit.classList.remove('hidden');
     }
 
-    private async save(ev) {
+    async save(ev) {
         ev.preventDefault();
         let postData = {
             'data': this.editor.getEditor().getData(),
-            'author': (this.metadataEdit.querySelector('.author') as HTMLInputElement).value,
-            'updateDate': ((this.metadataEdit.querySelector('.updateDate') as HTMLInputElement).checked ? 1 : 0),
+            'author': this.metadataEdit.querySelector('.author').value,
+            'updateDate': (this.metadataEdit.querySelector('.updateDate').checked ? 1 : 0),
         };
-        const csrf = (this.form.querySelector('input[name=_csrf]') as HTMLInputElement).value;
+        const csrf = this.form.querySelector('input[name=_csrf]').value;
 
         $.ajax({
             url: this.form.getAttribute('action'),
