@@ -205,13 +205,42 @@ ob_start();
 
 <?php
 $html = ob_get_clean();
+$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
+$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
+$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
 
-<script>
-    __setVueComponent('speech', 'component', 'speech-user-footer-widget', {
+<script type="module">
+    import { createApp } from '/npm/vue.esm-browser.prod.js';
+    import { getSpeechCommonMixins } from "/js/modules/shared/SpeechCommonMixins.js";
+
+    const SPEECH_MIXINS = getSpeechCommonMixins(
+        "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>,
+        "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>,
+        <?= json_encode($pollUrl) ?>,
+        <?= json_encode($registerUrl) ?>,
+        <?= json_encode($unregisterUrl) ?>
+    );
+
+    const $element = $(document.querySelector('.currentSpeechFooter'));
+
+    /** @type {import('vue').App} */
+    const widget = createApp({
+            template: `
+                    <speech-user-footer-widget :initQueue="queue" :user="user" :csrf="csrf" :title="title" :adminUrl="adminUrl"></speech-user-footer-widget>`,
+            data() { return {
+                queue: $element.data('queue'),
+                user: $element.data('user'),
+                csrf: $("head").find("meta[name=csrf-token]").attr("content"),
+                title: $element.data('title'),
+                adminUrl: $element.data('admin-url'),
+            } }
+        });
+
+    widget.component('speech-user-footer-widget', {
         template: <?= json_encode($html) ?>,
         props: ['initQueue', 'csrf', 'user', 'title', 'adminUrl'],
-        mixins: [SPEECH_COMMON_MIXIN],
+        mixins: [SPEECH_MIXINS],
         data() {
             return {
                 registerName: this.user.name,
@@ -226,4 +255,7 @@ $html = ob_get_clean();
             this.stopPolling();
         }
     });
+
+    widget.config.compilerOptions.whitespace = 'condense';
+    widget.mount(".currentSpeechFooter .currentSpeechList");
 </script>

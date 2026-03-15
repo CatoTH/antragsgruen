@@ -233,7 +233,9 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
 ?>
 
 <script type="module">
+    import { createApp } from '/npm/vue.esm-browser.prod.js';
     import { getSpeechCommonMixins } from "/js/modules/shared/SpeechCommonMixins.js";
+
     const SPEECH_MIXINS = getSpeechCommonMixins(
         "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>,
         "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>,
@@ -242,19 +244,19 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
         <?= json_encode($unregisterUrl) ?>
     );
 
-    const $element = $(document.querySelector('.currentSpeechFullPage')),
-        $vueEl = $element.find(".currentSpeechList"),
-        data = {
-            queue: $element.data('queue'),
-            user: $element.data('user'),
-            csrf: $("head").find("meta[name=csrf-token]").attr("content"),
-            title: $element.data('title'),
-            adminUrl: $element.data('admin-url'),
-        },
-        widget = Vue.createApp({
+    const $element = $('.currentSpeechFullPage');
+
+    /** @type {import('vue').App} */
+    const widget = createApp({
             template: `
                     <speech-user-full-list-widget :initQueue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-full-list-widget>`,
-            data() { return data }
+            data() { return {
+                queue: $element.data('queue'),
+                user: $element.data('user'),
+                csrf: $("head").find("meta[name=csrf-token]").attr("content"),
+                title: $element.data('title'),
+                adminUrl: $element.data('admin-url'),
+            } }
         });
 
     widget.component('speech-user-full-list-widget', {
@@ -277,5 +279,5 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
     });
 
     widget.config.compilerOptions.whitespace = 'condense';
-    widget.mount($vueEl[0]);
+    widget.mount('.currentSpeechFullPage .currentSpeechList');
 </script>

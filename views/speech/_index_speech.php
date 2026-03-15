@@ -24,8 +24,6 @@ $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
 $layout->loadVue();
-$layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/speech/user-inline-widget.vue.php');
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('user', 'speech');
 
@@ -38,10 +36,11 @@ if ($queue->motionId || $queue->agendaItemId) {
     $title = Yii::t('speech', 'user_section_title');
 }
 
+echo $this->render('@app/views/speech/user-inline-widget.vue.php');
+
 ?>
 <section class="currentSpeechInline currentSpeechPageWidth"
          aria-label="<?= Html::encode($title) ?>"
-         data-antragsgruen-widget="frontend/CurrentSpeechList"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"
