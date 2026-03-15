@@ -94,6 +94,10 @@ echo Html::beginForm('', 'post', [
 ]);
 
 ?>
+    <script type="module">
+        import { InitDb } from "/js/modules/installation/InitDb.js";
+        new InitDb(document.querySelector('.antragsgruenInitForm'));
+    </script>
     <input type="hidden" name="prettyUrls" value="<?= ($prettyBefore ? 1 : 0) ?>">
     <h2 class="green"><?= Yii::t('manager', 'config_lang') ?></h2>
     <div class="content">

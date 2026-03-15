@@ -10,22 +10,17 @@
 
 export class InitDb {
 
-    /** @type {JQuery} */
-    $form
-
-    /** @type {string} */
-    dbTestUrl
-
-    /** @type {string} */
-    dbTestUrlNotSoPretty
+    /** @type {JQuery} */ $form
+    /** @type {string} */ dbTestUrl
+    /** @type {string} */ dbTestUrlNotSoPretty
 
     /**
-     * @param {JQuery} $form
+     * @param {HTMLElement} form
      */
-    constructor($form) {
-        this.$form = $form
+    constructor(form) {
+        this.$form = $(form);
 
-        const $testDBcaller = $form.find(".testDBcaller")
+        const $testDBcaller = this.$form.find(".testDBcaller")
 
         this.dbTestUrl = $testDBcaller.data("url")
         this.dbTestUrlNotSoPretty = $testDBcaller.data("url-not-so-pretty")
@@ -130,5 +125,4 @@ export class InitDb {
 
             })
     }
-
 }
