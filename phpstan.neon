@@ -11,6 +11,9 @@ parameters:
       - identifier: missingType.iterableValue # Issues because Yii's ActiveRecords are recognized as Iterables
     scanDirectories:
       - vendor
+    excludePaths:
+      # Has too many symbols that are not installed by default, and not worth installing them just for this file
+      - components/OpenTelemetryLogTarget.php
     scanFiles:
       - views/motion/LayoutHelper.php
       - views/amendment/LayoutHelper.php
