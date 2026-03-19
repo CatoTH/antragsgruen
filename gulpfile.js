@@ -170,7 +170,8 @@ function taskCompileVue() {
     return gulp
         .src('web/js/vue/**/*.vue')
         .pipe(createVueTransform('/npm/vue.esm-browser.prod.js'))
-        .pipe(gulp.dest('web/js/build/'));
+        .pipe(terser())
+        .pipe(gulp.dest('web/js/vue/'));
 }
 
 gulp.task('build-js', taskBuildJs);

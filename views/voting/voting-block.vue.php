@@ -1,7 +1,5 @@
 <?php
 
-use app\components\UrlHelper;
-use app\models\layoutHooks\Layout;
 use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
 use app\models\policies\UserGroups;
@@ -9,7 +7,6 @@ use app\models\quorumType\IQuorumType;
 use app\models\settings\Privileges;
 use app\models\votings\AnswerTemplates;
 use app\models\db\{Consultation, IMotion, User, VotingBlock};
-use yii\helpers\Html;
 
 $user = User::getCurrentUser();
 $consultation = Consultation::getCurrent();
@@ -87,7 +84,7 @@ $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_V
 
     import { getVotingCommonMixins } from "/js/modules/shared/VotingCommonMixins.js";
     import translateDirective from "/js/modules/shared/Translate.vue.js";
-    import votingBlockWidget from "/js/build/VotingBlockWidget.js";
+    import votingBlockWidget from "/js/vue/VotingBlockWidget.js";
     const commonsMixins = getVotingCommonMixins(CONSTANTS, quorumCounter);
 
     translateDirective.registerTranslation("voting", <?= json_encode(
@@ -194,9 +191,6 @@ $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_V
     <?= $this->render('@app/views/voting/_voting_vote_list.vue.php'); ?>
 
     widget.component('voting-block-widget', votingBlockWidget);
-
-    import HelloWorld from '/js/build/helloworld.js';
-    widget.component('hello-world', HelloWorld);
 
     widget.config.compilerOptions.whitespace = 'condense';
     const widgetComponent = widget.mount(vueEl);

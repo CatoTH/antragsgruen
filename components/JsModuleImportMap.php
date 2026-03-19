@@ -10,6 +10,7 @@ use Symfony\Component\Finder\Finder;
 class JsModuleImportMap
 {
     private const JS_PATH = __DIR__ . '/../web/js/modules/';
+    private const VUE_PATH = __DIR__ . '/../web/js/vue/';
     private const INVALIDATE_MAX_HOURS = 2;
     private const MAP_CACHE_SECONDS = 60;
 
@@ -23,11 +24,11 @@ class JsModuleImportMap
 
         return $cache->getCached(function() {
             $app = AntragsgruenApp::getInstance();
-            $publicPathBase = $publicPath = $app->resourceBase . 'js/modules/';
+            $publicPathBase = $app->resourceBase . 'js/';
 
             $map = [];
             $finder = new Finder();
-            $finder->files()->in(self::JS_PATH)->name('*.js');
+            $finder->files()->in([self::JS_PATH, self::VUE_PATH])->name('*.js');
             foreach ($finder as $file) {
                 $lastModified = time() - $file->getMTime();
                 if ($lastModified > self::INVALIDATE_MAX_HOURS * 3600) {
@@ -35,7 +36,11 @@ class JsModuleImportMap
                 }
 
                 $path = basename($file->getPath());
-                $publicUrl = $publicPathBase . $path . '/' . $file->getFilename();
+                if ($path === "vue") {
+                    $publicUrl = $publicPathBase . $path . '/' . $file->getFilename();
+                } else {
+                    $publicUrl = $publicPathBase . "modules/" . $path . '/' . $file->getFilename();
+                }
                 $map[$publicUrl] = $publicUrl . '?ts=' . $file->getMTime();
             }
 
