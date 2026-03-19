@@ -88,9 +88,7 @@ ob_start();
 <?php
 $html = ob_get_clean();
 ?>
-
-<script>
-    __setVueComponent('voting', 'component', 'voting-vote-list', {
+widget.component('voting-vote-list', {
         template: <?= json_encode($html) ?>,
         props: ['voting', 'groupedVoting', 'setToUserGroupSelection', 'showNotVotedList'],
         data() {
@@ -166,4 +164,3 @@ $html = ob_get_clean();
             }
         }
     });
-</script>

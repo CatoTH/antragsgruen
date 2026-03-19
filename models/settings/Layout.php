@@ -315,7 +315,7 @@ class Layout
 
     public function loadVue(): void
     {
-        $this->addJS('npm/vue.global.prod.js');
+        //$this->addJS('npm/vue.global.prod.js');
     }
 
     public function addFullscreenTemplates(): void

@@ -5,6 +5,7 @@ import concat from 'gulp-concat';
 import postcss from 'gulp-postcss';
 import sourcemaps from 'gulp-sourcemaps';
 import terser from 'gulp-terser';
+import { createVueTransform } from "./assets/gulpfile.vue.js";
 // SASS
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
@@ -162,6 +163,14 @@ function taskWatch() {
     gulp.watch(["web/css/*.scss"], {usePolling: true}, gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], {usePolling: true}, taskBuildPluginCss);
     gulp.watch(["assets/html2pdf/*.scss"], {usePolling: true}, taskBuildHtml2PdfCss);
+    gulp.watch(['web/js/vue/**/*.vue'], taskCompileVue);
+}
+
+function taskCompileVue() {
+    return gulp
+        .src('web/js/vue/**/*.vue')
+        .pipe(createVueTransform('/npm/vue.esm-browser.prod.js'))
+        .pipe(gulp.dest('web/js/build/'));
 }
 
 gulp.task('build-js', taskBuildJs);
@@ -171,4 +180,4 @@ gulp.task('build-plugin-css', taskBuildPluginCss);
 gulp.task('copy-files', taskCopyFiles);
 gulp.task('watch', taskWatch);
 
-gulp.task('default', gulp.parallel(taskBuildJs, taskBuildCss, taskCopyFiles, taskBuildPluginCss, taskBuildHtml2PdfCss));
+gulp.task('default', gulp.parallel(taskBuildJs, taskCompileVue, taskBuildCss, taskCopyFiles, taskBuildPluginCss, taskBuildHtml2PdfCss));

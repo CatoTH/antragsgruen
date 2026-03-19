@@ -24,11 +24,6 @@ if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consu
     return;
 }
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
-$layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
-
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
@@ -41,9 +36,10 @@ $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTI
 <section data-url-poll="<?= Html::encode($pollUrl) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
          data-show-admin-link="true"
-         data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
+         class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"
 >
     <div class="currentVoting"></div>
 </section>
 
+<?= $this->render('/voting/voting-block.vue.php') ?>

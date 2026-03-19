@@ -1,3 +1,5 @@
+// @ts-check
+
 class SpeechPoller {
     timeOffset = 0;
     liveConnected = null;
