@@ -28,12 +28,7 @@ $layout->addCSS('css/backend.css');
 $layout->loadSelectize();
 $layout->loadSortable();
 $layout->loadVue();
-$layout->addVueTemplate('@app/views/shared/selectize.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/voting/_policy-select.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
 $layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
-$layout->addVueTemplate('@app/views/voting/admin-voting-sort.vue.php');
 Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
 $layout->loadVueDraggable();
 
