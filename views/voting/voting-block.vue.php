@@ -15,7 +15,7 @@ $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_V
 ?>
 
 <script type="module">
-    import { createApp } from '/npm/vue.esm-browser.prod.js';
+    import { createApp, h } from '/npm/vue.esm-browser.prod.js';
 
     const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
 
@@ -85,6 +85,7 @@ $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_V
     import { getVotingCommonMixins } from "/js/modules/shared/VotingCommonMixins.js";
     import translateDirective from "/js/modules/shared/Translate.vue.js";
     import votingBlockWidget from "/js/vue/VotingBlockWidget.js";
+    import voteList from "/js/vue/VotingList.js";
     const commonsMixins = getVotingCommonMixins(CONSTANTS, quorumCounter);
 
     translateDirective.registerTranslation("voting", <?= json_encode(
@@ -98,11 +99,22 @@ $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_V
         voteUrl = element.getAttribute('data-url-vote'),
         showAdminLink = element.getAttribute('data-show-admin-link');
 
+    /** @type {import('vue').App} */
     const widget = createApp({
-        template: `
-                <div class="currentVotings">
-                <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote" @abstain="abstain" :showAdminLink="showAdminLink"></voting-block-widget>
-                </div>`,
+        render() {
+            return h(
+                'div',
+                { class: 'currentVotings' },
+                this.votings.map(voting =>
+                    h(votingBlockWidget, {
+                        voting,
+                        showAdminLink: this.showAdminLink,
+                        onVote: this.vote,
+                        onAbstain: this.abstain
+                    })
+                )
+            );
+        },
         data() {
             return {
                 votings: JSON.parse(votingInitJson),
@@ -187,10 +199,7 @@ $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_V
 
     widget.directive('t', translateDirective);
     widget.mixin(commonsMixins);
-
-    <?= $this->render('@app/views/voting/_voting_vote_list.vue.php'); ?>
-
-    widget.component('voting-block-widget', votingBlockWidget);
+    widget.component('vote-list', voteList);
 
     widget.config.compilerOptions.whitespace = 'condense';
     const widgetComponent = widget.mount(vueEl);

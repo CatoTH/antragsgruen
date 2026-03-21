@@ -21,10 +21,6 @@ $this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT,
 $sidebarMode = 'results';
 include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
-$layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
 Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
 
 $apiData = [];

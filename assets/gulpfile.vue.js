@@ -24,6 +24,9 @@ function transformVueSfc(source, filePath, vueUrl) {
     const { descriptor, errors } = parse(source, { filename });
 
     if (errors.length) {
+        Object.keys(errors).forEach( it =>
+            console.warn(errors[it])
+        )
         throw new Error(`[vue-sfc] Parse errors in ${filename}:\n` + errors.join('\n'));
     }
 

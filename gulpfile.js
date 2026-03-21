@@ -178,6 +178,7 @@ gulp.task('build-js', taskBuildJs);
 gulp.task('build-css', taskBuildCss);
 gulp.task('build-html2pdf-css', taskBuildHtml2PdfCss);
 gulp.task('build-plugin-css', taskBuildPluginCss);
+gulp.task('build-plugin-vue', taskCompileVue);
 gulp.task('copy-files', taskCopyFiles);
 gulp.task('watch', taskWatch);
 
