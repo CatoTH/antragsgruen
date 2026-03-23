@@ -38,6 +38,10 @@ function applyTranslation(el, binding) {
 
     if (attr) {
         el.setAttribute(attr, text);
+    } else if (el instanceof HTMLTemplateElement) {
+        // <template> elements are inert — replace with a plain text node
+        const textNode = document.createTextNode(text);
+        el.parentNode.replaceChild(textNode, el);
     } else if (html) {
         el.innerHTML = text;
     } else {

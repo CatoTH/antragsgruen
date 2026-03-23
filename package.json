@@ -48,14 +48,17 @@
         "bin": "./bin/"
     },
     "dependencies": {
+        "@rollup/plugin-commonjs": "^29.0.2",
+        "@rollup/plugin-node-resolve": "^16.0.3",
         "@selectize/selectize": "^0.15.2",
         "bootbox": "^6.0.4",
-        "entreprise7pro-bootstrap": "^3.4.8",
         "bootstrap-toggle": "^2.2.2",
         "clipboard": "^2.0.8",
+        "entreprise7pro-bootstrap": "^3.4.8",
         "isotope-layout": "^3.0.6",
         "moment": "^2.29.1",
         "requirejs": "^2.3.6",
+        "rollup": "^4.60.0",
         "sortablejs": "^1.14.0",
         "vue": "^3.2.0",
         "vue-draggable-plus": "^0.6.0",

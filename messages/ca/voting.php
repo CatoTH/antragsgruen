@@ -40,7 +40,7 @@ return [
 
     'admin_title' => 'Administració de votacions',
     'admin_intro' => '<strong>Pista:</strong> pots trobar un manual per a la funcionalitat de votació a la <a href="https://sandbox.motion.tools/help#advanced">pàgina d\'ajuda</a>.',
-    'admin_aria_single' => 'Administrar votació',
+    'admin_aria_single' => 'Administrar votació: %TITLE%',
     'admin_voting_use' => 'Votació en línia',
     'admin_voting_use_h' => 'La votació sobre les següents resolucions i esmenes tindrà lloc en línia a Antragsgrün',
     'admin_votes_total' => 'Total',
@@ -120,7 +120,7 @@ return [
     'voting_current_aria' => 'Votació activa actual',
     'voting_show_amend' => 'Mostrar esmena',
     'voting_edit_amend' => 'Edita l\'esmena',
-    'voting_by' => 'Per',
+    'voting_by' => 'Per %BY%',
     'voting_admin_all' => 'Administra les votacions',
     'voting_visibility' => 'Qui pot veure com he votat?',
     'voting_visibility_none' => 'Ningú pot veure com has votat. <small>(Tot i això, les persones amb accés a la base de dades podrien accedir a aquestes dades)</small>',

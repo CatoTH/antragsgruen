@@ -27,10 +27,6 @@ include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 $layout->addCSS('css/backend.css');
 $layout->loadSelectize();
 $layout->loadSortable();
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
-Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
-$layout->loadVueDraggable();
 
 $apiData = [];
 foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
@@ -77,6 +73,13 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
     return $group->getUserAdminApiObject();
 }, $consultation->getAllAvailableUserGroups());
 
+
+$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
+$CONSTANTS = array_merge($CONSTANTS, [
+    "motionEditUrl" => UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000']),
+    "amendmentEditUrl" => UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000']),
+]);
+
 ?>
 <h1><?= Yii::t('voting', 'admin_title') ?></h1>
 
@@ -88,7 +91,6 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
      data-vote-create="<?= Html::encode($voteCreateUrl) ?>"
      data-url-poll="<?= Html::encode($pollUrl) ?>"
      data-url-sort="<?= Html::encode($sortUrl) ?>"
-     data-antragsgruen-widget="backend/VotingAdmin"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
@@ -276,4 +278,269 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
     </section>
 
     <div class="votingAdmin"></div>
+
+    <script type="module">
+        import { createApp, h } from '/npm/vue.esm-browser.prod.js';
+
+        const quorumCounter = <?= json_encode(Yii::t('voting', 'quorum_counter')) ?>;
+
+        const CONSTANTS = <?= json_encode($CONSTANTS) ?>;
+
+        import { getVotingCommonMixins } from "/js/modules/shared/VotingCommonMixins.js";
+        import translateDirective from "/js/modules/shared/Translate.vue.js";
+        import votingAdmin from "/js/vue/VotingAdmin.js";
+        import vuedraggable from "/npm/vuedraggable.esm.js";
+
+        const commonsMixins = getVotingCommonMixins(CONSTANTS, quorumCounter);
+
+        translateDirective.registerTranslation("voting", <?= json_encode(
+            include(__DIR__ . '/../../messages/en/voting.php')
+        ) ?>);
+
+
+        const element = document.querySelector(".manageVotings");
+        const vueEl = element.querySelector(".votingAdmin");
+        const voteSettingsUrl = element.getAttribute('data-url-vote-settings');
+        const voteCreateUrl = element.getAttribute('data-vote-create');
+        const voteDownloadUrl = element.getAttribute('data-url-vote-download');
+        const addableMotions = JSON.parse(element.getAttribute('data-addable-motions'));
+        const pollUrl = element.getAttribute('data-url-poll');
+        const initUserGroups = JSON.parse(element.getAttribute('data-user-groups'));
+        const sortUrl = element.getAttribute('data-url-sort');
+        const votingInitJson = element.getAttribute('data-voting');
+
+        /** @type {import('vue').App} */
+        const widget = createApp({
+            template: `<div class="adminVotings">
+                <!--<voting-sort-widget
+                    v-if="isSorting"
+                    :votings="votings"
+                    ref="voting-sort-widget"
+                    @sorted="onSorted"></voting-sort-widget>-->
+                <voting-admin-widget
+                    v-if="!isSorting"
+                    v-for="voting in votings"
+                    :key="voting.id"
+                    :voting="voting"
+                    :addableMotions="addableMotions"
+                    :alreadyAddedItems="alreadyAddedItems"
+                    :userGroups="userGroups"
+                    :voteDownloadUrl="voteDownloadUrl"
+                    @set-status="setStatus"
+                    @save-settings="saveSettings"
+                    @remove-item="removeItem"
+                    @delete-voting="deleteVoting"
+                    @add-imotion="addIMotion"
+                    @add-question="addQuestion"
+                    @set-voters-to-user-group="setVotersToUserGroup"
+                    ref="voting-admin-widget"
+                ></voting-admin-widget>
+            </div>`,
+            data() {
+                return {
+                    isSorting: false,
+                    votingsJson: null,
+                    votings: null,
+                    userGroups: initUserGroups,
+                    voteDownloadUrl,
+                    addableMotions,
+                    csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
+                    pollingId: null,
+                    onReloadedCbs: []
+                };
+            },
+            computed: {
+                alreadyAddedItems: function () {
+                    const motions = [];
+                    const amendments = [];
+                    this.votings.forEach(voting => {
+                        voting.items.forEach(item => {
+                            if (item.type === 'motion') {
+                                motions.push(item.id);
+                            }
+                            if (item.type === 'amendment') {
+                                amendments.push(item.id);
+                            }
+                        });
+                    });
+                    return {motions, amendments};
+                }
+            },
+            methods: {
+                _performOperation: function (votingBlockId, additionalProps) {
+                    let postData = {
+                        _csrf: this.csrf,
+                    };
+                    if (additionalProps) {
+                        postData = Object.assign(postData, additionalProps);
+                    }
+                    const widget = this;
+                    const url = voteSettingsUrl.replace(/VOTINGBLOCKID/, votingBlockId);
+                    $.post(url, postData, function (data) {
+                        if (data.success !== undefined && !data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        widget.votings = data;
+                    }).catch(function (err) {
+                        alert(err.responseText);
+                    });
+                },
+                setVotingFromJson(data) {
+                    if (data === this.votingsJson) {
+                        return;
+                    }
+                    this.votings = JSON.parse(data);
+                    this.votingsJson = data;
+                },
+                setVotingFromObject(data) {
+                    this.votings = data;
+                    this.votingsJson = null;
+                },
+                toggleSorting() {
+                    this.isSorting = !this.isSorting;
+                },
+                setStatus(votingBlockId, newStatus) {
+                    this._performOperation(votingBlockId, {
+                        op: 'update-status',
+                        status: newStatus,
+                    });
+                },
+                saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames) {
+                    this._performOperation(votingBlockId, {
+                        op: 'save-settings',
+                        title,
+                        answerTemplate,
+                        majorityType,
+                        quorumType,
+                        hasGeneralAbstention: (hasGeneralAbstention ? 1 : 0),
+                        votePolicy,
+                        maxVotesByGroup,
+                        resultsPublic,
+                        votesPublic,
+                        votingTime,
+                        assignedMotion,
+                        votesNames,
+                    });
+                },
+                onSorted(sortedIds) {
+                    let postData = {
+                        _csrf: this.csrf,
+                        votingIds: sortedIds
+                    };
+                    const widget = this;
+                    $.post(sortUrl, postData, function (data) {
+                        if (data.success !== undefined && !data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        widget.votings = data;
+                        widget.isSorting = false;
+                    }).catch(function (err) {
+                        alert(err.responseText);
+                    });
+                },
+                deleteVoting(votingBlockId) {
+                    this._performOperation(votingBlockId, {
+                        op: 'delete-voting',
+                    });
+                },
+                createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, votePolicy, userGroups, resultsPublic, votesPublic, votesNames) {
+                    let postData = {
+                        _csrf: this.csrf,
+                        type,
+                        answers,
+                        title,
+                        specificQuestion,
+                        assignedMotion,
+                        majorityType,
+                        votePolicy,
+                        userGroups,
+                        resultsPublic,
+                        votesPublic,
+                        votesNames
+                    };
+
+                    const widget = this;
+                    $.post(voteCreateUrl, postData, function (data) {
+                        if (data.success !== undefined && !data.success) {
+                            alert(data.message);
+                            return;
+                        }
+                        widget.votings = data['votings'];
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
+
+                        window.setTimeout(() => {
+                            $("#voting" + data['created_voting']).scrollintoview({top_offset: -100});
+                        }, 200);
+                    }).catch(function (err) {
+                        alert(err.responseText);
+                    });
+                },
+                removeItem(votingBlockId, itemType, itemId) {
+                    this._performOperation(votingBlockId, {
+                        op: 'remove-item',
+                        itemType,
+                        itemId
+                    });
+                },
+                addIMotion(votingBlockId, itemDefinition) {
+                    this._performOperation(votingBlockId, {
+                        op: 'add-imotion',
+                        itemDefinition
+                    });
+                },
+                addQuestion(votingBlockId, question) {
+                    this._performOperation(votingBlockId, {
+                        op: 'add-question',
+                        question
+                    });
+                },
+                setVotersToUserGroup(votingBlockId, userIds, newUserGroup) {
+                    this._performOperation(votingBlockId, {
+                        op: 'set-voters-to-user-group',
+                        userIds,
+                        newUserGroup
+                    });
+                },
+                addReloadedCb: function (cb) {
+                    this.onReloadedCbs.push(cb);
+                },
+                reloadData: function () {
+                    const widget = this;
+                    $.get(pollUrl, function (data) {
+                        widget.setVotingFromJson(data);
+                        widget.onReloadedCbs.forEach(cb => {
+                            cb(widget.votings);
+                        });
+                    }, 'text').catch(function (err) {
+                        console.error("Could not load voting data from backend", err);
+                    });
+                },
+                startPolling: function () {
+                    const widget = this;
+                    this.pollingId = window.setInterval(function () {
+                        widget.reloadData();
+                    }, 3000);
+                }
+            },
+            beforeUnmount() {
+                window.clearInterval(this.pollingId)
+            },
+            created() {
+                this.setVotingFromJson(votingInitJson);
+                this.startPolling()
+            }
+        });
+
+        widget.mixin(commonsMixins);
+        widget.component('voting-admin-widget', votingAdmin);
+
+        widget.directive('t', translateDirective);
+
+        widget.config.compilerOptions.whitespace = 'condense';
+        const widgetComponent = widget.mount(vueEl);
+    </script>
 </div>

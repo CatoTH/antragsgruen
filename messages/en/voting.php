@@ -41,7 +41,7 @@ return [
 
     'admin_title' => 'Voting administration',
     'admin_intro' => '<strong>Hint:</strong> you can find a manual for the voting functionality on the <a href="https://sandbox.motion.tools/help#advanced">help page</a>.',
-    'admin_aria_single' => 'Administrate voting',
+    'admin_aria_single' => 'Administrate voting: %TITLE%',
     'admin_voting_use' => 'Online voting',
     'admin_voting_use_h' => 'The voting about the following motions and amendments shall take place online on Antragsgrün',
     'admin_votes_total' => 'Total',
@@ -126,7 +126,7 @@ return [
     'voting_current_aria' => 'Currently active voting',
     'voting_show_amend' => 'Show amendment',
     'voting_edit_amend' => 'Edit amendment',
-    'voting_by' => 'By',
+    'voting_by' => 'By %BY%',
     'voting_admin_all' => 'Administrate votings',
     'voting_visibility' => 'Who can see how I voted?',
     'voting_visibility_none' => 'Nobody can see how you voted. <small>(Persons with access to the database could access this data, though)</small>',

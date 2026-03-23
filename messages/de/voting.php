@@ -41,7 +41,7 @@ return [
 
     'admin_title' => 'Abstimmungen: Verwaltung',
     'admin_intro' => '<strong>Hinweis:</strong> eine Einführung und Anleitung zu den Abstimmungen gibt es auf der <a href="https://antragsgruen.de/help#abstimmungen">Hilfe-Seite</a>.',
-    'admin_aria_single' => 'Abstimmung verwalten',
+    'admin_aria_single' => 'Abstimmung verwalten: %TITLE%',
     'admin_voting_use' => 'Online-Abstimmung',
     'admin_voting_use_h' => 'Die Abstimmung über die genannten (Änderungs-)Anträge soll online auf Antragsgrün durchgeführt werden',
     'admin_votes_total' => 'Gesamt',
@@ -126,7 +126,7 @@ return [
     'voting_current_aria' => 'Aktuell laufende Abstimmung',
     'voting_show_amend' => 'Änderungsantrag anzeigen',
     'voting_edit_amend' => 'Änderungsantrag bearbeiten',
-    'voting_by' => 'Von',
+    'voting_by' => 'Von %BY%',
     'voting_admin_all' => 'Abstimmungen verwalten',
     'voting_visibility' => 'Wer kann sehen, wie ich abgestimmt habe?',
     'voting_visibility_none' => 'Niemand kann über Antragsgrün deine Stimme einsehen. <small>(Personen mit Datenbank-Zugriff können es aber nachvollziehen)</small>',
