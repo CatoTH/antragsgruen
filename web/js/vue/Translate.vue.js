@@ -11,6 +11,9 @@ export default {
     },
     registerTranslation(category, messages) {
         translations[category] = messages
+    },
+    getTranslation(category, messageId) {
+        return translations[category][messageId];
     }
 };
 
@@ -39,6 +42,10 @@ function applyTranslation(el, binding) {
     if (attr) {
         el.setAttribute(attr, text);
     } else if (el instanceof HTMLTemplateElement) {
+        // If already replaced/detached, do nothing
+        // Hint: this will likely not work if the text is changing - using template is just a workaround
+        if (!el.parentNode) return;
+
         // <template> elements are inert — replace with a plain text node
         const textNode = document.createTextNode(text);
         el.parentNode.replaceChild(textNode, el);

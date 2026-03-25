@@ -287,8 +287,9 @@ $CONSTANTS = array_merge($CONSTANTS, [
         const CONSTANTS = <?= json_encode($CONSTANTS) ?>;
 
         import { getVotingCommonMixins } from "/js/modules/shared/VotingCommonMixins.js";
-        import translateDirective from "/js/modules/shared/Translate.vue.js";
+        import translateDirective from "/js/vue/Translate.vue.js";
         import votingAdmin from "/js/vue/VotingAdmin.js";
+        import tooltipDirective from "/js/vue/Tooltip.vue.js";
         import vuedraggable from "/npm/vuedraggable.esm.js";
 
         const commonsMixins = getVotingCommonMixins(CONSTANTS, quorumCounter);
@@ -539,6 +540,7 @@ $CONSTANTS = array_merge($CONSTANTS, [
         widget.component('voting-admin-widget', votingAdmin);
 
         widget.directive('t', translateDirective);
+        widget.directive('tooltip', tooltipDirective);
 
         widget.config.compilerOptions.whitespace = 'condense';
         const widgetComponent = widget.mount(vueEl);

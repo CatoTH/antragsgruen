@@ -31,7 +31,7 @@
         <div class="majorityType" v-if="getVotingMajority(voting)">
           <strong v-t="['voting', 'settings_majoritytype']"></strong>:
           {{ getVotingMajority(voting).name }}
-          <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingMajority(voting).description" v-tooltip="majorityType.description"></span>
+          <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingMajority(voting).description" v-tooltip="getVotingMajority(voting).description"></span>
         </div>
         <div class="quorumType" v-if="getVotingQuorum(voting)">
           <strong v-t="['voting', 'settings_quorumtype']"></strong>:
@@ -440,10 +440,7 @@
 
 <script>
 
-const description_activity_opened = "json_encode(Yii::t('voting', 'activity_opened'))";
-const description_activity_reset = "json_encode(Yii::t('voting', 'activity_reset'))";
-const description_activity_closed = "json_encode(Yii::t('voting', 'activity_closed'))";
-const description_activity_reopened = "json_encode(Yii::t('voting', 'activity_reopened')) ?>";
+import translate from "/js/vue/Translate.vue.js";
 
 export default {
   props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups', 'voteDownloadUrl'],
@@ -649,16 +646,16 @@ export default {
       let description = '?';
       switch (logEntry['type']) {
         case this.ACTIVITY_TYPE_OPENED:
-          description = description_activity_opened;
+          description = translate.getTranslation("voting", "activity_opened");
           break;
         case this.ACTIVITY_TYPE_RESET:
-          description = description_activity_reset;
+          description = translate.getTranslation("voting", "activity_reset");
           break;
         case this.ACTIVITY_TYPE_CLOSED:
-          description = description_activity_closed
+          description = translate.getTranslation("voting", "activity_closed");
           break;
         case this.ACTIVITY_TYPE_REOPENED:
-          description = description_activity_reopened;
+          description = translate.getTranslation("voting", "activity_reopened");
           break;
       }
       let date = new Date(logEntry['date']);

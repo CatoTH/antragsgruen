@@ -24,7 +24,7 @@ $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
     const CONSTANTS = <?= json_encode($CONSTANTS) ?>;
 
     import { getVotingCommonMixins } from "/js/modules/shared/VotingCommonMixins.js";
-    import translateDirective from "/js/modules/shared/Translate.vue.js";
+    import translateDirective from "/js/vue/Translate.vue.js";
     import votingBlockWidget from "/js/vue/VotingBlockWidget.js";
     import voteList from "/js/vue/VotingList.js";
     const commonsMixins = getVotingCommonMixins(CONSTANTS, quorumCounter);
