@@ -1,6 +1,8 @@
 // @ts-check
 
-export function getVotingCommonMixins(constants, quorumCounter) {
+import translate from "/js/vue/Translate.vue.js";
+
+export function getVotingCommonMixins(constants) {
     return {
         data() {
             return Object.assign({
@@ -86,7 +88,8 @@ export function getVotingCommonMixins(constants, quorumCounter) {
                 if (groupedVoting[0].quorum_votes === null) {
                     return groupedVoting[0].quorum_custom_current;
                 } else {
-                    return quorumCounter.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
+                    const template = translate.getTranslation("voting", "quorum_counter");
+                    return template.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
                 }
             },
             hasVoteList: function (groupedItem) {

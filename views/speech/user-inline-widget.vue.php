@@ -226,7 +226,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
 
 <script type="module">
     import { createApp } from '/npm/vue.esm-browser.prod.js';
-    import { getSpeechCommonMixins } from "/js/modules/shared/SpeechCommonMixins.js";
+    import { getSpeechCommonMixins } from "/js/vue/SpeechCommonMixins.js";
 
     const SPEECH_MIXINS = getSpeechCommonMixins(
         "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>,

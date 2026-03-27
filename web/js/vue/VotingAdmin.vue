@@ -52,13 +52,13 @@
         </div>
       </div>
       <div class="alert alert-success" v-if="isOpen">
-        <p v-t="['voting', 'admin_status_opened']"></p>
+        <p v-t="['voting', 'admin_status_opened', true]"></p>
       </div>
       <div class="alert alert-info" v-if="voting.status === STATUS_CLOSED_PUBLISHED">
-        <p v-t="['voting', 'admin_status_closed']"></p>
+        <p v-t="['voting', 'admin_status_closed', true]"></p>
       </div>
       <div class="alert alert-info" v-if="voting.status === STATUS_CLOSED_UNPUBLISHED">
-        <p v-t="['voting', 'admin_status_closed_unpublished']"></p>
+        <p v-t="['voting', 'admin_status_closed_unpublished', true]"></p>
       </div>
       <form method="POST" class="votingDataActions" v-if="isPreparing">
         <div class="actions">
