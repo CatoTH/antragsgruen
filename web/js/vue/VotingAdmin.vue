@@ -738,7 +738,7 @@ export default {
     resetVoting: function () {
       const widget = this,
           newStatus = this.STATUS_PREPARING;
-      bootbox.confirm(resetConfirmation, function(result) {
+      bootbox.confirm(translate.getTranslation("voting", "admin_reset_dialog"), function(result) {
         if (result) {
           widget.voting.status = newStatus;
           widget.statusChanged();

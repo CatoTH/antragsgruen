@@ -15,6 +15,6 @@ $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
     new VotingBlock(
         document.querySelector(".currentVotingWidget"),
         <?= json_encode($CONSTANTS) ?>,
-        <?= json_encode( include(__DIR__ . '/../../messages/en/voting.php') ) ?>
+        <?= json_encode(\app\components\JsTools::getTranslations($consultation, "voting") ) ?>
     );
 </script>

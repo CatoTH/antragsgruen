@@ -72,6 +72,7 @@ return [
     'admin_settings_open' => 'Einstellungen anzeigen',
     'admin_settings_close' => 'Einstellungen schließen',
     'admin_mvtoug_caller' => 'Abstimmende zu Benutzer*innengruppe',
+    'admin_reset_dialog' => 'Willst du die komplette Abstimmung zurücksetzen?',
 
     'settings_create' => 'Abstimmung anlegen',
     'settings_sort' => 'Umsortieren',

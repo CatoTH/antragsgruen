@@ -284,7 +284,7 @@ $CONSTANTS = array_merge($CONSTANTS, [
         new VotingAdmin(
             document.querySelector(".manageVotings"),
             <?= json_encode($CONSTANTS) ?>,
-            <?= json_encode( include(__DIR__ . '/../../messages/en/voting.php') ) ?>
+            <?= json_encode(\app\components\JsTools::getTranslations($consultation, "voting") ) ?>
         );
     </script>
 </div>
