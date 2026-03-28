@@ -11,7 +11,7 @@
         "test:acceptance": "vendor/bin/codecept run Acceptance",
         "test:unit": "vendor/bin/codecept run Unit",
         "watch": "gulp watch",
-        "build": "gulp",
+        "build": "gulp && rollup -c assets/rollup.js",
         "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
         "lint:fix": "eslint --fix 'web/js/**/*.{js,ts}'"
     },

@@ -4,6 +4,7 @@ import { createApp } from '/npm/vue.esm-browser.prod.js';
 import { getVotingCommonMixins } from "/js/vue/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingAdmin from "/js/vue/VotingAdmin.js";
+import votingSort from "/js/vue/VotingAdminSort.js";
 import tooltipDirective from "/js/vue/Tooltip.vue.js";
 import vuedraggable from "/npm/vuedraggable.esm.js";
 
@@ -43,11 +44,11 @@ export class VotingAdmin {
         /** @type {import('vue').App} */
         const widget = createApp({
             template: `<div class="adminVotings">
-                <!--<voting-sort-widget
+                <voting-sort-widget
                     v-if="isSorting"
                     :votings="votings"
                     ref="voting-sort-widget"
-                    @sorted="onSorted"></voting-sort-widget>-->
+                    @sorted="onSorted"></voting-sort-widget>
                 <voting-admin-widget
                     v-if="!isSorting"
                     v-for="voting in votings"
@@ -268,6 +269,8 @@ export class VotingAdmin {
 
         widget.mixin(commonsMixins);
         widget.component('voting-admin-widget', votingAdmin);
+        widget.component('voting-sort-widget', votingSort)
+        widget.component('draggable', vuedraggable);
 
         widget.directive('t', translateDirective);
         widget.directive('tooltip', tooltipDirective);
