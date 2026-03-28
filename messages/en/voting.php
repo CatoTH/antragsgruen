@@ -72,7 +72,7 @@ return [
     'admin_settings_open' => 'Show settings',
     'admin_settings_close' => 'Close settings',
     'admin_mvtoug_caller' => 'Assign voters to a user group',
-    "admin_reset_dialog" => 'Are you sure you want to reset the whole voting?',
+    'admin_reset_dialog' => 'Are you sure you want to reset the whole voting?',
 
     'settings_create' => 'New voting',
     'settings_sort' => 'Sort',

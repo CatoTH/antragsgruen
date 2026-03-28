@@ -2,17 +2,10 @@
     <section class="voting" v-t:aria-label="['voting', 'voting_current_aria']">
         <h2 class="green">
             {{ voting.title }}
-            <!--
-            ?php
-            if ($iAmAdmin) {
-                $url = UrlHelper::createUrl(['/consultation/admin-votings']);
-                echo '<a href="' . Html::encode($url) . '" class="votingsAdminLink greenHeaderExtraLink" v-if="showAdminLink">';
-                echo '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> ';
-                echo Yii::t('voting', 'voting_admin_all');
-                echo '</a>';
-            }
-            ?
-            -->
+            <a :href="adminLink" class="votingsAdminLink greenHeaderExtraLink" v-if="adminLink">
+              <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+              <template v-t="['voting', 'voting_admin_all']"></template>
+            </a>
         </h2>
         <div class="content">
             <div class="remainingTime" v-if="isOpen && hasVotingTime && remainingVotingTime !== null">
@@ -196,7 +189,7 @@
 
 <script>
 export default {
-   props: ['voting', 'showAdminLink'],
+   props: ['voting', 'adminLink'],
    data() {
        return {
            shownVoteLists: []

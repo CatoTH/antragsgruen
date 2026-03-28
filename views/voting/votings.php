@@ -27,6 +27,7 @@ foreach (Factory::getOpenVotingBlocks($consultation, true, null) as $votingBlock
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
 $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '']);
+$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 ?>
 <h1><?= Yii::t('voting', 'page_title') ?></h1>
@@ -47,4 +48,11 @@ $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTI
     <div class="currentVoting"></div>
 </section>
 
-<?= $this->render('/voting/voting-block.vue.php') ?>
+<script type="module">
+    import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
+    new VotingBlock(
+        document.querySelector(".currentVotingWidget"),
+        <?= json_encode($CONSTANTS) ?>,
+        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+    );
+</script>

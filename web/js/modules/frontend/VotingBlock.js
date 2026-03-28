@@ -19,7 +19,7 @@ export class VotingBlock {
         const vueEl = this.element.querySelector(".currentVoting"),
             pollUrl = this.element.getAttribute('data-url-poll'),
             voteUrl = this.element.getAttribute('data-url-vote'),
-            showAdminLink = this.element.getAttribute('data-show-admin-link');
+            adminLink = this.element.getAttribute('data-admin-link');
 
         /** @type {import('vue').App} */
         const widget = createApp({
@@ -30,7 +30,7 @@ export class VotingBlock {
                     this.votings.map(voting =>
                         h(votingBlockWidget, {
                             voting,
-                            showAdminLink: this.showAdminLink,
+                            adminLink: this.adminLink,
                             onVote: this.vote,
                             onAbstain: this.abstain
                         })
@@ -41,7 +41,7 @@ export class VotingBlock {
                 return {
                     votings: JSON.parse(votingInitJson),
                     pollingId: null,
-                    showAdminLink,
+                    adminLink,
                     onReloadedCbs: []
                 };
             },

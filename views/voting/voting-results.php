@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\User;
+use app\models\db\{Consultation, User};
 use app\models\proposedProcedure\Factory;
 use yii\helpers\Html;
 
@@ -26,6 +26,7 @@ foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockT
 }
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-closed-voting-blocks']);
+$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
         data-antragsgruen-widget="frontend/FullscreenToggle">
@@ -53,4 +54,11 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
     <div class="currentVoting"></div>
 </section>
 
-<?= $this->render('/voting/voting-block.vue.php') ?>
+<script type="module">
+    import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
+    new VotingBlock(
+        document.querySelector(".currentVotingWidget"),
+        <?= json_encode($CONSTANTS) ?>,
+        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+    );
+</script>
