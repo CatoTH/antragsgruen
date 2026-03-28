@@ -1,22 +1,42 @@
-declare let Vue: any;
+// @ts-check
+
+import { createApp, h } from '/npm/vue.esm-browser.prod.js';
+import { getVotingCommonMixins } from "/js/vue/VotingCommonMixins.js";
+import translateDirective from "/js/vue/Translate.vue.js";
+import votingBlockWidget from "/js/vue/VotingBlockWidget.js";
+import voteList from "/js/vue/VotingList.js";
 
 export class VotingBlock {
-    private widget: any;
-    private widgetComponent: any;
+    constructor(el, CONSTANTS, translations) {
+        this.element = el;
 
-    constructor($element: JQuery) {
-        const element = $element[0],
-            vueEl = element.querySelector(".currentVoting"),
-            votingInitJson = element.getAttribute('data-voting'),
-            pollUrl = element.getAttribute('data-url-poll'),
-            voteUrl = element.getAttribute('data-url-vote'),
-            showAdminLink = element.getAttribute('data-show-admin-link');
+        const votingInitJson = this.element.getAttribute('data-voting');
+        this.createVueWidget(votingInitJson, CONSTANTS, translations);
+    }
 
-        this.widget = Vue.createApp({
-            template: `
-                <div class="currentVotings">
-                <voting-block-widget v-for="voting in votings" :voting="voting" @vote="vote" @abstain="abstain" :showAdminLink="showAdminLink"></voting-block-widget>
-                </div>`,
+    createVueWidget(votingInitJson, CONSTANTS, translations) {
+        const commonsMixins = getVotingCommonMixins(CONSTANTS);
+        const vueEl = this.element.querySelector(".currentVoting"),
+            pollUrl = this.element.getAttribute('data-url-poll'),
+            voteUrl = this.element.getAttribute('data-url-vote'),
+            showAdminLink = this.element.getAttribute('data-show-admin-link');
+
+        /** @type {import('vue').App} */
+        const widget = createApp({
+            render() {
+                return h(
+                    'div',
+                    { class: 'currentVotings' },
+                    this.votings.map(voting =>
+                        h(votingBlockWidget, {
+                            voting,
+                            showAdminLink: this.showAdminLink,
+                            onVote: this.vote,
+                            onAbstain: this.abstain
+                        })
+                    )
+                );
+            },
             data() {
                 return {
                     votings: JSON.parse(votingInitJson),
@@ -99,13 +119,17 @@ export class VotingBlock {
             }
         });
 
-        this.widget.config.compilerOptions.whitespace = 'condense';
-        window['__initVueComponents'](this.widget, 'voting');
+        translateDirective.registerTranslation("voting", translations);
 
-        this.widgetComponent = this.widget.mount(vueEl);
+        widget.directive('t', translateDirective);
+        widget.mixin(commonsMixins);
+        widget.component('vote-list', voteList);
+
+        widget.config.compilerOptions.whitespace = 'condense';
+        const widgetComponent = widget.mount(vueEl);
 
         const noneIndicator = document.querySelectorAll('.votingsNoneIndicator')
-        this.widgetComponent.addReloadedCb(data => {
+        widgetComponent.addReloadedCb(data => {
             if (data.length === 0) {
                 noneIndicator.forEach(node => node.classList.remove('hidden'));
             } else {

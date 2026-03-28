@@ -2,7 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\db\User;
-use app\models\layoutHooks\Layout;
 use app\models\proposedProcedure\Factory;
 use yii\helpers\Html;
 
@@ -20,8 +19,6 @@ $this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT,
 
 $sidebarMode = 'results';
 include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
-
-Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
 
 $apiData = [];
 foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockToRender) {
@@ -50,8 +47,10 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
     </div>
 </div>
 
-<section data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
+<section class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"
 >
     <div class="currentVoting"></div>
 </section>
+
+<?= $this->render('/voting/voting-block.vue.php') ?>
