@@ -1,14 +1,14 @@
 // @ts-check
 
+import translate from "/js/vue/Translate.vue.js";
+
 class SpeechPoller {
     timeOffset = 0;
     liveConnected = null;
 
     listeners = [];
-    pollUrl;
 
-    constructor(pollUrl) {
-        this.pollUrl = pollUrl;
+    constructor() {
         this.startPolling();
     }
 
@@ -48,7 +48,7 @@ class SpeechPoller {
         }
 
         $.get(
-            this.pollUrl.replace(/QUEUEIDS/, queues.join(",")),
+            TEMPLATE_POLL_URL.replace(/QUEUEIDS/, queues.join(",")),
             this.setData.bind(this)
         ).catch(function (err) {
             console.error("Could not load speech queue data from backend", err);
@@ -109,10 +109,19 @@ class SpeechPoller {
 }
 
 let SPEECH_POLLER = null;
+let TEMPLATE_POLL_URL = null;
+let TEMPLATE_REGISTER_URL = null;
+let TEMPLATE_UNREGISTER_URL = null;
 
-export function getSpeechCommonMixins(msgPersonsWaiting1, msgPersonsWaitingX, pollUrl, registerUrl, unregisterUrl) {
+export function setSpeechUrls(pollUrl, registerUrl, unregisterUrl) {
+    TEMPLATE_POLL_URL = pollUrl;
+    TEMPLATE_REGISTER_URL = registerUrl;
+    TEMPLATE_UNREGISTER_URL = unregisterUrl;
+}
+
+export function getSpeechCommonMixins() {
     if (SPEECH_POLLER === null) {
-        SPEECH_POLLER = new SpeechPoller(pollUrl)
+        SPEECH_POLLER = new SpeechPoller()
     }
     return {
         data() {
@@ -170,9 +179,9 @@ export function getSpeechCommonMixins(msgPersonsWaiting1, msgPersonsWaitingX, po
             },
             numAppliedTitle: function (subqueue) {
                 if (subqueue.num_applied === 1) {
-                    return msgPersonsWaiting1;
+                    return translate.getTranslation("speech", "persons_waiting_1");
                 } else {
-                    return msgPersonsWaitingX.replace(/%NUM%/, subqueue.num_applied);
+                    return translate.getTranslation("speech", "persons_waiting_x").replace(/%NUM%/, subqueue.num_applied);
                 }
             },
             formatUsernameHtml: function (item) {
@@ -186,7 +195,7 @@ export function getSpeechCommonMixins(msgPersonsWaiting1, msgPersonsWaitingX, po
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(registerUrl.replace(/QUEUEID/, widget.queue.id), {
+                $.post(TEMPLATE_REGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     username: this.registerName,
                     pointOfOrder: (pointOfOrder ? '1' : '0'),
@@ -217,7 +226,7 @@ export function getSpeechCommonMixins(msgPersonsWaiting1, msgPersonsWaitingX, po
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(unregisterUrl.replace(/QUEUEID/, widget.queue.id), {
+                $.post(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
                     _csrf: this.csrf,
                 }, function (data) {
                     widget.queue = data;

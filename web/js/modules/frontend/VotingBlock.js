@@ -1,10 +1,10 @@
 // @ts-check
 
 import { createApp, h } from '/npm/vue.esm-browser.prod.js';
-import { getVotingCommonMixins } from "/js/vue/VotingCommonMixins.js";
+import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
-import votingBlockWidget from "/js/vue/VotingBlockWidget.js";
-import voteList from "/js/vue/VotingList.js";
+import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
+import voteList from "/js/vue/voting/VotingList.js";
 
 export class VotingBlock {
     constructor(el, CONSTANTS, translations) {

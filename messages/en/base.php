@@ -68,6 +68,9 @@ return [
     'aria_error'        => 'Error',
     'aria_info'         => 'Info',
     'aria_success'      => 'Success',
-    'aria_close'        => 'Close',
+    'aria_close'        => [
+        'text' => 'Close',
+        'js' => true,
+    ],
     'aria_remove'       => 'Remove',
 ];

@@ -19,7 +19,10 @@ return [
     'table_caption'          => 'Metadata of the amendment',
     'table_description'      => 'The following table describes the status, the proposer and other metadata of this amendment.',
     'status'                 => 'Status',
-    'proposed_status'        => 'Proposed procedure',
+    'proposed_status'        => [
+        'text' => 'Proposed procedure',
+        'js' => true,
+    ],
     'referred_to'            => 'Referred to',
     'refer_to'               => 'Refer to',
     'obsoleted_by'           => 'Handled by',

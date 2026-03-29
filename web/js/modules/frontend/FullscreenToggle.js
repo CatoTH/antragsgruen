@@ -1,13 +1,21 @@
-declare let Vue: any;
+// @ts-check
+
+import { createApp, h } from '/npm/vue.esm-browser.prod.js';
+import translateDirective from "/js/vue/Translate.vue.js";
+import fullscreenProjectorComponent from "/js/vue/fullscreen/FullscreenProjector.js";
+import fullscreenIMotionComponent from "/js/vue/fullscreen/FullscreenIMotion.js";
+import fullscreenPanelComponent from "/js/vue/fullscreen/FullscreenPanel.js";
+import fullscreenSpeechComponent from "/js/vue/speech/FullscreenSpeech.js";
 
 export class FullscreenToggle {
-    private readonly element: HTMLElement;
-    private readonly holderElement: HTMLElement;
-    private readonly vueElement: string = null;
-    private vueWidget = null;
+    /** @type {HTMLElement} */ element;
+    /** @type {HTMLElement} */ holderElement;
+    /** @type {string|null} */  vueElement;
+    /** @type {import('vue').App|null} */ vueWidget = null;
+    translations;
 
-    constructor(private $element: JQuery) {
-        this.element = $element[0] as HTMLElement;
+    constructor(element, translations) {
+        this.element = element;
         if (this.element.getAttribute('data-vue-element')) {
             this.vueElement = this.element.getAttribute('data-vue-element');
             this.holderElement = this.createFullscreenVueHolder();
@@ -15,18 +23,19 @@ export class FullscreenToggle {
             this.holderElement = document.querySelector(".well");
         }
         this.element.addEventListener('click', this.toggleFullScreeen.bind(this));
+        this.translations = translations;
 
         ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "msfullscreenchange"].forEach(
             eventType => document.addEventListener(eventType, this.onFullscreenChange.bind(this), false)
         );
     }
 
-    private requestFullscreen() {
+    requestFullscreen() {
         if (this.vueElement) {
             document.querySelector("body").append(this.holderElement);
         }
 
-        let holderElement = this.holderElement as any;
+        let holderElement = this.holderElement;
         if (holderElement.requestFullscreen) {
             holderElement.requestFullscreen();
         } else if (holderElement.webkitRequestFullscreen) {
@@ -42,8 +51,9 @@ export class FullscreenToggle {
         }
     }
 
-    private exitFullscreen() {
-        let doc: any = document;
+    exitFullscreen() {
+        /** @type {HTMLDocument} */
+        let doc = document;
         if (doc.exitFullscreen) {
             doc.exitFullscreen();
         } else if (doc.webkitExitFullscreen) {
@@ -55,15 +65,15 @@ export class FullscreenToggle {
         }
     }
 
-    private isFullscreen(): boolean {
-        let doc: any = document;
+    isFullscreen() {
+        let doc = document;
         return !!(doc.fullscreenElement ||
             doc.webkitFullscreenElement ||
             doc.mozFullScreenElement ||
             doc.msFullscreenElement);
     }
 
-    private toggleFullScreeen() {
+    toggleFullScreeen() {
         if (this.isFullscreen()) {
             this.exitFullscreen();
         } else {
@@ -71,7 +81,7 @@ export class FullscreenToggle {
         }
     }
 
-    private onFullscreenChange() {
+    onFullscreenChange() {
         if (!this.isFullscreen() && this.vueElement) {
             const newUrl = (this.vueWidget.currIMotion ? this.vueWidget.currIMotion.url_html : null);
             this.destroyVueElement();
@@ -82,8 +92,7 @@ export class FullscreenToggle {
         }
     }
 
-    private createFullscreenVueHolder(): HTMLElement
-    {
+    createFullscreenVueHolder() {
         const element = document.createElement('div');
         const vueHolder = document.createElement('div');
         element.append(vueHolder);
@@ -91,15 +100,14 @@ export class FullscreenToggle {
         return element;
     }
 
-    private initVueElement(): void
-    {
+    initVueElement() {
         const widget = this;
-        let template = '<' + this.vueElement + ' :initdata="initdata" @close="close" @changed="changed"></' + this.vueElement + '>';
+        let template = '<fullscreen-projector :initdata="initdata" @close="close" @changed="changed"></fullscreen-projector>';
         let initdata = {};
         if (this.element.getAttribute('data-vue-initdata')) {
             initdata = JSON.parse(this.element.getAttribute('data-vue-initdata'));
         }
-        this.vueWidget = Vue.createApp({
+        this.vueWidget = createApp({
             template,
             data() {
                 return {
@@ -123,18 +131,26 @@ export class FullscreenToggle {
                     this.currIMotion = newIMotion;
                 }
             },
-            beforeUnmount() {},
-            created() {}
+            beforeUnmount() {
+            },
+            created() {
+            }
         });
 
-        this.vueWidget.config.compilerOptions.whitespace = 'condense';
-        window['__initVueComponents'](this.vueWidget, 'fullscreen');
+        Object.keys(this.translations).forEach( category => {
+            translateDirective.registerTranslation(category, this.translations[category]);
+        });
+        this.vueWidget.directive('t', translateDirective);
+
+        this.vueWidget.component('fullscreen-projector', fullscreenProjectorComponent);
+        this.vueWidget.component('fullscreen-panel', fullscreenPanelComponent);
+        this.vueWidget.component('fullscreen-imotion', fullscreenIMotionComponent);
+        this.vueWidget.component('fullscreen-speech', fullscreenSpeechComponent);
 
         this.vueWidget.mount(this.holderElement.firstChild);
     }
 
-    private destroyVueElement(): void
-    {
+    destroyVueElement() {
         this.vueWidget.unmount();
     }
 }

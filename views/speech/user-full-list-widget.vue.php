@@ -3,6 +3,10 @@
 use app\components\UrlHelper;
 use yii\helpers\Html;
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$consultation = $controller->consultation;
+
 $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
 
 ob_start();
@@ -234,15 +238,16 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
 
 <script type="module">
     import { createApp } from '/npm/vue.esm-browser.prod.js';
-    import { getSpeechCommonMixins } from "/js/vue/SpeechCommonMixins.js";
+    import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
+    import translate from "/js/vue/Translate.vue.js";
+    translate.registerTranslation("speech", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "speech")) ?>);
 
-    const SPEECH_MIXINS = getSpeechCommonMixins(
-        "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>,
-        "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>,
+    setSpeechUrls(
         <?= json_encode($pollUrl) ?>,
         <?= json_encode($registerUrl) ?>,
         <?= json_encode($unregisterUrl) ?>
     );
+    const SPEECH_MIXINS = getSpeechCommonMixins();
 
     const $element = $('.currentSpeechFullPage');
 

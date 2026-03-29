@@ -18,7 +18,7 @@ export default {
 };
 
 function applyTranslation(el, binding) {
-    const [category, messageId, html, replacements] = binding.value || [];
+    const [category, messageId, html, replacements, suffix] = binding.value || [];
     const attr = binding.arg; // e.g. "title", "aria-label"
 
     if (!category || !messageId) {
@@ -31,6 +31,10 @@ function applyTranslation(el, binding) {
         text = "UNKNOWN TRANSLATION";
     } else {
         text = translations[category][messageId];
+    }
+
+    if (suffix) {
+        text += suffix;
     }
 
     if (typeof(replacements) === "object") {
