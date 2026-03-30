@@ -7,6 +7,7 @@ import GroupEditModal from '/js/vue/users/GroupEditModal.js';
 import GroupEditAddRestricted from '/js/vue/users/GroupEditAddRestricted.js';
 import OrganisationEdit from '/js/vue/users/OrganisationEdit.js';
 import UserAdministration from '/js/vue/users/UserAdministration.js';
+import Selectize from '/js/vue/Selectize.js';
 
 export class UserAdmin {
     /** @type {import('vue').App} */ widget;
@@ -230,6 +231,7 @@ export class UserAdmin {
         this.widget.component('organisation-edit-widget', OrganisationEdit);
         this.widget.component('group-edit-add-restricted-widget', GroupEditAddRestricted);
         this.widget.component('user-admin-widget', UserAdministration);
+        this.widget.component('v-selectize', Selectize);
 
         this.widget.directive('t', translateDirective);
 

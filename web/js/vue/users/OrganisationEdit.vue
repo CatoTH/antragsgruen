@@ -1,6 +1,7 @@
 <template>
   <div class="modal fade editOrganisationModal" tabindex="-1" role="dialog" aria-labelledby="editOrganisationModalLabel" ref="organisation-edit-modal">
     <form method="POST" class="modal-dialog">
+      <input type="hidden" name="_csrf" :value="csrf">
     <article class="modal-content">
       <header class="modal-header">
         <button type="button" class="close" data-dismiss="modal" v-t:aria-label="['base', 'abort']"><span aria-hidden="true">&times;</span></button>
@@ -85,6 +86,9 @@ export default {
     },
     hasCustomGroups: function () {
       return this.groups.filter(group => group.editable).length > 0;
+    },
+    csrf: function () {
+      return document.querySelector('head meta[name=csrf-token]').getAttribute('content');
     }
   },
   methods: {

@@ -22,6 +22,7 @@ $this->title = Yii::t('admin', 'users_head');
 $layout->addCSS('css/backend.css');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'users_bc'));
+$layout->loadSelectize();
 
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
 $userPollUrl = UrlHelper::createUrl(['/admin/users/poll']);
