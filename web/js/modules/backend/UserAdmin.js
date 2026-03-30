@@ -1,17 +1,25 @@
-declare let Vue: any;
+// @ts-check
+
+import { createApp } from '/npm/vue.esm-browser.prod.js';
+import translateDirective from "/js/vue/Translate.vue.js";
+import UserEditModal from '/js/vue/users/UserEditModal.js';
+import GroupEditModal from '/js/vue/users/GroupEditModal.js';
+import GroupEditAddRestricted from '/js/vue/users/GroupEditAddRestricted.js';
+import OrganisationEdit from '/js/vue/users/OrganisationEdit.js';
+import UserAdministration from '/js/vue/users/UserAdministration.js';
 
 export class UserAdmin {
-    private widget;
-    private element: HTMLElement;
+    /** @type {import('vue').App} */ widget;
+    /** @type {HTMLElement} */element;
 
-    constructor($element: JQuery) {
-        this.element = $element[0];
+    constructor(element) {
+        this.element = element;
         this.createVueWidget();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
 
-    private createVueWidget() {
+    createVueWidget() {
         const vueEl = this.element.querySelector(".userAdmin");
         const userSaveUrl = this.element.getAttribute('data-url-user-save');
         const initUsersJson = this.element.getAttribute('data-users');
@@ -30,7 +38,7 @@ export class UserAdmin {
 
         let userWidgetComponent;
 
-        this.widget = Vue.createApp({
+        this.widget = createApp({
             template: `<div class="adminUsers">
                 <user-edit-widget
                     :groups="groups"
@@ -217,8 +225,13 @@ export class UserAdmin {
             }
         });
 
-        this.widget.config.compilerOptions.whitespace = 'condense';
-        window['__initVueComponents'](this.widget, 'users');
+        this.widget.component('user-edit-widget', UserEditModal);
+        this.widget.component('group-edit-widget', GroupEditModal);
+        this.widget.component('organisation-edit-widget', OrganisationEdit);
+        this.widget.component('group-edit-add-restricted-widget', GroupEditAddRestricted);
+        this.widget.component('user-admin-widget', UserAdministration);
+
+        this.widget.directive('t', translateDirective);
 
         userWidgetComponent = this.widget.mount(vueEl);
 

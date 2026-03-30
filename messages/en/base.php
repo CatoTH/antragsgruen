@@ -4,9 +4,15 @@ return [
     'Help'                  => 'Help',
     'Today'                 => 'Today',
     'Yesterday'             => 'Yesterday',
-    'save'                  => 'Save',
+    'save'                  => [
+        'text' => 'Save',
+        'js' => true,
+    ],
     'saved'                 => 'Saved.',
-    'abort'                 => 'Cancel',
+    'abort'                 => [
+        'text' => 'Abort',
+        'js' => true,
+    ],
     'edit'                  => 'Edit',
     'Home'                  => 'Home',
     'home_back'             => 'Back to home',

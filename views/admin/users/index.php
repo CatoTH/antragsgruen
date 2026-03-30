@@ -23,15 +23,6 @@ $layout->addCSS('css/backend.css');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'users_bc'));
 
-$layout->loadVue();
-$layout->loadSelectize();
-$layout->addVueTemplate('@app/views/shared/selectize.vue.php');
-$layout->addVueTemplate('@app/views/admin/users/users.vue.php');
-$layout->addVueTemplate('@app/views/admin/users/_user_edit.vue.php');
-$layout->addVueTemplate('@app/views/admin/users/_group_edit.vue.php');
-$layout->addVueTemplate('@app/views/admin/users/_organisation_edit.vue.php');
-Layout::registerAdditionalVueUserAdministrationTemplates($consultation, $layout);
-
 $userSaveUrl = UrlHelper::createUrl(['/admin/users/save']);
 $userPollUrl = UrlHelper::createUrl(['/admin/users/poll']);
 $userLogUrl = UrlHelper::createUrl(['/consultation/activitylog', 'userId' => '###USER###']);
@@ -77,7 +68,7 @@ $motionTypes = array_map(fn(\app\models\db\ConsultationMotionType $type): array 
 $privilegeDependencies = $privileges->getPrivilegeDependencies();
 ?>
 
-<div data-antragsgruen-widget="backend/UserAdmin"
+<div class="userAdminHolder"
      data-url-user-save="<?= Html::encode($userSaveUrl) ?>"
      data-url-poll="<?= Html::encode($userPollUrl) ?>"
      data-url-user-log="<?= Html::encode($userLogUrl) ?>"
@@ -95,6 +86,15 @@ $privilegeDependencies = $privileges->getPrivilegeDependencies();
 >
     <div class="userAdmin"></div>
 </div>
+
+<script type="module">
+    import translate from "/js/vue/Translate.vue.js";
+    translate.registerTranslation("admin", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "admin")) ?>);
+    translate.registerTranslation("base", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "base")) ?>);
+
+    import { UserAdmin } from "/js/modules/backend/UserAdmin.js";
+    new UserAdmin(document.querySelector('.userAdminHolder'));
+</script>
 
 <?php
 

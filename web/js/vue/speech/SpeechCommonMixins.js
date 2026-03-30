@@ -18,6 +18,7 @@ class SpeechPoller {
     };
 
     registerListener(queueId, widget, highFrequency) {
+        console.log("register");
         this.listeners.push({
             queueId,
             widget,
@@ -26,6 +27,7 @@ class SpeechPoller {
     };
 
     unregisterListener(widget) {
+        console.log("unregister");
         this.listeners = this.listeners.filter(listener => listener.widget !== widget);
     };
 
