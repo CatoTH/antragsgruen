@@ -36,7 +36,6 @@ if ($pageData->textId === ConsultationText::DEFAULT_PAGE_WELCOME) {
 }
 
 if (User::getCurrentUser() && $pageData->isCustomPage()) {
-    $layout->loadVue();
     $layout->addFullscreenTemplates();
     $fullscreenInitData = json_encode([
         'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),

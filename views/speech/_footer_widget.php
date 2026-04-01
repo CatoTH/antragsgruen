@@ -21,7 +21,6 @@ $layout = $controller->layoutParams;
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
-$layout->loadVue();
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('user', 'speech');
 

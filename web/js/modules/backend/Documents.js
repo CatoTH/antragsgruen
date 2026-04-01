@@ -2,17 +2,17 @@ export class Documents {
     constructor() {
         this.initGroupAdder();
 
-        document.querySelectorAll('.fileGroupHolder').forEach((groupHolder: HTMLElement) => {
+        document.querySelectorAll('.fileGroupHolder').forEach(groupHolder => {
             this.initGroupHolder(groupHolder);
         });
-        document.querySelectorAll('.uploadedFileEntry').forEach((fileHolder: HTMLElement) => {
+        document.querySelectorAll('.uploadedFileEntry').forEach(fileHolder => {
             this.initFileHolder(fileHolder);
         });
     }
 
-    private initGroupHolder(groupHolder: HTMLElement): void
+    initGroupHolder(groupHolder)
     {
-        const deleteGroupForm = groupHolder.querySelector('.deleteGroupForm') as HTMLFormElement;
+        const deleteGroupForm = groupHolder.querySelector('.deleteGroupForm');
         deleteGroupForm.querySelector('.deleteGroupBtn').addEventListener('click', ev => {
             ev.preventDefault();
             ev.stopPropagation();
@@ -31,19 +31,19 @@ export class Documents {
             title = addForm.querySelector('.titleCol'),
             submitBtn = addForm.querySelector('.btnUpload');
 
-        const fileUploadForm = groupHolder.querySelector('.fileAddForm') as HTMLFormElement;
+        const fileUploadForm = groupHolder.querySelector('.fileAddForm');
         fileUploadForm.querySelector("input[type=file]").addEventListener("change", ev => {
-            const input = ev.currentTarget as HTMLInputElement;
+            const input = ev.currentTarget;
             const path = input.value.split('\\');
-            (fileUploadForm.querySelector('.text') as HTMLElement).innerText = path[path.length - 1];
+            fileUploadForm.querySelector('.text').innerText = path[path.length - 1];
 
             title.classList.remove('hidden');
             submitBtn.classList.remove('hidden');
         });
     }
 
-    private initFileHolder(fileHolder: HTMLElement): void {
-        const deleteBtn = fileHolder.querySelector('.deleteFileBtn') as HTMLFormElement;
+    initFileHolder(fileHolder) {
+        const deleteBtn = fileHolder.querySelector('.deleteFileBtn');
         deleteBtn.addEventListener('click', ev => {
             ev.preventDefault();
             ev.stopPropagation();
@@ -59,7 +59,7 @@ export class Documents {
         });
     }
 
-    private initGroupAdder(): void
+    initGroupAdder()
     {
         const openerBtn = document.querySelector('.btnFileGroupCreate'),
             form = document.querySelector('.fileGroupCreateForm');
@@ -68,12 +68,9 @@ export class Documents {
             openerBtn.classList.add('hidden');
             form.classList.remove('hidden');
             window.setTimeout(() => {
-                const element = document.querySelector('.fileGroupCreateForm input[type=text]') as HTMLInputElement;
+                const element = document.querySelector('.fileGroupCreateForm input[type=text]');
                 element.focus();
             }, 50);
         });
     }
 }
-
-
-new Documents();

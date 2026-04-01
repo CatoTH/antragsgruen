@@ -337,16 +337,6 @@ class Layout
         $this->addCSS('css/selectize.bootstrap3.css');
     }
 
-    public function loadVueDraggable(): void
-    {
-        $this->addJs('npm/vuedraggable.umd.min.js');
-    }
-
-    public function loadVueDraggablePlus(): void
-    {
-        $this->addJs('npm/vue-draggable-plus.iife.js');
-    }
-
     /**
      * @param View $view
      * @param Controller<\app\components\yii\Application> $controller

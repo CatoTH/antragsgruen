@@ -20,8 +20,6 @@ $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
 
-$layout->loadVue();
-$layout->addFullscreenTemplates();
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('user', 'speech');
 
