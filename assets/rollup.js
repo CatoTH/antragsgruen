@@ -4,11 +4,12 @@ import commonjs from "@rollup/plugin-commonjs";
 import path from "path";
 
 // ---------------------------------------------------------------------------
-// Package to bundle
+// Packages to bundle
 // ---------------------------------------------------------------------------
-const PACKAGE = "vuedraggable";
-const INPUT   = `node_modules/${PACKAGE}/src/${PACKAGE}.js`;
-const OUTPUT  = `web/npm/${PACKAGE}.esm.js`;
+const PACKAGES = {
+    "vuedraggable": "node_modules/vuedraggable/src/vuedraggable.js",
+    "vue-draggable-plus": "node_modules/vue-draggable-plus/dist/vue-draggable-plus.js",
+};
 
 // ---------------------------------------------------------------------------
 // Externals and their browser-path replacements
@@ -62,10 +63,10 @@ function escapeRegExp(s) {
 // Rollup configuration
 // ---------------------------------------------------------------------------
 export default defineConfig({
-    input: INPUT,
+    input: PACKAGES,
 
     output: {
-        file:   OUTPUT,
+        dir: "web/npm/",
         format: "es",
         // Keep the remapped URLs as live bindings (no interop shim needed
         // because the targets are proper ESM files).

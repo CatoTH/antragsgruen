@@ -6,7 +6,7 @@ import translateDirective from "/js/vue/Translate.vue.js";
 import votingAdmin from "/js/vue/voting/VotingAdmin.js";
 import votingSort from "/js/vue/voting/VotingAdminSort.js";
 import tooltipDirective from "/js/vue/Tooltip.vue.js";
-import vuedraggable from "/npm/vuedraggable.esm.js";
+import vuedraggable from "/npm/vuedraggable.js";
 
 export class VotingAdmin {
     /** @type {HTMLElement} */

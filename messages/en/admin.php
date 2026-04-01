@@ -970,11 +970,30 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'agenda_title' => 'Manage Agenda',
     'agenda_bc' => 'Agenda',
     'agenda_edit' => 'Edit',
-    'agenda_add_item' => 'Add item',
-    'agenda_add_date' => 'Add date',
-    'agenda_show_times' => 'Enter fixed times',
-    'agenda_move_aria' => 'Move item',
-    'agenda_speeking_link' => 'Manage speaking list',
+    'agenda_add_item' => [
+        'text' => 'Add item',
+        'js' => true,
+    ],
+    'agenda_add_date' => [
+        'text' => 'Add date',
+        'js' => true,
+    ],
+    'agenda_show_times' => [
+        'text' => 'Enter fixed times',
+        'js' => true,
+    ],
+    'agenda_move_aria' => [
+        'text' => 'Move item',
+        'js' => true,
+    ],
+    'agenda_speeking_link' => [
+        'text' => 'Manage speaking list',
+        'js' => true,
+    ],
+    'agenda_sort_save' => [
+        'text' => 'Save new order',
+        'js' => true,
+    ],
     'agenda_back' => 'Back to the home page',
     'agenda_admin_intro' => 'This page allows editing the agenda. To actually show it on the home page, please choose an appropriate home page view at "%LINK%".'
 ];

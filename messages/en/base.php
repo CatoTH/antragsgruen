@@ -8,7 +8,14 @@ return [
         'text' => 'Save',
         'js' => true,
     ],
-    'saved'                 => 'Saved.',
+    'saved' => [
+        'text' => 'Saved.',
+        'js' => true,
+    ],
+    'saving' => [
+        'text' => 'Saving',
+        'js' => true,
+    ],
     'abort'                 => [
         'text' => 'Abort',
         'js' => true,
