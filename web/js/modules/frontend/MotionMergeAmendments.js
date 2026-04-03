@@ -1,9 +1,10 @@
-import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
-import { MotionMergeChangeActions } from '../shared/MotionMergeChangeActions';
-import editor = CKEDITOR.editor;
-import ClickEvent = JQuery.ClickEvent;
+// @ts-check
 
-declare let Vue: any;
+import { AntragsgruenEditor } from "../shared/AntragsgruenEditor.js";
+import { MotionMergeChangeActions } from '../shared/MotionMergeChangeActions.js';
+import { createApp } from '/npm/vue.esm-browser.prod.js';
+import translateDirective from "/js/vue/Translate.vue.js";
+import ParagraphAmendmentSettings from "/js/vue/merging/ParagraphAmendmentSettings.js";
 
 const STATUS_ACCEPTED = 4;
 const STATUS_MODIFIED_ACCEPTED = 6;
@@ -11,27 +12,42 @@ const STATUS_PROCESSED = 17;
 const STATUS_ADOPTED = 8;
 const STATUS_COMPLETED = 9;
 
-type AMENDMENT_VERSION = string;
+/**
+ * @typedef {string} AMENDMENT_VERSION
+ */
 
-interface VotingData {
-    votesYes: number;
-    votesNo: number;
-    votesAbstention: number;
-    votesInvalid: number;
-    comment: string;
-}
+/**
+ * @typedef {Object} VotingData
+ * @property {number} votesYes
+ * @property {number} votesNo
+ * @property {number} votesAbstention
+ * @property {number} votesInvalid
+ * @property {string} comment
+ */
+
+// ============================================================
+// AmendmentStatuses
+// ============================================================
 
 class AmendmentStatuses {
-    private static statuses: { [amendmentId: number]: number };
-    private static versions: { [amendmentId: number]: AMENDMENT_VERSION };
-    private static votingData: { [amendmentId: number]: VotingData };
-    private static statusListeners: { [amendmentId: number]: MotionMergeAmendmentsParagraph[] } = {};
+    /** @type {Object<number, number>} */
+    static statuses;
 
-    public static init(
-        statuses: { [amendmentId: number]: number },
-        versions: { [amendmentId: number]: AMENDMENT_VERSION },
-        votingData: { [amendmentId: number]: VotingData }
-    ) {
+    /** @type {Object<number, AMENDMENT_VERSION>} */
+    static versions;
+
+    /** @type {Object<number, VotingData>} */
+    static votingData;
+
+    /** @type {Object<number, MotionMergeAmendmentsParagraph[]>} */
+    static statusListeners = {};
+
+    /**
+     * @param {Object<number, number>}           statuses
+     * @param {Object<number, AMENDMENT_VERSION>} versions
+     * @param {Object<number, VotingData>}        votingData
+     */
+    static init(statuses, versions, votingData) {
         AmendmentStatuses.statuses = statuses;
         AmendmentStatuses.versions = versions;
         AmendmentStatuses.votingData = votingData;
@@ -41,7 +57,13 @@ class AmendmentStatuses {
         });
     }
 
-    public static registerNewAmendment(amendmentId: number, status: number, version: AMENDMENT_VERSION, votingData: VotingData) {
+    /**
+     * @param {number}           amendmentId
+     * @param {number}           status
+     * @param {AMENDMENT_VERSION} version
+     * @param {VotingData}       votingData
+     */
+    static registerNewAmendment(amendmentId, status, version, votingData) {
         AmendmentStatuses.statuses[amendmentId] = status;
         AmendmentStatuses.versions[amendmentId] = version;
         AmendmentStatuses.votingData[amendmentId] = votingData;
@@ -50,79 +72,144 @@ class AmendmentStatuses {
         console.log("registered new amendment status", AmendmentStatuses.statuses, AmendmentStatuses.versions, AmendmentStatuses.votingData);
     }
 
-    public static deleteAmendment(amendmentId: number) {
-        delete(AmendmentStatuses.statuses[amendmentId]);
-        delete(AmendmentStatuses.versions[amendmentId]);
-        delete(AmendmentStatuses.votingData[amendmentId]);
+    /**
+     * @param {number} amendmentId
+     */
+    static deleteAmendment(amendmentId) {
+        delete AmendmentStatuses.statuses[amendmentId];
+        delete AmendmentStatuses.versions[amendmentId];
+        delete AmendmentStatuses.votingData[amendmentId];
     }
 
-    public static getAmendmentStatus(amendmentId: number): number {
+    /**
+     * @param {number} amendmentId
+     * @returns {number}
+     */
+    static getAmendmentStatus(amendmentId) {
         return AmendmentStatuses.statuses[amendmentId];
     }
 
-    public static getAmendmentVersion(amendmentId: number): AMENDMENT_VERSION {
+    /**
+     * @param {number} amendmentId
+     * @returns {AMENDMENT_VERSION}
+     */
+    static getAmendmentVersion(amendmentId) {
         return AmendmentStatuses.versions[amendmentId];
     }
 
-    public static getAmendmentVotingData(amendmentId: number): VotingData {
+    /**
+     * @param {number} amendmentId
+     * @returns {VotingData}
+     */
+    static getAmendmentVotingData(amendmentId) {
         return AmendmentStatuses.votingData[amendmentId];
     }
 
-    public static registerParagraph(amendmentId: number, paragraph: MotionMergeAmendmentsParagraph) {
+    /**
+     * @param {number}                          amendmentId
+     * @param {MotionMergeAmendmentsParagraph}  paragraph
+     */
+    static registerParagraph(amendmentId, paragraph) {
         AmendmentStatuses.statusListeners[amendmentId].push(paragraph);
     }
 
-    public static setStatus(amendmentId: number, status: number) {
+    /**
+     * @param {number} amendmentId
+     * @param {number} status
+     */
+    static setStatus(amendmentId, status) {
         AmendmentStatuses.statuses[amendmentId] = status;
         AmendmentStatuses.statusListeners[amendmentId].forEach(paragraph => {
             paragraph.onAmendmentStatusChanged(amendmentId, status);
         });
     }
 
-    public static setVersion(amendmentId: number, version: AMENDMENT_VERSION) {
+    /**
+     * @param {number}           amendmentId
+     * @param {AMENDMENT_VERSION} version
+     */
+    static setVersion(amendmentId, version) {
         AmendmentStatuses.versions[amendmentId] = version;
         AmendmentStatuses.statusListeners[amendmentId].forEach(paragraph => {
             paragraph.onAmendmentVersionChanged(amendmentId, version);
         });
     }
 
-    public static setVotesData(amendmentId: number, voteData: VotingData) {
+    /**
+     * @param {number}     amendmentId
+     * @param {VotingData} voteData
+     */
+    static setVotesData(amendmentId, voteData) {
         AmendmentStatuses.votingData[amendmentId] = voteData;
         AmendmentStatuses.statusListeners[amendmentId].forEach(paragraph => {
             paragraph.onAmendmentVotingChanged(amendmentId, voteData);
         });
     }
 
-    public static getAmendmentIds(): number[] {
+    /**
+     * @returns {number[]}
+     */
+    static getAmendmentIds() {
         return Object.keys(AmendmentStatuses.statuses).map(key => parseInt(key, 10));
     }
 
-    public static getAllStatuses(): { [amendmentId: number]: number } {
+    /**
+     * @returns {Object<number, number>}
+     */
+    static getAllStatuses() {
         return AmendmentStatuses.statuses;
     }
 
-    public static getAllVersions(): { [amendmentId: number]: AMENDMENT_VERSION } {
+    /**
+     * @returns {Object<number, AMENDMENT_VERSION>}
+     */
+    static getAllVersions() {
         return AmendmentStatuses.versions;
     }
 
-    public static getAllVotingData(): { [amendmentId: number]: VotingData } {
+    /**
+     * @returns {Object<number, VotingData>}
+     */
+    static getAllVotingData() {
         return AmendmentStatuses.votingData;
     }
 }
 
+// ============================================================
+// MotionMergeChangeTooltip
+// ============================================================
+
 class MotionMergeChangeTooltip {
-    constructor(private $element: JQuery, mouseX: number, mouseY: number, private parent: MotionMergeAmendmentsTextarea) {
-        let positionX: number = null,
-            positionY: number = null;
+    /** @type {JQuery} */
+    $element;
+
+    /** @type {MotionMergeAmendmentsTextarea} */
+    parent;
+
+    /**
+     * @param {JQuery}                          $element
+     * @param {number}                          mouseX
+     * @param {number}                          mouseY
+     * @param {MotionMergeAmendmentsTextarea}   parent
+     */
+    constructor($element, mouseX, mouseY, parent) {
+        this.$element = $element;
+        this.parent = parent;
+
+        /** @type {number|null} */
+        let positionX = null;
+        /** @type {number|null} */
+        let positionY = null;
+
         $element.popover({
             'container': 'body',
             'animation': false,
             'trigger': 'manual',
             'placement': function (popover) {
-                let $popover = $(<any>popover);
+                const $popover = $(/** @type {any} */ (popover));
                 $popover.data("element", $element);
                 window.setTimeout(() => {
-                    let width = $popover.width(),
+                    const width = $popover.width(),
                         elTop = $element.offset().top,
                         elHeight = $element.height();
                     if (positionX === null && width > 0) {
@@ -145,25 +232,25 @@ class MotionMergeChangeTooltip {
         });
 
         $element.popover('show');
-        let $popover: JQuery = $element.find("> .popover");
+        const $popover = $element.find("> .popover");
         $popover.on("mousemove", (ev) => {
             ev.stopPropagation();
         });
         window.setTimeout(this.removePopupIfInactive.bind(this), 1000);
     }
 
-    private getContent() {
-        let $myEl: JQuery = this.$element,
-            html,
-            cid = $myEl.data("cid"),
-            isAppendedCollision = ($myEl.data("appended-collision") === 1 || $myEl.parent().data("appended-collision") === 1),
+    getContent() {
+        const $myEl = this.$element;
+        let cid = $myEl.data("cid");
+        const isAppendedCollision = ($myEl.data("appended-collision") === 1 || $myEl.parent().data("appended-collision") === 1),
             isModU = $myEl.data("is-modu") === 1;
-        if (cid == undefined) {
+
+        if (cid === undefined) {
             cid = $myEl.parent().data("cid");
         }
         $myEl.parents(".texteditor").first().find("[data-cid=" + cid + "]").addClass("hover");
 
-        html = '';
+        let html = '';
         if (isAppendedCollision) {
             html += '<div class="mergingPopoverCollisionHint">⚠️ ' + __t("merge", "mergedCollisionHint") + '</div>';
         }
@@ -173,21 +260,23 @@ class MotionMergeChangeTooltip {
         html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
         html += '<div class="initiator" style="font-size: 0.8em;"></div>';
         html += '</div>';
-        let $el: JQuery = $(html);
+
+        const $el = $(html);
         $el.find(".opener").attr("href", $myEl.data("link")).attr("title", __t("merge", "title_open_in_blank"));
         if (isModU) {
             $el.find(".initiator").text(__t("merge", "modU"));
         } else {
             $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $myEl.data("username"));
         }
+
         if ($myEl.hasClass("ice-ins")) {
             $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
             $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
         } else if ($myEl.hasClass("ice-del")) {
             $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
             $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
-        } else if ($myEl[0].nodeName.toLowerCase() == 'li') {
-            let $list = $myEl.parent();
+        } else if ($myEl[0].nodeName.toLowerCase() === 'li') {
+            const $list = $myEl.parent();
             if ($list.hasClass("ice-ins")) {
                 $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
                 $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
@@ -204,7 +293,7 @@ class MotionMergeChangeTooltip {
         return $el;
     }
 
-    private removePopupIfInactive() {
+    removePopupIfInactive() {
         if (this.$element.is(":hover")) {
             return window.setTimeout(this.removePopupIfInactive.bind(this), 1000);
         }
@@ -214,16 +303,19 @@ class MotionMergeChangeTooltip {
         this.destroy();
     }
 
-    private affectedChangesets() {
+    affectedChangesets() {
         let cid = this.$element.data("cid");
-        if (cid == undefined) {
+        if (cid === undefined) {
             cid = this.$element.parent().data("cid");
         }
         return this.$element.parents(".texteditor").find("[data-cid=" + cid + "]");
     }
 
-    private performActionWithUI(action) {
-        let scrollX = window.scrollX,
+    /**
+     * @param {Function} action
+     */
+    performActionWithUI(action) {
+        const scrollX = window.scrollX,
             scrollY = window.scrollY;
 
         this.parent.saveEditorSnapshot();
@@ -234,7 +326,7 @@ class MotionMergeChangeTooltip {
         window.scrollTo(scrollX, scrollY);
     }
 
-    private accept() {
+    accept() {
         this.performActionWithUI(() => {
             this.affectedChangesets().each((i, el) => {
                 MotionMergeChangeActions.accept(el, () => {
@@ -244,7 +336,7 @@ class MotionMergeChangeTooltip {
         });
     }
 
-    private reject() {
+    reject() {
         this.performActionWithUI(() => {
             this.affectedChangesets().each((i, el) => {
                 MotionMergeChangeActions.reject(el, () => {
@@ -254,11 +346,11 @@ class MotionMergeChangeTooltip {
         });
     }
 
-    public destroy() {
+    destroy() {
         this.$element.popover("hide").popover("destroy");
 
         let cid = this.$element.data("cid");
-        if (cid == undefined) {
+        if (cid === undefined) {
             cid = this.$element.parent().data("cid");
         }
 
@@ -283,22 +375,70 @@ class MotionMergeChangeTooltip {
                 }
             });
         } catch (e) {
+            // ignore
         }
     }
 }
 
-class MotionMergeAmendmentsTextarea {
-    private texteditor: editor;
-    private unchangedText: string = null;
-    private hasChanged: boolean = false;
-    private changedListeners: { (): void }[] = [];
+// ============================================================
+// MotionMergeAmendmentsTextarea
+// ============================================================
 
-    private prepareText(html: string) {
-        let $text: JQuery = $('<div>' + html + '</div>');
+class MotionMergeAmendmentsTextarea {
+    /** @type {CKEDITOR.editor} */
+    texteditor;
+
+    /** @type {string|null} */
+    unchangedText = null;
+
+    /** @type {boolean} */
+    hasChanged = false;
+
+    /** @type {Array<function(): void>} */
+    changedListeners = [];
+
+    /** @type {JQuery} */
+    $holder;
+
+    /** @type {JQuery} */
+    $changedIndicator;
+
+    /** @type {JQuery} */
+    $mergeActionHolder;
+
+    /**
+     * @param {JQuery} $holder
+     * @param {JQuery} $changedIndicator
+     * @param {JQuery} $mergeActionHolder
+     */
+    constructor($holder, $changedIndicator, $mergeActionHolder) {
+        this.$holder = $holder;
+        this.$changedIndicator = $changedIndicator;
+        this.$mergeActionHolder = $mergeActionHolder;
+
+        const $textarea = $holder.find(".texteditor");
+        const edit = new AntragsgruenEditor($textarea.attr("id"));
+        this.texteditor = edit.getEditor();
+
+        this.setText(this.texteditor.getData());
+
+        if ($holder.data("unchanged")) {
+            this.unchangedText = $holder.data("unchanged");
+            this.onChanged();
+        }
+
+        this.texteditor.on('change', this.onChanged.bind(this));
+    }
+
+    /**
+     * @param {string} html
+     */
+    prepareText(html) {
+        const $text = $('<div>' + html + '</div>');
 
         // Move the amendment-Data from OL's and UL's to their list items
         $text.find("ul.appendHint, ol.appendHint").each((i, el) => {
-            let $this: JQuery = $(el),
+            const $this = $(el),
                 appendHint = $this.data("append-hint");
             $this.find("> li").addClass("appendHint").attr("data-append-hint", appendHint)
                 .attr("data-link", $this.data("link"))
@@ -310,21 +450,29 @@ class MotionMergeAmendmentsTextarea {
         $text.find(".moved .moved").removeClass('moved');
         $text.find(".moved").each(this.markupMovedParagraph.bind(this));
 
-        let newText = $text.html();
+        const newText = $text.html();
         this.texteditor.setData(newText);
         this.unchangedText = this.normalizeHtml(this.texteditor.getData());
         this.texteditor.fire('saveSnapshot');
         this.onChanged();
     }
 
-    public addChangedListener(cb: () => void) {
+    /**
+     * @param {function(): void} cb
+     */
+    addChangedListener(cb) {
         this.changedListeners.push(cb);
     }
 
-    private markupMovedParagraph(_, el) {
-        let $node = $(el),
-            paragraphNew = $node.data('moving-partner-paragraph'),
-            msg: string;
+    /**
+     * @param {number}  _
+     * @param {Element} el
+     */
+    markupMovedParagraph(_, el) {
+        let $node = $(el);
+        const paragraphNew = $node.data('moving-partner-paragraph');
+        /** @type {string} */
+        let msg;
 
         if ($node.hasClass('inserted')) {
             msg = __t('std', 'moved_paragraph_from');
@@ -340,7 +488,7 @@ class MotionMergeAmendmentsTextarea {
         $node.attr("data-moving-msg", msg);
     }
 
-    private initializeTooltips() {
+    initializeTooltips() {
         this.$holder.on("mouseover", ".appendHint", (ev) => {
             const $target = $(ev.currentTarget);
             if ($target.parents('.paragraphWrapper').first().find('.amendmentStatus.open').length > 0) {
@@ -353,8 +501,7 @@ class MotionMergeAmendmentsTextarea {
         });
     }
 
-
-    public acceptAll() {
+    acceptAll() {
         this.saveEditorSnapshot();
         this.$holder.find(".ice-ins").each((i, el) => {
             MotionMergeChangeActions.insertAccept(el);
@@ -370,7 +517,7 @@ class MotionMergeAmendmentsTextarea {
         }, 1000);
     }
 
-    public rejectAll() {
+    rejectAll() {
         this.saveEditorSnapshot();
         this.$holder.find(".ice-ins").each((i, el) => {
             MotionMergeChangeActions.insertReject($(el));
@@ -386,29 +533,43 @@ class MotionMergeAmendmentsTextarea {
         }, 1000);
     }
 
-    public saveEditorSnapshot() {
+    saveEditorSnapshot() {
         this.texteditor.fire('saveSnapshot');
     }
 
-    public focusTextarea() {
+    focusTextarea() {
         //this.$holder.find(".texteditor").focus();
         // This lead to strange cursor behavior, e.g. when removing a colliding paragraph
     }
 
-    public getContent(): string {
+    /**
+     * @returns {string}
+     */
+    getContent() {
         return this.texteditor.getData();
     }
 
-    public getUnchangedContent(): string {
+    /**
+     * @returns {string}
+     */
+    getUnchangedContent() {
         return this.unchangedText;
     }
 
-    public setText(html: string) {
+    /**
+     * @param {string} html
+     */
+    setText(html) {
         this.prepareText(html);
         this.initializeTooltips();
     }
 
-    private normalizeHtml(html: string) {
+    /**
+     * @param {string} html
+     * @returns {string}
+     */
+    normalizeHtml(html) {
+        /** @type {Object<string, string>} */
         const entities = {
             '&nbsp;': ' ',
             '&ndash;': '-',
@@ -420,11 +581,11 @@ class MotionMergeAmendmentsTextarea {
             '&Uuml;': 'Ü',
             '&szlig;': 'ß',
             '&bdquo;': '„',
-            '&ldquo;': '“',
+            '&ldquo;': '"',
             '&bull;': '•',
             '&sect;': '§',
             '&eacute;': 'é',
-            '&rsquo;': '’',
+            '&rsquo;': '\u2019',
             '&euro;': '€'
         };
         Object.keys(entities).forEach(ent => {
@@ -437,7 +598,7 @@ class MotionMergeAmendmentsTextarea {
             .replace(/<[^>]*>/g, '');
     }
 
-    public onChanged() {
+    onChanged() {
         if (this.normalizeHtml(this.texteditor.getData()) === this.unchangedText) {
             this.$changedIndicator.addClass("unchanged");
             this.hasChanged = false;
@@ -453,40 +614,56 @@ class MotionMergeAmendmentsTextarea {
         this.changedListeners.forEach(cb => cb());
     }
 
-    public hasChanges(): boolean {
+    /**
+     * @returns {boolean}
+     */
+    hasChanges() {
         return this.hasChanged;
-    }
-
-    constructor(private $holder: JQuery, private $changedIndicator: JQuery, private $mergeActionHolder: JQuery) {
-        let $textarea = $holder.find(".texteditor");
-        let edit = new AntragsgruenEditor($textarea.attr("id"));
-        this.texteditor = edit.getEditor();
-
-        this.setText(this.texteditor.getData());
-
-        if ($holder.data("unchanged")) {
-            this.unchangedText = $holder.data("unchanged");
-            this.onChanged();
-        }
-
-        this.texteditor.on('change', this.onChanged.bind(this));
     }
 }
 
-class MotionMergeAmendmentsParagraph {
-    public sectionId: number;
-    public paragraphId: number;
-    public textarea: MotionMergeAmendmentsTextarea;
-    public hasUnsavedChanges = false;
-    public handledCollisions: number[] = [];
-    public statusWidget: any;
-    public statusWidgetComponent: any;
+// ============================================================
+// MotionMergeAmendmentsParagraph
+// ============================================================
 
-    constructor(private $holder: JQuery, draft: any, amendmentStaticData: any) {
+class MotionMergeAmendmentsParagraph {
+    /** @type {number} */
+    sectionId;
+
+    /** @type {number} */
+    paragraphId;
+
+    /** @type {MotionMergeAmendmentsTextarea} */
+    textarea;
+
+    /** @type {boolean} */
+    hasUnsavedChanges = false;
+
+    /** @type {number[]} */
+    handledCollisions = [];
+
+    /** @type {any} */
+    statusWidget;
+
+    /** @type {any} */
+    statusWidgetComponent;
+
+    /** @type {JQuery} */
+    $holder;
+
+    /**
+     * @param {JQuery} $holder
+     * @param {any}    draft
+     * @param {any}    amendmentStaticData
+     */
+    constructor($holder, draft, amendmentStaticData) {
+        this.$holder = $holder;
         this.sectionId = parseInt($holder.data('sectionId'));
         this.paragraphId = parseInt($holder.data('paragraphId'));
 
-        const paragraphDraft = draft.paragraphs && draft.paragraphs[this.sectionId + "_" + this.paragraphId] ? draft.paragraphs[this.sectionId + "_" + this.paragraphId] : null;
+        const paragraphDraft = draft.paragraphs && draft.paragraphs[this.sectionId + "_" + this.paragraphId]
+            ? draft.paragraphs[this.sectionId + "_" + this.paragraphId]
+            : null;
         if (paragraphDraft.handledCollisions) {
             this.handledCollisions = paragraphDraft.handledCollisions;
         }
@@ -500,14 +677,17 @@ class MotionMergeAmendmentsParagraph {
         this.initSetCollisionsAsHandled();
         this.initStatusWidget(amendmentStaticData);
 
-        $holder.find(".amendmentStatus").each((i: number, element) => {
+        $holder.find(".amendmentStatus").each((i, element) => {
             AmendmentStatuses.registerParagraph($(element).data("amendment-id"), this);
         });
 
         this.textarea.addChangedListener(() => this.hasUnsavedChanges = true);
     }
 
-    private initStatusWidget(amendmentStaticData: any) {
+    /**
+     * @param {any} amendmentStaticData
+     */
+    initStatusWidget(amendmentStaticData) {
         const amendmentParagraphData = this.$holder.find(".changeToolbar .statuses").data("amendments");
         for (let i = 0; i < amendmentParagraphData.length; i++) {
             const amendmentId = amendmentParagraphData[i].amendmentId;
@@ -531,7 +711,7 @@ class MotionMergeAmendmentsParagraph {
             }
         };
 
-        para.statusWidget = Vue.createApp({
+        para.statusWidget = createApp({
             template: `
                 <div class="statuses">
                     <paragraph-amendment-settings v-for="data in amendmentParagraphData"
@@ -545,16 +725,16 @@ class MotionMergeAmendmentsParagraph {
                                                   v-on:update="update($event)"
                     ></paragraph-amendment-settings>
                 </div>`,
-            data() { return {
-                amendmentParagraphData,
-            } },
+            data() {
+                return { amendmentParagraphData };
+            },
             methods: {
                 getAllAmendmentData() {
                     return this.amendmentParagraphData;
                 },
                 getAmendmentData(amendmentId) {
                     for (let i = 0; i < this.amendmentParagraphData.length; i++) {
-                        if (this.amendmentParagraphData[i].amendmentId == amendmentId) {
+                        if (this.amendmentParagraphData[i].amendmentId === amendmentId) {
                             return this.amendmentParagraphData[i];
                         }
                     }
@@ -625,38 +805,63 @@ class MotionMergeAmendmentsParagraph {
                     });
                 },
                 onAmendmentDeleted(amendmentId) {
-                    this.amendmentParagraphData = this.amendmentParagraphData.filter(amend => amend.amendmentId != amendmentId);
+                    this.amendmentParagraphData = this.amendmentParagraphData.filter(amend => amend.amendmentId !== amendmentId);
                 }
             }
         });
 
-        para.statusWidget.config.compilerOptions.whitespace = 'condense';
-        window['__initVueComponents'](para.statusWidget, 'merging');
+        para.statusWidget.component("paragraph-amendment-settings", ParagraphAmendmentSettings);
+        para.statusWidget.directive("t", translateDirective);
+
         para.statusWidgetComponent = para.statusWidget.mount(this.$holder.find(".changeToolbar .statuses")[0]);
     }
 
-    public onAmendmentVersionChanged(amendmentId: number, version: string) {
+    /**
+     * @param {number}           amendmentId
+     * @param {string}           version
+     */
+    onAmendmentVersionChanged(amendmentId, version) {
         this.statusWidgetComponent.onVersionUpdated(amendmentId, version);
     }
 
-    public onAmendmentVotingChanged(amendmentId: number, votingData: VotingData) {
+    /**
+     * @param {number}     amendmentId
+     * @param {VotingData} votingData
+     */
+    onAmendmentVotingChanged(amendmentId, votingData) {
         this.statusWidgetComponent.onVotingUpdated(amendmentId, votingData);
     }
 
-    public onAmendmentStatusChanged(amendmentId: number, status: number) {
+    /**
+     * @param {number} amendmentId
+     * @param {number} status
+     */
+    onAmendmentStatusChanged(amendmentId, status) {
         this.statusWidgetComponent.onStatusUpdated(amendmentId, status);
     }
 
-    public onAmendmentAdded(amendment, nameBase, idAdd, active, status, verstion, votingData) {
+    /**
+     * @param {any}    amendment
+     * @param {any}    nameBase
+     * @param {any}    idAdd
+     * @param {any}    active
+     * @param {any}    status
+     * @param {any}    verstion
+     * @param {any}    votingData
+     */
+    onAmendmentAdded(amendment, nameBase, idAdd, active, status, verstion, votingData) {
         this.statusWidgetComponent.onAmendmentAdded(amendment, nameBase, idAdd, active, status, verstion, votingData);
     }
 
-    public onAmendmentDeleted(amendmentId) {
+    /**
+     * @param {number} amendmentId
+     */
+    onAmendmentDeleted(amendmentId) {
         this.statusWidgetComponent.onAmendmentDeleted(amendmentId);
     }
 
-    private initSetCollisionsAsHandled() {
-        this.$holder.on("click", "button.hideCollision", (ev: ClickEvent) => {
+    initSetCollisionsAsHandled() {
+        this.$holder.on("click", "button.hideCollision", (ev) => {
             const $collision = $(ev.currentTarget).parents(".collidingParagraph").first();
             const amendmentId = parseInt($collision.data("amendment-id"), 10);
             const $collisionHolder = $collision.parent();
@@ -669,7 +874,7 @@ class MotionMergeAmendmentsParagraph {
         });
     }
 
-    private initButtons() {
+    initButtons() {
         this.$holder.find(".mergeActionHolder .acceptAll").on("click", ev => {
             ev.preventDefault();
             this.textarea.acceptAll();
@@ -683,15 +888,13 @@ class MotionMergeAmendmentsParagraph {
         });
     }
 
-    private reloadText() {
+    reloadText() {
         const amendments = this.statusWidgetComponent.getAllAmendmentData()
             .filter(amendmentData => amendmentData.active)
-            .map(amendmentData => {
-                return {
-                    id: amendmentData.amendmentId,
-                    version: AmendmentStatuses.getAmendmentVersion(amendmentData.amendmentId),
-                }
-            });
+            .map(amendmentData => ({
+                id: amendmentData.amendmentId,
+                version: AmendmentStatuses.getAmendmentVersion(amendmentData.amendmentId),
+            }));
         const url = this.$holder.data("reload-url").replace('DUMMY', JSON.stringify(amendments));
         $.get(url, (data) => {
             this.textarea.setText(data.text);
@@ -712,7 +915,7 @@ class MotionMergeAmendmentsParagraph {
         });
     }
 
-    public getDraftData() {
+    getDraftData() {
         const amendmentToggles = this.statusWidgetComponent.getAllAmendmentData()
             .filter(amendmentData => amendmentData.active)
             .map(amendmentData => amendmentData.amendmentId);
@@ -724,31 +927,47 @@ class MotionMergeAmendmentsParagraph {
         };
     }
 
-    public onDraftChanged() {
+    onDraftChanged() {
         this.hasUnsavedChanges = false;
     }
 }
 
-/**
- * Singleton object
- */
+// ============================================================
+// MotionMergeAmendments (exported singleton)
+// ============================================================
+
 export class MotionMergeAmendments {
-    public static activePopup: MotionMergeChangeTooltip = null;
-    public static currMouseX: number = null;
-    public static $form;
+    /** @type {MotionMergeChangeTooltip|null} */
+    static activePopup = null;
 
-    public $draftSavingPanel: JQuery;
-    public $newAmendmentAlert: JQuery;
-    private paragraphsByTypeAndNo: {[typeAndPara: string]: MotionMergeAmendmentsParagraph} = {};
-    private hasUnsavedChanges = false;
+    /** @type {number|null} */
+    static currMouseX = null;
 
-    constructor($form: JQuery) {
-        MotionMergeAmendments.$form = $form;
+    /** @type {JQuery} */
+    static $form;
+
+    /** @type {JQuery} */
+    $draftSavingPanel;
+
+    /** @type {JQuery} */
+    $newAmendmentAlert;
+
+    /** @type {Object<string, MotionMergeAmendmentsParagraph>} */
+    paragraphsByTypeAndNo = {};
+
+    /** @type {boolean} */
+    hasUnsavedChanges = false;
+
+    /**
+     * @param {HTMLElement} form
+     */
+    constructor(form) {
+        MotionMergeAmendments.$form = $(form);
 
         const draft = JSON.parse(document.getElementById('mergeDraft').getAttribute('value'));
         AmendmentStatuses.init(draft.amendmentStatuses, draft.amendmentVersions, draft.amendmentVotingData);
 
-        const amendmentStaticData = $form.data('amendment-static-data');
+        const amendmentStaticData = MotionMergeAmendments.$form.data('amendment-static-data');
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
@@ -775,25 +994,32 @@ export class MotionMergeAmendments {
         this.initProtocol();
     }
 
-    public static onLeavePage(): string {
+    /**
+     * @returns {string}
+     */
+    static onLeavePage() {
         return __t("std", "leave_changed_page");
     }
 
-    private setDraftDate(date: Date) {
+    /**
+     * @param {Date} date
+     */
+    setDraftDate(date) {
         this.$draftSavingPanel.find(".lastSaved .none").hide();
 
-        let options: Intl.DateTimeFormatOptions = {
-                year: 'numeric', month: 'numeric', day: 'numeric',
-                hour: 'numeric', minute: 'numeric',
-                hour12: false
-            },
-            lang: string = $("html").attr("lang"),
-            formatted = new Intl.DateTimeFormat(lang, options).format(date);
+        /** @type {Intl.DateTimeFormatOptions} */
+        const options = {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: 'numeric', minute: 'numeric',
+            hour12: false
+        };
+        const lang = /** @type {string} */ ($("html").attr("lang"));
+        const formatted = new Intl.DateTimeFormat(lang, options).format(date);
 
         this.$draftSavingPanel.find(".lastSaved .value").text(formatted);
     }
 
-    private initRemovingSectionTexts() {
+    initRemovingSectionTexts() {
         MotionMergeAmendments.$form.find(".removeSection input[type=checkbox]").on("change", ev => {
             const $checkbox = $(ev.currentTarget);
             const $section = $checkbox.parents(".section").first();
@@ -805,7 +1031,7 @@ export class MotionMergeAmendments {
         }).trigger("change");
     }
 
-    private initProtocol() {
+    initProtocol() {
         const $textarea = $("#protocol_text_wysiwyg");
         $textarea.attr("contenteditable", "true");
         const ckeditor = new AntragsgruenEditor($textarea.attr("id"));
@@ -816,7 +1042,10 @@ export class MotionMergeAmendments {
         });
     }
 
-    private saveDraft(onlyInput = false) {
+    /**
+     * @param {boolean} [onlyInput=false]
+     */
+    saveDraft(onlyInput = false) {
         if (Object.keys(this.paragraphsByTypeAndNo).map(id => this.paragraphsByTypeAndNo[id])
             .filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
             return;
@@ -824,7 +1053,7 @@ export class MotionMergeAmendments {
 
         console.log("Has unsaved changes");
 
-        const protocolPublic = $("input[name=protocol_public]:checked").val() as string;
+        const protocolPublic = /** @type {string} */ ($("input[name=protocol_public]:checked").val());
         const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
             "amendmentVersions": AmendmentStatuses.getAllVersions(),
@@ -835,19 +1064,20 @@ export class MotionMergeAmendments {
             "protocol": CKEDITOR.instances['protocol_text_wysiwyg'].getData(),
             "protocolPublic": parseInt(protocolPublic) === 1,
         };
+
         $(".sectionType0").each((i, el) => {
             const $section = $(el),
                 sectionId = $section.data("section-id");
             data.sections[sectionId] = $section.find(".form-control").val();
         });
         MotionMergeAmendments.$form.find(".removeSection input[type=checkbox]:checked").each((i, el) => {
-            data.removedSections.push(parseInt($(el).val() as string));
+            data.removedSections.push(parseInt(/** @type {string} */ ($(el).val())));
         });
 
         Object.keys(this.paragraphsByTypeAndNo).forEach(paraId => {
             data.paragraphs[paraId] = this.paragraphsByTypeAndNo[paraId].getDraftData();
         });
-        let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
+        const isPublic = /** @type {boolean} */ (this.$draftSavingPanel.find('input[name=public]').prop('checked'));
 
         const dataStr = JSON.stringify(data);
         document.getElementById('mergeDraft').setAttribute('value', dataStr);
@@ -888,8 +1118,8 @@ export class MotionMergeAmendments {
         }
     }
 
-    private initAutosavingDraft() {
-        let $toggle: JQuery = this.$draftSavingPanel.find('input[name=autosave]');
+    initAutosavingDraft() {
+        const $toggle = this.$draftSavingPanel.find('input[name=autosave]');
 
         window.setInterval(() => {
             if ($toggle.prop('checked')) {
@@ -898,20 +1128,20 @@ export class MotionMergeAmendments {
         }, 5000);
 
         if (localStorage) {
-            let state = localStorage.getItem('merging-draft-auto-save');
+            const state = localStorage.getItem('merging-draft-auto-save');
             if (state !== null) {
-                $toggle.prop('checked', (state == '1'));
+                $toggle.prop('checked', (state === '1'));
             }
         }
         $toggle.on("change", () => {
-            let active: boolean = $toggle.prop('checked');
+            const active = /** @type {boolean} */ ($toggle.prop('checked'));
             if (localStorage) {
                 localStorage.setItem('merging-draft-auto-save', (active ? '1' : '0'));
             }
         }).trigger('change');
     }
 
-    private initDraftSaving() {
+    initDraftSaving() {
         this.$draftSavingPanel = MotionMergeAmendments.$form.find('#draftSavingPanel');
         this.$draftSavingPanel.find('.saveDraft').on('click', () => {
             this.hasUnsavedChanges = true;
@@ -919,12 +1149,12 @@ export class MotionMergeAmendments {
         });
         this.$draftSavingPanel.find('input[name=public]').on('change', () => {
             this.hasUnsavedChanges = true;
-            this.saveDraft(false)
+            this.saveDraft(false);
         });
         this.initAutosavingDraft();
 
         if (this.$draftSavingPanel.data("resumed-date")) {
-            let date = new Date(this.$draftSavingPanel.data("resumed-date"));
+            const date = new Date(this.$draftSavingPanel.data("resumed-date"));
             this.setDraftDate(date);
         }
 
@@ -933,7 +1163,7 @@ export class MotionMergeAmendments {
         $("#yii-debug-toolbar").remove();
     }
 
-    private initNewAmendmentAlert() {
+    initNewAmendmentAlert() {
         this.$newAmendmentAlert = MotionMergeAmendments.$form.find('#newAmendmentAlert');
         this.$newAmendmentAlert.find('.closeLink').on('click', () => {
             this.$newAmendmentAlert.find('.buttons').children().remove();
@@ -944,7 +1174,11 @@ export class MotionMergeAmendments {
         });
     }
 
-    private alertAboutNewAmendment(amendmentId: number, title: string) {
+    /**
+     * @param {number} amendmentId
+     * @param {string} title
+     */
+    alertAboutNewAmendment(amendmentId, title) {
         const $buttons = this.$newAmendmentAlert.find('.buttons');
         const $newButton = $('<button class="btn-link gotoAmendment" type="button"></button>').text(title);
         $newButton.on('click', () => {
@@ -970,7 +1204,7 @@ export class MotionMergeAmendments {
         }
     }
 
-    private initCheckBackendStatus() {
+    initCheckBackendStatus() {
         window.setInterval(() => {
             let url = MotionMergeAmendments.$form.data('checkStatusUrl');
             const amendmentIds = AmendmentStatuses.getAmendmentIds();
@@ -985,9 +1219,14 @@ export class MotionMergeAmendments {
         }, 3000);
     }
 
-    private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {
+    /**
+     * @param {any[]} newAmendments
+     * @param {any[]} deletedAmendments
+     */
+    onReceivedBackendStatus(newAmendments, deletedAmendments) {
         const newAmendmentStaticData = {},
             newAmendmentStatus = {};
+
         newAmendments['staticData'].forEach(amendmentData => {
             const status = newAmendments['status'][amendmentData['id']];
             newAmendmentStaticData[amendmentData['id']] = amendmentData;
@@ -1004,7 +1243,7 @@ export class MotionMergeAmendments {
                 newAmendments['paragraphs'][typeId][paragraphNo].forEach(data => {
                     const paraAmendmentData = newAmendmentStaticData[data.amendmentId];
                     const status = newAmendmentStatus[data.amendmentId];
-                    paraObj.onAmendmentAdded(paraAmendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData'])
+                    paraObj.onAmendmentAdded(paraAmendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData']);
                     AmendmentStatuses.registerParagraph(data.amendmentId, paraObj);
                 });
             });

@@ -155,10 +155,6 @@ foreach ($layout->onloadJs as $js) {
 echo $layout->getAMDClasses();
 echo $layout->getAMDLoader();
 
-foreach ($layout->vueTemplates as $vueTemplate) {
-    echo $this->render($vueTemplate);
-}
-
 $this->endBody();
 echo '
 <script type="application/ld+json">

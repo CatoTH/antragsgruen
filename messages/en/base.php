@@ -35,7 +35,10 @@ return [
     'menu_documents'        => 'Documents',
     'menu_votings'          => 'Votings',
     'goto_main_content'     => 'Skip to main content',
-    'toggle_dropdown'       => 'Open selection',
+    'toggle_dropdown'       => [
+        'text' => 'Open selection',
+        'js' => true,
+    ],
     'privacy_statement'     => 'Privacy',
     'imprint'               => 'Imprint',
     'err_email_not_sent'    => 'An e-mail could not be sent',
