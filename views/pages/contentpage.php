@@ -36,17 +36,11 @@ if ($pageData->textId === ConsultationText::DEFAULT_PAGE_WELCOME) {
 }
 
 if (User::getCurrentUser() && $pageData->isCustomPage()) {
-    $layout->addFullscreenTemplates();
-    $fullscreenInitData = json_encode([
-        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+    $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'page-' . $pageData->id,
         'init_content_url' => UrlHelper::absolutizeLink($pageData->getJsonUrl()),
+        'consultation' => $consultation,
     ]);
-    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-    </button>';
 } else {
     $fullscreenButton = '';
 }

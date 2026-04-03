@@ -1,6 +1,7 @@
 <?php
 
-use app\components\{JsTools, UrlHelper};
+use app\components\UrlHelper;
+use app\componentsUrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};
@@ -76,36 +77,11 @@ $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
 if (User::getCurrentUser()) {
-    $fullscreenInitData = json_encode([
-        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
-        'pagination' => $consultation->getSettings()->motionPrevNextLinks,
+    $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'motion-' . $motion->id,
         'init_content_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
+        'consultation' => $consultation,
     ]);
-    $jsTranslations = json_encode([
-        "amend" => JsTools::getTranslations($consultation, "amend"),
-        "base" => JsTools::getTranslations($consultation, "base"),
-        "motion" => JsTools::getTranslations($consultation, "motion"),
-        "pages" => JsTools::getTranslations($consultation, "pages"),
-        "speech" => JsTools::getTranslations($consultation, "speech"),
-    ]);
-    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-        data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-    </button>
-    <script type="module">
-    import { setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
-    console.log("test");
-    setSpeechUrls(
-        ' . json_encode(UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS'])) . ',
-        ' . json_encode(UrlHelper::createUrl(['/speech/register', 'queueIds' => 'QUEUEIDS'])) . ',
-        ' . json_encode(UrlHelper::createUrl(['/speech/unregister', 'queueIds' => 'QUEUEIDS'])) . '
-    );
-    import { FullscreenToggle } from "/js/modules/frontend/FullscreenToggle.js";
-    new FullscreenToggle(document.querySelector(".btnFullscreen"), ' . $jsTranslations . ');
-</script>
-    ';
 } else {
     $fullscreenButton = '';
 }
