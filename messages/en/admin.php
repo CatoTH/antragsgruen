@@ -294,7 +294,10 @@ return [
     'con_topic_del'           => 'Delete topic',
     'con_topic_del_warn'      => 'Some motions or amendments are assigned to this topic. If this topic is deleted, this assignment is deleted, too. (Apart from that, the motions and amendments remain unchanged).',
     'con_organisations'       => 'Selection for organisations',
-    'con_organisations_hint'  => 'If this list is empty (default), proposers of a motion can freely enter the organisation name. Changes to this list do not affect already submitted motions.',
+    'con_organisations_hint'  => [
+        'text' => 'If this list is empty (default), proposers of a motion can freely enter the organisation name. Changes to this list do not affect already submitted motions.',
+        'js' => true,
+    ],
     'con_organisation_add'    => 'New organisation',
     'con_multiple_topics'     => 'Allow multiple tags per motion/amendment',
     'con_allow_set_tags'      => 'Proposers can set the tags themselves',
@@ -357,8 +360,14 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_admins_all_cons'   => 'Administrator',
     'siteacc_admins_one_con'    => 'Manage this consultation',
     'siteacc_admins_proposals'  => 'Edit proposed procedure',
-    'siteacc_admins_pp_replyto' => 'Reply-To at proposed procedure e-mails',
-    'siteacc_admins_vote_weight' => 'Voting weight',
+    'siteacc_admins_pp_replyto' => [
+        'text' => 'Reply-To at proposed procedure e-mails',
+        'js' => true,
+    ],
+    'siteacc_admins_vote_weight' => [
+        'text' => 'Voting weight',
+        'js' => true,
+    ],
     'siteacc_add_multiple'      => 'Add multiple at once',
     'siteacc_add_email'         => 'E-mail address',
     'siteacc_add_email_btn'     => 'By e-mail',
@@ -369,57 +378,198 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_add_btn'           => 'Add',
     'siteacc_del_btn'           => 'Delete',
     'siteacc_user_del_done'     => 'The user was remove from this consultation.',
-    'siteacc_userfilter_place'  => 'Name...',
-    'siteacc_userfilter_aria'   => 'Filter the user list',
-    'siteacc_userfilter_allgr'  => 'All groups',
-    'siteacc_accounts_title'    => 'User accounts',
-    'siteacc_orgas_opener'      => 'Manage organisations',
-    'siteacc_organs_orga'       => 'Organisation',
-    'siteacc_organs_autogroup'  => 'Default group',
-    'siteacc_organs_autogroup_tt' => 'Users that are assigned to this organisation when creating their user account will also be assigned to the given group by default.',
+    'siteacc_userfilter_place'  => [
+        'text' => 'Name...',
+        'js' => true,
+    ],
+    'siteacc_userfilter_aria'   => [
+        'text' => 'Filter the user list',
+        'js' => true,
+    ],
+    'siteacc_userfilter_allgr'  => [
+        'text' => 'All groups',
+        'js' => true,
+    ],
+    'siteacc_accounts_title'    => [
+        'text' => 'User accounts',
+        'js' => true,
+    ],
+    'siteacc_orgas_opener'      => [
+        'text' => 'Manage organisations',
+        'js' => true,
+    ],
+    'siteacc_organs_orga'       => [
+        'text' => 'Organisation',
+        'js' => true,
+    ],
+    'siteacc_organs_autogroup'  => [
+        'text' => 'Default group',
+        'js' => true,
+    ],
+    'siteacc_organs_autogroup_tt' => [
+        'text' => 'Users that are assigned to this organisation when creating their user account will also be assigned to the given group by default.',
+        'js' => true,
+    ],
     'siteacc_organs_add'        => 'Add organisation',
     'siteacc_organs_saved'      => 'The organisations were saved',
-    'siteacc_groups_title'      => 'Groups',
-    'siteacc_groups_add_open'   => 'Add group',
-    'siteacc_groups_add_name'   => 'Name of the group',
-    'siteacc_group_del'         => 'Remove %GROUPNAME%',
-    'siteacc_group_edit'        => 'Edit %GROUPNAME%',
-    'siteacc_user_edit'         => 'Edit %USERNAME%',
-    'siteacc_user_del'          => 'Remove %USERNAME%',
-    'siteacc_usergroup_log'     => 'Change log',
-    'siteacc_userdel_confirm'   => 'Do you really want to remove %USERNAME% from the list?',
-    'siteacc_groupdel_confirm'  => 'Really delete %GROUPNAME%? The group with be unassigned from all accounts. Account without group will be assigned to "Participants".',
-    'siteacc_useraccdel'         => 'Delete account',
-    'siteacc_useraccdel_btn'     => 'Delete',
+    'siteacc_groups_title'      => [
+        'text' => 'Groups',
+        'js' => true,
+    ],
+    'siteacc_groups_add_open'   => [
+        'text' => 'Add group',
+        'js' => true,
+    ],
+    'siteacc_groups_add_name'   => [
+        'text' => 'Name of the group',
+        'js' => true,
+    ],
+    'siteacc_group_del'         => [
+        'text' => 'Remove %GROUPNAME%',
+        'js' => true,
+    ],
+    'siteacc_group_edit'        => [
+        'text' => 'Edit %GROUPNAME%',
+        'js' => true,
+    ],
+    'siteacc_user_edit'         => [
+        'text' => 'Edit %USERNAME%',
+        'js' => true,
+    ],
+    'siteacc_user_del'          => [
+        'text' => 'Remove %USERNAME%',
+        'js' => true,
+    ],
+    'siteacc_usergroup_log'     => [
+        'text' => 'Change log',
+        'js' => true,
+    ],
+    'siteacc_userdel_confirm'   => [
+        'text' => 'Do you really want to remove %USERNAME% from the list?',
+        'js' => true,
+    ],
+    'siteacc_groupdel_confirm'  => [
+        'text' => 'Really delete %GROUPNAME%? The group with be unassigned from all accounts. Account without group will be assigned to "Participants".',
+        'js' => true,
+    ],
+    'siteacc_useraccdel'         => [
+        'text' => 'Delete account',
+        'js' => true,
+    ],
+    'siteacc_useraccdel_btn'     => [
+        'text' => 'Delete',
+        'js' => true,
+    ],
     'siteacc_useraccdel_confirm' => 'Really delete the whole account %USERNAME%?',
     'siteacc_usermodal_title'    => 'Edit %USERNAME%',
-    'siteacc_usermodal_identity' => 'Identification',
-    'siteacc_usermodal_idnew'    => 'Change identification (e-mail-address)',
-    'siteacc_usermodal_pass'     => 'Password',
-    'siteacc_usermodal_passset'  => 'Set new password',
-    'siteacc_usermodal_passnew'  => 'New password',
-    'siteacc_usermodal_2fa'      => '2-Factor-Authentication',
-    'siteacc_usermodal_2fa_set'  => 'Set up',
-    'siteacc_usermodal_2fa_nset' => 'Not set up',
-    'siteacc_usermodal_2fa_del'  => 'Remove second factor',
-    'siteacc_usermodal_2fa_force' => 'Enforce two-factor-authentication',
-    'siteacc_usermodal_prevent_pwd' => 'Prevent password change by user',
-    'siteacc_usermodal_force_pwd' => 'Enforce password change with next login',
-    'siteacc_usermodal_superh'   => 'Hint: Super-admins can change the user data mentioned above and set a new password. Please refer to the <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technical documentation</a> on how to set up the list of super-admins.',
-    'siteacc_groupmodal_title'   => 'Edit %GROUPNAME%',
-    'siteacc_groupmodal_system'  => 'This is a default group that cannot be changed.',
-    'siteacc_priv_nonmotion'     => 'Regular privileges',
-    'siteacc_priv_motion_all'    => 'Privileges for <u>all</u><br> motions/amendments',
-    'siteacc_priv_motion_rest'   => 'Privileges for <u>some</u><br> motions/amendments',
-    'siteacc_priv_rest_privs'    => 'Permissions',
-    'siteacc_priv_rest_for'      => 'For',
-    'siteacc_priv_rest_none'     => 'none',
-    'siteacc_priv_rest_add'      => 'Add restricted permission',
-    'siteacc_priv_rest_add_btn'  => 'Add',
-    'siteacc_priv_rest_type'     => 'Restricted to',
-    'siteacc_priv_rest_tag'      => 'Tag',
-    'siteacc_priv_rest_mtype'    => 'Motion type',
-    'siteacc_priv_rest_agenda'   => 'Agenda item',
+    'siteacc_usermodal_identity' => [
+        'text' => 'Identification',
+        'js' => true,
+    ],
+    'siteacc_usermodal_idnew'    => [
+        'text' => 'Change identification (e-mail-address)',
+        'js' => true,
+    ],
+    'siteacc_usermodal_pass'     => [
+        'text' => 'Password',
+        'js' => true,
+    ],
+    'siteacc_usermodal_passset'  => [
+        'text' => 'Set new password',
+        'js' => true,
+    ],
+    'siteacc_usermodal_passnew'  => [
+        'text' => 'New password',
+        'js' => true,
+    ],
+    'siteacc_usermodal_2fa'      => [
+        'text' => '2-Factor-Authentication',
+        'js' => true,
+    ],
+    'siteacc_usermodal_2fa_set'  => [
+        'text' => 'Set up',
+        'js' => true,
+    ],
+    'siteacc_usermodal_2fa_nset' => [
+        'text' => 'Not set up',
+        'js' => true,
+    ],
+    'siteacc_usermodal_2fa_del'  => [
+        'text' => 'Remove second factor',
+        'js' => true,
+    ],
+    'siteacc_usermodal_2fa_force' => [
+        'text' => 'Enforce two-factor-authentication',
+        'js' => true,
+    ],
+    'siteacc_usermodal_prevent_pwd' => [
+        'text' => 'Prevent password change by user',
+        'js' => true,
+    ],
+    'siteacc_usermodal_force_pwd' => [
+        'text' => 'Enforce password change with next login',
+        'js' => true,
+    ],
+    'siteacc_usermodal_superh'   => [
+        'text' => 'Hint: Super-admins can change the user data mentioned above and set a new password. Please refer to the <a href="https://github.com/CatoTH/antragsgruen#setting-super-admins" target="_blank">technical documentation</a> on how to set up the list of super-admins.',
+        'js' => true,
+    ],
+    'siteacc_groupmodal_title'   => [
+        'text' => 'Edit %GROUPNAME%',
+        'js' => true,
+    ],
+    'siteacc_groupmodal_system'  => [
+        'text' => 'This is a default group that cannot be changed.',
+        'js' => true,
+    ],
+    'siteacc_priv_nonmotion'     => [
+        'text' => 'Regular privileges',
+        'js' => true,
+    ],
+    'siteacc_priv_motion_all'    => [
+        'text' => 'Privileges for <u>all</u><br> motions/amendments',
+        'js' => true,
+    ],
+    'siteacc_priv_motion_rest'   => [
+        'text' => 'Privileges for <u>some</u><br> motions/amendments',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_privs'    => [
+        'text' => 'Permissions',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_for'      => [
+        'text' => 'For',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_none'     => [
+        'text' => 'none',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_add'      => [
+        'text' => 'Add restricted permission',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_add_btn'  => [
+        'text' => 'Add',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_type'     => [
+        'text' => 'Restricted to',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_tag'      => [
+        'text' => 'Tag',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_mtype'    => [
+        'text' => 'Motion type',
+        'js' => true,
+    ],
+    'siteacc_priv_rest_agenda'   => [
+        'text' => 'Agenda item',
+        'js' => true,
+    ],
     'siteacc_email_text_pre'     => 'Hi,
 
 we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.
@@ -457,13 +607,25 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
                 <small>(needs to exactly match the box to the left!)</small>',
     'siteacc_new_saml_ww'         => 'Grünes-Netz-Accounts',
     'siteacc_new_mail'            => 'Welcome e-mail',
-    'siteacc_new_name_given'      => 'Given name',
-    'siteacc_new_name_family'     => 'Family name',
-    'siteacc_new_name_orga'       => 'Organization',
+    'siteacc_new_name_given'      => [
+        'text' => 'Given name',
+        'js' => true,
+    ],
+    'siteacc_new_name_family'     => [
+        'text' => 'Family name',
+        'js' => true,
+    ],
+    'siteacc_new_name_orga'       => [
+        'text' => 'Organization',
+        'js' => true,
+    ],
     'siteacc_new_name_pass'       => 'Password',
     'siteacc_new_name_pass_auto'  => 'Auto-generate password',
     'siteacc_new_force_pwd_change' => 'Force password change on first login',
-    'siteacc_new_groups'          => 'User groups',
+    'siteacc_new_groups'          => [
+        'text' => 'User groups',
+        'js' => true,
+    ],
     'siteacc_new_mail_send'       => 'Send an e-mail',
     'siteacc_new_hint_accexists'  => 'This user already has an account. You can grant him/her permissions.',
     'siteacc_new_mail_hint'       => '%LINK% will be replaced by a link to the site.<br>%ACCOUNT% will be replaced by the access data of the user.',
@@ -808,11 +970,30 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'agenda_title' => 'Manage Agenda',
     'agenda_bc' => 'Agenda',
     'agenda_edit' => 'Edit',
-    'agenda_add_item' => 'Add item',
-    'agenda_add_date' => 'Add date',
-    'agenda_show_times' => 'Enter fixed times',
-    'agenda_move_aria' => 'Move item',
-    'agenda_speeking_link' => 'Manage speaking list',
+    'agenda_add_item' => [
+        'text' => 'Add item',
+        'js' => true,
+    ],
+    'agenda_add_date' => [
+        'text' => 'Add date',
+        'js' => true,
+    ],
+    'agenda_show_times' => [
+        'text' => 'Enter fixed times',
+        'js' => true,
+    ],
+    'agenda_move_aria' => [
+        'text' => 'Move item',
+        'js' => true,
+    ],
+    'agenda_speeking_link' => [
+        'text' => 'Manage speaking list',
+        'js' => true,
+    ],
+    'agenda_sort_save' => [
+        'text' => 'Save new order',
+        'js' => true,
+    ],
     'agenda_back' => 'Back to the home page',
     'agenda_admin_intro' => 'This page allows editing the agenda. To actually show it on the home page, please choose an appropriate home page view at "%LINK%".'
 ];

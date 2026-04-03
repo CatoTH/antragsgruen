@@ -34,10 +34,12 @@ $documentsJs = array_map(function (\app\models\db\ConsultationFileGroup $fileGro
     </div>
 </section>
 
-<script>
-    window.addEventListener('load', () => {
-        const sortApp = Vue.createApp({
-            template: `
+<script type="module">
+    import { createApp } from '/npm/vue.esm-browser.prod.js';
+    import vuedraggable from "/npm/vuedraggable.js";
+
+    const sortApp = createApp({
+        template: `
                 <draggable :list="documents" item-key="title" @change="onChange">
                 <template #item="{ element }">
                     <div class="list-group-item">
@@ -53,32 +55,31 @@ $documentsJs = array_map(function (\app\models\db\ConsultationFileGroup $fileGro
                     <?= Yii::t('voting', 'settings_sort_save') ?>
                 </button>
                 </div>`,
-            data() {
-                return {
-                    documents: <?= json_encode($documentsJs) ?>,
-                };
-            },
-            computed: {}
-        });
-        sortApp.component('draggable', vuedraggable);
-        sortApp.config.compilerOptions.whitespace = 'condense';
-        sortApp.mount(document.getElementById('sortDocumentsHolder'));
+        data() {
+            return {
+                documents: <?= json_encode($documentsJs) ?>,
+            };
+        },
+        computed: {}
+    });
+    sortApp.component('draggable', vuedraggable);
+    sortApp.config.compilerOptions.whitespace = 'condense';
+    sortApp.mount(document.getElementById('sortDocumentsHolder'));
 
-        document.querySelector('.sortDocumentsOpener').addEventListener('click', () => {
-            if (document.querySelector('.documentSortingForm').classList.contains('hidden')) {
-                document.querySelector('.documentSortingForm').classList.remove('hidden');
-                document.querySelector('.btnFileGroupCreate').classList.add('hidden');
-                document.querySelectorAll('.fileGroupHolder').forEach(element => {
-                    element.classList.add('hidden');
-                });
-            } else {
-                document.querySelector('.documentSortingForm').classList.add('hidden');
-                document.querySelector('.btnFileGroupCreate').classList.remove('hidden');
-                document.querySelectorAll('.fileGroupHolder').forEach(element => {
-                    element.classList.remove('hidden');
-                });
-            }
+    document.querySelector('.sortDocumentsOpener').addEventListener('click', () => {
+        if (document.querySelector('.documentSortingForm').classList.contains('hidden')) {
+            document.querySelector('.documentSortingForm').classList.remove('hidden');
+            document.querySelector('.btnFileGroupCreate').classList.add('hidden');
+            document.querySelectorAll('.fileGroupHolder').forEach(element => {
+                element.classList.add('hidden');
+            });
+        } else {
+            document.querySelector('.documentSortingForm').classList.add('hidden');
+            document.querySelector('.btnFileGroupCreate').classList.remove('hidden');
+            document.querySelectorAll('.fileGroupHolder').forEach(element => {
+                element.classList.remove('hidden');
+            });
+        }
 
-        });
     });
 </script>

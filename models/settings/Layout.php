@@ -33,7 +33,6 @@ class Layout
     public array $extraCss = [];
     public array $inlineCss = [];
     public array $extraJs = [];
-    public array $vueTemplates = [];
     public array $bodyCssClasses = [];
     public array $onloadJs = [];
     public bool $fullWidth = false;
@@ -213,14 +212,6 @@ class Layout
         return $this;
     }
 
-    public function addVueTemplate(string $template): self
-    {
-        if (!in_array($template, $this->vueTemplates)) {
-            $this->vueTemplates[] = $template;
-        }
-        return $this;
-    }
-
     public function addLiveEventSubscription(string $role, string $channel): void
     {
         $this->connectLiveEvents[] = ['role' => $role, 'channel' => $channel];
@@ -313,19 +304,6 @@ class Layout
         $this->addJS('npm/Sortable.min.js');
     }
 
-    public function loadVue(): void
-    {
-        $this->addJS('npm/vue.global.prod.js');
-    }
-
-    public function addFullscreenTemplates(): void
-    {
-        $this->addVueTemplate('@app/views/shared/fullscreen-projector.vue.php');
-        $this->addVueTemplate('@app/views/shared/fullscreen-imotion.vue.php');
-        $this->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
-        $this->addVueTemplate('@app/views/speech/user-fullscreen-widget.vue.php');
-    }
-
     public function loadTypeahead(): void
     {
         $this->addJs('js/typeahead.bundle.min.js');
@@ -335,16 +313,6 @@ class Layout
     {
         $this->addJs('npm/selectize.min.js');
         $this->addCSS('css/selectize.bootstrap3.css');
-    }
-
-    public function loadVueDraggable(): void
-    {
-        $this->addJs('npm/vuedraggable.umd.min.js');
-    }
-
-    public function loadVueDraggablePlus(): void
-    {
-        $this->addJs('npm/vue-draggable-plus.iife.js');
     }
 
     /**

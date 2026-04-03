@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\componentsUrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};
@@ -29,8 +30,6 @@ $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestPropos
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->loadVue();
-$layout->addFullscreenTemplates();
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }
@@ -78,17 +77,11 @@ $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
 if (User::getCurrentUser()) {
-    $fullscreenInitData = json_encode([
-        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
-        'pagination' => $consultation->getSettings()->motionPrevNextLinks,
+    $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'motion-' . $motion->id,
         'init_content_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
+        'consultation' => $consultation,
     ]);
-    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-    </button>';
 } else {
     $fullscreenButton = '';
 }

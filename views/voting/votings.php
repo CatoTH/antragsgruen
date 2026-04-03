@@ -20,12 +20,6 @@ $this->title = Yii::t('voting', 'page_title');
 $sidebarMode = 'open';
 include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
-$layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
-Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
-
 $apiData = [];
 foreach (Factory::getOpenVotingBlocks($consultation, true, null) as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
@@ -33,6 +27,7 @@ foreach (Factory::getOpenVotingBlocks($consultation, true, null) as $votingBlock
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
 $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '']);
+$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 ?>
 <h1><?= Yii::t('voting', 'page_title') ?></h1>
@@ -47,8 +42,17 @@ $voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTI
 
 <section data-url-poll="<?= Html::encode($pollUrl) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
-         data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
+         class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"
 >
     <div class="currentVoting"></div>
 </section>
+
+<script type="module">
+    import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
+    new VotingBlock(
+        document.querySelector(".currentVotingWidget"),
+        <?= json_encode($CONSTANTS) ?>,
+        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+    );
+</script>

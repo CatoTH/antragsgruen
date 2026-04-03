@@ -318,11 +318,8 @@ class MessageSource extends \yii\i18n\MessageSource
     /**
      * @param string $category
      * @param string $language
-     * @param bool $withConsultationStrings
-     * @return array
-     * @throws Internal
      */
-    protected function loadMessages($category, $language, bool $withConsultationStrings = true): array
+    public function loadMessages($category, $language, bool $withConsultationStrings = true): array
     {
         return array_map(function ($entry) {
             if (is_array($entry)) {

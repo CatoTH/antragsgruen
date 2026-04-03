@@ -20,12 +20,6 @@ $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT
 $this->title = Yii::t('pages', 'documents_title');
 $layout->addBreadcrumb(Yii::t('pages', 'documents_title'));
 $layout->bodyCssClasses[] = 'documentsPage';
-if ($contentAdmin) {
-    $layout->addAMDModule('backend/Documents');
-    $layout->loadVue();
-    $layout->loadSortable();
-    $layout->loadVueDraggable();
-}
 
 $fileGroups = ConsultationFileGroup::getSortedRegularGroupsFromConsultation($consultation);
 $hasFiles = false;
@@ -231,5 +225,10 @@ if ($contentAdmin) {
         </div>
         <?= Html::endForm() ?>
     </section>
+
+    <script type="module">
+        import { Documents } from "/js/modules/backend/Documents.js";
+        new Documents();
+    </script>
     <?php
 }

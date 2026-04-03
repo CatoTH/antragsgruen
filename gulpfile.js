@@ -5,6 +5,7 @@ import concat from 'gulp-concat';
 import postcss from 'gulp-postcss';
 import sourcemaps from 'gulp-sourcemaps';
 import terser from 'gulp-terser';
+import { createVueTransform } from "./assets/gulpfile.vue.js";
 // SASS
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
@@ -29,9 +30,9 @@ async function taskCopyFiles() {
     await gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/requirejs/require.js").pipe(terser()).pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/vue/dist/vue.global.prod.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/vuedraggable/dist/vuedraggable.umd.min.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/vue-draggable-plus/dist/vue-draggable-plus.iife.js").pipe(gulp.dest('./web/npm/'));
+    //await gulp.src("node_modules/vue-draggable-plus/dist/vue-draggable-plus.iife.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/vue/dist/vue.esm-browser.prod.js").pipe(gulp.dest('./web/npm/')); // @TODO Replace by runtime
+    await gulp.src("node_modules/sortablejs/modular/sortable.esm.js").pipe(gulp.dest('./web/npm/'));
 }
 
 function taskBuildJsMain() {
@@ -162,13 +163,23 @@ function taskWatch() {
     gulp.watch(["web/css/*.scss"], {usePolling: true}, gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], {usePolling: true}, taskBuildPluginCss);
     gulp.watch(["assets/html2pdf/*.scss"], {usePolling: true}, taskBuildHtml2PdfCss);
+    gulp.watch(['web/js/vue/**/*.vue'], taskCompileVue);
+}
+
+function taskCompileVue() {
+    return gulp
+        .src('web/js/vue/**/*.vue')
+        .pipe(createVueTransform('/npm/vue.esm-browser.prod.js'))
+        .pipe(terser())
+        .pipe(gulp.dest('web/js/vue/'));
 }
 
 gulp.task('build-js', taskBuildJs);
 gulp.task('build-css', taskBuildCss);
 gulp.task('build-html2pdf-css', taskBuildHtml2PdfCss);
 gulp.task('build-plugin-css', taskBuildPluginCss);
+gulp.task('build-plugin-vue', taskCompileVue);
 gulp.task('copy-files', taskCopyFiles);
 gulp.task('watch', taskWatch);
 
-gulp.task('default', gulp.parallel(taskBuildJs, taskBuildCss, taskCopyFiles, taskBuildPluginCss, taskBuildHtml2PdfCss));
+gulp.task('default', gulp.parallel(taskBuildJs, taskCompileVue, taskBuildCss, taskCopyFiles, taskBuildPluginCss, taskBuildHtml2PdfCss));

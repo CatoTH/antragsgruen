@@ -40,7 +40,7 @@ return [
 
     'admin_title' => 'Administratie van de stemming',
     'admin_intro' => '<strong>Hint:</strong> Een handleiding voor de functies van stemmen is te vinden in <a href="https://sandbox.motion.tools/help#advanced">help page</a>.',
-    'admin_aria_single' => 'Administreer het stemmen',
+    'admin_aria_single' => 'Administreer het stemmen: %TITLE%',
     'admin_voting_use' => 'Online stemmen',
     'admin_voting_use_h' => 'De stemming over de volgende voorstellen en amendementen zal online plaatsvinden op Motion Tools',
     'admin_votes_total' => 'Totaal',
@@ -120,7 +120,7 @@ return [
     'voting_current_aria' => 'Op dit moment actieve stemmingen',
     'voting_show_amend' => 'Toon amendement',
     'voting_edit_amend' => 'Wijzig amendement',
-    'voting_by' => 'Door',
+    'voting_by' => 'Door %BY%',
     'voting_admin_all' => 'Administreer stemmingen',
     'voting_visibility' => 'Wie kan zien hoe ik gestemd heb?',
     'voting_visibility_none' => 'Niemand kan zien hoe je gestemd hebt. <small>(Personen die directe toegang hebben tot de database, zouden dit eventueel wel kunnen)</small>',

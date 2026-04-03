@@ -1,6 +1,6 @@
 <?php
 
-use app\components\JsModuleImportMap;
+use app\components\JsTools;
 use yii\helpers\Html;
 
 /**
@@ -107,7 +107,7 @@ echo \app\models\layoutHooks\Layout::favicons();
 $this->head();
 
 echo \app\models\layoutHooks\Layout::endOfHead($controller->consultation);
-echo JsModuleImportMap::getJsModulesImportMap();
+echo JsTools::getJsModulesImportMap();
 echo '</head>';
 
 if (defined('YII_ENV') && YII_ENV == 'test') {
@@ -154,10 +154,6 @@ foreach ($layout->onloadJs as $js) {
 }
 echo $layout->getAMDClasses();
 echo $layout->getAMDLoader();
-
-foreach ($layout->vueTemplates as $vueTemplate) {
-    echo $this->render($vueTemplate);
-}
 
 $this->endBody();
 echo '

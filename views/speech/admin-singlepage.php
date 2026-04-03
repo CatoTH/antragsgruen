@@ -23,9 +23,6 @@ if ($queue->motion) {
 }
 $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/speech/admin-widget.vue.php');
-$layout->addVueTemplate('@app/views/speech/admin-subqueue.vue.php');
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('admin', 'speech');
 
@@ -46,10 +43,12 @@ if ($queue->motion) {
 } else {
     $this->title = Yii::t('speech', 'admin_title_plain');
 }
+
+echo $this->render('@app/views/speech/admin-widget.vue.php');
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="manageSpeechQueue">
-    <section data-antragsgruen-widget="backend/SpeechListEdit"
+    <section class="manageSpeechQueueWidget"
              data-queue="<?= Html::encode(json_encode($initData)) ?>">
         <div class="speechAdmin"></div>
     </section>

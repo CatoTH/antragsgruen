@@ -18,11 +18,14 @@ $settings      = $supportType->getSettingsObj();
 
 echo Html::beginForm('', 'post', [
     'class'                    => 'motionSupportForm',
-    'data-antragsgruen-widget' => 'frontend/MotionSupportBlock',
     'data-settings'            => json_encode($settings)
 ]);
 
 ?>
+    <script type="module">
+        import { motionSupportBlock } from '/js/modules/frontend/MotionSupportBlock.js';
+        motionSupportBlock(document.querySelector('.motionSupportForm'));
+    </script>
     <label class="supportQuestion"><?= Yii::t('motion', 'support_question') ?></label>
 <?php
 if ($settings->hasOrganizations && $user && $user->organization === '' && $user->fixedData) {
