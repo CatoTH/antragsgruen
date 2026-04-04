@@ -1,6 +1,6 @@
-import '../shared/PolicySetter';
+// @ts-check
 
-declare let Sortable;
+import { PolicySetter } from "../shared/PolicySetter.js";
 
 const CONTACT_NONE = 0;
 const CONTACT_OPTIONAL = 1;
@@ -27,9 +27,9 @@ const TYPE_CHOICE = 9;
 
 const TYPE_TABULAR_SELECT = 4;
 
-class MotionTypeEdit {
-    private motionsHaveSupporters: boolean;
-    private amendmentsHaveSupporters: boolean;
+export class MotionTypeEdit {
+    /** @type { boolean } */ motionsHaveSupporters;
+    /** @type { boolean } */ amendmentsHaveSupporters;
 
     constructor() {
         $('.deleteTypeOpener button').on('click', () => {
@@ -46,7 +46,7 @@ class MotionTypeEdit {
         this.initInitiatorForm($("#amendmentSupportersForm"));
 
         $('.policyWidget').each((ix, el) => {
-            new PolicySetter($(el));
+            new PolicySetter(el);
         });
 
         const $sameSettings = $("#sameInitiatorSettingsForAmendments input");
@@ -69,16 +69,16 @@ class MotionTypeEdit {
         }).trigger('change');
     }
 
-    private initInitiatorForm($form: JQuery) {
+    initInitiatorForm($form) {
         const $initiatorGender = $form.find(".contactGender input");
 
         const $supportType = $form.find(".supportType");
         const $supportAllowMore = $form.find(".formGroupAllowMore input");
         const $initiatorCanBePerson = $form.find(".contactDetails .initiatorCanBePerson input");
         const $initiatorCanBeOrga = $form.find(".contactDetails .initiatorCanBeOrganization input");
-        const $initiatorSetPermissions= $form.find(".contactDetails .initiatorSetPermissions input");
+        const $initiatorSetPermissions = $form.find(".contactDetails .initiatorSetPermissions input");
 
-        let currentType = parseInt($supportType.find('input').val() as string, 10);
+        let currentType = parseInt($supportType.find('input').val(), 10);
 
         const visibilityRules = {
             hasInitiator: () => (currentType !== SUPPORTER_NO_INITIATOR),
@@ -93,7 +93,7 @@ class MotionTypeEdit {
             ),
             allowFemaleQuota: () => (
                 currentType === SUPPORTER_COLLECTING_SUPPORTERS &&
-                parseInt($initiatorGender.filter(":checked").val() as string, 10) !== CONTACT_NONE
+                parseInt($initiatorGender.filter(":checked").val(), 10) !== CONTACT_NONE
             ),
             initiatorCanBePerson: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorCanBePerson.prop("checked")),
             initiatorCanBeOrga: () => (currentType !== SUPPORTER_NO_INITIATOR && $initiatorCanBeOrga.prop("checked")),
@@ -102,7 +102,7 @@ class MotionTypeEdit {
         };
 
         const recalcVisibilities = () => {
-            $form.find("[data-visibility]").each(function() {
+            $form.find("[data-visibility]").each(function () {
                 const $this = $(this);
                 if (visibilityRules[$this.data('visibility')]()) {
                     $this.removeClass('hidden');
@@ -117,7 +117,7 @@ class MotionTypeEdit {
         }).trigger('change');
 
         $supportType.on('change', () => {
-            currentType = parseInt($supportType.val() as string, 10);
+            currentType = parseInt($supportType.val(), 10);
             const hasSupporters = $supportType.find("option[value=\"" + currentType.toString(10) + "\"]").data("has-supporters");
             recalcVisibilities();
 
@@ -144,7 +144,7 @@ class MotionTypeEdit {
         $initiatorGender.on("change", recalcVisibilities).trigger("change");
     }
 
-    private setMaxPdfSupporters() {
+    setMaxPdfSupporters() {
         if (this.amendmentsHaveSupporters || this.motionsHaveSupporters) {
             $('#typeMaxPdfSupportersRow').removeClass('hidden');
         } else {
@@ -152,7 +152,7 @@ class MotionTypeEdit {
         }
     }
 
-    private initDeadlines() {
+    initDeadlines() {
         $('#deadlineFormTypeComplex').on("change", (ev) => {
             if ($(ev.currentTarget).prop('checked')) {
                 $('.deadlineTypeSimple').addClass('hidden');
@@ -225,7 +225,7 @@ class MotionTypeEdit {
         });
     }
 
-    private initOptionsSelectize($el: any) {
+    initOptionsSelectize($el) {
         $el.selectize({
             create: true,
             plugins: ["remove_button"],
@@ -237,12 +237,12 @@ class MotionTypeEdit {
         });
     }
 
-    private initSectionList() {
+    initSectionList() {
         let $list = $('#sectionsList'),
             newCounter = 0,
             widget = this;
 
-        $list.data("sortable", Sortable.create(<HTMLElement>$list[0], {
+        $list.data("sortable", Sortable.create($list[0], {
             handle: '.drag-handle',
             animation: 150
         }));
@@ -259,7 +259,7 @@ class MotionTypeEdit {
         });
         $list.on('change', '.sectionType', function () {
             let $li = $(this).parents('li').first(),
-                val = parseInt($(this).val() as string);
+                val = parseInt($(this).val());
 
             $li.removeClass('title textHtml textSimple textEditorial image choice tabularData pdfAlternative pdfAttachment videoEmbed');
             if (val === TYPE_TITLE) {
@@ -331,7 +331,7 @@ class MotionTypeEdit {
             $list.find('.maxLenSet').trigger('change');
 
             let $tab = $newObj.find('.tabularDataRow ul');
-            $tab.data("sortable", Sortable.create(<HTMLElement>$tab[0], {
+            $tab.data("sortable", Sortable.create($tab[0], {
                 handle: '.drag-data-handle',
                 animation: 150
             }));
@@ -351,7 +351,7 @@ class MotionTypeEdit {
             $ul.append($row);
             $row.find('input').trigger('focus');
 
-            widget.initOptionsSelectize($row.find('.selectOptions select') as any);
+            widget.initOptionsSelectize($row.find('.selectOptions select'));
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
@@ -384,6 +384,3 @@ class MotionTypeEdit {
         widget.initOptionsSelectize($list.find('.selectOptions select, .choicesRow select'));
     }
 }
-
-
-new MotionTypeEdit();

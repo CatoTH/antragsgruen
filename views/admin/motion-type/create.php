@@ -20,10 +20,13 @@ $layout->addCSS('css/backend.css');
 echo '<h1>' . $this->title . '</h1>';
 echo Html::beginForm('', 'post', [
     'class'                    => 'motionTypeCreateForm content form-horizontal',
-    'data-antragsgruen-widget' => 'backend/MotionTypeCreate',
 ]);
 
 ?>
+<script type="module">
+    import { MotionTypeCreate } from "/js/modules/backend/MotionTypeCreate.js";
+    new MotionTypeCreate(document.querySelector('.motionTypeCreateForm'));
+</script>
 <div class="stdTwoCols">
     <label class="leftColumn">
         <?= Yii::t('admin', 'motion_type_templ') ?>:

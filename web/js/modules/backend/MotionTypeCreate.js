@@ -1,11 +1,15 @@
-export class MotionTypeCreate {
-    private $inputSingle: JQuery;
-    private $inputPlural: JQuery;
-    private $inputCta: JQuery;
-    private $inputPrefix: JQuery;
-    private $presets: JQuery;
+// @ts-check
 
-    constructor(private $form: JQuery) {
+export class MotionTypeCreate {
+    /** @type { JQuery } */ $inputSingle;
+    /** @type { JQuery } */ $inputPlural;
+    /** @type { JQuery } */ $inputCta;
+    /** @type { JQuery } */ $inputPrefix;
+    /** @type { JQuery } */ $presets;
+
+    /** @param {HTMLElement} form */
+    constructor(form) {
+        const $form = $(form);
         this.$inputSingle = $form.find('#typeTitleSingular');
         this.$inputPlural = $form.find('#typeTitlePlural');
         this.$inputCta = $form.find('#typeCreateTitle');

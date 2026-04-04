@@ -22,14 +22,18 @@ $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadSelectize();
-$layout->addAMDModule('backend/MotionTypeEdit');
 
 $myUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motionType->id]);
 
 $locale = Tools::getCurrentDateLocale();
 
-
-echo '<h1>' . Yii::t('admin', 'motion_type_edit') . '</h1>';
+?>
+<h1><?= Yii::t('admin', 'motion_type_edit') ?></h1>
+<script type="module">
+    import { MotionTypeEdit } from "/js/modules/backend/MotionTypeEdit.js";
+    new MotionTypeEdit();
+</script>
+<?php
 
 if ($supportCollPolicyWarning) {
     ?>
