@@ -1,15 +1,19 @@
-export class MoveMotion {
-    private checkBackend: string;
+// @ts-check
 
-    constructor(private $form: JQuery) {
-        this.checkBackend = $form.data('check-backend');
+export class MotionMove {
+    /** @type {string} */ checkBackend;
+    /** @type {JQuery} */ $form;
+
+    constructor(form) {
+        this.$form = $(form);
+        this.checkBackend = this.$form.data('check-backend');
         this.initCopyMove();
         this.initTarget();
         this.initConsultation();
         this.initButtonEnabled();
     }
 
-    private initCopyMove() {
+    initCopyMove() {
         this.$form.find('input[name=operation]').on("change", () => {
             if (this.$form.find('input[name=operation]:checked').val() === 'copynoref') {
                 this.$form.find('.labelTargetMove').addClass('hidden');
@@ -23,7 +27,7 @@ export class MoveMotion {
         });
     }
 
-    private initTarget() {
+    initTarget() {
         const $target = this.$form.find("input[name=target]");
         $target.on("change", () => {
             const selected = $target.filter(":checked").val();
@@ -42,11 +46,11 @@ export class MoveMotion {
         }).trigger("change");
     }
 
-    private initConsultation() {
+    initConsultation() {
         $("#consultationId").on("change", this.rebuildMotionTypes.bind(this));
     }
 
-    private rebuildMotionTypes() {
+    rebuildMotionTypes() {
         const consultationId = $("#consultationId").val();
         $(".moveToMotionTypeId").addClass("hidden");
         if (this.$form.find("input[name=target]:checked").val() === "consultation") {
@@ -54,7 +58,7 @@ export class MoveMotion {
         }
     }
 
-    private isPrefixAvailable(prefix: string, operation: string, consultation: number): Promise<boolean> {
+    isPrefixAvailable(prefix, operation, consultation) {
         return new Promise((resolve, reject) => {
             return $.get(this.checkBackend, {
                 checkType: 'prefix',
@@ -67,19 +71,19 @@ export class MoveMotion {
         });
     }
 
-    private async rebuildButtonEnabled() {
+    async rebuildButtonEnabled() {
         let isEnabled = true;
 
         let consultationId;
         if (this.$form.find('input[name=target]:checked').val() === 'consultation' && this.$form.find('[name=consultation]').length > 0) {
-            consultationId = parseInt(this.$form.find('[name=consultation]').val() as string);
+            consultationId = parseInt(this.$form.find('[name=consultation]').val());
         } else {
             consultationId = null;
         }
 
         const prefixIsAvailable = await this.isPrefixAvailable(
-            this.$form.find('#motionTitlePrefix').val() as string,
-            this.$form.find('input[name=operation]:checked').val() as string,
+            this.$form.find('#motionTitlePrefix').val(),
+            this.$form.find('input[name=operation]:checked').val(),
             consultationId
         );
         if (prefixIsAvailable) {
@@ -99,7 +103,7 @@ export class MoveMotion {
         this.$form.find("button[type=submit]").prop("disabled", !isEnabled);
     }
 
-    private initButtonEnabled() {
+    initButtonEnabled() {
         this.$form.find('#motionTitlePrefix').on('change keyup', this.rebuildButtonEnabled.bind(this));
         this.$form.find('input[name=operation]').on('change', this.rebuildButtonEnabled.bind(this));
         this.$form.find('input[name=target]').on('change', this.rebuildButtonEnabled.bind(this));

@@ -57,6 +57,10 @@ echo Html::beginForm('', 'post', [
         </div>
         <div class="right">
             <?= $this->render('_switch_dropdown') ?>
+            <script type="module">
+                import { ProposedProcedureExport } from "/js/modules/backend/ProposedProcedureExport.js";
+                new ProposedProcedureExport(document.querySelector(".exportProcedureDd"));
+            </script>
             <?= $this->render('_functions_dropdown') ?>
             <div class="autoUpdateWidget">
                 <label class="sr-only" for="autoUpdateToggle"></label>

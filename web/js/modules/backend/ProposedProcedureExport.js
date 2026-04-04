@@ -1,9 +1,14 @@
+// @ts-check
+
 export class ProposedProcedureExport {
-    constructor(private $widget: JQuery) {
+    /** @type {JQuery} */ $widget;
+
+    constructor(element) {
+        this.$widget = $(element);
         this.initExportRow();
     }
 
-    private recalcLinks() {
+    recalcLinks() {
         let withdrawn = (this.$widget.find("input[name=comments]").prop("checked") ? 1 : 0);
         let onlyPublic = (this.$widget.find("input[name=onlypublic]").prop("checked") ? 1 : 0);
         this.$widget.find("a.odsLink").each((ev, el) => {
@@ -14,7 +19,7 @@ export class ProposedProcedureExport {
         });
     }
 
-    private initExportRow() {
+    initExportRow() {
         this.$widget.find("li.checkbox").on("click", function (ev) {
             ev.stopPropagation();
         });

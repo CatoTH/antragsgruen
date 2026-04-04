@@ -14,12 +14,11 @@ $controller   = $this->context;
 $consultation = $controller->consultation;
 
 ?>
-<div class="dropdown dropdown-menu-left exportProcedureDd"
-     data-antragsgruen-widget="backend/ProposedProcedureExport">
+<div class="dropdown dropdown-menu-left exportProcedureDd">
     <button class="btn btn-default dropdown-toggle" type="button" id="exportProcedureBtn"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <?= Yii::t('admin', 'index_export_procedure') ?>
-        <span class="caret"></span>
+        <span class="caret" aria-hidden="true"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportProcedureBtn">
         <li class="exportLink linkProcedureIntern">
