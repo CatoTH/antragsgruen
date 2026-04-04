@@ -33,7 +33,6 @@ if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUE
     $adminUrl = '';
 }
 
-echo $this->render('@app/views/speech/user-footer-widget.vue.php');
 ?>
 <section class="currentSpeechFooter"
          aria-labelledby="speechListUserTitle"

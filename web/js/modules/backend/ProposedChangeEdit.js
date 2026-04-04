@@ -1,30 +1,38 @@
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
-import {MotionMergeChangeActions} from "../shared/MotionMergeChangeActions";
+// @ts-check
+
+import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
+import {MotionMergeChangeActions} from "../shared/MotionMergeChangeActions.js";
 
 export class ProposedChangeEdit {
-    private hasChanged: boolean = false;
-    private $collisionIndicator: JQuery;
+    hasChanged = false;
 
-    public constructor(private $form: JQuery) {
+    /** @type { JQuery } */
+    $collisionIndicator;
+
+    /** @type { JQuery } */
+    $form;
+
+    constructor(form) {
+        this.$form = $(form);
         this.textEditCalled();
         this.initCollisionDetection();
 
-        $form.on("submit", () => {
+        this.$form.on("submit", () => {
             $(window).off("beforeunload", ProposedChangeEdit.onLeavePage);
         });
     }
 
-    private textEditCalled() {
+    textEditCalled() {
         $(".wysiwyg-textarea:not(#sectionHolderEditorial)").each((i, el) => {
             let $holder = $(el),
                 $textarea = $holder.find(".texteditor");
 
-            let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
-                ckeditor: CKEDITOR.editor = editor.getEditor();
+            let editor = new AntragsgruenEditor($textarea.attr("id")),
+                ckeditor = editor.getEditor();
 
             $textarea.parents("form").on('submit', () => {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());
-                if (typeof(ckeditor.plugins.lite) != 'undefined') {
+                if (typeof (ckeditor.plugins.lite) != 'undefined') {
                     ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
                     $textarea.parent().find("textarea.consolidated").val(ckeditor.getData());
                 }
@@ -35,14 +43,14 @@ export class ProposedChangeEdit {
         });
 
         this.$form.find('.resetText').on('click', (ev) => {
-            let $text: JQuery = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
+            let $text = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
             window['CKEDITOR']['instances'][$text.attr('id')].setData($text.data('original-html'));
 
             $(ev.currentTarget).parents('.modifiedActions').addClass('hidden');
         });
     }
 
-    private initCollisionDetection() {
+    initCollisionDetection() {
         if (!this.$form.data('collision-check-url')) {
             // Motions do not support collision detection yet
             return;
@@ -85,7 +93,7 @@ export class ProposedChangeEdit {
                     this.$collisionIndicator.removeClass('hidden');
                     let listHtml = '';
                     ret['collisions'].forEach((el) => {
-                       listHtml += el['html'];
+                        listHtml += el['html'];
                     });
                     this.$collisionIndicator.find('.collisionList').html(listHtml);
                 }
@@ -94,7 +102,7 @@ export class ProposedChangeEdit {
         }, 5000);
     }
 
-    private getTextConsolidatedSections() {
+    getTextConsolidatedSections() {
         let sections = {};
         $('.proposedVersion .wysiwyg-textarea:not(#sectionHolderEditorial)').each((i, el) => {
             let $holder = $(el),
@@ -114,11 +122,11 @@ export class ProposedChangeEdit {
         return sections;
     }
 
-    public static onLeavePage(): string {
+    static onLeavePage() {
         return __t("std", "leave_changed_page");
     }
 
-    public onContentChanged() {
+    onContentChanged() {
         if (!this.hasChanged) {
             this.hasChanged = true;
             if (!$("body").hasClass('testing')) {

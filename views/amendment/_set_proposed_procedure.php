@@ -22,7 +22,6 @@ if ($proposal->isNewRecord) {
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
     'class'                    => implode(' ', $classes),
-    'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'data-proposal-id'         => ($proposal->isNewRecord ? null : $proposal->id),
 ]);
@@ -40,6 +39,10 @@ $consultation = $amendment->getMyConsultation();
 $canBeChangedUnlimitedly = $proposal->canEditProposedProcedure();
 $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 ?>
+<script type="module">
+    import { ChangeProposedProcedure } from "/js/modules/backend/ChangeProposedProcedure.js";
+    new ChangeProposedProcedure(document.getElementById('proposedChanges'));
+</script>
 <h2>
     <?= Yii::t('amend', 'proposal_amend_title') ?>
     <button class="pull-right btn-link closeBtn" type="button"

@@ -1,3 +1,5 @@
+// @ts-check
+
 const STATUS_REFERRED = 10;
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY_MOT = 32;
@@ -6,21 +8,53 @@ const STATUS_CUSTOM_STRING = 23;
 const STATUS_PROPOSED_MOVE_TO_OTHER_MOTION = 28;
 
 export class ChangeProposedProcedure {
-    private $openerBtn: JQuery;
-    private $statusDetails: JQuery;
-    private $visibilityInput: JQuery;
-    private $votingStatusInput: JQuery;
-    private $votingBlockId: JQuery;
-    private $tagsSelect: JQuery;
-    private saveUrl: string;
-    private context: string;
-    private version: number|null;
-    private csrf: string;
-    private savingComment: boolean = false;
-    private isLatestVersion: boolean;
-    private isNewVersion: boolean; // Not saved yet
+    /** @type {JQuery} */
+    $widget;
 
-    constructor(private $widget: JQuery) {
+    /** @type {JQuery} */
+    $openerBtn;
+
+    /** @type {JQuery} */
+    $statusDetails;
+
+    /** @type {JQuery} */
+    $visibilityInput;
+
+    /** @type {JQuery} */
+    $votingStatusInput;
+
+    /** @type {JQuery} */
+    $votingBlockId;
+
+    /** @type {JQuery} */
+    $tagsSelect;
+
+    /** @type {string} */
+    saveUrl;
+
+    /** @type {string} */
+    context;
+
+    /** @type {number|null} */
+    version;
+
+    /** @type {string} */
+    csrf;
+
+    /** @type {boolean} */
+    savingComment = false;
+
+    /** @type {boolean} */
+    isLatestVersion;
+
+    /** @type {boolean} */
+    isNewVersion;
+
+    /**
+     * @param {HTMLElement} element
+     */
+    constructor(element) {
+        this.$widget = $(element);
         this.initElements();
         this.initOpener();
         this.initStatusSetter();
@@ -28,26 +62,26 @@ export class ChangeProposedProcedure {
         this.initVotingBlock();
         this.initExplanation();
         this.initTags();
-        $widget.on("submit", ev => ev.preventDefault());
+        this.$widget.on("submit", ev => ev.preventDefault());
         this.setVotingBlockSettings();
     }
 
-    private initElements() {
-        this.$statusDetails = this.$widget.find('.statusDetails');
-        this.$visibilityInput = this.$widget.find('input[name=proposalVisible]');
+    initElements() {
+        this.$statusDetails    = this.$widget.find('.statusDetails');
+        this.$visibilityInput  = this.$widget.find('input[name=proposalVisible]');
         this.$votingStatusInput = this.$widget.find('input[name=votingStatus]');
-        this.$votingBlockId = this.$widget.find('select[name=votingBlockId]');
-        this.$tagsSelect = this.$widget.find('.proposalTagsSelect');
-        this.$openerBtn = $('.proposedChangesOpener button');
-        this.context = this.$widget.data('context');
-        this.saveUrl = this.$widget.attr('action');
-        this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
-        this.version = this.$widget.data('proposal-id') ?? null;
-        this.isLatestVersion = this.$widget[0].classList.contains('latestVersion');
-        this.isNewVersion = this.$widget[0].classList.contains('new');
+        this.$votingBlockId    = this.$widget.find('select[name=votingBlockId]');
+        this.$tagsSelect       = this.$widget.find('.proposalTagsSelect');
+        this.$openerBtn        = $('.proposedChangesOpener button');
+        this.context           = this.$widget.data('context');
+        this.saveUrl           = this.$widget.attr('action');
+        this.csrf              = /** @type {string} */ (this.$widget.find('input[name=_csrf]').val());
+        this.version           = this.$widget.data('proposal-id') ?? null;
+        this.isLatestVersion   = this.$widget[0].classList.contains('latestVersion');
+        this.isNewVersion      = this.$widget[0].classList.contains('new');
     }
 
-    private initOpener() {
+    initOpener() {
         this.$openerBtn.on('click', () => {
             this.$widget.removeClass('hidden');
             this.$openerBtn.addClass('hidden');
@@ -67,8 +101,8 @@ export class ChangeProposedProcedure {
         }
     }
 
-    private initTags() {
-        const $tagsSelect: any = this.$tagsSelect;
+    initTags() {
+        const $tagsSelect = /** @type {any} */ (this.$tagsSelect);
 
         $tagsSelect.selectize({
             create: true,
@@ -85,7 +119,7 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private reinitAfterReload() {
+    reinitAfterReload() {
         this.initElements();
         this.statusChanged();
         this.commentsScrollBottom();
@@ -96,11 +130,17 @@ export class ChangeProposedProcedure {
         this.$widget.find('#votingBlockId').trigger('change');
     }
 
-    private setGlobalProposedStr(html: string) {
+    /**
+     * @param {string} html
+     */
+    setGlobalProposedStr(html) {
         $(".motionData .proposedStatusRow .str").html(html);
     }
 
-    private performCallWithReload(data: object) {
+    /**
+     * @param {object} data
+     */
+    performCallWithReload(data) {
         data['context'] = this.context;
 
         if (data['version'] === undefined) {
@@ -119,7 +159,7 @@ export class ChangeProposedProcedure {
                 if (ret['redirectToUrl']) {
                     window.location.href = ret['redirectToUrl'];
                 } else if (ret['success']) {
-                    let $content = $(ret['html']);
+                    const $content = $(ret['html']);
                     this.$widget.children().remove();
                     this.$widget.append($content.children());
                     this.$widget.data('proposal-id', $content.data('proposal-id'));
@@ -149,10 +189,10 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private notifyProposer() {
-        const text = this.$widget.find('textarea[name=proposalNotificationText]').val(),
-            fromName = this.$widget.find('input[name=proposalNotificationFrom]').val(),
-            replyTo = this.$widget.find('input[name=proposalNotificationReply]').val();
+    notifyProposer() {
+        const text      = this.$widget.find('textarea[name=proposalNotificationText]').val(),
+            fromName    = this.$widget.find('input[name=proposalNotificationFrom]').val(),
+            replyTo     = this.$widget.find('input[name=proposalNotificationReply]').val();
         this.performCallWithReload({
             'notifyProposer': true,
             'text': text,
@@ -161,7 +201,7 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private setPropserHasAccepted() {
+    setPropserHasAccepted() {
         const confirm = this.$widget.find('.setConfirmation').data('msg');
         bootbox.confirm(confirm, (result) => {
             if (result) {
@@ -172,11 +212,11 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private saveStatus() {
-        const selectize = this.$tagsSelect[0] as any
-        let newValStr = this.$widget.find('.statusForm input[type=radio]:checked').val() as string|undefined;
-        let newVal = (newValStr === undefined ? null : parseInt(newValStr, 10));
-        let data = {
+    saveStatus() {
+        const selectize = this.$tagsSelect[0];
+        const newValStr = this.$widget.find('.statusForm input[type=radio]:checked').val();
+        const newVal = (newValStr === undefined ? null : parseInt(newValStr, 10));
+        const data = {
             setStatus: newVal,
             visible: this.$visibilityInput.prop('checked'),
             votingBlockId: this.$votingBlockId.val(),
@@ -184,31 +224,31 @@ export class ChangeProposedProcedure {
             tags: selectize.selectize.items,
         };
 
-        if (newVal == STATUS_REFERRED) {
+        if (newVal === STATUS_REFERRED) {
             data['proposalComment'] = this.$widget.find('input[name=referredTo]').val();
         }
-        if (newVal == STATUS_OBSOLETED_BY_AMEND) {
+        if (newVal === STATUS_OBSOLETED_BY_AMEND) {
             data['proposalComment'] = this.$widget.find('select[name=obsoletedByAmendment]').val();
         }
-        if (newVal == STATUS_OBSOLETED_BY_MOT) {
+        if (newVal === STATUS_OBSOLETED_BY_MOT) {
             data['proposalComment'] = this.$widget.find('select[name=obsoletedByMotion]').val();
         }
-        if (newVal == STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
+        if (newVal === STATUS_PROPOSED_MOVE_TO_OTHER_MOTION) {
             if (this.$widget.find('select[name=movedToOtherMotion]').length > 0) {
                 data['proposalComment'] = this.$widget.find('select[name=movedToOtherMotion]').val();
             }
         }
-        if (newVal == STATUS_CUSTOM_STRING) {
+        if (newVal === STATUS_CUSTOM_STRING) {
             data['proposalComment'] = this.$widget.find('input[name=statusCustomStr]').val();
         }
-        if (newVal == STATUS_VOTE) {
+        if (newVal === STATUS_VOTE) {
             data['votingStatus'] = this.$votingStatusInput.filter(':checked').val();
         }
-        if (data.votingBlockId == 'NEW') {
+        if (data.votingBlockId === 'NEW') {
             data['votingBlockTitle'] = this.$widget.find('input[name=newBlockTitle]').val();
         }
         data['votingItemBlockId'] = {};
-        this.$widget.find('.votingItemBlockInput').each(function(i, el) {
+        this.$widget.find('.votingItemBlockInput').each(function (i, el) {
             const $select = $(el);
             data['votingItemBlockId'][$select.data('voting-block') + ""] = $select.val();
         });
@@ -227,8 +267,8 @@ export class ChangeProposedProcedure {
         this.performCallWithReload(data);
     }
 
-    private statusChanged() {
-        let newVal = parseInt(this.$widget.find('.statusForm input[type=radio]:checked').val() as string, 10);
+    statusChanged() {
+        const newVal = parseInt(/** @type {string} */ (this.$widget.find('.statusForm input[type=radio]:checked').val()), 10);
         this.$statusDetails.addClass('hidden');
         this.$statusDetails.filter('.status_' + newVal.toString(10)).removeClass('hidden');
         if (this.isNewVersion) {
@@ -241,7 +281,7 @@ export class ChangeProposedProcedure {
         }
     }
 
-    private initStatusSetter() {
+    initStatusSetter() {
         this.$widget.on('change', '.statusForm input[type=radio]', (ev, data) => {
             if (!$(ev.currentTarget).prop('checked')) {
                 return;
@@ -282,7 +322,7 @@ export class ChangeProposedProcedure {
         this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
     }
 
-    private setVotingBlockSettings() {
+    setVotingBlockSettings() {
         this.$widget.find(".votingItemBlockRow select").on('change', (ev) => {
             const $select = $(ev.currentTarget);
             if ($select.val()) {
@@ -307,7 +347,7 @@ export class ChangeProposedProcedure {
         }
     }
 
-    private initVotingBlock() {
+    initVotingBlock() {
         this.$widget.on('change', '#votingBlockId', () => {
             this.$widget.addClass('isChanged');
             this.setVotingBlockSettings();
@@ -321,32 +361,26 @@ export class ChangeProposedProcedure {
         this.$widget.find('.newBlock').addClass('hidden');
     }
 
-    private initExplanation() {
+    initExplanation() {
         this.$widget.find('input[name=setPublicExplanation]').on('change', (ev) => {
-            if ($(ev.target).prop('checked')) {
-                this.$widget.find('section.publicExplanation').removeClass('hidden');
-            } else {
-                this.$widget.find('section.publicExplanation').addClass('hidden');
-            }
+            const isChecked = $(ev.target).prop('checked');
+            this.$widget.find('section.publicExplanation').toggleClass('hidden', !isChecked);
         });
-        if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
-            this.$widget.find('section.publicExplanation').removeClass('hidden');
-        } else {
-            this.$widget.find('section.publicExplanation').addClass('hidden');
-        }
+        const isChecked = this.$widget.find('input[name=setPublicExplanation]').prop('checked');
+        this.$widget.find('section.publicExplanation').toggleClass('hidden', !isChecked);
     }
 
-    private commentsScrollBottom() {
-        let $commentList = this.$widget.find('.proposalCommentForm .commentList');
+    commentsScrollBottom() {
+        const $commentList = this.$widget.find('.proposalCommentForm .commentList');
         $commentList[0].scrollTop = $commentList[0].scrollHeight;
     }
 
-    private doSaveComment() {
-        let $commentWidget = this.$widget.find('.proposalCommentForm'),
+    doSaveComment() {
+        const $commentWidget = this.$widget.find('.proposalCommentForm'),
             $commentList = $commentWidget.find('.commentList'),
             text = $commentWidget.find('textarea').val();
 
-        if (text == '' || this.savingComment) {
+        if (text === '' || this.savingComment) {
             return;
         }
 
@@ -370,7 +404,7 @@ export class ChangeProposedProcedure {
                         delHtml = '<button type="button" data-url="' + ev.comment.delLink + '" class="btn-link delComment">';
                         delHtml += '<span class="glyphicon glyphicon-trash"></span></button>';
                     }
-                    let $comment = $('<li class="comment"><div class="header"><div class="date"></div>' + delHtml + '<div class="name"></div></div><div class="comment"></div></li>');
+                    const $comment = $('<li class="comment"><div class="header"><div class="date"></div>' + delHtml + '<div class="name"></div></div><div class="comment"></div></li>');
                     $comment.find('.date').text(ev.comment.dateFormatted);
                     $comment.find('.name').text(ev.comment.username);
                     $comment.find('.comment').text(ev.comment.text);
@@ -392,7 +426,10 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private delComment($comment: JQuery) {
+    /**
+     * @param {JQuery} $comment
+     */
+    delComment($comment) {
         $.post($comment.find(".delComment").data("url"), {
             "_csrf": this.csrf,
             "id": $comment.data("id"),
@@ -405,16 +442,12 @@ export class ChangeProposedProcedure {
         });
     }
 
-    private initCommentForm() {
+    initCommentForm() {
         this.$widget.on('click', '.proposalCommentForm button', () => {
             this.doSaveComment();
         });
         this.$widget.on('click', '.btnMaximizeComments', () => {
-            if (this.$widget[0].classList.contains('maximizedComments')) {
-                this.$widget[0].classList.remove('maximizedComments');
-            } else {
-                this.$widget[0].classList.add('maximizedComments');
-            }
+            this.$widget[0].classList.toggle('maximizedComments');
         });
         this.commentsScrollBottom();
 

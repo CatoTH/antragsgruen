@@ -36,7 +36,6 @@ echo Html::beginForm('', 'post', [
     'id'                       => 'consultationSettingsForm',
     'class'                    => 'adminForm',
     'enctype'                  => 'multipart/form-data',
-    'data-antragsgruen-widget' => 'backend/ConsultationSettings',
 ]);
 
 echo $controller->showErrors();
@@ -50,6 +49,10 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
 }
 
 ?>
+    <script type="module">
+        import { ConsultationSettings } from "/js/modules/backend/ConsultationSettings.js";
+        new ConsultationSettings(document.getElementById('consultationSettingsForm'));
+    </script>
     <h2 class="green"><?= Yii::t('admin', 'con_title_general') ?></h2>
     <div class="content">
         <div>

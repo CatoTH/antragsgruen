@@ -1,10 +1,11 @@
-declare let Sortable;
+// @ts-check
 
 export class ConsultationSettings {
-    private element: HTMLFormElement;
+    /** @type { HTMLElement } */
+    element;
 
-    constructor(private $form: JQuery) {
-        this.element = $form[0] as HTMLFormElement;
+    constructor(element) {
+        this.element = element;
         this.initUrlPath();
         this.initTags();
         this.initAdminMayEdit();
@@ -15,7 +16,7 @@ export class ConsultationSettings {
         $('[data-toggle="tooltip"]').tooltip();
     }
 
-    private initUrlPath() {
+    initUrlPath() {
         $('.urlPathHolder .shower a').on("click", (ev) => {
             ev.preventDefault();
             $('.urlPathHolder .shower').addClass('hidden');
@@ -23,7 +24,7 @@ export class ConsultationSettings {
         });
     }
 
-    private initSingleMotionMode() {
+    initSingleMotionMode() {
         $("#singleMotionMode").on("change", function () {
             if ($(this).prop("checked")) {
                 $("#forceMotionRow").removeClass("hidden");
@@ -33,7 +34,7 @@ export class ConsultationSettings {
         }).trigger("change");
     }
 
-    private initAdminMayEdit() {
+    initAdminMayEdit() {
         let $adminsMayEdit = $("#adminsMayEdit"),
             $iniatorsMayEdit = $("#iniatorsMayEdit").parents("label").first().parent();
         $adminsMayEdit.on("change", function () {
@@ -54,21 +55,21 @@ export class ConsultationSettings {
         if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
     }
 
-    private initTags() {
-        const $form = this.$form.find('#tagsEditForm');
-        const $tagRowTemplate= $form.find(".newTagRowTemplate").remove();
+    initTags() {
+        const $form = $(this.element).find('#tagsEditForm');
+        const $tagRowTemplate = $form.find(".newTagRowTemplate").remove();
 
         let activeTagType = 0;
 
         $form.find('.tagTypeSelector input').on('change', () => {
             const $selected = $form.find('.tagTypeSelector input:checked');
-            activeTagType = $selected.val() as number;
+            activeTagType = $selected.val();
 
             $form.find('.editList').addClass('hidden');
             $form.find('.editList' + activeTagType).removeClass('hidden');
         }).trigger('change');
 
-        document.querySelectorAll('#tagsEditForm .editList').forEach((tagList: HTMLElement) => {
+        document.querySelectorAll('#tagsEditForm .editList').forEach(tagList => {
             Sortable.create(tagList, {
                 handle: '.drag-handle',
                 animation: 150
@@ -84,7 +85,7 @@ export class ConsultationSettings {
             }, 100);
         });
 
-        $form.on('click', '.editList .remover', function(ev) {
+        $form.on('click', '.editList .remover', function (ev) {
             let $li = $(this).parents("li").first();
             ev.preventDefault();
 
@@ -100,12 +101,12 @@ export class ConsultationSettings {
         });
     }
 
-    private initConPwd() {
+    initConPwd() {
         const widget = this.element.querySelector('.conpw');
         if (!widget) {
             return;
         }
-        const checkbox = widget.querySelector('.setter input[type=checkbox]') as HTMLInputElement;
+        const checkbox = widget.querySelector('.setter input[type=checkbox]');
         const onCheckboxChange = () => {
             if (checkbox.checked) {
                 widget.classList.add("checked");
@@ -123,8 +124,8 @@ export class ConsultationSettings {
         });
     }
 
-    private initManagedAccounts() {
-        const checkbox = this.element.querySelector('.managedUserAccounts input[type=checkbox]') as HTMLInputElement;
+    initManagedAccounts() {
+        const checkbox = this.element.querySelector('.managedUserAccounts input[type=checkbox]');
         const onCheckboxChange = () => {
             if (checkbox.checked) {
                 this.element.querySelector('.allowRequestingAccess').classList.remove("hidden");

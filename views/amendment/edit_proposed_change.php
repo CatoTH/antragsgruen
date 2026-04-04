@@ -62,10 +62,14 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
 
         echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change', ['proposalVersion' => $proposal->version]), 'post', [
             'id'                        => 'proposedChangeTextForm',
-            'data-antragsgruen-widget'  => 'backend/ProposedChangeEdit',
             'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
         ]);
         ?>
+
+        <script type="module">
+            import { ProposedChangeEdit } from "/js/modules/backend/ProposedChangeEdit.js";
+            new ProposedChangeEdit(document.getElementById("proposedChangeTextForm"));
+        </script>
 
         <div class="stdEqualCols stdPadding">
             <section>

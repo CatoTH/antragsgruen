@@ -1,10 +1,10 @@
-import "../shared/SiteCreateWizard";
+// @ts-check
 
-declare let __t: any;
+import { SiteCreateWizard } from "../shared/SiteCreateWizard.js";
 
 export class ConsultationCreate {
     constructor() {
-        $(".settingsType").find("input[type=radio]").on("change", ConsultationCreate.settingsTypeChanged).trigger("change");
+        $(".settingsType").find("input[type=radio]").on("change", this.settingsTypeChanged).trigger("change");
 
         let $consultationEditForm = $(".consultationEditForm");
         $consultationEditForm.find(".delbox button").on("click", function (ev) {
@@ -22,8 +22,8 @@ export class ConsultationCreate {
         new SiteCreateWizard($(".siteCreate"));
     }
 
-    private static settingsTypeChanged(): void {
-        if ((document.getElementById('settingsTypeWizard') as HTMLInputElement).checked) {
+    settingsTypeChanged() {
+        if (document.getElementById('settingsTypeWizard').checked) {
             console.log("checked");
             document.querySelector('.settingsTypeWizard').classList.remove('hidden');
             document.querySelectorAll('.settingsTypeTemplate').forEach(el => el.classList.add('hidden'));
@@ -35,5 +35,3 @@ export class ConsultationCreate {
         }
     }
 }
-
-new ConsultationCreate();
