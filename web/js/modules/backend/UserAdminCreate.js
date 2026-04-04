@@ -1,29 +1,50 @@
-type OrganizationEntry = {
-    name: string;
-    autoUserGroups: number[];
-}
+// @ts-check
 
-type QueryUserResponse = {
-    exists: boolean;
-    alreadyMember?: boolean;
-    organization?: string;
-}
+/**
+ * @typedef {Object} OrganizationEntry
+ * @property {string}   name
+ * @property {number[]} autoUserGroups
+ */
+
+/**
+ * @typedef {Object} QueryUserResponse
+ * @property {boolean}  exists
+ * @property {boolean}  [alreadyMember]
+ * @property {string}   [organization]
+ */
 
 export class UserAdminCreate {
-    private element: HTMLElement;
+    /** @type {JQuery} */
+    $el;
 
-    constructor(private $el: JQuery) {
-        this.element = $el[0] as HTMLElement;
+    /** @type {HTMLElement} */
+    element;
+
+    /** @type {OrganizationEntry[]} */
+    organizationList;
+
+    /** @type {number[]} */
+    defaultOrganisations;
+
+    /** @type {boolean} */
+    lastGroupAssignmentWasAutomatical = true;
+
+    /**
+     * @param {HTMLElement} element
+     */
+    constructor(element) {
+        this.$el = $(element);
+        this.element = element;
 
         this.initAddMultiple();
         this.initAddSingleInit();
         this.initAddSingleShow();
     }
 
-    private initAddMultiple() {
+    initAddMultiple() {
         this.element.querySelectorAll(".addMultipleOpener .addUsersOpener").forEach(openerEl => {
             openerEl.addEventListener('click', ev => {
-                const type = (ev.currentTarget as HTMLButtonElement).getAttribute('data-type');
+                const type = /** @type {HTMLButtonElement} */ (ev.currentTarget).getAttribute('data-type');
                 this.element.querySelectorAll('.addUsersByLogin').forEach(el => {
                     el.classList.add('hidden');
                 });
@@ -36,8 +57,11 @@ export class UserAdminCreate {
         });
     }
 
-    private validateEmailText(text: string): boolean
-    {
+    /**
+     * @param {string} text
+     * @returns {boolean}
+     */
+    validateEmailText(text) {
         if (text.indexOf("%ACCOUNT%") === -1) {
             bootbox.alert(__t("admin", "emailMissingCode"));
             return false;
@@ -49,45 +73,49 @@ export class UserAdminCreate {
         return true;
     }
 
-    private checkMultipleSubmit(ev: Event) {
+    /**
+     * @param {Event} ev
+     */
+    checkMultipleSubmit(ev) {
         const samlLoginBtn = this.element.querySelector(".addUsersByLogin.samlWW");
         const emailLoginBtn = this.element.querySelector(".addUsersByLogin.email");
         const hasEmailText = !!this.element.querySelector('#emailText'); // If e-mail-sending is deactivated, this will be false
 
         if (emailLoginBtn && !emailLoginBtn.classList.contains('hidden')) {
             if (hasEmailText) {
-                const text = (this.element.querySelector('#emailText') as HTMLTextAreaElement).value;
+                const text = /** @type {HTMLTextAreaElement} */ (this.element.querySelector('#emailText')).value;
                 if (!this.validateEmailText(text)) {
                     ev.preventDefault();
                     return;
                 }
             }
 
-            let emails = (this.element.querySelector("#emailAddresses") as HTMLTextAreaElement).value.split("\n"),
-                names = (this.element.querySelector("#names") as HTMLTextAreaElement).value.split("\n");
-            if (emails.length == 1 && emails[0] == "") {
+            const emails = /** @type {HTMLTextAreaElement} */ (this.element.querySelector("#emailAddresses")).value.split("\n"),
+                names  = /** @type {HTMLTextAreaElement} */ (this.element.querySelector("#names")).value.split("\n");
+
+            if (emails.length === 1 && emails[0] === "") {
                 ev.preventDefault();
                 bootbox.alert(__t("admin", "emailMissingTo"));
             }
-            if (emails.length != names.length) {
+            if (emails.length !== names.length) {
                 bootbox.alert(__t("admin", "emailNumberMismatch"));
                 ev.preventDefault();
             }
         }
         if (samlLoginBtn && !samlLoginBtn.classList.contains('hidden')) {
-            if ((this.element.querySelector("#samlWW") as HTMLInputElement).value === "") {
+            if (/** @type {HTMLInputElement} */ (this.element.querySelector("#samlWW")).value === "") {
                 ev.preventDefault();
                 bootbox.alert(__t("admin", "emailMissingUsername"));
             }
         }
     }
 
-    private initAddSingleInit() {
-        const form = this.element.querySelector('.addSingleInit') as HTMLFormElement,
-            typeSelect = this.element.querySelector('.adminTypeSelect') as HTMLSelectElement,
-            inputEmail = this.element.querySelector('.inputEmail') as HTMLInputElement,
-            inputUsername = this.element.querySelector('.inputUsername') as HTMLInputElement,
-            welcomeEmailHolder = this.element.querySelector('.welcomeEmail') as HTMLDivElement|null;
+    initAddSingleInit() {
+        const form             = /** @type {HTMLFormElement} */       (this.element.querySelector('.addSingleInit')),
+            typeSelect         = /** @type {HTMLSelectElement} */     (this.element.querySelector('.adminTypeSelect')),
+            inputEmail         = /** @type {HTMLInputElement} */      (this.element.querySelector('.inputEmail')),
+            inputUsername      = /** @type {HTMLInputElement} */      (this.element.querySelector('.inputUsername')),
+            welcomeEmailHolder = /** @type {HTMLDivElement|null} */   (this.element.querySelector('.welcomeEmail'));
 
         typeSelect.addEventListener('change', () => {
             if (typeSelect.value === 'email') {
@@ -102,7 +130,6 @@ export class UserAdminCreate {
                 if (welcomeEmailHolder) {
                     welcomeEmailHolder.classList.add('hidden');
                 }
-
                 inputEmail.classList.add('hidden');
                 inputUsername.classList.remove('hidden');
                 inputEmail.required = false;
@@ -110,7 +137,7 @@ export class UserAdminCreate {
             }
         });
 
-        form.addEventListener('submit', (ev: Event) => {
+        form.addEventListener('submit', (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
 
@@ -118,7 +145,7 @@ export class UserAdminCreate {
                 _csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                 type: typeSelect.value,
                 username: ''
-            }
+            };
             if (typeSelect.value === 'email') {
                 postData.username = inputEmail.value;
             } else {
@@ -138,12 +165,13 @@ export class UserAdminCreate {
     }
 
     /**
-     * Functions that are to be called when showing the form
+     * @param {QueryUserResponse} response
+     * @param {string}            authType
+     * @param {string}            authUsername
      */
-    private showAddSingleShowFromResponse(response: QueryUserResponse, authType: string, authUsername: string)
-    {
-        const alreadyMember = this.element.querySelector('.alreadyMember') as HTMLDivElement;
-        const form = this.element.querySelector('.addUsersByLogin.singleuser') as HTMLFormElement;
+    showAddSingleShowFromResponse(response, authType, authUsername) {
+        const alreadyMember = /** @type {HTMLDivElement} */  (this.element.querySelector('.alreadyMember'));
+        const form          = /** @type {HTMLFormElement} */ (this.element.querySelector('.addUsersByLogin.singleuser'));
 
         if (response['exists'] && response['already_member']) {
             alreadyMember.classList.remove('hidden');
@@ -154,8 +182,8 @@ export class UserAdminCreate {
         form.classList.remove('hidden');
         alreadyMember.classList.add('hidden');
 
-        (this.element.querySelector('input[name=authType]') as HTMLInputElement).value = authType;
-        (this.element.querySelector('input[name=authUsername]') as HTMLInputElement).value = authUsername;
+        /** @type {HTMLInputElement} */ (this.element.querySelector('input[name=authType]')).value = authType;
+        /** @type {HTMLInputElement} */ (this.element.querySelector('input[name=authUsername]')).value = authUsername;
 
         if (this.element.querySelector('#addSelectOrganization')) {
             if (response.exists && response.organization) {
@@ -169,28 +197,26 @@ export class UserAdminCreate {
             form.querySelectorAll('.showIfNew').forEach(el => {
                 el.classList.add('hidden');
             });
-
-            (form.querySelector('#addUserPassword') as HTMLInputElement).removeAttribute('required');
+            /** @type {HTMLInputElement} */ (form.querySelector('#addUserPassword')).removeAttribute('required');
         } else {
             form.querySelectorAll('.showIfExists').forEach(el => {
                 el.classList.add('hidden');
             });
-            (form.querySelector('#addSingleNameGiven') as HTMLInputElement).setAttribute('required', '');
-            (form.querySelector('#addSingleNameFamily') as HTMLInputElement).setAttribute('required', '');
+            /** @type {HTMLInputElement} */ (form.querySelector('#addSingleNameGiven')).setAttribute('required', '');
+            /** @type {HTMLInputElement} */ (form.querySelector('#addSingleNameFamily')).setAttribute('required', '');
 
             window.setTimeout(() => {
-                (form.querySelector('input[name=nameGiven]') as HTMLInputElement).focus();
+                /** @type {HTMLInputElement} */ (form.querySelector('input[name=nameGiven]')).focus();
             }, 1);
         }
     }
 
-    private organizationList: OrganizationEntry[];
-    private defaultOrganisations: number[];
-    private lastGroupAssignmentWasAutomatical: boolean = true;
-
-    private setAutoOrganizations(selectedOrganization: string): void
-    {
-        let autoUserGroups: number[] = [];
+    /**
+     * @param {string} selectedOrganization
+     */
+    setAutoOrganizations(selectedOrganization) {
+        /** @type {number[]} */
+        let autoUserGroups = [];
         this.organizationList.forEach(orga => {
             if (orga.name === selectedOrganization) {
                 autoUserGroups = orga.autoUserGroups;
@@ -200,30 +226,35 @@ export class UserAdminCreate {
         // If it's an organisation with groups set, then set those groups.
         // If no groups are assigned to this organisation, then reset the organisation IF no manual change has been made
         if (autoUserGroups.length > 0) {
-            this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
-                input.checked = autoUserGroups.indexOf(parseInt(input.value, 10)) > -1;
+            this.element.querySelectorAll('input.userGroup').forEach((input) => {
+                /** @type {HTMLInputElement} */ (input).checked = autoUserGroups.indexOf(parseInt(/** @type {HTMLInputElement} */ (input).value, 10)) > -1;
             });
             this.lastGroupAssignmentWasAutomatical = true;
         } else if (this.lastGroupAssignmentWasAutomatical) {
-            this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
-                input.checked = this.defaultOrganisations.indexOf(parseInt(input.value, 10)) > -1;
+            this.element.querySelectorAll('input.userGroup').forEach((input) => {
+                /** @type {HTMLInputElement} */ (input).checked = this.defaultOrganisations.indexOf(parseInt(/** @type {HTMLInputElement} */ (input).value, 10)) > -1;
             });
         }
     }
 
-    private initOrganizationToUserGroup(fixedOrganization: string|null)
-    {
+    /**
+     * @param {string|null} fixedOrganization
+     */
+    initOrganizationToUserGroup(fixedOrganization) {
         this.defaultOrganisations = [];
-        this.element.querySelectorAll('input.userGroup').forEach((input: HTMLInputElement) => {
-            if (input.checked) this.defaultOrganisations.push(parseInt(input.value, 10));
-            input.addEventListener('change', () => this.lastGroupAssignmentWasAutomatical = false);
+        this.element.querySelectorAll('input.userGroup').forEach((input) => {
+            const $input = /** @type {HTMLInputElement} */ (input);
+            if ($input.checked) {
+                this.defaultOrganisations.push(parseInt($input.value, 10));
+            }
+            $input.addEventListener('change', () => this.lastGroupAssignmentWasAutomatical = false);
         });
-        this.organizationList = JSON.parse(this.element.getAttribute('data-organisations')) as OrganizationEntry[];
+        this.organizationList = /** @type {OrganizationEntry[]} */ (JSON.parse(this.element.getAttribute('data-organisations')));
 
         if (fixedOrganization) {
             this.setAutoOrganizations(fixedOrganization);
         } else {
-            const $addSelect: any = $("#addSelectOrganization");
+            const $addSelect = /** @type {any} */ ($("#addSelectOrganization"));
             $addSelect.selectize({
                 create: true,
                 render: {
@@ -238,13 +269,12 @@ export class UserAdminCreate {
         }
     }
 
-    private initAddSingleShow()
-    {
-        const form = this.element.querySelector('.addUsersByLogin.singleuser') as HTMLFormElement,
-            autoGeneratePassword = form.querySelector('#addSingleGeneratePassword') as HTMLInputElement,
-            sendEmail = form.querySelector('#addSingleSendEmail') as HTMLInputElement,
-            emailText = form.querySelector('#addSingleEmailText') as HTMLTextAreaElement,
-            passwordInput = form.querySelector('#addUserPassword') as HTMLInputElement;
+    initAddSingleShow() {
+        const form                 = /** @type {HTMLFormElement} */     (this.element.querySelector('.addUsersByLogin.singleuser')),
+            autoGeneratePassword   = /** @type {HTMLInputElement} */    (form.querySelector('#addSingleGeneratePassword')),
+            sendEmail              = /** @type {HTMLInputElement} */    (form.querySelector('#addSingleSendEmail')),
+            emailText              = /** @type {HTMLTextAreaElement} */ (form.querySelector('#addSingleEmailText')),
+            passwordInput          = /** @type {HTMLInputElement} */    (form.querySelector('#addUserPassword'));
 
         const onAutoGeneratePasswordChanged = () => {
             if (autoGeneratePassword.checked) {
@@ -259,11 +289,7 @@ export class UserAdminCreate {
         onAutoGeneratePasswordChanged();
 
         const onSendEmailChanged = () => {
-            if (sendEmail.checked) {
-                emailText.classList.remove('hidden');
-            } else {
-                emailText.classList.add('hidden');
-            }
+            emailText.classList.toggle('hidden', !sendEmail.checked);
         };
         sendEmail.addEventListener('change', onSendEmailChanged);
         onSendEmailChanged();
@@ -273,7 +299,6 @@ export class UserAdminCreate {
                 const text = emailText.value;
                 if (!this.validateEmailText(text)) {
                     ev.preventDefault();
-                    return;
                 }
             }
         });

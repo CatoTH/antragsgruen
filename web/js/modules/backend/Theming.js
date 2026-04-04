@@ -1,5 +1,7 @@
+// @ts-check
+
 class ImageChooser {
-    constructor(private $row) {
+    constructor($row) {
         const $uploadLabel = $row.find('.uploadCol label .text');
         $row.on('click', '.imageChooserDd ul a', ev => {
             ev.preventDefault();
@@ -23,12 +25,13 @@ class ImageChooser {
 }
 
 export class Theming {
-    constructor(private $form: JQuery) {
-        this.$form.find('.row_image').each((i, el) => {
+    constructor(element) {
+        const $form = $(element);
+        $form.find('.row_image').each((i, el) => {
             new ImageChooser($(el));
         });
 
-        this.$form.on('click', '.btnResetTheme', (ev) => {
+        $form.on('click', '.btnResetTheme', (ev) => {
             ev.preventDefault();
 
             const options = {
@@ -53,7 +56,7 @@ export class Theming {
                         this.$form.trigger("submit");
                     }
                 }
-            } as BootboxPromptOptions; // Typings of Bootbox don't support "message"
+            }
             bootbox.prompt(options);
         });
     }

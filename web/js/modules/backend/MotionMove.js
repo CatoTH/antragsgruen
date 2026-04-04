@@ -59,15 +59,13 @@ export class MotionMove {
     }
 
     isPrefixAvailable(prefix, operation, consultation) {
-        return new Promise((resolve, reject) => {
-            return $.get(this.checkBackend, {
-                checkType: 'prefix',
-                operation,
-                newMotionPrefix: prefix,
-                newConsultationId: consultation
-            }).then(res => {
-                resolve(res.success);
-            });
+        return $.get(this.checkBackend, {
+            checkType: 'prefix',
+            operation,
+            newMotionPrefix: prefix,
+            newConsultationId: consultation
+        }).then(res => {
+            return res.success;
         });
     }
 

@@ -31,8 +31,11 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
 }
 
 ?>
+<script type="module">
+    import { UserAdminCreate } from "/js/modules/backend/UserAdminCreate.js";
+    new UserAdminCreate(document.getElementById("accountsCreateForm"));
+</script>
 <section id="accountsCreateForm" class="adminForm form-horizontal accountsCreateForm"
-         data-antragsgruen-widget="backend/UserAdminCreate"
          data-organisations="<?= Html::encode(json_encode($consultation->getSettings()->organisations)) ?>"
          aria-labelledby="newUserAdderTitle">
     <h2 class="green" id="newUserAdderTitle"><?= Yii::t('admin', 'siteacc_new_users') ?></h2>
