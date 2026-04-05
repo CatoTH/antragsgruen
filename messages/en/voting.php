@@ -42,8 +42,14 @@ return [
     'admin_title' => 'Voting administration',
     'admin_intro' => '<strong>Hint:</strong> you can find a manual for the voting functionality on the <a href="https://sandbox.motion.tools/help#advanced">help page</a>.',
     'admin_aria_single' => 'Administrate voting: %TITLE%',
-    'admin_voting_use' => 'Online voting',
-    'admin_voting_use_h' => 'The voting about the following motions and amendments shall take place online on Antragsgrün',
+    'admin_voting_use' => [
+        'text' => 'Online voting',
+        'js' => true,
+    ],
+    'admin_voting_use_h' => [
+        'text' => 'The voting about the following motions and amendments shall take place online on Antragsgrün',
+        'js' => true,
+    ],
     'admin_votes_total' => 'Total',
     'admin_btn_open' => 'Open voting',
     'admin_btn_close' => 'Close voting',

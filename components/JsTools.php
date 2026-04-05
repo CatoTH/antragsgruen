@@ -63,6 +63,6 @@ class JsTools
         $i18n = \Yii::$app->get('i18n');
         /** @var MessageSource $messagesource */
         $messagesource = $i18n->getMessageSource($category);
-        return $messagesource->loadMessages($category, $consultation->wordingBase, true);
+        return $messagesource->loadJsMessages($category, $consultation->wordingBase);
     }
 }
