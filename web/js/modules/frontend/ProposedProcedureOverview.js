@@ -1,23 +1,31 @@
-interface ReloadResult {
-    success: boolean;
-    error?: string;
-    html?: string;
-    date?: string;
-}
+// @ts-check
+
+/**
+ * @typedef {Object} ReloadResult
+ * @property {boolean} success
+ * @property {string}  [error]
+ * @property {string}  [html]
+ * @property {string}  [date]
+ */
 
 export class ProposedProcedureOverview {
-    private $updateWidget: JQuery;
-    private updateUrl: string;
-    private $proposalList: JQuery;
-    private $dateField: JQuery;
-    private interval: number = null;
+    /** @type {JQuery} */ $widget;
+    /** @type {JQuery} */ $updateWidget;
+    /** @type {string} */ updateUrl;
+    /** @type {JQuery} */ $proposalList;
+    /** @type {JQuery} */ $dateField;
+    /** @type {number|null} */ interval = null;
 
-    constructor(public $widget: JQuery) {
+    /**
+     * @param {HTMLElement} element
+     */
+    constructor(element) {
+        this.$widget = $(element);
         this.initUpdateWidget();
     }
 
-    private reload() {
-        $.get(this.updateUrl, (data: ReloadResult) => {
+    reload() {
+        $.get(this.updateUrl, (/** @type {ReloadResult} */ data) => {
             if (!data.success) {
                 if (data.error) {
                     alert(data.error);
@@ -29,14 +37,14 @@ export class ProposedProcedureOverview {
         });
     }
 
-    private startInterval() {
+    startInterval() {
         if (this.interval !== null) {
             return;
         }
         this.interval = window.setInterval(this.reload.bind(this), 10000);
     }
 
-    private stopInterval() {
+    stopInterval() {
         if (this.interval === null) {
             return;
         }
@@ -44,15 +52,15 @@ export class ProposedProcedureOverview {
         this.interval = null;
     }
 
-    private initUpdateWidget() {
+    initUpdateWidget() {
         this.$updateWidget = this.$widget.find('.autoUpdateWidget');
         this.$proposalList = this.$widget.find('.reloadContent');
-        this.$dateField = this.$widget.find('.currentDate .date');
-        this.updateUrl = this.$widget.data('reload-url');
+        this.$dateField    = this.$widget.find('.currentDate .date');
+        this.updateUrl     = this.$widget.data('reload-url');
 
-        let $toggle = this.$updateWidget.find('#autoUpdateToggle');
+        const $toggle = this.$updateWidget.find('#autoUpdateToggle');
         $toggle.on("change", () => {
-            let active: boolean = $toggle.prop('checked');
+            const active = /** @type {boolean} */ ($toggle.prop('checked'));
             if (active) {
                 this.reload();
                 this.startInterval();

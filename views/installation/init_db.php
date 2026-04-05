@@ -89,8 +89,7 @@ echo Html::endForm();
 
 
 echo Html::beginForm('', 'post', [
-    'class'                    => 'antragsgruenInitForm form-horizontal',
-    'data-antragsgruen-widget' => 'installation/InitDb',
+    'class' => 'antragsgruenInitForm form-horizontal',
 ]);
 
 ?>

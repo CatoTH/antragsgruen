@@ -152,8 +152,8 @@ foreach ($layout->getJSFiles() as $jsFile) {
 foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
-echo $layout->getAMDClasses();
-echo $layout->getAMDLoader();
+
+echo '<script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>' . "\n";
 
 $this->endBody();
 echo '

@@ -71,7 +71,11 @@ echo $controller->showErrors();
 
 
 ?>
-    <fieldset class="content" data-antragsgruen-widget="frontend/UserNotificationsForm">
+    <script type="module">
+        import { UserNotificationsForm } from "/js/modules/frontend/UserNotificationsForm.js";
+        UserNotificationsForm();
+    </script>
+    <fieldset class="content">
         <legend><?= Yii::t('con', 'noti_triggers') ?></legend>
 
         <div class="notificationRow">

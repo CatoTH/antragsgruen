@@ -1,18 +1,22 @@
-export class MotionMergeAmendmentsConfirm {
-    private $sections: JQuery;
-    private $newStatus: JQuery;
+// @ts-check
 
-    constructor(public $widget: JQuery) {
-        this.$sections = $widget.find(".motionTextHolder");
-        $widget.find("input[name=diffStyle]").on("change", this.onChangeDiffStyle.bind(this)).trigger("change");
+export class MotionMergeAmendmentsConfirm {
+    /** @type { JQuery } */ $sections;
+    /** @type { JQuery } */ $newStatus;
+    /** @type { JQuery } */ $widget;
+
+    constructor(element) {
+        this.$widget = $(element);
+        this.$sections = this.$widget.find(".motionTextHolder");
+        this.$widget.find("input[name=diffStyle]").on("change", this.onChangeDiffStyle.bind(this)).trigger("change");
 
         this.initResolutionFunctions();
         this.initVotingFunctions();
     }
 
-    private onChangeDiffStyle() {
+    onChangeDiffStyle() {
         let style = this.$widget.find("input[name=diffStyle]:checked").val();
-        if (style == 'diff') {
+        if (style === 'diff') {
             this.$sections.find(".fullText").addClass('hidden');
             this.$sections.find(".diffText").removeClass('hidden');
         } else {
@@ -21,7 +25,7 @@ export class MotionMergeAmendmentsConfirm {
         }
     }
 
-    private initResolutionFunctions() {
+    initResolutionFunctions() {
         this.$newStatus = this.$widget.find('.newMotionStatus input');
         this.$newStatus.on('change', () => {
             if (this.$newStatus.filter(':checked').val() === 'motion') {
@@ -38,7 +42,7 @@ export class MotionMergeAmendmentsConfirm {
         });
     }
 
-    private initVotingFunctions() {
+    initVotingFunctions() {
         const $closer = $(".votingResultCloser"),
             $opener = $(".votingResultOpener"),
             $inputRows = $(".contentVotingResult, .contentVotingResultComment");

@@ -47,9 +47,12 @@ if ($consultation->getSettings()->hasSpeechLists) {
             </tr>
         </table>
     </div>
+    <script type="module">
+        import { MotionMergeAmendmentsPublic } from "/js/modules/frontend/MotionMergeAmendmentsPublic.js";
+        new MotionMergeAmendmentsPublic(document.querySelector(".mergePublicDraft"));
+    </script>
     <section class="motionTextHolder mergePublicDraft"
-             data-reload-url="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'merge-amendments-public-ajax')) ?>"
-             data-antragsgruen-widget="frontend/MotionMergeAmendmentsPublic">
+             data-reload-url="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'merge-amendments-public-ajax')) ?>">
         <h2 class="green"><?= Yii::t('amend', 'merge_new_text') ?></h2>
         <div class="content">
             <div class="header">
@@ -87,4 +90,3 @@ if ($consultation->getSettings()->hasSpeechLists) {
             </div>
         </div>
     </section>
-<?php

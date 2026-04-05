@@ -15,7 +15,6 @@ use Yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->loadCKEditor();
-$layout->addAMDModule('frontend/MergeSingleAmendment');
 $layout->addCSS('css/formwizard.css');
 
 $motion    = $amendment->getMyMotion();

@@ -38,7 +38,6 @@ class Layout
     public bool $fullWidth = false;
     public bool $fullScreen = false;
     public ?string $mainCssFile = null;
-    public array $mainAMDModules = [];
     public bool $provideJwt = false;
     public ?string $canonicalUrl = null;
     public array $alternateLanuages = [];
@@ -370,30 +369,6 @@ class Layout
         }
         $newUrl = AntragsgruenApp::getInstance()->resourceBase . $url;
         return Html::encode($newUrl);
-    }
-
-    public function addAMDModule(string $module): void
-    {
-        $this->mainAMDModules[] = $module;
-    }
-
-    public function getAMDLoader(): string
-    {
-        $resourceBase = AntragsgruenApp::getInstance()->resourceBase;
-        $module       = $this->resourceUrl('js/build/Antragsgruen.js');
-        $src          = $this->resourceUrl('npm/require.js');
-        return '<script src="' . addslashes($src) . '"></script>' .
-            '<script src="' . addslashes($module) . '" id="antragsgruenScript" ' .
-            'data-resource-base="' . Html::encode($resourceBase) . '"></script>';
-    }
-
-    public function getAMDClasses(): string
-    {
-        $out = '';
-        foreach ($this->mainAMDModules as $module) {
-            $out .= '<span data-antragsgruen-load-class="' . Html::encode($module) . '"></span>' . "\n";
-        }
-        return $out;
     }
 
     public function formatTitle(string $title): string

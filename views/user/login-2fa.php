@@ -16,14 +16,16 @@ $layout     = $controller->layoutParams;
 $this->title = Yii::t('user', 'login_title');
 $layout->addBreadcrumb(Yii::t('user', 'login_title'));
 $layout->robotsNoindex = true;
-$layout->addAMDModule('frontend/LoginForm');
 
 $layout->addOnLoadJS('document.getElementById("2facode").focus()');
 
-echo '<h1>Login</h1>';
+echo '<h1>' . Yii::t('user', 'login_title') . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'tfaForm']);
 ?>
-
+<script type="module">
+    import { LoginForm } from '/js/modules/frontend/LoginForm.js';
+    new LoginForm();
+</script>
 <div class="content">
 
     <div class="alert alert-info tfaIntro">

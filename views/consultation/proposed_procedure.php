@@ -26,7 +26,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 
 ?>
 <script type="module">
-    import { ProposedProcedureOverview } from "/js/modules/backend/ProposedProcedureOverview.js";
+    import { ProposedProcedureOverview } from "/js/modules/frontend/ProposedProcedureOverview.js";
     new ProposedProcedureOverview(document.querySelector(".proposedProcedureReloadHolder"));
 </script>
 <div class="proposedProcedureReloadHolder"

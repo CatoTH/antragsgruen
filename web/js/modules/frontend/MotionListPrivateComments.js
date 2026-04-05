@@ -5,7 +5,6 @@
  */
 export function MotionListPrivateComments(holder) {
     holder.childNodes.forEach(comment => {
-        console.log(comment);
         if (comment.nodeType !== Node.ELEMENT_NODE) {
             return;
         }
