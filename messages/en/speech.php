@@ -11,18 +11,39 @@ return [
     'title_to'           => 'Speaking list of %TITLE%',
     'goto_admin'         => 'Manage speaking list',
     'user_section_title' => 'Speaking list',
-    'current'            => 'Currently',
+    'current'            => [
+        'text' => 'Currently',
+        'js' => true,
+    ],
     'current_nobody'     => 'nobody',
-    'remaining_time'     => 'Speaking time',
-    'remaining_time_over' => 'over',
-    'next_speaker'       => 'Next speaker',
-    'you'                => 'You',
+    'remaining_time'     => [
+        'text' => 'Speaking time',
+        'js' => true,
+    ],
+    'remaining_time_over' => [
+        'text' => 'over',
+        'js' => true,
+    ],
+    'next_speaker'       => [
+        'text' => 'Next speaker',
+        'js' => true,
+    ],
+    'you'                => [
+        'text' => 'You',
+        'js' => true,
+    ],
     'login_warning'      => 'Log in',
     'waiting_aria_1'     => 'Waiting list',
     'waiting_aria_x'     => 'Waiting lists',
     'waiting_list_1'     => 'Waiting list',
-    'waiting_list_x'     => 'Waiting lists',
-    'waiting_list'       => 'Waiting list',
+    'waiting_list_x'     => [
+        'text' => 'Waiting lists',
+        'js' => true,
+    ],
+    'waiting_list'       => [
+        'text' => 'Waiting list',
+        'js' => true,
+    ],
     'persons_waiting_1'  => '1 person is on the waiting list',
     'persons_waiting_x'  => '%NUM% persons are on the waiting list',
     'persons_waiting'    => 'Persons on the waiting list',
@@ -33,14 +54,20 @@ return [
     'apply_closed'       => 'The speaking list is not opened',
     'applied'            => 'Applied',
     'applied_aria'       => 'You applied to speak',
-    'apply_revoke'       => 'Withdraw',
+    'apply_revoke'       => [
+        'text' => 'Withdraw',
+        'js' => true,
+    ],
     'apply_revoke_aria'  => 'Withdraw the application',
     'name_poo'           => 'Point of Order',
 
     'footer_title_plain'    => 'Speaking list',
     'footer_title_to'       => '%TITLE%',
     'footer_current'        => 'Currenty',
-    'footer_current_nobody' => 'Nobody',
+    'footer_current_nobody' => [
+        'text' => 'Nobody',
+        'js' => true,
+    ],
 
     'err_permission_admin' => 'No permission to edit this speaking list',
     'err_permission_apply' => 'The speaking list is closed',
@@ -88,6 +115,9 @@ return [
     'sidebar_title'  => 'All speaking lists',
     'sidebar_active' => 'Active speaking list',
 
-    'fullscreen_title_s' => 'Speaking list',
+    'fullscreen_title_s' => [
+        'text' => 'Speaking list',
+        'js' => true,
+    ],
     'fullscreen_title_p' => 'Speaking lists',
 ];

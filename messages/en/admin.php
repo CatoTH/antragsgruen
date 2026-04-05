@@ -410,7 +410,10 @@ If this site should only be <em>visible</em> to users included below, select the
         'text' => 'Users that are assigned to this organisation when creating their user account will also be assigned to the given group by default.',
         'js' => true,
     ],
-    'siteacc_organs_add'        => 'Add organisation',
+    'siteacc_organs_add'        => [
+        'text' => 'Add organisation',
+        'js' => true,
+    ],
     'siteacc_organs_saved'      => 'The organisations were saved',
     'siteacc_groups_title'      => [
         'text' => 'Groups',

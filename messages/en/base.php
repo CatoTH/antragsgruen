@@ -88,5 +88,8 @@ return [
         'text' => 'Close',
         'js' => true,
     ],
-    'aria_remove'       => 'Remove',
+    'aria_remove'       => [
+        'text' => 'Remove',
+        'js' => true,
+    ],
 ];
