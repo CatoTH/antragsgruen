@@ -1,25 +1,29 @@
-export class MergeInit {
-    private exportLinkTpl: string;
-    private $checkboxes: JQuery;
-    private $allCheckbox: JQuery;
+// @ts-check
 
-    constructor(private $widget: JQuery) {
+export class MergeInit {
+    /** @type { String } */ exportLinkTpl;
+    /** @type { JQuery } */ $checkboxes;
+    /** @type { JQuery } */ $allCheckbox;
+    /** @type { JQuery } */ $widget;
+
+    constructor(element) {
+        this.$widget = $(element);
         this.$checkboxes = this.$widget.find('.toMergeAmendments .selectSingle');
         this.$allCheckbox = this.$widget.find('.selectAll');
         this.initExportBtn();
         this.initAllCheckbox();
     }
 
-    private recalcExportBtn() {
+    recalcExportBtn() {
         let ids = [];
-        this.$checkboxes.filter(":checked").each((idx, el: Element) => {
+        this.$checkboxes.filter(":checked").each((idx, el) => {
             ids.push(parseInt(el.getAttribute('name').split('[')[1]));
         });
         let link = this.exportLinkTpl.replace(/IDS/, ids.join(','));
         this.$widget.find('.exportHolder a').attr('href', link);
     }
 
-    private initExportBtn() {
+    initExportBtn() {
         this.exportLinkTpl = this.$widget.find('.exportHolder a').attr('href');
         if (!this.exportLinkTpl) {
             return;
@@ -31,10 +35,10 @@ export class MergeInit {
         this.recalcExportBtn();
     }
 
-    private recalcAllCheckbox() {
-        let allSelected: boolean = true;
-        let noneSelected: boolean = true;
-        this.$checkboxes.each((idx, el: Element) => {
+    recalcAllCheckbox() {
+        let allSelected = true;
+        let noneSelected = true;
+        this.$checkboxes.each((idx, el) => {
             if ($(el).prop("checked")) {
                 noneSelected = false;
             } else {
@@ -50,13 +54,13 @@ export class MergeInit {
         }
     }
 
-    private initAllCheckbox() {
+    initAllCheckbox() {
         this.recalcAllCheckbox();
         this.$allCheckbox.on("change", () => {
             this.$checkboxes.prop("checked", this.$allCheckbox.prop("checked"));
         });
         this.$checkboxes.on("change", () => {
-           this.recalcAllCheckbox();
+            this.recalcAllCheckbox();
         });
     }
 }

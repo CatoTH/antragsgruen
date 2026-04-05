@@ -15,11 +15,15 @@ $controller  = $this->context;
 $this->title = Yii::t('manager', 'title_install');
 $layout      = $controller->layoutParams;
 
-
-echo '<h1>' . Yii::t('manager', 'title_install') . '</h1>';
+?>
+    <h1><?= Yii::t('manager', 'title_install') ?></h1>
+    <script type="module">
+        import { SiteConfig } from "/js/modules/backend/SiteConfig.js";
+        SiteConfig();
+    </script>
+<?php
 echo Html::beginForm('', 'post', [
     'class'                    => 'siteConfigForm form-horizontal',
-    'data-antragsgruen-widget' => 'manager/SiteConfig',
 ]);
 
 

@@ -1,23 +1,25 @@
-declare let Isotope: any;
+// @ts-check
 
 export class ConsultationDiscussionTags {
-    private grid;
-    private currTagFilter = '*';
-    private currSort = 'phase';
-    private currSortAsc = true;
+    grid;
+    currTagFilter = '*';
+    currSort = 'phase';
+    currSortAsc = true;
+    /** @type {JQuery} */ $widget;
 
-    constructor(private $widget: JQuery) {
+    constructor(element) {
+        this.$widget = $(element);
         this.initComments();
         this.initTags();
     }
 
-    private initComments() {
+    initComments() {
         this.$widget.find(".commentListHolder .showAllComments button").on("click", () => {
             this.$widget.find(".expandableRecentComments").removeClass("shortened");
         });
     }
 
-    private initTags() {
+    initTags() {
         this.grid = new Isotope('.motionListFilter .motionListFiltered', {
             itemSelector: '.sortitem',
             layoutMode: 'vertical',
@@ -59,7 +61,7 @@ export class ConsultationDiscussionTags {
         });
     }
 
-    private setFilters() {
+    setFilters() {
         let filter = '';
         if (this.currTagFilter !== '*') {
             filter += this.currTagFilter;

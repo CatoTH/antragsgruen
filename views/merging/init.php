@@ -24,8 +24,11 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
-<div class="motionMergeInit" data-antragsgruen-widget="frontend/MergeInit">
-
+<script type="module">
+    import { MergeInit } from "/js/modules/frontend/MergeInit.js";
+    new MergeInit(document.querySelector(".motionMergeInit"));
+</script>
+<div class="motionMergeInit">
     <div class="content">
         <div class="alert alert-info">
             <?= Yii::t('amend', 'merge_init_explanation') ?>

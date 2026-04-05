@@ -20,6 +20,7 @@ const config = defineConfig(
                 "CKEDITOR": "readonly",
                 "Sortable": "readonly",
                 "ClipboardJS": "readonly",
+                "Isotope": "readonly",
                 "__t": "readonly",
             },
         },

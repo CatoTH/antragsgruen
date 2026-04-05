@@ -1,16 +1,17 @@
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
-import editor = CKEDITOR.editor;
+// @ts-check
 
-class MergeSingleAmendment {
-    private $collisionHolder: JQuery;
-    private $form: JQuery;
-    private $checkCollisions: JQuery;
-    private $affectedParagraphs: JQuery;
-    private $stepWizardHolder: JQuery;
-    private $steps: {[no: string]: JQuery};
-    private editors: AntragsgruenEditor[] = [];
-    private collisionEditors: {[id: string]: AntragsgruenEditor} = {};
-    private $otherStatsFields: JQuery;
+import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
+
+export class MergeSingleAmendment {
+    /** @type { JQuery } */ $collisionHolder;
+    /** @type { JQuery } */ $form;
+    /** @type { JQuery } */ $checkCollisions;
+    /** @type { JQuery } */ $affectedParagraphs;
+    /** @type { JQuery } */ $stepWizardHolder;
+    /** @type { {[no: string]: JQuery} } */ $steps;
+    /** @type { AntragsgruenEditor[] } */ editors = [];
+    /** @type { {[id: string]: AntragsgruenEditor} } */ collisionEditors = {};
+    /** @type { JQuery } */ $otherStatsFields;
 
     constructor() {
         this.$form = $("#amendmentMergeForm");
@@ -42,7 +43,7 @@ class MergeSingleAmendment {
         this.gotoStep("1");
     }
 
-    private gotoStep(no: string) {
+    gotoStep(no) {
         for (let n in this.$steps) {
             if (n == no) {
                 this.$steps[n].removeClass("hidden");
@@ -55,7 +56,7 @@ class MergeSingleAmendment {
         this.$stepWizardHolder.scrollintoview({top_offset: -50});
     }
 
-    private initAffectedParagraph(el) {
+    initAffectedParagraph(el) {
         let $paragraph = $(el);
 
         $paragraph.find(".versionSelector input").on("change", () => {
@@ -82,7 +83,7 @@ class MergeSingleAmendment {
         }
     }
 
-    private loadCollisions() {
+    loadCollisions() {
         this.gotoStep("3");
 
         let url = this.$checkCollisions.data("url"),
@@ -99,7 +100,7 @@ class MergeSingleAmendment {
 
             if (changed) {
                 const srcId = sectionId + "_" + paragraphNo + (version === 'modified' ? '_modified' : '_original');
-                let editor: editor = this.editors[srcId].getEditor(),
+                let editor = this.editors[srcId].getEditor(),
                     dataOrig = editor.getData();
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();
@@ -123,7 +124,7 @@ class MergeSingleAmendment {
         });
 
         this.$otherStatsFields.each((i, el) => {
-            let $input:JQuery = $(el);
+            let $input = $(el);
             otherAmendmentsStatus[$input.data("amendment-id")] = $input.val();
         });
 
@@ -134,7 +135,7 @@ class MergeSingleAmendment {
         }, this.collisionsLoaded.bind(this));
     }
 
-    private collisionsLoaded(html) {
+    collisionsLoaded(html) {
         this.collisionEditors = {};
         this.$collisionHolder.html(html);
         let $texteditors = this.$collisionHolder.find(".amendmentOverrideBlock > .texteditor");
@@ -147,7 +148,7 @@ class MergeSingleAmendment {
         }
     }
 
-    private onSubmit() {
+    onSubmit() {
         this.$affectedParagraphs.each((i, el) => {
             let $paragraph = $(el),
                 version = $paragraph.find(".versionSelector input:checked").val(),
@@ -156,7 +157,7 @@ class MergeSingleAmendment {
 
             if (changed) {
                 let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no") + (version === 'modified' ? '_modified' : '_original'),
-                    editor: editor = this.editors[key].getEditor();
+                    editor = this.editors[key].getEditor();
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();
                 }
@@ -170,7 +171,7 @@ class MergeSingleAmendment {
             }
         });
         for (let id in this.collisionEditors) {
-            let editor: editor = this.collisionEditors[id].getEditor();
+            let editor = this.collisionEditors[id].getEditor();
             if (typeof(editor.plugins.lite) != 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
             }
@@ -180,5 +181,3 @@ class MergeSingleAmendment {
         }
     }
 }
-
-new MergeSingleAmendment();
