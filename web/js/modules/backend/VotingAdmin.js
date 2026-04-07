@@ -277,6 +277,9 @@ export class VotingAdmin {
 
         widget.config.compilerOptions.whitespace = 'condense';
         this.widgetComponent = widget.mount(vueEl);
+
+        // Used by tests to control vue-select
+        window['votingAdminWidget'] = this.widgetComponent;
     }
 
     initVotingSorter(votingInitJson) {

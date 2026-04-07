@@ -463,8 +463,14 @@ If this site should only be <em>visible</em> to users included below, select the
         'text' => 'Delete',
         'js' => true,
     ],
-    'siteacc_useraccdel_confirm' => 'Really delete the whole account %USERNAME%?',
-    'siteacc_usermodal_title'    => 'Edit %USERNAME%',
+    'siteacc_useraccdel_confirm' => [
+        'text' => 'Really delete the whole account %USERNAME%?',
+        'js' => true,
+    ],
+    'siteacc_usermodal_title'    => [
+        'text' => 'Edit %USERNAME%',
+        'js' => true,
+    ],
     'siteacc_usermodal_identity' => [
         'text' => 'Identification',
         'js' => true,

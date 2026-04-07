@@ -44,8 +44,14 @@ return [
         'text' => 'Waiting list',
         'js' => true,
     ],
-    'persons_waiting_1'  => '1 person is on the waiting list',
-    'persons_waiting_x'  => '%NUM% persons are on the waiting list',
+    'persons_waiting_1'  => [
+        'text' => '1 person is on the waiting list',
+        'js' => true,
+    ],
+    'persons_waiting_x'  => [
+        'text' => '%NUM% persons are on the waiting list',
+        'js' => true,
+    ],
     'persons_waiting'    => 'Persons on the waiting list',
     'apply'              => 'Apply',
     'apply_name'         => 'Name',

@@ -45,10 +45,22 @@ return [
         'text' => 'Show complete protocol',
         'js' => true,
     ],
-    'activity_opened' => 'Voting opened',
-    'activity_closed' => 'Voting closed',
-    'activity_reset' => 'Voting reset',
-    'activity_reopened' => 'Voting re-opened',
+    'activity_opened' => [
+        'text' => 'Voting opened',
+        'js' => true,
+    ],
+    'activity_closed' => [
+        'text' => 'Voting closed',
+        'js' => true,
+    ],
+    'activity_reset' => [
+        'text' => 'Voting reset',
+        'js' => true,
+    ],
+    'activity_reopened' => [
+        'text' => 'Voting re-opened',
+        'js' => true,
+    ],
 
     'page_title' => 'Votings',
     'results_title' => 'Voting results',
@@ -171,7 +183,10 @@ return [
         'text' => 'Assign voters to a user group',
         'js' => true,
     ],
-    'admin_reset_dialog' => 'Are you sure you want to reset the whole voting?',
+    'admin_reset_dialog' => [
+        'text' => 'Are you sure you want to reset the whole voting?',
+        'js' => true,
+    ],
 
     'settings_create' => 'New voting',
     'settings_sort' => 'Sort',
@@ -336,31 +351,85 @@ return [
         'text' => 'Administrate votings',
         'js' => true,
     ],
-    'voting_visibility' => 'Who can see how I voted?',
-    'voting_visibility_none' => 'Nobody can see how you voted. <small>(Persons with access to the database could access this data, though)</small>',
-    'voting_visibility_admin' => 'The votes are visible to the <strong>administrators</strong> of this page, but not for other participants.',
-    'voting_visibility_all' => '<strong>All logged in users</strong> can see who voted how.',
+    'voting_visibility' => [
+        'text' => 'Who can see how I voted?',
+        'js' => true,
+    ],
+    'voting_visibility_none' => [
+        'text' => 'Nobody can see how you voted. <small>(Persons with access to the database could access this data, though)</small>',
+        'js' => true,
+    ],
+    'voting_visibility_admin' => [
+        'text' => 'The votes are visible to the <strong>administrators</strong> of this page, but not for other participants.',
+        'js' => true,
+    ],
+    'voting_visibility_all' => [
+        'text' => '<strong>All logged in users</strong> can see who voted how.',
+        'js' => true,
+    ],
     'voting_show_all' => 'Show all votings',
-    'voting_votes_status' => 'Status',
-    'voting_votes_0' => 'No vote has been cast yet.',
-    'voting_votes_1_1' => '1 vote has been cast.',
+    'voting_votes_status' => [
+        'text' => 'Status',
+        'js' => true,
+    ],
+    'voting_votes_0' => [
+        'text' => 'No vote has been cast yet.',
+        'js' => true,
+    ],
+    'voting_votes_1_1' => [
+        'text' => '1 vote has been cast.',
+        'js' => true,
+    ],
     'voting_votes_1_x' => '%VOTES% votes have been cast by 1 user.',
     'voting_votes_x' => '%VOTES% votes have been cast by %USERS% users.',
     'voting_votes_x_same' => '%VOTES% votes have been cast.',
-    'voting_remainig_0' => 'You have cast all your votes.',
-    'voting_remainig_1' => 'You have 1 remaining vote to cast.',
-    'voting_remainig_x' => 'You have %VOTES% remaining votes to cast.',
-    'voting_notvoted' => 'Not voted',
-    'voting_notvoted_yet' => 'Not voted yet',
-    'voting_notvoted_0' => 'None',
-    'voting_presence_0' => 'Nobody has marked their presence yet',
-    'voting_presence_1_1' => '1 user has marked their presence',
+    'voting_remainig_0' => [
+        'text' => 'You have cast all your votes.',
+        'js' => true,
+    ],
+    'voting_remainig_1' => [
+        'text' => 'You have 1 remaining vote to cast.',
+        'js' => true,
+    ],
+    'voting_remainig_x' => [
+        'text' => 'You have %VOTES% remaining votes to cast.',
+        'js' => true,
+    ],
+    'voting_notvoted' => [
+        'text' => 'Not voted',
+        'js' => true,
+    ],
+    'voting_notvoted_yet' => [
+        'text' => 'Not voted yet',
+        'js' => true,
+    ],
+    'voting_notvoted_0' => [
+        'text' => 'None',
+        'js' => true,
+    ],
+    'voting_presence_0' => [
+        'text' => 'Nobody has marked their presence yet',
+        'js' => true,
+    ],
+    'voting_presence_1_1' => [
+        'text' => '1 user has marked their presence',
+        'js' => true,
+    ],
     'voting_presence_1_x' => '%VOTES% presences have been marked by 1 user',
     'voting_presence_x' => '%VOTES% presences have been marked by %USERS% users',
     'voting_presence_x_same' => '%VOTES% presences have been marked',
-    'voting_weight' => 'Voting weight',
-    'voting_show_votes' => 'Show vote list',
-    'voting_hide_votes' => 'Hide vote list',
+    'voting_weight' => [
+        'text' => 'Voting weight',
+        'js' => true,
+    ],
+    'voting_show_votes' => [
+        'text' => 'Show vote list',
+        'js' => true,
+    ],
+    'voting_hide_votes' => [
+        'text' => 'Hide vote list',
+        'js' => true,
+    ],
     'voting_abstentions_1' => '1 General Abstention',
     'voting_abstentions_x' => '%NUM% General Abstentions',
 
@@ -377,6 +446,10 @@ return [
     'quorum_two_third' => '2/3 majority',
     'quorum_two_third_h' => 'At least two out of three of all eligible users have to cast a vote',
     'quorum_limit' => '%QUORUM% out of %ALL% users',
-    'quorum_counter' => 'Quorum: %CURRENT% out of %QUORUM% necessary votes',
+    'quorum_counter' => [
+        'text' => 'Quorum: %CURRENT% out of %QUORUM% necessary votes',
+        'js' => true,
+    ],
 ];
+
 

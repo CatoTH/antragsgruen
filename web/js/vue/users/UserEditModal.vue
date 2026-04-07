@@ -175,9 +175,11 @@ export default {
   computed: {
     modalTitle: function () {
       const userModalTitleTemplate = translate.getTranslation('admin', 'siteacc_usermodal_title');
+      console.log("2", userModalTitleTemplate);
       return (this.user ? userModalTitleTemplate.replace(/%USERNAME%/, this.user.email) : '--');
     },
     userLogUrl: function () {
+      console.log("1", this.urlUserLog);
       return this.urlUserLog.replace(/%23/g, "#").replace(/###USER###/, this.user.id);
     },
     organisationSelect: function () {
@@ -235,6 +237,7 @@ export default {
     },
     deleteAccount: function ($event) {
       const userDeleteConfirmTemplate = translate.getTranslation('admin', 'siteacc_useraccdel_confirm');
+      console.log(userDeleteConfirmTemplate);
       this.$emit('delete-user', this.user.id, userDeleteConfirmTemplate.replace("%USERNAME%", this.user.auth));
       $(this.$refs['user-edit-modal']).modal("hide");
 
