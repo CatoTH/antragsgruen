@@ -665,6 +665,8 @@ export default {
       if (!this.votingHasMajority) {
         return null;
       }
+      console.log(this.MAJORITY_TYPES);
+
       return Object.values(this.MAJORITY_TYPES).find(majorityType => {
         return majorityType.id === voting.majority_type;
       });

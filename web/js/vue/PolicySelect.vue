@@ -1,20 +1,4 @@
 <template>
-  <!--
-  $allPolicies = [];
-foreach (IPolicy::getPolicyNames() as $id => $name) {
-    $allPolicies[] = ["id" => $id, "title" => $name];
-}
-
-if (\app\models\db\ConsultationUserGroup::consultationHasLoadableUserGroups($consultation)) {
-    $groupLoadUrl = \app\components\UrlHelper::createUrl('/admin/users/search-groups');
-} else {
-    $groupLoadUrl = '';
-}
-
-  POLICY_USER_GROUPS: <?= IPolicy::POLICY_USER_GROUPS ?>,
-    ALL_POLICIES: <?= json_encode($allPolicies) ?>,
-    GROUP_LOAD_URL: <?= json_encode($groupLoadUrl) ?>,
-  -->
   <div class="v-policy-select">
     <select class="stdDropdown" @change="setPolicy($event)" :disabled="disabled">
       <option v-for="policyIterator in ALL_POLICIES" :value="policyIterator.id" :selected="policy.id === policyIterator.id">{{ policyIterator.title }}</option>
@@ -31,13 +15,24 @@ if (\app\models\db\ConsultationUserGroup::consultationHasLoadableUserGroups($con
 </template>
 
 <script>
+let POLICY_USER_GROUPS,
+    ALL_POLICIES,
+    GROUP_LOAD_URL;
 export default {
+  setConstants(groupLoadUrl, groupPolicy, allPolicies) {
+      POLICY_USER_GROUPS = groupPolicy;
+      ALL_POLICIES = allPolicies;
+      GROUP_LOAD_URL = groupLoadUrl;
+  },
   props: ['allGroups', 'allowAnonymous', 'policy', 'disabled'],
   data() {
     return {
       policyId: null,
       changedUserGroups: null,
       ajaxLoadedUserGroups: [],
+      ALL_POLICIES,
+      GROUP_LOAD_URL,
+      POLICY_USER_GROUPS,
     }
   },
   watch: {

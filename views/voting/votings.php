@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\layoutHooks\Layout;
 use app\models\proposedProcedure\Factory;

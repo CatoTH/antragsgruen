@@ -279,7 +279,26 @@ $CONSTANTS = array_merge($CONSTANTS, [
 
     <div class="votingAdmin"></div>
 
+    <?php
+    $allPolicies = [];
+    foreach (IPolicy::getPolicyNames() as $id => $name) {
+        $allPolicies[] = ["id" => $id, "title" => $name];
+    }
+
+    if (\app\models\db\ConsultationUserGroup::consultationHasLoadableUserGroups($consultation)) {
+        $groupLoadUrl = UrlHelper::createUrl('/admin/users/search-groups');
+    } else {
+        $groupLoadUrl = '';
+    }
+    ?>
     <script type="module">
+        import policySelect from "/js/vue/PolicySelect.js";
+        policySelect.setConstants(
+            <?= json_encode($groupLoadUrl) ?>,
+            <?= json_encode(IPolicy::POLICY_USER_GROUPS) ?>,
+            <?= json_encode($allPolicies) ?>
+        );
+
         import { VotingAdmin } from "/js/modules/backend/VotingAdmin.js";
         new VotingAdmin(
             document.querySelector(".manageVotings"),
