@@ -2,6 +2,8 @@
 
 import { createApp } from '/npm/vue.esm-browser.prod.js';
 import translateDirective from "/js/vue/Translate.vue.js";
+import tooltipDirective from '/js/vue/Tooltip.vue.js';
+import focusDirective from '/js/vue/Focus.vue.js';
 import UserEditModal from '/js/vue/users/UserEditModal.js';
 import GroupEditModal from '/js/vue/users/GroupEditModal.js';
 import GroupEditAddRestricted from '/js/vue/users/GroupEditAddRestricted.js';
@@ -234,6 +236,8 @@ export class UserAdmin {
         this.widget.component('v-selectize', Selectize);
 
         this.widget.directive('t', translateDirective);
+        this.widget.directive('focus', focusDirective);
+        this.widget.directive('tooltip', tooltipDirective);
 
         userWidgetComponent = this.widget.mount(vueEl);
 

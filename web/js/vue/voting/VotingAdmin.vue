@@ -180,8 +180,8 @@
             </div>
           </li>
           <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-            <voting-vote-list :voting="voting" :groupedVoting="groupedVoting" :showNotVotedList="true"
-                              :setToUserGroupSelection="userGroups" @set-user-group="setVotersToUserGroup"></voting-vote-list>
+            <vote-list :voting="voting" :groupedVoting="groupedVoting" :showNotVotedList="true"
+                              :setToUserGroupSelection="userGroups" @set-user-group="setVotersToUserGroup"></vote-list>
           </li>
         </template>
       </ul>
@@ -200,7 +200,7 @@
         </button>
         <form v-if="addingMotions" class="addingMotions" @submit="addIMotion($event)">
           <select class="stdDropdown" v-model="addableMotionSelected"
-                  v-t:aria-label="['voting', 'admin_add_amendments']" v-ttitle="['voting', 'admin_add_amendments']">
+                  v-t:aria-label="['voting', 'admin_add_amendments']" v-t:title="['voting', 'admin_add_amendments']">
             <option value="" v-t="['voting', 'admin_add_amendments_opt']"></option>
             <template v-for="item in addableMotions">
               <!-- Statute amendment -->
@@ -630,14 +630,16 @@ export default {
       if (this.voting.quorum === null) {
         return this.voting.quorum_custom_target;
       } else {
-        return quorumIndicator.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
+        const tpl = translate.getTranslation("voting", "quorum_limit");
+        return tpl.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
       }
     },
     abstentionsStr: function () {
       if (this.voting.abstentions_total === 1) {
-        return abstentions1;
+        return translate.getTranslation("voting", "voting_abstentions_1");
       } else {
-        return abstentionsx.replace(/%NUM%/, this.voting.abstentions_total);
+        const tpl = translate.getTranslation("voting", "voting_abstentions_x");
+        return tpl.replace(/%NUM%/, this.voting.abstentions_total);
       }
     }
   },
@@ -665,7 +667,6 @@ export default {
       if (!this.votingHasMajority) {
         return null;
       }
-      console.log(this.MAJORITY_TYPES);
 
       return Object.values(this.MAJORITY_TYPES).find(majorityType => {
         return majorityType.id === voting.majority_type;
@@ -873,6 +874,7 @@ export default {
     },
     deleteVoting: function () {
       const widget = this;
+      const deleteConfirmation = translate.getTranslation("voting", "settings_delete_bb");
       bootbox.confirm(deleteConfirmation, function(result) {
         if (result) {
           widget.$emit('delete-voting', widget.voting.id);

@@ -52,7 +52,10 @@ return [
     'admin_btn_close_nopub' => 'Schließen und noch nicht veröffentlichen',
     'admin_btn_cancel' => 'Abbrechen',
     'admin_btn_reset' => 'Zurücksetzen',
-    'admin_btn_reset_bb' => 'Hiermit werden alle Stimmen gelöscht und die Abstimmung wieder in den Vorbereitungs-Modus gesetzt, um Anträge hinzufügen und entfernen zu können. ACHTUNG: Alle Mitglieder müssen erneut abstimmen.',
+    'admin_btn_reset_bb' => [
+        'text' => 'Hiermit werden alle Stimmen gelöscht und die Abstimmung wieder in den Vorbereitungs-Modus gesetzt, um Anträge hinzufügen und entfernen zu können. ACHTUNG: Alle Mitglieder müssen erneut abstimmen.',
+        'js' => true,
+    ],
     'admin_btn_reopen' => 'Erneut öffnen',
     'admin_btn_publish' => 'Ergebnisse veröffentlichen',
     'admin_btn_remove_item' => 'Aus der Abstimmung entfernen',
@@ -120,7 +123,10 @@ return [
     'settings_timer_sec' => 'Sekunden',
     'settings_save' => 'Speichern',
     'settings_delete' => 'Abstimmung löschen',
-    'settings_delete_bb' => 'Soll diese Abstimmung mitsamt den abgegebenen Stimmen gelöscht werden? Die Anträge und Änderungsanträge bleiben dabei bestehen.',
+    'settings_delete_bb' => [
+        'text' => 'Soll diese Abstimmung mitsamt den abgegebenen Stimmen gelöscht werden? Die Anträge und Änderungsanträge bleiben dabei bestehen.',
+        'js' => true,
+    ],
     'settings_sort_title' => 'Abstimmungen umsortieren',
     'settings_sort_save' => 'Neue Reihenfolge speichern',
 
@@ -154,8 +160,14 @@ return [
     'voting_weight' => 'Stimmgewicht',
     'voting_show_votes' => 'Einzelstimmen anzeigen',
     'voting_hide_votes' => 'Einzelstimmen ausblenden',
-    'voting_abstentions_1' => '1 Enthaltung',
-    'voting_abstentions_x' => '%NUM% Enthaltungen',
+    'voting_abstentions_1' => [
+        'text' => '1 Enthaltung',
+        'js' => true,
+    ],
+    'voting_abstentions_x' => [
+        'text' => '%NUM% Enthaltungen',
+        'js' => true,
+    ],
 
     'majority_simple' => 'Einfache Mehrheit',
     'majority_simple_h' => 'Ein (Änderungs-)Antrag gilt als angenommen, wenn mehr Ja- als Nein-Stimmen abgegeben werden. Enthaltungen werden nicht gezählt.',
@@ -169,6 +181,9 @@ return [
     'quorum_half_h' => 'Mindestens die Hälfte aller Berechtigten müssen abstimmen',
     'quorum_two_third' => '2/3-Mehrheit',
     'quorum_two_third_h' => 'Mindestens zwei Drittel aller Berechtigten müssen abstimmen',
-    'quorum_limit' => '%QUORUM% von %ALL% Berechtigten',
+    'quorum_limit' => [
+        'text' => '%QUORUM% von %ALL% Berechtigten',
+        'js' => true,
+    ],
     'quorum_counter' => 'Quorum: %CURRENT% von %QUORUM% nötigen Stimmen',
 ];

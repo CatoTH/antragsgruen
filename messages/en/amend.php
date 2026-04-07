@@ -105,6 +105,7 @@ return [
     ],
     'merge_status_set'             => [
         'text' => 'Set status',
+        'js' => true,
     ],
     'merge_amend_statuses'         => 'Status of the amendments',
     'merge_amend_show'             => [

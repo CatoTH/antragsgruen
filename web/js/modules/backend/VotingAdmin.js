@@ -5,6 +5,7 @@ import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingAdmin from "/js/vue/voting/VotingAdmin.js";
 import votingSort from "/js/vue/voting/VotingAdminSort.js";
+import voteList from "/js/vue/voting/VotingList.js";
 import policySelect from "/js/vue/PolicySelect.js";
 import selectize from "/js/vue/Selectize.js";
 import tooltipDirective from "/js/vue/Tooltip.vue.js";
@@ -275,6 +276,7 @@ export class VotingAdmin {
         widget.component('draggable', vuedraggable);
         widget.component('policy-select', policySelect);
         widget.component('v-selectize', selectize);
+        widget.component('vote-list', voteList);
 
         widget.directive('t', translateDirective);
         widget.directive('tooltip', tooltipDirective);
