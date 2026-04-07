@@ -268,7 +268,7 @@ class AmendmentController extends Base
         }
 
         $policy = $motion->getMyMotionType()->getAmendmentPolicy();
-        if (!$policy->checkCurrUserMotion()) {
+        if (!$policy->checkCurrUserAmendment()) {
             // Could be past the deadline of submission by now, or an admin changing the permissions
             return new HtmlErrorResponse(403, \Yii::t('amend', 'err_create_permission'));
         }
