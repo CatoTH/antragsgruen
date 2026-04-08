@@ -9,7 +9,10 @@ return [
 
     'title_plain'        => 'Speaking list',
     'title_to'           => 'Speaking list of %TITLE%',
-    'goto_admin'         => 'Manage speaking list',
+    'goto_admin'         => [
+        'text' => 'Manage speaking list',
+        'js' => true,
+    ],
     'user_section_title' => 'Speaking list',
     'current'            => [
         'text' => 'Currently',
@@ -32,9 +35,17 @@ return [
         'text' => 'You',
         'js' => true,
     ],
-    'login_warning'      => 'Log in',
-    'waiting_aria_1'     => 'Waiting list',
-    'waiting_aria_x'     => 'Waiting lists',
+    'login_warning'      => [
+        'text' => 'Log in',
+        'js' => true,
+    ],
+    'waiting_aria_1'     => [
+        'text' => 'Waiting list',
+        'js' => true,
+    ],
+    'waiting_aria_x'     => [
+        'text' => 'Waiting lists',
+    ],
     'waiting_list_1'     => 'Waiting list',
     'waiting_list_x'     => [
         'text' => 'Waiting lists',
@@ -53,23 +64,47 @@ return [
         'js' => true,
     ],
     'persons_waiting'    => 'Persons on the waiting list',
-    'apply'              => 'Apply',
-    'apply_name'         => 'Name',
-    'apply_do'           => 'Apply',
-    'apply_poo_do'       => 'Point of Order',
-    'apply_closed'       => 'The speaking list is not opened',
+    'apply'              => [
+        'text' => 'Apply',
+        'js' => true,
+    ],
+    'apply_name'         => [
+        'text' => 'Name',
+        'js' => true,
+    ],
+    'apply_do'           => [
+        'text' => 'Apply',
+        'js' => true,
+    ],
+    'apply_poo_do'       => [
+        'text' => 'Point of Order',
+        'js' => true,
+    ],
+    'apply_closed'       => [
+        'text' => 'The speaking list is not opened',
+        'js' => true,
+    ],
     'applied'            => 'Applied',
-    'applied_aria'       => 'You applied to speak',
+    'applied_aria'       => [
+        'text' => 'You applied to speak',
+        'js' => true,
+    ],
     'apply_revoke'       => [
         'text' => 'Withdraw',
         'js' => true,
     ],
-    'apply_revoke_aria'  => 'Withdraw the application',
+    'apply_revoke_aria'  => [
+        'text' => 'Withdraw the application',
+        'js' => true,
+    ],
     'name_poo'           => 'Point of Order',
 
     'footer_title_plain'    => 'Speaking list',
     'footer_title_to'       => '%TITLE%',
-    'footer_current'        => 'Currenty',
+    'footer_current'        => [
+        'text' => 'Currenty',
+        'js' => true,
+    ],
     'footer_current_nobody' => [
         'text' => 'Nobody',
         'js' => true,

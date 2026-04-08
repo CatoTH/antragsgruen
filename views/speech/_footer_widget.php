@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\User;
@@ -33,6 +34,7 @@ if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUE
     $adminUrl = '';
 }
 
+echo $this->render('@app/views/speech/user-footer-widget.vue.php');
 ?>
 <section class="currentSpeechFooter"
          aria-labelledby="speechListUserTitle"
@@ -40,6 +42,7 @@ if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUE
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitleShort()) ?>"
          data-admin-url="<?= Html::encode($adminUrl) ?>"
+         data-login-url="<?= Html::encode(UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url])) ?>"
 >
     <div class="hidden" id="speechListUserTitle"><?= Html::encode($queue->getTitle()) ?></div>
     <div class="currentSpeechList"></div>

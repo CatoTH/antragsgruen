@@ -48,13 +48,13 @@ if (User::getCurrentUser()) {
     $fullscreenButton = '';
 }
 
-echo $this->render('@app/views/speech/user-full-list-widget.vue.php');
-
 ?>
 <div class="primaryHeader">
     <h1 id="speechListUserTitle"><?= Html::encode($this->title) ?></h1>
     <?= $fullscreenButton ?>
 </div>
+
+<?= $this->render('@app/views/speech/user-full-list-widget.vue.php') ?>
 
 <section class="currentSpeechFullPage currentSpeechPageWidth"
          aria-labelledby="speechListUserTitle"
