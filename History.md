@@ -1,8 +1,8 @@
 # Version history
 
-### Version 4.16.4 [not released yet]
+### Version 4.16.4 (2026-04-10)
 
-- Bugfix: Fixing a regression introduced in v4.16.3
+- Bugfix: Fixing a regression introduced in v4.16.3 (preventing amendments from being submitted under certain conditions)
 
 ### Version 4.16.3 (2026-03-22)
 
