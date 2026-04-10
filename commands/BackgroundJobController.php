@@ -10,7 +10,7 @@ use Yii;
 use yii\console\Controller;
 
 /**
- * Run background commends
+ * Run background commands
  *
  * @extends Controller<\yii\console\Application>
  */

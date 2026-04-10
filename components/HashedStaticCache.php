@@ -87,7 +87,7 @@ class HashedStaticCache
     public function getCached(callable $method): mixed
     {
         if (!$this->skipCache) {
-            // Hint: don't even try to aquire a lock if a cache item already exists
+            // Hint: don't even try to acquire a lock if a cache item already exists
             $cached = $this->getCache();
             if ($cached !== false) {
                 return $cached;

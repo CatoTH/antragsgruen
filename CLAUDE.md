@@ -8,7 +8,7 @@ Antragsgrün (motion.tools) is a PHP/Yii2 web application for NGOs and political
 
 ## General Instructions for Claude Code
 
-Whenever there are non-trivial design decisons, ask rather than make assumptions.
+Whenever there are non-trivial design decisions, ask rather than make assumptions.
 
 ## Commands
 
@@ -153,7 +153,7 @@ Disabled by default; enabled per site (`apiEnabled` in the site settings, see `B
 The correct approach to make modifications to the API and DTOs is:
 - First change the docs/openapi.yaml
 - Then run `VENDOR_DIR=/Users/tobiashossl/Sites/openapi/vendor php docs/openapi-generate-dtos.php docs/openapi.yaml models/api/` to generate the PHP DTOs
-- Then use those DTOs. It is acceptable to add methods to these DTOs, as only the constructur will be overwritten by the command above.
+- Then use those DTOs. It is acceptable to add methods to these DTOs, as only the constructor will be overwritten by the command above.
 
 ### PDF generation
 Two backends: TCPDF (default, PHP-only) and Weasyprint (external binary, nicer output). Configured via `weasyprintPath`/`qpdfPath` in `config.json`.

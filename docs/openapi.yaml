@@ -818,7 +818,7 @@ components:
           nullable: true
           items:
             type: integer
-          desription: Only set when this object is returned from the API; ignored when using the object for saving the agenda.
+          description: Only set when this object is returned from the API; ignored when using the object for saving the agenda.
         in_proposed_procedures:
           type: boolean
         motion_types:
