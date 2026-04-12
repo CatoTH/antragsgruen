@@ -18,7 +18,10 @@ return [
         'text' => 'Currently',
         'js' => true,
     ],
-    'current_nobody'     => 'nobody',
+    'current_nobody'     => [
+        'text' => 'nobody',
+        'js' => true,
+    ],
     'remaining_time'     => [
         'text' => 'Speaking time',
         'js' => true,
@@ -45,8 +48,12 @@ return [
     ],
     'waiting_aria_x'     => [
         'text' => 'Waiting lists',
+        'js' => true,
     ],
-    'waiting_list_1'     => 'Waiting list',
+    'waiting_list_1'     => [
+        'text' => 'Waiting list',
+        'js' => true,
+    ],
     'waiting_list_x'     => [
         'text' => 'Waiting lists',
         'js' => true,
@@ -63,7 +70,10 @@ return [
         'text' => '%NUM% persons are on the waiting list',
         'js' => true,
     ],
-    'persons_waiting'    => 'Persons on the waiting list',
+    'persons_waiting'    => [
+        'text' => 'Persons on the waiting list',
+        'js' => true,
+    ],
     'apply'              => [
         'text' => 'Apply',
         'js' => true,
@@ -84,7 +94,10 @@ return [
         'text' => 'The speaking list is not opened',
         'js' => true,
     ],
-    'applied'            => 'Applied',
+    'applied'            => [
+        'text' => 'Applied',
+        'js' => true,
+    ],
     'applied_aria'       => [
         'text' => 'You applied to speak',
         'js' => true,
