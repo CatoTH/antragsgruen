@@ -4,7 +4,10 @@ return [
     'subqueue_male'     => 'Men / Diverse',
     'subqueue_female'   => 'Women',
     'subqueue_inactive' => 'inactive',
-    'speaking_list'     => 'Speaking list',
+    'speaking_list'     => [
+        'text' => 'Speaking list',
+        'js' => true,
+    ],
     'speaking_bc'       => 'Speaking list',
 
     'title_plain'        => 'Speaking list',
@@ -129,42 +132,135 @@ return [
     'admin_bc'               => 'Administration',
     'admin_title_plain'      => 'Manage speaking list',
     'admin_title_to'         => 'Manage speaking list of %TITLE%',
-    'admin_setting'          => 'Settings',
-    'admin_is_active'        => 'Active list',
-    'admin_is_inactive'      => 'List inactive',
-    'admin_activate'         => 'Activate',
-    'admin_deactivate'       => 'Deactivate',
-    'admin_deactivate_other' => 'deactivates other lists',
-    'admin_setting_open'     => 'Open to apply',
-    'admin_setting_open_poo' => 'Open to Points of Orders',
-    'admin_prefer_nonspeak'  => 'Prefer persons who haven\'t talked yet',
-    'admin_show_names'       => 'Show names of applicants publicly',
-    'admin_allow_custom_names' => 'Speakers can change their names',
-    'admin_speaking_time'    => 'Show speaking time',
-    'admin_goto_components'  => 'Quota, (de-)activation',
-    'admin_prev_speakers'    => 'Previous speakers',
-    'admin_prev_show'        => 'Show',
-    'admin_running'          => 'Speaking',
-    'admin_running_nobody'   => 'Nobody',
-    'admin_next'             => 'Next speaker',
-    'admin_start'            => 'Start',
-    'admin_stop'             => 'Finish',
-    'admin_delete'           => 'Remove',
-    'admin_back_to_wait'     => 'Back to the waiting list',
-    'admin_start_proposal'   => 'Start proposal',
+    'admin_setting'          => [
+        'text' => 'Settings',
+        'js' => true,
+    ],
+    'admin_is_active'        => [
+        'text' => 'Active list',
+        'js' => true,
+    ],
+    'admin_is_inactive'      => [
+        'text' => 'List inactive',
+        'js' => true,
+    ],
+    'admin_activate'         => [
+        'text' => 'Activate',
+        'js' => true,
+    ],
+    'admin_deactivate'       => [
+        'text' => 'Deactivate',
+        'js' => true,
+    ],
+    'admin_deactivate_other' => [
+        'text' => 'deactivates other lists',
+        'js' => true,
+    ],
+    'admin_setting_open'     => [
+        'text' => 'Open to apply',
+        'js' => true,
+    ],
+    'admin_setting_open_poo' => [
+        'text' => 'Open to Points of Orders',
+        'js' => true,
+    ],
+    'admin_prefer_nonspeak'  => [
+        'text' => 'Prefer persons who haven\'t talked yet',
+        'js' => true,
+    ],
+    'admin_show_names'       => [
+        'text' => 'Show names of applicants publicly',
+        'js' => true,
+    ],
+    'admin_allow_custom_names' => [
+        'text' => 'Speakers can change their names',
+        'js' => true,
+    ],
+    'admin_speaking_time'    => [
+        'text' => 'Show speaking time',
+        'js' => true,
+    ],
+    'admin_goto_components'  => [
+        'text' => 'Quota, (de-)activation',
+        'js' => true,
+    ],
+    'admin_prev_speakers'    => [
+        'text' => 'Previous speakers',
+        'js' => true,
+    ],
+    'admin_prev_show'        => [
+        'text' => 'Show',
+        'js' => true,
+    ],
+    'admin_running'          => [
+        'text' => 'Speaking',
+        'js' => true,
+    ],
+    'admin_running_nobody'   => [
+        'text' => 'Nobody',
+        'js' => true,
+    ],
+    'admin_next'             => [
+        'text' => 'Next speaker',
+        'js' => true,
+    ],
+    'admin_start'            => [
+        'text' => 'Start',
+        'js' => true,
+    ],
+    'admin_stop'             => [
+        'text' => 'Finish',
+        'js' => true,
+    ],
+    'admin_delete'           => [
+        'text' => 'Remove',
+        'js' => true,
+    ],
+    'admin_back_to_wait'     => [
+        'text' => 'Back to the waiting list',
+        'js' => true,
+    ],
+    'admin_start_proposal'   => [
+        'text' => 'Start proposal',
+        'js' => true,
+    ],
     'admin_proposal_nobody'  => 'No proposal',
-    'admin_randomize_queues' => 'Randomize waiting list',
-    'admin_reset'            => 'Reset / empty speaking list',
+    'admin_randomize_queues' => [
+        'text' => 'Randomize waiting list',
+        'js' => true,
+    ],
+    'admin_reset'            => [
+        'text' => 'Reset / empty speaking list',
+        'js' => true,
+    ],
     'admin_reset_dialog'     => 'Do you want to reset the whole speaking list, including the history of previous speakers?',
 
-    'admin_subq_start' => 'Start speaking',
+    'admin_subq_start' => [
+        'text' => 'Start speaking',
+        'js' => true,
+    ],
     'admin_subq_move_1' => 'Move to the other list',
     'admin_subq_move_x' => 'Move to another list',
-    'admin_subq_no_applic' => 'no applications',
-    'admin_subq_add' => 'Add',
-    'admin_subq_name' => 'Name',
-    'admin_move_here' => 'Move here',
-    'admin_time_seconds' => 'seconds',
+    'admin_subq_no_applic' => [
+        'text' => 'no applications',
+        'js' => true,
+    ],
+    'admin_subq_add' => [
+        'text' => 'Add',
+        'js' => true,
+    ],
+    'admin_subq_name' => [
+        'text' => 'Name',
+        'js' => true,
+    ],
+    'admin_move_here' => [
+        'text' => 'Move here',
+        'js' => true,
+    ],
+    'admin_time_seconds' => [
+        'text' => 'seconds',
+        'js' => true,
+    ],
 
     'sidebar_title'  => 'All speaking lists',
     'sidebar_active' => 'Active speaking list',

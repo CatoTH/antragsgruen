@@ -49,7 +49,7 @@ return [
 	'admin_is_inactive' => 'Llista inactiva',
 	'admin_activate' => 'Activar',
 	'admin_deactivate' => 'Desactivar',
-	'admin_deactivate_other' => 'Desactivar altres llistes',
+	'admin_deactivate_other' => '(Desactivar altres llistes)',
 	'admin_setting_open' => 'Obert per aplicar',
 	'admin_setting_open_poo' => 'Obert a punts d\'ordre',
 	'admin_prefer_nonspeak' => 'Preferència per a persones que no han parlat encara',
