@@ -69,7 +69,7 @@ $pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' 
 </div>
 
 <script type="module">
-    import { createApp, h, resolveComponent } from '/npm/vue.esm-browser.prod.js';
+    import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import translateDirective from "/js/vue/Translate.vue.js";
     translateDirective.registerTranslation("speech", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "speech")) ?>);
     import AdminWidgetComponent from "/js/vue/speech/AdminWidget.js";
@@ -110,6 +110,5 @@ $pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' 
 
     widget.directive('t', translateDirective);
 
-    widget.config.compilerOptions.whitespace = 'condense';
     widget.mount(".manageSpeechQueueWidget .speechAdmin");
 </script>

@@ -31,7 +31,7 @@ class JsTools
 
             $map = [];
             if (YII_DEBUG) {
-                $map['/npm/vue.esm-browser.prod.js'] = '/npm/vue.esm-browser.js';
+                $map['/npm/vue.runtime.esm-browser.prod.js'] = '/npm/vue.runtime.esm-browser.js';
             }
             $finder = new Finder();
             $finder->files()->in([self::JS_PATH, self::VUE_PATH])->name('*.js');

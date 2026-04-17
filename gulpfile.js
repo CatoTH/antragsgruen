@@ -30,7 +30,8 @@ async function taskCopyFiles() {
     await gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
     //await gulp.src("node_modules/vue-draggable-plus/dist/vue-draggable-plus.iife.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/vue/dist/vue.esm-browser.prod.js").pipe(gulp.dest('./web/npm/')); // @TODO Replace by runtime
+    await gulp.src("node_modules/vue/dist/vue.runtime.esm-browser.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/vue/dist/vue.runtime.esm-browser.prod.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/sortablejs/modular/sortable.esm.js").pipe(gulp.dest('./web/npm/'));
 }
 
@@ -168,7 +169,7 @@ function taskWatch() {
 function taskCompileVue() {
     return gulp
         .src('web/js/vue/**/*.vue')
-        .pipe(createVueTransform('/npm/vue.esm-browser.prod.js'))
+        .pipe(createVueTransform('/npm/vue.runtime.esm-browser.prod.js'))
         .pipe(terser())
         .pipe(gulp.dest('web/js/vue/'));
 }

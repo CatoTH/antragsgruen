@@ -57,7 +57,10 @@ function transformVueSfc(source, filePath, vueUrl) {
             filename,
             source: descriptor.template.content,
             scoped: descriptor.styles.some((s) => s.scoped),
-            compilerOptions: { scopeId: id },
+            compilerOptions: {
+                scopeId: id,
+                whitespace: "condense",
+            },
         });
 
         // Rewrite any bare `from 'vue'` (or `from "vue"`) import to the provided URL

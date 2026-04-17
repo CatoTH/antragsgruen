@@ -15,7 +15,7 @@ const PACKAGES = {
 // Externals and their browser-path replacements
 // ---------------------------------------------------------------------------
 const EXTERNALS = {
-    vue:        "/npm/vue.esm-browser.prod.js",
+    vue:        "/npm/vue.runtime.esm-browser.prod.js",
     sortablejs: "/npm/sortable.esm.js",
 };
 
