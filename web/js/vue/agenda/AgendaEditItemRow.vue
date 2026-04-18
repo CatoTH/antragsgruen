@@ -55,7 +55,7 @@ export default {
     speechAdminUrlTemplate = url;
   },
   props: {
-    modelValue: { type: Array },
+    modelValue: { type: Object },
     codeBase: { type: String },
     motionTypes: { type: Array },
     showTime: { type: Boolean }

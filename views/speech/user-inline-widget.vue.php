@@ -15,7 +15,7 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
 ?>
 
 <script type="module">
-    import { createApp } from '/npm/vue.esm-browser.prod.js';
+    import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import translateDirective from "/js/vue/Translate.vue.js";
     translateDirective.registerTranslation("speech", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "speech")) ?>);
@@ -32,21 +32,26 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
 
     /** @type {import('vue').App} */
     const widget = createApp({
-            template: `
-                    <speech-user-inline-widget :initQueue="initQueue" :user="user" :csrf="csrf" :title="title"></speech-user-inline-widget>`,
-            data() { return {
-                initQueue: $element.data('queue'),
-                user: $element.data('user'),
-                csrf: $("head").find("meta[name=csrf-token]").attr("content"),
-                title: $element.data('title'),
-                adminUrl: $element.data('admin-url'),
-            } }
-        });
+        render() {
+            return h(resolveComponent('speech-user-inline-widget'), {
+                initQueue: this.initQueue,
+                user: this.user,
+                csrf: this.csrf,
+                title: this.title,
+            });
+        },
+        data() { return {
+            initQueue: $element.data('queue'),
+            user: $element.data('user'),
+            csrf: $("head").find("meta[name=csrf-token]").attr("content"),
+            title: $element.data('title'),
+            adminUrl: $element.data('admin-url'),
+        } }
+    });
 
     widget.mixin(SPEECH_MIXINS);
     widget.component('speech-user-inline-widget', userInlineWidget);
     widget.directive('t', translateDirective);
 
-    widget.config.compilerOptions.whitespace = 'condense';
     widget.mount('.currentSpeechInline .currentSpeechList');
 </script>

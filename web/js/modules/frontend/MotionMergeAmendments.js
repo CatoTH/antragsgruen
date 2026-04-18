@@ -2,7 +2,7 @@
 
 import { AntragsgruenEditor } from "../shared/AntragsgruenEditor.js";
 import { MotionMergeChangeActions } from '../shared/MotionMergeChangeActions.js';
-import { createApp } from '/npm/vue.esm-browser.prod.js';
+import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
 import translateDirective from "/js/vue/Translate.vue.js";
 import ParagraphAmendmentSettings from "/js/vue/merging/ParagraphAmendmentSettings.js";
 
@@ -712,19 +712,23 @@ class MotionMergeAmendmentsParagraph {
         };
 
         para.statusWidget = createApp({
-            template: `
-                <div class="statuses">
-                    <paragraph-amendment-settings v-for="data in amendmentParagraphData"
-                                                  v-bind:amendment="data.amendment"
-                                                  v-bind:nameBase="data.nameBase"
-                                                  v-bind:idAdd="data.idAdd"
-                                                  v-bind:active="data.active"
-                                                  v-bind:status="data.status"
-                                                  v-bind:version="data.version"
-                                                  v-bind:votingData="data.votingData"
-                                                  v-on:update="update($event)"
-                    ></paragraph-amendment-settings>
-                </div>`,
+            render() {
+                const ParagraphAmendmentSettings = resolveComponent('paragraph-amendment-settings');
+                return h('div', { class: 'statuses' },
+                    this.amendmentParagraphData.map(data =>
+                        h(ParagraphAmendmentSettings, {
+                            amendment: data.amendment,
+                            nameBase: data.nameBase,
+                            idAdd: data.idAdd,
+                            active: data.active,
+                            status: data.status,
+                            version: data.version,
+                            votingData: data.votingData,
+                            onUpdate: ($event) => this.update($event),
+                        })
+                    )
+                );
+            },
             data() {
                 return { amendmentParagraphData };
             },

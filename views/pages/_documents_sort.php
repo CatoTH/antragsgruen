@@ -35,35 +35,58 @@ $documentsJs = array_map(function (\app\models\db\ConsultationFileGroup $fileGro
 </section>
 
 <script type="module">
-    import { createApp } from '/npm/vue.esm-browser.prod.js';
+    import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import vuedraggable from "/npm/vuedraggable.js";
+    const sortSaveLabel = <?= json_encode(Yii::t('voting', 'settings_sort_save')) ?>;
 
     const sortApp = createApp({
-        template: `
-                <draggable :list="documents" item-key="title" @change="onChange">
-                <template #item="{ element }">
-                    <div class="list-group-item">
-                        <input type="hidden" name="document[]" :value="element.id">
-                        <span class="glyphicon glyphicon-sort sortIndicator" aria-hidden="true"></span>
-                        {{ element.title }}
-                    </div>
-                </template>
-                </draggable>
+        render() {
+            const Draggable = resolveComponent('draggable');
 
-                <div class="saveRow">
-                <button type="submit" class="btn btn-primary btnSave" name="sortDocuments">
-                    <?= Yii::t('voting', 'settings_sort_save') ?>
-                </button>
-                </div>`,
+            return [
+                h(Draggable,
+                    {
+                        list: this.documents,
+                        itemKey: 'title',
+                        onChange: ($event) => this.onChange($event),
+                    },
+                    {
+                        item: ({ element }) =>
+                            h('div', { class: 'list-group-item' }, [
+                                h('input', {
+                                    type: 'hidden',
+                                    name: 'document[]',
+                                    value: element.id,
+                                }),
+                                h('span', {
+                                    class: 'glyphicon glyphicon-sort sortIndicator',
+                                    'aria-hidden': 'true',
+                                }),
+                                element.title,
+                            ]),
+                    }
+                ),
+
+                h('div', { class: 'saveRow' },
+                    h('button', {
+                        type: 'submit',
+                        class: 'btn btn-primary btnSave',
+                        name: 'sortDocuments',
+                    }, sortSaveLabel)
+                ),
+            ];
+        },
         data() {
             return {
                 documents: <?= json_encode($documentsJs) ?>,
             };
         },
+        methods: {
+            onChange() {}
+        },
         computed: {}
     });
     sortApp.component('draggable', vuedraggable);
-    sortApp.config.compilerOptions.whitespace = 'condense';
     sortApp.mount(document.getElementById('sortDocumentsHolder'));
 
     document.querySelector('.sortDocumentsOpener').addEventListener('click', () => {

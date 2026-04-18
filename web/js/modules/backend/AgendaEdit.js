@@ -1,6 +1,6 @@
 // @ts-check
 
-import { createApp } from '/npm/vue.esm-browser.prod.js';
+import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
 import translateDirective from "/js/vue/Translate.vue.js";
 import AgendaEditItemRow from '/js/vue/agenda/AgendaEditItemRow.js';
 import AgendaSorter from '/js/vue/agenda/AgendaSorter.js';
@@ -29,14 +29,17 @@ export class AgendaEdit {
         const csrf = document.querySelector('head meta[name=csrf-token]').getAttribute('content');
 
         this.widget = createApp({
-            template: `<div class="agendaEditHolder">
-                <agenda-edit-widget
-                    v-model="agenda"
-                    :motionTypes="motionTypes"
-                    ref="agenda-edit-widget"
-                    @saveAgenda="onSaveAgenda()"
-                ></agenda-edit-widget>
-            </div>`,
+            render() {
+                return h('div', { class: 'agendaEditHolder' },
+                    h(resolveComponent('agenda-edit-widget'), {
+                        modelValue: this.agenda,
+                        motionTypes: this.motionTypes,
+                        ref: 'agenda-edit-widget',
+                        'onUpdate:modelValue': (value) => { this.agenda = value; },
+                        onSaveAgenda: () => this.onSaveAgenda(),
+                    })
+                );
+            },
             data() {
                 return {
                     agenda,

@@ -1,6 +1,6 @@
 // @ts-check
 
-import { createApp, h } from '/npm/vue.esm-browser.prod.js';
+import { createApp, h } from '/npm/vue.runtime.esm-browser.prod.js';
 import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
@@ -125,7 +125,6 @@ export class VotingBlock {
         widget.mixin(commonsMixins);
         widget.component('vote-list', voteList);
 
-        widget.config.compilerOptions.whitespace = 'condense';
         const widgetComponent = widget.mount(vueEl);
 
         const noneIndicator = document.querySelectorAll('.votingsNoneIndicator')
