@@ -51,9 +51,9 @@ export class Theming {
                 callback: (result) => {
                     if (result) {
                         const $defaults = $('<input type="hidden" name="defaults" value="1">').attr("value", result);
-                        this.$form.append('<input type="hidden" name="resetTheme" value="1">');
-                        this.$form.append($defaults);
-                        this.$form.trigger("submit");
+                        $form.append('<input type="hidden" name="resetTheme" value="1">');
+                        $form.append($defaults);
+                        $form.trigger("submit");
                     }
                 }
             }

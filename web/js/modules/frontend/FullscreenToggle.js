@@ -1,6 +1,6 @@
 // @ts-check
 
-import { createApp, h } from '/npm/vue.esm-browser.prod.js';
+import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
 import translateDirective from "/js/vue/Translate.vue.js";
 import fullscreenProjectorComponent from "/js/vue/fullscreen/FullscreenProjector.js";
 import fullscreenIMotionComponent from "/js/vue/fullscreen/FullscreenIMotion.js";
@@ -102,13 +102,18 @@ export class FullscreenToggle {
 
     initVueElement() {
         const widget = this;
-        let template = '<fullscreen-projector :initdata="initdata" @close="close" @changed="changed"></fullscreen-projector>';
         let initdata = {};
         if (this.element.getAttribute('data-vue-initdata')) {
             initdata = JSON.parse(this.element.getAttribute('data-vue-initdata'));
         }
         this.vueWidget = createApp({
-            template,
+            render() {
+                return h(resolveComponent('fullscreen-projector'), {
+                    initdata: this.initdata,
+                    onClose: (newUrl) => this.close(newUrl),
+                    onChanged: (newIMotion) => this.changed(newIMotion),
+                });
+            },
             data() {
                 return {
                     initdata,

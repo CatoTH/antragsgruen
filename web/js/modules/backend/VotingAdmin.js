@@ -1,6 +1,6 @@
 // @ts-check
 
-import { createApp } from '/npm/vue.esm-browser.prod.js';
+import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
 import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingAdmin from "/js/vue/voting/VotingAdmin.js";
@@ -46,31 +46,44 @@ export class VotingAdmin {
 
         /** @type {import('vue').App} */
         const widget = createApp({
-            template: `<div class="adminVotings">
-                <voting-sort-widget
-                    v-if="isSorting"
-                    :votings="votings"
-                    ref="voting-sort-widget"
-                    @sorted="onSorted"></voting-sort-widget>
-                <voting-admin-widget
-                    v-if="!isSorting"
-                    v-for="voting in votings"
-                    :key="voting.id"
-                    :voting="voting"
-                    :addableMotions="addableMotions"
-                    :alreadyAddedItems="alreadyAddedItems"
-                    :userGroups="userGroups"
-                    :voteDownloadUrl="voteDownloadUrl"
-                    @set-status="setStatus"
-                    @save-settings="saveSettings"
-                    @remove-item="removeItem"
-                    @delete-voting="deleteVoting"
-                    @add-imotion="addIMotion"
-                    @add-question="addQuestion"
-                    @set-voters-to-user-group="setVotersToUserGroup"
-                    ref="voting-admin-widget"
-                ></voting-admin-widget>
-            </div>`,
+            render() {
+                const VotingSortWidget = resolveComponent('voting-sort-widget');
+                const VotingAdminWidget = resolveComponent('voting-admin-widget');
+
+                return h('div', {class: 'adminVotings'}, [
+                    this.isSorting
+                        ? h(VotingSortWidget, {
+                            votings: this.votings,
+                            ref: 'voting-sort-widget',
+                            onSorted: (sortedIds) => this.onSorted(sortedIds),
+                        })
+                        : null,
+
+                    ...(!this.isSorting
+                            ? this.votings.map(voting =>
+                                h(VotingAdminWidget, {
+                                    key: voting.id,
+                                    voting: voting,
+                                    addableMotions: this.addableMotions,
+                                    alreadyAddedItems: this.alreadyAddedItems,
+                                    userGroups: this.userGroups,
+                                    voteDownloadUrl: this.voteDownloadUrl,
+                                    onSetStatus: (votingBlockId, newStatus) => this.setStatus(votingBlockId, newStatus),
+                                    onSaveSettings: (votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames) =>
+                                        this.saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames),
+                                    onRemoveItem: (votingBlockId, itemType, itemId) => this.removeItem(votingBlockId, itemType, itemId),
+                                    onDeleteVoting: (votingBlockId) => this.deleteVoting(votingBlockId),
+                                    onAddImotion: (votingBlockId, itemDefinition) => this.addIMotion(votingBlockId, itemDefinition),
+                                    onAddQuestion: (votingBlockId, question) => this.addQuestion(votingBlockId, question),
+                                    onSetVotersToUserGroup: (votingBlockId, userIds, newUserGroup) => this.setVotersToUserGroup(votingBlockId, userIds, newUserGroup),
+                                    ref_for: true,
+                                    ref: 'voting-admin-widget',
+                                })
+                            )
+                            : []
+                    ),
+                ]);
+            },
             data() {
                 return {
                     isSorting: false,
@@ -281,7 +294,6 @@ export class VotingAdmin {
         widget.directive('t', translateDirective);
         widget.directive('tooltip', tooltipDirective);
 
-        widget.config.compilerOptions.whitespace = 'condense';
         this.widgetComponent = widget.mount(vueEl);
 
         // Used by tests to control vue-select

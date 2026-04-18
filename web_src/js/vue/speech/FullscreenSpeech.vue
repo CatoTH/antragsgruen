@@ -8,7 +8,7 @@
         <span v-if="!activeSpeaker" class="notExisting" v-t="['speech', 'current_nobody']"></span>
       </div>
       <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
-        <template v-t="['speech', 'remaining_time', false, {}, ':']"></template>
+        <template v-t="['speech', 'remaining_time', false, {}, ': ']"></template>
         <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
         <span v-if="remainingSpeakingTime < 0" class="over" v-t="['speech', 'remaining_time_over']"></span>
       </div>
@@ -32,7 +32,7 @@
 
     <div v-if="queue">
       <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" v-t:aria-label="['speech', 'waiting_aria_1']">
-        <h2 class="green"><template  v-t="['speech', 'waiting_list', false, {}, ':']"></template> {{ queue.subqueues[0].num_applied }}</h2>
+        <h2 class="green"><template  v-t="['speech', 'waiting_list', false, {}, ': ']"></template> {{ queue.subqueues[0].num_applied }}</h2>
 
         <ol class="nameList" v-if="queue.subqueues[0].applied && queue.subqueues[0].applied.length > 0" v-t:title="['speech', 'persons_waiting']">
           <li v-for="applied in queue.subqueues[0].applied">

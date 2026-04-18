@@ -93,7 +93,7 @@
               <input type="text" class="form-control inputOrganization" v-model="organization">
             </div>
             <div class="rightColumn" v-if="permissionGlobalEdit && organisations.length > 0">
-              <v-selectize @change="setOrganisation($event)" :options="organisationSelect" :values="[organization]" create="true"></v-selectize>
+              <v-selectize @change="setOrganisation($event)" :options="organisationSelect" :values="[organization]" :create="true"></v-selectize>
             </div>
           </div>
           <div class="stdTwoCols">

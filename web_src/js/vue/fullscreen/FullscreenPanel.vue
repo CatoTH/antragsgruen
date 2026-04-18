@@ -151,7 +151,6 @@ export default {
           foundPage = page;
         }
       });
-      console.log(foundPage);
       if (foundPage) {
         this.loadPage(foundPage.url_json);
       } else {

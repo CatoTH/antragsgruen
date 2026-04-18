@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /**
  * @var \app\models\db\Consultation $consultation
  * @var string $init_page
- * @var string $init_content_url
+ * @var string|null $init_content_url
  */
 
 $fullscreenInitData = json_encode([

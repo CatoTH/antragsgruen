@@ -38,7 +38,7 @@ $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 $I->seeBootboxDialog('Das Passwort muss mindestens 8 Zeichen lang sein.');
 $I->acceptBootboxAlert();
 
-$I->fillField('#passwordInput', 'newuser');
+$I->fillField('#passwordInput', 'newuser1');
 $I->fillField('#passwordConfirm', 'newuser2');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 $I->seeBootboxDialog('Die beiden Passwörter stimmen nicht überein');

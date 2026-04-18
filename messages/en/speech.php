@@ -224,7 +224,10 @@ return [
         'text' => 'Start proposal',
         'js' => true,
     ],
-    'admin_proposal_nobody'  => 'No proposal',
+    'admin_proposal_nobody'  => [
+        'text' => 'No proposal',
+        'js' => true,
+    ],
     'admin_randomize_queues' => [
         'text' => 'Randomize waiting list',
         'js' => true,

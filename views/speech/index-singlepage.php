@@ -35,15 +35,11 @@ if ($queue->motionId && $queue->motion) {
 }
 
 if (User::getCurrentUser()) {
-    $fullscreenInitData = json_encode([
-        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
-        'init_page' => 'speech'
+    $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
+        'init_page' => 'speech',
+        'init_content_url' => null,
+        'consultation' => $consultation,
     ]);
-    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-    </button>';
 } else {
     $fullscreenButton = '';
 }

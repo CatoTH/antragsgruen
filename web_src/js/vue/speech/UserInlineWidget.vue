@@ -3,19 +3,19 @@
         <div class="activeSpeaker">
             <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>
             <span v-if="activeSpeaker" class="existing">
-                <template v-t="['speech', 'current', false, {}, ':']"></template>
+                <template v-t="['speech', 'current', false, {}, ': ']"></template>
                 <span class="name" v-html="formatUsernameHtml(activeSpeaker)"></span>
             </span>
             <span v-if="!activeSpeaker" class="notExisting" v-t="['speech', 'current_nobody']"></span>
         </div>
         <div class="remainingTime" v-if="activeSpeaker && hasSpeakingTime && remainingSpeakingTime !== null">
-            <template v-t="['speech', 'remaining_time', false, {}, ':']"></template>
+            <template v-t="['speech', 'remaining_time', false, {}, ': ']"></template>
             <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
             <span v-if="remainingSpeakingTime < 0" class="over" v-t="['speech', 'remaining_time_over']"></span>
         </div>
         <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            <template v-t="['speech', 'next_speaker', false, {}, ':']"></template>
+            <template v-t="['speech', 'next_speaker', false, {}, ': ']"></template>
             <ul class="upcomingSpeakerList">
                 <li v-for="speaker in upcomingSpeakers">
                     <span class="name" v-html="formatUsernameHtml(speaker)"></span><!-- Fight unwanted whitespace
@@ -33,7 +33,7 @@
         <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" v-t:aria-label="['speech', 'waiting_aria_1']">
             <header>
                 <span class="glyphicon glyphicon-time leftIcon" aria-hidden="true"></span>
-                <template v-t="['speech', 'waiting_list', false, {}, ':']"></template>
+                <template v-t="['speech', 'waiting_list', false, {}, ': ']"></template>
 
                 <span class="number" v-t:title="['speech', 'persons_waiting']">
                     {{ queue.subqueues[0].num_applied }}

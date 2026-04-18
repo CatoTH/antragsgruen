@@ -64,9 +64,9 @@
                       <span class="sr-only" v-t="['base', 'aria_remove']"></span>
                     </button>
                     <dl>
-                      <dt v-t="['admin', 'siteacc_priv_rest_privs', false, {}, ':']"></dt>
+                      <dt v-t="['admin', 'siteacc_priv_rest_privs', false, {}, ': ']"></dt>
                       <dd>{{ formatPrivilegeIdList(priv.privileges) }}</dd>
-                      <dt v-t="['admin', 'siteacc_priv_rest_for', false, {}, ':']"></dt>
+                      <dt v-t="['admin', 'siteacc_priv_rest_for', false, {}, ': ']"></dt>
                       <dd v-if="priv.motionType">{{ priv.motionType.title }}</dd>
                       <dd v-if="priv.tag">{{ priv.tag.title }}</dd>
                       <dd v-if="priv.agendaItem">{{ priv.agendaItem.title }}</dd>

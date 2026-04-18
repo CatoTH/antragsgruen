@@ -76,7 +76,7 @@
     <main class="content">
       <section class="previousSpeakers" :class="{previousShown: showPreviousList, invisible: !hasPreviousSpeakers}">
         <header>
-          <template v-t="['speech', 'admin_prev_speakers', false, {}, ':']"></template>
+          <template v-t="['speech', 'admin_prev_speakers', false, {}, ': ']"></template>
           {{ previousSpeakers.length }}
 
           <button class="btn btn-link" type="button" @click="showPreviousList = true" v-if="!showPreviousList">
@@ -109,7 +109,7 @@
           <div class="name" v-html="formatUsernameHtml(activeSlot)"></div>
 
           <div class="remainingTime" v-if="hasSpeakingTime && remainingSpeakingTime !== null">
-            <template v-t="['speech', 'remaining_time', false, {}, ':']"></template>
+            <template v-t="['speech', 'remaining_time', false, {}, ': ']"></template>
             <span v-if="remainingSpeakingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
             <span v-if="remainingSpeakingTime < 0" class="over" v-t="['speech', 'remaining_time_over']"></span>
           </div>

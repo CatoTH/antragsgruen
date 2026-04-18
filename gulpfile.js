@@ -163,12 +163,12 @@ function taskWatch() {
     gulp.watch(["web/css/*.scss"], {usePolling: true}, gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], {usePolling: true}, taskBuildPluginCss);
     gulp.watch(["assets/html2pdf/*.scss"], {usePolling: true}, taskBuildHtml2PdfCss);
-    gulp.watch(['web/js/vue/**/*.vue'], taskCompileVue);
+    gulp.watch(['web_src/js/vue/**/*.vue'], taskCompileVue);
 }
 
 function taskCompileVue() {
     return gulp
-        .src('web/js/vue/**/*.vue')
+        .src('web_src/js/vue/**/*.vue')
         .pipe(createVueTransform('/npm/vue.runtime.esm-browser.prod.js'))
         .pipe(terser())
         .pipe(gulp.dest('web/js/vue/'));

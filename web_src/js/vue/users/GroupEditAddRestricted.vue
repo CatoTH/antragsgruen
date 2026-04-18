@@ -7,7 +7,7 @@
       </header>
       <main class="modal-body restrictedAddingForm">
         <div class="restrictedPermissions"><br>
-          <strong v-t="['admin', 'siteacc_priv_rest_privs', false, {}, ':']"></strong>
+          <strong v-t="['admin', 'siteacc_priv_rest_privs', false, {}, ': ']"></strong>
           <label v-for="priv in allPrivilegesMotion" :class="'privilege' + priv.id">
             <input type="checkbox" :checked="isPrivilegeSet(priv.id)" @click="togglePrivilege(priv.id)">
             <span v-if="isDependentPrivilege(priv.id)">↳ </span>
@@ -17,7 +17,7 @@
 
         <div class="restrictedTo">
           <div class="verticalLabels">
-            <strong v-t="['admin', 'siteacc_priv_rest_type', false, {}, ':']"></strong><br>
+            <strong v-t="['admin', 'siteacc_priv_rest_type', false, {}, ': ']"></strong><br>
             <label class="motionType">
               <input type="radio" v-model="restrictToType" value="motionType">
               <template v-t="['admin', 'siteacc_priv_rest_mtype']"></template>

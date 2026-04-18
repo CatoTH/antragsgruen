@@ -80,7 +80,7 @@
     </button>
     <form @submit="addGroupSubmit($event)" class="addGroupForm" v-if="creatingGroups">
       <label class="addGroupName">
-        <template v-t="['admin', 'siteacc_groups_add_name', false, {}, ':']"></template><br>
+        <template v-t="['admin', 'siteacc_groups_add_name', false, {}, ': ']"></template><br>
         <input type="text" v-model="addGroupName" class="form-control" ref="addGroupName" v-focus required>
       </label>
       <div class="actions">

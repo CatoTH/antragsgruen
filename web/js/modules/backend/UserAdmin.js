@@ -1,6 +1,6 @@
 // @ts-check
 
-import { createApp } from '/npm/vue.esm-browser.prod.js';
+import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
 import translateDirective from "/js/vue/Translate.vue.js";
 import tooltipDirective from '/js/vue/Tooltip.vue.js';
 import focusDirective from '/js/vue/Focus.vue.js';
@@ -42,47 +42,56 @@ export class UserAdmin {
         let userWidgetComponent;
 
         this.widget = createApp({
-            template: `<div class="adminUsers">
-                <user-edit-widget
-                    :groups="groups"
-                    :organisations="organisations"
-                    :permissionGlobalEdit="permissionGlobalEdit"
-                    :urlUserLog="urlUserLog"
-                    @save-user="saveUser"
-                    @delete-user="deleteUser"
-                    ref="user-edit-widget"
-                ></user-edit-widget>
-                <group-edit-widget
-                    :urlGroupLog="urlGroupLog"
-                    :allPrivilegesGeneral="nonMotionPrivileges"
-                    :allPrivilegesMotion="motionPrivileges"
-                    :allPrivilegeDependencies="privilegeDependencies"
-                    :allMotionTypes="motionTypes"
-                    :allTags="tags"
-                    :allAgendaItems="agendaItems"
-                    @save-group="saveGroup"
-                    ref="group-edit-widget"
-                ></group-edit-widget>
-                <organisation-edit-widget
-                    :organisations="organisations"
-                    :groups="groups"
-                    ref="organisation-edit-widget"
-                ></organisation-edit-widget>
-                <user-admin-widget
-                    :users="users"
-                    :groups="groups"
-                    :allPrivilegesGeneral="nonMotionPrivileges"
-                    :allPrivilegesMotion="motionPrivileges"
-                    @remove-user="removeUser"
-                    @edit-user="editUser"
-                    @save-user="saveUser"
-                    @create-group="createGroup"
-                    @edit-group="editGroup"
-                    @remove-group="removeUserGroup"
-                    @edit-organisations="editOrganisations"
-                    ref="user-admin-widget"
-                ></user-admin-widget>
-            </div>`,
+            render() {
+                const UserEditWidget = resolveComponent('user-edit-widget');
+                const GroupEditWidget = resolveComponent('group-edit-widget');
+                const OrganisationEditWidget = resolveComponent('organisation-edit-widget');
+                const UserAdminWidget = resolveComponent('user-admin-widget');
+
+                return h('div', { class: 'adminUsers' }, [
+                    h(UserEditWidget, {
+                        groups: this.groups,
+                        organisations: this.organisations,
+                        permissionGlobalEdit: this.permissionGlobalEdit,
+                        urlUserLog: this.urlUserLog,
+                        onSaveUser: (userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange) =>
+                            this.saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange),
+                        onDeleteUser: (userId, msg) => this.deleteUser(userId, msg),
+                        ref: 'user-edit-widget',
+                    }),
+                    h(GroupEditWidget, {
+                        urlGroupLog: this.urlGroupLog,
+                        allPrivilegesGeneral: this.nonMotionPrivileges,
+                        allPrivilegesMotion: this.motionPrivileges,
+                        allPrivilegeDependencies: this.privilegeDependencies,
+                        allMotionTypes: this.motionTypes,
+                        allTags: this.tags,
+                        allAgendaItems: this.agendaItems,
+                        onSaveGroup: (groupId, groupTitle, privilegeList) => this.saveGroup(groupId, groupTitle, privilegeList),
+                        ref: 'group-edit-widget',
+                    }),
+                    h(OrganisationEditWidget, {
+                        organisations: this.organisations,
+                        groups: this.groups,
+                        ref: 'organisation-edit-widget',
+                    }),
+                    h(UserAdminWidget, {
+                        users: this.users,
+                        groups: this.groups,
+                        allPrivilegesGeneral: this.nonMotionPrivileges,
+                        allPrivilegesMotion: this.motionPrivileges,
+                        onRemoveUser: (user) => this.removeUser(user),
+                        onEditUser: (user) => this.editUser(user),
+                        onSaveUser: (userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange) =>
+                            this.saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange),
+                        onCreateGroup: (groupName) => this.createGroup(groupName),
+                        onEditGroup: (group) => this.editGroup(group),
+                        onRemoveGroup: (group) => this.removeUserGroup(group),
+                        onEditOrganisations: () => this.editOrganisations(),
+                        ref: 'user-admin-widget',
+                    }),
+                ]);
+            },
             data() {
                 return {
                     usersJson: null,

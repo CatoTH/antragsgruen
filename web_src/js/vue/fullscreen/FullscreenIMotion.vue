@@ -74,6 +74,7 @@
 <script>
 export default {
   props: ['imotion'],
+  emits: ['pagination-change'],
   computed: {
     isTwoColumnLayout: function () {
       return this.imotion.sections && this.imotion.sections.find(section => {

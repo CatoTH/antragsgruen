@@ -14,7 +14,7 @@
       </div>
       <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-        <template v-t="['speech', 'next_speaker', false, {}, ':']"></template>
+        <template v-t="['speech', 'next_speaker', false, {}, ': ']"></template>
         <ul class="upcomingSpeakerList">
           <li v-for="speaker in upcomingSpeakers">
             <span class="name" v-html="formatUsernameHtml(speaker)"></span><!-- Fight unwanted whitespace

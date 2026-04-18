@@ -9,7 +9,7 @@
 
     <div class="activeSpeaker">
       <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-      <span class="title" v-t="['speech', 'footer_current', false, {}, ':']">:</span>
+      <span class="title" v-t="['speech', 'footer_current', false, {}, ': ']"></span>
       <span class="name" v-if="activeSpeaker">
             <span v-html="formatUsernameHtml(activeSpeaker)"></span>
             <span class="label label-success" v-if="isMe(activeSpeaker)" v-t="['speech', 'you']"></span>
@@ -22,7 +22,7 @@
     </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
       <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-      <template v-t="['speech', 'next_speaker', false, {}, ':']"></template>
+      <template v-t="['speech', 'next_speaker', false, {}, ': ']"></template>
       <ul class="upcomingSpeakerList">
         <li v-for="speaker in upcomingSpeakers">
           <span class="name" v-html="formatUsernameHtml(speaker)"></span><!-- Fight unwanted whitespace

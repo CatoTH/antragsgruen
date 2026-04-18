@@ -3,6 +3,7 @@
 ## Version 4.17.0 [not released yet]
 
 - WARNING: if you are using a PHP 8.1 or older, then update to PHP 8.2 or newer first before installing this update!
+- The JavaScript-based frontend components were rewritten to make use or more modern and standardized technologies (ECMAScript Modules, compiled Vue modules).
 - Configuring Antragsgrün via environment variables is now supported, allowing for easier deployment in Docker- and Kubernetes-environments.
 - It is now easier possible to integrate OpenTelemetry into Antragsgrün.
 
