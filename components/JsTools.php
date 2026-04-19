@@ -27,27 +27,27 @@ class JsTools
 
         return $cache->getCached(function() {
             $app = AntragsgruenApp::getInstance();
+            $basePathBase = '/js/';
             $publicPathBase = $app->resourceBase . 'js/';
+            $nonRootResourcePath = ($app->resourceBase !== '/');
 
             $map = [];
             if (YII_DEBUG) {
-                $map['/npm/vue.runtime.esm-browser.prod.js'] = '/npm/vue.runtime.esm-browser.js';
+                $map['/npm/vue.runtime.esm-browser.prod.js'] = $app->resourceBase . 'npm/vue.runtime.esm-browser.js';
+            } elseif ($nonRootResourcePath) {
+                $map['/npm/vue.runtime.esm-browser.prod.js'] = $app->resourceBase . 'npm/vue.runtime.esm-browser.prod.js';
             }
+
             $finder = new Finder();
             $finder->files()->in([self::JS_PATH, self::VUE_PATH])->name('*.js');
             foreach ($finder as $file) {
                 $lastModified = time() - $file->getMTime();
-                if ($lastModified > self::INVALIDATE_MAX_HOURS * 3600) {
+                if ($lastModified > self::INVALIDATE_MAX_HOURS * 3600 && !$nonRootResourcePath) {
                     continue;
                 }
 
-                $path = basename($file->getPath());
-                if ($path === "vue") {
-                    $publicUrl = $publicPathBase . $path . '/' . $file->getFilename();
-                } else {
-                    $publicUrl = $publicPathBase . "modules/" . $path . '/' . $file->getFilename();
-                }
-                $map[$publicUrl] = $publicUrl . '?ts=' . $file->getMTime();
+                $url = explode($basePathBase, $file->getPath())[1] . '/' . $file->getFilename();
+                $map[$basePathBase . $url] = $publicPathBase . $url . '?ts=' . $file->getMTime();
             }
 
             if (count($map) === 0) {
