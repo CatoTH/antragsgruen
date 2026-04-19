@@ -27,8 +27,7 @@ if [[ ! -d ./local/antragsgruen-$ANTRAGSGRUEN_VERSION ]]; then
 fi
 
 npm ci
-npx gulp
-npx rollup -c assets/rollup.js
+npm run build
 
 rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 

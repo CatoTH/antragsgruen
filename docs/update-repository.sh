@@ -31,8 +31,8 @@ if echo "$GIT_OUTPUT" | grep -q "Already up to date"; then
     echo "No incoming changes. Skipping composer/npm install."
 else
   composer install
-  npx ci
-  npx gulp
+  npm ci
+  npm run build
 fi
 
 # Update Antragsgrün Migrations

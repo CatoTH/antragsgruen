@@ -371,9 +371,9 @@ Developing
 
 ### Technical considerations
 
-- PHP version support: Antragsgrün supports PHP versions until its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.1 is supported until end 2025, the first major version of Antragsgrün of 2026 will drop support for PHP 8.1).
+- PHP version support: Antragsgrün supports PHP versions until its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.2 is supported until end 2026, the first major version of Antragsgrün of 2027 will drop support for PHP 8.2).
 - PHP Framework: [Yii2](https://www.yiiframework.com/) is used. While it would not be the framework of choice for a fresh start anymore, it works sufficiently well since its introduction in 2015 and is still supported, so there is no plan to migrate to Symfony of Laravel yet.
-- JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though written in TypeScript and loaded via [RequireJS](https://requirejs.org/). For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
+- JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though gradually replaced by standard JavaScript. ECMAScript Modules are used as module system. For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
 - REST API: The API is documented below. There will be more development regarding the REST API, including authorized endpoints using JWT based authentication.
 
 ### Running with Docker Compose
@@ -408,7 +408,7 @@ Installing dependencies:
 docker exec antragsgruen-node-helper-1 npm ci
 ```
 
-To run the watcher that compiles SCSS and TypeScript files, use:
+To run the watcher that compiles SCSS and Vue.JS files, use:
 ```shell
 docker-compose -f docker-compose.development.yml --profile node-helper --profile gulp-watch up
 ```
