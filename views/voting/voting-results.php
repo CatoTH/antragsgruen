@@ -1,8 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\User;
-use app\models\layoutHooks\Layout;
+use app\models\db\{Consultation, User};
 use app\models\proposedProcedure\Factory;
 use yii\helpers\Html;
 
@@ -21,18 +20,13 @@ $this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT,
 $sidebarMode = 'results';
 include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
-$layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
-Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
-
 $apiData = [];
 foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserResultsApiObject(User::getCurrentUser());
 }
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-closed-voting-blocks']);
+$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
         data-antragsgruen-widget="frontend/FullscreenToggle">
@@ -54,8 +48,17 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
     </div>
 </div>
 
-<section data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
+<section class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"
 >
     <div class="currentVoting"></div>
 </section>
+
+<script type="module">
+    import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
+    new VotingBlock(
+        document.querySelector(".currentVotingWidget"),
+        <?= json_encode($CONSTANTS) ?>,
+        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+    );
+</script>

@@ -28,6 +28,12 @@ $layout->loadSelectize();
 $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
+?>
+    <script type="module">
+        import { ProposedProcedureOverview } from "/js/modules/backend/ProposedProcedureOverview.js";
+        new ProposedProcedureOverview(document.querySelector(".proposedProcedureReloadHolder"));
+    </script>
+<?php
 
 $reloadOptions = ['admin/proposed-procedure/index-ajax', 'minimal' => ($minimal ? 1 : 0)];
 if ($expandId) {
@@ -39,7 +45,6 @@ if ($tagId) {
 $reloadUrl = UrlHelper::createUrl($reloadOptions);
 echo Html::beginForm('', 'post', [
     'class'                    => 'proposedProcedureReloadHolder',
-    'data-antragsgruen-widget' => 'backend/ProposedProcedureOverview',
     'data-reload-url'          => $reloadUrl,
 ]);
 ?>
@@ -52,6 +57,10 @@ echo Html::beginForm('', 'post', [
         </div>
         <div class="right">
             <?= $this->render('_switch_dropdown') ?>
+            <script type="module">
+                import { ProposedProcedureExport } from "/js/modules/backend/ProposedProcedureExport.js";
+                new ProposedProcedureExport(document.querySelector(".exportProcedureDd"));
+            </script>
             <?= $this->render('_functions_dropdown') ?>
             <div class="autoUpdateWidget">
                 <label class="sr-only" for="autoUpdateToggle"></label>

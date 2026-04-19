@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\User;
@@ -21,9 +22,6 @@ $layout = $controller->layoutParams;
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/speech/user-footer-widget.vue.php');
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('user', 'speech');
 
@@ -36,13 +34,15 @@ if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUE
     $adminUrl = '';
 }
 
+echo $this->render('@app/views/speech/user-footer-widget.vue.php');
 ?>
-<section aria-labelledby="speechListUserTitle"
-         data-antragsgruen-widget="frontend/CurrentSpeechList" class="currentSpeechFooter"
+<section class="currentSpeechFooter"
+         aria-labelledby="speechListUserTitle"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitleShort()) ?>"
          data-admin-url="<?= Html::encode($adminUrl) ?>"
+         data-login-url="<?= Html::encode(UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url])) ?>"
 >
     <div class="hidden" id="speechListUserTitle"><?= Html::encode($queue->getTitle()) ?></div>
     <div class="currentSpeechList"></div>

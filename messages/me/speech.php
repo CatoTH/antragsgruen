@@ -49,7 +49,7 @@ return [
     'admin_is_inactive' => 'Neaktivna lista', // Original: List inactive
     'admin_activate' => 'Aktiviraj', // Original: Activate
     'admin_deactivate' => 'Deaktiviraj', // Original: Deactivate
-    'admin_deactivate_other' => 'deaktivira druge liste', // Original: deactivates other lists
+    'admin_deactivate_other' => '(deaktivira druge liste)', // Original: deactivates other lists
     'admin_setting_open' => 'Otvoreno za prijavu', // Original: Open to apply
     'admin_setting_open_poo' => 'Otvoren za zahtjeve za uspostavljanje reda', // Original: Open to Points of Orders
     'admin_prefer_nonspeak' => 'Preferiraj osobe koje još nisu razgovarale', // Original: Prefer persons who haven\\'t talked yet
@@ -82,4 +82,3 @@ return [
     'fullscreen_title_s' => 'lista govornika', // Original: Speaking list
     'fullscreen_title_p' => 'Liste govornika', // Original: Speaking lists
 ];
- 

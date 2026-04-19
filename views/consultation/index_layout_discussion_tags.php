@@ -23,8 +23,13 @@ if (!$showPrefix) {
         return $motion2->getTimestamp() <=> $motion1->getTimestamp();
     });
 }
-
-echo '<section class="consultationDiscussionTags" data-antragsgruen-widget="frontend/ConsultationDiscussionTags">';
+?>
+<script type="module">
+    import { ConsultationDiscussionTags } from "/js/modules/frontend/ConsultationDiscussionTags.js";
+    new ConsultationDiscussionTags(document.querySelector('.consultationDiscussionTags'));
+</script>
+<section class="consultationDiscussionTags">
+<?php
 
 $comments = \app\models\db\IComment::getNewestForConsultations([$consultation], 10);
 if (count($comments) > 0) {
@@ -195,6 +200,4 @@ if (count($comments) > 0) {
             ?>
         </div>
     </section>
-
-<?php
-echo '</section>';
+</section>

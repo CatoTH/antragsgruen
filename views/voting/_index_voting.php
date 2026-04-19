@@ -1,7 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{Motion, User};
+use app\models\settings\Privileges;
+use app\models\db\{Consultation, Motion, User};
 use app\models\proposedProcedure\Factory;
 use yii\helpers\Html;
 
@@ -12,6 +13,7 @@ use yii\helpers\Html;
 
 $controller = $this->context;
 $consultation = $controller->consultation;
+$user = User::getCurrentUser();
 $layout = $controller->layoutParams;
 
 if (!User::getCurrentUser()) {
@@ -24,26 +26,36 @@ if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consu
     return;
 }
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
-$layout->addVueTemplate('@app/views/voting/voting-block.vue.php');
-
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
 }
 
+$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 $assignedToMotionId = ($assignedToMotion ? $assignedToMotion->id : '');
-$pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => $assignedToMotionId, 'showAllOpen' => 0]);
-$voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => $assignedToMotionId]);
+$pollUrl  = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => $assignedToMotionId, 'showAllOpen' => 0]);
+$voteUrl  = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => $assignedToMotionId]);
+$iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null));
+if ($iAmAdmin) {
+    $adminLink = UrlHelper::createUrl(['/consultation/admin-votings']);
+} else {
+    $adminLink = '';
+}
 ?>
 <section data-url-poll="<?= Html::encode($pollUrl) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
-         data-show-admin-link="true"
-         data-antragsgruen-widget="frontend/VotingBlock" class="currentVotingWidget votingCommon"
+         data-admin-link="<?= Html::encode($adminLink) ?>"
+         class="currentVotingWidget votingCommon"
          data-voting="<?= Html::encode(json_encode($apiData)) ?>"
 >
     <div class="currentVoting"></div>
 </section>
 
+<script type="module">
+    import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
+    new VotingBlock(
+        document.querySelector(".currentVotingWidget"),
+        <?= json_encode($CONSTANTS) ?>,
+        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+    );
+</script>

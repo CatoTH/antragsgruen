@@ -15,7 +15,6 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->loadCKEditor();
-$layout->addAMDModule('frontend/MergeSingleAmendment');
 $layout->addCSS('css/formwizard.css');
 
 $motion    = $amendment->getMyMotion();
@@ -37,11 +36,15 @@ foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollisionDetection([
 }
 $needsCollisionCheck = (count($otherAmendments) > 0);
 
-echo '<h1>' . Html::encode($this->title) . '</h1>';
-
-echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm']);
-
 ?>
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <script type="module">
+        import { MergeSingleAmendment } from "/js/modules/frontend/MergeSingleAmendment.js";
+        new MergeSingleAmendment();
+    </script>
+    <?= Html::beginForm('', 'post', ['id' => 'amendmentMergeForm']) ?>
+
     <div id="MergeSingleWizard" class="wizardWidget">
         <ul class="steps">
             <li data-target="#step1" class="goto_step1">

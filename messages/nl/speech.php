@@ -53,7 +53,7 @@ return [
     'admin_is_inactive'      => 'Inactieve lijst',
     'admin_activate'         => 'Activeer',
     'admin_deactivate'       => 'Deactiveer',
-    'admin_deactivate_other' => 'deactiveert andere lijsten',
+    'admin_deactivate_other' => '(deactiveert andere lijsten)',
     'admin_setting_open'     => 'Open om in te dienen',
     'admin_setting_open_poo' => 'Open Punten van Orde',
     'admin_prefer_nonspeak'  => 'Geef voorrang aan personen die nog niet gesproken hebben',

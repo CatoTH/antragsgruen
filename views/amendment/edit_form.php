@@ -86,12 +86,17 @@ echo '<div id="draftHint" class="hidden alert alert-info"
 
 </div>';
 
+?>
+<script type="module">
+    import { AmendmentEdit } from '/js/modules/frontend/AmendmentEdit.js';
+    new AmendmentEdit(document.getElementById("amendmentEditForm"));
+</script>
+<?php
 
 echo Html::beginForm('', 'post', [
     'id'                        => 'amendmentEditForm',
     'class'                     => 'motionEditForm draftForm',
     'enctype'                   => 'multipart/form-data',
-    'data-antragsgruen-widget'  => 'frontend/AmendmentEdit',
     'data-multi-paragraph-mode' => $motionType->amendmentMultipleParagraphs,
     'data-init-section-id'      => $form->initSectionId,
     'data-init-paragraph-no'    => $form->initParagraphNo,

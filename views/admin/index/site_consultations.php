@@ -20,7 +20,6 @@ $this->title = 'Veranstaltungen verwalten';
 $layout->addCSS('css/formwizard.css');
 $layout->addCSS('css/manager.css');
 $layout->addCSS('css/backend.css');
-$layout->addAMDModule('backend/ConsultationCreate');
 $layout->loadDatepicker();
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'cons_breadcrumb'));
@@ -85,6 +84,11 @@ echo Html::beginForm('', 'post', ['class' => 'consultationCreateForm']);
 
 $textOpts = ['required' => 'required', 'class' => 'form-control'];
 ?>
+<script type="module">
+    import { ConsultationCreate } from "/js/modules/backend/ConsultationCreate.js";
+    new ConsultationCreate();
+</script>
+
 <h2 class="green"><?= Yii::t('admin', 'cons_create') ?></h2>
 
 <div class="content">

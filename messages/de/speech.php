@@ -53,7 +53,7 @@ return [
     'admin_is_inactive'      => 'Redeliste inaktiv',
     'admin_activate'         => 'Aktivieren',
     'admin_deactivate'       => 'Deaktivieren',
-    'admin_deactivate_other' => 'Deaktiviert andere Redelisten',
+    'admin_deactivate_other' => '(Deaktiviert andere Redelisten)',
     'admin_setting_open'     => 'Bewerbungen möglich',
     'admin_setting_open_poo' => 'Geschätsordnungsanträge möglich',
     'admin_prefer_nonspeak'  => 'Personen bevorzugen, die noch nicht sprachen',

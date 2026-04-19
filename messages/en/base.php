@@ -4,9 +4,22 @@ return [
     'Help'                  => 'Help',
     'Today'                 => 'Today',
     'Yesterday'             => 'Yesterday',
-    'save'                  => 'Save',
-    'saved'                 => 'Saved.',
-    'abort'                 => 'Cancel',
+    'save'                  => [
+        'text' => 'Save',
+        'js' => true,
+    ],
+    'saved' => [
+        'text' => 'Saved.',
+        'js' => true,
+    ],
+    'saving' => [
+        'text' => 'Saving',
+        'js' => true,
+    ],
+    'abort'                 => [
+        'text' => 'Abort',
+        'js' => true,
+    ],
     'edit'                  => 'Edit',
     'Home'                  => 'Home',
     'home_back'             => 'Back to home',
@@ -22,7 +35,10 @@ return [
     'menu_documents'        => 'Documents',
     'menu_votings'          => 'Votings',
     'goto_main_content'     => 'Skip to main content',
-    'toggle_dropdown'       => 'Open selection',
+    'toggle_dropdown'       => [
+        'text' => 'Open selection',
+        'js' => true,
+    ],
     'privacy_statement'     => 'Privacy',
     'imprint'               => 'Imprint',
     'err_email_not_sent'    => 'An e-mail could not be sent',
@@ -68,6 +84,12 @@ return [
     'aria_error'        => 'Error',
     'aria_info'         => 'Info',
     'aria_success'      => 'Success',
-    'aria_close'        => 'Close',
-    'aria_remove'       => 'Remove',
+    'aria_close'        => [
+        'text' => 'Close',
+        'js' => true,
+    ],
+    'aria_remove'       => [
+        'text' => 'Remove',
+        'js' => true,
+    ],
 ];

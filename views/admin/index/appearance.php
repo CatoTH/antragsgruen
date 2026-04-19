@@ -31,12 +31,15 @@ $boolSettingRow = function (ConsultationSettings $settings, string $field, array
 };
 
 ?><h1><?= Yii::t('admin', 'con_h1') ?></h1>
+    <script type="module">
+        import { AppearanceEdit } from '/js/modules/backend/AppearanceEdit.js';
+        new AppearanceEdit(document.getElementById('consultationAppearanceForm'));
+    </script>
 <?php
 echo Html::beginForm('', 'post', [
     'id'                       => 'consultationAppearanceForm',
     'class'                    => 'adminForm',
     'enctype'                  => 'multipart/form-data',
-    'data-antragsgruen-widget' => 'backend/AppearanceEdit',
 ]);
 
 echo $controller->showErrors();

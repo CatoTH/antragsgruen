@@ -38,7 +38,7 @@ foreach ($myAmendmentComments as $comment) {
     }
 }
 
-echo '<div class="hidden privateCommentList" data-antragsgruen-widget="frontend/MotionListPrivateComments">';
+echo '<div class="hidden privateCommentList">';
 foreach ($motionComments as $motionId => $commentTexts) {
     $tooltip = Html::encode(implode(" - ", $commentTexts));
 
@@ -59,3 +59,8 @@ foreach ($amendmentComments as $amendmentId => $commentTexts) {
     echo '</a>';
 }
 echo '</div>';
+?>
+<script type="module">
+    import { MotionListPrivateComments } from "/js/modules/frontend/MotionListPrivateComments.js";
+    MotionListPrivateComments(document.querySelector(".privateCommentList"));
+</script>

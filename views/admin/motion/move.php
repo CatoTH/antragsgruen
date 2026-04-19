@@ -27,7 +27,6 @@ echo '<h1>' . Yii::t('admin', 'motion_move_title') . '</h1>';
 
 $myUrl = UrlHelper::createUrl(['admin/motion/move', 'motionId' => $motion->id]);
 echo Html::beginForm($myUrl, 'post', [
-    'data-antragsgruen-widget' => 'backend/MoveMotion',
     'data-check-backend'       => UrlHelper::createUrl(['/admin/motion/move-check', 'motionId' => $motion->id]),
     'class'                    => 'adminMoveForm form-horizontal',
 ]);
@@ -35,6 +34,10 @@ echo Html::beginForm($myUrl, 'post', [
 $targetConsultations = $form->getConsultationTargets();
 
 ?>
+    <script type="module">
+        import {MotionMove} from "/js/modules/backend/MotionMove.js";
+        new MotionMove(document.querySelector(".adminMoveForm"));
+    </script>
     <div class="content">
 
         <div class="stdTwoCols">

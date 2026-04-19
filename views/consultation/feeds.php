@@ -43,11 +43,17 @@ foreach ($consultation->motionTypes as $type) {
 <div class="content contentPage contentPageFeeds">
     <?php
     if ($admin) {
+        ?>
+        <script type="module">
+            import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
+            new ContentPageEdit(document.getElementById('stdTextForm'));
+        </script>
+        <?php
         $saveUrl = $pageData->getSaveUrl();
         echo Html::beginForm($saveUrl, 'post', [
+            'id'                       => 'stdTextForm',
             'data-upload-url'          => $pageData->getUploadUrl(),
             'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
-            'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
             'data-text-selector'       => '#stdTextHolder',
             'data-save-selector'       => '.textSaver',
             'data-edit-selector'       => '.editCaller',

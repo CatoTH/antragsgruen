@@ -36,18 +36,11 @@ if ($pageData->textId === ConsultationText::DEFAULT_PAGE_WELCOME) {
 }
 
 if (User::getCurrentUser() && $pageData->isCustomPage()) {
-    $layout->loadVue();
-    $layout->addFullscreenTemplates();
-    $fullscreenInitData = json_encode([
-        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+    $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'page-' . $pageData->id,
         'init_content_url' => UrlHelper::absolutizeLink($pageData->getJsonUrl()),
+        'consultation' => $consultation,
     ]);
-    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-    </button>';
 } else {
     $fullscreenButton = '';
 }
@@ -57,6 +50,12 @@ echo '<div class="primaryHeader"><h1 class="pageTitle">' . Html::encode($pageDat
 if ($admin) {
     $layout->loadCKEditor();
     $layout->loadSelectize();
+    ?>
+    <script type="module">
+        import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
+        new ContentPageEdit(document.querySelector(".contentEditForm"));
+    </script>
+    <?php
 
     echo Html::beginForm($saveUrl, 'post', [
         'class'                    => 'contentEditForm',
@@ -64,7 +63,6 @@ if ($admin) {
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
         'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
         'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
-        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
         'data-text-selector'       => '#stdTextHolder',
         'data-save-selector'       => '.textSaver',
         'data-edit-selector'       => '.editCaller',

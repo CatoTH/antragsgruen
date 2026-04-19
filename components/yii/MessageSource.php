@@ -258,6 +258,23 @@ class MessageSource extends \yii\i18n\MessageSource
         }, array_keys($messages), $messages);
     }
 
+    /**
+     * This preserves structures in the baseTranslation (like js/description/...).
+     */
+    private function mergeWithStructure(array $baseTranslations, array $toBeMerged): array
+    {
+        foreach ($toBeMerged as $key => $value) {
+            if (is_array($value)) {
+                $baseTranslations[$key] = $value;
+            } elseif (isset($baseTranslations[$key]) && is_array($baseTranslations[$key])) {
+                $baseTranslations[$key]["text"] = $value;
+            } else {
+                $baseTranslations[$key] = $value;
+            }
+        }
+        return $baseTranslations;
+    }
+
     private function loadMessagesRaw(string $category, string $language, bool $withConsultationStrings): array
     {
         $categories = static::getTranslatableCategories();
@@ -280,7 +297,7 @@ class MessageSource extends \yii\i18n\MessageSource
             } else {
                 $baseFile      = $this->getMessageFilePath($categoryFilename, $language);
                 $transMessages = $this->loadMessagesFromFile($baseFile);
-                return array_merge($origMessages, $transMessages);
+                return $this->mergeWithStructure($origMessages, $transMessages);
             }
         }
 
@@ -292,13 +309,13 @@ class MessageSource extends \yii\i18n\MessageSource
             $baseFile = $this->getMessageFilePath($categoryFilename, $parts[0]);
             $messages = $this->loadMessagesFromFile($baseFile);
             if ($messages) {
-                $baseMessages = array_merge($baseMessages, $messages);
+                $baseMessages = $this->mergeWithStructure($baseMessages, $messages);
             }
 
             $extFile  = $this->getMessageFilePath($categoryFilename, $lang);
             $messages = $this->loadMessagesFromFile($extFile);
             if ($messages) {
-                $extMessages = array_merge($extMessages, $messages);
+                $extMessages = $this->mergeWithStructure($extMessages, $messages);
             }
         }
 
@@ -311,18 +328,18 @@ class MessageSource extends \yii\i18n\MessageSource
             }
         }
 
-        return array_merge($origMessages, $baseMessages, $extMessages, $conSpecific);
-    }
+        $messages = $this->mergeWithStructure($origMessages, $baseMessages);
+        $messages = $this->mergeWithStructure($messages, $extMessages);
+        $messages = $this->mergeWithStructure($messages, $conSpecific);
 
+        return $messages;
+    }
 
     /**
      * @param string $category
      * @param string $language
-     * @param bool $withConsultationStrings
-     * @return array
-     * @throws Internal
      */
-    protected function loadMessages($category, $language, bool $withConsultationStrings = true): array
+    public function loadMessages($category, $language, bool $withConsultationStrings = true): array
     {
         return array_map(function ($entry) {
             if (is_array($entry)) {
@@ -331,5 +348,17 @@ class MessageSource extends \yii\i18n\MessageSource
                 return $entry;
             }
         }, $this->loadMessagesRaw($category, $language, $withConsultationStrings));
+    }
+
+    public function loadJsMessages(string $category, string $language): array
+    {
+        $allMessages = $this->loadMessagesRaw($category, $language, true);
+        $messages = [];
+        foreach ($allMessages as $key => $data) {
+            if (is_array($data) && isset($data['js']) && $data['js'] === true) {
+                $messages[$key] = $data["text"];
+            }
+        }
+        return $messages;
     }
 }

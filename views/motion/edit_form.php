@@ -83,12 +83,17 @@ echo '<div id="draftHint" class="hidden alert alert-info"
 
 echo '</div>';
 
+?>
+<script type="module">
+    import { MotionEditForm } from '/js/modules/frontend/MotionEditForm.js';
+    new MotionEditForm(document.getElementById("motionEditForm"));
+</script>
+<?php
 
 echo Html::beginForm('', 'post', [
     'id'                       => 'motionEditForm',
     'class'                    => 'motionEditForm draftForm',
     'enctype'                  => 'multipart/form-data',
-    'data-antragsgruen-widget' => 'frontend/MotionEditForm'
 ]);
 
 echo '<div class="content">';

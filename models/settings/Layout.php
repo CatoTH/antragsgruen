@@ -33,13 +33,11 @@ class Layout
     public array $extraCss = [];
     public array $inlineCss = [];
     public array $extraJs = [];
-    public array $vueTemplates = [];
     public array $bodyCssClasses = [];
     public array $onloadJs = [];
     public bool $fullWidth = false;
     public bool $fullScreen = false;
     public ?string $mainCssFile = null;
-    public array $mainAMDModules = [];
     public bool $provideJwt = false;
     public ?string $canonicalUrl = null;
     public array $alternateLanuages = [];
@@ -213,14 +211,6 @@ class Layout
         return $this;
     }
 
-    public function addVueTemplate(string $template): self
-    {
-        if (!in_array($template, $this->vueTemplates)) {
-            $this->vueTemplates[] = $template;
-        }
-        return $this;
-    }
-
     public function addLiveEventSubscription(string $role, string $channel): void
     {
         $this->connectLiveEvents[] = ['role' => $role, 'channel' => $channel];
@@ -313,19 +303,6 @@ class Layout
         $this->addJS('npm/Sortable.min.js');
     }
 
-    public function loadVue(): void
-    {
-        $this->addJS('npm/vue.global.prod.js');
-    }
-
-    public function addFullscreenTemplates(): void
-    {
-        $this->addVueTemplate('@app/views/shared/fullscreen-projector.vue.php');
-        $this->addVueTemplate('@app/views/shared/fullscreen-imotion.vue.php');
-        $this->addVueTemplate('@app/views/speech/_speech_common_mixins.vue.php');
-        $this->addVueTemplate('@app/views/speech/user-fullscreen-widget.vue.php');
-    }
-
     public function loadTypeahead(): void
     {
         $this->addJs('js/typeahead.bundle.min.js');
@@ -335,16 +312,6 @@ class Layout
     {
         $this->addJs('npm/selectize.min.js');
         $this->addCSS('css/selectize.bootstrap3.css');
-    }
-
-    public function loadVueDraggable(): void
-    {
-        $this->addJs('npm/vuedraggable.umd.min.js');
-    }
-
-    public function loadVueDraggablePlus(): void
-    {
-        $this->addJs('npm/vue-draggable-plus.iife.js');
     }
 
     /**
@@ -402,30 +369,6 @@ class Layout
         }
         $newUrl = AntragsgruenApp::getInstance()->resourceBase . $url;
         return Html::encode($newUrl);
-    }
-
-    public function addAMDModule(string $module): void
-    {
-        $this->mainAMDModules[] = $module;
-    }
-
-    public function getAMDLoader(): string
-    {
-        $resourceBase = AntragsgruenApp::getInstance()->resourceBase;
-        $module       = $this->resourceUrl('js/build/Antragsgruen.js');
-        $src          = $this->resourceUrl('npm/require.js');
-        return '<script src="' . addslashes($src) . '"></script>' .
-            '<script src="' . addslashes($module) . '" id="antragsgruenScript" ' .
-            'data-resource-base="' . Html::encode($resourceBase) . '"></script>';
-    }
-
-    public function getAMDClasses(): string
-    {
-        $out = '';
-        foreach ($this->mainAMDModules as $module) {
-            $out .= '<span data-antragsgruen-load-class="' . Html::encode($module) . '"></span>' . "\n";
-        }
-        return $out;
     }
 
     public function formatTitle(string $title): string

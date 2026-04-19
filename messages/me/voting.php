@@ -34,7 +34,7 @@ return [
     'remaining_time' => 'Vrijeme glasanja', // Original: Voting time
     'admin_title' => 'Administracija glasanja', // Original: Voting administration
     'admin_intro' => '<strong>Savjet:</strong> priručnik za funkciju glasanja možete pronaći na <a href="https://sandbox.motion.tools/help#advanced"> stranici pomoći</a>.', // Original: <strong>Hint:</strong> you can find a manual for the voting functionality on the <a href="https://sandbox.motion.tools/help#advanced">help page</a>.
-    'admin_aria_single' => 'Upravljanje glasanjem', // Original: Administrate voting
+    'admin_aria_single' => 'Upravljanje glasanjem: %TITLE%', // Original: Administrate voting
     'admin_voting_use' => 'Online glasanje', // Original: Online voting
     'admin_voting_use_h' => 'Glasanje o sledećim predlozima i amandmanima odvija se online na stranici Antragsgrün', // Original: The voting about the following motions and amendments shall take place online on Antragsgrün
     'admin_votes_total' => 'Ukupno', // Original: Total
@@ -113,7 +113,7 @@ return [
     'voting_current_aria' => 'Trenutno aktivno glasanje', // Original: Currently active voting
     'voting_show_amend' => 'Prikaži izmjenu', // Original: Show amendment
     'voting_edit_amend' => 'Izmjena i dopuna', // Original: Edit amendment
-    'voting_by' => 'Pored', // Original: By
+    'voting_by' => 'Pored %BY%', // Original: By
     'voting_admin_all' => 'Upravljanje glasanjem', // Original: Administrate votings
     'voting_visibility' => 'Ko može vidjeti kako sam glasao?', // Original: Who can see how I voted?
     'voting_visibility_none' => 'Niko ne može vidjeti kako ste glasali. <small>(Međutim, osobe s pristupom bazi podataka mogle bi pristupiti tim podacima)</small>', // Original: Nobody can see how you voted. <small>(Persons with access to the database could access this data, though)</small>

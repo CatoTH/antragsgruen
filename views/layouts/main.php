@@ -1,5 +1,6 @@
 <?php
 
+use app\components\JsTools;
 use yii\helpers\Html;
 
 /**
@@ -106,6 +107,7 @@ echo \app\models\layoutHooks\Layout::favicons();
 $this->head();
 
 echo \app\models\layoutHooks\Layout::endOfHead($controller->consultation);
+echo JsTools::getJsModulesImportMap();
 echo '</head>';
 
 if (defined('YII_ENV') && YII_ENV == 'test') {
@@ -150,12 +152,8 @@ foreach ($layout->getJSFiles() as $jsFile) {
 foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
-echo $layout->getAMDClasses();
-echo $layout->getAMDLoader();
 
-foreach ($layout->vueTemplates as $vueTemplate) {
-    echo $this->render($vueTemplate);
-}
+echo '<script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>' . "\n";
 
 $this->endBody();
 echo '

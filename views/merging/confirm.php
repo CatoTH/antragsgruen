@@ -27,12 +27,15 @@ $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 ?>
     <h1><?= Yii::t('amend', 'merge_confirm_title') ?></h1>
+    <script type="module">
+        import { MotionMergeAmendmentsConfirm } from "/js/modules/frontend/MotionMergeAmendmentsConfirm.js";
+        new MotionMergeAmendmentsConfirm(document.getElementById("motionConfirmForm"));
+    </script>
 <?php
 
 echo Html::beginForm('', 'post', [
     'id'                       => 'motionConfirmForm',
     'class'                    => 'motionMergeConfirmForm',
-    'data-antragsgruen-widget' => 'frontend/MotionMergeAmendmentsConfirm'
 ]);
 
 $odtText = '<span class="glyphicon glyphicon-download" aria-hidden="true"></span> ' . Yii::t('amend', 'merge_confirm_odt');

@@ -23,9 +23,6 @@ if ($queue->motion) {
 }
 $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/speech/admin-widget.vue.php');
-$layout->addVueTemplate('@app/views/speech/admin-subqueue.vue.php');
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('admin', 'speech');
 
@@ -46,11 +43,72 @@ if ($queue->motion) {
 } else {
     $this->title = Yii::t('speech', 'admin_title_plain');
 }
+
+$componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpeechLists';
+$setStatusUrl      = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
+$itemPerformOpUrl  = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
+$createItemUrl     = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
+$resetQueueUrl     = UrlHelper::createUrl(['/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
+$randomizeQueueUrl = UrlHelper::createUrl(['/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
+$pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
+
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="manageSpeechQueue">
-    <section data-antragsgruen-widget="backend/SpeechListEdit"
+    <section class="manageSpeechQueueWidget"
+             data-component-admin-link="<?= Html::encode($componentAdminLink) ?>"
+             data-poll-url="<?= Html::encode($pollUrl) ?>"
+             data-item-perform-operation-url="<?= Html::encode($itemPerformOpUrl) ?>"
+             data-randomize-queue-url="<?= Html::encode($randomizeQueueUrl) ?>"
+             data-reset-queue-url="<?= Html::encode($resetQueueUrl) ?>"
+             data-create-item-url="<?= Html::encode($createItemUrl) ?>"
+             data-set-status-url="<?= Html::encode($setStatusUrl) ?>"
              data-queue="<?= Html::encode(json_encode($initData)) ?>">
         <div class="speechAdmin"></div>
     </section>
 </div>
+
+<script type="module">
+    import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
+    import translateDirective from "/js/vue/Translate.vue.js";
+    translateDirective.registerTranslation("speech", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "speech")) ?>);
+    import AdminWidgetComponent from "/js/vue/speech/AdminWidget.js";
+    import AdminSubqueueComponent from "/js/vue/speech/AdminSubqueue.js";
+
+    const element = document.querySelector(".manageSpeechQueueWidget");
+
+    /** @type {import('vue').App} */
+    const widget = createApp({
+        render() {
+            return h(resolveComponent('speech-admin-widget'), {
+                initQueue: this.queue,
+                csrf: this.csrf,
+                componentAdminLink: this.componentAdminLink,
+                pollUrl: this.pollUrl,
+                itemPerformOperationUrl: this.itemPerformOperationUrl,
+                randomizeQueueUrl: this.randomizeQueueUrl,
+                resetQueueUrl: this.resetQueueUrl,
+                createItemUrl: this.createItemUrl,
+                setStatusUrl: this.setStatusUrl,
+            });
+        },
+        data() { return {
+            queue: JSON.parse(element.getAttribute("data-queue")),
+            csrf: document.querySelector("meta[name='csrf-token']").getAttribute("content"),
+            componentAdminLink: element.getAttribute("data-component-admin-link"),
+            pollUrl: element.getAttribute("data-poll-url"),
+            itemPerformOperationUrl: element.getAttribute("data-item-perform-operation-url"),
+            randomizeQueueUrl: element.getAttribute("data-randomize-queue-url"),
+            resetQueueUrl: element.getAttribute("data-reset-queue-url"),
+            createItemUrl: element.getAttribute("data-create-item-url"),
+            setStatusUrl: element.getAttribute("data-set-status-url"),
+        } }
+    });
+
+    widget.component('speech-admin-subqueue', AdminSubqueueComponent)
+    widget.component('speech-admin-widget', AdminWidgetComponent);
+
+    widget.directive('t', translateDirective);
+
+    widget.mount(".manageSpeechQueueWidget .speechAdmin");
+</script>

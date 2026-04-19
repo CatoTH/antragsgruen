@@ -27,15 +27,6 @@ include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 $layout->addCSS('css/backend.css');
 $layout->loadSelectize();
 $layout->loadSortable();
-$layout->loadVue();
-$layout->addVueTemplate('@app/views/shared/selectize.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_common_mixins.vue.php');
-$layout->addVueTemplate('@app/views/voting/_policy-select.vue.php');
-$layout->addVueTemplate('@app/views/voting/_voting_vote_list.vue.php');
-$layout->addVueTemplate('@app/views/voting/admin-votings.vue.php');
-$layout->addVueTemplate('@app/views/voting/admin-voting-sort.vue.php');
-Layout::registerAdditionalVueVotingTemplates($consultation, $layout);
-$layout->loadVueDraggable();
 
 $apiData = [];
 foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
@@ -82,6 +73,13 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
     return $group->getUserAdminApiObject();
 }, $consultation->getAllAvailableUserGroups());
 
+
+$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
+$CONSTANTS = array_merge($CONSTANTS, [
+    "motionEditUrl" => UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000']),
+    "amendmentEditUrl" => UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000']),
+]);
+
 ?>
 <h1><?= Yii::t('voting', 'admin_title') ?></h1>
 
@@ -93,7 +91,6 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
      data-vote-create="<?= Html::encode($voteCreateUrl) ?>"
      data-url-poll="<?= Html::encode($pollUrl) ?>"
      data-url-sort="<?= Html::encode($sortUrl) ?>"
-     data-antragsgruen-widget="backend/VotingAdmin"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
      data-voting="<?= Html::encode(json_encode($apiData)) ?>">
@@ -281,4 +278,32 @@ $userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): 
     </section>
 
     <div class="votingAdmin"></div>
+
+    <?php
+    $allPolicies = [];
+    foreach (IPolicy::getPolicyNames() as $id => $name) {
+        $allPolicies[] = ["id" => $id, "title" => $name];
+    }
+
+    if (\app\models\db\ConsultationUserGroup::consultationHasLoadableUserGroups($consultation)) {
+        $groupLoadUrl = UrlHelper::createUrl('/admin/users/search-groups');
+    } else {
+        $groupLoadUrl = '';
+    }
+    ?>
+    <script type="module">
+        import policySelect from "/js/vue/PolicySelect.js";
+        policySelect.setConstants(
+            <?= json_encode($groupLoadUrl) ?>,
+            <?= json_encode(IPolicy::POLICY_USER_GROUPS) ?>,
+            <?= json_encode($allPolicies) ?>
+        );
+
+        import { VotingAdmin } from "/js/modules/backend/VotingAdmin.js";
+        new VotingAdmin(
+            document.querySelector(".manageVotings"),
+            <?= json_encode($CONSTANTS) ?>,
+            <?= json_encode(\app\components\JsTools::getTranslations($consultation, "voting") ) ?>
+        );
+    </script>
 </div>

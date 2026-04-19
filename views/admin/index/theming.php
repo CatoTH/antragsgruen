@@ -36,8 +36,11 @@ foreach (Stylesheet::getAllSettings($default) as $key => $setting) {
 <?= Html::beginForm(UrlHelper::createUrl('/admin/index/theming'), 'POST', [
     'class'                    => 'themingForm',
     'enctype'                  => 'multipart/form-data',
-    'data-antragsgruen-widget' => 'backend/Theming'
 ]) ?>
+<script type="module">
+    import { Theming } from "/js/modules/backend/Theming.js";
+    new Theming(document.querySelector(".themingForm"));
+</script>
 
 <?php
 foreach ($settingsByBlock as $group => $settings) {

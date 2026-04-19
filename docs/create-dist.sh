@@ -28,6 +28,7 @@ fi
 
 npm ci
 npx gulp
+npx rollup -c assets/rollup.js
 
 rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
@@ -59,7 +60,7 @@ chmod -R u+rwx web/js/bower/yii2-pjax/.git
 rm -R web/js/src
 rm -R web/js/bootstrap-datetimepicker.js
 rm -R web/js/bower
-rm -R web/typescript
+rm -R web_src
 rm -R vendor/tecnickcom/tcpdf/examples
 rm -R vendor/swiftmailer/swiftmailer/tests
 rm -R vendor/doctrine/lexer/tests

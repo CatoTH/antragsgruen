@@ -15,7 +15,6 @@ use Yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->loadCKEditor();
-$layout->addAMDModule('frontend/MergeSingleAmendment');
 $layout->addCSS('css/formwizard.css');
 
 $motion    = $amendment->getMyMotion();
@@ -38,11 +37,15 @@ foreach ($amendment->getActiveSections() as $section) {
     }
 }
 
-echo '<h1>' . Html::encode($this->title) . '</h1>';
-
-echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm']);
-
 ?>
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <script type="module">
+        import { MergeSingleAmendment } from "/js/modules/frontend/MergeSingleAmendment.js";
+        new MergeSingleAmendment();
+    </script>
+    <?= Html::beginForm('', 'post', ['id' => 'amendmentMergeForm']) ?>
+
     <div class="content">
         <div class="alert alert-info"><?= Yii::t('amend', 'merge1_intro_user') ?></div>
 

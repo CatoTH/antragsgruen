@@ -1,8 +1,7 @@
 <?php
 
-use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
-use app\models\db\{Amendment, AmendmentProposal, User};
+use app\models\db\{Amendment, User};
 use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
@@ -27,9 +26,6 @@ $hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedPropo
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->addAMDModule('frontend/AmendmentShow');
-$layout->loadVue();
-$layout->addFullscreenTemplates();
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }
@@ -58,16 +54,11 @@ $this->title = $amendment->getTitle() . ' (' . $consultation->title . ')';
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 if (User::getCurrentUser()) {
-    $fullscreenInitData = json_encode([
-        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
+    $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'amendment-' . $amendment->id,
         'init_content_url' => UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'rest')),
+        'consultation' => $consultation,
     ]);
-    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-    </button>';
 } else {
     $fullscreenButton = '';
 }
@@ -76,6 +67,13 @@ echo '<div class="primaryHeader">';
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 echo $fullscreenButton;
 echo '</div>';
+
+?>
+    <script type="module">
+        import { AmendmentShow } from '/js/modules/frontend/AmendmentShow.js';
+        new AmendmentShow();
+    </script>
+<?php
 
 echo $layout->getMiniMenu('sidebarSmall');
 

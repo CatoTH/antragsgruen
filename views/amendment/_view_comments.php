@@ -12,8 +12,14 @@ use app\models\settings\{PrivilegeQueryContext, Privileges};
 $motion       = $amendment->getMyMotion();
 $consultation = $motion->getMyConsultation();
 
-echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
-echo '<h2 class="green" id="commentsTitle">' . Yii::t('amend', 'comments_title') . '</h2>';
+?>
+<script type="module">
+    import { initComments } from '/js/modules/frontend/Comments.js';
+    initComments(document.querySelector(".commentsWidget"));
+</script>
+<section class="comments commentsWidget" aria-labelledby="commentsTitle">
+    <h2 class="green" id="commentsTitle"><?= Yii::t('amend', 'comments_title') ?></h2>
+    <?php
 
 $form = $commentForm;
 
@@ -45,5 +51,5 @@ foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
 }
 
 echo $form->renderFormOrErrorMessage();
-
-echo '</section>';
+?>
+</section>

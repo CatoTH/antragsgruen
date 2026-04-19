@@ -16,14 +16,12 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $motion     = $form->motion;
+$consultation = $motion->getMyConsultation();
 
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
-$layout->loadVue();
 $layout->loadCKEditor();
-
-$layout->addVueTemplate('@app/views/merging/_merging_paragraph_status.vue.php');
 
 if ($twoCols) {
     $layout->fullWidth = true;
@@ -68,12 +66,31 @@ echo $controller->showErrors();
 
 echo '</div>';
 
+$statuses = [
+    Amendment::STATUS_PROCESSED         => Yii::t('structure', 'STATUS_PROCESSED'),
+    Amendment::STATUS_ACCEPTED          => Yii::t('structure', 'STATUS_ACCEPTED'),
+    Amendment::STATUS_REJECTED          => Yii::t('structure', 'STATUS_REJECTED'),
+    Amendment::STATUS_MODIFIED_ACCEPTED => Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
+];
+?>
+<script type="module">
+    import translate from "/js/vue/Translate.vue.js";
+    translate.registerTranslation("base", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "base")) ?>);
+    translate.registerTranslation("amend", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "amend")) ?>);
+
+    import ParagraphAmendmentSettings from "/js/vue/merging/ParagraphAmendmentSettings.js";
+    ParagraphAmendmentSettings.setStatuses(<?= json_encode($statuses) ?>);
+
+    import { MotionMergeAmendments } from "/js/modules/frontend/MotionMergeAmendments.js";
+    new MotionMergeAmendments(document.querySelector(".motionMergeForm"));
+</script>
+<?php
+
 echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'post', [
     'class'                      => 'motionMergeForm motionMergeStyles',
     'enctype'                    => 'multipart/form-data',
     'data-draft-saving-url'      => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
     'data-check-status-url'      => UrlHelper::createMotionUrl($motion, 'merge-amendments-status-ajax', ['knownAmendments' => 'AMENDMENTS']),
-    'data-antragsgruen-widget'   => 'frontend/MotionMergeAmendments',
     'data-amendment-static-data' => json_encode($amendmentStaticData),
 ]);
 

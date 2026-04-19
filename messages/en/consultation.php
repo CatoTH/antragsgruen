@@ -114,9 +114,18 @@ return [
     'agenda_time'    => 'Time',
     'agenda_comment' => 'Comment',
     'agenda_date'    => 'Date',
-    'agenda_pp'      => 'In proposed procedure',
-    'agenda_speaking' => 'Has a speaking list',
-    'agenda_del'     => 'Remove agenda item',
+    'agenda_pp'      => [
+        'text' => 'In proposed procedure',
+        'js' => true,
+    ],
+    'agenda_speaking' => [
+        'text' => 'Has a speaking list',
+        'js' => true,
+    ],
+    'agenda_del'     => [
+        'text' => 'Remove agenda item',
+        'js' => true,
+    ],
     'agenda_del_confirm' => 'Delete this agenda item and all sub-items?',
 
     'discuss_comments_title'  => 'Discussed recently',

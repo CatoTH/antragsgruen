@@ -817,5 +817,6 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'agenda_move_aria' => 'Tagesordnungspunkt verschieben',
     'agenda_speeking_link' => 'Redeliste verwalten',
     'agenda_back' => 'Zurück zur Startseite',
-    'agenda_admin_intro' => 'Auf dieser Seite wird die Tagesordnung verwaltet. Damit diese auch tatsächlich angezeigt wird, muss eine entsprechende Startseiten-Ansicht unter „%LINK%” ausgewählt werden.'
+    'agenda_admin_intro' => 'Auf dieser Seite wird die Tagesordnung verwaltet. Damit diese auch tatsächlich angezeigt wird, muss eine entsprechende Startseiten-Ansicht unter „%LINK%” ausgewählt werden.',
+    'agenda_sort_save' => 'Reihenfolge speichern',
 ];

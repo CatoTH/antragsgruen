@@ -5,6 +5,7 @@ return [
     'Today'                 => 'Heute',
     'Yesterday'             => 'Gestern',
     'save'                  => 'Speichern',
+    'saving'                => 'Speichern',
     'saved'                 => 'Gespeichert.',
     'abort'                 => 'Abbrechen',
     'edit'                  => 'Bearbeiten',

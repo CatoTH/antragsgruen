@@ -25,11 +25,14 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
 
     $saveUrl = \app\components\UrlHelper::createMotionUrl($motion, 'save-editorial', ['sectionId' => $section->sectionId]);
     echo Html::beginForm($saveUrl, 'post', [
-        'class'                    => 'editorialEditForm',
-        'data-antragsgruen-widget' => 'frontend/EditorialEdit',
+        'class' => 'editorialEditForm',
     ]);
 
     ?>
+    <script type="module">
+        import { EditorialEdit } from "/js/modules/frontend/EditorialEdit.js";
+        new EditorialEdit(document.querySelector('.editorialEditForm'));
+    </script>
     <div class="editorialHeader toolbarBelowTitle">
 
         <?= $metadataView ?>

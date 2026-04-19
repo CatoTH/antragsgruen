@@ -64,7 +64,11 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     $controller->layoutParams->addJS('npm/clipboard.min.js');
     $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)));
     ?><br>
-    <div class="alert alert-info promoUrl" role="alert" data-antragsgruen-widget="frontend/CopyUrlToClipboard">
+    <script type="module">
+        import { copyUrlToClipboard } from '/js/modules/frontend/CopyUrlToClipboard.js';
+        copyUrlToClipboard(document.querySelector(".promoUrl"));
+    </script>
+    <div class="alert alert-info promoUrl" role="alert">
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-btn">

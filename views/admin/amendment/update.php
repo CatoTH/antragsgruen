@@ -79,11 +79,15 @@ if ($amendment->isInScreeningProcess() && User::havePrivilege($consultation, Pri
     echo "<br>";
 }
 
-
+?>
+    <script type="module">
+        import { AmendmentEdit } from '/js/modules/backend/AmendmentEdit.js';
+        new AmendmentEdit();
+    </script>
+<?php
 echo Html::beginForm('', 'post', [
     'id'                       => 'amendmentUpdateForm',
     'class'                    => 'motionEditForm',
-    'data-antragsgruen-widget' => 'backend/AmendmentEdit',
 ]);
 
 

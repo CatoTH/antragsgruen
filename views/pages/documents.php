@@ -20,12 +20,6 @@ $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT
 $this->title = Yii::t('pages', 'documents_title');
 $layout->addBreadcrumb(Yii::t('pages', 'documents_title'));
 $layout->bodyCssClasses[] = 'documentsPage';
-if ($contentAdmin) {
-    $layout->addAMDModule('backend/Documents');
-    $layout->loadVue();
-    $layout->loadSortable();
-    $layout->loadVueDraggable();
-}
 
 $fileGroups = ConsultationFileGroup::getSortedRegularGroupsFromConsultation($consultation);
 $hasFiles = false;
@@ -44,12 +38,18 @@ $pageData = ConsultationText::getPageData($consultation->site, $consultation, Co
 if ($contentAdmin) {
     $layout->loadCKEditor();
 
+    ?>
+    <script type="module">
+        import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
+        new ContentPageEdit(document.querySelector(".contentEditForm"));
+    </script>
+    <?php
+
     $saveUrl = $pageData->getSaveUrl();
     echo Html::beginForm($saveUrl, 'post', [
         'class' => 'contentEditForm',
         'data-upload-url' => $pageData->getUploadUrl(),
         'data-image-browse-url' => $pageData->getImageBrowseUrl(),
-        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
         'data-text-selector' => '#stdTextHolder',
         'data-save-selector' => '.textSaver',
         'data-edit-selector' => '.editCaller',
@@ -225,5 +225,10 @@ if ($contentAdmin) {
         </div>
         <?= Html::endForm() ?>
     </section>
+
+    <script type="module">
+        import { Documents } from "/js/modules/backend/Documents.js";
+        new Documents();
+    </script>
     <?php
 }

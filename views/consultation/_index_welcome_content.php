@@ -30,12 +30,18 @@ $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $c
 $saveUrl  = $pageData->getSaveUrl();
 
 if ($contentAdmin) {
+    ?>
+    <script type="module">
+        import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
+        new ContentPageEdit(document.getElementById('stdTextForm'));
+    </script>
+    <?php
     echo Html::beginForm($saveUrl, 'post', [
+        'id'                       => 'stdTextForm',
         'data-upload-url'          => $pageData->getUploadUrl(),
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
         'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
         'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
-        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
         'data-text-selector'       => '#stdTextHolder',
         'data-save-selector'       => '.textSaver',
         'data-edit-selector'       => '.editCaller',

@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\componentsUrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};
@@ -29,9 +30,6 @@ $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestPropos
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->addAMDModule('frontend/MotionShow');
-$layout->loadVue();
-$layout->addFullscreenTemplates();
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }
@@ -79,17 +77,11 @@ $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
 if (User::getCurrentUser()) {
-    $fullscreenInitData = json_encode([
-        'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
-        'pagination' => $consultation->getSettings()->motionPrevNextLinks,
+    $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'motion-' . $motion->id,
         'init_content_url' => UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'rest')),
+        'consultation' => $consultation,
     ]);
-    $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
-        data-antragsgruen-widget="frontend/FullscreenToggle" data-vue-element="fullscreen-projector" data-vue-initdata="' . Html::encode($fullscreenInitData) . '">
-        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>
-    </button>';
 } else {
     $fullscreenButton = '';
 }
@@ -102,6 +94,13 @@ if ($motion->isResolution()) {
 }
 echo $fullscreenButton;
 echo '</div>';
+
+?>
+<script type="module">
+    import { MotionShow } from '/js/modules/frontend/MotionShow.js';
+    new MotionShow();
+</script>
+<?php
 
 if ($consultation->getSettings()->hasSpeechLists) {
     // Should be after h1 (because of CSS border-radius to .well :first-child),
@@ -327,7 +326,7 @@ if ($alternativeCommentView) {
 }
 $maySeeComments = $motion->getMyMotionType()->maySeeIComments();
 if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alternativeCommentView) {
-    echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
+    echo '<section class="comments commentsWidget" aria-labelledby="commentsTitle">';
     echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion));
@@ -370,6 +369,15 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
     echo $form->renderFormOrErrorMessage();
 
     echo '</section>';
+    ?>
+<?php
 }
+
+?>
+<script type="module">
+    import { initComments } from '/js/modules/frontend/Comments.js';
+    document.querySelectorAll(".commentsWidget").forEach(widget => initComments(widget));
+</script>
+<?php
 
 echo $this->render('_view_prevnext', ['motion' => $motion, 'top' => false, 'reducedNavigation' => $reducedNavigation]);

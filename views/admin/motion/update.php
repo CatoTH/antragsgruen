@@ -86,12 +86,16 @@ if ($motion->isInScreeningProcess() && User::havePrivilege($consultation, Privil
     echo "<br>";
 }
 
-
+?>
+    <script type="module">
+        import { MotionEdit } from '/js/modules/backend/MotionEdit.js';
+        new MotionEdit();
+    </script>
+<?php
 echo Html::beginForm('', 'post', [
     'id'                       => 'motionUpdateForm',
     'class'                    => 'motionEditForm',
     'enctype'                  => 'multipart/form-data',
-    'data-antragsgruen-widget' => 'backend/MotionEdit',
 ]);
 
 echo '<div class="content form-horizontal">';
