@@ -12,6 +12,8 @@ use yii\helpers\Html;
  * @var Motion $entry
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
+ * @var boolean $colType
+ * @var boolean $colTags
  * @var boolean $colProposals
  * @var boolean $colAction
  * @var boolean $colResponsible
@@ -22,7 +24,6 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 
-$hasTags        = (count($consultation->tags) > 0);
 $isReplaced     = (count($entry->getReadableReplacedByMotions()) > 0);
 $viewUrl        = UrlHelper::createMotionUrl($entry);
 if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\MotionController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::motion($entry))) {
@@ -35,11 +36,14 @@ echo '<tr class="motion motion' . $entry->id . ($isReplaced ? ' replaced' : '') 
 if ($colMark) {
     echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
-echo '<td class="typeCol">';
-if ($entry->getMyMotionType()->motionPrefix) {
-    echo Html::encode(trim($entry->getMyMotionType()->motionPrefix, ":-. \t\n\r\0\x0B/"));
-} else {
-    echo Yii::t('admin', 'list_motion_short');
+if ($colType) {
+    echo '<td class="typeCol">';
+    if ($entry->getMyMotionType()->motionPrefix) {
+        echo Html::encode(trim($entry->getMyMotionType()->motionPrefix, ":-. \t\n\r\0\x0B/"));
+    } else {
+        echo Yii::t('admin', 'list_motion_short');
+    }
+    echo '</td>';
 }
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> ';
 echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-');
@@ -74,6 +78,8 @@ if ($colDate) {
     echo '<td class="dateCol">';
     if ($entry->datePublication) {
         echo \app\components\Tools::formatMysqlDateTime($entry->datePublication);
+    } elseif ($entry->dateSubmission) {
+        echo '<span class="unpublished">' . \app\components\Tools::formatMysqlDateTime($entry->dateSubmission) . '</span>';
     }
     echo '</td>';
 }
@@ -99,7 +105,7 @@ if ($colProposals) {
     echo '</td>';
 }
 echo '<td>' . Html::encode($entry->getInitiatorsStr()) . '</td>';
-if ($hasTags) {
+if ($colTags) {
     $tags = [];
     foreach ($entry->getProposedProcedureTags() as $tag) {
         $tags[] = Html::encode($tag->title) . ' <small>(' . Yii::t('admin', 'filter_tag_pp') . ')</small>';

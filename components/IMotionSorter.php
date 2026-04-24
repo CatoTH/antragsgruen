@@ -210,11 +210,24 @@ class IMotionSorter
         }
     }
 
+    /**
+     * Oldest and published first
+     */
     private static function sortDate(IMotion $imotion1, IMotion $imotion2): int
     {
-        $timestamp1 = ($imotion1->dateCreation ? Tools::dateSql2timestamp($imotion1->dateCreation) : 0);
-        $timestamp2 = ($imotion2->dateCreation ? Tools::dateSql2timestamp($imotion2->dateCreation) : 0);
-        return $timestamp1 <=> $timestamp2;
+        if ($imotion1->datePublication && $imotion2->datePublication) {
+            $timestamp1 = Tools::dateSql2timestamp($imotion1->datePublication);
+            $timestamp2 = Tools::dateSql2timestamp($imotion2->datePublication);
+            return $timestamp1 <=> $timestamp2;
+        } elseif ($imotion1->datePublication) {
+            return -1;
+        } elseif ($imotion2->datePublication) {
+            return 1;
+        } else {
+            $timestamp1 = ($imotion1->dateCreation ? Tools::dateSql2timestamp($imotion1->dateCreation) : 0);
+            $timestamp2 = ($imotion2->dateCreation ? Tools::dateSql2timestamp($imotion2->dateCreation) : 0);
+            return $timestamp1 <=> $timestamp2;
+        }
     }
 
     /**
