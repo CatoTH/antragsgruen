@@ -9,16 +9,14 @@
  */
 
 use app\models\forms\AdminMotionFilterForm;
-use app\models\settings\Privileges;
+use app\models\settings\{Privileges, Consultation as ConsultationSettings};
 use app\components\{HTMLTools, UrlHelper};
 use yii\helpers\Html;
 
 $controller = $this->context;
 $consultation = $controller->consultation;
+$consultationSettings = $consultation->getSettings();
 $layout = $controller->layoutParams;
-
-$hasOpenslides = $consultation->getSettings()->openslidesExportEnabled;
-$hasInactiveFunctionality = (!$hasResponsibilities || !$hasProposedProcedures || !$hasOpenslides);
 
 $getExportLinkLi = function ($title, $route, $motionTypeIds, $cssClass) use ($search) {
     $params     = array_merge($route, ['motionTypeId' => $motionTypeIds, 'inactive' => '0', 'replaced' => '0']);
@@ -53,7 +51,7 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 
 $btnNew       = count($creatableMotions) > 0;
-$btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null) && $hasInactiveFunctionality;
+$btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
 
 ?>
 <section class="motionListExportRow toolbarBelowTitle">
@@ -103,10 +101,40 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                     $title = Yii::t('admin', 'list_functions_procedure');
                     echo '<li>' . Html::a($title, $url, ['class' => 'activateProcedure']) . '</li>';
                 }
-                if (!$hasOpenslides) {
+                if (!$consultationSettings->openslidesExportEnabled) {
                     $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'activate' => 'openslides']);
                     $title = Yii::t('admin', 'list_functions_openslides');
                     echo '<li>' . Html::a($title, $url, ['class' => 'activateOpenslides']) . '</li>';
+                }
+
+                if (in_array(ConsultationSettings::ADMIN_LIST_DATE, $consultationSettings->adminListAdditionalFields)) {
+                    $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'deactivate' => ConsultationSettings::ADMIN_LIST_DATE]);
+                    $title = Yii::t('admin', 'list_functions_date_remove');
+                    echo '<li>' . Html::a($title, $url, ['class' => 'deactivateDate']) . '</li>';
+                } else {
+                    $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'activate' => ConsultationSettings::ADMIN_LIST_DATE]);
+                    $title = Yii::t('admin', 'list_functions_date_add');
+                    echo '<li>' . Html::a($title, $url, ['class' => 'activateDate']) . '</li>';
+                }
+
+                if (in_array(ConsultationSettings::ADMIN_LIST_HIDE_TYPE, $consultationSettings->adminListAdditionalFields)) {
+                    $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'deactivate' => ConsultationSettings::ADMIN_LIST_HIDE_TYPE]);
+                    $title = Yii::t('admin', 'list_functions_type_add');
+                    echo '<li>' . Html::a($title, $url, ['class' => 'deactivateHideType']) . '</li>';
+                } else {
+                    $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'activate' => ConsultationSettings::ADMIN_LIST_HIDE_TYPE]);
+                    $title = Yii::t('admin', 'list_functions_type_remove');
+                    echo '<li>' . Html::a($title, $url, ['class' => 'activateHideType']) . '</li>';
+                }
+
+                if (in_array(ConsultationSettings::ADMIN_LIST_HIDE_TAGS, $consultationSettings->adminListAdditionalFields)) {
+                    $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'deactivate' => ConsultationSettings::ADMIN_LIST_HIDE_TAGS]);
+                    $title = Yii::t('admin', 'list_functions_tags_add');
+                    echo '<li>' . Html::a($title, $url, ['class' => 'deactivateHideTags']) . '</li>';
+                } else {
+                    $url   = UrlHelper::createUrl(['/admin/motion-list/index', 'activate' => ConsultationSettings::ADMIN_LIST_HIDE_TAGS]);
+                    $title = Yii::t('admin', 'list_functions_tags_remove');
+                    echo '<li>' . Html::a($title, $url, ['class' => 'activateHideTags']) . '</li>';
                 }
                 ?>
             </ul>

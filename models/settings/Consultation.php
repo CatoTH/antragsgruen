@@ -97,6 +97,9 @@ class Consultation implements \JsonSerializable
     public int $motiondataMode = 0;
     public int $discourseCategoryId = 0;
 
+    public const ADMIN_LIST_DATE = 'date';
+    public const ADMIN_LIST_HIDE_TAGS = 'hide_tags';
+    public const ADMIN_LIST_HIDE_TYPE = 'hide_type';
     public array $adminListAdditionalFields = [];
 
     public ?string $logoUrl = null;

@@ -12,6 +12,8 @@ use yii\helpers\Html;
  * @var Motion $lastMotion
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
+ * @var boolean $colType
+ * @var boolean $colTags
  * @var boolean $colProposals
  * @var boolean $colAction
  * @var boolean $colResponsible
@@ -22,7 +24,6 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 
-$hasTags           = (count($consultation->tags) > 0);
 $amendmentStatuses = $consultation->getStatuses()->getStatusNames();
 if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\AmendmentController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::amendment($entry))) {
     $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
@@ -35,7 +36,9 @@ echo '<tr class="amendment amendment' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
-echo '<td class="typeCol">' . Yii::t('admin', 'list_amend_short') . '</td>';
+if ($colType) {
+    echo '<td class="typeCol">' . Yii::t('admin', 'list_amend_short') . '</td>';
+}
 echo '<td class="prefixCol">';
 echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
 echo '<a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> ';
@@ -91,7 +94,7 @@ if ($colProposals) {
 }
 
 echo '<td>' . Html::encode($entry->getInitiatorsStr()) . '</td>';
-if ($hasTags) {
+if ($colTags) {
     $tags = [];
     foreach ($entry->getProposedProcedureTags() as $tag) {
         $tags[] = Html::encode($tag->title) . ' <small>(' . Yii::t('admin', 'filter_tag_pp') . ')</small>';

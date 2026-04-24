@@ -1,5 +1,6 @@
 <?php
 
+use app\models\settings\Consultation as ConsultationSettings;
 use app\components\{IMotionSorter, UrlHelper};
 use app\models\db\{Amendment, IMotion, Motion};
 use app\models\forms\AdminMotionFilterForm;
@@ -37,8 +38,6 @@ if ($motionId !== null) {
 }
 $search->setCurrentRoute($route);
 
-$hasTags = (count($consultation->tags) > 0);
-
 $hasResponsibilities   = false;
 $hasProposedProcedures = $consultation->hasProposedProcedures();
 foreach ($consultation->motionTypes as $motionType) {
@@ -47,16 +46,19 @@ foreach ($consultation->motionTypes as $motionType) {
     }
 }
 
+$additionalFields = $consultation->getSettings()->adminListAdditionalFields;
+$colType        = !in_array(ConsultationSettings::ADMIN_LIST_HIDE_TYPE, $additionalFields);
 $colMark        = $privilegeProposals || $privilegeScreening || $privilegeDelete || $search->hasAdditionalActions();
 $colAction      = $privilegeScreening || $privilegeDelete;
 $colProposals   = $privilegeProposals && $hasProposedProcedures;
 $colResponsible = $privilegeProposals && $hasResponsibilities;
-$colDate        = in_array('date', $consultation->getSettings()->adminListAdditionalFields);
+$colTags        = !in_array(ConsultationSettings::ADMIN_LIST_HIDE_TAGS, $additionalFields) && (count($consultation->tags) > 0);
+$colDate        = in_array(ConsultationSettings::ADMIN_LIST_DATE, $additionalFields);
 
 
 echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
 
-echo $this->render('_list_all_export', [
+echo $this->render('_list_all_header_bar', [
     'hasProposedProcedures' => $hasProposedProcedures,
     'hasResponsibilities' => $hasResponsibilities,
     'search' => $search,
@@ -93,9 +95,12 @@ echo '<thead><tr>';
 if ($colMark) {
     echo '<th class="markCol"></th>';
 }
-echo '<th class="typeCol">';
-echo '<span>' . Yii::t('admin', 'list_type') . '</span>';
-echo '</th><th class="prefixCol">';
+if ($colType) {
+    echo '<th class="typeCol">';
+    echo '<span>' . Yii::t('admin', 'list_type') . '</span>';
+    echo '</th>';
+}
+echo '<th class="prefixCol">';
 if ($search->sort === IMotionSorter::SORT_TITLE_PREFIX) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_prefix') . '</span>';
 } else {
@@ -154,7 +159,7 @@ if ($search->sort === IMotionSorter::SORT_INITIATOR) {
     $url = $search->getCurrentUrl(['Search[sort]' => IMotionSorter::SORT_INITIATOR]);
     echo Html::a(Yii::t('admin', 'list_initiators'), $url);
 }
-if ($hasTags) {
+if ($colTags) {
     echo '</th><th>';
     if ($search->sort === IMotionSorter::SORT_TAG) {
         echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_tag') . '</span>';
@@ -183,6 +188,8 @@ foreach ($entries as $entry) {
             'entry'          => $entry,
             'search'         => $search,
             'colMark'        => $colMark,
+            'colType'        => $colType,
+            'colTags'        => $colTags,
             'colAction'      => $colAction,
             'colProposals'   => $colProposals,
             'colResponsible' => $colResponsible,
@@ -195,6 +202,8 @@ foreach ($entries as $entry) {
             'search'         => $search,
             'lastMotion'     => $lastMotion,
             'colMark'        => $colMark,
+            'colType'        => $colType,
+            'colTags'        => $colTags,
             'colAction'      => $colAction,
             'colProposals'   => $colProposals,
             'colResponsible' => $colResponsible,

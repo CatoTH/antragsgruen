@@ -6,6 +6,7 @@
 - The JavaScript-based frontend components were rewritten to make use or more modern and standardized technologies (ECMAScript Modules, compiled Vue modules).
 - Configuring Antragsgrün via environment variables is now supported, allowing for easier deployment in Docker- and Kubernetes-environments.
 - It is now easier possible to integrate OpenTelemetry into Antragsgrün.
+- More configurations for the admin list: a date column can be added, and the tags and type column removed.
 
 ### Version 4.16.4 (2026-04-10)
 

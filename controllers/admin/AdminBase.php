@@ -3,7 +3,7 @@
 namespace app\controllers\admin;
 
 use app\models\exceptions\ResponseException;
-use app\models\settings\PrivilegeQueryContext;
+use app\models\settings\{Consultation, PrivilegeQueryContext};
 use app\models\http\{HtmlErrorResponse, RedirectResponse};
 use app\components\{RequestContext, UrlHelper};
 use app\controllers\Base;
@@ -83,6 +83,25 @@ class AdminBase extends Base
             $this->consultation->save();
 
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'list_functions_activated_c'));
+        }
+
+        $columnToggles = [
+            Consultation::ADMIN_LIST_DATE,
+            Consultation::ADMIN_LIST_HIDE_TAGS,
+            Consultation::ADMIN_LIST_HIDE_TYPE,
+        ];
+        $settings = $this->consultation->getSettings();
+        if (in_array($this->getHttpRequest()->get('activate'), $columnToggles, true)) {
+            $settings->adminListAdditionalFields[] = $this->getHttpRequest()->get('activate');
+            $settings->adminListAdditionalFields = array_unique($settings->adminListAdditionalFields);
+            $this->consultation->setSettings($settings);
+            $this->consultation->save();
+        }
+        if (in_array($this->getHttpRequest()->get('deactivate'), $columnToggles, true)) {
+            $settings->adminListAdditionalFields = array_filter($settings->adminListAdditionalFields, fn ($item) => $item !== $this->getHttpRequest()->get('deactivate'));
+            $settings->adminListAdditionalFields = array_values($settings->adminListAdditionalFields);
+            $this->consultation->setSettings($settings);
+            $this->consultation->save();
         }
     }
 }
