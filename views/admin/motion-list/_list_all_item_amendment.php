@@ -66,6 +66,8 @@ if ($colDate) {
     echo '<td class="dateCol">';
     if ($entry->datePublication) {
         echo \app\components\Tools::formatMysqlDateTime($entry->datePublication);
+    } elseif ($entry->dateSubmission) {
+        echo '<span class="unpublished">' . \app\components\Tools::formatMysqlDateTime($entry->dateSubmission) . '</span>';
     }
     echo '</td>';
 }

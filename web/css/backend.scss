@@ -1372,6 +1372,11 @@ label.legend {
     }
   }
 
+  td.dateCol .unpublished {
+    color: grey;
+    font-size: 0.8em;
+  }
+
   .todo {
     font-style: italic;
     font-size: 0.8em;

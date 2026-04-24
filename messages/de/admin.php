@@ -151,7 +151,7 @@ return [
     'list_initiators'             => 'Initiator*innen',
     'list_status'                 => 'Status',
     'list_todo'                   => 'To Do',
-    'list_date'                   => 'Eingereicht',
+    'list_date'                   => 'Veröffentlicht',
     'list_proposal'               => 'Verfahrensvorschlag',
     'list_responsible'            => 'Verantwortlich',
     'list_responsible_none'       => 'keine registrierte Nutzer*in',

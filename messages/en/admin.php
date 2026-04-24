@@ -155,7 +155,7 @@ return [
     'list_initiators'             => 'Proposers',
     'list_status'                 => 'Status',
     'list_todo'                   => 'To Do',
-    'list_date'                   => 'Submitted',
+    'list_date'                   => 'Published',
     'list_proposal'               => 'Proposed procedure',
     'list_responsible'            => 'Responsible',
     'list_responsible_none'       => 'no registered user',
