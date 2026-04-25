@@ -241,7 +241,7 @@ class Layout
     public function getJSFiles(): array
     {
         $files   = [];
-        $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
+        $files[] = $this->resourceUrl('js/antragsgruen.min.js');
         foreach ($this->extraJs as $extraJs) {
             $files[] = $this->resourceUrl($extraJs);
         }
@@ -262,7 +262,7 @@ class Layout
     public function loadDatepicker(): void
     {
         $this->addJS('npm/moment-with-locales.min.js');
-        $this->addJS('js/build/bootstrap-datetimepicker.min.js');
+        $this->addJS('js/bootstrap-datetimepicker.min.js');
         $this->addCSS('css/bootstrap-datetimepicker.min.css');
     }
 

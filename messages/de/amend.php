@@ -439,7 +439,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
         'text' => 'Bis hier Kollisionen',
         'js' => true,
     ],
-    'reloadParagraph' => [
+    'reload_paragraph' => [
         'text' => 'Wenn diese Auswahl geändert wird, gehen händische Änderungen in diesem Paragraph verloren. Weiter?',
         'js' => true,
     ],
@@ -449,6 +449,10 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     ],
     'modU' => [
         'text' => 'Modifizierte Übernahme',
+        'js' => true,
+    ],
+    'leave_changed_page' => [
+        'text' => 'Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?',
         'js' => true,
     ],
 ];

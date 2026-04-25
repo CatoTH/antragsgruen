@@ -153,8 +153,6 @@ foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
 
-echo '<script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>' . "\n";
-
 $this->endBody();
 echo '
 <script type="application/ld+json">

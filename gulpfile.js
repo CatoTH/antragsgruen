@@ -40,16 +40,16 @@ function taskBuildJsMain() {
         .pipe(concat('antragsgruen.min.js'))
         .pipe(terser())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./web/js/build/'));
+        .pipe(gulp.dest('./web/js/'));
 }
 
 function taskBuildDatetimepicker() {
-    return gulp.src(["web/js/bootstrap-datetimepicker.js"])
+    return gulp.src(["web_src/js/bootstrap-datetimepicker.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('bootstrap-datetimepicker.min.js'))
         .pipe(terser())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./web/js/build/'));
+        .pipe(gulp.dest('./web/js/'));
 }
 
 const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildDatetimepicker);
@@ -94,8 +94,7 @@ function taskBuildHtml2PdfCss() {
 
 function taskWatch() {
     gulp.watch(main_js_files, {usePolling: true}, taskBuildJs);
-    gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], {usePolling: true}, taskBuildJs);
-    gulp.watch(["web/js/bootstrap-datetimepicker.js"], {usePolling: true}, taskBuildDatetimepicker);
+    gulp.watch(["web_src/js/bootstrap-datetimepicker.js"], {usePolling: true}, taskBuildDatetimepicker);
     gulp.watch(["web/css/*.scss"], {usePolling: true}, gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], {usePolling: true}, taskBuildPluginCss);
     gulp.watch(["assets/html2pdf/*.scss"], {usePolling: true}, taskBuildHtml2PdfCss);

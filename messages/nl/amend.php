@@ -397,8 +397,12 @@ return [
         'text' => 'Tegenstrijdigheid tot hier',
         'js' => true,
     ],
-    'reloadParagraph' => [
+    'reload_paragraph' => [
         'text' => 'Als deze selectie wordt gewijzigd, gaan handmatige wijzigingen in deze paragraaf verloren. Volgende?',
+        'js' => true,
+    ],
+    'leave_changed_page' => [
+        'text' => 'Er zijn nog niet opgeslagen wijzigingen. Weet je zeker dat je deze pagina wilt verlaten?',
         'js' => true,
     ],
 ];

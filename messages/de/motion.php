@@ -339,10 +339,6 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
         'text' => 'Bitte gib etwas im Gender-Feld an.',
         'js' => true,
     ],
-    'leave_changed_page' => [
-        'text' => 'Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?',
-        'js' => true,
-    ],
     'moved_paragraph_from' => [
         'text' => 'Verschoben von Absatz ##PARA##',
         'js' => true,

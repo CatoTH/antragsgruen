@@ -449,7 +449,7 @@ return [
         'text' => 'Collisions end here',
         'js' => true,
     ],
-    'reloadParagraph' => [
+    'reload_paragraph' => [
         'text' => 'If this selection is changed, manual changes to this paragraph are lost. Proceed?',
         'js' => true,
     ],
@@ -459,6 +459,10 @@ return [
     ],
     'modU' => [
         'text' => 'Proposed modification',
+        'js' => true,
+    ],
+    'leave_changed_page' => [
+        'text' => 'There are unsaved changes. Do you really want to leave this page and discard those changes?',
         'js' => true,
     ],
 ];

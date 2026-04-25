@@ -296,10 +296,6 @@ return [
         'text' => 'Vul iets in bij het genderveld',
         'js' => true,
     ],
-    'leave_changed_page' => [
-        'text' => 'Er zijn nog niet opgeslagen wijzigingen. Weet je zeker dat je deze pagina wilt verlaten?',
-        'js' => true,
-    ],
     'moved_paragraph_from' => [
         'text' => 'Verplaatst van alinea ##PARA##.',
         'js' => true,

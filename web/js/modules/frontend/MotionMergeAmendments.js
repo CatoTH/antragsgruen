@@ -701,7 +701,7 @@ class MotionMergeAmendmentsParagraph {
 
         const doAfterAskIfChanged = (cb) => {
             if (para.textarea.hasChanges()) {
-                bootbox.confirm(translateDirective.getTranslation('amend', 'reloadParagraph'), (result) => {
+                bootbox.confirm(translateDirective.getTranslation('amend', 'reload_paragraph'), (result) => {
                     if (result) {
                         cb();
                     }
@@ -1002,7 +1002,7 @@ export class MotionMergeAmendments {
      * @returns {string}
      */
     static onLeavePage() {
-        return translateDirective.getTranslation("motion", "leave_changed_page");
+        return translateDirective.getTranslation("amend", "leave_changed_page");
     }
 
     /**

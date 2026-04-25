@@ -211,7 +211,7 @@ return [
         'text' => 'Collisions end here',
         'js' => true,
     ],
-    'reloadParagraph' => [
+    'reload_paragraph' => [
         'text' => 'If this selection is changed, manual changes to this paragraph are lost. Proceed?',
         'js' => true,
     ],

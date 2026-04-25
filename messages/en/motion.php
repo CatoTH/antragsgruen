@@ -342,10 +342,6 @@ return [
         'text' => 'Please select one choice in the field Gender.',
         'js' => true,
     ],
-    'leave_changed_page' => [
-        'text' => 'There are unsaved changes. Do you really want to leave this page and discard those changes?',
-        'js' => true,
-    ],
     'moved_paragraph_from' => [
         'text' => 'Moved from paragraph ##PARA##',
         'js' => true,
