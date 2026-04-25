@@ -252,7 +252,7 @@ class MotionMergeChangeTooltip {
 
         let html = '';
         if (isAppendedCollision) {
-            html += '<div class="mergingPopoverCollisionHint">⚠️ ' + __t("merge", "mergedCollisionHint") + '</div>';
+            html += '<div class="mergingPopoverCollisionHint">⚠️ ' + translateDirective.getTranslation("amend", "mergedCollisionHint") + '</div>';
         }
         html += '<div class="mergingPopoverButtons">';
         html += '<button type="button" class="accept btn btn-sm btn-default"></button>';
@@ -262,27 +262,27 @@ class MotionMergeChangeTooltip {
         html += '</div>';
 
         const $el = $(html);
-        $el.find(".opener").attr("href", $myEl.data("link")).attr("title", __t("merge", "title_open_in_blank"));
+        $el.find(".opener").attr("href", $myEl.data("link")).attr("title", translateDirective.getTranslation("amend", "title_open_in_blank"));
         if (isModU) {
-            $el.find(".initiator").text(__t("merge", "modU"));
+            $el.find(".initiator").text(translateDirective.getTranslation("amend", "modU"));
         } else {
-            $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $myEl.data("username"));
+            $el.find(".initiator").text(translateDirective.getTranslation("amend", "initiated_by") + ": " + $myEl.data("username"));
         }
 
         if ($myEl.hasClass("ice-ins")) {
-            $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
-            $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
+            $el.find("button.accept").text(translateDirective.getTranslation("amend", "change_accept")).on("click", this.accept.bind(this));
+            $el.find("button.reject").text(translateDirective.getTranslation("amend", "change_reject")).on("click", this.reject.bind(this));
         } else if ($myEl.hasClass("ice-del")) {
-            $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
-            $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
+            $el.find("button.accept").text(translateDirective.getTranslation("amend", "change_accept")).on("click", this.accept.bind(this));
+            $el.find("button.reject").text(translateDirective.getTranslation("amend", "change_reject")).on("click", this.reject.bind(this));
         } else if ($myEl[0].nodeName.toLowerCase() === 'li') {
             const $list = $myEl.parent();
             if ($list.hasClass("ice-ins")) {
-                $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
-                $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
+                $el.find("button.accept").text(translateDirective.getTranslation("amend", "change_accept")).on("click", this.accept.bind(this));
+                $el.find("button.reject").text(translateDirective.getTranslation("amend", "change_reject")).on("click", this.reject.bind(this));
             } else if ($list.hasClass("ice-del")) {
-                $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
-                $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
+                $el.find("button.accept").text(translateDirective.getTranslation("amend", "change_accept")).on("click", this.accept.bind(this));
+                $el.find("button.reject").text(translateDirective.getTranslation("amend", "change_reject")).on("click", this.reject.bind(this));
             } else {
                 console.log("unknown", $list);
             }
@@ -475,9 +475,9 @@ class MotionMergeAmendmentsTextarea {
         let msg;
 
         if ($node.hasClass('inserted')) {
-            msg = __t('std', 'moved_paragraph_from');
+            msg = translateDirective.getTranslation("motion", 'moved_paragraph_from');
         } else {
-            msg = __t('std', 'moved_paragraph_to');
+            msg = translateDirective.getTranslation("motion", 'moved_paragraph_to');
         }
         msg = msg.replace(/##PARA##/, (paragraphNew + 1));
 
@@ -701,7 +701,7 @@ class MotionMergeAmendmentsParagraph {
 
         const doAfterAskIfChanged = (cb) => {
             if (para.textarea.hasChanges()) {
-                bootbox.confirm(__t('merge', 'reloadParagraph'), (result) => {
+                bootbox.confirm(translateDirective.getTranslation('amend', 'reloadParagraph'), (result) => {
                     if (result) {
                         cb();
                     }
@@ -1002,7 +1002,7 @@ export class MotionMergeAmendments {
      * @returns {string}
      */
     static onLeavePage() {
-        return __t("std", "leave_changed_page");
+        return translateDirective.getTranslation("motion", "leave_changed_page");
     }
 
     /**

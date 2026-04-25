@@ -235,34 +235,13 @@ class Layout
         }
     }
 
-    public function getJSLanguageCode(): string
-    {
-        if (!$this->consultation) {
-            $lang   = explode('-', AntragsgruenApp::getInstance()->baseLanguage);
-            if (AntragsgruenApp::getInstance()->baseLanguage == 'en-gb') {
-                return 'en-gb';
-            } else {
-                return $lang[0];
-            }
-        }
-        $langs = explode(',', $this->consultation->wordingBase);
-        $lang  = explode('-', $langs[0]);
-        if ($langs[0] == 'en-gb') {
-            return 'en-gb';
-        } else {
-            return $lang[0];
-        }
-    }
-
     /**
      * @return string[]
      */
     public function getJSFiles(): array
     {
-        $jsLang  = $this->getJSLanguageCode();
         $files   = [];
         $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
-        $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
         foreach ($this->extraJs as $extraJs) {
             $files[] = $this->resourceUrl($extraJs);
         }
