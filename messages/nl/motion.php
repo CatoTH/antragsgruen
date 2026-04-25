@@ -263,4 +263,57 @@ return [
     'goto_line_err' => 'Regel niet gevonden',
 
     'statutes_base_head' => 'Base text',
+
+    'del_confirm' => [
+        'text' => 'Weet je zeker dat je dit wilt verwijderen?',
+        'js' => true,
+    ],
+    'draft_del' => [
+        'text' => 'Concept verwijderen',
+        'js' => true,
+    ],
+    'draft_del_confirm' => [
+        'text' => 'Weet je zeker dat je dit wilt verwijderen?',
+        'js' => true,
+    ],
+    'draft_date' => [
+        'text' => 'Conceptdatum',
+        'js' => true,
+    ],
+    'draft_restore_confirm' => [
+        'text' => 'Dit concept herstellen?',
+        'js' => true,
+    ],
+    'min_x_supporter' => [
+        'text' => 'Je moet minimaal %NUM% ondersteuners hebben.',
+        'js' => true,
+    ],
+    'missing_resolution_date' => [
+        'text' => 'Er moet een resolutiedatum worden opgegeven.',
+        'js' => true,
+    ],
+    'missing_gender' => [
+        'text' => 'Vul iets in bij het genderveld',
+        'js' => true,
+    ],
+    'leave_changed_page' => [
+        'text' => 'Er zijn nog niet opgeslagen wijzigingen. Weet je zeker dat je deze pagina wilt verlaten?',
+        'js' => true,
+    ],
+    'moved_paragraph_from' => [
+        'text' => 'Verplaatst van alinea ##PARA##.',
+        'js' => true,
+    ],
+    'moved_paragraph_to' => [
+        'text' => 'Verplaatst naar alinea ##PARA##.',
+        'js' => true,
+    ],
+    'moved_paragraph_from_line' => [
+        'text' => 'Verplaatst van alinea ##PARA## (regel ##LINE##)',
+        'js' => true,
+    ],
+    'moved_paragraph_to_line' => [
+        'text' => 'Verplaatst naar alinea ##PARA## (regel ##LINE##)',
+        'js' => true,
+    ],
 ];

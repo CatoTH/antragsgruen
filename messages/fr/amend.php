@@ -80,7 +80,10 @@ return [
     'sidebar_back'                      => 'Retour à la motion',
     'sidebar_mergeintomotion'           => 'Intégrer à la motion',
     'back_to_amend'                     => 'Retour à l\'amendement',
-    'initiated_by'                      => 'Déposé par',
+    'initiated_by'                      => [
+        'text' => 'Déposé par',
+        'js' => true,
+    ],
     'confirm_bread'                     => 'Confirmer',
     'affects_x_paragraphs'              => 'Affecte %num% paragraphes',
     'revert_changes'                    => 'Revenir sur les changements',
@@ -171,4 +174,53 @@ return [
     'merge1_manual_changes'    => 'Vos changements actuels',
     'merge1_manual_amend'      => 'Changements aportés par l\'amendement en collision',
     'merge1_manual_new'        => 'Nouvelle version de l\'amendement en collision',
+
+    'title_open_in_blank' => [
+        'text' => 'Open the amendment in a new window',
+        'js' => true,
+    ],
+    'title_del_title' => [
+        'text' => 'Remove the headline "Colliding Amendment: ..."',
+        'js' => true,
+    ],
+    'title_del_colliding' => [
+        'text' => 'Remove the whole colliding paragraph',
+        'js' => true,
+    ],
+    'title' => [
+        'text' => 'Headline',
+        'js' => true,
+    ],
+    'change_accept' => [
+        'text' => 'Acceptez',
+        'js' => true,
+    ],
+    'change_reject' => [
+        'text' => 'Rejeter',
+        'js' => true,
+    ],
+    'colliding_title' => [
+        'text' => 'Colliding amendm.',
+        'js' => true,
+    ],
+    'colliding_start' => [
+        'text' => 'Collisions start here',
+        'js' => true,
+    ],
+    'colliding_end' => [
+        'text' => 'Collisions end here',
+        'js' => true,
+    ],
+    'reloadParagraph' => [
+        'text' => 'If this selection is changed, manual changes to this paragraph are lost. Proceed?',
+        'js' => true,
+    ],
+    'mergedCollisionHint' => [
+        'text' => 'This change collides with a previous one. Please be cautious to get a consistent text in the end.',
+        'js' => true,
+    ],
+    'modU' => [
+        'text' => 'Proposed modification',
+        'js' => true,
+    ],
 ];

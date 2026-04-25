@@ -171,4 +171,17 @@ return [
     'group_template_proposed_h' => 'Je kunt de voorgestelde procedure wijzigen, maar niet de moties of amendementen.',
     'group_template_participant' => 'Deelnemer',
     'group_template_participant_h' => 'Geen speciale toegang. Dat is alleen van belang als de toegang tot deze site beperkt is.',
+
+    'pw_x_chars' => [
+        'text' => 'Het wachtwoord moet minimaal %NUM% tekens lang zijn.',
+        'js' => true,
+    ],
+    'pw_min_x_chars' => [
+        'text' => 'Minimaal %NUM% tekens',
+        'js' => true,
+    ],
+    'pw_no_match' => [
+        'text' => 'De twee wachtwoorden komen niet overeen.',
+        'js' => true,
+    ],
 ];

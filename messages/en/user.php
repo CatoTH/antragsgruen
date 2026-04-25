@@ -200,4 +200,17 @@ return [
     'group_template_progress_h' => 'Can edit progress reports of resolutions, but not the resolutions themselves.',
     'group_template_participant' => 'Participant',
     'group_template_participant_h' => 'No special privileges. Only relevant if access to this site is restricted.',
+
+    'pw_x_chars' => [
+        'text' => 'The password needs to be at least %NUM% characters long.',
+        'js' => true,
+    ],
+    'pw_min_x_chars' => [
+        'text' => 'Min. %NUM% characters',
+        'js' => true,
+    ],
+    'pw_no_match' => [
+        'text' => 'The passwords do not match.',
+        'js' => true,
+    ],
 ];

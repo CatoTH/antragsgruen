@@ -128,4 +128,17 @@ return [
     'no_noti_all'          => 'Se désinscrire de toutes les notifications',
     'no_noti_blocklist'    => 'Aucun email du tout<small>(y compris les emails de récupération de mot de passe, etc.)</small>',
     'no_noti_save'         => 'Enregistrer',
+
+    'pw_x_chars' => [
+        'text' => 'The password needs to be at least %NUM% characters long.',
+        'js' => true,
+    ],
+    'pw_min_x_chars' => [
+        'text' => 'Min. %NUM% characters',
+        'js' => true,
+    ],
+    'pw_no_match' => [
+        'text' => 'The passwords do not match.',
+        'js' => true,
+    ],
 ];

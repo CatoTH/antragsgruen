@@ -301,4 +301,62 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
 
     'statutes_base_head' => 'Basistext',
     'last_update' => 'Stand',
+
+
+    'add_tag' => [
+        'text' => 'Anlegen',
+        'js' => true,
+    ],
+    'del_confirm' => [
+        'text' => 'Wirklich löschen?',
+        'js' => true,
+    ],
+    'draft_del' => [
+        'text' => 'Entwurf löschen',
+        'js' => true,
+    ],
+    'draft_del_confirm' => [
+        'text' => 'Entwurf wirklich löschen?',
+        'js' => true,
+    ],
+    'draft_date' => [
+        'text' => 'Entwurf vom',
+        'js' => true,
+    ],
+    'draft_restore_confirm' => [
+        'text' => 'Diesen Entwurf wiederherstellen?',
+        'js' => true,
+    ],
+    'min_x_supporter' => [
+        'text' => 'Es müssen mindestens %NUM% Unterstützer*innen angegeben werden.',
+        'js' => true,
+    ],
+    'missing_resolution_date' => [
+        'text' => 'Es muss ein Beschlussdatum angegeben werden.',
+        'js' => true,
+    ],
+    'missing_gender' => [
+        'text' => 'Bitte gib etwas im Gender-Feld an.',
+        'js' => true,
+    ],
+    'leave_changed_page' => [
+        'text' => 'Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?',
+        'js' => true,
+    ],
+    'moved_paragraph_from' => [
+        'text' => 'Verschoben von Absatz ##PARA##',
+        'js' => true,
+    ],
+    'moved_paragraph_to' => [
+        'text' => 'Verschoben zu Absatz ##PARA##',
+        'js' => true,
+    ],
+    'moved_paragraph_from_line' => [
+        'text' => 'Verschoben von Absatz ##PARA## (Zeile ##LINE##)',
+        'js' => true,
+    ],
+    'moved_paragraph_to_line' => [
+        'text' => 'Verschoben zu Absatz ##PARA## (Zeile ##LINE##)',
+        'js' => true,
+    ],
 ];

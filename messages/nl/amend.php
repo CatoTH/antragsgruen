@@ -168,7 +168,10 @@ return [
     'sidebar_back'                      => 'Terug naar de motie',
     'sidebar_mergeintomotion'           => 'Voer de wijzigingen in in de motie',
     'back_to_amend'                     => 'Terug naar het amendement',
-    'initiated_by'                      => 'Ingediend door',
+    'initiated_by'                      => [
+        'text' => 'Ingediend door',
+        'js' => true,
+    ],
     'confirm_bread'                     => 'Bevestig',
     'affects_x_paragraphs'              => 'Raakt %num% paragrafen',
     'revert_changes'                    => 'Maak wijzigingen ongedaan',
@@ -357,4 +360,45 @@ return [
     'proposal_user_disagree_h'   => 'als je het oneens bent, neem aub contact op met de orginasitoren van deze raadpleging.',
     'proposal_user_saved'        => 'Je keuze is vastgelegd',
     'proposal_user_change_reset' => 'Aangezien de voorgestelde procedure is gewijzigd, is de keuze van de indiener ge-reset.',
+
+    'title_open_in_blank' => [
+        'text' => 'Open de wijziging in een nieuw venster',
+        'js' => true,
+    ],
+    'title_del_title' => [
+        'text' => 'Verwijder "tegenstrijdige: ..." titel',
+        'js' => true,
+    ],
+    'title_del_colliding' => [
+        'text' => 'Verwijder het volledige tegenstrijdige blok',
+        'js' => true,
+    ],
+    'title' => [
+        'text' => 'Titel',
+        'js' => true,
+    ],
+    'change_accept' => [
+        'text' => 'Overnemen',
+        'js' => true,
+    ],
+    'change_reject' => [
+        'text' => 'Werwerpen',
+        'js' => true,
+    ],
+    'colliding_title' => [
+        'text' => 'Tegenstrijdige ÄA',
+        'js' => true,
+    ],
+    'colliding_start' => [
+        'text' => 'Tegenstrijdigheid start hier',
+        'js' => true,
+    ],
+    'colliding_end' => [
+        'text' => 'Tegenstrijdigheid tot hier',
+        'js' => true,
+    ],
+    'reloadParagraph' => [
+        'text' => 'Als deze selectie wordt gewijzigd, gaan handmatige wijzigingen in deze paragraaf verloren. Volgende?',
+        'js' => true,
+    ],
 ];

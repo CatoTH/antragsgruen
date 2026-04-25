@@ -208,4 +208,17 @@ return [
     'group_template_progress_h' => 'Können die Sachstände der Beschlüsse bearbeiten, aber nicht die Beschlüsse selbst.',
     'group_template_participant' => 'Teilnehmer*in',
     'group_template_participant_h' => 'Keine besonderen Berechtigungen. Nur relevant, falls der Zugriff auf diese Veranstaltung eingeschränkt ist.',
+
+    'pw_x_chars' => [
+        'text' => 'Das Passwort muss mindestens %NUM% Zeichen lang sein.',
+        'js' => true,
+    ],
+    'pw_min_x_chars' => [
+        'text' => 'Min. %NUM% Zeichen',
+        'js' => true,
+    ],
+    'pw_no_match' => [
+        'text' => 'Die beiden Passwörter stimmen nicht überein.',
+        'js' => true,
+    ],
 ];
