@@ -2,8 +2,8 @@
   <section class="agendaEditWidget stdSortingWidget">
     <div class="settings">
       <label>
-        <input type="checkbox" v-model="showTime" :disabled="anyItemHasTime" class="showTimeSelector">
-        <template v-t="['admin', 'agenda_show_times']"></template>
+        <input type="checkbox" v-model="showTime" :disabled="anyItemHasTime"
+               class="showTimeSelector"> <span v-t="['admin', 'agenda_show_times']"></span>
       </label>
     </div>
     <agenda-sorter v-model="list" :motionTypes="motionTypes" :root="true" :showTime="showTime"></agenda-sorter>
@@ -14,8 +14,8 @@
       </div>
       <div class="saving" v-t="['base', 'saving', false, {}, '...']"></div>
       <div class="saved">
-        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-        <template v-t="['base', 'saved']"></template>
+        <span class="glyphicon glyphicon-ok"
+              aria-hidden="true"></span> <template v-t="['base', 'saved']"></template>
       </div>
     </div>
   </section>

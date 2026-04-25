@@ -16,6 +16,7 @@
         <span class="glyphicon glyphicon-wrench" v-t:aria-label="['admin', 'agenda_move_aria']"></span>
         <span class="caret" aria-hidden="true"></span>
       </button>
+      <input v-if="!hasProposedProcedure()" type="checkbox" v-model="modelValue.settings.in_proposed_procedures" hidden>
       <ul class="dropdown-menu dropdown-menu-right">
         <li class="checkbox inProposedProcedures" v-if="hasProposedProcedure()">
           <label>

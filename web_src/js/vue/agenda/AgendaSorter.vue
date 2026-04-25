@@ -85,7 +85,7 @@ export default {
         time: null,
         children: [],
         settings: {
-          in_proposed_procedures: false,
+          in_proposed_procedures: true,
           has_speaking_list: false,
           motion_types: [],
         },

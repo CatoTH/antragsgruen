@@ -7,6 +7,7 @@
 - Configuring Antragsgrün via environment variables is now supported, allowing for easier deployment in Docker- and Kubernetes-environments.
 - It is now easier possible to integrate OpenTelemetry into Antragsgrün.
 - More configurations for the admin list: a date column can be added, and the tags and type column removed.
+- Agenda items now are by default set to be included in the proposed procedure, making them opt-out instead of opt-in.
 
 ### Version 4.16.4 (2026-04-10)
 
