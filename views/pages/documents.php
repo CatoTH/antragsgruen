@@ -37,7 +37,7 @@ $pageData = ConsultationText::getPageData($consultation->site, $consultation, Co
 
 if ($contentAdmin) {
     $layout->loadCKEditor();
-    $layout->addJsTranslation("motion");
+    $layout->addJsTranslation("admin");
     ?>
     <script type="module">
         import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';

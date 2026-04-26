@@ -18,6 +18,7 @@ const main_js_files = [
     "node_modules/entreprise7pro-bootstrap/js/popover.js",
     "node_modules/bootbox/dist/bootbox.all.js",
     "web_src/js/jquery.isonscreen.js",
+    "web_src/js/antragsgruen.js",
 ];
 
 async function taskCopyFiles() {

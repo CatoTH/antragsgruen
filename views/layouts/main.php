@@ -90,7 +90,6 @@ if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
 echo '<script src="' . $layout->resourceUrl('js/jquery-4.0.0.min.js') . '"></script>';
-//echo '<script src="' . $layout->resourceUrl('js/jquery-migrate-4.0.2.js') . '"></script>';
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
@@ -171,18 +170,6 @@ echo '
       "url": "' . Html::encode($params->domainPlain) . '",
       "logo": "' . Html::encode($params->getAbsoluteResourceBase()) . 'img/logo.png"
     }
-</script>
-<script type="application/ld+json">
-{
-  "@context" : "http://schema.org",
-  "@type" : "Organization",
-  "name" : "' . Yii::t('export', 'default_creator') . '",
-  "url" : "' . Html::encode($params->domainPlain) . '",
-  "sameAs" : [
-    "https://www.facebook.com/Antragsgruen",
-    "https://twitter.com/Antragsgruen"
-  ]
-}
 </script>
 </body></html>';
 

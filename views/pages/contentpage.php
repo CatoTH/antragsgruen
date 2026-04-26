@@ -50,7 +50,7 @@ echo '<div class="primaryHeader"><h1 class="pageTitle">' . Html::encode($pageDat
 if ($admin) {
     $layout->loadCKEditor();
     $layout->loadSelectize();
-    $layout->addJsTranslation("motion");
+    $layout->addJsTranslation("admin");
     ?>
     <script type="module">
         import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';

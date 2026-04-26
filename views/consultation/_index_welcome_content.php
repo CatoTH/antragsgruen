@@ -34,7 +34,7 @@ $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $c
 $saveUrl  = $pageData->getSaveUrl();
 
 if ($contentAdmin) {
-    $layout->addJsTranslation("motion");
+    $layout->addJsTranslation("admin");
     ?>
     <script type="module">
         import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
