@@ -18,6 +18,8 @@ $layout       = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'));
 $this->title = Yii::t('voting', 'page_title');
 
+$layout->addJsTranslation('voting');
+
 $sidebarMode = 'open';
 include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
@@ -53,7 +55,6 @@ $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
     import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
     new VotingBlock(
         document.querySelector(".currentVotingWidget"),
-        <?= json_encode($CONSTANTS) ?>,
-        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+        <?= json_encode($CONSTANTS) ?>
     );
 </script>

@@ -1,5 +1,7 @@
 // @ts-check
 
+import translations from "/js/vue/Translate.vue.js";
+
 export class ConsultationSettings {
     /** @type { HTMLElement } */
     element;
@@ -41,7 +43,7 @@ export class ConsultationSettings {
             if ($(this).prop("checked")) {
                 $iniatorsMayEdit.removeClass("hidden");
             } else {
-                let confirmMessage = __t("admin", "adminMayEditConfirm");
+                let confirmMessage = translations.getTranslation("admin", "admin_may_edit_confirm");
                 bootbox.confirm(confirmMessage, function (result) {
                     if (result) {
                         $iniatorsMayEdit.addClass("hidden");

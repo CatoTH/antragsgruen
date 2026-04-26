@@ -79,6 +79,7 @@ if ($amendment->isInScreeningProcess() && User::havePrivilege($consultation, Pri
     echo "<br>";
 }
 
+$layout->addJsTranslation("admin");
 ?>
     <script type="module">
         import { AmendmentEdit } from '/js/modules/backend/AmendmentEdit.js';

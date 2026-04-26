@@ -86,6 +86,8 @@ echo '<div id="draftHint" class="hidden alert alert-info"
 
 </div>';
 
+$layout->addJsTranslation("motion");
+$layout->addJsTranslation("amend");
 ?>
 <script type="module">
     import { AmendmentEdit } from '/js/modules/frontend/AmendmentEdit.js';

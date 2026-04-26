@@ -1,6 +1,7 @@
 // @ts-check
 
 import {ResponsibilitySetter} from './ResponsibilitySetter.js';
+import translate from "../../vue/Translate.vue.js";
 
 /**
  * @typedef {Object} ReloadResult
@@ -97,7 +98,10 @@ export class ProposedProcedureOverview {
                 plugins: ["remove_button"],
                 render: {
                     option_create: (data, escape) => {
-                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                        const addTag = translate.getTranslation("motion", "add_tag")
+                            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                        return '<div class="create">' + addTag + ': <strong>' + escape(data.input) + '</strong></div>';
                     }
                 }
             });

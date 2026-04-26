@@ -1,6 +1,7 @@
 // @ts-check
 
 import { ResponsibilitySetter } from './ResponsibilitySetter.js';
+import translate from "../../vue/Translate.vue.js";
 
 export class MotionList {
     constructor() {
@@ -108,7 +109,7 @@ export class MotionList {
         ev.preventDefault();
         let $button = $(ev.target),
             $form = $button.parents("form");
-        bootbox.confirm(__t("std", "del_confirm"), function (result) {
+        bootbox.confirm(translate.getTranslation("motion", "del_confirm"), function (result) {
             if (result) {
                 let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
                 $form.append($input);

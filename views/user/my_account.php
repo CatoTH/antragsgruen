@@ -24,6 +24,8 @@ $this->title = Yii::t('user', 'my_acc_title');
 $layout->addBreadcrumb(Yii::t('user', 'my_acc_bread'));
 $layout->robotsNoindex = true;
 
+$layout->addJsTranslation("user");
+
 $externalAuthenticator = User::getExternalAuthenticator();
 
 $formUrl = UrlHelper::createUrl('user/myaccount');

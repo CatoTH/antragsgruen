@@ -116,6 +116,15 @@ if (defined('YII_ENV') && YII_ENV == 'test') {
 
 echo '<body' . (count($bodyClasses) > 0 ? ' class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
 
+if (count($layout->getJsTranslations()) > 0) {
+    echo '<script type="module">
+    import translate from "/js/vue/Translate.vue.js";' . "\n";
+    foreach ($layout->getJsTranslations() as $translation) {
+        echo 'translate.registerTranslation("' . $translation . '", ' . json_encode(JsTools::getTranslations($consultation, $translation)) . ');' . "\n";
+    }
+    echo '</script>';
+}
+
 $this->beginBody();
 
 echo '<a href="#mainContent" id="gotoMainContent">' . Yii::t('base', 'goto_main_content') . '</a>';

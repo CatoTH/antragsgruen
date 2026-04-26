@@ -21,6 +21,8 @@ $layout->addOnLoadJS('document.getElementById("2facode").focus()');
 
 echo '<h1>' . Yii::t('user', 'login_title') . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'tfaForm']);
+
+$layout->addJsTranslation("user");
 ?>
 <script type="module">
     import { LoginForm } from '/js/modules/frontend/LoginForm.js';

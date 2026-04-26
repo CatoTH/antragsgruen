@@ -50,6 +50,8 @@ $currentUser = \app\models\db\User::getCurrentUser();
 $canInitiateAsPerson = $settings->canInitiateAsPerson($consultation);
 $canInitiateAsOrganization = $settings->canInitiateAsOrganization($consultation);
 
+$layout->addJsTranslation("motion");
+
 echo '
 <script type="module">
 import { InitiatorForm } from "/js/modules/frontend/InitiatorForm.js";

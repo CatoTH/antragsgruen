@@ -31,6 +31,7 @@ if ($admin) {
 
 echo '<h1>' . Html::encode($pageData->title) . '</h1>';
 
+$layout->addJsTranslation("motion");
 ?>
     <script type="module">
         import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';

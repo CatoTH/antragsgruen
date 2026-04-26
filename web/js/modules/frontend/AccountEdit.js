@@ -1,5 +1,7 @@
 // @ts-check
 
+import translations from "/js/vue/Translate.vue.js";
+
 export class AccountEdit {
     constructor() {
         let pwMinLen = $("#userPwd").data("min-len");
@@ -30,10 +32,10 @@ export class AccountEdit {
             if (pwd != '' || pwd2 != '') {
                 if (pwd.length < pwMinLen) {
                     ev.preventDefault();
-                    bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen));
+                    bootbox.alert(translations.getTranslation("user", "pw_x_chars").replace(/%NUM%/, pwMinLen));
                 } else if (pwd != pwd2) {
                     ev.preventDefault();
-                    bootbox.alert(__t("std", "pw_no_match"));
+                    bootbox.alert(translations.getTranslation("user", "pw_no_match"));
                 }
             }
         });

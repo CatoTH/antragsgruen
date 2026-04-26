@@ -2,6 +2,7 @@
 
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
 import {MotionMergeChangeActions} from "../shared/MotionMergeChangeActions.js";
+import translations from "/js/vue/Translate.vue.js";
 
 export class ProposedChangeEdit {
     hasChanged = false;
@@ -123,7 +124,7 @@ export class ProposedChangeEdit {
     }
 
     static onLeavePage() {
-        return __t("std", "leave_changed_page");
+        return translations.getTranslation("amend", "leave_changed_page");
     }
 
     onContentChanged() {

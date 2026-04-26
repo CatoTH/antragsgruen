@@ -9,19 +9,23 @@ use yii\helpers\Html;
  * @var string|null $init_content_url
  */
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$consultation = $controller->consultation;
+$layout = $controller->layoutParams;
+
 $fullscreenInitData = json_encode([
     'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
     'pagination' => $consultation->getSettings()->motionPrevNextLinks,
     'init_page' => $init_page,
     'init_content_url' => $init_content_url,
 ]);
-$jsTranslations = json_encode([
-    "amend" => JsTools::getTranslations($consultation, "amend"),
-    "base" => JsTools::getTranslations($consultation, "base"),
-    "motion" => JsTools::getTranslations($consultation, "motion"),
-    "pages" => JsTools::getTranslations($consultation, "pages"),
-    "speech" => JsTools::getTranslations($consultation, "speech"),
-]);
+
+$layout->addJsTranslation("amend");
+$layout->addJsTranslation("base");
+$layout->addJsTranslation("motion");
+$layout->addJsTranslation("pages");
+$layout->addJsTranslation("speech");
 
 ?>
 <button type="button" title="<?= Yii::t('motion', 'fullscreen') ?>" class="btn btn-link btnFullscreen"
@@ -37,5 +41,5 @@ $jsTranslations = json_encode([
         <?= json_encode(UrlHelper::createUrl(['/speech/unregister', 'queueIds' => 'QUEUEIDS'])) ?>
     );
     import { FullscreenToggle } from "/js/modules/frontend/FullscreenToggle.js";
-    new FullscreenToggle(document.querySelector(".btnFullscreen"), <?= $jsTranslations ?>);
+    new FullscreenToggle(document.querySelector(".btnFullscreen"));
 </script>

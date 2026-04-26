@@ -38,6 +38,7 @@ echo $this->render('_list_all_export', [
     'search' => $search,
 ]);
 
+$layout->addJsTranslation("motion");
 ?>
 <script type="module">
     import { MotionList } from "/js/modules/backend/MotionList.js";

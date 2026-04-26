@@ -27,6 +27,9 @@ $myUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $mot
 
 $locale = Tools::getCurrentDateLocale();
 
+$layout->addJsTranslation("admin");
+$layout->addJsTranslation("motion");
+
 ?>
 <h1><?= Yii::t('admin', 'motion_type_edit') ?></h1>
 <script type="module">

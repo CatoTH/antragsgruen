@@ -68,6 +68,7 @@ echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 echo $fullscreenButton;
 echo '</div>';
 
+$layout->addJsTranslation("motion");
 ?>
     <script type="module">
         import { AmendmentShow } from '/js/modules/frontend/AmendmentShow.js';

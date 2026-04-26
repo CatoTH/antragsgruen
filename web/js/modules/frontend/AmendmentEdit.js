@@ -2,6 +2,7 @@
 
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
 import {DraftSavingEngine} from "../shared/DraftSavingEngine.js";
+import translations from "/js/vue/Translate.vue.js";
 
 // Keep in sync with ConsultationMotionType.php
 const AMEND_PARAGRAPHS_MULTIPLE = 1;
@@ -9,7 +10,7 @@ const AMEND_PARAGRAPHS_SINGLE_PARAGRAPH = 0;
 const AMEND_PARAGRAPHS_SINGLE_CHANGE = -1;
 
 function onLeavePage() {
-    return __t("std", "leave_changed_page");
+    return translations.getTranslation("amend", "leave_changed_page");
 }
 
 export class AmendmentEdit {

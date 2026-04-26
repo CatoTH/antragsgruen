@@ -26,6 +26,8 @@ $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('admin', 'speech');
 
+$layout->addJsTranslation('speech');
+
 $htmls = \app\views\speech\LayoutHelper::getSidebars($consultation, $queue);
 if ($htmls[0] !== '') {
     $layout->menusHtml[] = $htmls[0];
@@ -71,7 +73,6 @@ $pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' 
 <script type="module">
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import translateDirective from "/js/vue/Translate.vue.js";
-    translateDirective.registerTranslation("speech", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "speech")) ?>);
     import AdminWidgetComponent from "/js/vue/speech/AdminWidget.js";
     import AdminSubqueueComponent from "/js/vue/speech/AdminSubqueue.js";
 

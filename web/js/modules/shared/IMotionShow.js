@@ -1,5 +1,7 @@
 // @ts-check
 
+import translate from "../../vue/Translate.vue.js";
+
 export class IMotionShow {
     initContactShow() {
         $(".motionData .contactShow").on("click", function (ev) {
@@ -53,7 +55,7 @@ export class IMotionShow {
             ev.preventDefault();
             /** @type {HTMLFormElement} */
             const form = ev.target;
-            bootbox.confirm(__t("std", "del_confirm"), function (result) {
+            bootbox.confirm(translate.getTranslation("motion", "del_confirm"), function (result) {
                 if (result) {
                     // noinspection JSDeprecatedSymbols
                     form.submit(); // Native submit() function, not the jQuery one

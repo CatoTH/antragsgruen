@@ -5,17 +5,19 @@ use app\components\UrlHelper;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+$layout       = $controller->layoutParams;
 
 $pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
 $registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
 $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
+
+$layout->addJsTranslation('speech');
 ?>
 
 <script type="module">
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import translateDirective from "/js/vue/Translate.vue.js";
-    translateDirective.registerTranslation("speech", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "speech")) ?>);
     import userFooterWidget from "/js/vue/speech/UserFooterWidget.js";
 
     setSpeechUrls(

@@ -9,7 +9,10 @@ use yii\helpers\Html;
 /**
  * @var User|null $user
  * @var SupportBase $supportType
+ * @var \app\controllers\UserController $controller
  */
+$controller = $this->context;
+$layout     = $controller->layoutParams;
 
 $fixedReadOnly = ($user && ($user->fixedData & User::FIXED_NAME) ? 'readonly' : '');
 $name          = ($user ? $user->name : '');
@@ -21,6 +24,7 @@ echo Html::beginForm('', 'post', [
     'data-settings'            => json_encode($settings)
 ]);
 
+$layout->addJsTranslation("motion");
 ?>
     <script type="module">
         import { motionSupportBlock } from '/js/modules/frontend/MotionSupportBlock.js';

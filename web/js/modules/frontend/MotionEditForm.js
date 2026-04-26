@@ -2,9 +2,10 @@
 
 import {DraftSavingEngine} from "../shared/DraftSavingEngine.js";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor.js";
+import translations from "/js/vue/Translate.vue.js";
 
 function onLeavePage() {
-    return __t("std", "leave_changed_page");
+    return translations.getTranslation("amend", "leave_changed_page");
 }
 
 export class MotionEditForm {

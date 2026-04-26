@@ -64,6 +64,7 @@ echo $this->render('_list_all_header_bar', [
     'search' => $search,
 ]);
 
+$layout->addJsTranslation("motion");
 ?>
 <script type="module">
     import { MotionList } from "/js/modules/backend/MotionList.js";

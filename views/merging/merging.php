@@ -72,12 +72,10 @@ $statuses = [
     Amendment::STATUS_REJECTED          => Yii::t('structure', 'STATUS_REJECTED'),
     Amendment::STATUS_MODIFIED_ACCEPTED => Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
 ];
+$layout->addJsTranslation('base');
+$layout->addJsTranslation('amend');
 ?>
 <script type="module">
-    import translate from "/js/vue/Translate.vue.js";
-    translate.registerTranslation("base", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "base")) ?>);
-    translate.registerTranslation("amend", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "amend")) ?>);
-
     import ParagraphAmendmentSettings from "/js/vue/merging/ParagraphAmendmentSettings.js";
     ParagraphAmendmentSettings.setStatuses(<?= json_encode($statuses) ?>);
 

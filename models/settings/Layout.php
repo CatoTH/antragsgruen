@@ -35,6 +35,7 @@ class Layout
     public array $extraJs = [];
     public array $bodyCssClasses = [];
     public array $onloadJs = [];
+    public array $jsTranslations = [];
     public bool $fullWidth = false;
     public bool $fullScreen = false;
     public ?string $mainCssFile = null;
@@ -186,6 +187,19 @@ class Layout
     {
         $this->onloadJs[] = $execJs;
         return $this;
+    }
+
+    public function addJsTranslation(string $translation): self
+    {
+        if (!in_array($translation, $this->jsTranslations)) {
+            $this->jsTranslations[] = $translation;
+        }
+        return $this;
+    }
+
+    public function getJsTranslations(): array
+    {
+        return $this->jsTranslations;
     }
 
     private bool $tooltipOnloadJsInitialized = false;

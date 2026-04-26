@@ -1,5 +1,7 @@
 // @ts-check
 
+import translate from "../../vue/Translate.vue.js";
+
 const STATUS_REFERRED = 10;
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY_MOT = 32;
@@ -109,7 +111,10 @@ export class ChangeProposedProcedure {
             plugins: ["remove_button"],
             render: {
                 option_create: (data, escape) => {
-                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                    const addTag = translate.getTranslation("motion", "add_tag")
+                        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                    return '<div class="create">' + addTag + ': <strong>' + escape(data.input) + '</strong></div>';
                 }
             }
         });

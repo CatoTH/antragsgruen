@@ -43,6 +43,7 @@ foreach ($consultation->motionTypes as $type) {
 <div class="content contentPage contentPageFeeds">
     <?php
     if ($admin) {
+        $layout->addJsTranslation("motion");
         ?>
         <script type="module">
             import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';

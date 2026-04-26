@@ -3,6 +3,7 @@
 import { MotionSupporterEdit } from "./MotionSupporterEdit.js";
 import { AntragsgruenEditor } from "../shared/AntragsgruenEditor.js";
 import { AmendmentEditSinglePara } from "../shared/AmendmentEditSinglePara.js";
+import translations from "../../vue/Translate.vue.js";
 
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY_MOTION = 32;
@@ -49,7 +50,7 @@ export class AmendmentEdit {
             }
             const $form = $(this);
             ev.preventDefault();
-            bootbox.confirm(__t("admin", "delAmendmentConfirm"), function (result) {
+            bootbox.confirm(translations.getTranslation("admin", "del_amendment_confirm"), function (result) {
                 if (result) {
                     $form.trigger("submit", { 'confirmed': true });
                 }

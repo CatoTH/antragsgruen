@@ -64,6 +64,8 @@ $collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
             'id'                        => 'proposedChangeTextForm',
             'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
         ]);
+
+        $layout->addJsTranslation("amend");
         ?>
 
         <script type="module">

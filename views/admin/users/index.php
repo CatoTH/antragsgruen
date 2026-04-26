@@ -88,11 +88,11 @@ $privilegeDependencies = $privileges->getPrivilegeDependencies();
     <div class="userAdmin"></div>
 </div>
 
+<?php
+$layout->addJsTranslation('admin');
+$layout->addJsTranslation('base');
+?>
 <script type="module">
-    import translate from "/js/vue/Translate.vue.js";
-    translate.registerTranslation("admin", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "admin")) ?>);
-    translate.registerTranslation("base", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "base")) ?>);
-
     import { UserAdmin } from "/js/modules/backend/UserAdmin.js";
     new UserAdmin(document.querySelector('.userAdminHolder'));
 </script>

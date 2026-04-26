@@ -6,6 +6,8 @@
  * @property {number[]} autoUserGroups
  */
 
+import translations from "../../vue/Translate.vue.js";
+
 /**
  * @typedef {Object} QueryUserResponse
  * @property {boolean}  exists
@@ -63,11 +65,11 @@ export class UserAdminCreate {
      */
     validateEmailText(text) {
         if (text.indexOf("%ACCOUNT%") === -1) {
-            bootbox.alert(__t("admin", "emailMissingCode"));
+            bootbox.alert(translations.getTranslation("admin", "email_missing_code"));
             return false;
         }
         if (text.indexOf("%LINK%") === -1) {
-            bootbox.alert(__t("admin", "emailMissingLink"));
+            bootbox.alert(translations.getTranslation("admin", "email_missing_link"));
             return false;
         }
         return true;
@@ -95,17 +97,17 @@ export class UserAdminCreate {
 
             if (emails.length === 1 && emails[0] === "") {
                 ev.preventDefault();
-                bootbox.alert(__t("admin", "emailMissingTo"));
+                bootbox.alert(translations.getTranslation("admin", "email_missing_to"));
             }
             if (emails.length !== names.length) {
-                bootbox.alert(__t("admin", "emailNumberMismatch"));
+                bootbox.alert(translations.getTranslation("admin", "email_number_mismatch"));
                 ev.preventDefault();
             }
         }
         if (samlLoginBtn && !samlLoginBtn.classList.contains('hidden')) {
             if (/** @type {HTMLInputElement} */ (this.element.querySelector("#samlWW")).value === "") {
                 ev.preventDefault();
-                bootbox.alert(__t("admin", "emailMissingUsername"));
+                bootbox.alert(translations.getTranslation("admin", "email_missing_username"));
             }
         }
     }

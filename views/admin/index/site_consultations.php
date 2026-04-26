@@ -83,6 +83,8 @@ echo Html::endForm();
 echo Html::beginForm('', 'post', ['class' => 'consultationCreateForm']);
 
 $textOpts = ['required' => 'required', 'class' => 'form-control'];
+
+$layout->addJsTranslation("admin");
 ?>
 <script type="module">
     import { ConsultationCreate } from "/js/modules/backend/ConsultationCreate.js";

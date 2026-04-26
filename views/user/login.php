@@ -34,6 +34,7 @@ $params = AntragsgruenApp::getInstance();
 $externalAuthenticator = User::getExternalAuthenticator();
 $hasNonUsernamePwdLogin = false;
 
+$layout->addJsTranslation("user");
 ?>
     <h1><?= Yii::t('user', 'login_title') ?></h1>
     <script type="module">

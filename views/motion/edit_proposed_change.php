@@ -58,12 +58,14 @@ echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
             'id'                        => 'proposedChangeTextForm',
             //'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
         ]);
+
+        $layout->addJsTranslation("amend");
         ?>
         <script type="module">
             import { ProposedChangeEdit } from "/js/modules/backend/ProposedChangeEdit.js";
             new ProposedChangeEdit(document.getElementById("proposedChangeTextForm"));
         </script>
-        
+
         <div class="stdEqualCols stdPadding">
             <section>
                 <h2><?= Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
