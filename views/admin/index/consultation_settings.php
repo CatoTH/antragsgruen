@@ -48,6 +48,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
     echo $plugin::getConsultationExtraSettingsForm($consultation);
 }
 
+$layout->addJsTranslation("admin");
 ?>
     <script type="module">
         import { ConsultationSettings } from "/js/modules/backend/ConsultationSettings.js";

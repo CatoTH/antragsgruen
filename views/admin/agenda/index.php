@@ -65,13 +65,13 @@ echo '<h1>' . Yii::t('admin', 'agenda_title') . '</h1>';
         <div class="agendaEdit"></div>
     </div>
 
+    <?php
+    $layout->addJsTranslation('admin');
+    $layout->addJsTranslation('base');
+    $layout->addJsTranslation('con');
+    ?>
     <script type="module">
         import { AgendaEdit } from "/js/modules/backend/AgendaEdit.js";
-        import translate from "/js/vue/Translate.vue.js";
-        translate.registerTranslation("admin", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "admin")) ?>);
-        translate.registerTranslation("base", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "base")) ?>);
-        translate.registerTranslation("con", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "con")) ?>);
-
         new AgendaEdit(document.querySelector('.agendaEditForm'));
     </script>
 

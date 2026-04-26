@@ -185,4 +185,17 @@ Equip Antragsgrün',
 	'group_template_proposed_h' => 'Pot editar el procediment proposat, però no les mocions i esmenes en si.',
 	'group_template_participant' => 'Participant',
 	'group_template_participant_h' => 'Sense privilegis especials. Només és rellevant si l\'accés a aquest lloc està restringit.',
+
+    'pw_x_chars' => [
+        'text' => 'The password needs to be at least %NUM% characters long.',
+        'js' => true,
+    ],
+    'pw_min_x_chars' => [
+        'text' => 'Min. %NUM% characters',
+        'js' => true,
+    ],
+    'pw_no_match' => [
+        'text' => 'The passwords do not match.',
+        'js' => true,
+    ],
 ];

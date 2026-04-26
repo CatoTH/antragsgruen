@@ -7,14 +7,14 @@ import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
 import voteList from "/js/vue/voting/VotingList.js";
 
 export class VotingBlock {
-    constructor(el, CONSTANTS, translations) {
+    constructor(el, CONSTANTS) {
         this.element = el;
 
         const votingInitJson = this.element.getAttribute('data-voting');
-        this.createVueWidget(votingInitJson, CONSTANTS, translations);
+        this.createVueWidget(votingInitJson, CONSTANTS);
     }
 
-    createVueWidget(votingInitJson, CONSTANTS, translations) {
+    createVueWidget(votingInitJson, CONSTANTS) {
         const commonsMixins = getVotingCommonMixins(CONSTANTS);
         const vueEl = this.element.querySelector(".currentVoting"),
             pollUrl = this.element.getAttribute('data-url-poll'),
@@ -118,8 +118,6 @@ export class VotingBlock {
                 this.startPolling()
             }
         });
-
-        translateDirective.registerTranslation("voting", translations);
 
         widget.directive('t', translateDirective);
         widget.mixin(commonsMixins);

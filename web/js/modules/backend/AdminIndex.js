@@ -1,5 +1,7 @@
 // @ts-check
 
+import translations from "../../vue/Translate.vue.js";
+
 export class AdminIndex {
     constructor() {
         this.initDelSite();
@@ -11,7 +13,7 @@ export class AdminIndex {
         $delForm.find("button").on("click", function (ev) {
             ev.preventDefault();
             let $button = $(this);
-            bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
+            bootbox.confirm(translations.getTranslation('admin', 'cons_delete_confirm'), function (result) {
                 if (result) {
                     let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
                     $delForm.append($input);
@@ -27,7 +29,7 @@ export class AdminIndex {
         }
         ev.preventDefault();
         bootbox.confirm({
-            message: __t('admin', 'gotoUpdateModeConfirm'),
+            message: translations.getTranslation('admin', 'goto_update_mode_confirm'),
             callback: (result) => {
                 if (result) {
                     $('.adminCardUpdates .updateForm').trigger('submit', {'confirmed': true});

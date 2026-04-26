@@ -22,6 +22,8 @@ $layout->addCSS('css/backend.css');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'));
 
 echo '<h1>' . Yii::t('admin', 'index_settings') . '</h1>';
+
+$layout->addJsTranslation("admin");
 ?>
     <script type="module">
         import { AdminIndex } from '/js/modules/backend/AdminIndex.js';

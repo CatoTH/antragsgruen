@@ -2,6 +2,7 @@
 
 import { IMotionShow } from "../shared/IMotionShow.js"
 import { LineNumberHighlighting } from "./LineNumberHighlighting.js";
+import translate from "../../vue/Translate.vue.js";
 
 /**
  * MotionParagraph handles inline amendments inside a paragraph
@@ -149,8 +150,8 @@ export class MotionShow {
             const paragraphNewFirstline = $('#section_' + sectionId + '_' + paragraphNew).find('.lineNumber').first().data('line-number');
 
             let msg = $node.hasClass('inserted')
-                ? __t('std', 'moved_paragraph_from_line')
-                : __t('std', 'moved_paragraph_to_line');
+                ? translate.getTranslation('motion', 'moved_paragraph_from_line')
+                : translate.getTranslation('motion', 'moved_paragraph_to_line');
 
             msg = msg.replace(/##LINE##/, paragraphNewFirstline)
                 .replace(/##PARA##/, (paragraphNew + 1));

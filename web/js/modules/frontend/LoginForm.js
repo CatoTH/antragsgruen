@@ -1,5 +1,7 @@
 // @ts-check
 
+import translations from "/js/vue/Translate.vue.js";
+
 export class LoginForm {
 
     /** @type {JQuery} */ $form;
@@ -22,7 +24,7 @@ export class LoginForm {
         if ($checkbox.prop("checked")) {
             $("#pwdConfirm").removeClass('hidden');
             $("#regName").removeClass('hidden').find("input").attr("required", "required");
-            $("#passwordInput").attr("placeholder", __t("std", "pw_min_x_chars").replace(/%NUM%/, this.pwMinLen.toString()));
+            $("#passwordInput").attr("placeholder", translations.getTranslation("user", "pw_min_x_chars").replace(/%NUM%/, this.pwMinLen.toString()));
             $("#createStr").removeClass('hidden');
             $("#loginStr").addClass('hidden');
             $("#regConfirmation").removeClass('hidden').find("input").attr("required", "required");
@@ -45,7 +47,7 @@ export class LoginForm {
 
         if (isCreate && pwd.length < this.pwMinLen) {
             ev.preventDefault();
-            bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, this.pwMinLen.toString()));
+            bootbox.alert(translations.getTranslation("user", "pw_x_chars").replace(/%NUM%/, this.pwMinLen.toString()));
             return;
         }
 
@@ -53,7 +55,7 @@ export class LoginForm {
             const pwdConfirm = $("#passwordConfirm").val() || "";
             if (pwd !== pwdConfirm) {
                 ev.preventDefault();
-                bootbox.alert(__t("std", "pw_no_match"));
+                bootbox.alert(translations.getTranslation("user", "pw_no_match"));
             }
         }
     }

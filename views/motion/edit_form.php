@@ -83,6 +83,9 @@ echo '<div id="draftHint" class="hidden alert alert-info"
 
 echo '</div>';
 
+$layout->addJsTranslation("motion");
+$layout->addJsTranslation("amend");
+
 ?>
 <script type="module">
     import { MotionEditForm } from '/js/modules/frontend/MotionEditForm.js';

@@ -1,6 +1,7 @@
 // @ts-check
 
 import { PolicySetter } from "../shared/PolicySetter.js";
+import translate from "../../vue/Translate.vue.js";
 
 const CONTACT_NONE = 0;
 const CONTACT_OPTIONAL = 1;
@@ -231,7 +232,10 @@ export class MotionTypeEdit {
             plugins: ["remove_button"],
             render: {
                 option_create: (data, escape) => {
-                    return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                    const addTag = translate.getTranslation("motion", "add_tag")
+                        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                    return '<div class="create">' + addTag + ': <strong>' + escape(data.input) + '</strong></div>';
                 }
             }
         });
@@ -250,7 +254,7 @@ export class MotionTypeEdit {
             ev.preventDefault();
             let $sectionHolder = $(this).parents('li').first(),
                 delId = $sectionHolder.data('id');
-            bootbox.confirm(__t('admin', 'deleteMotionSectionConfirm'), function (result) {
+            bootbox.confirm(translate.getTranslation('admin', 'delete_motion_section_confirm'), function (result) {
                 if (result) {
                     $('.adminTypeForm').append('<input type="hidden" name="sectionsTodelete[]" value="' + delId + '">');
                     $sectionHolder.remove();
@@ -357,7 +361,7 @@ export class MotionTypeEdit {
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
             let $this = $(this);
             ev.preventDefault();
-            bootbox.confirm(__t('admin', 'deleteDataConfirm'), function (result) {
+            bootbox.confirm(translate.getTranslation('admin', 'delete_data_confirm'), function (result) {
                 if (result) {
                     $this.parents("li").first().remove();
                 }

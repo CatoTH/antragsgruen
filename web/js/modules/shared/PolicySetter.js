@@ -1,5 +1,7 @@
 // @ts-check
 
+import translate from "../../vue/Translate.vue.js";
+
 const POLICY_USER_GROUPS = 6;
 
 export class PolicySetter {
@@ -44,7 +46,10 @@ export class PolicySetter {
                 },
                 render: {
                     option_create: (data, escape) => {
-                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                        const addTag = translate.getTranslation("motion", "add_tag")
+                            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                        return '<div class="create">' + addTag + ': <strong>' + escape(data.input) + '</strong></div>';
                     }
                 }
             });

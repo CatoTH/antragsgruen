@@ -151,4 +151,33 @@ return [
     'support_finish_err'                 => 'Ce n\'est pas (encore) possible.',
     'support_finish_done'                => 'La motion est maintenant officiellement déposée',
     'prefix_new_code'                    => 'nouveau',
+
+    'add_tag' => [
+        'text' => 'Créer',
+        'js' => true,
+    ],
+    'del_confirm' => [
+        'text' => 'Really delete it?',
+        'js' => true,
+    ],
+    'draft_del' => [
+        'text' => 'Delete draft',
+        'js' => true,
+    ],
+    'draft_del_confirm' => [
+        'text' => 'Really delete this draft?',
+        'js' => true,
+    ],
+    'draft_restore_confirm' => [
+        'text' => 'Really restore this draft?',
+        'js' => true,
+    ],
+    'min_x_supporter' => [
+        'text' => 'You have to enter at least %NUM% supporters.',
+        'js' => true,
+    ],
+    'missing_resolution_date' => [
+        'text' => 'A resolution date has to be entered.',
+        'js' => true,
+    ],
 ];

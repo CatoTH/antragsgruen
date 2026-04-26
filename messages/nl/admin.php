@@ -757,4 +757,85 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'files_download_title' => 'Title',
     'files_download_del'   => 'Delete this file: %TITLE%',
     'files_download_del_c' => 'Do you want to delete this file?',
+
+    'admin_may_edit_confirm' => [
+        'text' => 'Als dit wordt gedeactiveerd, heeft dit ook invloed op alle eerdere toepassingen en kan dit niet worden geannuleerd voor eerdere toepassingen. Wil je doorgaan?',
+        'js' => true,
+    ],
+    'delete_data_confirm' => [
+        'text' => 'Wil je deze informatie echt verwijderen?',
+        'js' => true,
+    ],
+    'agendaAddEntry' => [
+        'text' => 'Item toevoegen',
+        'js' => true,
+    ],
+    'agendaAddDate' => [
+        'text' => 'Datum toevoegen',
+        'js' => true,
+    ],
+    'agendaShowTimes' => [
+        'text' => 'Exacte tijden instellen',
+        'js' => true,
+    ],
+    'agendaDelEntryConfirm' => [
+        'text' => 'Dit agendapunt en diens subpunten schrappen?',
+        'js' => true,
+    ],
+    'removeAdminConfirm' => [
+        'text' => 'Wil je echt de beheerdersrechten van dit account intrekken?',
+        'js' => true,
+    ],
+    'removeUserConfirm' => [
+        'text' => 'Echt %NAME% van DIT evenement verwijderen? Ingediende aanvragen enz. worden bewaard en moeten expliciet worden verwijderd.',
+        'js' => true,
+    ],
+    'deleteUserConfirm' => [
+        'text' => '%NAME% echt verwijderen? Ingediende aanvragen enz. worden bewaard en moeten expliciet worden verwijderd.',
+        'js' => true,
+    ],
+    'email_missing_code' => [
+        'text' => 'De e-mailtekst moet de code %ACCOUNT% bevatten.',
+        'js' => true,
+    ],
+    'email_missing_link' => [
+        'text' => 'De e-mailtekst moet de code %LINK% bevatten.',
+        'js' => true,
+    ],
+    'email_missing_to' => [
+        'text' => 'Er werden geen e-mailadressen opgegeven.',
+        'js' => true,
+    ],
+    'email_missing_username' => [
+        'text' => 'Er werden geen usernames genoemd.',
+        'js' => true,
+    ],
+    'email_number_mismatch' => [
+        'text' => 'Er zijn niet evenveel usernames als e-mailadressen. Zorg ervoor dat er precies één naam wordt ingevuld voor elke regel met e-mailadressen!',
+        'js' => true,
+    ],
+    'del_motion_confirm' => [
+        'text' => 'Weet je zeker dat je dit verzoek wilt verwijderen?',
+        'js' => true,
+    ],
+    'del_amendment_confirm' => [
+        'text' => 'Weet je zeker dat je deze wijziging wilt verwijderen?',
+        'js' => true,
+    ],
+    'del_page_confirm' => [
+        'text' => 'Weet je zeker dat je deze pagina wilt verwijderen?',
+        'js' => true,
+    ],
+    'delete_motion_section_confirm' => [
+        'text' => 'Als dit type wordt verwijderd, worden ook alle stukken van dit type verwijderd. Wil je dit echt verwijderen?',
+        'js' => true,
+    ],
+    'cons_delete_confirm' => [
+        'text' => 'Moet dit evenement, inclusief alle moties en amendementen, echt worden afgelast?',
+        'js' => true,
+    ],
+    'goto_update_mode_confirm' => [
+        'text' => 'Moet de updatemodus worden geactiveerd? De applicatie is niet beschikbaar wanneer de updatemodus actief is.',
+        'js' => true,
+    ],
 ];

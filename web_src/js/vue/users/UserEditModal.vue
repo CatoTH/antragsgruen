@@ -33,14 +33,14 @@
                   <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                   <template v-t="['admin', 'siteacc_usermodal_2fa_set']"></template>
                   <label v-if="canModifyAuth" class="remove2FaHolder">
-                    <input type="checkbox" v-model="remove2Fa" value="1">
-                    <template v-t="['admin', 'siteacc_usermodal_2fa_del']"></template>
+                    <input type="checkbox" v-model="remove2Fa"
+                           value="1"> <template v-t="['admin', 'siteacc_usermodal_2fa_del']"></template>
                   </label>
               </span>
               <span v-if="!user.has_2fa" v-t="['admin', 'siteacc_usermodal_2fa_nset']"></span>
               <label v-if="canModifyAuth" class="force2FaHolder">
-                <input type="checkbox" v-model="force2Fa" value="1">
-                <template v-t="['admin', 'siteacc_usermodal_2fa_force']"></template>
+                <input type="checkbox" v-model="force2Fa"
+                       value="1"> <template v-t="['admin', 'siteacc_usermodal_2fa_force']"></template>
               </label>
             </div>
           </div>
@@ -57,12 +57,12 @@
                      ref="password-setter"
               >
               <label class="preventPwdChangeHolder">
-                <input type="checkbox" v-model="preventPasswordChange" value="1">
-                <template v-t="['admin', 'siteacc_usermodal_prevent_pwd']"></template>
+                <input type="checkbox" v-model="preventPasswordChange"
+                       value="1"> <template v-t="['admin', 'siteacc_usermodal_prevent_pwd']"></template>
               </label>
               <label class="forcePwdChangeHolder">
-                <input type="checkbox" v-model="forcePasswordChange" value="1">
-                <template v-t="['admin', 'siteacc_usermodal_force_pwd']"></template>
+                <input type="checkbox" v-model="forcePasswordChange"
+                       value="1"> <template v-t="['admin', 'siteacc_usermodal_force_pwd']"></template>
               </label>
             </div>
           </div>
@@ -123,8 +123,7 @@
 
           <div v-if="permissionGlobalEdit" class="deleteActivator">
             <label>
-              <input type="checkbox" v-model="deletingVisible">
-              <template v-t="['admin', 'siteacc_useraccdel']"></template>
+              <input type="checkbox" v-model="deletingVisible"> <template v-t="['admin', 'siteacc_useraccdel']"></template>
             </label>
           </div>
 
@@ -132,8 +131,8 @@
         </main>
         <footer class="modal-footer" v-if="!deletingVisible">
           <a class="changeLogLink" :href="userLogUrl" v-if="user">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            <template v-t="['admin','siteacc_usergroup_log']"></template>
+            <span class="glyphicon glyphicon-chevron-right"
+                  aria-hidden="true"></span> <template v-t="['admin','siteacc_usergroup_log']"></template>
           </a>
 
           <button type="button" class="btn btn-default btnCancel" data-dismiss="modal" v-t="['base', 'abort']"></button>

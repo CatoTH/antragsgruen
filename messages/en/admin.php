@@ -1010,5 +1010,70 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
         'js' => true,
     ],
     'agenda_back' => 'Back to the home page',
-    'agenda_admin_intro' => 'This page allows editing the agenda. To actually show it on the home page, please choose an appropriate home page view at "%LINK%".'
+    'agenda_admin_intro' => 'This page allows editing the agenda. To actually show it on the home page, please choose an appropriate home page view at "%LINK%".',
+
+    'admin_may_edit_confirm' => [
+        'text' => 'If this is deactivated, this cannot be undone for all motions created up to now.',
+        'js' => true,
+    ],
+    'delete_data_confirm' => [
+        'text' => 'Really delete this?',
+        'js' => true,
+    ],
+    'removeAdminConfirm' => [
+        'text' => 'Do you really want to remove admin right from this user?',
+        'js' => true,
+    ],
+    'removeUserConfirm' => [
+        'text' => 'Do you really want to remove the user %NAME% from THIS consultation? Submitted motions etc. will remain in the system and need to be removed manually.',
+        'js' => true,
+    ],
+    'deleteUserConfirm' => [
+        'text' => 'Do you really want to delete the user %NAME%? Submitted motions etc. will remain in the system and need to be removed manually.',
+        'js' => true,
+    ],
+    'email_missing_code' => [
+        'text' => 'The text needs to contain the code %ACCOUNT%.',
+        'js' => true,
+    ],
+    'email_missing_link' => [
+        'text' => 'The text needs to contain the code %LINK%.',
+        'js' => true,
+    ],
+    'email_missing_to' => [
+        'text' => 'No e-mail-address was entered.',
+        'js' => true,
+    ],
+    'email_missing_username' => [
+        'text' => 'No username was entered.',
+        'js' => true,
+    ],
+    'email_number_mismatch' => [
+        'text' => 'The number of names and e-mail-addresses does not match.',
+        'js' => true,
+    ],
+    'del_motion_confirm' => [
+        'text' => 'Do you really want to delete this motion?',
+        'js' => true,
+    ],
+    'del_amendment_confirm' => [
+        'text' => 'Do you really want to delete this amendment?',
+        'js' => true,
+    ],
+    'del_page_confirm' => [
+        'text' => 'Do you really want to delete this page?',
+        'js' => true,
+    ],
+    'delete_motion_section_confirm' => [
+        'text' => 'Do you really want to delete this section? It will be deleted from all motions of this motion type.',
+        'js' => true,
+    ],
+    'cons_delete_confirm' => [
+        'text' => 'Do you really want to delete this consultation, including all motions and amendments?',
+        'js' => true,
+    ],
+    'goto_UpdateModeConfirm' => [
+        'text' => 'Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users.',
+        'js' => true,
+    ],
 ];

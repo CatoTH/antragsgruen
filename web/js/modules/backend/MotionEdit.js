@@ -2,6 +2,7 @@
 
 import { MotionSupporterEdit } from "./MotionSupporterEdit.js";
 import { AntragsgruenEditor } from "../shared/AntragsgruenEditor.js";
+import translations from "../../vue/Translate.vue.js";
 
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY_MOTION = 32;
@@ -170,7 +171,7 @@ export class MotionEdit {
             return;
         }
         ev.preventDefault();
-        bootbox.confirm(__t("admin", "delMotionConfirm"), function (result) {
+        bootbox.confirm(translations.getTranslation("admin", "del_motion_confirm"), function (result) {
             if (result) {
                 $(".motionDeleteForm").trigger("submit", { 'confirmed': true });
             }

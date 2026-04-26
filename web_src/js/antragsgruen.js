@@ -128,19 +128,6 @@ if (todoLoader) {
         });
 }
 
-window['__t'] = function (category, str) {
-    if (typeof(ANTRAGSGRUEN_STRINGS) == "undefined") {
-        return '@TRANSLATION STRINGS NOT LOADED';
-    }
-    if (typeof(ANTRAGSGRUEN_STRINGS[category]) == "undefined") {
-        return "@UNKNOWN CATEGORY: " + category
-    }
-    if (typeof(ANTRAGSGRUEN_STRINGS[category][str]) == "undefined") {
-        return "@UNKNOWN STRING: " + category + " / " + str;
-    }
-    return ANTRAGSGRUEN_STRINGS[category][str];
-};
-
 $.fn.extend({
     scrollintoview: function (options) {
         if ($("body").hasClass('testing')) {

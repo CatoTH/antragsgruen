@@ -1,6 +1,7 @@
 // @ts-check
 
 import {PolicySetter} from "../shared/PolicySetter.js";
+import translate from "../../vue/Translate.vue.js";
 
 export class ContentPageEdit {
     /** @type {JQuery} */          $form;
@@ -254,7 +255,7 @@ export class ContentPageEdit {
             return;
         }
         ev.preventDefault();
-        bootbox.confirm(__t("admin", "delPageConfirm"), function (result) {
+        bootbox.confirm(translate.getTranslation("admin", "del_page_confirm"), function (result) {
             if (result) {
                 $(".deletePageForm").trigger("submit", {'confirmed': true});
             }

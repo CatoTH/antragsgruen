@@ -20,21 +20,20 @@ export class VotingAdmin {
 
     widgetComponent;
 
-    constructor(el, CONSTANTS, translations) {
+    constructor(el, CONSTANTS) {
         this.element = el;
         this.CONSTANTS = CONSTANTS;
 
         const votingInitJson = this.element.getAttribute('data-voting');
-        this.createVueWidget(votingInitJson, CONSTANTS, translations);
+        this.createVueWidget(votingInitJson, CONSTANTS);
         this.initVotingCreater();
         window.component = this.widgetComponent;
         this.initVotingSorter(votingInitJson);
     }
 
-    createVueWidget(votingInitJson, CONSTANTS, translations) {
+    createVueWidget(votingInitJson, CONSTANTS) {
         const commonsMixins = getVotingCommonMixins(CONSTANTS);
 
-        translateDirective.registerTranslation("voting", translations);
         const vueEl = this.element.querySelector(".votingAdmin");
         const voteDownloadUrl = this.element.getAttribute('data-url-vote-download');
         const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
@@ -411,7 +410,9 @@ export class VotingAdmin {
                 },
                 render: {
                     option_create: (data, escape) => {
-                        return '<div class="create">' + __t('std', 'add_tag') + ': <strong>' + escape(data.input) + '</strong></div>';
+                        const addTag = translateDirective.getTranslation("motion", "add_tag")
+                            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        return '<div class="create">' + addTag + ': <strong>' + escape(data.input) + '</strong></div>';
                     }
                 }
             });

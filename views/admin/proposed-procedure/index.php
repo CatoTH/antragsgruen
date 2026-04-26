@@ -28,6 +28,8 @@ $layout->loadSelectize();
 $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
+
+$layout->addJsTranslation("motion");
 ?>
     <script type="module">
         import { ProposedProcedureOverview } from "/js/modules/backend/ProposedProcedureOverview.js";

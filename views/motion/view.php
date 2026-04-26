@@ -1,7 +1,6 @@
 <?php
 
 use app\components\UrlHelper;
-use app\componentsUrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};
@@ -95,6 +94,7 @@ if ($motion->isResolution()) {
 echo $fullscreenButton;
 echo '</div>';
 
+$layout->addJsTranslation("motion");
 ?>
 <script type="module">
     import { MotionShow } from '/js/modules/frontend/MotionShow.js';

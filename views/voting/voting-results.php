@@ -17,6 +17,8 @@ $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/co
 $layout->addBreadcrumb(Yii::t('voting', 'results_bc'));
 $this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT, 'UTF-8');
 
+$layout->addJsTranslation('voting');
+
 $sidebarMode = 'results';
 include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
@@ -58,7 +60,6 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
     import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
     new VotingBlock(
         document.querySelector(".currentVotingWidget"),
-        <?= json_encode($CONSTANTS) ?>,
-        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+        <?= json_encode($CONSTANTS) ?>
     );
 </script>

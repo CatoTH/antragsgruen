@@ -11,6 +11,11 @@ use app\components\{IMotionStatusFilter, UrlHelper};
 use app\models\db\{Amendment, AmendmentProposal};
 use yii\helpers\Html;
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$consultation = $controller->consultation;
+$layout = $controller->layoutParams;
+
 $collidingAmendments = $proposal->collidesWithOtherProposedAmendments();
 
 $saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
@@ -38,6 +43,8 @@ if (isset($msgAlert)) {
 $consultation = $amendment->getMyConsultation();
 $canBeChangedUnlimitedly = $proposal->canEditProposedProcedure();
 $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
+
+$layout->addJsTranslation("motion");
 ?>
 <script type="module">
     import { ChangeProposedProcedure } from "/js/modules/backend/ChangeProposedProcedure.js";

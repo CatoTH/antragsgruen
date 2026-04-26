@@ -15,6 +15,10 @@ if ($welcomeReplace !== null) {
     return;
 }
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$layout     = $controller->layoutParams;
+
 
 $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
 
@@ -30,6 +34,7 @@ $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $c
 $saveUrl  = $pageData->getSaveUrl();
 
 if ($contentAdmin) {
+    $layout->addJsTranslation("admin");
     ?>
     <script type="module">
         import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';

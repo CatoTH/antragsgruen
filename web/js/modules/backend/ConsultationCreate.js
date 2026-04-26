@@ -1,6 +1,7 @@
 // @ts-check
 
 import { SiteCreateWizard } from "../shared/SiteCreateWizard.js";
+import translations from "../../vue/Translate.vue.js";
 
 export class ConsultationCreate {
     constructor() {
@@ -10,7 +11,7 @@ export class ConsultationCreate {
         $consultationEditForm.find(".delbox button").on("click", function (ev) {
             ev.preventDefault();
             let $button = $(this);
-            bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
+            bootbox.confirm(translations.getTranslation('admin', 'cons_delete_confirm'), function (result) {
                 if (result) {
                     let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
                     $consultationEditForm.append($input);

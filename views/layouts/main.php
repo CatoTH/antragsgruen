@@ -90,7 +90,6 @@ if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
 echo '<script src="' . $layout->resourceUrl('js/jquery-4.0.0.min.js') . '"></script>';
-//echo '<script src="' . $layout->resourceUrl('js/jquery-migrate-4.0.2.js') . '"></script>';
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
@@ -115,6 +114,15 @@ if (defined('YII_ENV') && YII_ENV == 'test') {
 }
 
 echo '<body' . (count($bodyClasses) > 0 ? ' class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
+
+if (count($layout->getJsTranslations()) > 0) {
+    echo '<script type="module">
+    import translate from "/js/vue/Translate.vue.js";' . "\n";
+    foreach ($layout->getJsTranslations() as $translation) {
+        echo 'translate.registerTranslation("' . $translation . '", ' . json_encode(JsTools::getTranslations($consultation, $translation)) . ');' . "\n";
+    }
+    echo '</script>';
+}
 
 $this->beginBody();
 
@@ -153,8 +161,6 @@ foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
 
-echo '<script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>' . "\n";
-
 $this->endBody();
 echo '
 <script type="application/ld+json">
@@ -164,18 +170,6 @@ echo '
       "url": "' . Html::encode($params->domainPlain) . '",
       "logo": "' . Html::encode($params->getAbsoluteResourceBase()) . 'img/logo.png"
     }
-</script>
-<script type="application/ld+json">
-{
-  "@context" : "http://schema.org",
-  "@type" : "Organization",
-  "name" : "' . Yii::t('export', 'default_creator') . '",
-  "url" : "' . Html::encode($params->domainPlain) . '",
-  "sameAs" : [
-    "https://www.facebook.com/Antragsgruen",
-    "https://twitter.com/Antragsgruen"
-  ]
-}
 </script>
 </body></html>';
 

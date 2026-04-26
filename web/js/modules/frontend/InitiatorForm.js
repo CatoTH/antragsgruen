@@ -1,5 +1,7 @@
 // @ts-check
 
+import translations from "/js/vue/Translate.vue.js";
+
 const CONTACT_NONE = 0;
 const CONTACT_OPTIONAL = 1;
 const CONTACT_REQUIRED = 2;
@@ -239,7 +241,7 @@ export class InitiatorForm {
             });
             if (found < this.$supporterData.data('min-supporters')) {
                 ev.preventDefault();
-                bootbox.alert(__t("std", "min_x_supporter").replace(/%NUM%/, this.$supporterData.data('min-supporters')));
+                bootbox.alert(translations.getTranslation("motion", "min_x_supporter").replace(/%NUM%/, this.$supporterData.data('min-supporters')));
             }
         });
     }
@@ -330,13 +332,13 @@ export class InitiatorForm {
         if ($('#personTypeOrga').prop('checked')) {
             if (this.settings.hasResolutionDate === CONTACT_REQUIRED && $('#resolutionDate').val() === '') {
                 ev.preventDefault();
-                bootbox.alert(__t('std', 'missing_resolution_date'));
+                bootbox.alert(translations.getTranslation('motion', 'missing_resolution_date'));
             }
         }
         if ($('#personTypeNatural').prop('checked')) {
             if (this.settings.contactGender === CONTACT_REQUIRED && $('#initiatorGender').val() === '') {
                 ev.preventDefault();
-                bootbox.alert(__t('std', 'missing_gender'));
+                bootbox.alert(translations.getTranslation('motion', 'missing_gender'));
             }
         }
     }

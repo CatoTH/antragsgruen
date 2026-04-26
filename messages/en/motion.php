@@ -305,4 +305,57 @@ return [
 
     'statutes_base_head' => 'Base text',
     'last_update' => 'Update',
+
+    'add_tag' => [
+        'text' => 'Create',
+        'js' => true,
+    ],
+    'del_confirm' => [
+        'text' => 'Really delete it?',
+        'js' => true,
+    ],
+    'draft_del' => [
+        'text' => 'Delete draft',
+        'js' => true,
+    ],
+    'draft_del_confirm' => [
+        'text' => 'Really delete this draft?',
+        'js' => true,
+    ],
+    'draft_date' => [
+        'text' => 'Draft date',
+        'js' => true,
+    ],
+    'draft_restore_confirm' => [
+        'text' => 'Really restore this draft?',
+        'js' => true,
+    ],
+    'min_x_supporter' => [
+        'text' => 'You have to enter at least %NUM% supporters.',
+        'js' => true,
+    ],
+    'missing_resolution_date' => [
+        'text' => 'A resolution date has to be entered.',
+        'js' => true,
+    ],
+    'missing_gender' => [
+        'text' => 'Please select one choice in the field Gender.',
+        'js' => true,
+    ],
+    'moved_paragraph_from' => [
+        'text' => 'Moved from paragraph ##PARA##',
+        'js' => true,
+    ],
+    'moved_paragraph_to' => [
+        'text' => 'Moved to paragraph ##PARA##',
+        'js' => true,
+    ],
+    'moved_paragraph_from_line' => [
+        'text' => 'Moved from paragraph ##PARA## (line ##LINE##)',
+        'js' => true,
+    ],
+    'moved_paragraph_to_line' => [
+        'text' => 'Moved to paragraph ##PARA##(line ##LINE##)',
+        'js' => true,
+    ],
 ];

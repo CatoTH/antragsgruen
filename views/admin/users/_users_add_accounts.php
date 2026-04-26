@@ -12,6 +12,7 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
+$layout = $controller->layoutParams;
 
 $preEmails = '';
 $preNames = '';
@@ -30,6 +31,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
     }
 }
 
+$layout->addJsTranslation("admin");
 ?>
 <script type="module">
     import { UserAdminCreate } from "/js/modules/backend/UserAdminCreate.js";

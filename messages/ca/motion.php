@@ -262,6 +262,4 @@ return [
 	'goto_line' => 'Anar a la línia',
 	'goto_line_go' => 'Anar',
 	'goto_line_err' => 'Línia no trobada',
-
-	'statutes_base_head' => 'Text base',
 ];

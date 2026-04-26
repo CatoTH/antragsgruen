@@ -211,7 +211,10 @@ return [
     'sidebar_back'                      => 'Back to the motion',
     'sidebar_mergeintomotion'           => 'Adopt changes into motion',
     'back_to_amend'                     => 'Back to the amendment',
-    'initiated_by'                      => 'Submitted by',
+    'initiated_by'                      => [
+        'text' => 'Submitted by',
+        'js' => true,
+    ],
     'confirm_bread'                     => 'Confirm',
     'affects_x_paragraphs'              => 'Affects %num% paragraphs',
     'revert_changes'                    => 'Revert changes',
@@ -409,4 +412,57 @@ return [
     'proposal_user_agreement_amend' => 'Update decision',
     'proposal_user_saved'        => 'Your decision has been saved',
     'proposal_user_change_reset' => 'As the proposed procedure has changed, the decision by the proposer has been reset.',
+
+    'title_open_in_blank' => [
+        'text' => 'Open the amendment in a new window',
+        'js' => true,
+    ],
+    'title_del_title' => [
+        'text' => 'Remove the headline "Colliding Amendment: ..."',
+        'js' => true,
+    ],
+    'title_del_colliding' => [
+        'text' => 'Remove the whole colliding paragraph',
+        'js' => true,
+    ],
+    'title' => [
+        'text' => 'Headline',
+        'js' => true,
+    ],
+    'change_accept' => [
+        'text' => 'Accept',
+        'js' => true,
+    ],
+    'change_reject' => [
+        'text' => 'Reject',
+        'js' => true,
+    ],
+    'colliding_title' => [
+        'text' => 'Colliding amendm.',
+        'js' => true,
+    ],
+    'colliding_start' => [
+        'text' => 'Collisions start here',
+        'js' => true,
+    ],
+    'colliding_end' => [
+        'text' => 'Collisions end here',
+        'js' => true,
+    ],
+    'reload_paragraph' => [
+        'text' => 'If this selection is changed, manual changes to this paragraph are lost. Proceed?',
+        'js' => true,
+    ],
+    'mergedCollisionHint' => [
+        'text' => 'This change collides with a previous one. Please be cautious to get a consistent text in the end.',
+        'js' => true,
+    ],
+    'modU' => [
+        'text' => 'Proposed modification',
+        'js' => true,
+    ],
+    'leave_changed_page' => [
+        'text' => 'There are unsaved changes. Do you really want to leave this page and discard those changes?',
+        'js' => true,
+    ],
 ];

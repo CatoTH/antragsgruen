@@ -204,7 +204,10 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'sidebar_back'                    => 'Zurück zum Antrag',
     'sidebar_mergeintomotion'         => 'In den Antrag übernehmen',
     'back_to_amend'                   => 'Zurück zum Änderungsantrag',
-    'initiated_by'                    => 'gestellt von',
+    'initiated_by'                    => [
+        'text' => 'gestellt von',
+        'js' => true,
+    ],
     'confirm_bread'                   => 'Bestätigen',
     'affects_x_paragraphs'            => 'Bezieht sich auf insgesamt %num% Absätze',
     'revert_changes'                  => 'Änderungen rückgängig machen',
@@ -399,4 +402,57 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_user_agreement_amend' => 'Entscheidung aktualisieren',
     'proposal_user_saved'        => 'Deine Entscheidung wurde gespeichert',
     'proposal_user_change_reset' => 'Da sich der Verfahrensvorschlag geändert hat, wurde die Entscheidung der Antragsteller*in zurückgesetzt.',
+
+    'title_open_in_blank' => [
+        'text' => 'Den Änderungsantrag in einem neuen Fenster öffnen',
+        'js' => true,
+    ],
+    'title_del_title' => [
+        'text' => 'Die Überschrift "Kollidierender Änderungsantrag: ..." entfernen',
+        'js' => true,
+    ],
+    'title_del_colliding' => [
+        'text' => 'Den kompletten kollidierenden Block entfernen',
+        'js' => true,
+    ],
+    'title' => [
+        'text' => 'Überschrift',
+        'js' => true,
+    ],
+    'change_accept' => [
+        'text' => 'Übernehmen',
+        'js' => true,
+    ],
+    'change_reject' => [
+        'text' => 'Verwerfen',
+        'js' => true,
+    ],
+    'colliding_title' => [
+        'text' => 'Kollidierender ÄA',
+        'js' => true,
+    ],
+    'colliding_start' => [
+        'text' => 'Ab hier Kollisionen',
+        'js' => true,
+    ],
+    'colliding_end' => [
+        'text' => 'Bis hier Kollisionen',
+        'js' => true,
+    ],
+    'reload_paragraph' => [
+        'text' => 'Wenn diese Auswahl geändert wird, gehen händische Änderungen in diesem Paragraph verloren. Weiter?',
+        'js' => true,
+    ],
+    'mergedCollisionHint' => [
+        'text' => 'Diese Änderung kollidiert mit einer Vorigen. Achte beim Einpflegen besonders auf die schlussendliche Formulierung!',
+        'js' => true,
+    ],
+    'modU' => [
+        'text' => 'Modifizierte Übernahme',
+        'js' => true,
+    ],
+    'leave_changed_page' => [
+        'text' => 'Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?',
+        'js' => true,
+    ],
 ];

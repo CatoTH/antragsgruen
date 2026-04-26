@@ -290,6 +290,9 @@ $CONSTANTS = array_merge($CONSTANTS, [
     } else {
         $groupLoadUrl = '';
     }
+
+    $layout->addJsTranslation("motion");
+    $layout->addJsTranslation("voting")
     ?>
     <script type="module">
         import policySelect from "/js/vue/PolicySelect.js";
@@ -302,8 +305,7 @@ $CONSTANTS = array_merge($CONSTANTS, [
         import { VotingAdmin } from "/js/modules/backend/VotingAdmin.js";
         new VotingAdmin(
             document.querySelector(".manageVotings"),
-            <?= json_encode($CONSTANTS) ?>,
-            <?= json_encode(\app\components\JsTools::getTranslations($consultation, "voting") ) ?>
+            <?= json_encode($CONSTANTS) ?>
         );
     </script>
 </div>

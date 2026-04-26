@@ -60,12 +60,19 @@ class JsTools
         });
     }
 
-    public static function getTranslations(Consultation $consultation, string $category): array
+    public static function getTranslations(?Consultation $consultation, string $category): array
     {
         /** @var I18N $i18n */
         $i18n = \Yii::$app->get('i18n');
         /** @var MessageSource $messagesource */
         $messagesource = $i18n->getMessageSource($category);
-        return $messagesource->loadJsMessages($category, $consultation->wordingBase);
+
+        if ($consultation) {
+            $language = $consultation->wordingBase;
+        } else {
+            $language = AntragsgruenApp::getInstance()->baseLanguage;
+        }
+
+        return $messagesource->loadJsMessages($category, $language);
     }
 }

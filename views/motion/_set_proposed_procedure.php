@@ -12,6 +12,11 @@ use app\components\{IMotionStatusFilter, UrlHelper};
 use app\models\db\{Motion, MotionProposal};
 use yii\helpers\Html;
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$consultation = $controller->consultation;
+$layout = $controller->layoutParams;
+
 $isLatestVersion = ($proposal->id === $motion->getLatestProposal()->id);
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
 $classes = ['version' . $motion->version];
@@ -51,6 +56,8 @@ $currBlockIsLocked = ($motion->votingBlock && !$motion->votingBlock->itemsCanBeR
 $canBeChangedUnlimitedly = $proposal->canEditProposedProcedure();
 $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 $voting = $motion->getVotingData();
+
+$layout->addJsTranslation("motion");
 ?>
 <script type="module">
     import { ChangeProposedProcedure } from "/js/modules/backend/ChangeProposedProcedure.js";

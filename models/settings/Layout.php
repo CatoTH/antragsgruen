@@ -35,6 +35,7 @@ class Layout
     public array $extraJs = [];
     public array $bodyCssClasses = [];
     public array $onloadJs = [];
+    public array $jsTranslations = [];
     public bool $fullWidth = false;
     public bool $fullScreen = false;
     public ?string $mainCssFile = null;
@@ -188,6 +189,19 @@ class Layout
         return $this;
     }
 
+    public function addJsTranslation(string $translation): self
+    {
+        if (!in_array($translation, $this->jsTranslations)) {
+            $this->jsTranslations[] = $translation;
+        }
+        return $this;
+    }
+
+    public function getJsTranslations(): array
+    {
+        return $this->jsTranslations;
+    }
+
     private bool $tooltipOnloadJsInitialized = false;
 
     public function addTooltopOnloadJs(): self
@@ -235,34 +249,13 @@ class Layout
         }
     }
 
-    public function getJSLanguageCode(): string
-    {
-        if (!$this->consultation) {
-            $lang   = explode('-', AntragsgruenApp::getInstance()->baseLanguage);
-            if (AntragsgruenApp::getInstance()->baseLanguage == 'en-gb') {
-                return 'en-gb';
-            } else {
-                return $lang[0];
-            }
-        }
-        $langs = explode(',', $this->consultation->wordingBase);
-        $lang  = explode('-', $langs[0]);
-        if ($langs[0] == 'en-gb') {
-            return 'en-gb';
-        } else {
-            return $lang[0];
-        }
-    }
-
     /**
      * @return string[]
      */
     public function getJSFiles(): array
     {
-        $jsLang  = $this->getJSLanguageCode();
         $files   = [];
-        $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
-        $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
+        $files[] = $this->resourceUrl('js/antragsgruen.min.js');
         foreach ($this->extraJs as $extraJs) {
             $files[] = $this->resourceUrl($extraJs);
         }
@@ -283,7 +276,7 @@ class Layout
     public function loadDatepicker(): void
     {
         $this->addJS('npm/moment-with-locales.min.js');
-        $this->addJS('js/build/bootstrap-datetimepicker.min.js');
+        $this->addJS('js/bootstrap-datetimepicker.min.js');
         $this->addCSS('css/bootstrap-datetimepicker.min.css');
     }
 

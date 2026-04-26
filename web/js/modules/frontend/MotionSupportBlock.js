@@ -1,15 +1,18 @@
 // @ts-check
 
+import translations from "/js/vue/Translate.vue.js";
+
 const CONTACT_REQUIRED = 2;
 
 /** @param { HTMLElement } widget */
 export function motionSupportBlock(widget) {
-    this.settings = this.$widget.data("settings");
-    this.$widget.on('submit', (ev) => {
-        if (this.settings.contactGender === CONTACT_REQUIRED && this.$widget.find('[name=motionSupportGender]').val() === '') {
+    const $widget = $(widget),
+        settings = $widget.data("settings");
+    $widget.on('submit', (ev) => {
+        if (settings.contactGender === CONTACT_REQUIRED && $widget.find('[name=motionSupportGender]').val() === '') {
             ev.preventDefault();
-            bootbox.alert(__t('std', 'missing_gender'));
+            bootbox.alert(translations.getTranslation('motion', 'missing_gender'));
         }
     });
-    this.$widget.find('[data-toggle="tooltip"]').tooltip();
+    $widget.find('[data-toggle="tooltip"]').tooltip();
 }

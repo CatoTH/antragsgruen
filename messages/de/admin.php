@@ -825,4 +825,69 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'agenda_back' => 'Zurück zur Startseite',
     'agenda_admin_intro' => 'Auf dieser Seite wird die Tagesordnung verwaltet. Damit diese auch tatsächlich angezeigt wird, muss eine entsprechende Startseiten-Ansicht unter „%LINK%” ausgewählt werden.',
     'agenda_sort_save' => 'Reihenfolge speichern',
+
+    'admin_may_edit_confirm' => [
+        'text' => 'Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?',
+        'js' => true,
+    ],
+    'delete_data_confirm' => [
+        'text' => 'Diese Angabe wirklich löschen?',
+        'js' => true,
+    ],
+    'removeAdminConfirm' => [
+        'text' => 'Diesem Zugang wirklich die Admin-Rechte entziehen?',
+        'js' => true,
+    ],
+    'removeUserConfirm' => [
+        'text' => '%NAME% wirklich von DIESER Veranstaltung entfernen? Eingereichte Anträge etc. bleiben erhalten und müssen explizit gelöscht werden.',
+        'js' => true,
+    ],
+    'deleteUserConfirm' => [
+        'text' => '%NAME% wirklich löschen? Eingereichte Anträge etc. bleiben erhalten und müssen explizit gelöscht werden.',
+        'js' => true,
+    ],
+    'email_missing_code' => [
+        'text' => 'Im E-Mail-Text muss der Code %ACCOUNT% vorkommen.',
+        'js' => true,
+    ],
+    'email_missing_link' => [
+        'text' => 'Im E-Mail-Text muss der Code %LINK% vorkommen.',
+        'js' => true,
+    ],
+    'email_missing_to' => [
+        'text' => 'Es wurden keine E-Mail-Adressen angegeben.',
+        'js' => true,
+    ],
+    'email_missing_username' => [
+        'text' => 'Es wurden keine Namen angegeben.',
+        'js' => true,
+    ],
+    'email_number_mismatch' => [
+        'text' => 'Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!',
+        'js' => true,
+    ],
+    'del_motion_confirm' => [
+        'text' => 'Diesen Antrag wirklich löschen?',
+        'js' => true,
+    ],
+    'del_amendment_confirm' => [
+        'text' => 'Diesen Änderungsantrag wirklich löschen?',
+        'js' => true,
+    ],
+    'del_page_confirm' => [
+        'text' => 'Diese Seite wirklich löschen?',
+        'js' => true,
+    ],
+    'delete_motion_section_confirm' => [
+        'text' => 'Wenn dieser Abschnitt gelöscht wird, wird er auch unwiderruflich in allen Anträgen dieses Types gelöscht. Wirklich löschen?',
+        'js' => true,
+    ],
+    'cons_delete_confirm' => [
+        'text' => 'Soll diese Veranstaltung mitsamt aller Anträge und Änderungsanträge wirklich gelöscht werden?',
+        'js' => true,
+    ],
+    'goto_update_mode_confirm' => [
+        'text' => 'Soll der Update-Modus aktiviert werden? Während der Update-Modus aktiv ist, ist diese Antragsgrün-Version nicht verfügbar.',
+        'js' => true,
+    ],
 ];

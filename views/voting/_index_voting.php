@@ -26,6 +26,8 @@ if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consu
     return;
 }
 
+$layout->addJsTranslation('voting');
+
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
     $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
@@ -55,7 +57,6 @@ if ($iAmAdmin) {
     import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
     new VotingBlock(
         document.querySelector(".currentVotingWidget"),
-        <?= json_encode($CONSTANTS) ?>,
-        <?= json_encode(\app\components\JsTools::getTranslations(Consultation::getCurrent(), "voting") ) ?>
+        <?= json_encode($CONSTANTS) ?>
     );
 </script>

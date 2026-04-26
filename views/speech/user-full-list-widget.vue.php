@@ -6,6 +6,9 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+$layout = $controller->layoutParams;
+
+$layout->addJsTranslation('speech');
 
 $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
 
@@ -18,7 +21,6 @@ $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUE
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import translateDirective from "/js/vue/Translate.vue.js";
-    translateDirective.registerTranslation("speech", <?= json_encode(\app\components\JsTools::getTranslations($consultation, "speech")) ?>);
     import userFullList from "/js/vue/speech/UserFullListWidget.js";
 
     setSpeechUrls(
