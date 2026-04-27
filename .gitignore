@@ -16,3 +16,4 @@ npm-debug.log
 /web/assets/*
 components/fpdi
 .phpunit.result.cache
+.env
