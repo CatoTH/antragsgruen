@@ -1,0 +1,6 @@
+# Ensure shell scripts and text files use LF
+*.sh text eol=lf
+scripts/* text eol=lf
+bin/* text eol=lf
+docker/* text eol=lf
+*.md text eol=lf
