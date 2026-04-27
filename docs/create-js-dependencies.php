@@ -142,10 +142,7 @@ ksort($transitiveDeps);
 
 // --- Output ---
 
-echo json_encode(
-         [
-             'integrity'    => $integrity,
-             'dependencies' => $transitiveDeps,
-         ],
-         JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-) . PHP_EOL;
+file_put_contents(__DIR__ . '/../assets/js-dependencies.json', json_encode([
+    'integrity'    => $integrity,
+    'dependencies' => $transitiveDeps,
+], JSON_PRETTY_PRINT));

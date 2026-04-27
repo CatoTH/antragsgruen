@@ -1,0 +1,299 @@
+{
+    "integrity": {
+        "https:\/\/cdn.motion.tools\/js\/antragsgruen-live-events.js": "sha384-iOc1qohg0p3BOmjkXth\/SEZolnr5umpMk6J\/ud6FO8URzzan5vfbazpKWjylhn2g",
+        "https:\/\/cdn.motion.tools\/js\/antragsgruen.min.js": "sha384-7oZ53OEM6dYdjia32FOQ73BI0t6\/LY9VqtQ3H2+lswzs56k9ktq\/8B7PWue1f1Nz",
+        "https:\/\/cdn.motion.tools\/js\/bootstrap-datetimepicker.min.js": "sha384-HrFgC\/jPFju85zk587RuMzGaSPEUhFmQ7kVmGP0seLelZi\/\/2VcsNAfiApnf6FOA",
+        "https:\/\/cdn.motion.tools\/js\/colResizable-1.6.min.js": "sha384-lnOk0j2HLdxFhy0Xo7uKb1GmAQYW+U6XGzXjUXXJSmSua8LEEjt8nTfkUH2IXXct",
+        "https:\/\/cdn.motion.tools\/js\/jquery-4.0.0.min.js": "sha384-fgGyf7Mo7DURSOMnOy7ed+dkq5Job205Gnzu6QIg0BOHKaqt4D76Dt8VlDCzcMHV",
+        "https:\/\/cdn.motion.tools\/js\/jscolor.js": "sha384-5byH52gFtKrytPuzy1hUEbDXZKEbeaEr9RqSyEeNXLtL\/l3lPE3CFUa4CQn6R7jF",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/AdminIndex.js": "sha384-uzXEIV0Xpf\/9Wnzxu+bN\/qJt5Fdm3YOHsDmggFbAqgUvFoPXyBdtqg\/\/m2fOMVg8",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/AgendaEdit.js": "sha384-Q1GhdHErSOTwIBDBztjFyr31B7ykgk3lI3q3Yk0hjwOooQ0n8GOtlpjPn3MzeIBY",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/AmendmentEdit.js": "sha384-+9ZEiqJhnX3zbw203BpzTK8UzZLEMIsVI2lnA86pkFlzlbHcg1eU26urtrEQ3KOh",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/AppearanceEdit.js": "sha384-0LwBUm7hSbrNyRPwn2cpeZrfdy\/lMiO9rOexN7uxUmqQ\/oSurx2EI790jVhu1k0V",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/ChangeProposedProcedure.js": "sha384-UaC8bjhchIq\/2A2Pez3Yhr2MOyM1veSexaDei7+UCEjlY6zJr0ROO5uCOzsX0Hhn",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/ConsultationCreate.js": "sha384-RD34EynzZvnCAsafIv9uCFIBfbCNAXabsJpIuLMws8MCtanVJxKAtTgC9QHhU2vr",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/ConsultationSettings.js": "sha384-EC5yXQnoWSvv4Aw+xgyuofIAALXiSg6dE+JX80x+riGpVksAv3\/asQKM\/jWeGKVk",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/Documents.js": "sha384-uwxqcref+vY8F4sPUPXBdCl5CwaRtksRtiZl7Wmj+0dDjNIGJ2mCJ3qYzm8puDps",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/MotionEdit.js": "sha384-V4s0dUbEPjp9fFZxO7ihIQf2VvOvKnOLMBcTFV5NJfuUGagwzZ4kC7Vc1SpZvBm4",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/MotionList.js": "sha384-d6pcdCxKVfq1mpFiKZ9bdNJ9M5dTC8q\/CiVFIy\/fKNISt\/9Hu6kj\/FXSNdZ0BV+N",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/MotionMove.js": "sha384-8XopRyX93neNls8x\/QVb+1HQFvGzA\/KpA0QQZw6BWjsUjE+y+1ogtD6dEsCDPuJ4",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/MotionSupporterEdit.js": "sha384-tdpKBOj1Vr83PH6ETSqQ95o18NWtX9xSEP8Z7eBVpVUnYzNGDiBRskB87uP2yl3x",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/MotionTypeCreate.js": "sha384-NvnDkPfn0hrM\/vr1nxun0jIocedbn8vb34kus1DPfpcTmxdqVnGYF265hUJzDI4I",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/MotionTypeEdit.js": "sha384-7tXaZ1VdcoYLqj5aCN+tj4TchGJPwFCKg4GZEZZzS15l5HmMeBdB9yrB6IiNvNcH",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/ProposedChangeEdit.js": "sha384-uUQAkhNxNkisAFy02Q2Il+Ecd3fO8D1JzvyxgRIrKFvMIGYScsObl0q7QNhTSdIp",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/ProposedProcedureExport.js": "sha384-OcchsD\/Hz2NmTzYYJJkFwMYIQsR76Crt8PIVCB8LonTQ7if6UceDeoE8O3d1uqcM",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/ProposedProcedureOverview.js": "sha384-QFIiCH4YfmHcQXP4cO7tEM8iXc4uKoxXi0bX8DDqA7CcEXphV3uE5vXfVb3mJCvr",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/ResponsibilitySetter.js": "sha384-NgtqxIR\/kA0DltF7JVGzRAnUudy8UGAWodwwxlt\/larw05+n1ejwqOhuJwW8Ckd9",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/SiteConfig.js": "sha384-d6LmcyuUkHdnysote8V\/kNhLqPEKK+BgwvjvO19vh5yykHhhQjw5Ua9JSjFqTXIM",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/Theming.js": "sha384-mSrO8hCcrPPpAOO7csD\/Nd3\/3kZyf7cfs5qO3lN+h4lCCYp7Zdg9U+7VW1bh5rIE",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/UserAdmin.js": "sha384-a7\/n6NxMrBDxqbjLG1ULfE9h7\/SjWZlcLj98\/VIiuNC5mbBx7dd7lQXxWfT6bYbv",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/UserAdminCreate.js": "sha384-pQTh1afy0eAy9VZugPNuT5FycdsvAxTtYdVA67MT6vb8KpyHNhzQJKymCm9uE8JA",
+        "https:\/\/cdn.motion.tools\/js\/modules\/backend\/VotingAdmin.js": "sha384-T4EpoRjgQkzK0\/\/lztEMPSaHxRQJWmv9YJRXtRbOeLOjei8ExFb+AgY9ALk1Uunh",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/AccountEdit.js": "sha384-UcjZCEJzuoUtDyP+8A2rXp2wyWJFkGqlAEtvM137XLucp0VOE1ihmcNhL2iJfuHF",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/AmendmentEdit.js": "sha384-atJPBmPUbdgVZ3Zc0cqom9CQK5nd9RI9rK5qwYjC3dZxFNb5bbF22Q0mQKNya9KA",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/AmendmentShow.js": "sha384-v\/UC94WpLMUOecjourug2FdGW3lXwrKVNSOAvtzDO2LpqECJoDKkPTxZ4JHFHob8",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/Comments.js": "sha384-fVA+BX1GVd\/EwzXwiBQGH\/CChgiPaX65941ctqQOHbJ7UKA0UtvT5FUuGGwvpXhL",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/ConsultationDiscussionTags.js": "sha384-RIzrWDhWSDq4cm8DPfBzuCUstFK9wz2fJujsBIJmk2q8SLccPLv31UGh3Fvy8cBT",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/ContentPageCreate.js": "sha384-Tw6urfxkZSpoqAKZcHuf\/JWdDHkLIQTUapXbk8Pyg0D9akWtttmZExqyzDoae51b",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/ContentPageEdit.js": "sha384-VlDww1Dm4uCbc3ex+cA8iBsZ5FZ3b0awButjsUjI8zYPQY2LJ5L\/EBCdv0OJXg0v",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/CopyUrlToClipboard.js": "sha384-N9Rla65kxNuni3yX6Tv3yO51T4drJk0J\/wuudEe+rbbDBZ8+yCq\/bg5hZXVa7iYn",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/DeadlineDebugBar.js": "sha384-BaLo3NRu5XPCirCD9DEwbA9u\/eLPlwkVY5fkd8PWkfZ\/NaoD9Aov7h2Wawf1oC\/C",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/EditorialEdit.js": "sha384-KzfQrKSgvoqG1sKZsvVYXXShFnhESNyn8d+layYDHmOMnRaRzKJYNlNp9Ru1Fhj4",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/FullscreenToggle.js": "sha384-VH1eUNYD2NC07gb0f3yKWov\/DZXvYOY\/7DmKZ+ODxBrBNq6y4BdxBh8aj9XYYQt0",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/InitiatorForm.js": "sha384-dG+7U34HbVq9khnuNXrvEkFAQ91KVYui1+6uBpOTLQ9t\/ybOqGA277UpIicnstR\/",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/LineNumberHighlighting.js": "sha384-ZfqXarDw8oVQhU9el\/3fcWPcGOCZOJTR0092oQngYU1hkYuGS2i3JasLrNTlRPaE",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/LoginForm.js": "sha384-U5HdXmYRRrfBwEnzaBLkmu+mj+7bA5E76w+6Id7cI1ZCJ+g34jq2GDlf\/Zs0F7eg",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MergeInit.js": "sha384-ULZkmp3DvFa0FlE3uUbtvCm\/vHt3H8tU20KXxSasCijUfXjAAjLUDW7gUO1JjMGl",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MergeSingleAmendment.js": "sha384-PVssB8LvpJpisnZpfCmrfFXlhM20VU7OLUK7D5pIsMSaRNVHq\/uDPHoyJ3sqQyrP",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionCreateConfirm.js": "sha384-VlwQhM9UqG1UzJz8SQJ1xxiMXozFINh4O1\/DwgchEQhFB5gql4512zX0aDxAlVQM",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionEditForm.js": "sha384-RaoQcSTm5eWc5RBtaZImBQWU2y+Aw6LwXgg4NVE8veXxdmNnQv6xWfCJW76gq4\/8",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionListPrivateComments.js": "sha384-V6sE\/uX+x87SKsrd66\/eAnDQYNt0jpVpDvmkKNDsElU72b4BJs90I535j7zFCgR1",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionMergeAmendments.js": "sha384-ZIgONHqXdQFtUFH9dyN+mg7QGd7cBl69BbIfJQvt\/tCILsxeyrvZPPy9XpapPx6p",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionMergeAmendmentsConfirm.js": "sha384-WBfuPqcERF5t5q5Ii3t1bRXrY7dzySC2c1uH2OKi\/s4JyNSgPiykc9aTj+cRzGpX",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionMergeAmendmentsPublic.js": "sha384-OASWul\/bi98gz5gWn5VkNlgoRQr3RFQfzx+xn5pvYh9C+Q8urgWQ\/9AfTbk17Efb",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionShow.js": "sha384-gbs4g2raO9gxDVhyDXX1fYoIxYZZk5g49tuXRNlDPBZ6RcFWJIAY77VKrq+vEpIP",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/MotionSupportBlock.js": "sha384-iaj2191Hnmzsj7Sl2P2ObGlHKbKryJ88K1Gngnz3j0zX+Gh+joIY+AFw9b+KJL3X",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/ProposedProcedureOverview.js": "sha384-6HYBB6tfr\/mwf27o0v4bzXbLsrZvqMhaza6RCrha4f1+Zl1N3wIPFKi0fbrOgOZH",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/UserNotificationsForm.js": "sha384-Cwpwd7YDkek9K03SO9v44PyvSCJGbjkor0wGON9geWZy7Bi+8QHIpoZxxTgP8TfJ",
+        "https:\/\/cdn.motion.tools\/js\/modules\/frontend\/VotingBlock.js": "sha384-vKgjH45jF3TETjDOpIk9CKMEMIvviLW6Ie2vebGln43l06CaRt+i4RueTBq5GkEt",
+        "https:\/\/cdn.motion.tools\/js\/modules\/installation\/InitDb.js": "sha384-6KNDXd7fiM\/tSKmujHIlilSgsoruYAAGw5sjV0lbPk18wjcIhsXiK4DY36tpZi8x",
+        "https:\/\/cdn.motion.tools\/js\/modules\/shared\/AmendmentEditSinglePara.js": "sha384-AbSxI7z550Tn+AWhJEj+lKPgc2x5TXw0g5kOMR8XpPOt6H4aBqoufaCLTNKwBtLs",
+        "https:\/\/cdn.motion.tools\/js\/modules\/shared\/AntragsgruenEditor.js": "sha384-XSzHUsrTXfZZI85U2KjR2TRHc6HG9V9N7bhBscJoIKj4SkUyNNP9p+Anc5O8fJul",
+        "https:\/\/cdn.motion.tools\/js\/modules\/shared\/DraftSavingEngine.js": "sha384-C\/kYjxutgFDspY6F7sL7jEXbRmZJcuV5yjf3VxAH0B+uplHzSPom7ZfaI3FG5RRg",
+        "https:\/\/cdn.motion.tools\/js\/modules\/shared\/IMotionShow.js": "sha384-r8Oeb217E\/WgNN7cNuao3vpMhMx7hG1PWM1ejCO0JFCVkCA\/QfIrawpAcU1jZKHf",
+        "https:\/\/cdn.motion.tools\/js\/modules\/shared\/MotionMergeChangeActions.js": "sha384-CkpF9G3Zkpm6fCex3f89YHmeznjqMH32j7JFVKCd2m0kO59fwj4rg\/tJeSxTi3gf",
+        "https:\/\/cdn.motion.tools\/js\/modules\/shared\/PolicySetter.js": "sha384-AZ7EL1jvLQmbnWsHEN3yBIJjCiT+xGmTdozdZSKO2x8+YKE370xQGvtUa76tEUCV",
+        "https:\/\/cdn.motion.tools\/js\/modules\/shared\/SiteCreateWizard.js": "sha384-Y9y5zvNeosbylU8z3dkvRXt1ikaHjh9LSxe1Rt9SsmIj\/OVhAWa6X0FpEJIzYNqG",
+        "https:\/\/cdn.motion.tools\/js\/pdfjs-viewer.min.js": "sha384-nnWKI\/hlz679UY4BNK1IazDYtCnMYFqGNARzVQHvLs33KELiesohhUm5wLuimdhD",
+        "https:\/\/cdn.motion.tools\/js\/pdfjs-viewer\/pdf.viewer.js": "sha384-JjbprP1+mRTMILTm9v6V1kjv+3AUQZ2\/wiOj3KZ0XrUMsSbvbILQEgXtrcP1rSLo",
+        "https:\/\/cdn.motion.tools\/js\/pdfjs-viewer\/pdf.worker.js": "sha384-ORTAZcbr3gjW\/y68WV8lJ3u\/P+T\/sNDWkmj3YBcmjXYdppdiCp6Yf\/FJ2GKRlO9W",
+        "https:\/\/cdn.motion.tools\/js\/typeahead.bundle.min.js": "sha384-zBEVx\/ZG7uT9lA6LS5h\/V0wq4mfFmHz7kcHLXgi1gQVBhtJ\/T7cuNSrYPbWaRdF6",
+        "https:\/\/cdn.motion.tools\/js\/vue\/DatetimePicker.js": "sha384-9LBMkKjyXGleie2Tzm\/qY5sYQCjiFIx+gZDMIJEX2ffKaMUkE3kl2zA71AJaX1Ob",
+        "https:\/\/cdn.motion.tools\/js\/vue\/Focus.vue.js": "sha384-PT3b8BDMDBSJD61H1\/oEkwGKNyzjBiaUmmrosoYCsR0rc2mhBM1h\/VuNgvXThRLs",
+        "https:\/\/cdn.motion.tools\/js\/vue\/PolicySelect.js": "sha384-Z9te7+8ZMGkWaJdH4wc1O\/khcF\/\/UtrjoIaGRUjdms3nc6hcrufouv2lsb79py9o",
+        "https:\/\/cdn.motion.tools\/js\/vue\/Selectize.js": "sha384-PJMlQvJ9dgSmDHCxpqiU5UYu4AvpH\/NW6KbHsDihsz94s8OzPbJ2GFggVaW3JnUM",
+        "https:\/\/cdn.motion.tools\/js\/vue\/Tooltip.vue.js": "sha384-CMqlNY4BOsqTK\/vKlJ8ycyNUcYl6Fryd++CbKmQAodUMIwXeFrdnCQBotwZT4QOp",
+        "https:\/\/cdn.motion.tools\/js\/vue\/Translate.vue.js": "sha384-FFZj8zy8uthYkegYAT1cleNHWwzS7YVgIRns+Ti4EZiCAFrznqj1zoYd1ciAiG+F",
+        "https:\/\/cdn.motion.tools\/js\/vue\/agenda\/AgendaEditItemRow.js": "sha384-q+mUDIA\/fEzzqk3RzznZwSf0x8B4m1hP0gqtu9dP4b1tjzwtMY5ZV11Nu9nECAJk",
+        "https:\/\/cdn.motion.tools\/js\/vue\/agenda\/AgendaEditWidget.js": "sha384-1QE0ip1KqADSSKE8f24vebT7DDBZ+2HtFnjkYWdW7UX4sDJLGnd\/WVSF8\/aolb7i",
+        "https:\/\/cdn.motion.tools\/js\/vue\/agenda\/AgendaSorter.js": "sha384-r+OYOU4ccDXJ1bI0IcVLs7Xi67ZWxbCcx2gdTsnfUpEQsuAAyB5ldwEL92\/\/mry+",
+        "https:\/\/cdn.motion.tools\/js\/vue\/fullscreen\/FullscreenIMotion.js": "sha384-9k1gqPjM+ujsabBlD5FkL+TtL6B\/Aksh\/zbUG4zZJp1urGpVw1g4l1LM7ha\/7nqY",
+        "https:\/\/cdn.motion.tools\/js\/vue\/fullscreen\/FullscreenPanel.js": "sha384-woViQWlPABPZLD9Ij7RCivJXLQLxe2igkncWbZEfQu\/31aNebbYznXM\/0dO2Ao\/t",
+        "https:\/\/cdn.motion.tools\/js\/vue\/fullscreen\/FullscreenProjector.js": "sha384-gS7NsgpMsMGyF47UgJReYP2s0y6wxvN+Wn0WslPvStOQn5TWQIFxopCxybFC6UIb",
+        "https:\/\/cdn.motion.tools\/js\/vue\/merging\/ParagraphAmendmentSettings.js": "sha384-ZWcUGlhYZZMORkZor6BCLoPP+A\/wsg1TbaTNyja0LzPoudwY8mK251xzg7UlZqUU",
+        "https:\/\/cdn.motion.tools\/js\/vue\/speech\/AdminSubqueue.js": "sha384-iLtuUpASrX0NyUMy5TZh659NSG5CkJasEUlCh+IAztNWbEUidqXCPbkEWZ2tCcwf",
+        "https:\/\/cdn.motion.tools\/js\/vue\/speech\/AdminWidget.js": "sha384-efcboD166WEAyOc3q04oT9G7s\/zuSDs1usEg13sHTptxy7WRqIL89JwzR+jqejpn",
+        "https:\/\/cdn.motion.tools\/js\/vue\/speech\/FullscreenSpeech.js": "sha384-OLyzBF\/Obrga5oJHrsyYrjeetyx96TnUlb7AiHDm7VMvMm5moz0CRVe1pueus1pS",
+        "https:\/\/cdn.motion.tools\/js\/vue\/speech\/SpeechCommonMixins.js": "sha384-Q5mp6VKFtnYAIxClVFMozzwcOfhlS+4q3e88gMMY+DxdACItzeZQYkfP1PlNjIIV",
+        "https:\/\/cdn.motion.tools\/js\/vue\/speech\/UserFooterWidget.js": "sha384-dw3u06q871XnZsSBkzqZsSApo9JHXHMd9JwhAO4mm1vP74ewHsOyfh0B8R\/e2lbc",
+        "https:\/\/cdn.motion.tools\/js\/vue\/speech\/UserFullListWidget.js": "sha384-1JPpfUJLfVuxo\/tUwkwhuV1F4mjJlY2MFcDOV08PLvbzy32jT0RdMqoYkT2alqsW",
+        "https:\/\/cdn.motion.tools\/js\/vue\/speech\/UserInlineWidget.js": "sha384-WZbAqOyuuAV5nEMBt6+tblUnLdqBZLhCsuKoaiz3qH4Kg0x510UNkn\/oE4k5S6os",
+        "https:\/\/cdn.motion.tools\/js\/vue\/users\/GroupEditAddRestricted.js": "sha384-tbhU6+uN++J8eO4iM8+7W0PhEimnIeG8ac+J2YXc+gNu6fO3HCXMJDXZpCsvDGC4",
+        "https:\/\/cdn.motion.tools\/js\/vue\/users\/GroupEditModal.js": "sha384-R+2g82GFDE8PH4IzvOrHQFtnENyl\/uReagZ1eb37J6E7ASYmSzFA6juI4q3ifXJ6",
+        "https:\/\/cdn.motion.tools\/js\/vue\/users\/OrganisationEdit.js": "sha384-1aRoG1QnWcRBsKBwdmL\/LyHjLBRg0q222ZHiwtLMsoSGfjtNLmDDjqGf9pFHAQIt",
+        "https:\/\/cdn.motion.tools\/js\/vue\/users\/UserAdministration.js": "sha384-y6Yr74uFLetlXafHYBEfLfbe5FpVB8+qfOAEkDMmH2lnFzs7T\/FZX+xRP7xYA+Qs",
+        "https:\/\/cdn.motion.tools\/js\/vue\/users\/UserEditModal.js": "sha384-B95alRdp6IMA30x4buW0v1yy\/5giz3OV1+v10DmR09\/QVBvxUylQiB4ra6b1nFaV",
+        "https:\/\/cdn.motion.tools\/js\/vue\/voting\/VotingAdmin.js": "sha384-sRAdW9M4dNrgVtA4+jsnPuQWazO2CQNiv2uyn9ZqpNBTDCaL1ct\/wjAmWMzHL1tG",
+        "https:\/\/cdn.motion.tools\/js\/vue\/voting\/VotingAdminSort.js": "sha384-ggPTdxBei4MHqcszsGVLotgfARGqW0qC0RipoT39IwaSwzFfr0mrunO1ehCp8BBX",
+        "https:\/\/cdn.motion.tools\/js\/vue\/voting\/VotingBlockWidget.js": "sha384-BiVkbJS8djXjUheuXwBfEbRLDaiLlLf4k8bee6B729YrLaeInrl8gmtFNcJa0GzQ",
+        "https:\/\/cdn.motion.tools\/js\/vue\/voting\/VotingCommonMixins.js": "sha384-ty0rcdJZA7V8LnMv3F+HI0Uk3dDVsrwdctakerXBN40FvQT3K7GPWLrSmswLEPas",
+        "https:\/\/cdn.motion.tools\/js\/vue\/voting\/VotingList.js": "sha384-6nKHinZ9GpX8BxlmckkurxT2ncgq1CQJTJ79CwoCZyKQnk7aKblYidt9NqCAONGb",
+        "https:\/\/cdn.motion.tools\/npm\/Sortable.min.js": "sha384-DgmC6Xe2bSN2WjTDXzWYbUbxyhNP+NNkGDR\/g78pCXV7E7rcVTGxVg0uIVCUUcBc",
+        "https:\/\/cdn.motion.tools\/npm\/bootstrap-toggle.min.js": "sha384-cd07Jx5KAMCf7qM+DveFKIzHXeCSYUrai+VWCPIXbYL7JraHMFL\/IXaCKbLtsxyB",
+        "https:\/\/cdn.motion.tools\/npm\/clipboard.min.js": "sha384-OY8o6YNboKwr\/dVDQaTiAB7y\/O6cUEpZJsQ7mfSOx69OSzLeHvvWgH0Q5LhL3+1M",
+        "https:\/\/cdn.motion.tools\/npm\/isotope.pkgd.min.js": "sha384-vtH+5pZsjdWxaTWlFSCrWM6i0TIG0HKOqJbPo91LB35dvWpVzuWdJeVoNweP+eoY",
+        "https:\/\/cdn.motion.tools\/npm\/moment-with-locales.min.js": "sha384-Jx7nF8Lr+lkOLpB9WqQqk6OK83W8P87BGQxdNEFvHM5SEiItXH87Ednyl0soQZs8",
+        "https:\/\/cdn.motion.tools\/npm\/selectize.min.js": "sha384-ru6x\/WT7eIu5ecGn0WpgNpcL6WT7IE9q0l6O\/eIBLaMVkDZPaNK42X1LZTpaza7X",
+        "https:\/\/cdn.motion.tools\/npm\/sortable.esm.js": "sha384-epMYlv+pmbMc16ZCUzLpj1OfyiZhjzumHPnQk8CNKG4yR+Dh\/+7y7WMSQqODNIE9",
+        "https:\/\/cdn.motion.tools\/npm\/vue-draggable-plus.js": "sha384-piaUCLQqRs7QBV2zEuNm8lGyyrRj8Z3qpD+YBhFnGJrCzGqxSkF5Kss1o9mtSYEc",
+        "https:\/\/cdn.motion.tools\/npm\/vue.runtime.esm-browser.js": "sha384-1QCzjXfMpAClCkQDGdA3Wt+qihjRIe\/UK5xHWpSJKeoU6Xi5OJ3c4dDNQU+LJNrg",
+        "https:\/\/cdn.motion.tools\/npm\/vue.runtime.esm-browser.prod.js": "sha384-F0ykfWg2a23oLLLBImt8LHTZEoN7k5mjQu3BxmYlUYEVFSk5LsNtXIJ0cVBkjd\/z",
+        "https:\/\/cdn.motion.tools\/npm\/vuedraggable.js": "sha384-wq9bFVpqOLhJrn69kYrRbKulVQBNZEp+cYQOfPYmu1+r+nsMxWjrXHn8dxJoCWJn"
+    },
+    "dependencies": {
+        "js\/modules\/backend\/AdminIndex.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/AgendaEdit.js": [
+            "js\/vue\/DatetimePicker.js",
+            "js\/vue\/Translate.vue.js",
+            "js\/vue\/agenda\/AgendaEditItemRow.js",
+            "js\/vue\/agenda\/AgendaEditWidget.js",
+            "js\/vue\/agenda\/AgendaSorter.js",
+            "npm\/vue-draggable-plus.js",
+            "npm\/vue.runtime.esm-browser.prod.js"
+        ],
+        "js\/modules\/backend\/AmendmentEdit.js": [
+            "js\/modules\/backend\/MotionSupporterEdit.js",
+            "js\/modules\/shared\/AmendmentEditSinglePara.js",
+            "js\/modules\/shared\/AntragsgruenEditor.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/ChangeProposedProcedure.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/ConsultationCreate.js": [
+            "js\/modules\/shared\/SiteCreateWizard.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/ConsultationSettings.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/MotionEdit.js": [
+            "js\/modules\/backend\/MotionSupporterEdit.js",
+            "js\/modules\/shared\/AntragsgruenEditor.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/MotionList.js": [
+            "js\/modules\/backend\/ResponsibilitySetter.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/MotionTypeEdit.js": [
+            "js\/modules\/shared\/PolicySetter.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/ProposedChangeEdit.js": [
+            "js\/modules\/shared\/AntragsgruenEditor.js",
+            "js\/modules\/shared\/MotionMergeChangeActions.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/ProposedProcedureOverview.js": [
+            "js\/modules\/backend\/ResponsibilitySetter.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/UserAdmin.js": [
+            "js\/vue\/Focus.vue.js",
+            "js\/vue\/Selectize.js",
+            "js\/vue\/Tooltip.vue.js",
+            "js\/vue\/Translate.vue.js",
+            "js\/vue\/users\/GroupEditAddRestricted.js",
+            "js\/vue\/users\/GroupEditModal.js",
+            "js\/vue\/users\/OrganisationEdit.js",
+            "js\/vue\/users\/UserAdministration.js",
+            "js\/vue\/users\/UserEditModal.js",
+            "npm\/vue.runtime.esm-browser.prod.js"
+        ],
+        "js\/modules\/backend\/UserAdminCreate.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/backend\/VotingAdmin.js": [
+            "js\/vue\/PolicySelect.js",
+            "js\/vue\/Selectize.js",
+            "js\/vue\/Tooltip.vue.js",
+            "js\/vue\/Translate.vue.js",
+            "js\/vue\/voting\/VotingAdmin.js",
+            "js\/vue\/voting\/VotingAdminSort.js",
+            "js\/vue\/voting\/VotingCommonMixins.js",
+            "js\/vue\/voting\/VotingList.js",
+            "npm\/sortable.esm.js",
+            "npm\/vue.runtime.esm-browser.prod.js",
+            "npm\/vuedraggable.js"
+        ],
+        "js\/modules\/frontend\/AccountEdit.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/AmendmentEdit.js": [
+            "js\/modules\/shared\/AntragsgruenEditor.js",
+            "js\/modules\/shared\/DraftSavingEngine.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/AmendmentShow.js": [
+            "js\/modules\/shared\/IMotionShow.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/ContentPageEdit.js": [
+            "js\/modules\/shared\/PolicySetter.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/EditorialEdit.js": [
+            "js\/modules\/shared\/AntragsgruenEditor.js"
+        ],
+        "js\/modules\/frontend\/FullscreenToggle.js": [
+            "js\/vue\/Translate.vue.js",
+            "js\/vue\/fullscreen\/FullscreenIMotion.js",
+            "js\/vue\/fullscreen\/FullscreenPanel.js",
+            "js\/vue\/fullscreen\/FullscreenProjector.js",
+            "js\/vue\/speech\/FullscreenSpeech.js",
+            "npm\/vue.runtime.esm-browser.prod.js"
+        ],
+        "js\/modules\/frontend\/InitiatorForm.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/LoginForm.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/MergeSingleAmendment.js": [
+            "js\/modules\/shared\/AntragsgruenEditor.js"
+        ],
+        "js\/modules\/frontend\/MotionEditForm.js": [
+            "js\/modules\/shared\/AntragsgruenEditor.js",
+            "js\/modules\/shared\/DraftSavingEngine.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/MotionMergeAmendments.js": [
+            "js\/modules\/shared\/AntragsgruenEditor.js",
+            "js\/modules\/shared\/MotionMergeChangeActions.js",
+            "js\/vue\/Translate.vue.js",
+            "js\/vue\/merging\/ParagraphAmendmentSettings.js",
+            "npm\/vue.runtime.esm-browser.prod.js"
+        ],
+        "js\/modules\/frontend\/MotionShow.js": [
+            "js\/modules\/frontend\/LineNumberHighlighting.js",
+            "js\/modules\/shared\/IMotionShow.js",
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/MotionSupportBlock.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/frontend\/VotingBlock.js": [
+            "js\/vue\/Translate.vue.js",
+            "js\/vue\/voting\/VotingBlockWidget.js",
+            "js\/vue\/voting\/VotingCommonMixins.js",
+            "js\/vue\/voting\/VotingList.js",
+            "npm\/vue.runtime.esm-browser.prod.js"
+        ],
+        "js\/modules\/shared\/AmendmentEditSinglePara.js": [
+            "js\/modules\/shared\/AntragsgruenEditor.js"
+        ],
+        "js\/modules\/shared\/DraftSavingEngine.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/shared\/IMotionShow.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/modules\/shared\/PolicySetter.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/Tooltip.vue.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/merging\/ParagraphAmendmentSettings.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/speech\/SpeechCommonMixins.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/users\/GroupEditModal.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/users\/UserAdministration.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/users\/UserEditModal.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/voting\/VotingAdmin.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "js\/vue\/voting\/VotingCommonMixins.js": [
+            "js\/vue\/Translate.vue.js"
+        ],
+        "npm\/vue-draggable-plus.js": [
+            "npm\/vue.runtime.esm-browser.prod.js"
+        ],
+        "npm\/vuedraggable.js": [
+            "npm\/sortable.esm.js",
+            "npm\/vue.runtime.esm-browser.prod.js"
+        ]
+    }
+}
