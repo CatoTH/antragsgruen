@@ -216,12 +216,18 @@ return [
         'text' => 'Yes',
         'js' => true,
     ],
-    'settings_answers_yesh' => 'For lists. After creation, the "Number of votes per user" can be given in the settings.',
+    'settings_answers_yesh' => [
+        'For lists. After creation, the "Number of votes per user" can be given in the settings.',
+        'js' => true,
+    ],
     'settings_answers_present' => [
         'text' => 'Present',
         'js' => true,
     ],
-    'settings_answers_presenth' => 'For „votings” meant to ask which members are present, like roll calls.',
+    'settings_answers_presenth' => [
+        'test' => 'For "votings"”" meant to ask which members are present, like roll calls.',
+        'js' => true,
+    ],
     'settings_majoritytype' => [
         'text' => 'Majority type',
         'js' => true,
@@ -290,7 +296,10 @@ return [
         'text' => 'Number of votes per user',
         'js' => true,
     ],
-    'settings_maxvotes_h' => 'This can be used, for example, to present 7 candidates, and only allow up to 3 votes for each user',
+    'settings_maxvotes_h' => [
+        'text' => 'This can be used, for example, to present 7 candidates, and only allow up to 3 votes for each user',
+        'js' => true,
+    ],
     'settings_maxvotes_none' => [
         'text' => 'Unlimited',
         'js' => true,
@@ -311,7 +320,10 @@ return [
         'text' => 'Assigned to motion',
         'js' => true,
     ],
-    'settings_motionassign_h' => 'If this voting is assigned to a motion, it will be shown on the motion page, not on the home page',
+    'settings_motionassign_h' => [
+        'text' => 'If this voting is assigned to a motion, it will be shown on the motion page, not on the home page',
+        'js' => true,
+    ],
     'settings_motionassign_none' => [
         'text' => 'None',
         'js' => true,
@@ -320,7 +332,10 @@ return [
         'text' => 'Time for voting',
         'js' => true,
     ],
-    'settings_timer_h' => 'If a number of seconds is set, a countdown appears when the voting is open. This is just informal, though - the voting still needs to be explicitly closed manually.',
+    'settings_timer_h' => [
+        'text' => 'If a number of seconds is set, a countdown appears when the voting is open. This is just informal, though - the voting still needs to be explicitly closed manually.',
+        'js' => true,
+    ],
     'settings_timer_sec' => [
         'text' => 'Seconds',
         'js' => true,
@@ -329,8 +344,14 @@ return [
         'text' => 'Save',
         'js' => true,
     ],
-    'settings_delete' => 'Delete the voting',
-    'settings_delete_bb' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',
+    'settings_delete' => [
+        'text' => 'Delete the voting',
+        'js' => true,
+    ],
+    'settings_delete_bb' => [
+        'test' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',
+        'js' => true,
+    ],
     'settings_sort_title' => [
         'text' => 'Reorder votings',
         'js' => true,

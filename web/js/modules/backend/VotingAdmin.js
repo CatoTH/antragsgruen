@@ -389,6 +389,8 @@ export class VotingAdmin {
             form.classList.add('hidden');
             opener.classList.remove('hidden');
         });
+
+        $(form).find('[data-toggle="tooltip"]').tooltip();
     }
 
     initPolicyWidget() {

@@ -274,24 +274,24 @@
       <fieldset class="answerTemplate">
         <legend><template v-t="['voting', 'settings_answers']"></template>:</legend>
         <label>
-          <input type="radio" :value="ANSWER_TEMPLATE_YES_NO_ABSTENTION" v-model="answerTemplate" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_answers_yesnoabst']"></template>
+          <input type="radio" :value="ANSWER_TEMPLATE_YES_NO_ABSTENTION" v-model="answerTemplate" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_answers_yesnoabst']"></template>
         </label>
         <label>
-          <input type="radio" :value="ANSWER_TEMPLATE_YES_NO" v-model="answerTemplate" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_answers_yesno']"></template>
+          <input type="radio" :value="ANSWER_TEMPLATE_YES_NO" v-model="answerTemplate" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_answers_yesno']"></template>
         </label>
         <label>
-          <input type="radio" :value="ANSWER_TEMPLATE_YES" v-model="answerTemplate" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_answers_yes']"></template>
-          <span class="glyphicon glyphicon-info-sign"
+          <input type="radio" :value="ANSWER_TEMPLATE_YES" v-model="answerTemplate" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_answers_yes']"></template
+            > <span class="glyphicon glyphicon-info-sign"
                 v-t:aria-label="['voting', 'settings_answers_yesh']"
                 v-tooltip="['voting', 'settings_answers_yesh']"></span>
         </label>
         <label>
-          <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_answers_present']"></template>
-          <span class="glyphicon glyphicon-info-sign"
+          <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_answers_present']"></template
+            > <span class="glyphicon glyphicon-info-sign"
                 v-t:aria-label="['voting', 'settings_answers_presenth']"
                 v-tooltip="['voting', 'settings_answers_presenth']"></span>
         </label>
@@ -308,16 +308,16 @@
                 v-tooltip="['voting', 'settings_maxvotes_h']"></span>
         </legend>
         <label class="maxVotesNone">
-          <input type="radio" value="0" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_maxvotes_none']"></template>
+          <input type="radio" value="0" v-model="maxVotesRestriction" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_maxvotes_none']"></template>
         </label>
         <label class="maxVotesAll">
-          <input type="radio" value="1" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_maxvotes_limit']"></template>
+          <input type="radio" value="1" v-model="maxVotesRestriction" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_maxvotes_limit']"></template>
         </label>
         <label class="maxVotesPerGroup" v-if="votePolicy && votePolicy.id === VOTE_POLICY_USERGROUPS">
-          <input type="radio" value="2" v-model="maxVotesRestriction" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_maxvotes_pergroup']"></template>
+          <input type="radio" value="2" v-model="maxVotesRestriction" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_maxvotes_pergroup']"></template>
         </label>
       </fieldset>
 
@@ -366,43 +366,43 @@
       <fieldset class="resultsPublicSettings">
         <legend><template v-t="['voting', 'settings_resultspublic']"></template>:</legend>
         <label>
-          <input type="radio" value="0" v-model="resultsPublic">
-          <template v-t="['voting', 'settings_resultspublic_admins']"></template>
+          <input type="radio" value="0" v-model="resultsPublic"
+            > <template v-t="['voting', 'settings_resultspublic_admins']"></template>
         </label>
         <label>
-          <input type="radio" value="1" v-model="resultsPublic">
-          <template v-t="['voting', 'settings_resultspublic_all']"></template>
+          <input type="radio" value="1" v-model="resultsPublic"
+            > <template v-t="['voting', 'settings_resultspublic_all']"></template>
         </label>
       </fieldset>
       <fieldset class="votesPublicSettings">
         <legend><template v-t="['voting', 'settings_votespublic']"></template>:</legend>
         <label>
-          <input type="radio" value="0" v-model="votesPublic" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_votespublic_nobody']"></template>
+          <input type="radio" value="0" v-model="votesPublic" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_votespublic_nobody']"></template>
         </label>
         <label>
-          <input type="radio" value="1" v-model="votesPublic" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_votespublic_admins']"></template>
+          <input type="radio" value="1" v-model="votesPublic" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_votespublic_admins']"></template>
         </label>
         <label>
-          <input type="radio" value="2" v-model="votesPublic" :disabled="isOpen || isClosed">
-          <template v-t="['voting', 'settings_votespublic_all']"></template>
+          <input type="radio" value="2" v-model="votesPublic" :disabled="isOpen || isClosed"
+            > <template v-t="['voting', 'settings_votespublic_all']"></template>
         </label>
         <div class="hint" v-t="['voting', 'settings_votespublic_hint']"></div>
       </fieldset>
       <fieldset class="votesNamesSettings">
         <legend><template v-t="['voting', 'settings_votesnames']"></template>:</legend>
         <label>
-          <input type="radio" value="\app\models\settings\VotingBlock::VOTES_NAMES_AUTH ?>" v-model="votesNames">
-          <template v-t="['voting', 'settings_votesnames_auth']"></template>
+          <input type="radio" value="\app\models\settings\VotingBlock::VOTES_NAMES_AUTH ?>" v-model="votesNames"
+            > <template v-t="['voting', 'settings_votesnames_auth']"></template>
         </label>
         <label>
-          <input type="radio" value="\app\models\settings\VotingBlock::VOTES_NAMES_NAME ?>" v-model="votesNames">
-          <template v-t="['voting', 'settings_votesnames_name']"></template>
+          <input type="radio" value="\app\models\settings\VotingBlock::VOTES_NAMES_NAME ?>" v-model="votesNames"
+            > <template v-t="['voting', 'settings_votesnames_name']"></template>
         </label>
         <label>
-          <input type="radio" value="\app\models\settings\VotingBlock::VOTES_NAMES_ORGANIZATION ?>" v-model="votesNames">
-          <template v-t="['voting', 'settings_votesnames_organization']"></template>
+          <input type="radio" value="\app\models\settings\VotingBlock::VOTES_NAMES_ORGANIZATION ?>" v-model="votesNames"
+            > <template v-t="['voting', 'settings_votesnames_organization']"></template>
         </label>
       </fieldset>
       <fieldset class="inputWithLabelHolder votesTimer">
@@ -883,7 +883,7 @@ export default {
     }
   },
   updated() {
-    $(this.$el).find('[data-toggle="tooltip"]').tooltip();
+    //$(this.$el).find('[data-toggle="tooltip"]').tooltip();
   },
   beforeMount() {
     this.startPolling();
