@@ -17,8 +17,20 @@ class JsTools
     private const INVALIDATE_MAX_HOURS = 2;
     private const MAP_CACHE_SECONDS = 60;
 
+    private static array $foundModules = [];
+
+    public static function detectAndRegisterModules(string $content): string
+    {
+        return preg_replace_callback("/\/(npm|js)[^\"']+/siu", static function ($matches) {
+            self::$foundModules[] = $matches[0];
+            // @TODO replace paths
+            return $matches[0];
+        }, $content);
+    }
+
     public static function getJsModulesImportMap(): string
     {
+        // @TODO Only show relevant modules, CDN support
         $cache = HashedStaticCache::getInstance('getJsModulesImportMap', []);
         if (YII_DEBUG) {
             $cache->setSkipCache(true);

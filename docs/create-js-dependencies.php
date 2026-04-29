@@ -2,12 +2,28 @@
 <?php
 
 $localDir  = './web';
-$cdnBase   = 'https://cdn.motion.tools';
 $integrity = [];
 
 $files = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($localDir, RecursiveDirectoryIterator::SKIP_DOTS)
 );
+
+$relevantFiles = [];
+foreach ($files as $file) {
+    if (!$file->isFile()) {
+        continue;
+    }
+    if ($file->getExtension() !== 'js') {
+        continue;
+    }
+    if (str_contains($file->getPathname(), "ckeditor")) {
+        continue;
+    }
+    if (str_contains($file->getPathname(), "assets")) {
+        continue;
+    }
+    $relevantFiles[] = $file;
+}
 
 // --- Pass 1: collect integrity hashes and direct imports ---
 
@@ -16,22 +32,8 @@ $directDeps = [];
 
 $absLocalDir = realpath($localDir);
 
-foreach ($files as $file) {
-    if (!$file->isFile()) {
-        continue;
-    }
-    if ($file->getExtension() !== 'js') {
-        continue;
-    }
-
+foreach ($relevantFiles as $file) {
     $localPath = $file->getPathname();
-    if (str_contains($localPath, "ckeditor")) {
-        continue;
-    }
-    if (str_contains($localPath, "assets")) {
-        continue;
-    }
-
     $contents  = file_get_contents($localPath);
 
     if ($contents === false) {
@@ -43,9 +45,8 @@ foreach ($files as $file) {
 
     // Build the CDN URL: strip the local base dir prefix and normalise separators
     $relative = ltrim(str_replace(DIRECTORY_SEPARATOR, '/', substr($localPath, strlen($localDir))), '/');
-    $url      = $cdnBase . '/' . $relative;
 
-    $integrity[$url] = $hash;
+    $integrity[$relative] = $hash;
 
     // Scan for static and dynamic ES module imports:
     //   import ... from './foo.js'
@@ -140,9 +141,85 @@ foreach (array_keys($directDeps) as $file) {
 
 ksort($transitiveDeps);
 
+// --- Pass 3: collect translation keys ---
+
+$validBases = array_map(
+    fn($f) => basename($f, '.php') === 'consultation' ? 'con' : basename($f, '.php'),
+    glob(__DIR__ . '/../messages/en/*.php') ?: []
+);
+
+$translations = [];
+
+foreach ($relevantFiles as $file) {
+    $localPath = $file->getPathname();
+    $contents  = file_get_contents($localPath);
+
+    if (str_contains($file->getPathname(), "/npm/")) {
+        continue;
+    }
+    if (str_contains($file->getPathname(), "pdfjs-viewer")) {
+        continue;
+    }
+    if (str_contains($file->getPathname(), "bootstrap-datetimepicker")) {
+        continue;
+    }
+    if (str_contains($file->getPathname(), "jquery-4")) {
+        continue;
+    }
+    if (str_contains($file->getPathname(), "jscolor.js")) {
+        continue;
+    }
+
+    if ($contents === false) {
+        continue; // already warned in pass 1
+    }
+
+    $relative = ltrim(str_replace(DIRECTORY_SEPARATOR, '/', substr($localPath, strlen($localDir))), '/');
+
+    // Match array literals: ['base', 'key', ...optional...]
+    // Captures the first two string arguments.
+    preg_match_all(
+        '/\[\s*[\'"]([^\'"]+)[\'"]\s*,\s*[\'"]([^\'"]+)[\'"](?:\s*,|\s*\])/',
+        $contents,
+        $matches,
+        PREG_SET_ORDER
+    );
+
+    $keys = [];
+    foreach ($matches as $match) {
+        $base = $match[1];
+        $key  = $match[2];
+
+        if (!in_array($base, $validBases, true)) {
+            continue;
+        }
+
+        $keys[] = [$base, $key];
+    }
+
+    if (!empty($keys)) {
+        // Deduplicate while preserving order
+        $seen   = [];
+        $unique = [];
+        foreach ($keys as $k) {
+            $sig = $k[0] . "\0" . $k[1];
+            if (!isset($seen[$sig])) {
+                $seen[$sig] = true;
+                $unique[]   = $k;
+            }
+        }
+        $translations[$relative] = $unique;
+    }
+}
+
+ksort($translations);
+
+
+
 // --- Output ---
 
 file_put_contents(__DIR__ . '/../assets/js-dependencies.json', json_encode([
     'integrity'    => $integrity,
     'dependencies' => $transitiveDeps,
+    'translations' => $translations,
 ], JSON_PRETTY_PRINT));

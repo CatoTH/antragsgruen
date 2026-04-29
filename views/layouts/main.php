@@ -44,6 +44,8 @@ if ($controller->consultation) {
 
 $title = $layout->formatTitle($this->title ?? '');
 
+$content = JsTools::detectAndRegisterModules($content);
+
 $this->beginPage();
 
 
