@@ -18,31 +18,11 @@ class JsTools
 
     public static function detectAndRegisterModules(string $content): string
     {
-        $app = AntragsgruenApp::getInstance();
+        return preg_replace_callback("/\/(npm|js)[^\"']+/siu", static function ($matches) {
+            self::$foundModules[] = trim($matches[0], "/");
 
-        return preg_replace_callback("/\/(npm|js)[^\"']+/siu", static function ($matches) use ($app) {
-            $file = trim($matches[0], "/");
-            self::$foundModules[] = $file;
-
-            return $app->resourceBase . $file;
+            return $matches[0];
         }, $content);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private static function getJsModulesImportBase(): array
-    {
-        $resourceBase = AntragsgruenApp::getInstance()->resourceBase;
-
-        $map = [];
-        if (YII_DEBUG) {
-            $map['/npm/vue.runtime.esm-browser.prod.js'] = $resourceBase . 'npm/vue.runtime.esm-browser.js';
-        } elseif ($resourceBase !== '/') {
-            $map['/npm/vue.runtime.esm-browser.prod.js'] = $resourceBase . 'npm/vue.runtime.esm-browser.prod.js';
-        }
-
-        return $map;
     }
 
     /**
@@ -85,6 +65,9 @@ class JsTools
                 echo "No integrity check for module: $module\n";
             }
         }
+        if (YII_DEBUG && isset($integrityMap['npm/vue.runtime.esm-browser.prod.js'])) {
+            $integrityMap['npm/vue.runtime.esm-browser.js'] = $dependencies["integrity"]['npm/vue.runtime.esm-browser.js'];
+        }
 
         return $integrityMap;
     }
@@ -105,6 +88,22 @@ class JsTools
         $localAssets = str_starts_with($app->resourceBase, '/');
         foreach ($map as $fileName => $fileHash) {
             $path = $app->resourceBase . $fileName;
+
+            // Somewhat dirty hack in order to use the YII dev-build when YII_DEBUG is set
+            // By mapping the .prod.js in the imports to the non-prod .js-file.
+            if (YII_DEBUG) {
+                if ($fileName === 'npm/vue.runtime.esm-browser.js') {
+                    continue;
+                }
+                if ($fileName === 'npm/vue.runtime.esm-browser.prod.js') {
+                    // Hint: Also replaced in detectAndRegisterModules
+                    $path = $app->resourceBase . 'npm/vue.runtime.esm-browser.js';
+                    $fileHash = $map['npm/vue.runtime.esm-browser.js'];
+
+                    // @TODO Check if this will affect resources in subdirectories on the CDN
+                    $imports[$app->resourceBase . 'npm/vue.runtime.esm-browser.prod.js'] = $path;
+                }
+            }
 
             // For local files, let's add a cache buster if the file was changed recently
             if ($localAssets) {
