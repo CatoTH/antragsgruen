@@ -28,7 +28,7 @@
         "js\/modules\/backend\/Theming.js": "sha384-mSrO8hCcrPPpAOO7csD\/Nd3\/3kZyf7cfs5qO3lN+h4lCCYp7Zdg9U+7VW1bh5rIE",
         "js\/modules\/backend\/UserAdmin.js": "sha384-a7\/n6NxMrBDxqbjLG1ULfE9h7\/SjWZlcLj98\/VIiuNC5mbBx7dd7lQXxWfT6bYbv",
         "js\/modules\/backend\/UserAdminCreate.js": "sha384-pQTh1afy0eAy9VZugPNuT5FycdsvAxTtYdVA67MT6vb8KpyHNhzQJKymCm9uE8JA",
-        "js\/modules\/backend\/VotingAdmin.js": "sha384-T4EpoRjgQkzK0\/\/lztEMPSaHxRQJWmv9YJRXtRbOeLOjei8ExFb+AgY9ALk1Uunh",
+        "js\/modules\/backend\/VotingAdmin.js": "sha384-1W53TRI\/XMJkPDSH9kAGwrzL4HYYBMKaNZS+RqBS2knJE4ktD\/t9WV8u2fFz36J5",
         "js\/modules\/frontend\/AccountEdit.js": "sha384-UcjZCEJzuoUtDyP+8A2rXp2wyWJFkGqlAEtvM137XLucp0VOE1ihmcNhL2iJfuHF",
         "js\/modules\/frontend\/AmendmentEdit.js": "sha384-atJPBmPUbdgVZ3Zc0cqom9CQK5nd9RI9rK5qwYjC3dZxFNb5bbF22Q0mQKNya9KA",
         "js\/modules\/frontend\/AmendmentShow.js": "sha384-v\/UC94WpLMUOecjourug2FdGW3lXwrKVNSOAvtzDO2LpqECJoDKkPTxZ4JHFHob8",
@@ -93,7 +93,7 @@
         "js\/vue\/users\/OrganisationEdit.js": "sha384-1aRoG1QnWcRBsKBwdmL\/LyHjLBRg0q222ZHiwtLMsoSGfjtNLmDDjqGf9pFHAQIt",
         "js\/vue\/users\/UserAdministration.js": "sha384-y6Yr74uFLetlXafHYBEfLfbe5FpVB8+qfOAEkDMmH2lnFzs7T\/FZX+xRP7xYA+Qs",
         "js\/vue\/users\/UserEditModal.js": "sha384-B95alRdp6IMA30x4buW0v1yy\/5giz3OV1+v10DmR09\/QVBvxUylQiB4ra6b1nFaV",
-        "js\/vue\/voting\/VotingAdmin.js": "sha384-sRAdW9M4dNrgVtA4+jsnPuQWazO2CQNiv2uyn9ZqpNBTDCaL1ct\/wjAmWMzHL1tG",
+        "js\/vue\/voting\/VotingAdmin.js": "sha384-A+kEK8JTmEmIB3TDvXET5KHv0swCpG\/CR2r3uIcc2aqwg8L2gzfvAGnLWgcaThb\/",
         "js\/vue\/voting\/VotingAdminSort.js": "sha384-ggPTdxBei4MHqcszsGVLotgfARGqW0qC0RipoT39IwaSwzFfr0mrunO1ehCp8BBX",
         "js\/vue\/voting\/VotingBlockWidget.js": "sha384-BiVkbJS8djXjUheuXwBfEbRLDaiLlLf4k8bee6B729YrLaeInrl8gmtFNcJa0GzQ",
         "js\/vue\/voting\/VotingCommonMixins.js": "sha384-ty0rcdJZA7V8LnMv3F+HI0Uk3dDVsrwdctakerXBN40FvQT3K7GPWLrSmswLEPas",
@@ -111,6 +111,12 @@
         "npm\/vuedraggable.js": "sha384-wq9bFVpqOLhJrn69kYrRbKulVQBNZEp+cYQOfPYmu1+r+nsMxWjrXHn8dxJoCWJn"
     },
     "dependencies": {
+        "js\/antragsgruen-live-events.js": [],
+        "js\/antragsgruen.min.js": [],
+        "js\/bootstrap-datetimepicker.min.js": [],
+        "js\/colResizable-1.6.min.js": [],
+        "js\/jquery-4.0.0.min.js": [],
+        "js\/jscolor.js": [],
         "js\/modules\/backend\/AdminIndex.js": [
             "js\/vue\/Translate.vue.js"
         ],
@@ -129,6 +135,7 @@
             "js\/modules\/shared\/AntragsgruenEditor.js",
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/backend\/AppearanceEdit.js": [],
         "js\/modules\/backend\/ChangeProposedProcedure.js": [
             "js\/vue\/Translate.vue.js"
         ],
@@ -139,6 +146,7 @@
         "js\/modules\/backend\/ConsultationSettings.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/backend\/Documents.js": [],
         "js\/modules\/backend\/MotionEdit.js": [
             "js\/modules\/backend\/MotionSupporterEdit.js",
             "js\/modules\/shared\/AntragsgruenEditor.js",
@@ -148,6 +156,9 @@
             "js\/modules\/backend\/ResponsibilitySetter.js",
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/backend\/MotionMove.js": [],
+        "js\/modules\/backend\/MotionSupporterEdit.js": [],
+        "js\/modules\/backend\/MotionTypeCreate.js": [],
         "js\/modules\/backend\/MotionTypeEdit.js": [
             "js\/modules\/shared\/PolicySetter.js",
             "js\/vue\/Translate.vue.js"
@@ -157,10 +168,14 @@
             "js\/modules\/shared\/MotionMergeChangeActions.js",
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/backend\/ProposedProcedureExport.js": [],
         "js\/modules\/backend\/ProposedProcedureOverview.js": [
             "js\/modules\/backend\/ResponsibilitySetter.js",
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/backend\/ResponsibilitySetter.js": [],
+        "js\/modules\/backend\/SiteConfig.js": [],
+        "js\/modules\/backend\/Theming.js": [],
         "js\/modules\/backend\/UserAdmin.js": [
             "js\/vue\/Focus.vue.js",
             "js\/vue\/Selectize.js",
@@ -201,10 +216,15 @@
             "js\/modules\/shared\/IMotionShow.js",
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/frontend\/Comments.js": [],
+        "js\/modules\/frontend\/ConsultationDiscussionTags.js": [],
+        "js\/modules\/frontend\/ContentPageCreate.js": [],
         "js\/modules\/frontend\/ContentPageEdit.js": [
             "js\/modules\/shared\/PolicySetter.js",
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/frontend\/CopyUrlToClipboard.js": [],
+        "js\/modules\/frontend\/DeadlineDebugBar.js": [],
         "js\/modules\/frontend\/EditorialEdit.js": [
             "js\/modules\/shared\/AntragsgruenEditor.js"
         ],
@@ -219,17 +239,21 @@
         "js\/modules\/frontend\/InitiatorForm.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/frontend\/LineNumberHighlighting.js": [],
         "js\/modules\/frontend\/LoginForm.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/frontend\/MergeInit.js": [],
         "js\/modules\/frontend\/MergeSingleAmendment.js": [
             "js\/modules\/shared\/AntragsgruenEditor.js"
         ],
+        "js\/modules\/frontend\/MotionCreateConfirm.js": [],
         "js\/modules\/frontend\/MotionEditForm.js": [
             "js\/modules\/shared\/AntragsgruenEditor.js",
             "js\/modules\/shared\/DraftSavingEngine.js",
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/frontend\/MotionListPrivateComments.js": [],
         "js\/modules\/frontend\/MotionMergeAmendments.js": [
             "js\/modules\/shared\/AntragsgruenEditor.js",
             "js\/modules\/shared\/MotionMergeChangeActions.js",
@@ -237,6 +261,8 @@
             "js\/vue\/merging\/ParagraphAmendmentSettings.js",
             "npm\/vue.runtime.esm-browser.prod.js"
         ],
+        "js\/modules\/frontend\/MotionMergeAmendmentsConfirm.js": [],
+        "js\/modules\/frontend\/MotionMergeAmendmentsPublic.js": [],
         "js\/modules\/frontend\/MotionShow.js": [
             "js\/modules\/frontend\/LineNumberHighlighting.js",
             "js\/modules\/shared\/IMotionShow.js",
@@ -245,6 +271,8 @@
         "js\/modules\/frontend\/MotionSupportBlock.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/frontend\/ProposedProcedureOverview.js": [],
+        "js\/modules\/frontend\/UserNotificationsForm.js": [],
         "js\/modules\/frontend\/VotingBlock.js": [
             "js\/vue\/Translate.vue.js",
             "js\/vue\/voting\/VotingBlockWidget.js",
@@ -252,30 +280,57 @@
             "js\/vue\/voting\/VotingList.js",
             "npm\/vue.runtime.esm-browser.prod.js"
         ],
+        "js\/modules\/installation\/InitDb.js": [],
         "js\/modules\/shared\/AmendmentEditSinglePara.js": [
             "js\/modules\/shared\/AntragsgruenEditor.js"
         ],
+        "js\/modules\/shared\/AntragsgruenEditor.js": [],
         "js\/modules\/shared\/DraftSavingEngine.js": [
             "js\/vue\/Translate.vue.js"
         ],
         "js\/modules\/shared\/IMotionShow.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/shared\/MotionMergeChangeActions.js": [],
         "js\/modules\/shared\/PolicySetter.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/modules\/shared\/SiteCreateWizard.js": [],
+        "js\/pdfjs-viewer.min.js": [],
+        "js\/pdfjs-viewer\/pdf.viewer.js": [],
+        "js\/pdfjs-viewer\/pdf.worker.js": [],
+        "js\/typeahead.bundle.min.js": [],
+        "js\/vue\/DatetimePicker.js": [],
+        "js\/vue\/Focus.vue.js": [],
+        "js\/vue\/PolicySelect.js": [],
+        "js\/vue\/Selectize.js": [],
         "js\/vue\/Tooltip.vue.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/vue\/Translate.vue.js": [],
+        "js\/vue\/agenda\/AgendaEditItemRow.js": [],
+        "js\/vue\/agenda\/AgendaEditWidget.js": [],
+        "js\/vue\/agenda\/AgendaSorter.js": [],
+        "js\/vue\/fullscreen\/FullscreenIMotion.js": [],
+        "js\/vue\/fullscreen\/FullscreenPanel.js": [],
+        "js\/vue\/fullscreen\/FullscreenProjector.js": [],
         "js\/vue\/merging\/ParagraphAmendmentSettings.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/vue\/speech\/AdminSubqueue.js": [],
+        "js\/vue\/speech\/AdminWidget.js": [],
+        "js\/vue\/speech\/FullscreenSpeech.js": [],
         "js\/vue\/speech\/SpeechCommonMixins.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/vue\/speech\/UserFooterWidget.js": [],
+        "js\/vue\/speech\/UserFullListWidget.js": [],
+        "js\/vue\/speech\/UserInlineWidget.js": [],
+        "js\/vue\/users\/GroupEditAddRestricted.js": [],
         "js\/vue\/users\/GroupEditModal.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/vue\/users\/OrganisationEdit.js": [],
         "js\/vue\/users\/UserAdministration.js": [
             "js\/vue\/Translate.vue.js"
         ],
@@ -285,12 +340,24 @@
         "js\/vue\/voting\/VotingAdmin.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/vue\/voting\/VotingAdminSort.js": [],
+        "js\/vue\/voting\/VotingBlockWidget.js": [],
         "js\/vue\/voting\/VotingCommonMixins.js": [
             "js\/vue\/Translate.vue.js"
         ],
+        "js\/vue\/voting\/VotingList.js": [],
+        "npm\/Sortable.min.js": [],
+        "npm\/bootstrap-toggle.min.js": [],
+        "npm\/clipboard.min.js": [],
+        "npm\/isotope.pkgd.min.js": [],
+        "npm\/moment-with-locales.min.js": [],
+        "npm\/selectize.min.js": [],
+        "npm\/sortable.esm.js": [],
         "npm\/vue-draggable-plus.js": [
             "npm\/vue.runtime.esm-browser.prod.js"
         ],
+        "npm\/vue.runtime.esm-browser.js": [],
+        "npm\/vue.runtime.esm-browser.prod.js": [],
         "npm\/vuedraggable.js": [
             "npm\/sortable.esm.js",
             "npm\/vue.runtime.esm-browser.prod.js"

@@ -133,10 +133,8 @@ $transitiveDeps = [];
 
 foreach (array_keys($directDeps) as $file) {
     $deps = resolveTransitiveDeps($file, $directDeps, $cache);
-    if (!empty($deps)) {
-        sort($deps);
-        $transitiveDeps[$file] = $deps;
-    }
+    sort($deps);
+    $transitiveDeps[$file] = $deps;
 }
 
 ksort($transitiveDeps);
