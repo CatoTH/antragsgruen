@@ -348,6 +348,11 @@ class ModuleBase extends Module
         return null;
     }
 
+    public static function getInitialMotionVersion(Consultation $consultation, Motion $partiallyInitializedMotion): ?string
+    {
+        return null;
+    }
+
     public static function getMotionVersions(Consultation $consultation): ?array
     {
         return null;
