@@ -1,6 +1,14 @@
 #!/usr/bin/env php
 <?php
 
+# Call:
+#  docs/create-js-dependencies.php [cdn-tag]
+
+if (count($argv) < 2) {
+    die("Call: ./create-js-dependencies.php [cdn-tag]\n");
+}
+
+$cdnTag = $argv[1];
 $localDir  = './web';
 $integrity = [];
 
@@ -212,12 +220,16 @@ foreach ($relevantFiles as $file) {
 
 ksort($translations);
 
-
-
 // --- Output ---
 
-file_put_contents(__DIR__ . '/../assets/js-dependencies.json', json_encode([
+$data = [
+    'cdn_tag'      => $cdnTag,
     'integrity'    => $integrity,
     'dependencies' => $transitiveDeps,
     'translations' => $translations,
-], JSON_PRETTY_PRINT));
+];
+
+file_put_contents(
+    __DIR__ . '/../config/js-dependencies.php',
+    '<?php return ' . var_export($data, true) . ';' . PHP_EOL
+);

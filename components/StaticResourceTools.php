@@ -17,6 +17,32 @@ class StaticResourceTools
     /** @var string[] */
     private static array $foundModules = [];
 
+    /**
+     * @param array{
+     *      cdn_tag: string,
+     *      dependencies: array<string, string[]>,
+     *      integrity: array<string, string>,
+     *      translations: array<string, string[][]>,
+     *  } $jsDependencies
+     */
+    private static ?array $jsDependencies = null;
+
+    public static function getJsDependencies(): array
+    {
+        if (self::$jsDependencies === null) {
+            self::$jsDependencies = require(__DIR__ . '/../config/js-dependencies.php');
+        }
+        return self::$jsDependencies;
+    }
+
+    public static function getResolvedResourceBase(): string
+    {
+        $dependencies = static::getJsDependencies();
+        $baseTemplate = AntragsgruenApp::getInstance()->resourceBase;
+
+        return str_replace('{CDN_TAG}', $dependencies['cdn_tag'], $baseTemplate);
+    }
+
     public static function detectAndRegisterModules(string $content): string
     {
         return preg_replace_callback("/\/(npm|js)[^\"']+/siu", static function ($matches) {
@@ -33,14 +59,7 @@ class StaticResourceTools
      */
     private static function resolveDependentModules(array $modules): array
     {
-        /**
-         * @var array{
-         *     dependencies: array<string, string[]>,
-         *     integrity: array<string, string>,
-         *     translations: array<string, string[][]>,
-         * } $dependencies
-         */
-        $dependencies = json_decode((string) file_get_contents(__DIR__ . '/../assets/js-dependencies.json'), true, flags: JSON_THROW_ON_ERROR);
+        $dependencies = self::getJsDependencies();
 
         do {
             $newModules = $modules;
@@ -75,7 +94,7 @@ class StaticResourceTools
 
     public static function getJsModulesImportMap(): string
     {
-        $app = AntragsgruenApp::getInstance();
+        $resourceBase = self::getResolvedResourceBase();
 
         $map = self::resolveDependentModules(self::$foundModules);
 
@@ -86,9 +105,9 @@ class StaticResourceTools
         $imports = [];
         $integrity = [];
 
-        $localAssets = str_starts_with($app->resourceBase, '/');
+        $localAssets = str_starts_with($resourceBase, '/');
         foreach ($map as $fileName => $fileHash) {
-            $path = $app->resourceBase . $fileName;
+            $path = $resourceBase . $fileName;
 
             // Somewhat dirty hack in order to use the YII dev-build when YII_DEBUG is set
             // By mapping the .prod.js in the imports to the non-prod .js-file.
@@ -98,11 +117,10 @@ class StaticResourceTools
                 }
                 if ($fileName === 'npm/vue.runtime.esm-browser.prod.js') {
                     // Hint: Also replaced in detectAndRegisterModules
-                    $path = $app->resourceBase . 'npm/vue.runtime.esm-browser.js';
+                    $path = $resourceBase . 'npm/vue.runtime.esm-browser.js';
                     $fileHash = $map['npm/vue.runtime.esm-browser.js'];
 
-                    // @TODO Check if this will affect resources in subdirectories on the CDN
-                    $imports[$app->resourceBase . 'npm/vue.runtime.esm-browser.prod.js'] = $path;
+                    $imports[$resourceBase . 'npm/vue.runtime.esm-browser.prod.js'] = $path;
                 }
             }
 
@@ -117,7 +135,7 @@ class StaticResourceTools
 
             $imports['/' . $fileName] = $path;
             if (!$localAssets) {
-                $cdnUrlBase = parse_url($app->resourceBase, PHP_URL_HOST);
+                $cdnUrlBase = parse_url($resourceBase);
                 if (isset($cdnUrlBase['scheme'], $cdnUrlBase['host'], $cdnUrlBase['path']) && $cdnUrlBase['path'] !== '/') {
                     // JS-files that are hosted on the CDN and make use of absolute imports (starting with "/")
                     // are pointing to the root directory of the CDN - not the root directory of the Antragsgrün host.
@@ -162,7 +180,7 @@ class StaticResourceTools
 
     public static function resourceUrl(string $url): string
     {
-        $resourceBase = AntragsgruenApp::getInstance()->resourceBase;
+        $resourceBase = self::getResolvedResourceBase();
         $localAssets = str_starts_with($resourceBase, '/');
 
         if ($localAssets) {

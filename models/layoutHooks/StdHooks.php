@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\layoutHooks;
 
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
-use app\components\{HTMLTools, RequestContext, Tools, UrlHelper};
+use app\components\{HTMLTools, RequestContext, StaticResourceTools, Tools, UrlHelper};
 use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
@@ -46,12 +46,7 @@ class StdHooks extends Hooks
 
     public function favicons(string $before): string
     {
-        $params       = AntragsgruenApp::getInstance();
-        $resourceBase = Html::encode($params->resourceBase);
-        if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
-            $resourceBase .= 'web/';
-        }
-        $faviconBase = $resourceBase . 'favicons';
+        $faviconBase = StaticResourceTools::resourceUrl("favicons");
 
         return '<link rel="apple-touch-icon" sizes="180x180" href="' . $faviconBase . '/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="' . $faviconBase . '/favicon-32x32.png">
