@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{JsTools, UrlHelper};
+use app\components\{StaticResourceTools, UrlHelper};
 use yii\helpers\Html;
 
 /**

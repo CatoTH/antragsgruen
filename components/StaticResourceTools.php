@@ -7,9 +7,10 @@ namespace app\components;
 use app\components\yii\MessageSource;
 use app\models\db\Consultation;
 use app\models\settings\AntragsgruenApp;
+use yii\helpers\Html;
 use yii\i18n\I18N;
 
-class JsTools
+class StaticResourceTools
 {
     private const INVALIDATE_MAX_HOURS = 2;
 
@@ -115,6 +116,19 @@ class JsTools
             }
 
             $imports['/' . $fileName] = $path;
+            if (!$localAssets) {
+                $cdnUrlBase = parse_url($app->resourceBase, PHP_URL_HOST);
+                if (isset($cdnUrlBase['scheme'], $cdnUrlBase['host'], $cdnUrlBase['path']) && $cdnUrlBase['path'] !== '/') {
+                    // JS-files that are hosted on the CDN and make use of absolute imports (starting with "/")
+                    // are pointing to the root directory of the CDN - not the root directory of the Antragsgrün host.
+                    // So with a resourceBase of https://cdn.motion.tools/v4.17.0/ , an "import ... from /js/test.js"
+                    // would point to https://cdn.motion.tools/js/test.js , not /v4.17.0/js/test.js . We fix that here.
+
+                    // It could be an option to change the imports in the CDN - however it would add complexity,
+                    // as the integrity-hash of the importing scripts would change based on the subdirectory of the hash.
+                    $imports[$cdnUrlBase['scheme'] . '://' . $cdnUrlBase['host'] . '/' . $fileName] = $path;
+                }
+            }
             $integrity[$path] = $fileHash;
         }
 
@@ -144,5 +158,26 @@ class JsTools
         }
 
         return $messagesource->loadJsMessages($category, $language);
+    }
+
+    public static function resourceUrl(string $url): string
+    {
+        $resourceBase = AntragsgruenApp::getInstance()->resourceBase;
+        $localAssets = str_starts_with($resourceBase, '/');
+
+        if ($localAssets) {
+            $absolute = \Yii::$app->basePath . '/web/' . str_replace('/', DIRECTORY_SEPARATOR, $url);
+
+            $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);
+            $age      = time() - $mtime;
+            if ($age < 604800) { // 1 Week
+                $url .= (str_contains($url, '?') ? '&ts=' : '?ts=');
+                $url .= $mtime;
+            }
+        }
+
+        $newUrl = $resourceBase . $url;
+
+        return Html::encode($newUrl);
     }
 }

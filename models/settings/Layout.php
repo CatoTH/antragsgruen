@@ -3,6 +3,7 @@
 namespace app\models\settings;
 
 use app\components\RequestContext;
+use app\components\StaticResourceTools;
 use app\components\yii\MessageSource;
 use app\controllers\Base;
 use app\models\db\Consultation;
@@ -255,9 +256,9 @@ class Layout
     public function getJSFiles(): array
     {
         $files   = [];
-        $files[] = $this->resourceUrl('js/antragsgruen.min.js');
+        $files[] = StaticResourceTools::resourceUrl('js/antragsgruen.min.js');
         foreach ($this->extraJs as $extraJs) {
-            $files[] = $this->resourceUrl($extraJs);
+            $files[] = StaticResourceTools::resourceUrl($extraJs);
         }
 
         return $files;
@@ -348,20 +349,6 @@ class Layout
         ' . $collapsed . '
     </div>
 </nav>';
-    }
-
-    public static function resourceUrl(string $url): string
-    {
-        $absolute = \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR .
-            str_replace('/', DIRECTORY_SEPARATOR, $url);
-        $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);
-        $age      = time() - $mtime;
-        if ($age < 604800) { // 1 Week
-            $url .= (str_contains($url, '?') ? '&' : '?');
-            $url .= $mtime;
-        }
-        $newUrl = AntragsgruenApp::getInstance()->resourceBase . $url;
-        return Html::encode($newUrl);
     }
 
     public function formatTitle(string $title): string
