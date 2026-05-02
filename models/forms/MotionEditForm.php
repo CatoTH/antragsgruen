@@ -4,8 +4,9 @@ namespace app\models\forms;
 
 use app\components\HTMLTools;
 use app\components\RequestContext;
-use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\models\db\{ConsultationAgendaItem,
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\models\db\{Consultation,
+    ConsultationAgendaItem,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
     ConsultationSettingsTag,
@@ -246,6 +247,18 @@ class MotionEditForm
         }
     }
 
+    private function getInitialVersion(Consultation $consultation, Motion $motion): string
+    {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $version = $plugin::getInitialMotionVersion($consultation, $motion);
+            if ($version !== null) {
+                return $version;
+            }
+        }
+
+        return Motion::VERSION_DEFAULT;
+    }
+
     /**
      * @throws FormError
      */
@@ -269,7 +282,7 @@ class MotionEditForm
         $motion->textFixed = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
         $motion->title = '';
         $motion->titlePrefix = '';
-        $motion->version = Motion::VERSION_DEFAULT;
+        $motion->version = $this->getInitialVersion($consultation, $motion);
         $motion->dateCreation = date('Y-m-d H:i:s');
         $motion->dateContentModification = date('Y-m-d H:i:s');
         $motion->motionTypeId = $this->motionType->id;
