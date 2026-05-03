@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\SupportBase;
 use yii\db\{ActiveQuery, ActiveRecord};
 
@@ -178,6 +179,11 @@ abstract class ISupporter extends ActiveRecord
                 $supporter->personType = static::PERSON_NATURAL;
             }
         }
+
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $supporter = $plugin::createInitiator($consultation, $supportType, $iAmAdmin, $supporter);
+        }
+
         return $supporter;
     }
 }
