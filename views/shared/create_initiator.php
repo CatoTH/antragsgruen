@@ -347,9 +347,10 @@ $getInitiatorRow = function (ISupporter $initiator, InitiatorForm $settings) {
     return $str;
 };
 
-
-foreach ($moreInitiators as $init) {
-    echo $getInitiatorRow($init, $settings);
+if ($allowOther) {
+    foreach ($moreInitiators as $init) {
+        echo $getInitiatorRow($init, $settings);
+    }
 }
 
 if ($adminMode) {

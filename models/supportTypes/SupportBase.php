@@ -5,7 +5,7 @@ namespace app\models\supportTypes;
 use app\components\RequestContext;
 use app\components\Tools;
 use app\controllers\Base;
-use app\models\db\{Amendment, AmendmentSupporter, ConsultationMotionType, ISupporter, Motion, MotionSupporter, User};
+use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, MotionSupporter, User};
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\exceptions\{FormError, Internal};
@@ -324,25 +324,50 @@ abstract class SupportBase
         }
     }
 
+    /**
+     * @param ISupporter[] $supporters
+     */
+    private function getEditableInitiator(array $supporters, Consultation $consultation): ?ISupporter
+    {
+        $user = User::getCurrentUser();
+        $initiatorAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, null);
+
+        if ($initiatorAdmin || $user === null) {
+            foreach ($supporters as $supp) {
+                if ($supp->position === 0) {
+                    return $supp;
+                }
+            }
+
+            return null;
+        }
+
+        // Logged in, non-admin user -> edit themselves
+        foreach ($supporters as $supp) {
+            if ($supp->role === ISupporter::ROLE_INITIATOR && $supp->userId === $user->id) {
+                return $supp;
+            }
+        }
+        return null;
+    }
 
     /**
      * @throws \Exception
      */
     public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller): string
     {
+        $initiatorAdmin = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, null);
+
         $view           = new View();
-        $initiator      = null;
+        $initiator      = $this->getEditableInitiator($editForm->supporters, $motionType->getConsultation());
         $moreInitiators = [];
         $supporters     = [];
         foreach ($editForm->supporters as $supporter) {
-            if ($supporter->role == MotionSupporter::ROLE_INITIATOR) {
-                if ($supporter->position == 0) {
-                    $initiator = $supporter;
-                } else {
-                    $moreInitiators[] = $supporter;
-                }
+            if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $initiatorAdmin &&
+                ($supporter->userId === null || $supporter->userId !== $initiator?->userId)) {
+                $moreInitiators[] = $supporter;
             }
-            if ($supporter->role == MotionSupporter::ROLE_SUPPORTER) {
+            if ($supporter->role === MotionSupporter::ROLE_SUPPORTER) {
                 $supporters[] = $supporter;
             }
         }
@@ -351,9 +376,8 @@ abstract class SupportBase
             $initiator->dateCreation = date('Y-m-d H:i:s');
             $initiator->role         = MotionSupporter::ROLE_INITIATOR;
         }
-        $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, null);
         $isForOther      = false;
-        if ($othersPrivilege) {
+        if ($initiatorAdmin) {
             $isForOther = (!User::getCurrentUser() || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
@@ -362,7 +386,7 @@ abstract class SupportBase
                 'initiator'         => $initiator,
                 'moreInitiators'    => $moreInitiators,
                 'supporters'        => $supporters,
-                'allowOther'        => $othersPrivilege,
+                'allowOther'        => $initiatorAdmin,
                 'isForOther'        => $isForOther,
                 'settings'          => $this->getSettingsObj(),
                 'hasSupporters'     => $this->hasInitiatorGivenSupporters(),
@@ -380,26 +404,29 @@ abstract class SupportBase
      */
     public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller): string
     {
+        $initiatorAdmin = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, null);
+
         $view           = new View();
-        $initiator      = null;
+        $initiator      = $this->getEditableInitiator($editForm->supporters, $motionType->getConsultation());
         $supporters     = [];
         $moreInitiators = [];
         foreach ($editForm->supporters as $supporter) {
-            if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
-                if ($supporter->position == 0) {
-                    $initiator = $supporter;
-                } else {
-                    $moreInitiators[] = $supporter;
-                }
+            if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $initiatorAdmin &&
+                ($supporter->userId === null || $supporter->userId !== $initiator?->userId)) {
+                $moreInitiators[] = $supporter;
             }
-            if ($supporter->role == AmendmentSupporter::ROLE_SUPPORTER) {
+            if ($supporter->role === AmendmentSupporter::ROLE_SUPPORTER) {
                 $supporters[] = $supporter;
             }
         }
-        $screeningPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_SCREENING, null);
+        if (!$initiator) {
+            $initiator               = new AmendmentSupporter();
+            $initiator->dateCreation = date('Y-m-d H:i:s');
+            $initiator->role         = AmendmentSupporter::ROLE_INITIATOR;
+        }
         $isForOther         = false;
-        if ($screeningPrivilege) {
-            $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
+        if ($initiatorAdmin) {
+            $isForOther = (!User::getCurrentUser() || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
             '@app/views/shared/create_initiator',
@@ -407,7 +434,7 @@ abstract class SupportBase
                 'initiator'         => $initiator,
                 'moreInitiators'    => $moreInitiators,
                 'supporters'        => $supporters,
-                'allowOther'        => $screeningPrivilege,
+                'allowOther'        => $initiatorAdmin,
                 'isForOther'        => $isForOther,
                 'settings'          => $this->getSettingsObj(),
                 'hasSupporters'     => $this->hasInitiatorGivenSupporters(),
@@ -502,6 +529,7 @@ abstract class SupportBase
         $return[]             = $init;
 
         if (isset($post['moreInitiators']['name'])) {
+            // ADMIN Case
             foreach ($post['moreInitiators']['name'] as $i => $name) {
                 $isOrganization = (
                     isset($post['moreInitiators']['organization'][$i]) &&
@@ -520,6 +548,17 @@ abstract class SupportBase
                     $init->organization = $post['moreInitiators']['organization'][$i];
                 }
                 $return[] = $init;
+            }
+        } else {
+            // USER Case -> just copy other initiators
+            foreach ($motion->motionSupporters as $supporter) {
+                if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0 && $supporter->userId !== User::getCurrentUser()?->id) {
+                    $init = new MotionSupporter();
+                    $init->setAttributes($supporter->getAttributes(), false);
+                    $init->position = $posCount++;
+                    $init->id = null;
+                    $return[] = $init;
+                }
             }
         }
 
@@ -616,7 +655,8 @@ abstract class SupportBase
         $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
         $return[]             = $init;
 
-        if (isset($post['moreInitiators']) && isset($post['moreInitiators']['name'])) {
+        if (isset($post['moreInitiators']['name'])) {
+            // ADMIn Case
             foreach ($post['moreInitiators']['name'] as $i => $name) {
                 $init               = new AmendmentSupporter();
                 $init->amendmentId  = $amendment->id;
@@ -629,6 +669,17 @@ abstract class SupportBase
                     $init->organization = $post['moreInitiators']['organization'][$i];
                 }
                 $return[] = $init;
+            }
+        } else {
+            // USER Case -> just copy other initiators
+            foreach ($amendment->amendmentSupporters as $supporter) {
+                if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0 && $supporter->userId !== User::getCurrentUser()?->id) {
+                    $init = new AmendmentSupporter();
+                    $init->setAttributes($supporter->getAttributes(), false);
+                    $init->position = $posCount++;
+                    $init->id = null;
+                    $return[] = $init;
+                }
             }
         }
 
