@@ -74,6 +74,10 @@ $components = [
     ],
     'assetManager' => [
         'appendTimestamp' => true,
+        //'baseUrl' => 'https://cdn.example.com/assets',
+        //'hashCallback' => function ($path) {
+        //    return 'my-fixed-folder';
+        //},
     ],
     'mailer'       => [
         'class' => 'yii\swiftmailer\Mailer',
