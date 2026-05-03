@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, Consultation, IMotion, Motion, Site, User, Vote, VotingBlock};
+use app\models\db\{Amendment, Consultation, IMotion, ISupporter, Motion, Site, User, Vote, VotingBlock};
 use app\components\LoginProviderInterface;
 use app\controllers\Base;
 use app\models\AdminTodoItem;
@@ -13,6 +13,7 @@ use app\models\layoutHooks\Hooks;
 use app\models\majorityType\IMajorityType;
 use app\models\policies\IPolicy;
 use app\models\quorumType\IQuorumType;
+use app\models\supportTypes\SupportBase;
 use app\models\settings\{IMotionStatus, Layout, Privilege, VotingData};
 use yii\base\{Action, Module};
 use yii\web\{AssetBundle, Controller, View};
@@ -325,6 +326,11 @@ class ModuleBase extends Module
 
     public static function setAmendmentExtraSettingsFromForm(Amendment $amendment, array $post): void
     {
+    }
+
+    public static function createInitiator(Consultation $consultation, SupportBase $supportType, bool $iAmAdmin, ISupporter $supporter): ISupporter
+    {
+        return $supporter;
     }
 
     /**
