@@ -15,3 +15,25 @@ updates:
       github-actions:
         patterns:
           - "*"
+
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      timezone: "Europe/Berlin"
+      time: "05:00"
+    groups:
+      composer:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      timezone: "Europe/Berlin"
+      time: "05:00"
+    groups:
+      npm:
+        patterns:
+          - "*"
