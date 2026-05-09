@@ -22,7 +22,6 @@ class StaticResourceTools
      *      cdn_tag: string,
      *      dependencies: array<string, string[]>,
      *      integrity: array<string, string>,
-     *      translations: array<string, string[][]>,
      *  } $jsDependencies
      */
     private static ?array $jsDependencies = null;

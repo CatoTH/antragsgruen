@@ -266,7 +266,7 @@ Please refer to the [Environment Variables Documentation](./docs/environment-var
 
 ### Integrating a CDN for Static Assets
 
-Integrating a CDN consists of two steps (when using the source version). First, configure it in your `config.json`:
+Integrating a CDN consists of two steps (when using the source version). First, configure it in your `config.json` (or the `RESOURCE_BASE` environment variable):
 ```
 {
     "resourceBase": "https://cdn.motion.tools/{CDN_TAG}/"
@@ -280,6 +280,8 @@ Then, to create an uploadable bundle and a local manifest about dependencies bet
 docs/create-static-resources.php choose-a-cdn-subdirectory
 rsync --progress -a -v local/cdn/ your-subdirectory
 ```
+
+Hint: If a CDN / A absolute URL is set as `resourceBase` AND Antragsgrün is installed in a subdirectory of the domain, it is required to also set the `updaterBase` in `config.json`, pointing to the relative directory of the updater.php script.
 
 ### Increasing performance by caching in Redis
 

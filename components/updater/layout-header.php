@@ -1,6 +1,7 @@
 <?php
 /** @var array $config */
 /** @var string $title */
+/** @var string $resourceBase */
 ?><!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -9,9 +10,9 @@
     <meta name="description" content="Antragsgrün Updater">
     <title>Antragsgrün Update</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="<?= $config['resourceBase'] ?>css/layout-classic.css">
-    <link rel="stylesheet" href="<?= $config['resourceBase'] ?>css/update.css">
-    <script src="<?= $config['resourceBase'] ?>npm/jquery.min.js"></script>
+    <link rel="stylesheet" href="<?= htmlentities($resourceBase, ENT_COMPAT, 'UTF-8') ?>css/layout-classic.css">
+    <link rel="stylesheet" href="<?= htmlentities($resourceBase, ENT_COMPAT, 'UTF-8') ?>css/update.css">
+    <script src="<?= htmlentities($resourceBase, ENT_COMPAT, 'UTF-8') ?>js/jquery-4.0.0.min.js"></script>
 </head>
 <body>
 
@@ -30,7 +31,7 @@
             </div>
         </header>
         <div class="logoRow">
-            <a href="<?= $config['resourceBase'] ?>" class="homeLinkLogo text-hide" disabled>Home<span class="logoImg"></span></a>
+            <a href="<?= htmlentities($resourceBase, ENT_COMPAT, 'UTF-8') ?>" class="homeLinkLogo text-hide" disabled>Home<span class="logoImg"></span></a>
         </div>
         <ol class="breadcrumb"></ol>
         <div class="row antragsgruen-content">

@@ -1,7 +1,6 @@
 <?php
 
-use app\components\StaticResourceTools;
-use app\components\UrlHelper;
+use app\components\{StaticResourceTools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};

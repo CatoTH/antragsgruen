@@ -167,10 +167,10 @@ $this->endBody();
 echo '
 <script type="application/ld+json">
     {
-      "@context": "http://schema.org",
+      "@context": "https://schema.org/",
       "@type": "Organization",
       "url": "' . Html::encode($params->domainPlain) . '",
-      "logo": "' . Html::encode($params->getAbsoluteResourceBase()) . 'img/logo.png"
+      "logo": "' . Html::encode(StaticResourceTools::getResolvedResourceBase()) . 'img/logo.png"
     }
 </script>
 </body></html>';

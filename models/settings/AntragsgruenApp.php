@@ -22,6 +22,7 @@ class AntragsgruenApp implements \JsonSerializable
     public bool $prettyUrl = true;
     public string $tablePrefix = '';
     public string $resourceBase = '/';
+    public ?string $updaterBase = null; // Falls back to resource Base; or "/" in case resourceBase is a absolute URL (CDN)
     public string $baseLanguage = 'en';
     public string $randomSeed = '';
     public bool $multisiteMode = false;
@@ -348,17 +349,6 @@ class AntragsgruenApp implements \JsonSerializable
     public static function getActivePluginIds(): array
     {
         return array_keys(static::getActivePlugins());
-    }
-
-    public function getAbsoluteResourceBase(): string
-    {
-        $url = $this->domainPlain;
-        if ($url && $url[strlen($url) - 1] === '/' && $this->resourceBase[0] === '/') {
-            $url = substr($url, 0, strlen($url) - 1);
-        }
-        $url .= $this->resourceBase;
-
-        return $url;
     }
 
     public function getTmpDir(): string
