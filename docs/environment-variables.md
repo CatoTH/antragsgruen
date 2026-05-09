@@ -71,6 +71,7 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 |----------|---------|-------------|
 | `APP_DOMAIN` | - | Domain name (e.g., motion.tools) |
 | `APP_PROTOCOL` | https | Protocol: http or https |
+| `RESOURCE_BASE` | Base path for static assets (local or CDN) |
 | `MULTISITE_MODE` | false | Enable multisite mode |
 | `SITE_SUBDOMAIN` | | If multisite=false, this refers to the one subdomain |
 | `BASE_LANGUAGE` | en | Base language (en, de, fr, etc.) |

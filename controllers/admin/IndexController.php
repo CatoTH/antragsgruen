@@ -612,6 +612,17 @@ class IndexController extends AdminBase
         $form      = new AntragsgruenUpdateModeForm();
         $updateKey = $form->activateUpdate();
 
-        return new RedirectResponse($this->getParams()->resourceBase . 'update.php?set_key=' . $updateKey);
+        if ($this->getParams()->updaterBase !== null) {
+            $base = $this->getParams()->updaterBase;
+        } elseif (str_starts_with($this->getParams()->resourceBase, '/')) {
+            $base = $this->getParams()->resourceBase;
+        } elseif (str_contains($_SERVER['REQUEST_URI'] ?? '', '/web/')) {
+            $base = explode('/web/', $_SERVER['REQUEST_URI'])[0];
+            $base = $base[0] . '/web/';
+        } else {
+            // A CDN is configured, and no /web/ in the URL - so we will assume that Antragsgrün is installed on the root of the domain.
+            $base = '/';
+        }
+        return new RedirectResponse($base . 'update.php?set_key=' . $updateKey);
     }
 }

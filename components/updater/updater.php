@@ -29,6 +29,14 @@ if (!isset($config['updateKey']) || strlen($config['updateKey']) < 10) {
 }
 $updateKey = $config['updateKey'];
 
+if (isset($config["updaterBase"])) {
+    $resourceBase = $config["updaterBase"];
+} elseif (isset($config['resourceBase']) && str_starts_with($config['resourceBase'], '/')) {
+    $resourceBase = $config['resourceBase'];
+} else {
+    $resourceBase = '/'; // More a guess...
+}
+
 if (isset($_REQUEST['set_key'])) {
     setcookie('update_key', $_REQUEST['set_key'], 0, '/');
     $uri = explode('?', $_SERVER['REQUEST_URI']);
@@ -50,7 +58,7 @@ if (isset($_POST['cancel_update'])) {
     $config = json_decode((string)file_get_contents($configFile), true, JSON_THROW_ON_ERROR);
     unset($config['updateKey']);
     file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT));
-    Header('Location: ' . $config['resourceBase']);
+    Header('Location: ' . $resourceBase);
     die();
 }
 

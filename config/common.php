@@ -99,6 +99,21 @@ $components = [
     ],
 ];
 
+if (!str_starts_with($params->resourceBase, '/')) {
+    require_once(__DIR__ . '/../components/StaticResourceTools.php');
+    $jsDependencies = \app\components\StaticResourceTools::getJsDependencies();
+    if ($jsDependencies['cdn_tag']) {
+        $components['assetManager']['baseUrl'] = str_replace('{CDN_TAG}', $jsDependencies['cdn_tag'], $params->resourceBase);
+        $components['assetManager']['hashCallback'] = function ($path) {
+            $pathParts = explode('plugins/', $path);
+            $pathParts = explode('/', $pathParts[1]);
+
+            // We need two levels of paths, so relative links in CSS files like ../../fonts work both in local and CDN deployments
+            return "plugins/" . $pathParts[0];
+        };
+    }
+}
+
 if ($params->redis) {
     $components['redis']   = array_merge(['class' => 'yii\redis\Connection'], $params->redis);
     $components['session'] = ['class' => 'yii\redis\Session'];

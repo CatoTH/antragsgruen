@@ -2,11 +2,9 @@
 
 namespace app\models\settings;
 
-use app\components\RequestContext;
-use app\components\yii\MessageSource;
+use app\components\{RequestContext, StaticResourceTools, yii\MessageSource, UrlHelper};
 use app\controllers\Base;
 use app\models\db\Consultation;
-use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\{Hooks, StdHooks};
 use yii\base\Action;
@@ -69,12 +67,12 @@ class Layout
             'layout-classic' => [
                 'id'      => 'layout-classic',
                 'title'   => 'Standard',
-                'preview' => AntragsgruenApp::getInstance()->resourceBase . 'img/layout-preview-std.png',
+                'preview' => StaticResourceTools::getResolvedResourceBase() . 'img/layout-preview-std.png',
             ],
             'layout-dbjr'    => [
                 'id'      => 'layout-dbjr',
                 'title'   => 'DBJR',
-                'preview' => AntragsgruenApp::getInstance()->resourceBase . 'img/layout-preview-dbjr.png',
+                'preview' => StaticResourceTools::getResolvedResourceBase() . 'img/layout-preview-dbjr.png',
             ],
         ], $pluginLayouts);
     }
@@ -255,9 +253,9 @@ class Layout
     public function getJSFiles(): array
     {
         $files   = [];
-        $files[] = $this->resourceUrl('js/antragsgruen.min.js');
+        $files[] = StaticResourceTools::resourceUrl('js/antragsgruen.min.js');
         foreach ($this->extraJs as $extraJs) {
-            $files[] = $this->resourceUrl($extraJs);
+            $files[] = StaticResourceTools::resourceUrl($extraJs);
         }
 
         return $files;
@@ -350,20 +348,6 @@ class Layout
 </nav>';
     }
 
-    public static function resourceUrl(string $url): string
-    {
-        $absolute = \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR .
-            str_replace('/', DIRECTORY_SEPARATOR, $url);
-        $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);
-        $age      = time() - $mtime;
-        if ($age < 604800) { // 1 Week
-            $url .= (str_contains($url, '?') ? '&' : '?');
-            $url .= $mtime;
-        }
-        $newUrl = AntragsgruenApp::getInstance()->resourceBase . $url;
-        return Html::encode($newUrl);
-    }
-
     public function formatTitle(string $title): string
     {
         if (stripos($title, 'Antragsgrün') === false) {
@@ -387,7 +371,7 @@ class Layout
             $path     = parse_url($controller->consultation->getSettings()->logoUrl);
             $logoUrl  = $controller->consultation->getSettings()->logoUrl;
             if (!isset($path['host']) && $logoUrl[0] !== '/') {
-                $logoUrl = AntragsgruenApp::getInstance()->resourceBase . $logoUrl;
+                $logoUrl = StaticResourceTools::getResolvedResourceBase() . $logoUrl;
             }
             return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode(\Yii::t('base', 'logo_current')) . '">';
         } else {

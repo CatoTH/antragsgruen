@@ -1,5 +1,8 @@
 ﻿<?php
-$pdfjsPath = \app\models\settings\AntragsgruenApp::getInstance()->resourceBase . 'js/pdfjs-viewer/';
+
+use app\components\StaticResourceTools;
+
+$pdfjsPath = StaticResourceTools::getResolvedResourceBase() . 'js/pdfjs-viewer/';
 
 ?><!DOCTYPE html>
 <!--

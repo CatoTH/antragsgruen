@@ -1,6 +1,6 @@
 <?php
 
-use app\components\JsTools;
+use app\components\StaticResourceTools;
 use yii\helpers\Html;
 
 /**
@@ -15,7 +15,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
 $layout->registerPluginAssets($this, $controller);
 if ($layout->mainCssFile === null) {
-    $mainCssFile = $layout->resourceUrl('css/layout-classic.css');
+    $mainCssFile = StaticResourceTools::resourceUrl('css/layout-classic.css');
 } elseif (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
     $mainCssHash = str_replace('layout-custom', '', $layout->mainCssFile);
     $mainCssFile = \app\components\UrlHelper::createUrl(['/pages/css', 'hash' => $mainCssHash]);
@@ -24,10 +24,10 @@ if ($layout->mainCssFile === null) {
         $mainCssFile = null;
         $layout->setPluginLayout($this);
     } catch (\app\models\exceptions\Internal $e) {
-        $mainCssFile = $layout->resourceUrl('css/layout-classic.css');
+        $mainCssFile = StaticResourceTools::resourceUrl('css/layout-classic.css');
     }
 } else {
-    $mainCssFile = $layout->resourceUrl('css/' . $layout->mainCssFile . '.css');
+    $mainCssFile = StaticResourceTools::resourceUrl('css/' . $layout->mainCssFile . '.css');
 }
 
 if (\app\components\DateTools::isDeadlineDebugModeActive($controller->consultation)) {
@@ -43,6 +43,8 @@ if ($controller->consultation) {
 }
 
 $title = $layout->formatTitle($this->title ?? '');
+
+$content = StaticResourceTools::detectAndRegisterModules($content);
 
 $this->beginPage();
 
@@ -77,7 +79,7 @@ foreach ($layout->feeds as $title => $url) {
         'title="' . Html::encode($title) . '">' . "\n";
 }
 foreach ($layout->extraCss as $file) {
-    echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
+    echo '<link rel="stylesheet" href="' . StaticResourceTools::resourceUrl($file) . '">' . "\n";
 }
 foreach ($layout->inlineCss as $inlineCss) {
     echo '<style>' . $inlineCss . '</style>' . "\n";
@@ -89,7 +91,7 @@ if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
 
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
-echo '<script src="' . $layout->resourceUrl('js/jquery-4.0.0.min.js') . '"></script>';
+echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '"></script>';
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
@@ -106,7 +108,7 @@ echo \app\models\layoutHooks\Layout::favicons();
 $this->head();
 
 echo \app\models\layoutHooks\Layout::endOfHead($controller->consultation);
-echo JsTools::getJsModulesImportMap();
+echo StaticResourceTools::getJsModulesImportMap();
 echo '</head>';
 
 if (defined('YII_ENV') && YII_ENV == 'test') {
@@ -119,7 +121,7 @@ if (count($layout->getJsTranslations()) > 0) {
     echo '<script type="module">
     import translate from "/js/vue/Translate.vue.js";' . "\n";
     foreach ($layout->getJsTranslations() as $translation) {
-        echo 'translate.registerTranslation("' . $translation . '", ' . json_encode(JsTools::getTranslations($consultation, $translation)) . ');' . "\n";
+        echo 'translate.registerTranslation("' . $translation . '", ' . json_encode(StaticResourceTools::getTranslations($consultation, $translation)) . ');' . "\n";
     }
     echo '</script>';
 }
@@ -151,7 +153,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 echo \app\models\layoutHooks\Layout::endPage();
 
 if (count($layout->connectLiveEvents) && $params->live && $consultation) {
-    echo '<script src="' . $layout->resourceUrl('js/antragsgruen-live-events.js') . '"></script>';
+    echo '<script src="' . StaticResourceTools::resourceUrl('js/antragsgruen-live-events.js') . '"></script>';
 }
 
 foreach ($layout->getJSFiles() as $jsFile) {
@@ -165,10 +167,10 @@ $this->endBody();
 echo '
 <script type="application/ld+json">
     {
-      "@context": "http://schema.org",
+      "@context": "https://schema.org/",
       "@type": "Organization",
       "url": "' . Html::encode($params->domainPlain) . '",
-      "logo": "' . Html::encode($params->getAbsoluteResourceBase()) . 'img/logo.png"
+      "logo": "' . Html::encode(StaticResourceTools::getResolvedResourceBase()) . 'img/logo.png"
     }
 </script>
 </body></html>';
