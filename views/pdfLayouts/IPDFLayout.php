@@ -17,15 +17,11 @@ abstract class IPDFLayout
 
     public static function getTcpdfDefaultLayout(): PdfLayoutDescription
     {
-        $params = AntragsgruenApp::getInstance();
-
         return new PdfLayoutDescription(0, PdfLayoutDescription::RENDERER_PHP, null, 'LDK Bayern', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_byldk.png', ByLDK::class);
     }
 
     public static function getWeasyprintDefaultLayout(): PdfLayoutDescription
     {
-        $params = AntragsgruenApp::getInstance();
-
         return new PdfLayoutDescription(
             self::LAYOUT_WEASYPRINT_DEFAULT,
             PdfLayoutDescription::RENDERER_WEASYPRINT,
@@ -41,8 +37,6 @@ abstract class IPDFLayout
      */
     public static function getAvailableTcpdfClasses(): array
     {
-        $params = AntragsgruenApp::getInstance();
-
         $pdfClasses = [
             new PdfLayoutDescription(-1, PdfLayoutDescription::RENDERER_NONE, null, '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -', null, null),
             self::getTcpdfDefaultLayout(),

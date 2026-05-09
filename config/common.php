@@ -108,7 +108,8 @@ if (!str_starts_with($params->resourceBase, '/')) {
             $pathParts = explode('plugins/', $path);
             $pathParts = explode('/', $pathParts[1]);
 
-            return $pathParts[0];
+            // We need two levels of paths, so relative links in CSS files like ../../fonts work both in local and CDN deployments
+            return "plugins/" . $pathParts[0];
         };
     }
 }

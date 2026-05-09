@@ -9,28 +9,101 @@ if (count($argv) < 2) {
 }
 
 $cdnTag = $argv[1];
-$localDir  = './web';
+if (!preg_match("/^[a-zA-Z0-9_-]+$/iu", $cdnTag)) {
+    die("CDN Tag needs to be [^a-zA-Z0-9_-]+).\n");
+}
+
+$localDir  = __DIR__ . '/../web';
+$localPluginDir  = __DIR__ . '/../plugins';
+$cdnDir = __DIR__ . '/../local/cdn/' . $cdnTag;
+if (file_exists($cdnDir)) {
+    die("CDN Directory already exists.\n");
+}
+
+
+
+function isRelevantForJsMap(SplFileInfo $file): bool {
+    if (!$file->isFile()) {
+        return false;
+    }
+    if ($file->getExtension() !== 'js') {
+        return false;
+    }
+    if (str_contains($file->getPathname(), "ckeditor")) {
+        return false;
+    }
+    if (str_contains($file->getPathname(), "assets")) {
+        return false;
+    }
+    return true;
+}
+
+function isWebRelevantForCDN(SplFileInfo $file): bool {
+    if (!$file->isFile()) {
+        return false;
+    }
+    if (in_array($file->getExtension(), ['php', 'html', 'txt', 'DS_Store', 'gitignore', 'htaccess'])) {
+        return false;
+    }
+    if (str_contains($file->getPathname(), "assets")) {
+        return false;
+    }
+    return true;
+}
+
+function isPluginRelevantForCDN(SplFileInfo $file): bool {
+    if (!$file->isFile()) {
+        return false;
+    }
+    if (in_array($file->getExtension(), ['php', 'html', 'txt', 'DS_Store', 'gitignore', 'htaccess'])) {
+        return false;
+    }
+    return str_contains($file->getPathname(), "assets");
+}
+
+function copyWithDirectory(SplFileInfo $from, string $to): void {
+    $path = pathinfo($to);
+    if (!file_exists($path['dirname'])) {
+        mkdir($path['dirname'], 0777, true);
+    }
+    if (!copy($from->getRealPath(), $to)) {
+        die("Copying file failed: " . $from->getRealPath() . " => $to\n");
+    }
+}
+
+
+mkdir($cdnDir, 0775, true);
+
 $integrity = [];
 
 $files = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($localDir, RecursiveDirectoryIterator::SKIP_DOTS)
 );
 
-$relevantFiles = [];
+$relevantJsFiles = [];
 foreach ($files as $file) {
-    if (!$file->isFile()) {
-        continue;
+    /** @var SplFileInfo $file */
+    if (isRelevantForJsMap($file)) {
+        $relevantJsFiles[] = $file;
     }
-    if ($file->getExtension() !== 'js') {
-        continue;
+    if (isWebRelevantForCDN($file)) {
+        $relative = explode("/web/", $file->getRealPath());
+        copyWithDirectory($file, $cdnDir . "/" . $relative[1]);
     }
-    if (str_contains($file->getPathname(), "ckeditor")) {
-        continue;
+}
+
+$files = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($localPluginDir, RecursiveDirectoryIterator::SKIP_DOTS)
+);
+foreach ($files as $file) {
+    /** @var SplFileInfo $file */
+    if (isPluginRelevantForCDN($file)) {
+        if (preg_match('/plugins\/(?<plugin>[a-z0-9_-]+)\/assets\/(?<filename>[a-z0-9_.\/-]+)$/siU', $file->getRealPath(), $matches)) {
+            copyWithDirectory($file, $cdnDir . "/plugins/" . $matches['plugin'] . "/" . $matches['filename']);
+        } else {
+            echo "Skipping Plugin Asset: " . $file->getRealPath() . "\n";
+        }
     }
-    if (str_contains($file->getPathname(), "assets")) {
-        continue;
-    }
-    $relevantFiles[] = $file;
 }
 
 // --- Pass 1: collect integrity hashes and direct imports ---
@@ -40,7 +113,7 @@ $directDeps = [];
 
 $absLocalDir = realpath($localDir);
 
-foreach ($relevantFiles as $file) {
+foreach ($relevantJsFiles as $file) {
     $localPath = $file->getPathname();
     $contents  = file_get_contents($localPath);
 
@@ -156,7 +229,7 @@ $validBases = array_map(
 
 $translations = [];
 
-foreach ($relevantFiles as $file) {
+foreach ($relevantJsFiles as $file) {
     $localPath = $file->getPathname();
     $contents  = file_get_contents($localPath);
 
@@ -226,10 +299,13 @@ $data = [
     'cdn_tag'      => $cdnTag,
     'integrity'    => $integrity,
     'dependencies' => $transitiveDeps,
-    'translations' => $translations,
+    // 'translations' => $translations, @TODO Not yet supported on application side to make use of this.
 ];
 
 file_put_contents(
     __DIR__ . '/../config/js-dependencies.php',
     '<?php return ' . var_export($data, true) . ';' . PHP_EOL
 );
+
+echo "Next step:\n";
+echo "rsync --progress -a -v local/cdn/ [CDN-LOCATION]\n";

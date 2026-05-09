@@ -264,6 +264,23 @@ Instead of configuring Antragsgrün via the traditional `config.json` file, it i
 
 Please refer to the [Environment Variables Documentation](./docs/environment-variables.md) for more information.
 
+### Integrating a CDN for Static Assets
+
+Integrating a CDN consists of two steps (when using the source version). First, configure it in your `config.json`:
+```
+{
+    "resourceBase": "https://cdn.motion.tools/{CDN_TAG}/"
+}
+```
+
+`CDN_TAG` identifies a subdirectory on your CDN, which, if provided, needs to match what will be set in the next step.
+
+Then, to create an uploadable bundle and a local manifest about dependencies between JS Modules:
+```shell
+docs/create-static-resources.php choose-a-cdn-subdirectory
+rsync --progress -a -v local/cdn/ your-subdirectory
+```
+
 ### Increasing performance by caching in Redis
 
 Redis can be used to cache the changes in amendments, user sessions, and many other aspects of the site. To enable redis, simply add a `redis` configuration key to the `config.json` and point it to your setup:
