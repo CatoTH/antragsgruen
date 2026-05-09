@@ -612,6 +612,7 @@ class IndexController extends AdminBase
         $form      = new AntragsgruenUpdateModeForm();
         $updateKey = $form->activateUpdate();
 
+        // @TODO Refactor for CDN
         return new RedirectResponse($this->getParams()->resourceBase . 'update.php?set_key=' . $updateKey);
     }
 }

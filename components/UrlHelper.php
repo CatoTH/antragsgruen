@@ -196,6 +196,7 @@ class UrlHelper
 
         if (self::$currentSite) {
             if ($params->domainSubdomain) {
+                // @TODO Refactor for CDN
                 if (grapheme_strpos($url, $params->resourceBase) === 0) {
                     $url = grapheme_substr($url, (int)grapheme_strlen($params->resourceBase));
                 } elseif ($url[0] === '/') {

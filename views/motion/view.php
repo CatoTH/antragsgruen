@@ -1,5 +1,6 @@
 <?php
 
+use app\components\StaticResourceTools;
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
@@ -241,7 +242,7 @@ $viewText = preg_replace_callback('/<!--AMENDMENT_LINK_(?<sectionId>\d+)_(?<para
         return '';
     }
 
-    $imgUrl = \app\models\settings\AntragsgruenApp::getInstance()->resourceBase . 'img/aa-new-icon.svg';
+    $imgUrl = StaticResourceTools::getResolvedResourceBase() . 'img/aa-new-icon.svg';
     $title = '<img src="' . $imgUrl . '" alt="' . Yii::t('motion', 'amendment_create_paragraph') . '"></span>';
     $amendCreateUrl = UrlHelper::createUrl([
         '/amendment/create',

@@ -2,12 +2,9 @@
 
 namespace app\models\settings;
 
-use app\components\RequestContext;
-use app\components\StaticResourceTools;
-use app\components\yii\MessageSource;
+use app\components\{RequestContext, StaticResourceTools, yii\MessageSource, UrlHelper};
 use app\controllers\Base;
 use app\models\db\Consultation;
-use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\{Hooks, StdHooks};
 use yii\base\Action;
@@ -70,12 +67,12 @@ class Layout
             'layout-classic' => [
                 'id'      => 'layout-classic',
                 'title'   => 'Standard',
-                'preview' => AntragsgruenApp::getInstance()->resourceBase . 'img/layout-preview-std.png',
+                'preview' => StaticResourceTools::getResolvedResourceBase() . 'img/layout-preview-std.png',
             ],
             'layout-dbjr'    => [
                 'id'      => 'layout-dbjr',
                 'title'   => 'DBJR',
-                'preview' => AntragsgruenApp::getInstance()->resourceBase . 'img/layout-preview-dbjr.png',
+                'preview' => StaticResourceTools::getResolvedResourceBase() . 'img/layout-preview-dbjr.png',
             ],
         ], $pluginLayouts);
     }
@@ -374,7 +371,7 @@ class Layout
             $path     = parse_url($controller->consultation->getSettings()->logoUrl);
             $logoUrl  = $controller->consultation->getSettings()->logoUrl;
             if (!isset($path['host']) && $logoUrl[0] !== '/') {
-                $logoUrl = AntragsgruenApp::getInstance()->resourceBase . $logoUrl;
+                $logoUrl = StaticResourceTools::getResolvedResourceBase() . $logoUrl;
             }
             return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode(\Yii::t('base', 'logo_current')) . '">';
         } else {

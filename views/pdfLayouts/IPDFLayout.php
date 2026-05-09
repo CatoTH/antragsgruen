@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\views\pdfLayouts;
 
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, Motion, TexTemplate};
+use app\components\StaticResourceTools;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use TCPDF;
@@ -18,7 +19,7 @@ abstract class IPDFLayout
     {
         $params = AntragsgruenApp::getInstance();
 
-        return new PdfLayoutDescription(0, PdfLayoutDescription::RENDERER_PHP, null, 'LDK Bayern', $params->resourceBase . 'img/pdf_preview_byldk.png', ByLDK::class);
+        return new PdfLayoutDescription(0, PdfLayoutDescription::RENDERER_PHP, null, 'LDK Bayern', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_byldk.png', ByLDK::class);
     }
 
     public static function getWeasyprintDefaultLayout(): PdfLayoutDescription
@@ -30,7 +31,7 @@ abstract class IPDFLayout
             PdfLayoutDescription::RENDERER_WEASYPRINT,
             null,
             'Default',
-            $params->resourceBase . 'img/pdf_preview_latex_bdk.png',
+            StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_latex_bdk.png',
             null
         );
     }
@@ -45,8 +46,8 @@ abstract class IPDFLayout
         $pdfClasses = [
             new PdfLayoutDescription(-1, PdfLayoutDescription::RENDERER_NONE, null, '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -', null, null),
             self::getTcpdfDefaultLayout(),
-            new PdfLayoutDescription(1, PdfLayoutDescription::RENDERER_PHP, null, 'BDK', $params->resourceBase . 'img/pdf_preview_bdk.png', BDK::class),
-            new PdfLayoutDescription(2, PdfLayoutDescription::RENDERER_PHP, null, 'DBJR', $params->resourceBase . 'img/pdf_preview_dbjr.png', DBJR::class),
+            new PdfLayoutDescription(1, PdfLayoutDescription::RENDERER_PHP, null, 'BDK', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_bdk.png', BDK::class),
+            new PdfLayoutDescription(2, PdfLayoutDescription::RENDERER_PHP, null, 'DBJR', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_dbjr.png', DBJR::class),
         ];
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $pdfClasses = $plugin::getProvidedPdfLayouts($pdfClasses);
@@ -80,7 +81,7 @@ abstract class IPDFLayout
             $texLayouts = TexTemplate::find()->all();
             foreach ($texLayouts as $layout) {
                 if ($layout->id === 1) {
-                    $preview = $params->resourceBase . 'img/pdf_preview_latex_bdk.png';
+                    $preview = StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_latex_bdk.png';
                 } else {
                     $preview = null;
                 }
