@@ -9,8 +9,8 @@ if (count($argv) < 2) {
 }
 
 $cdnTag = $argv[1];
-if (!preg_match("/^[a-zA-Z0-9_-]+$/iu", $cdnTag)) {
-    die("CDN Tag needs to be [^a-zA-Z0-9_-]+).\n");
+if (!preg_match("/^[a-zA-Z0-9._-]+$/iu", $cdnTag)) {
+    die("CDN Tag needs to be [^a-zA-Z0-9._-]+).\n");
 }
 
 $localDir  = __DIR__ . '/../web';

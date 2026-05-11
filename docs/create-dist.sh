@@ -90,6 +90,7 @@ rm migrations/m20*
 rm migrations/m21*
 rm migrations/m22*
 rm migrations/m23*
+rm migrations/m24*
 find . -name ".DS_Store" -exec rm {} \;
 find . -name ".git" -exec rm -rf {} \;
 find . -name ".github" -exec rm -rf {} \;
@@ -134,6 +135,10 @@ rm eslint.config.mjs
 rm .eslintrc.cjs
 rm .eslintrc.js
 rm docker-compose.development.yml
+rm docker-compose.yml
+
+docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
+docs/
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
