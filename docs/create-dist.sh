@@ -138,7 +138,6 @@ rm docker-compose.development.yml
 rm docker-compose.yml
 
 docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
-docs/
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION

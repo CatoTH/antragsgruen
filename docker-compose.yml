@@ -3,12 +3,13 @@ volumes:
 
 services:
   web:
-    image: antragsgruen-v4.17.0-b1
+    image: tobiashoessl/antragsgruen:latest
     ports:
       - "12380:80"
     environment:
       - APP_DOMAIN=localhost:12380
       - APP_PROTOCOL=http
+      - SITE_SUBDOMAIN=std
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
       - DB_USER=root
