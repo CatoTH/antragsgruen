@@ -608,6 +608,7 @@ class UserGroupAdminMethods
     public function addUsersByEmail(): void
     {
         $params   = AntragsgruenApp::getInstance();
+        /** @var array $post */
         $post     = $this->request->post();
         $hasEmail = ($params->mailService['transport'] !== 'none');
 

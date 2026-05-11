@@ -152,7 +152,7 @@ class ManagerController extends Base
         $model  = new SiteCreateForm();
         $errors = [];
 
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         if (isset($post['create'])) {
             try {
                 $model->setAttributes($post['SiteCreateForm']);

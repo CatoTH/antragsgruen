@@ -70,7 +70,7 @@ class UserController extends Base
         }
 
         if ($this->isPostSet('loginusernamepassword')) {
-            $usernamePasswordForm->setAttributes($this->getHttpRequest()->post());
+            $usernamePasswordForm->setAttributes($this->getPostValues());
             try {
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
                 if ($user->status === User::STATUS_UNCONFIRMED && $this->getParams()->confirmEmailAddresses) {
@@ -459,7 +459,7 @@ class UserController extends Base
             }
         }
         if ($this->isPostSet('save')) {
-            $post = $this->getHttpRequest()->post();
+            $post = $this->getPostValues();
 
             if (($user->fixedData & User::FIXED_NAME) === 0) {
                 $user->nameGiven = $post['name_given'] ?? '';
@@ -577,7 +577,7 @@ class UserController extends Base
         }
 
         if ($this->isPostSet('save')) {
-            $post = $this->getHttpRequest()->post();
+            $post = $this->getPostValues();
             if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] === 'consultation') {
                 $notis = UserNotification::getUserConsultationNotis($user, $this->consultation);
                 foreach ($notis as $noti) {

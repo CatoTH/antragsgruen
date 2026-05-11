@@ -222,7 +222,7 @@ class PagesController extends Base
 
         $page->save();
 
-        $downloadableResult = $this->handleDownloadableFiles($page, $this->getHttpRequest()->post());
+        $downloadableResult = $this->handleDownloadableFiles($page, $this->getPostValues());
         $result             = array_merge($result, $downloadableResult);
 
         $page->refresh();

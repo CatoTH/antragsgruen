@@ -51,7 +51,7 @@ class ManagerController extends Base
             return new HtmlErrorResponse(500, 'This configuration tool can only be used for single-site installations.');
         }
 
-        $post = RequestContext::getWebApplication()->request->post();
+        $post = $this->getPostValues();
         if (isset($post['save'])) {
             $config->resourceBase          = $post['resourceBase'];
             $config->baseLanguage          = $post['baseLanguage'];

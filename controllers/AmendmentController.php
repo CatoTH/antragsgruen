@@ -323,7 +323,7 @@ class AmendmentController extends Base
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);
-            $form->setAttributes($this->getHttpRequest()->post(), $_FILES);
+            $form->setAttributes($this->getPostValues(), $_FILES);
             try {
                 $form->saveAmendment($amendment);
 
@@ -480,7 +480,7 @@ class AmendmentController extends Base
             return new RestApiExceptionResponse(404, 'Amendment not found');
         }
 
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         if (!in_array('version', array_keys($post))) {
             return new RestApiExceptionResponse(400, 'No version provided');
         }
@@ -708,7 +708,7 @@ class AmendmentController extends Base
         $msgAlert   = null;
 
         if ($this->getHttpRequest()->post('save', null) !== null) {
-            $form->save($this->getHttpRequest()->post(), $_FILES);
+            $form->save($this->getPostValues(), $_FILES);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
             if ($proposal->userStatus !== null) {

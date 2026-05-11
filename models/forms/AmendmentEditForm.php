@@ -232,7 +232,7 @@ class AmendmentEditForm
 
         $amendment = new Amendment();
 
-        $this->setAttributes(RequestContext::getWebApplication()->request->post(), $_FILES);
+        $this->setAttributes(RequestContext::getAllPostVars(), $_FILES);
         $this->supporters = $this->motion->motionType->getAmendmentSupportTypeClass()
             ->getAmendmentSupporters($amendment);
 

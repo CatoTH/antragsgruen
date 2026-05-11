@@ -18,8 +18,6 @@ class AdminBase extends Base
     ];
 
     /**
-     * @param \yii\base\Action<$this> $action
-     *
      * @throws \yii\web\BadRequestHttpException|ResponseException
      */
     public function beforeAction($action): bool

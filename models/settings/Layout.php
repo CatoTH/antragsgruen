@@ -414,9 +414,6 @@ class Layout
         }
     }
 
-    /**
-     * @param Action<mixed>|null $action
-     */
     public function isRobotsIndex(?Action $action): bool
     {
         if (!$action) {
