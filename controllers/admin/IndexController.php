@@ -44,7 +44,7 @@ class IndexController extends AdminBase
 
         if ($this->isPostSet('save')) {
             $this->saveTags($model);
-            $post = $this->getHttpRequest()->post();
+            $post = $this->getPostValues();
 
             $data = $post['consultation'];
             $model->setAttributes($data);
@@ -141,7 +141,7 @@ class IndexController extends AdminBase
         $consultation = $this->consultation;
 
         if ($this->isPostSet('save')) {
-            $post = $this->getHttpRequest()->post();
+            $post = $this->getPostValues();
 
             $settingsInput = $post['settings'] ?? [];
             $settings      = $consultation->getSettings();
@@ -375,7 +375,7 @@ class IndexController extends AdminBase
         $site = $this->site;
         $form = new ConsultationCreateForm($site);
         $form->template = $this->consultation;
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
 
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];

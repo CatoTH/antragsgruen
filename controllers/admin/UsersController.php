@@ -13,9 +13,6 @@ class UsersController extends AdminBase
 {
     private UserGroupAdminMethods $userGroupAdminMethods;
 
-    /**
-     * @param \yii\base\Action<$this> $action
-     */
     public function beforeAction($action): bool
     {
         $result = parent::beforeAction($action);

@@ -34,8 +34,6 @@ class ConsultationController extends Base
     public const VIEW_ID_INDEX = 'index';
 
     /**
-     * @param \yii\base\Action<$this> $action
-     *
      * @throws \Exception
      */
     public function beforeAction($action): bool

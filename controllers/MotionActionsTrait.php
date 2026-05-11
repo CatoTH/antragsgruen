@@ -427,7 +427,7 @@ trait MotionActionsTrait
      */
     private function performShowActions(Motion $motion, int $commentId, array &$viewParameters): void
     {
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         if ($commentId === 0 && isset($post['commentId'])) {
             $commentId = intval($post['commentId']);
         }
@@ -486,7 +486,7 @@ trait MotionActionsTrait
             return new RestApiExceptionResponse(404, 'Motion not found');
         }
 
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         if (!in_array('version', array_keys($post))) {
             return new RestApiExceptionResponse(400, 'No version provided');
         }
@@ -707,7 +707,7 @@ trait MotionActionsTrait
         $msgAlert   = null;
 
         if ($this->getHttpRequest()->post('save', null) !== null) {
-            $form->save($this->getHttpRequest()->post(), $_FILES);
+            $form->save($this->getPostValues(), $_FILES);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
 
             if ($proposal->userStatus !== null) {

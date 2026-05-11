@@ -394,7 +394,7 @@ trait AmendmentActionsTrait
      */
     private function performShowActions(Amendment $amendment, int $commentId, array &$viewParameters): void
     {
-        $post = RequestContext::getWebRequest()->post();
+        $post = $this->getPostValues();
         if ($commentId === 0 && isset($post['commentId'])) {
             $commentId = intval($post['commentId']);
         }

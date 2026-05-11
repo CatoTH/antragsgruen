@@ -127,7 +127,7 @@ abstract class SupportBase
     protected function parseSupporters(ISupporter $model): array
     {
         $ret  = [];
-        $post = RequestContext::getWebApplication()->request->post();
+        $post = RequestContext::getAllPostVars();
         if (isset($post['supporters']) && is_array($post['supporters']['name'])) {
             foreach ($post['supporters']['name'] as $i => $name) {
                 if (!$this->isValidName($name)) {
@@ -154,7 +154,7 @@ abstract class SupportBase
      */
     public function validateMotion(): void
     {
-        $post = RequestContext::getWebApplication()->request->post();
+        $post = RequestContext::getAllPostVars();
         if (!isset($post['Initiator'])) {
             throw new FormError('No Initiator data given');
         }
@@ -455,7 +455,7 @@ abstract class SupportBase
         /** @var MotionSupporter[] $return */
         $return = [];
 
-        $post            = RequestContext::getWebApplication()->request->post();
+        $post = RequestContext::getAllPostVars();
         $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion));
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
@@ -582,7 +582,7 @@ abstract class SupportBase
     {
         /** @var AmendmentSupporter[] $return */
         $return = [];
-        $post   = RequestContext::getWebApplication()->request->post();
+        $post = RequestContext::getAllPostVars();
 
         $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);

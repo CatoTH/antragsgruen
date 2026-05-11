@@ -277,7 +277,7 @@ class MotionEditForm
 
         $motion = new Motion();
 
-        $this->setAttributes(RequestContext::getWebApplication()->request->post(), $_FILES);
+        $this->setAttributes(RequestContext::getAllPostVars(), $_FILES);
         $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();

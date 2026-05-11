@@ -62,7 +62,7 @@ class InstallationController extends Base
 
         if ($this->isPostSet('create')) {
             try {
-                $post = $this->getHttpRequest()->post();
+                $post = $this->getPostValues();
                 $siteForm->setAttributes($post['SiteCreateForm']);
                 $siteForm->prettyUrls = isset($post['SiteCreateForm']['prettyUrls']);
 
@@ -150,7 +150,7 @@ class InstallationController extends Base
         }
 
 
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         if ($this->isPostSet('saveDb')) {
             $dbForm->setAttributes($post);
 
@@ -191,7 +191,7 @@ class InstallationController extends Base
             throw new Internal('Installation mode not activated');
         }
 
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         $form = new AntragsgruenInitDb($configFile);
         $form->setAttributes($post);
         if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {

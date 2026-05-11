@@ -21,6 +21,14 @@ final class RequestContext
         return $app;
     }
 
+    public static function getAllPostVars(): array
+    {
+        /** @var array $post */
+        $post = self::getWebApplication()->request->post();
+
+        return $post;
+    }
+
     public static function getSession(): Session
     {
         return self::getWebApplication()->session;

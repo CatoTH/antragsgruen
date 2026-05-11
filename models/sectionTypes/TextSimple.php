@@ -281,7 +281,7 @@ class TextSimple extends TextSimpleCommon
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        $post    = RequestContext::getWebRequest()->post();
+        $post = RequestContext::getAllPostVars();
 
         $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
         if ($this->forceMultipleParagraphs) {

@@ -47,7 +47,6 @@ class Base extends Controller
     }
 
     /**
-     * @param \yii\base\Action<$this> $action
      * @throws Internal
      * @throws \Exception
      * @throws \yii\base\ExitException
@@ -213,7 +212,7 @@ class Base extends Controller
 
     protected function isPostSet(string $name): bool
     {
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         return isset($post[$name]);
     }
 
@@ -230,7 +229,7 @@ class Base extends Controller
 
     public function getRequestValue(string $name, mixed $default = null): mixed
     {
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
         if (isset($post[$name])) {
             return $post[$name];
         }
@@ -248,7 +247,10 @@ class Base extends Controller
 
     public function getPostValues(): array
     {
-        return $this->getHttpRequest()->post();
+        /** @var array $post */
+        $post = $this->getHttpRequest()->post();
+
+        return $post;
     }
 
     public function renderContentPage(string $pageKey): HtmlResponse

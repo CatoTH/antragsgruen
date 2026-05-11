@@ -132,7 +132,7 @@ class MotionController extends AdminBase
         }
 
         $this->layout = 'column2';
-        $post         = $this->getHttpRequest()->post();
+        $post         = $this->getPostValues();
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
             $toSetPrefix = (mb_strlen($post['titlePrefix']) > 50 ? mb_substr($post['titlePrefix'], 0, 50) : $post['titlePrefix']);
@@ -342,7 +342,7 @@ class MotionController extends AdminBase
         $form = new MotionMover($this->consultation, $motion, User::getCurrentUser());
 
         if ($this->isPostSet('move')) {
-            $newMotion = $form->move($this->getHttpRequest()->post());
+            $newMotion = $form->move($this->getPostValues());
             if ($newMotion) {
                 if ($newMotion->consultationId === $this->consultation->id) {
                     return new RedirectResponse(UrlHelper::createMotionUrl($newMotion));

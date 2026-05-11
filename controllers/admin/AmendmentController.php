@@ -211,7 +211,7 @@ class AmendmentController extends AdminBase
 
         $this->layout = 'column2';
 
-        $post = $this->getHttpRequest()->post();
+        $post = $this->getPostValues();
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
             $toSetPrefix = (mb_strlen($post['titlePrefix']) > 45 ? mb_substr($post['titlePrefix'], 0, 45) : $post['titlePrefix']);
