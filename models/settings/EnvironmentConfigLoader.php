@@ -186,6 +186,47 @@ class EnvironmentConfigLoader
     }
 
     /**
+     * Get trusted proxy configuration from environment variables
+     *
+     * Supported environment variable:
+     * - TRUSTED_PROXIES: Comma-separated list of IPs or CIDR ranges
+     *   (e.g., "10.0.0.0/8,172.16.0.0/12,192.168.1.100")
+     *
+     * Each entry is validated as either a plain IP address or a CIDR notation.
+     * Invalid entries are silently skipped. Empty entries (e.g. from trailing
+     * commas) are filtered out.
+     *
+     * @return string[]|null Array of trusted proxy entries, or null if TRUSTED_PROXIES is not set
+     */
+    public static function getTrustedProxiesConfig(): ?array
+    {
+        $proxies = self::getEnv('TRUSTED_PROXIES');
+        if ($proxies === null || $proxies === '') {
+            return null;
+        }
+
+        return array_values(array_filter(
+            array_map('trim', explode(',', $proxies)),
+            fn(string $entry): bool => self::isValidTrustedProxyEntry($entry)
+        ));
+    }
+
+    /**
+     * Validate a trusted proxy entry (IP address or CIDR notation)
+     *
+     * @param string $entry IP address (e.g. "10.0.0.1") or CIDR (e.g. "10.0.0.0/8")
+     */
+    private static function isValidTrustedProxyEntry(string $entry): bool
+    {
+        if (str_contains($entry, '/')) {
+            $parts = explode('/', $entry, 2);
+            return filter_var($parts[0], FILTER_VALIDATE_IP) !== false
+                && ctype_digit($parts[1]) && (int) $parts[1] >= 0 && (int) $parts[1] <= 128;
+        }
+        return filter_var($entry, FILTER_VALIDATE_IP) !== false;
+    }
+
+    /**
      * Get application-level configuration from environment variables
      *
      * Supported environment variables:
