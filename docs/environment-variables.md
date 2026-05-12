@@ -78,6 +78,7 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `RANDOM_SEED` | - | **Required!** Security seed: `openssl rand -base64 32` |
 | `MAIL_FROM_EMAIL` | - | Default from email |
 | `MAIL_FROM_NAME` | Antragsgrün | Default from name |
+| `TRUSTED_PROXIES` | - | Comma-separated trusted proxy IPs or CIDR ranges (e.g., `10.0.0.0/8,172.16.0.0/12`). Added to the default trusted hosts. |
 
 ## Optional Tool Paths
 

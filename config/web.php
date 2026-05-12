@@ -97,7 +97,7 @@ $config = yii\helpers\ArrayHelper::merge(
                         '172.16.0.0/12',
                         '192.168.0.0/16',
                     ],
-                    $params->getTrustedProxies()
+                    $params->trustedProxies
                 ),
 
                 'parsers' => [

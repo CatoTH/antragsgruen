@@ -93,19 +93,6 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var string[] */
     public array $trustedProxies = [];
 
-    /**
-     * @return string[]
-     */
-    public function getTrustedProxies(): array
-    {
-        $envProxies = $_ENV['TRUSTED_PROXIES'] ?? '';
-        if ($envProxies !== '') {
-            return array_map('trim', explode(',', $envProxies));
-        }
-
-        return $this->trustedProxies;
-    }
-
     private function isHttps(): bool
     {
         // Needs to be equal to Yii2's web/Request.php
@@ -181,6 +168,14 @@ class AntragsgruenApp implements \JsonSerializable
             $mailConfig = EnvironmentConfigLoader::getMailServiceConfig();
             if ($mailConfig !== null) {
                 $this->mailService = $mailConfig;
+            }
+        }
+
+        // Trusted proxies configuration
+        if ($this->trustedProxies === []) {
+            $proxyConfig = EnvironmentConfigLoader::getTrustedProxiesConfig();
+            if ($proxyConfig !== null) {
+                $this->trustedProxies = $proxyConfig;
             }
         }
 
