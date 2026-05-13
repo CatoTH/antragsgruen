@@ -86,7 +86,28 @@ sudo chown -R www-data:www-data runtime
 sudo chown -R www-data:www-data config #Can be skipped if you don't use the Installer
 ```
 
-### Using container images – Docker and other container orchestrations
+### Using the Docker Image
+
+A Docker Image is provided at [tobiashoessl/antragsgruen](tobiashoessl/antragsgruen). A sample on how to use it can be seen in the bundles [docker-compose.yml](docker-compose.yml).
+
+Usage for first-time installation:
+```shell
+docker compose start
+docker exec antragsgruen-web-1 /root/enable-installer.sh # To enable the install mode
+```
+
+Atfer this, http://localhost:12380/ should show the installer. The database connection is pre-configured in to use the MariaDB in the Docker-Compose.yml, so no need to change it.
+
+To update to a newer version of Antragsgrün, remove the image and pull the `latest` tag:
+
+```shell
+docker compose down
+docker image rm tobiashoessl/antragsgruen:latest
+docker compose start
+docker exec -it antragsgruen-web-1 /var/www/html/yii migrate # To perform potential database updates.
+```
+
+#### Alternative Docker Image
 
 [Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) developed a container image, which is now maintained as an open source / collaborative project at [github.com/devops-ansible/docker-antragsgruen](https://github.com/devops-ansible/docker-antragsgruen).
 

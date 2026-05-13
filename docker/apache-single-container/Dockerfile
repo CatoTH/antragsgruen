@@ -35,6 +35,7 @@ RUN mkdir -p /var/www/html \
 RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
+    && chmod 775 /var/www/html/yii \
     # Yii2 runtime and assets directories need to be writable
     && chmod -R 775 /var/www/html/runtime 2>/dev/null || true \
     && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true
