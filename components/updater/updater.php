@@ -11,6 +11,13 @@ if (!file_exists($configFile)) {
     die("config.json not found");
 }
 $config = json_decode((string)file_get_contents($configFile), true);
+if (isset($config["updaterBase"])) {
+    $resourceBase = $config["updaterBase"];
+} elseif (isset($config['resourceBase']) && str_starts_with($config['resourceBase'], '/')) {
+    $resourceBase = $config['resourceBase'];
+} else {
+    $resourceBase = '/'; // More a guess...
+}
 
 if (!\app\components\updater\UpdateChecker::isUpdaterAvailable()) {
     $title = 'Not available';
@@ -28,14 +35,6 @@ if (!isset($config['updateKey']) || strlen($config['updateKey']) < 10) {
     die();
 }
 $updateKey = $config['updateKey'];
-
-if (isset($config["updaterBase"])) {
-    $resourceBase = $config["updaterBase"];
-} elseif (isset($config['resourceBase']) && str_starts_with($config['resourceBase'], '/')) {
-    $resourceBase = $config['resourceBase'];
-} else {
-    $resourceBase = '/'; // More a guess...
-}
 
 if (isset($_REQUEST['set_key'])) {
     setcookie('update_key', $_REQUEST['set_key'], 0, '/');
