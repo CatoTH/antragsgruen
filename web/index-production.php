@@ -9,8 +9,12 @@ defined('YII_ENV') or define('YII_ENV', 'production');
 $configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config';
 $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
 $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
-if (!file_exists($configFile) && !file_exists($installFile)) {
-    die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');
+if (!file_exists($configFile) && !file_exists($installFile) && !isset($_ENV['APP_DOMAIN'])) {
+    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && str_starts_with($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'de')) {
+        die('Antragsgrün ist noch nicht eingerichtet. Bitte lege die Datei config/INSTALLING an und öffne diese Seite erneut, um in den Installationsmodus zu gelangen.');
+    } else {
+        die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');
+    }
 }
 
 require(__DIR__ . '/../vendor/autoload.php');

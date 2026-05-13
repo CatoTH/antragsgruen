@@ -32,7 +32,6 @@ $dbTestUrlNotSoPretty = UrlHelper::createUrl('installation/db-test');
 Yii::$app->urlManager->enablePrettyUrl = $prettyBefore;
 
 echo '<h1>' . Yii::t('manager', 'title_install') . '</h1>';
-echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal']);
 
 echo '<div class="content">';
 echo $controller->showErrors();
@@ -84,8 +83,6 @@ if ($form->isConfigured()) {
 }
 
 echo '</div>';
-
-echo Html::endForm();
 
 
 echo Html::beginForm('', 'post', [

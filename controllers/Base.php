@@ -80,7 +80,9 @@ class Base extends Controller
         $inManager = (get_class($this) === ManagerController::class);
         $inInstaller = (get_class($this) === InstallationController::class);
 
-        if ($appParams->siteSubdomain || isset($params[1]['subdomain'])) {
+        if ($inInstaller) {
+            $this->layoutParams->setLayout(Layout::getDefaultLayout());
+        } elseif ($appParams->siteSubdomain || isset($params[1]['subdomain'])) {
             $subdomain = $appParams->siteSubdomain ?? $params[1]['subdomain'];
             if (str_starts_with($subdomain, 'xn--')) {
                 $convertedSubdomain = idn_to_utf8($subdomain);
@@ -100,7 +102,7 @@ class Base extends Controller
             } else {
                 $this->layoutParams->setLayout(Layout::getDefaultLayout());
             }
-        } elseif (!($inInstaller || $inManager) && !$appParams->multisiteMode) {
+        } elseif (!$inManager && !$appParams->multisiteMode) {
             $this->layoutParams->setLayout(Layout::getDefaultLayout());
             $this->showErrorpage(500, Yii::t('base', 'err_no_site_internal'));
         } else {

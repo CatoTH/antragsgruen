@@ -6,6 +6,7 @@
 - The JavaScript-based frontend components were rewritten to make use or more modern and standardized technologies (ECMAScript Modules, compiled Vue modules).
 - Antragsgrün now supports hosting static assets (JS, CSS, Images, ...) on CDNs, for faster loading times.
 - Configuring Antragsgrün via environment variables is now supported, allowing for easier deployment in Docker- and Kubernetes-environments.
+- An pre-built Docker Image for Antragsgrün is now provided via Docker Hub.
 - It is now easier possible to integrate OpenTelemetry into Antragsgrün.
 - More configurations for the admin list: a date column can be added, and the tags and type column removed.
 - Agenda items now are by default set to be included in the proposed procedure, making them opt-out instead of opt-in.

@@ -1,0 +1,36 @@
+volumes:
+  mysql-data: {}
+
+services:
+  web:
+    image: tobiashoessl/antragsgruen:latest
+    ports:
+      - "12380:80"
+    environment:
+      - APP_DOMAIN=localhost:12380
+      - APP_PROTOCOL=http
+      - SITE_SUBDOMAIN=std
+      - DB_HOST=mysql
+      - DB_NAME=antragsgruen
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - REDIS_HOST=redis
+      - MAILER_DISABLED=true
+      - MAIL_FROM_EMAIL=noreply@example.org
+      - MAIL_FROM_NAME=Motion Tools
+      - RANDOM_SEED=${RANDOM_SEED}
+      - WEASYPRINT_PATH=/usr/bin/weasyprint
+      - IMAGE_MAGICK_PATH=/usr/bin/convert
+
+  mysql:
+    image: mariadb
+    ports:
+      - "13306:3306"
+    environment:
+      MARIADB_DATABASE: antragsgruen
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - "mysql-data:/var/lib/mysql"
+
+  redis:
+    image: "redis:7"

@@ -93,13 +93,6 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var string[] */
     public array $trustedProxies = [];
 
-    private function isHttps(): bool
-    {
-        // Needs to be equal to Yii2's web/Request.php
-        return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1) ||
-            isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
-    }
-
     /**
      * Constructor - loads configuration from JSON and/or environment variables
      *

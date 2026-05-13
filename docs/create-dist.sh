@@ -6,6 +6,8 @@
 # - Update SECURITY.md
 # - Commit this changes to repository
 # - Execute this script (docs/create-dist.sh)
+# - rsync --progress -a -v local/cdn/ [CDN-LOCATION]
+# - docker buildx build  --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b4.tar.bz2 -t tobiashoessl/antragsgruen:4.17.0-b4 -t tobiashoessl/antragsgruen:latest -f Dockerfile --push .
 # - Create the new release on Github, attaching the .tar.bz2- and the .zip-file
 
 if [[ ! -d ./controllers ]]; then
@@ -138,7 +140,6 @@ rm docker-compose.development.yml
 rm docker-compose.yml
 
 docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
-docs/
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
