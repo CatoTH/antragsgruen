@@ -24,6 +24,7 @@ RUN a2enmod rewrite remoteip
 
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY enable-installer.sh /root/enable-installer.sh
+COPY php.ini /usr/local/etc/php/conf.d/zz-antragsgruen.ini
 
 # Copy and extract the application archive (single top-level directory is stripped)
 COPY ${APP_ARCHIVE} /tmp/app.tar.bz2
@@ -40,6 +41,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/runtime 2>/dev/null || true \
     && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["apache2-foreground"]

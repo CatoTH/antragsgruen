@@ -5,7 +5,7 @@ services:
   web:
     image: tobiashoessl/antragsgruen:latest
     ports:
-      - "12380:80"
+      - "12380:8080"
     environment:
       - APP_DOMAIN=localhost:12380
       - APP_PROTOCOL=http
