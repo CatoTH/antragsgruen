@@ -3,6 +3,9 @@ name: phpstan-evaluate-pr
 on:
   pull_request: {}
 
+permissions:
+  contents: read   # ← Add this block
+
 jobs:
   evaluate-pr:
     runs-on: ubuntu-latest
