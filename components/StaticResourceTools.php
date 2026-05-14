@@ -177,12 +177,12 @@ class StaticResourceTools
         return $messagesource->loadJsMessages($category, $language);
     }
 
-    public static function resourceUrl(string $url): string
+    public static function resourceUrl(string $url, bool $useCacheBusher = true): string
     {
         $resourceBase = self::getResolvedResourceBase();
         $localAssets = str_starts_with($resourceBase, '/');
 
-        if ($localAssets) {
+        if ($localAssets && $useCacheBusher) {
             $absolute = \Yii::$app->basePath . '/web/' . str_replace('/', DIRECTORY_SEPARATOR, $url);
 
             $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);

@@ -46,7 +46,7 @@ class StdHooks extends Hooks
 
     public function favicons(string $before): string
     {
-        $faviconBase = StaticResourceTools::resourceUrl("favicons");
+        $faviconBase = StaticResourceTools::resourceUrl("favicons", false);
 
         return '<link rel="apple-touch-icon" sizes="180x180" href="' . $faviconBase . '/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="' . $faviconBase . '/favicon-32x32.png">
