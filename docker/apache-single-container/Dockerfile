@@ -13,7 +13,10 @@ RUN apt-get update \
         libcurl4-openssl-dev \
         libxml2-dev \
         libonig-dev \
-        libzip-dev
+        libzip-dev \
+        weasyprint \
+        imagemagick \
+        poppler-utils
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
 RUN docker-php-ext-install exif gd intl mysqli pdo_mysql curl xml mbstring zip iconv sysvsem
@@ -31,6 +34,9 @@ COPY ${APP_ARCHIVE} /tmp/app.tar.bz2
 RUN mkdir -p /var/www/html \
     && tar -xjf /tmp/app.tar.bz2 --strip-components=1 -C /var/www/html \
     && rm /tmp/app.tar.bz2
+
+# Allow Static View Caches
+RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache
 
 # Set correct ownership and permissions
 RUN chown -R www-data:www-data /var/www/html \
