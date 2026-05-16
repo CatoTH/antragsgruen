@@ -24,6 +24,7 @@ services:
 
   mysql:
     image: mariadb
+    command: --max_allowed_packet=33554432
     ports:
       - "13306:3306"
     environment:
