@@ -47,6 +47,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/runtime 2>/dev/null || true \
     && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["apache2-foreground"]
