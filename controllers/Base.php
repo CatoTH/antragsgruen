@@ -4,13 +4,11 @@ namespace app\controllers;
 
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\forms\LoginUsernamePasswordForm;
-use app\plugins\ModuleBase;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
-use app\components\{ConsultationAccessPassword, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
+use app\components\{ConsultationAccess, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, repostory\MotionRepository, Site, User};
 use Yii;
-use yii\base\Module;
 use yii\helpers\Html;
 use yii\web\{Controller, Request, Response, Session};
 
@@ -136,9 +134,17 @@ class Base extends Controller
             }
         }
 
-        if ($this->testMaintenanceMode($action->id) || $this->testSiteForcedLogin() || $this->testConsultationPwd()) {
+        $accessCheck = (new ConsultationAccess($this->consultation))->testForDenyReason($action->id);
+        if (isset($accessCheck['limitedAccessBecauseOfOverride'])) {
+            $this->limitedAccessBecauseOfOverride = $accessCheck['limitedAccessBecauseOfOverride'];
+        }
+        if ($accessCheck['denied']) {
+            if ($accessCheck['deniedRedirect']) {
+                $this->redirect($accessCheck['deniedRedirect']);
+            }
             return false;
         }
+
         return true;
     }
 
@@ -337,105 +343,6 @@ class Base extends Controller
         /** @var AntragsgruenApp $app */
         $app = Yii::$app->params;
         return $app;
-    }
-
-
-    /**
-     * @throws \yii\base\ExitException
-     */
-    public function testMaintenanceMode(?string $actionId): bool
-    {
-        if ($this->consultation == null) {
-            return false;
-        }
-
-        if (get_class($this) === ConsultationController::class && $actionId === ConsultationController::VIEW_ID_INDEX) {
-            // On home, the actual error is shown on the regular page
-            return false;
-        }
-        $settings = $this->consultation->getSettings();
-        $admin = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null);
-        if ($settings->maintenanceMode && !$admin) {
-            $this->redirect(UrlHelper::createUrl(['/consultation/index']));
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @throws \yii\base\ExitException
-     */
-    public function testSiteForcedLogin(): bool
-    {
-        if ($this->consultation === null) {
-            return false;
-        }
-        if (!$this->consultation->getSettings()->forceLogin) {
-            return false;
-        }
-
-        $user = User::getCurrentUser();
-        if ($user === null || RequestContext::getYiiUser()->getIsGuest()) {
-            $this->redirect(UrlHelper::createUrl(['/user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
-            return true;
-        }
-
-        if ($this->consultation->getSettings()->managedUserAccounts) {
-            if (count($user->getUserGroupsForConsultation($this->consultation)) === 0 &&
-                !$this->allowAccessToProtectedPage($user)) {
-                $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
-                return true;
-            }
-        }
-
-        if ($this->site && !in_array($user->getAuthType(), $this->site->getSettings()->loginMethods)) {
-            $this->redirect(UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation));
-            return true;
-        }
-
-        return false;
-    }
-
-    private function allowAccessToProtectedPage(?User $user): bool
-    {
-        if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
-            return true;
-        }
-
-        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            /** @var ModuleBase $plugin */
-            $access = $plugin::canAccessConsultationAsUnprivilegedUser($user, $this->consultation, get_class($this), $this->action->id);
-            if ($access !== null) {
-                $this->limitedAccessBecauseOfOverride = $access;
-
-                return $access;
-            }
-        }
-
-        return false;
-    }
-
-    public function testConsultationPwd(): bool
-    {
-        if (!RequestContext::getYiiUser()->getIsGuest()) {
-            return false;
-        }
-        if (!$this->consultation || !$this->consultation->getSettings()->accessPwd) {
-            return false;
-        }
-        $pwdChecker = new ConsultationAccessPassword($this->consultation);
-        if (!$pwdChecker->isCookieLoggedIn()) {
-            $loginUrl = UrlHelper::createUrl([
-                '/user/login',
-                'backUrl'   => $this->getHttpRequest()->url,
-                'passConId' => $this->consultation->urlPath,
-            ]);
-            $this->redirect($loginUrl);
-            Yii::$app->end();
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public function forceLogin(): void

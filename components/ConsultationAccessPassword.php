@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components;
 
 use app\models\db\Consultation;
@@ -13,12 +15,11 @@ use app\models\settings\AntragsgruenApp;
  */
 class ConsultationAccessPassword
 {
-    private Consultation $consultation;
     private Site $site;
 
-    public function __construct(Consultation $consultation)
-    {
-        $this->consultation = $consultation;
+    public function __construct(
+        private readonly Consultation $consultation
+    ) {
         $this->site         = $consultation->site;
     }
 

@@ -337,6 +337,7 @@ if ($controller->site) {
             <ul>
                 <?php
                 foreach ($controller->site->consultations as $consultation) {
+
                     $link = UrlHelper::createUrl(
                         ['consultation/notifications', 'consultationPath' => $consultation->urlPath]
                     );
