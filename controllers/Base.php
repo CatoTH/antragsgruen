@@ -134,12 +134,12 @@ class Base extends Controller
             }
         }
 
-        $accessCheck = (new ConsultationAccess($this->consultation))->testForDenyReason($action->id);
+        $accessCheck = (new ConsultationAccess($this->consultation))->testForDenyReason(get_class($this), $action->id);
         if (isset($accessCheck['limitedAccessBecauseOfOverride'])) {
             $this->limitedAccessBecauseOfOverride = $accessCheck['limitedAccessBecauseOfOverride'];
         }
         if ($accessCheck['denied']) {
-            if ($accessCheck['deniedRedirect']) {
+            if (isset($accessCheck['deniedRedirect'])) {
                 $this->redirect($accessCheck['deniedRedirect']);
             }
             return false;

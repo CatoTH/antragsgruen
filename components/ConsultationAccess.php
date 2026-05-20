@@ -9,24 +9,24 @@ use app\models\db\{Consultation, User};
 use app\models\settings\{AntragsgruenApp, Privileges};
 use app\plugins\ModuleBase;
 
-class ConsultationAccess
+readonly class ConsultationAccess
 {
     public function __construct(
-        private readonly ?Consultation $consultation,
+        private ?Consultation $consultation,
     ) {
     }
 
     /**
      * @return array{denied: bool, deniedRedirect?: string, limitedAccessBecauseOfOverride?: bool}
      */
-    public function testForDenyReason(?string $actionId): array
+    public function testForDenyReason(string $controllerClass, ?string $actionId): array
     {
-        $maintenance = $this->testMaintenanceMode($actionId);
+        $maintenance = $this->testMaintenanceMode($controllerClass, $actionId);
         if ($maintenance['denied']) {
             return $maintenance;
         }
 
-        $forcedLogin = $this->testSiteForcedLogin();
+        $forcedLogin = $this->testSiteForcedLogin($controllerClass, $actionId);
         if ($forcedLogin['denied']) {
             return $forcedLogin;
         }
@@ -61,7 +61,7 @@ class ConsultationAccess
     /**
      * @return array{allowed: bool, limitedAccessBecauseOfOverride?: bool}
      */
-    private function allowAccessToProtectedPage(?User $user): array
+    private function allowAccessToProtectedPage(?User $user, string $controllerClass, ?string $actionId): array
     {
         if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             return ['allowed' => true];
@@ -69,7 +69,7 @@ class ConsultationAccess
 
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             /** @var ModuleBase $plugin */
-            $access = $plugin::canAccessConsultationAsUnprivilegedUser($user, $this->consultation, get_class($this), $this->action->id);
+            $access = $plugin::canAccessConsultationAsUnprivilegedUser($user, $this->consultation, $controllerClass, $actionId);
             if ($access !== null) {
                 return ['allowed' => $access, 'limitedAccessBecauseOfOverride' => $access];
             }
@@ -81,7 +81,7 @@ class ConsultationAccess
     /**
      * @return array{denied: bool, deniedRedirect?: string, limitedAccessBecauseOfOverride?: bool}
      */
-    public function testSiteForcedLogin(): array
+    public function testSiteForcedLogin(string $controllerClass, ?string $actionId): array
     {
         if ($this->consultation === null) {
             return ['denied' => false];
@@ -98,9 +98,9 @@ class ConsultationAccess
         if ($this->consultation->getSettings()->managedUserAccounts) {
             if (count($user->getUserGroupsForConsultation($this->consultation)) === 0) {
                 // Allow plugins to grant limited access for specific sub-pages to users even if they are not regularily allowed to access.
-                $restrictedAccess = $this->allowAccessToProtectedPage($user);
+                $restrictedAccess = $this->allowAccessToProtectedPage($user, $controllerClass, $actionId);
                 if ($restrictedAccess['allowed']) {
-                    return ['denied' => false, 'limitedAccessBecauseOfOverride' => $restrictedAccess['limitedAccessBecauseOfOverride']];
+                    return ['denied' => false, 'limitedAccessBecauseOfOverride' => $restrictedAccess['limitedAccessBecauseOfOverride'] ?? null];
                 }
 
                 return ['denied' => true, 'deniedRedirect' => UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation)];
@@ -108,7 +108,7 @@ class ConsultationAccess
         }
 
         $site = $this->consultation->site;
-        if ($site && !in_array($user->getAuthType(), $site->getSettings()->loginMethods)) {
+        if (!in_array($user->getAuthType(), $site->getSettings()->loginMethods)) {
             return ['denied' => true, 'deniedRedirect' => UrlHelper::createUrl('/user/consultationaccesserror', $this->consultation)];
         }
 
@@ -118,13 +118,13 @@ class ConsultationAccess
     /**
      * @return array{denied: bool, deniedRedirect?: string}
      */
-    public function testMaintenanceMode(?string $actionId): array
+    public function testMaintenanceMode(string $controllerClass, ?string $actionId): array
     {
         if ($this->consultation === null) {
             return ['denied' => false];
         }
 
-        if (get_class($this) === ConsultationController::class && $actionId === ConsultationController::VIEW_ID_INDEX) {
+        if ($controllerClass === ConsultationController::class && $actionId === ConsultationController::VIEW_ID_INDEX) {
             // On home, the actual error is shown on the regular page
             return ['denied' => false];
         }

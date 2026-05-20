@@ -66,8 +66,11 @@ class PagesController extends Base
         // For everything else, check for maintenance mode and login.
         $allowedPages = [ConsultationText::DEFAULT_PAGE_MAINTENANCE, ConsultationText::DEFAULT_PAGE_LEGAL, ConsultationText::DEFAULT_PAGE_PRIVACY];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
-            $accessTest = new ConsultationAccess($this->consultation);
-            if ($accessTest->testMaintenanceMode(null)['denied'] || $accessTest->testSiteForcedLogin()['denied']) {
+            $accessTest = (new ConsultationAccess($this->consultation))->testForDenyReason(get_class($this), null);
+            if ($accessTest['denied']) {
+                if (isset($accessTest['deniedRedirect'])) {
+                    $this->redirect($accessTest['deniedRedirect']);
+                }
                 throw new ResponseException(new HtmlErrorResponse(404, 'Page not found'));
             }
         }
