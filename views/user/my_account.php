@@ -1,5 +1,6 @@
 <?php
 
+use app\components\ConsultationAccess;
 use app\components\UrlHelper;
 use app\models\db\User;
 use OTPHP\TOTP;
@@ -337,7 +338,10 @@ if ($controller->site) {
             <ul>
                 <?php
                 foreach ($controller->site->consultations as $consultation) {
-
+                    $accessCheck = (new ConsultationAccess($consultation))->testForDenyReason(null, null);
+                    if ($accessCheck['denied']) {
+                        continue;
+                    }
                     $link = UrlHelper::createUrl(
                         ['consultation/notifications', 'consultationPath' => $consultation->urlPath]
                     );

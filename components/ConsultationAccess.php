@@ -19,7 +19,7 @@ readonly class ConsultationAccess
     /**
      * @return array{denied: bool, deniedRedirect?: string, limitedAccessBecauseOfOverride?: bool}
      */
-    public function testForDenyReason(string $controllerClass, ?string $actionId): array
+    public function testForDenyReason(?string $controllerClass, ?string $actionId): array
     {
         $maintenance = $this->testMaintenanceMode($controllerClass, $actionId);
         if ($maintenance['denied']) {
@@ -61,7 +61,7 @@ readonly class ConsultationAccess
     /**
      * @return array{allowed: bool, limitedAccessBecauseOfOverride?: bool}
      */
-    private function allowAccessToProtectedPage(?User $user, string $controllerClass, ?string $actionId): array
+    private function allowAccessToProtectedPage(?User $user, ?string $controllerClass, ?string $actionId): array
     {
         if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             return ['allowed' => true];
@@ -81,7 +81,7 @@ readonly class ConsultationAccess
     /**
      * @return array{denied: bool, deniedRedirect?: string, limitedAccessBecauseOfOverride?: bool}
      */
-    public function testSiteForcedLogin(string $controllerClass, ?string $actionId): array
+    public function testSiteForcedLogin(?string $controllerClass, ?string $actionId): array
     {
         if ($this->consultation === null) {
             return ['denied' => false];
@@ -118,7 +118,7 @@ readonly class ConsultationAccess
     /**
      * @return array{denied: bool, deniedRedirect?: string}
      */
-    public function testMaintenanceMode(string $controllerClass, ?string $actionId): array
+    public function testMaintenanceMode(?string $controllerClass, ?string $actionId): array
     {
         if ($this->consultation === null) {
             return ['denied' => false];
