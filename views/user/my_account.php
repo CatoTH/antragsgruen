@@ -335,7 +335,7 @@ if ($controller->site) {
         <h2 class="green" id="notificationsTitle"><?= Yii::t('user', 'notification_title') ?></h2>
         <div class="content">
             <?= Yii::t('user', 'notification_intro') ?>
-            <ul>
+            <ul class="notificationLinks">
                 <?php
                 foreach ($controller->site->consultations as $consultation) {
                     $accessCheck = (new ConsultationAccess($consultation))->testForDenyReason(null, null);
@@ -345,7 +345,7 @@ if ($controller->site) {
                     $link = UrlHelper::createUrl(
                         ['consultation/notifications', 'consultationPath' => $consultation->urlPath]
                     );
-                    echo '<li>' . Html::a(Html::encode($consultation->title), $link) . '</li>';
+                    echo '<li>' . Html::a(Html::encode($consultation->title), $link, ['class' => 'consultation' . $consultation->id]) . '</li>';
                 }
                 ?>
             </ul>
