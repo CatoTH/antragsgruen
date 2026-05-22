@@ -137,7 +137,7 @@ class ModuleBase extends Module
      * Called if the consultation is protected, and the user (if any) does not have privileges to access.
      * Can be used to give grant users read-only access to certain motions.
      */
-    public static function canAccessConsultationAsUnprivilegedUser(?User $user, Consultation $consultation, string $controllerClass, string $actionId): ?bool
+    public static function canAccessConsultationAsUnprivilegedUser(?User $user, Consultation $consultation, ?string $controllerClass, ?string $actionId): ?bool
     {
         return null;
     }

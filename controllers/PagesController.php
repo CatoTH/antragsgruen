@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\models\policies\{IPolicy, UserGroups};
 use app\models\settings\{Layout, Privileges, AntragsgruenApp};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface, RestApiResponse};
-use app\components\{HTMLTools, Tools, UrlHelper, ZipWriter};
+use app\components\{ConsultationAccess, HTMLTools, Tools, UrlHelper, ZipWriter};
 use app\models\db\{ConsultationFile, ConsultationFileGroup, ConsultationText, ConsultationUserGroup, User};
 use app\models\exceptions\{Access, FormError, ResponseException};
 use yii\web\Response;
@@ -66,7 +66,11 @@ class PagesController extends Base
         // For everything else, check for maintenance mode and login.
         $allowedPages = [ConsultationText::DEFAULT_PAGE_MAINTENANCE, ConsultationText::DEFAULT_PAGE_LEGAL, ConsultationText::DEFAULT_PAGE_PRIVACY];
         if ($pageData->consultation && !in_array($pageSlug, $allowedPages)) {
-            if ($this->testMaintenanceMode(null) || $this->testSiteForcedLogin()) {
+            $accessTest = (new ConsultationAccess($this->consultation))->testForDenyReason(get_class($this), null);
+            if ($accessTest['denied']) {
+                if (isset($accessTest['deniedRedirect'])) {
+                    $this->redirect($accessTest['deniedRedirect']);
+                }
                 throw new ResponseException(new HtmlErrorResponse(404, 'Page not found'));
             }
         }
