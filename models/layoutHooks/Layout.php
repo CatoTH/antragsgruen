@@ -195,6 +195,11 @@ class Layout
         return self::callHook('getConsultationWelcomeReplacer', [], null);
     }
 
+    public static function getConsultationMyMotionsReplacer(): ?string
+    {
+        return self::callHook('getConsultationMyMotionsReplacer', [], null);
+    }
+
     public static function getFormattedMotionStatus(string $origStatus, Motion $motion): string
     {
         return self::callHook('getFormattedMotionStatus', [$motion], $origStatus);

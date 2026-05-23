@@ -320,8 +320,6 @@ class ConsultationController extends Base
             'cache' => $cache,
             'consultation' => $this->consultation,
             'myself' => $myself,
-            'myMotions' => $myself?->getMySupportedMotionsByConsultation($this->consultation),
-            'myAmendments' => $myself?->getMySupportedAmendmentsByConsultation($this->consultation),
             'myMotionComments' => MotionComment::getPrivatelyCommentedByConsultation($myself, $this->consultation),
             'myAmendmentComments' => AmendmentComment::getPrivatelyCommentedByConsultation($myself, $this->consultation),
         ]));
