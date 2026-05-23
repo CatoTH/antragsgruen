@@ -12,6 +12,8 @@ $page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->checkOption('#allowAmendmentsToAmendments');
 $page->saveForm();
 
+$I->executeJS("console.log('MovingAmendments');");
+
 $I->wantTo('create a new consultation');
 $I->gotoStdAdminPage();
 $I->click('.siteConsultationsLink');
