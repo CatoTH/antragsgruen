@@ -11,7 +11,8 @@ use yii\helpers\Html;
  * @var \app\controllers\Base $controller
  */
 
-$typeName = $motion->getMyMotionType()->titleSingular;
+$motionType = $motion->getMyMotionType();
+$typeName = $motionType->titleSingular;
 if ($mode === 'create') {
     $this->title = $typeName;
 } else {
@@ -35,20 +36,20 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
 if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
-    echo Yii::t('motion', 'confirmed_visible');
+    echo $motionType->getConsultationTextWithFallback('motion', 'confirmed_visible');
 }
 if ($motion->isInScreeningProcess()) {
-    echo Yii::t('motion', 'confirmed_screening');
+    echo $motionType->getConsultationTextWithFallback('motion', 'confirmed_screening');
 }
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-    $supportType   = $motion->getMyMotionType()->getMotionSupportTypeClass();
+    $supportType   = $motionType->getMotionSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
-    $msgTpl        = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'confirmed_support_phase');
+    $msgTpl        = $motionType->getConsultationTextWithFallback('motion', 'confirmed_support_phase');
     $msg           = str_replace(['%TITLE%', '%MIN%'], [$typeName, $min], $msgTpl);
     $requirement   = '';
     $missingFemale = $motion->getMissingSupporterCountByGender($supportType, 'female');
     if ($missingFemale > 0) {
-        $requirementTpl = $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'confirmed_support_phase_addfemale');
+        $requirementTpl = $motionType->getConsultationTextWithFallback('motion', 'confirmed_support_phase_addfemale');
         $requirement = str_replace('%MIN%', $missingFemale, $requirementTpl);
     }
     $msg = str_replace('%ADD_REQUIREMENT%', $requirement, $msg);
@@ -82,9 +83,9 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
         <div class="hidden clipboard-done"><?= Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>
     <?php
-    if (is_a($motion->getMyMotionType()->getMotionSupportPolicy(), \app\models\policies\GruenesNetz::class)) {
+    if (is_a($motionType->getMotionSupportPolicy(), \app\models\policies\GruenesNetz::class)) {
         echo '<div class="alert alert-info">';
-        echo $motion->getMyMotionType()->getConsultationTextWithFallback('motion', 'confirmed_support_phase_ww');
+        echo $motionType->getConsultationTextWithFallback('motion', 'confirmed_support_phase_ww');
         echo '</div>';
     }
 }

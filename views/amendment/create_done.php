@@ -41,10 +41,10 @@ if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
 if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
-    echo Yii::t('amend', 'confirmed_visible');
+    echo $motionType->getConsultationTextWithFallback('amend', 'confirmed_visible');
 }
 if ($amendment->isInScreeningProcess()) {
-    echo Yii::t('amend', 'confirmed_screening');
+    echo $motionType->getConsultationTextWithFallback('amend', 'confirmed_screening');
 }
 if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     $supportType   = $motionType->getAmendmentSupportTypeClass();
