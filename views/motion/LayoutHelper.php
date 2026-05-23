@@ -1126,7 +1126,15 @@ class LayoutHelper
         $motionsOrResolutions = array_values(array_filter($consultation->motions, fn(Motion $itMotion) => $itMotion->isResolution() === $motion->isResolution()));
 
         $invisibleStatuses = $consultation->getStatuses()->getInvisibleMotionStatuses();
-        if (in_array($motion->status, $invisibleStatuses) && User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY,
+
+        if ($motion->status === IMotion::STATUS_SUBMITTED_UNSCREENED && $motion->iAmInitiator()) {
+            // Browsing through one's own unscreened motions. Sorted backwards, as that's the order on the home page too.
+            $motions = array_values(array_filter($motionsOrResolutions, fn(Motion $itMotion) =>
+                $itMotion->iAmInitiator() && $itMotion->status === IMotion::STATUS_SUBMITTED_UNSCREENED && $itMotion->version === $motion->version));
+            usort($motions, function (Motion $a, Motion $b) {
+                return $b->getTimestamp() <=> $a->getTimestamp();
+            });
+        } elseif (in_array($motion->status, $invisibleStatuses) && User::havePrivilege($consultation, Privileges::PRIVILEGE_ANY,
                 PrivilegeQueryContext::anyRestriction())) {
             $motions = array_values(array_filter($motionsOrResolutions, fn(Motion $motion) => in_array($motion->status, $invisibleStatuses)));
             usort($motions, function (Motion $a, Motion $b) {

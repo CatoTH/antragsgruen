@@ -86,7 +86,7 @@ class Consultation implements \JsonSerializable
     public bool $homepageByTag = false;
     public bool $homepageDeadlineCircle = true;
     public bool $externalLinksNewWindow = false;
-    public bool $motionPrevNextLinks = false;
+    public bool $motionPrevNextLinks = true;
     public bool $allowRequestingAccess = true;
 
     public int $lineLength = 80;
