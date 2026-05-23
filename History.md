@@ -10,6 +10,7 @@
 - It is now easier possible to integrate OpenTelemetry into Antragsgrün.
 - More configurations for the admin list: a date column can be added, and the tags and type column removed.
 - Agenda items now are by default set to be included in the proposed procedure, making them opt-out instead of opt-in.
+- The pagination between motions is now enabled by default for new consultations. It also allows browsing through one's own not yet submitted motions.
 - Bugfix: The "My Account" page showed consultations where the user did not actually have access.
 - Many text fragments that were static before (like alert boxes) can now also be translated and changed on the admin page.
 - A new console command `yii site/create` bootstraps the first site and its admin user without going through the web installer (useful for multisite setups, where setting `config/INSTALLING` would force every other instance into installer mode).
