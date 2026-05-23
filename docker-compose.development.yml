@@ -10,6 +10,7 @@ services:
       target: development
     environment:
       - APP_DOMAIN=localhost:12380
+      - APP_PROTOCOL=http
       - SITE_SUBDOMAIN=stdparteitag
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
@@ -45,9 +46,10 @@ services:
   mysql:
     image: mariadb
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: antragsgruen
     volumes:
       - "mysql-data:/var/lib/mysql"
 

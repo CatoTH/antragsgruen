@@ -83,15 +83,15 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var array{notifications?: bool}|null */
     public ?array $backgroundJobs = null;
 
+    /** @var string[] */
+    public array $trustedProxies = [];
+
     public static function getInstance(): AntragsgruenApp
     {
         /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         return $app;
     }
-
-    /** @var string[] */
-    public array $trustedProxies = [];
 
     /**
      * Constructor - loads configuration from JSON and/or environment variables
