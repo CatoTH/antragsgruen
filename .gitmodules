@@ -1,0 +1,3 @@
+[submodule "docker/antragsgruen-live"]
+	path = docker/antragsgruen-live
+	url = https://github.com/CatoTH/antragsgruen-live.git
