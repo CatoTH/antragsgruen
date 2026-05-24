@@ -71,22 +71,26 @@ services:
       - live
 
   gulp-watch:
-    image: 'node:22'
+    build:
+      context: ./
+      dockerfile: docker/pnpm/Dockerfile
     volumes:
       - "./:/var/www/antragsgruen"
     working_dir: /var/www/antragsgruen
-    command: "npx gulp watch"
+    command: "pnpm dlx gulp watch"
     profiles:
       - gulp-watch
 
-  node-helper:
-    image: 'node:22'
+  pnpm-helper:
+    build:
+      context: ./
+      dockerfile: docker/pnpm/Dockerfile
     volumes:
       - "./:/var/www/antragsgruen"
     working_dir: /var/www/antragsgruen
     command: sleep infinity
     profiles:
-      - node-helper
+      - pnpm-helper
 
   otlp-collector:
     image: otel/opentelemetry-collector

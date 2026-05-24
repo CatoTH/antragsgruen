@@ -1,0 +1,5 @@
+allowBuilds:
+  '@parcel/watcher': false
+  es5-ext: false
+  puppeteer: false
+minimumReleaseAge: 4320 # 3 Days - a bit more conservative than the default

@@ -61,9 +61,11 @@ git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar install --prefer-dist
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
+
+If [pnpm](https://pnpm.io) is not installed, you can either install it by `brew install pnpm` (macOS), `npm install -g pnpm` (NPM-based) or use the `pnpm-helper` image (Docker), as described in [Developing with Docker Compose](https://github.com/CatoTH/antragsgruen#developing-with-docker-compose).
 
 If you want to use the web-based installer (recommended):
 
@@ -422,17 +424,17 @@ Developing
 - JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though gradually replaced by standard JavaScript. ECMAScript Modules are used as module system. For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
 - REST API: The API is documented below. There will be more development regarding the REST API, including authorized endpoints using JWT based authentication.
 
-### Running with Docker Compose
+### Developing with Docker Compose
 
 [docker-compose.development.yml](docker-compose.development.yml) provides a basic docker setup to run Antragsgrün in Development mode.
 
-It requires the dependencies (composer, npm, gulp) to be run on the host system and initialized (see "Compiling from source").
+It requires the dependencies (composer, pnpm) to be run on the host system and initialized (see "Compiling from source").
 
 Then, you can run:
 ```shell
 echo "RANDOM_SEED=$(openssl rand -base64 32)" > .env # One time initialization of a local secret key
 touch config/DEBUG # optional, to enable debug mode
-docker-compose -f docker-compose.development.yml --profile node-helper up
+docker-compose -f docker-compose.development.yml --profile pnpm-helper up
 docker exec -it antragsgruen-web-1 /var/www/antragsgruen/docker/initialize-development-environment.sh
 ```
 
@@ -447,16 +449,16 @@ Test credentials:
 | testuser@example.org      | testuser      | Regular user without privileges     |
 | proposaladmin@example.org | proposaladmin | Allowed to edit proposed procedures |
 
-When working with compiled web assets and not having NPM installed locally, you can use the Node containers.
+When working with compiled web assets and not having PNPM installed locally, you can use the Node containers.
 
 Installing dependencies:
 ```shell
-docker exec antragsgruen-node-helper-1 npm ci
+docker exec antragsgruen-pnpm-helper-1 pnpm ci
 ```
 
 To run the watcher that compiles SCSS and Vue.JS files, use:
 ```shell
-docker-compose -f docker-compose.development.yml --profile node-helper --profile gulp-watch up
+docker-compose -f docker-compose.development.yml --profile pnpm-helper --profile gulp-watch up
 ```
 
 The embedded sample OpenTelemetry Collector is reachable under:
@@ -468,10 +470,10 @@ You can enable debug mode by creating an empty file config/DEBUG.
 
 To compile the JavaScript- and CSS-Files, you need to install Gulp:
 ```bash
-npm install # Installs all required packages
+pnpm install # Installs all required packages
 
-npm run build # Compiles the regular JS/CSS-files
-npm run watch # Listens for changes in JS/CSS-files and compiles them immediately
+pnpm run build # Compiles the regular JS/CSS-files
+pnpm run watch # Listens for changes in JS/CSS-files and compiles them immediately
 ```
 
 After updating the source code from git, do:
@@ -485,7 +487,7 @@ gulp
 ### Updating PDF.JS
 
 * Download the [latest release](https://github.com/mozilla/pdf.js/releases)
-* `npm install`
+* `pnpm install`
 * `gulp dist-install`
 * Copy relevant files, redo changes in `viewer.html` and `viewer.css` (look for "Antragsgrün" in the comments)
 
@@ -566,7 +568,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 * Download the [Selenium Server (Grid)](https://www.selenium.dev/downloads/)
 * Copy the [docs/selenium-antragsgruen.toml](docs/selenium-antragsgruen.toml) to the directory that has the downloaded JAR and set the correct path to the ChromeDriver binary in it.
 * For the automated HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
-* For the automated accessibility validation, [Pa11y](https://pa11y.org/) needs to be installed. (is done by ``npm install``)
+* For the automated accessibility validation, [Pa11y](https://pa11y.org/) needs to be installed. (is done by ``pnpm install``)
 * The host name ``test.antragsgruen.test`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured. If another host name is to be used, it has to be changed in the [config/TEST_DOMAIN](config/TEST_DOMAIN) and [tests/acceptance.suite.yml](tests/acceptance.suite.yml).
 
 #### Running
