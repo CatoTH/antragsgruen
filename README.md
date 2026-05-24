@@ -107,6 +107,12 @@ docker compose start
 docker exec -it antragsgruen-web-1 /var/www/html/yii migrate # To perform potential database updates.
 ```
 
+#### Caution: Docker and Environment Variables
+
+While it is possible to configure Docker-based Antragsgrün through environment variables, when using the Web-based installer as described here, some configuration will still be stored in a local configuration file (`config/config.json`).
+
+Most crucially, a random key is created, saved in this file and used to hash security-related information like passwords. It is therefore mandatory to not store this file in the *container*, but a *volume*! The default [docker-compose.yml](docker-compose.yml) achieves this by using the whole `config` directory as volume. Alternatively, this key can be set up through environment variables manually.
+
 #### Alternative Docker Image
 
 [Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) developed a container image, which is now maintained as an open source / collaborative project at [github.com/devops-ansible/docker-antragsgruen](https://github.com/devops-ansible/docker-antragsgruen).
