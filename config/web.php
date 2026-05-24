@@ -26,7 +26,7 @@ if (file_exists($configFile)) {
     $config = file_get_contents($configFile);
 } else {
     // No config.json found - will load from environment variables
-    $config = '{}';
+    $config = null;
 
     // Log in development mode for transparency
     if (defined('YII_DEBUG') && YII_DEBUG) {

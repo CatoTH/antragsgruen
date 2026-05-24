@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\forms;
 
 use app\models\settings\AntragsgruenApp;
@@ -21,11 +23,11 @@ trait AntragsgruenInitConfigwriteTrait
             $configJson = (string)file_get_contents($this->configFile);
             try {
                 $config = new AntragsgruenApp($configJson);
-            } catch (\Exception $e) {
-                $config = new AntragsgruenApp('');
+            } catch (\Exception) {
+                $config = new AntragsgruenApp(null);
             }
         } else {
-            $config = new AntragsgruenApp('');
+            $config = new AntragsgruenApp(null);
         }
 
         if ($config->randomSeed == '') {

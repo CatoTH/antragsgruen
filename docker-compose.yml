@@ -1,11 +1,14 @@
 volumes:
   mysql-data: {}
+  antragsgruen-config: {}
 
 services:
   web:
     image: tobiashoessl/antragsgruen:latest
     ports:
       - "12380:80"
+    volumes:
+      - "antragsgruen-config:/var/www/html/config"
     environment:
       - APP_DOMAIN=localhost:12380
       - APP_PROTOCOL=http
