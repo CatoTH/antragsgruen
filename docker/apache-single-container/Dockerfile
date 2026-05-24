@@ -1,6 +1,10 @@
-# docker build --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b1.tar.bz2 -t antragsgruen-v4.17.0-b1 .
+# docker buildx create --use desktop-linux
+# Base
+# docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b9.tar.bz2 --target base -t tobiashoessl/antragsgruen:4.17.0-b9 -t tobiashoessl/antragsgruen:latest -f Dockerfile --push .
+# Full
+# docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b9.tar.bz2 --target full -t tobiashoessl/antragsgruen:4.17.0-b9-full -t tobiashoessl/antragsgruen:latest-full -f Dockerfile --push .
 
-FROM php:8.5-apache
+FROM php:8.5-apache AS minimal
 
 ARG APP_ARCHIVE=antragsgruen.tar.bz2
 
@@ -14,14 +18,18 @@ RUN apt-get update \
         libxml2-dev \
         libonig-dev \
         libzip-dev \
-        weasyprint \
-        imagemagick \
-        poppler-utils
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-
-RUN docker-php-ext-install exif gd intl mysqli pdo_mysql curl xml mbstring zip iconv sysvsem
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install exif gd intl mysqli pdo_mysql curl xml mbstring zip iconv sysvsem \
+    && apt-get purge -y --auto-remove \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libicu-dev \
+        libcurl4-openssl-dev \
+        libxml2-dev \
+        libonig-dev \
+        libzip-dev \
+   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite remoteip
 
@@ -51,3 +59,14 @@ RUN chown -R www-data:www-data /var/www/html \
 EXPOSE 80
 
 CMD ["apache2-foreground"]
+
+
+FROM minimal AS full
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        weasyprint \
+        imagemagick \
+        poppler-utils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*

@@ -90,7 +90,11 @@ sudo chown -R www-data:www-data config #Can be skipped if you don't use the Inst
 
 ### Using the Docker Image
 
-A Docker Image is provided at [tobiashoessl/antragsgruen](tobiashoessl/antragsgruen). A sample on how to use it can be seen in the bundles [docker-compose.yml](docker-compose.yml).
+A Docker Image is provided at [tobiashoessl/antragsgruen](tobiashoessl/antragsgruen). It comes in two flavors:
+- `full` contains everything, including better PDF generation (Weasyprint) and tools for image processing (for uploading applications).
+- `minimal` contains everything, but without these extra tools. The image is therefore significantly smaller, but some functionality will be missing.
+
+A sample on how to use it can be seen in the bundles [docker-compose.yml](docker-compose.yml).
 
 Usage for first-time installation:
 ```shell

@@ -7,7 +7,8 @@
 # - Commit this changes to repository
 # - Execute this script (docs/create-dist.sh)
 # - rsync --progress -a -v local/cdn/ [CDN-LOCATION]
-# - docker buildx build  --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b4.tar.bz2 -t tobiashoessl/antragsgruen:4.17.0-b4 -t tobiashoessl/antragsgruen:latest -f Dockerfile --push .
+# - docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b9.tar.bz2 --target full -t tobiashoessl/antragsgruen:4.17.0-b11-full -t tobiashoessl/antragsgruen:latest-full -f Dockerfile --push .
+# - docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b9.tar.bz2 --target minimal -t tobiashoessl/antragsgruen:4.17.0-b11 -t tobiashoessl/antragsgruen:latest-minimal -f Dockerfile --push
 # - Create the new release on Github, attaching the .tar.bz2- and the .zip-file
 
 if [[ ! -d ./controllers ]]; then
@@ -31,7 +32,7 @@ fi
 pnpm ci
 pnpm run build
 
-rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
+rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='web_src' --exclude='docker' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
 cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
@@ -61,7 +62,6 @@ chmod -R u+rwx web/js/bower/yii2-pjax/.git
 rm -R web/js/src
 rm -R web/js/bootstrap-datetimepicker.js
 rm -R web/js/bower
-rm -R web_src
 rm -R vendor/tecnickcom/tcpdf/examples
 rm -R vendor/swiftmailer/swiftmailer/tests
 rm -R vendor/doctrine/lexer/tests
@@ -142,6 +142,9 @@ rm docker-compose.yml
 docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
 
 cd ..
+mv antragsgruen-$ANTRAGSGRUEN_VERSION/local/cdn/v$ANTRAGSGRUEN_VERSION ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION-cdn
+rmdir antragsgruen-$ANTRAGSGRUEN_VERSION/local/cdn
+antragsgruen-$ANTRAGSGRUEN_VERSION/local
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
 zip -r ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.zip antragsgruen-$ANTRAGSGRUEN_VERSION
 mv antragsgruen-$ANTRAGSGRUEN_VERSION ../dist/
