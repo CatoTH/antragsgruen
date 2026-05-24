@@ -28,8 +28,8 @@ if [[ ! -d ./local/antragsgruen-$ANTRAGSGRUEN_VERSION ]]; then
     exit
 fi
 
-npm ci
-npm run build
+pnpm ci
+pnpm run build
 
 rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
@@ -41,7 +41,7 @@ curl -sS https://getcomposer.org/installer | php
 rm -R local dist updates docker-vagrant .DS_Store .idea package.json gulpfile.js phpstan.neon
 rm config/DEBUG config/config.template.json
 rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml .editorconfig
-rm package-lock.json composer.json
+rm package-lock.json composer.json pnpm-lock.yaml pnpm-workspace.yml
 rm config/TEST_DOMAIN
 rm assets/phpstan-helper.php
 rm -R assets/OpenOffice-Template-ods
