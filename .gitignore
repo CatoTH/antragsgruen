@@ -1,4 +1,5 @@
 .idea
+.pnpm-store
 .DS_Store
 phpstan-baseline.neon
 vendor
