@@ -8,8 +8,8 @@
 # - Execute this script (docs/create-dist.sh)
 # - rsync --progress -a -v local/cdn/ [CDN-LOCATION]
 # - docker buildx create --use desktop-linux
-# - docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b9.tar.bz2 --target full -t tobiashoessl/antragsgruen:4.17.0-b11-full -t tobiashoessl/antragsgruen:latest-full -t tobiashoessl/antragsgruen:latest -f Dockerfile --push .
-# - docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b9.tar.bz2 --target minimal -t tobiashoessl/antragsgruen:4.17.0-b11 -t tobiashoessl/antragsgruen:latest-minimal -f Dockerfile --push
+# - docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-rc1.tar.bz2 --target full -t tobiashoessl/antragsgruen:4.17.0-rc1-full -t tobiashoessl/antragsgruen:latest-full -t tobiashoessl/antragsgruen:latest -f Dockerfile --push .
+# - docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-rc1.tar.bz2 --target minimal -t tobiashoessl/antragsgruen:4.17.0-rc1 -t tobiashoessl/antragsgruen:latest-minimal -f Dockerfile --push .
 # - Create the new release on Github, attaching the .tar.bz2- and the .zip-file
 
 if [[ ! -d ./controllers ]]; then
