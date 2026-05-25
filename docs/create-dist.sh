@@ -42,13 +42,14 @@ curl -sS https://getcomposer.org/installer | php
 rm -R local dist updates docker-vagrant .DS_Store .idea package.json gulpfile.js phpstan.neon
 rm config/DEBUG config/config.template.json
 rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml .editorconfig
-rm package-lock.json composer.json pnpm-lock.yaml pnpm-workspace.yml
+rm package-lock.json composer.json pnpm-lock.yaml pnpm-workspace.yaml
 rm config/TEST_DOMAIN
 rm assets/phpstan-helper.php
 rm -R assets/OpenOffice-Template-ods
 rm -R assets/OpenOffice-Template-odt
 mv web/index-production.php web/index.php
 rm docs/create-dist.sh docs/create-update.php
+rm -R vendor/bin
 
 mkdir plugins
 cp ../../plugins/*php plugins/
@@ -79,6 +80,8 @@ rm -Rf vendor/s1syphos/php-simple-captcha/demo/
 rm -Rf vendor/s1syphos/php-simple-captcha/tests/
 find vendor/ -name "README.md" -exec rm {} \;
 find vendor/ -name "CHANGELOG.md" -exec rm {} \;
+find vendor/ -name "UPGRADING.md" -exec rm {} \;
+find vendor/ -name "VERSION" -exec rm {} \;
 rm ./vendor/s1syphos/php-simple-captcha/fonts/LinLibertine_Rah.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Hack-Regular.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Bitter-Bold.ttf
@@ -144,7 +147,7 @@ docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
 cd ..
 mv antragsgruen-$ANTRAGSGRUEN_VERSION/local/cdn/v$ANTRAGSGRUEN_VERSION ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION-cdn
 rmdir antragsgruen-$ANTRAGSGRUEN_VERSION/local/cdn
-antragsgruen-$ANTRAGSGRUEN_VERSION/local
+rmdir antragsgruen-$ANTRAGSGRUEN_VERSION/local
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
 zip -r ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.zip antragsgruen-$ANTRAGSGRUEN_VERSION
 mv antragsgruen-$ANTRAGSGRUEN_VERSION ../dist/
