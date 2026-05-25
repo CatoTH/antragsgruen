@@ -274,7 +274,7 @@ export class UserAdminCreate {
     initAddSingleShow() {
         const form                 = /** @type {HTMLFormElement} */     (this.element.querySelector('.addUsersByLogin.singleuser')),
             autoGeneratePassword   = /** @type {HTMLInputElement} */    (form.querySelector('#addSingleGeneratePassword')),
-            sendEmail              = /** @type {HTMLInputElement} */    (form.querySelector('#addSingleSendEmail')),
+            sendEmail              = /** @type {HTMLInputElement|null} */ (form.querySelector('#addSingleSendEmail')),
             emailText              = /** @type {HTMLTextAreaElement} */ (form.querySelector('#addSingleEmailText')),
             passwordInput          = /** @type {HTMLInputElement} */    (form.querySelector('#addUserPassword'));
 
@@ -290,19 +290,21 @@ export class UserAdminCreate {
         autoGeneratePassword.addEventListener('change', onAutoGeneratePasswordChanged);
         onAutoGeneratePasswordChanged();
 
-        const onSendEmailChanged = () => {
-            emailText.classList.toggle('hidden', !sendEmail.checked);
-        };
-        sendEmail.addEventListener('change', onSendEmailChanged);
-        onSendEmailChanged();
+        if (sendEmail) {
+            const onSendEmailChanged = () => {
+                emailText.classList.toggle('hidden', !sendEmail.checked);
+            };
+            sendEmail.addEventListener('change', onSendEmailChanged);
+            onSendEmailChanged();
 
-        form.addEventListener('submit', ev => {
-            if (sendEmail) {
-                const text = emailText.value;
-                if (!this.validateEmailText(text)) {
-                    ev.preventDefault();
+            form.addEventListener('submit', ev => {
+                if (sendEmail) {
+                    const text = emailText.value;
+                    if (!this.validateEmailText(text)) {
+                        ev.preventDefault();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
