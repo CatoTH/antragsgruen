@@ -69,6 +69,8 @@ $I->wantTo('Open the voting and participate');
 $I->clickJS($votingId . ' .btnOpen');
 
 $I->gotoConsultationHome();
+
+$I->wait(0.3);
 $I->see('Is this cool', '.voting_question_1');
 $I->see('Do you agree', '.voting_question_2');
 $I->dontSee('One too much');
