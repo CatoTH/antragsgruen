@@ -29,6 +29,7 @@ RUN apt-get update \
         libxml2-dev \
         libonig-dev \
         libzip-dev \
+   && apt-get install -y --no-install-recommends libicu76 libzip5
    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite remoteip
@@ -42,7 +43,8 @@ COPY ${APP_ARCHIVE} /tmp/app.tar.bz2
 RUN mkdir -p /var/www/html \
     && tar -xjf /tmp/app.tar.bz2 --strip-components=1 -C /var/www/html \
     && rm /tmp/app.tar.bz2 \
-    && rm /var/www/html/config/INSTALLING
+    && rm /var/www/html/config/INSTALLING \
+    && mkdir -p /var/www/.cache/fontconfig && chmod 755 /var/www/.cache/fontconfig && chown www-data /var/www/.cache/fontconfig
 
 # Allow Static View Caches
 RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache
