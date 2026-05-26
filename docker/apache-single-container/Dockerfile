@@ -29,7 +29,7 @@ RUN apt-get update \
         libxml2-dev \
         libonig-dev \
         libzip-dev \
-   && apt-get install -y --no-install-recommends libicu76 libzip5
+   && apt-get install -y --no-install-recommends libicu76 libzip5 \
    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite remoteip
