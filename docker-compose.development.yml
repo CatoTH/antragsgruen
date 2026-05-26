@@ -23,6 +23,7 @@ services:
       - RANDOM_SEED=${RANDOM_SEED}
       - RABBITMQ_HOST=rabbitmq
       - WEASYPRINT_PATH=/usr/bin/weasyprint
+      - QPDF_PATH=/usr/bin/qpdf
       - IMAGE_MAGICK_PATH=/usr/bin/convert
       - OTEL_PHP_AUTOLOAD_ENABLED=true
       - OTEL_SERVICE_NAME=antragsgruen

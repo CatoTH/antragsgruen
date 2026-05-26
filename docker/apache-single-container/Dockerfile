@@ -70,5 +70,6 @@ RUN apt-get update \
         weasyprint \
         imagemagick \
         poppler-utils \
+        qpdf \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

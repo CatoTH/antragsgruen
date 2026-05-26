@@ -78,12 +78,32 @@ class Html2PdfConverter
         if (!file_exists($filenameBase . '.pdf')) {
             throw new Internal('An error occurred while creating the PDF: ' . $cmd);
         }
-        $pdf = (string)file_get_contents($filenameBase . '.pdf');
 
         unlink($filenameBase . '.html');
         foreach ($imageFiles as $file) {
             unlink($file);
         }
+
+        if ($this->app->qpdfPath === null) {
+            $pdf = (string)file_get_contents($filenameBase . '.pdf');
+        } else {
+            // Use qpdf - to avoid compatibility issues with fpdf-parser (when combining PDFs)
+            $cmd = $this->app->qpdfPath . " --decrypt --object-streams=disable";
+            $cmd .= ' ' . escapeshellarg($filenameBase . '.pdf');
+            $cmd .= ' ' . escapeshellarg($filenameBase . '_decrypted.pdf');
+
+            shell_exec($cmd);
+
+            if (!file_exists($filenameBase . '_decrypted.pdf')) {
+                throw new Internal('An error occurred while decrypting the PDF: ' . $cmd);
+            }
+
+            $pdf = (string)file_get_contents($filenameBase . '_decrypted.pdf');
+
+            unlink($filenameBase . '_decrypted.pdf');
+        }
+
+        unlink($filenameBase . '.pdf');
 
         return $pdf;
     }

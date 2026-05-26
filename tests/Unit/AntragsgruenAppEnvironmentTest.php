@@ -230,12 +230,14 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['DB_USER'] = 'testuser';
         $_ENV['IMAGE_MAGICK_PATH'] = '/custom/bin/convert';
         $_ENV['WEASYPRINT_PATH'] = '/opt/weasyprint';
+        $_ENV['QPDF_PATH'] = '/opt/qpdf';
         $_ENV['LUALATEX_PATH'] = '/usr/local/texlive/bin/lualatex';
 
         $app = new AntragsgruenApp('{}');
 
         $this->assertEquals('/custom/bin/convert', $app->imageMagickPath);
         $this->assertEquals('/opt/weasyprint', $app->weasyprintPath);
+        $this->assertEquals('/opt/qpdf', $app->qpdfPath);
         $this->assertEquals('/usr/local/texlive/bin/lualatex', $app->lualatexPath);
     }
 
