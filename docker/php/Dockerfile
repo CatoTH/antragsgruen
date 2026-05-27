@@ -21,7 +21,9 @@ RUN pecl install opentelemetry protobuf \
 
 RUN apt-get install -y weasyprint imagemagick poppler-utils qpdf
 
-RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache
+RUN mkdir /tmp/viewcache \
+    && chown www-data:www-data /tmp/viewcache \
+    && chown -R www-data /var/cache/fontconfig
 
 WORKDIR /var/www/antragsgruen
 

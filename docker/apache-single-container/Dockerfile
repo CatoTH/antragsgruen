@@ -43,8 +43,7 @@ COPY ${APP_ARCHIVE} /tmp/app.tar.bz2
 RUN mkdir -p /var/www/html \
     && tar -xjf /tmp/app.tar.bz2 --strip-components=1 -C /var/www/html \
     && rm /tmp/app.tar.bz2 \
-    && rm /var/www/html/config/INSTALLING \
-    && mkdir -p /var/www/.cache/fontconfig && chmod 755 /var/www/.cache/fontconfig && chown www-data /var/www/.cache/fontconfig
+    && rm /var/www/html/config/INSTALLING
 
 # Allow Static View Caches
 RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache
@@ -56,7 +55,8 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod 775 /var/www/html/yii \
     # Yii2 runtime and assets directories need to be writable
     && chmod -R 775 /var/www/html/runtime 2>/dev/null || true \
-    && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true
+    && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true \
+    && chown -R www-data /var/cache/fontconfig
 
 EXPOSE 80
 
