@@ -23,6 +23,7 @@ services:
       - MAIL_FROM_NAME=Motion Tools
       - RANDOM_SEED=${RANDOM_SEED}
       - WEASYPRINT_PATH=/usr/bin/weasyprint
+      - QPDF_PATH=/usr/bin/qpdf
       - IMAGE_MAGICK_PATH=/usr/bin/convert
 
   mysql:

@@ -312,6 +312,9 @@ class EnvironmentConfigLoader
         if ($path = self::getEnv('WEASYPRINT_PATH')) {
             $config['weasyprintPath'] = $path;
         }
+        if ($path = self::getEnv('QPDF_PATH')) {
+            $config['qpdfPath'] = $path;
+        }
         if ($path = self::getEnv('LUALATEX_PATH')) {
             $config['lualatexPath'] = $path;
         }

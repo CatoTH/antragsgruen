@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models\sectionTypes;
+
+use app\models\exceptions\Internal;
 use app\components\{latex\Content as LatexContent, html2pdf\Content as HtmlToPdfContent, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationSettingsMotionSection, MotionSection};
 use app\models\exceptions\FormError;
@@ -104,11 +106,38 @@ class PDF extends ISectionType
         if (!in_array($mime, ['application/pdf'])) {
             throw new FormError('Please only upload PDFs.');
         }
+
+        $pdf = $this->decryptPdf($data['tmp_name']);
         $metadata                = [
-            'filesize' => filesize($data['tmp_name']),
+            'filesize' => strlen($pdf),
         ];
-        $this->section->setData((string)file_get_contents($data['tmp_name']));
+        $this->section->setData($pdf);
         $this->section->metadata = json_encode($metadata, JSON_THROW_ON_ERROR);
+    }
+
+    private function decryptPdf(string $pdfFile): string
+    {
+        $app = AntragsgruenApp::getInstance();
+        if ($app->qpdfPath === null) {
+            return (string)file_get_contents($pdfFile);
+        } else {
+            // Use qpdf - to avoid compatibility issues with fpdf-parser (when combining PDFs)
+            $tmpFile = $app->getTmpDir() . uniqid('pdf-upload');
+            $cmd = $app->qpdfPath . " --decrypt --object-streams=disable";
+            $cmd .= ' ' . escapeshellarg($pdfFile);
+            $cmd .= ' ' . escapeshellarg($tmpFile . '_decrypted.pdf');
+
+            shell_exec($cmd);
+
+            if (!file_exists($tmpFile . '_decrypted.pdf')) {
+                throw new Internal('An error occurred while decrypting the PDF: ' . $cmd);
+            }
+
+            $pdf = (string)file_get_contents($tmpFile . '_decrypted.pdf');
+            unlink($tmpFile . '_decrypted.pdf');
+
+            return $pdf;
+        }
     }
 
     public function deleteMotionData(): void

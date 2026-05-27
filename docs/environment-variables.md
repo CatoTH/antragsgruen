@@ -86,6 +86,7 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 |----------|-------------|
 | `IMAGE_MAGICK_PATH` | Path to ImageMagick convert binary |
 | `WEASYPRINT_PATH` | Path to WeasyPrint binary |
+| `QPDF_PATH` | Path to QPDF binary |
 | `LUALATEX_PATH` | Path to LuaLaTeX binary |
 
 ## Docker Example

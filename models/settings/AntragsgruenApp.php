@@ -50,6 +50,7 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $xdvipdfmx = null; // @TODO OBSOLETE
     public ?string $lualatexPath = null;
     public ?string $weasyprintPath = null;
+    public ?string $qpdfPath = null;
     public bool $pdfExportConcat = true;
     public mixed $pdfExportIntegFrame = false; // Type: mixed, can be ether int or array
     public array $localMessages = [];

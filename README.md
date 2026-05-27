@@ -172,19 +172,15 @@ If this is not possible, you need to specify an alternative writable folder by h
 define("K_PATH_FONTS", "/path/to/writable/directory/");
 ```
 
-### FPDI-PDF
-
-If you run into the error "This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)" and decide to use the commercial plugin, you can install the package using the following steps:
-- Extract the content of the package into the directory ``components/fpdi``, so there exists a subdirectory ``src``.
-- Run the command ``./composer.phar dump-autoload``
-
-After that, newer PDF files should be able to be parsed as well.
-
 ### Weasyprint-based PDF-rendering
 
-Variant 1, for a distribution with a reasonably recent version of Weasyprint (60+):
+As an optional alternative way to create PDFs that are slighly more aesthetically pleasing, Antragsgrün supports using [Weasyprint](https://weasyprint.org) as a rendering backend. This needs to be installed on the command line. Also, the [qpdf](https://github.com/qpdf/qpdf) command line tool is necessary, to improve compatibility of the generated PDF files.
+
+When using the docker image, the `full` image variant comes preconfigured with Weasyprint. When using the regular way (downloading the source code or zip/bz2-bundle), it needs to be installed on the system by hand:
+
+Variant 1, for a Linux distribution with a reasonably recent version of Weasyprint (60+):
 ```bash
-apt-get install weasyprint
+apt-get install weasyprint qpdf
 ```
 
 Variant 2, installation using pip (requires Python 3 including VirtualEnv support):
@@ -200,9 +196,20 @@ Add the following settings to your config.json (and adapt them to your needs):
 
 ```json
 {
-    "weasyprintPath": "/usr/bin/weasyprint"
+    "weasyprintPath": "/usr/bin/weasyprint",
+    "qpdfPath": "/usr/bin/qpdf"
 }
 ```
+
+### FPDI-PDF
+
+If you run into the error "This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)" and decide to use the commercial plugin, you can install the package using the following steps:
+- Extract the content of the package into the directory ``components/fpdi``, so there exists a subdirectory ``src``.
+- Run the command ``./composer.phar dump-autoload``
+
+After that, newer PDF files should be able to be parsed as well.
+
+Alternatively, you can install the `qpdf` tool and set it up using `qpdfPath` as outlined in the section above, even when not using Weasyprint. This will only work for newly uploaded PDF Files, though.
 
 ## Deployment and Performance Optimization
 
