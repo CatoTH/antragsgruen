@@ -2,6 +2,7 @@
 
 namespace app\models\motionTypeTemplates;
 
+use app\views\pdfLayouts\IPDFLayout;
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
 use app\models\settings\{InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
@@ -30,6 +31,7 @@ class Application
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
         $type->sidebarCreateButton          = 0;
+        $type->pdfLayout                    = IPDFLayout::getDefaultLayoutId();
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::ONLY_INITIATOR;

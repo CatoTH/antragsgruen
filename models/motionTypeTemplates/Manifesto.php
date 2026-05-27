@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\motionTypeTemplates;
 
+use app\views\pdfLayouts\IPDFLayout;
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
 use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
@@ -33,6 +36,7 @@ class Manifesto
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
         $type->sidebarCreateButton          = 1;
+        $type->pdfLayout                    = IPDFLayout::getDefaultLayoutId();
 
         $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->type         = SupportBase::ONLY_INITIATOR;

@@ -13,11 +13,12 @@ use TCPDF;
 abstract class IPDFLayout
 {
     public const LAYOUT_NONE = -1;
+    public const LAYOUT_TCPDF_DEFAULT = 0;
     public const LAYOUT_WEASYPRINT_DEFAULT = 3;
 
     public static function getTcpdfDefaultLayout(): PdfLayoutDescription
     {
-        return new PdfLayoutDescription(0, PdfLayoutDescription::RENDERER_PHP, null, 'LDK Bayern', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_byldk.png', ByLDK::class);
+        return new PdfLayoutDescription(self::LAYOUT_TCPDF_DEFAULT, PdfLayoutDescription::RENDERER_PHP, null, 'Variant 1', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_byldk.png', ByLDK::class);
     }
 
     public static function getWeasyprintDefaultLayout(): PdfLayoutDescription
@@ -40,14 +41,23 @@ abstract class IPDFLayout
         $pdfClasses = [
             new PdfLayoutDescription(-1, PdfLayoutDescription::RENDERER_NONE, null, '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -', null, null),
             self::getTcpdfDefaultLayout(),
-            new PdfLayoutDescription(1, PdfLayoutDescription::RENDERER_PHP, null, 'BDK', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_bdk.png', BDK::class),
-            new PdfLayoutDescription(2, PdfLayoutDescription::RENDERER_PHP, null, 'DBJR', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_dbjr.png', DBJR::class),
+            new PdfLayoutDescription(1, PdfLayoutDescription::RENDERER_PHP, null, 'Variant 2', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_bdk.png', BDK::class),
+            new PdfLayoutDescription(2, PdfLayoutDescription::RENDERER_PHP, null, 'Variant 3', StaticResourceTools::getResolvedResourceBase() . 'img/pdf_preview_dbjr.png', DBJR::class),
         ];
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             $pdfClasses = $plugin::getProvidedPdfLayouts($pdfClasses);
         }
 
         return $pdfClasses;
+    }
+
+    public static function getDefaultLayoutId(): int
+    {
+        if (AntragsgruenApp::getInstance()->weasyprintPath) {
+            return self::LAYOUT_WEASYPRINT_DEFAULT;
+        } else {
+            return self::LAYOUT_TCPDF_DEFAULT;
+        }
     }
 
     /** @var array<PdfLayoutDescription>|null */
