@@ -363,7 +363,7 @@ abstract class SupportBase
         $moreInitiators = [];
         $supporters     = [];
         foreach ($editForm->supporters as $supporter) {
-            if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $initiatorAdmin &&
+            if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $initiatorAdmin && $supporter->id !== $initiator?->id &&
                 ($supporter->userId === null || $supporter->userId !== $initiator?->userId)) {
                 $moreInitiators[] = $supporter;
             }
@@ -411,7 +411,7 @@ abstract class SupportBase
         $supporters     = [];
         $moreInitiators = [];
         foreach ($editForm->supporters as $supporter) {
-            if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $initiatorAdmin &&
+            if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $initiatorAdmin && $supporter->id !== $initiator?->id &&
                 ($supporter->userId === null || $supporter->userId !== $initiator?->userId)) {
                 $moreInitiators[] = $supporter;
             }
