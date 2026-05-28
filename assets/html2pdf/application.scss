@@ -17,12 +17,6 @@
   font-weight: normal;
   src: url('fonts/arvo_regular.woff') format('woff');
 }
-@font-face {
-  font-family: 'Arvo Gruen';
-  font-style: normal;
-  font-weight: normal;
-  src: url('fonts/arvo_gruen.woff') format('woff');
-}
 
 body {
   string-set: strPage attr(data-str-page);
