@@ -55,8 +55,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod 775 /var/www/html/yii \
     # Yii2 runtime and assets directories need to be writable
     && chmod -R 775 /var/www/html/runtime 2>/dev/null || true \
-    && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true \
-    && chown -R www-data /var/cache/fontconfig
+    && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true
 
 EXPOSE 80
 
@@ -65,6 +64,8 @@ CMD ["apache2-foreground"]
 
 FROM minimal AS full
 
+COPY fonts /var/www/html/assets/html2pdf/fonts
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         weasyprint \
@@ -72,4 +73,5 @@ RUN apt-get update \
         poppler-utils \
         qpdf \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && chown -R www-data /var/cache/fontconfig
