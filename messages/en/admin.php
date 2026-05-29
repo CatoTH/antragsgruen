@@ -354,6 +354,8 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_admins_proposals'  => 'Edit proposed procedure',
     'siteacc_admins_pp_replyto' => 'Reply-To at proposed procedure e-mails',
     'siteacc_admins_vote_weight' => 'Voting weight',
+    'siteacc_admins_userfunc'   => 'Additional Features',
+    'siteacc_admins_userprivnot' => 'Allow private notes',
     'siteacc_add_multiple'      => 'Add multiple at once',
     'siteacc_add_email'         => 'E-mail address',
     'siteacc_add_email_btn'     => 'By e-mail',

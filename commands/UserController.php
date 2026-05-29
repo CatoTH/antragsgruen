@@ -20,13 +20,14 @@ class UserController extends Controller
     public bool $forcePasswordChange = false;
     public bool $forceTwoFactor = false;
     public bool $preventPasswordChange = false;
+    public bool $disablePrivateComments = false;
     public bool $fixedName = false;
     public bool $fixedOrganization = false;
 
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create', 'create-or-update' => ['consultationPath', 'groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange', 'fixedName', 'fixedOrganization'],
+            'create', 'create-or-update' => ['consultationPath', 'groupIds', 'organization', 'welcomeFile', 'forcePasswordChange', 'forceTwoFactor', 'preventPasswordChange', 'fixedName', 'fixedOrganization', 'disablePrivateComments'],
             'update' => ['consultationPath', 'groupIds', 'organization', 'password', 'welcomeFile'],
             default => [],
         };
@@ -127,6 +128,7 @@ class UserController extends Controller
      * --preventPasswordChange
      * --fixedName
      * --fixedOrganization
+     * --disablePrivateComments
      */
     public function actionCreateOrUpdate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
@@ -154,6 +156,7 @@ class UserController extends Controller
      * --preventPasswordChange
      * --fixedName
      * --fixedOrganization
+     * --disablePrivateComments
      */
     public function actionCreate(string $auth, string $email, string $givenName, string $familyName, string $password): int
     {
@@ -192,6 +195,9 @@ class UserController extends Controller
         $userSettings = $user->getSettingsObj();
         if ($this->forcePasswordChange) {
             $userSettings->forcePasswordChange = true;
+        }
+        if ($this->disablePrivateComments) {
+            $userSettings->allowPrivateComments = false;
         }
         if ($this->preventPasswordChange) {
             $userSettings->preventPasswordChange = true;

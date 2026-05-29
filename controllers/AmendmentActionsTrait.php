@@ -343,11 +343,12 @@ trait AmendmentActionsTrait
      */
     private function savePrivateNote(Amendment $amendment): void
     {
-        $user     = User::getCurrentUser();
-        $noteText = trim(RequestContext::getWebRequest()->post('noteText', ''));
-        if (!$user) {
+        $user = User::getCurrentUser();
+        if (!$user || !$user->getSettingsObj()->allowPrivateComments) {
             return;
         }
+
+        $noteText = trim(RequestContext::getWebRequest()->post('noteText', ''));
 
         $comment = $amendment->getPrivateComment();
         if ($comment && $noteText === '') {
