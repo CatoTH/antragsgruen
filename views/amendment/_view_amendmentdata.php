@@ -83,7 +83,7 @@ MotionLayoutHelper::addTagsRow($amendment, $amendment->getPublicTopicTags(), $am
 
 $amendmentData = \app\models\layoutHooks\Layout::getAmendmentViewData($amendmentData, $amendment);
 
-if (User::getCurrentUser()) {
+if (User::getCurrentUser()?->getSettingsObj()->allowPrivateComments) {
     $comment = $amendment->getPrivateComment();
 
     $str = '';

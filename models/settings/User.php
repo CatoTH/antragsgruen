@@ -14,6 +14,7 @@ class User implements \JsonSerializable
     public bool $preventPasswordChange = false;
     public bool $preventAccountPage = false;
     public bool $forcePasswordChange = false;
+    public bool $allowPrivateComments = true;
 
     /** @var array<array{type: non-empty-string, secret: non-empty-string}>|null */
     public ?array $secondFactorKeys = null;

@@ -384,12 +384,13 @@ trait MotionActionsTrait
      */
     private function savePrivateNote(Motion $motion): void
     {
-        $user      = User::getCurrentUser();
-        $noteText  = trim($this->getHttpRequest()->post('noteText', ''));
-        $paragraph = IntVal($this->getHttpRequest()->post('paragraphNo', -1));
-        if (!$user) {
+        $user = User::getCurrentUser();
+        if (!$user || !$user->getSettingsObj()->allowPrivateComments) {
             return;
         }
+
+        $noteText  = trim($this->getHttpRequest()->post('noteText', ''));
+        $paragraph = IntVal($this->getHttpRequest()->post('paragraphNo', -1));
 
         if ($this->getHttpRequest()->post('sectionId', 0) > 0) {
             $section = IntVal($this->getHttpRequest()->post('sectionId', 0));
