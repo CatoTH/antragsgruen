@@ -209,6 +209,7 @@ $html = ob_get_clean();
                 force2Fa: false,
                 preventPasswordChange: false,
                 forcePasswordChange: false,
+                allowPrivateComments: true,
                 deletingVisible: false,
                 newPassword: '',
                 newAuth: '',

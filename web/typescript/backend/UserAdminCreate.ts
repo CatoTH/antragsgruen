@@ -258,15 +258,17 @@ export class UserAdminCreate {
         autoGeneratePassword.addEventListener('change', onAutoGeneratePasswordChanged);
         onAutoGeneratePasswordChanged();
 
-        const onSendEmailChanged = () => {
-            if (sendEmail.checked) {
-                emailText.classList.remove('hidden');
-            } else {
-                emailText.classList.add('hidden');
-            }
-        };
-        sendEmail.addEventListener('change', onSendEmailChanged);
-        onSendEmailChanged();
+        if (sendEmail) {
+            const onSendEmailChanged = () => {
+                if (sendEmail.checked) {
+                    emailText.classList.remove('hidden');
+                } else {
+                    emailText.classList.add('hidden');
+                }
+            };
+            sendEmail.addEventListener('change', onSendEmailChanged);
+            onSendEmailChanged();
+        }
 
         form.addEventListener('submit', ev => {
             if (sendEmail) {
