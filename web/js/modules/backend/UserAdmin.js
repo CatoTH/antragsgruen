@@ -54,8 +54,8 @@ export class UserAdmin {
                         organisations: this.organisations,
                         permissionGlobalEdit: this.permissionGlobalEdit,
                         urlUserLog: this.urlUserLog,
-                        onSaveUser: (userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange) =>
-                            this.saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange),
+                        onSaveUser: (userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange, allowPrivateComments) =>
+                            this.saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange, allowPrivateComments),
                         onDeleteUser: (userId, msg) => this.deleteUser(userId, msg),
                         ref: 'user-edit-widget',
                     }),
@@ -139,7 +139,7 @@ export class UserAdmin {
                         alert(err.responseText);
                     })
                 },
-                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange) {
+                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange, allowPrivateComments) {
                     this._performOperation({
                         op: 'save-user',
                         userId,
@@ -154,7 +154,8 @@ export class UserAdmin {
                         remove2Fa,
                         force2Fa,
                         preventPasswordChange,
-                        forcePasswordChange
+                        forcePasswordChange,
+                        allowPrivateComments
                     });
                 },
                 deleteUser(userId, msg) {

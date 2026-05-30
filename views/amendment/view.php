@@ -149,7 +149,7 @@ if ($amendment->canFinishSupportCollection()) {
 echo '</div>';
 echo '</div>';
 
-if (User::getCurrentUser() && !$amendment->getPrivateComment() && $consultation->getSettings()->showPrivateNotes) {
+if (User::getCurrentUser()?->getSettingsObj()->allowPrivateComments && !$amendment->getPrivateComment() && $consultation->getSettings()->showPrivateNotes) {
     ?>
     <div class="privateNoteOpener">
         <button class="btn btn-link btn-sm" tabindex="0" type="button">

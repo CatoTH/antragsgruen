@@ -374,6 +374,14 @@ If this site should only be <em>visible</em> to users included below, select the
         'text' => 'Voting weight',
         'js' => true,
     ],
+    'siteacc_admins_userfunc'   => [
+        'text' => 'Additional Features',
+        'js' => true,
+    ],
+    'siteacc_admins_userprivnot' => [
+        'text' => 'Allow private notes',
+        'js' => true,
+    ],
     'siteacc_add_multiple'      => 'Add multiple at once',
     'siteacc_add_email'         => 'E-mail address',
     'siteacc_add_email_btn'     => 'By e-mail',

@@ -196,7 +196,7 @@ if ((!isset($skip_drafts) || !$skip_drafts) && $motion->getMergingDraft(true)) {
 $motionData = \app\models\layoutHooks\Layout::getMotionViewData($motionData, $motion);
 
 
-if (User::getCurrentUser()) {
+if (User::getCurrentUser()?->getSettingsObj()->allowPrivateComments) {
     $comment = $motion->getPrivateComment(null, -1);
 
     $str = '';
