@@ -112,6 +112,15 @@
             </div>
           </div>
           <div class="stdTwoCols">
+            <div class="leftColumn" v-t="['admin', 'siteacc_admins_userfunc']"></div>
+            <div class="rightColumn">
+              <label class="forcePwdChangeHolder">
+                <input type="checkbox" v-model="allowPrivateComments" value="1"> <template
+                  v-t="['admin', 'siteacc_admins_userprivnot']"></template>
+              </label>
+            </div>
+          </div>
+          <div class="stdTwoCols">
             <div class="leftColumn" v-t="['admin', 'siteacc_new_groups']"></div>
             <div class="rightColumn">
               <label v-for="group in groups" :class="['userGroup' + group.id, isGroupSelectable(group) ? '' : 'disabled']">
@@ -166,6 +175,7 @@ export default {
       force2Fa: false,
       preventPasswordChange: false,
       forcePasswordChange: false,
+      allowPrivateComments: true,
       deletingVisible: false,
       newPassword: '',
       newAuth: '',
@@ -216,6 +226,7 @@ export default {
       this.force2Fa = user.force_2fa;
       this.preventPasswordChange = user.prevent_password_change;
       this.forcePasswordChange = user.force_password_change;
+      this.allowPrivateComments = user.allow_private_comments;
       this.newAuth = '';
       this.deletingVisible = false;
 
@@ -224,7 +235,7 @@ export default {
     save: function ($event) {
       const password = (this.settingPassword ? this.newPassword : null);
       const auth = (this.settingAuth ? this.newAuth : null);
-      this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth, this.remove2Fa, this.force2Fa, this.preventPasswordChange, this.forcePasswordChange);
+      this.$emit('save-user', this.user.id, this.userGroups, this.name_given, this.name_family, this.organization, this.ppreplyto, this.voteweight, password, auth, this.remove2Fa, this.force2Fa, this.preventPasswordChange, this.forcePasswordChange, this.allowPrivateComments);
       $(this.$refs['user-edit-modal']).modal("hide");
 
       if ($event) {
