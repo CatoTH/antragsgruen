@@ -44,7 +44,7 @@ class StaticResourceTools
 
     public static function detectAndRegisterModules(string $content): string
     {
-        return preg_replace_callback("/\/(npm|js)[^\"']+/siu", static function ($matches) {
+        return preg_replace_callback("/\/(npm|js)\/[^\"']+/siu", static function ($matches) {
             self::$foundModules[] = trim($matches[0], "/");
 
             return $matches[0];
