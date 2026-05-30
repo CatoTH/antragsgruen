@@ -138,7 +138,7 @@ class UserGroupAdminMethods
         AdminTodoItem::flushUserTodoCount($this->consultation, $userId);
     }
 
-    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa, bool $force2Fa, bool $preventPwdChange, bool $forcePwdChange): void
+    public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa, bool $force2Fa, bool $preventPwdChange, bool $forcePwdChange, bool $allowPrivateComments): void
     {
         $user = User::findOne(['id' => $userId]);
 
@@ -175,6 +175,7 @@ class UserGroupAdminMethods
         $settings->enforceTwoFactorAuthentication = $force2Fa;
         $settings->preventPasswordChange = $preventPwdChange;
         $settings->forcePasswordChange = $forcePwdChange;
+        $settings->allowPrivateComments = $allowPrivateComments;
         $user->setSettingsObj($settings);
 
         $user->save();

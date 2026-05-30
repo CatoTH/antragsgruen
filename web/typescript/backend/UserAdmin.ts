@@ -119,7 +119,7 @@ export class UserAdmin {
                         alert(err.responseText);
                     })
                 },
-                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange) {
+                saveUser(userId, groups, nameGiven, nameFamily, organization, ppReplyTo, voteWeight, newPassword, newAuth, remove2Fa, force2Fa, preventPasswordChange, forcePasswordChange, allowPrivateComments) {
                     this._performOperation({
                         op: 'save-user',
                         userId,
@@ -134,7 +134,8 @@ export class UserAdmin {
                         remove2Fa,
                         force2Fa,
                         preventPasswordChange,
-                        forcePasswordChange
+                        forcePasswordChange,
+                        allowPrivateComments
                     });
                 },
                 deleteUser(userId, msg) {
