@@ -1,0 +1,172 @@
+name: Docker image
+
+# Automates the multi-arch image build that is currently run by hand at release
+# time (see docs/create-dist.sh and the buildx commands in the Dockerfile header).
+# Publishes the `minimal` and `full` targets to Docker Hub, matching the existing
+# tobiashoessl/antragsgruen tagging scheme.
+
+on:
+  release:
+    types: [published]
+  pull_request:
+    paths:
+      - 'docker/apache-single-container/**'
+      - '.github/workflows/docker-build.yml'
+  workflow_dispatch:
+    inputs:
+      ANTRAGSGRUEN_VERSION:
+        description: 'Version string override (e.g. 4.17.0-rc1). Defaults to ANTRAGSGRUEN_VERSION from config/defines.php.'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE: tobiashoessl/antragsgruen
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }} image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [minimal, full]
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231 # v2.31.1
+        with:
+          php-version: '8.4'
+          extensions: curl, dom, fileinfo, iconv, intl, mbstring, mysql, pdo, zip
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress --no-dev --no-interaction
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@08c4be7e2e672a47d11bd04269e27e5f3e8529cb # v6.0.0
+        with:
+          version: 10
+
+      - name: Install Node.js dependencies
+        run: pnpm install
+
+      - name: Build frontend assets
+        run: pnpm run build
+
+      - name: Read version
+        id: version
+        run: |
+          OVERRIDE="${{ github.event.inputs.ANTRAGSGRUEN_VERSION }}"
+          if [ -n "$OVERRIDE" ]; then
+            echo "value=$OVERRIDE" >> "$GITHUB_OUTPUT"
+          else
+            VERSION=$(grep "ANTRAGSGRUEN_VERSION" config/defines.php | cut -d \' -f 4)
+            echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create distribution tarball
+        # Mirrors the pruning in docs/create-dist.sh closely enough to produce the
+        # same runnable application tree the Dockerfile's APP_ARCHIVE expects. The
+        # CDN/static-resource generation in create-dist.sh is intentionally skipped
+        # as it is not needed inside the image.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.value }}"
+          DIST_DIR="local/antragsgruen-$VERSION"
+          mkdir -p "$DIST_DIR"
+
+          rsync -a \
+            --exclude='local' --exclude='/dist' --exclude='/updates' \
+            --exclude='/plugins' --exclude='node_modules' --exclude='runtime' \
+            --exclude='web_src' --exclude='/docker' --exclude='.git' \
+            . "$DIST_DIR"
+
+          cd "$DIST_DIR"
+          rm -f config/DEBUG config/config.template.json config/TEST_DOMAIN
+          rm -f config/config.json config/config_tests.json
+          rm -f composer.json composer.lock package.json pnpm-lock.yaml pnpm-workspace.yaml
+          rm -f gulpfile.js eslint.config.mjs .eslintrc.cjs .eslintrc.js
+          rm -f phpstan.neon phpstan.neon.dist phpstan.use-baseline.neon phpstan-baseline.neon
+          rm -f .php-cs-fixer.php .php-cs-fixer.dist.php phpunit.xml phpunit9.xml.dist
+          rm -f codeception.yml phpci.yml .gitignore .gitattributes .editorconfig .travis.yml
+          rm -f Makefile UPGRADE.md .readthedocs.yaml .scrutinizer.yml .woodpecker.yml
+          rm -rf tests docker-vagrant docker-compose.development.yml docker-compose.yml
+          rm -rf assets/OpenOffice-Template-ods assets/OpenOffice-Template-odt assets/phpstan-helper.php
+          rm -rf web/js/src web/js/bower vendor/bin vendor/bower-asset
+          rm -rf migrations/m1* migrations/m20* migrations/m21* migrations/m22* migrations/m23* migrations/m24*
+          find vendor/ -name "README.md" -delete 2>/dev/null || true
+          find vendor/ -name "CHANGELOG.md" -delete 2>/dev/null || true
+          find vendor/ -type l -delete 2>/dev/null || true
+          find . -name "*.map" -delete 2>/dev/null || true
+          find . -name ".DS_Store" -delete 2>/dev/null || true
+          mv web/index-production.php web/index.php 2>/dev/null || true
+          sed -i -e 's/repository-source/dist/g' config/defines.php
+          touch config/INSTALLING
+          mkdir -p plugins runtime
+          chmod 775 runtime web/assets
+
+          cd "$GITHUB_WORKSPACE"
+          mkdir -p docker/apache-single-container/releases
+          tar cfj "docker/apache-single-container/releases/antragsgruen-$VERSION.tar.bz2" \
+            -C local "antragsgruen-$VERSION"
+
+      - name: Compute image tags
+        id: tags
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          if [ "${{ matrix.target }}" = "full" ]; then
+            TAGS="$IMAGE:$VERSION-full,$IMAGE:latest-full"
+          else
+            TAGS="$IMAGE:$VERSION,$IMAGE:latest,$IMAGE:latest-minimal"
+          fi
+          echo "list=$TAGS" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: docker/apache-single-container
+          file: docker/apache-single-container/Dockerfile
+          target: ${{ matrix.target }}
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          build-args: |
+            APP_ARCHIVE=releases/antragsgruen-${{ steps.version.outputs.value }}.tar.bz2
+          tags: ${{ steps.tags.outputs.list }}
+          labels: |
+            org.opencontainers.image.title=Antragsgruen
+            org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen
+            org.opencontainers.image.version=${{ steps.version.outputs.value }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.target }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.target }}
