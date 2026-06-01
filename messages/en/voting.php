@@ -217,7 +217,7 @@ return [
         'js' => true,
     ],
     'settings_answers_yesh' => [
-        'For lists. After creation, the "Number of votes per user" can be given in the settings.',
+        'text' => 'For lists. After creation, the "Number of votes per user" can be given in the settings.',
         'js' => true,
     ],
     'settings_answers_present' => [
@@ -225,7 +225,7 @@ return [
         'js' => true,
     ],
     'settings_answers_presenth' => [
-        'test' => 'For "votings"”" meant to ask which members are present, like roll calls.',
+        'text' => 'For "votings"”" meant to ask which members are present, like roll calls.',
         'js' => true,
     ],
     'settings_majoritytype' => [
@@ -349,7 +349,7 @@ return [
         'js' => true,
     ],
     'settings_delete_bb' => [
-        'test' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',
+        'text' => 'Do you want to delete the voting including all cast votes? The motions and amendments will remain untouched.',
         'js' => true,
     ],
     'settings_sort_title' => [
