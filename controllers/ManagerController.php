@@ -44,7 +44,7 @@ class ManagerController extends Base
             return new HtmlErrorResponse(403, 'Only admins are allowed to access this page.');
         }
 
-        $configfile = $_SERVER['ANTRAGSGRUEN_CONFIG'] ?? dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPA>
+        $configfile = $_SERVER['ANTRAGSGRUEN_CONFIG'] ?? dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.json';
         $config     = $this->getParams();
 
         if ($config->multisiteMode) {
