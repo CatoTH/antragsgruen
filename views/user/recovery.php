@@ -113,5 +113,5 @@ $inlineCaptcha = (Captcha::needsCaptcha(null) ? Captcha::createInlineCaptcha() :
 echo Html::endForm();
 
 if ($preCode != '' && $preEmail != '') {
-    $layout->addOnLoadJS('$("#recoveryPassword").scrollintoview().focus();');
+    $layout->addOnLoadJS('$("#recoveryPassword").scrollintoview({top_offset: -30}); $("#recoveryPassword").focus();');
 }
