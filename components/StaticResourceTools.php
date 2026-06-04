@@ -158,7 +158,7 @@ class StaticResourceTools
             $importmap["integrity"] = $integrity;
         }
 
-        return '<script type="importmap">' . json_encode($importmap) . '</script>';
+        return '<script type="importmap" crossorigin="anonymous">' . json_encode($importmap) . '</script>';
     }
 
     public static function getTranslations(?Consultation $consultation, string $category): array
