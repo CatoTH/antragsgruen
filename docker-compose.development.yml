@@ -32,6 +32,7 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otlp-collector:4318
       - OTEL_PROPAGATORS=baggage,tracecontext
       - BACKGROUND_JOBS_NOTIFICATIONS=true
+      - JS_ERROR_TRACKING=otel://
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"

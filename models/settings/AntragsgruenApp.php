@@ -62,6 +62,7 @@ class AntragsgruenApp implements \JsonSerializable
     public ?string $updateKey = null;
     public ?string $jwtPrivateKey = null;
     public ?string $healthCheckKey = null; // A hash generated with password_hash(..., PASSWORD_DEFAULT)
+    public ?bool $jsErrorTracking = null; // file:///tmp/js_error.log or otel://
 
     /** @var array{mode: string, ignoredIps: string[], difficulty: string} */
     public array $captcha = [
