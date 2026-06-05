@@ -27,11 +27,31 @@ class ErrorTrackingController extends Base
         if (!isset($parts['scheme']) && isset($parts['path'])) {
             $parts['scheme'] = 'file';
         }
+        if (!isset($parts['scheme']) || !in_array($parts['scheme'], ['file', 'otel'])) {
+            return new RestApiResponse(500, null, '{"success": true, "error": "error tracking not set up correctly"}');
+        }
+
+        $raw = $this->getPostBody();
+        if (!$raw) {
+            return new RestApiResponse(400, null, '{"success": false, "error": "no content"}');
+        }
+
+        $data = json_decode($raw, true);
+        if (!$data || json_last_error() !== JSON_ERROR_NONE) {
+            return new RestApiResponse(400, null, '{"success": false, "error": "could not parse content"}');
+        }
 
         if ($parts['scheme'] == 'file') {
-
-        } elseif ($parts['scheme'] == 'otel') {
-            return new RestApiResponse(500, null, '{"success": true, "error": "server error"}');
+            if (!isset($parts['path'])) {
+                return new RestApiResponse(500, null, '{"success": true, "error": "error tracking not set up correctly"}');
+            }
+            if (!is_writable($parts['path'])) {
+                return new RestApiResponse(500, null, '{"success": true, "error": "error log not writable"}');
+            }
+            file_put_contents($app->jsErrorTracking, $raw . "\n", FILE_APPEND);
+        }
+        if ($parts['scheme'] == 'otel') {
+            // @TODO
         }
 
         return new RestApiResponse(200, null, '{"success": true}');
