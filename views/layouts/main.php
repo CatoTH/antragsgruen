@@ -91,6 +91,9 @@ if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
 
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
+if ($params->jsErrorTracking) {
+    echo $this->render('_error_tracking');
+}
 echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '"></script>';
 
 $consultation = $controller->consultation;

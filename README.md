@@ -352,6 +352,17 @@ OpenTelemetry could be configured through the `php.ini`, but will practically ra
 
 If you are running the [docker-compose.development.yml](docker-compose.development.yml) for development, a sample collector is included, accessible through http://localhost:55679/debug/tracez .
 
+### Client-Side (JavaScrípt) Error Tracking
+
+Error Tracking for Client-Side errors can be enabled, either to a local log file, or via OpenTelemetry. To log to a local file `/var/log/antragsgruen/js_error.log`, use:
+```json
+{
+    "js_error_tracking": "file:///var/log/antragsgruen/js_error.log"
+}
+```
+
+To use OpenTelemetry instead, simply set it to `otel://`.
+
 ### Enable background job processing
 
 Some processes that are potentially blocking or long-running can be executed as background jobs, by using a permanently running worker-job that executes these jobs asynchonously.
