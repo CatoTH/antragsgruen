@@ -39,19 +39,19 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     <p>Sind Änderungsanträge möglich, kann man diese auf zwei Weisen vom Antragstext aus anlegen: entweder wählt man den Punkt „Änderungsantrag stellen“ in der Seitenleiste rechts. Oder man wählt (falls sich Änderungen nur auf einen Absatz beziehen dürfen - nur dann gibt es diese Möglichkeit), zunächst den betreffenden Absatz aus und wählt dort dann die am Rande erscheinende Bearbeiten-Funktion.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/AenderungsantragStellen1.png" alt="Screenshot: Änderungsantrag stellen in der Antrags-Ansicht">
+        <img src="https://cdn.motion.tools/help/AenderungsantragStellen1.png" alt="Screenshot: Änderungsantrag stellen in der Antrags-Ansicht">
     </figure>
 
     <p>Man bekommt nun den Originaltext vorgelegt, in einer bearbeitbaren Form. Änderungen, die man vornimmt, werden farblich gekennzeichnet: Streichungen werden rot markiert, Einfügungen grün. Ersetzt man ein Wort, sieht man daher sowohl die vorige Version (rot) als auch die vorgeschlagene Neue (grün). Anschließend gibt man seine Kontaktdaten an und schickt den Änderungsantrag ab. Je nach den Einstellungen der Veranstaltung ist der Änderungsantrag sofort sichtbar oder muss zunächst freigeschaltet werden.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/AenderungsantragStellen2.png" alt="Screenshot: Änderungsantrag formulieren">
+        <img src="https://cdn.motion.tools/help/AenderungsantragStellen2.png" alt="Screenshot: Änderungsantrag formulieren">
     </figure>
 
     <p>Wenn der Änderungsantrag sichtbar ist, erscheint er in zwei Formen: zum einen wird der Änderungsantrag auf der Startseite und innerhalb des Antrags unten verlinkt. Zum anderen kann die vorgeschlagene Änderung aber auch innerhalb des eigentlichen Antragstexts im Gesamtkontext angezeigt werden. An der betreffenden Stelle (oder den betreffenden Stellen) des Originaltexts erscheint am rechten Rand ein Lesezeichen, das andeutet, dass es hier einen Änderungsantrag gibt. Klickt man darauf (oder fährt mit der Maus darüber), erscheint nun die vorgeschlagene Änderung innerhalb des Fließtexts.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/AenderungsantragStellen2.png" alt="Screenshot: Der Änderungsantrag innerhalb des Fließtexts des Antrags">
+        <img src="https://cdn.motion.tools/help/AenderungsantragStellen2.png" alt="Screenshot: Der Änderungsantrag innerhalb des Fließtexts des Antrags">
     </figure>
 
     <p>Auf diese Weise kann man als Delegierte einfach den ursprünglichen Antrag lesen, sieht aber auch auf den ersten Blick, welche Stellen gegebenenfalls umstritten ist, und welche vorgeschlagenen Änderungen es gibt.</p>

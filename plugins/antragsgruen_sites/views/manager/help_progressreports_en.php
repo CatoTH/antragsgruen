@@ -42,7 +42,7 @@ $controller->layoutParams->addBreadcrumb('Progress Reports');
     <p>While creating the resolution (as part of the &ldquo;Merge amendments&rdquo; function), you will be presented a choice if to create a new motion, a preliminary resolution or a final resolution. If you choose a resolution, and a compatible motion type exists (see &ldquo;Setup&rdquo;), a dropdown with compatible motion types will appear, the progress reports type being one of them. Select it and proceed as normal.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/ProgressReport1.png" alt="Screenshot: Creating a resolution with progress report">
+        <img src="https://cdn.motion.tools/help/ProgressReport1.png" alt="Screenshot: Creating a resolution with progress report">
     </figure>
 
     <p>By default, the generated resolution will be presented as any resolution, without a progress report.</p>
@@ -50,7 +50,7 @@ $controller->layoutParams->addBreadcrumb('Progress Reports');
     <p>Eligible editorial persons, however, will be given the chance to create and edit the progress report, just below the resolution text. Once a text is entered, it will be visible to all users.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/ProgressReport2.png" alt="Screenshot: Editing the progress report">
+        <img src="https://cdn.motion.tools/help/ProgressReport2.png" alt="Screenshot: Editing the progress report">
     </figure>
 
     <h2>Setup</h2>

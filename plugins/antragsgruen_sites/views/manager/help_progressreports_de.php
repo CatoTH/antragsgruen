@@ -44,7 +44,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     <p>Im Rahmen des Beschlussfassung - also der Funktion „Änderungsanträge einpflegen“ - bekommt man die Auswahl, ob das Ergebnis ein neuer Antrag, ein vorläufiger Beschluss oder ein finaler tatsächlicher Beschluss sein soll. Wählt man den Beschluss, und ist ein passender Antragstyp angelegt (siehe „Einrichtung“), erscheint eine Auswahl, welchem Antragstypen der Beschluss zugeordnet werden soll. Hier kann man nun „Sachstandsbericht“ auswählen.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/Sachstandsbericht1.png" alt="Screenshot: Einen Beschluss mit Sachstandsbericht anlegen">
+        <img src="https://cdn.motion.tools/help/Sachstandsbericht1.png" alt="Screenshot: Einen Beschluss mit Sachstandsbericht anlegen">
     </figure>
 
     <p>Standardmäßig erscheinen die Beschlüsse nun erst einmal wie reguläre Beschlüsse (ohne Sachstandsbericht).</p>
@@ -52,7 +52,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     <p>Berechtigte Personen bekommen aber einen zusätzlichen Abschnitt unterhalb des Beschlusstextes angezeigt, in dem sie einen Sachstand eintragen können, bzw. eventuell existierende Sachstände bearbeiten können. Sobald dies einmal geschehen ist, wird der Sachstand allen Mitgliedern angezeigt, die auch den Beschlusstext lesen können.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/Sachstandsbericht2.png" alt="Screenshot: Den Sachstandsbericht bearbeiten">
+        <img src="https://cdn.motion.tools/help/Sachstandsbericht2.png" alt="Screenshot: Den Sachstandsbericht bearbeiten">
     </figure>
 
     <h2>Einrichtung</h2>

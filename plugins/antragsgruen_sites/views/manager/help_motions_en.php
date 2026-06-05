@@ -66,7 +66,7 @@ $controller->layoutParams->addBreadcrumb('Motions');
 
     <p>You can choose whether to require a login in the Settings at “Edit motion types” -> “Motions” -> “Permissions” -> “Submit Motions”. The following options are available:</p>
     <figure class="helpFigure center">
-        <img src="/img/help/Permissions.png" alt="Screenshot of the permission settings">
+        <img src="https://cdn.motion.tools/help/Permissions.png" alt="Screenshot of the permission settings">
     </figure>
     <ul>
         <li>“Registered Users” requires users to create an account and log in before submitting a motion.</li>
@@ -79,7 +79,7 @@ $controller->layoutParams->addBreadcrumb('Motions');
     <p>To choose if admins need to review motions before they become visible, refer to the setting “Admins need to review motions before publication” under “This consultation” -> “Motions”. For amendments, the same can be set up independently, one section below at “Amendments”. If this is active, admins will receive a notification e-mail whenever a motion to review is submitted. You can specify who receives that e-mail at “This consultation” -> “E-Mails” -> “Admins”. In case multiple admins are to be notified, you can enter multiple e-mail addresses, separating them by a comma (for example “test1@example.org, test2@example.org").</p>
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Reviewing.png" alt="Screenshot of the reviewing process">
+        <img src="https://cdn.motion.tools/help/Reviewing.png" alt="Screenshot of the reviewing process">
     </figure>
 
     <p>Admins can then review and publish a motion in its respective admin view. The link to that is in the e-mail, but it is also possible to get there either by the then-visible “To Do” link in the menu or through the admin’s motion list. On the top of this page will be a prominently placed “Publish” button. Clicking it performs the following actions:</p>
@@ -112,7 +112,7 @@ $controller->layoutParams->addBreadcrumb('Motions');
     <p>Enabling or disabling comments is done at the same place as setting the permissions for submitting motions - that is, at “Permissions” -> “Comments”. To deactivate it, select “Nobody”, to activate it, “Registered users” or “Everyone”. (The options “Admins” and “Selected groups” do exist here, too, but hardly ever relevant. There is also an option to require each comment being screened before publication, though this is not a frequently used option.)</p>
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Comments.png" alt="Screenshot of paragraph-based comments">
+        <img src="https://cdn.motion.tools/help/Comments.png" alt="Screenshot of paragraph-based comments">
     </figure>
 
     <p>By default, comments to a motion are shown below the motion text. Comments refer to the motion as a whole. If you would prefer comments to refer to specific paragraphs, you can set that up by choosing “Comments: Paragraph-based” in the motion type settings at “Motion Sections” (bottom) -> “Motion text”. Once selected, each paragraph of the motion will have its own comment section; comments are not visible by default (to avoid interrupting the reading flow of the motion text), but the number of comments is visible as an annotation next to each paragraph, including the option to show the comments.</p>
@@ -147,7 +147,7 @@ $controller->layoutParams->addBreadcrumb('Motions');
     </ul>
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/SupportCollection.png" alt="Screenshot eines absatzbasierten Kommentars">
+        <img src="https://cdn.motion.tools/help/SupportCollection.png" alt="Screenshot eines absatzbasierten Kommentars">
     </figure>
 
     <p>Now, if a member creates a motion, a confirmation will appear that gives more instructions on how to tell the supporting members to express their support - in particular, a copy-pastable URL to the not-yet-submitted motion will be presented. Eligible members opening that page will be given the option to express their support. Once the minimum number of supports has been reached, the original proposer of the motion will receive a notification e-mail, asking them to now formally submit the motion.<</p>

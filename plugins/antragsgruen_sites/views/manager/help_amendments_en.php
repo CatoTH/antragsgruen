@@ -37,19 +37,19 @@ $controller->layoutParams->addBreadcrumb('Amendments');
     <p>If it is possible to submit amendments, there are two ways coming from the original document: you can either click &ldquo;Create an amendment&rdquo; in the sidebar to the right. And, if amendments are restricted to affect only one paragraph, you can alternatively choose the paragraph you want to amend and click on the &ldquo;edit&rdquo;-icon that would appear if you hover over that paragraph.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/AmendmentCreating1.png" alt="Screenshot: Create an amendment from the motion view">
+        <img src="https://cdn.motion.tools/help/AmendmentCreating1.png" alt="Screenshot: Create an amendment from the motion view">
     </figure>
 
     <p>Now you will be given the original text, in an editable way. You can change the text to match your proposed version. The changes you make will be marked using colors: removed words in the original text will be marked red, and inserted words green. Finally, once done, you can enter your contact data and submit the amendment. Depending on the procedures of the organization, the amendment will either be visible right away or needs to be explicitly published by an admin.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/AmendmentCreating2.png" alt="Screenshot: Writing an amendment">
+        <img src="https://cdn.motion.tools/help/AmendmentCreating2.png" alt="Screenshot: Writing an amendment">
     </figure>
 
     <p>Once the amendment is visible, other users can reach your suggestion in two ways: for once, it will be linked to at the home page and the bottom of the motion page. On the other side, the original text will be annotated with bookmarks at the side, indicating those places where suggestions for improvement exist. By tapping on these bookmarks (or hovering over them with the mouse), the concrete suggestion will become visible in the context of the full text.</p>
 
     <figure class="helpFigure center">
-        <img src="/img/help/AmendmentCreating3.png" alt="Screenshot: The published amendment in the context of the full motion text">
+        <img src="https://cdn.motion.tools/help/AmendmentCreating3.png" alt="Screenshot: The published amendment in the context of the full motion text">
     </figure>
 
     <p>This way, users like delegates can easily read the motion, draft resolution or draft party platform, while seeing which parts might be controversial or where suggestions / amendments exist.</p>

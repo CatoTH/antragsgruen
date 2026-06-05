@@ -77,7 +77,7 @@ $controller->layoutParams->addInlineCss('
             Auch das Einreichen von <strong>Bewerbungen</strong>, inklusive Bild- und PDF-Upload wird unterstützt.</p>
 
         <figure class="homeFigure homeFigureAmendment">
-            <img src="/img/Screenshot-Amendment-de.png" alt="Screenshot eines Änderungsantrags">
+            <img src="https://cdn.motion.tools/Screenshot-Amendment-de.png" alt="Screenshot eines Änderungsantrags">
             <figcaption>
                 Änderungsanträge können sowohl separat als auch (wie hier) im Kontext des Antrags angezeigt werden
             </figcaption>
@@ -88,7 +88,7 @@ $controller->layoutParams->addInlineCss('
             die von der Antragskommission oder der Mitgliederversammlung behandelt werden.</p>
 
         <figure class="homeFigure homeFigurePrint">
-            <img src="/img/Screenshot-Print.png" alt="Druckvorlage">
+            <img src="https://cdn.motion.tools/Screenshot-Print.png" alt="Druckvorlage">
             <figcaption>
                 Vielfältige Exports, wie z.B. Druckvorlagen
             </figcaption>
@@ -140,14 +140,14 @@ $controller->layoutParams->addInlineCss('
 
     <div class="homeFigureTwoHolder">
         <figure class="homeFigure homeFigureSpeech">
-            <img src="/img/Screenshot-Redeliste.png" alt="Screenshot einer Redeliste">
+            <img src="https://cdn.motion.tools/Screenshot-Redeliste.png" alt="Screenshot einer Redeliste">
             <figcaption>
                 Flexible Redelisten mit einfacher Verwaltung
             </figcaption>
         </figure>
 
         <figure class="homeFigure homeFigureVoting">
-            <img src="/img/Screenshot-Abstimmungen.png" alt="Screenshot einer Abstimmung">
+            <img src="https://cdn.motion.tools/Screenshot-Abstimmungen.png" alt="Screenshot einer Abstimmung">
             <figcaption>
                 Konfigurierbare Abstimmungen über Anträge und Fragestellungen
             </figcaption>

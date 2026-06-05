@@ -79,7 +79,7 @@ $controller->layoutParams->addBreadcrumb('Anträge');
 
     <p>Die Entscheidung, ob ein Login nötig ist oder nicht, wird in der Einstellung „Anträge“ -> „Berechtigungen“ -> „Antäge stellen“ getroffen:</p>
     <figure class="helpFigure center">
-        <img src="/img/help/Berechtigungen.png" alt="Screenshot der Berechtigungen">
+        <img src="https://cdn.motion.tools/help/Berechtigungen.png" alt="Screenshot der Berechtigungen">
     </figure>
     <ul>
         <li>„Eingeloggte“ heißt, dass Mitglieder zunächst einen Zugang anlegen und bestätigen müssen, um Anträge anlegen zu müssen.</li>
@@ -105,7 +105,7 @@ $controller->layoutParams->addBreadcrumb('Anträge');
         benachrichtigt werden, kann man mehrere E-Mail-Adressen kommagetrennt eingeben (also z.B. „test1@example.org, test2@example.org").</p>
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Freischaltung.png" alt="Screenshot der Freischaltung">
+        <img src="https://cdn.motion.tools/help/Freischaltung.png" alt="Screenshot der Freischaltung">
     </figure>
 
     <p>Admins gelangen dann entweder über den Link in der E-Mail, die Antragsliste oder den dann erscheinenden „To Do“ Link im Menü zur Administrations-Seite
@@ -168,7 +168,7 @@ $controller->layoutParams->addBreadcrumb('Anträge');
         Möglichkeit, ist aber nur in ganz wenigen Fällen relevant.)</p>
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Kommentare.png" alt="Screenshot eines absatzbasierten Kommentars">
+        <img src="https://cdn.motion.tools/help/Kommentare.png" alt="Screenshot eines absatzbasierten Kommentars">
     </figure>
 
     <p>Standardmäßig befindet sich die Kommentarfunktion unterhalb eines Antrags, Kommentare beziehen sich dabei auf den kompletten Antrag. Es ist aber auch
@@ -222,7 +222,7 @@ $controller->layoutParams->addBreadcrumb('Anträge');
     </ul>
 
     <figure class="helpFigure right bordered">
-        <img src="/img/help/Unterstuetzung.png" alt="Screenshot eines absatzbasierten Kommentars">
+        <img src="https://cdn.motion.tools/help/Unterstuetzung.png" alt="Screenshot eines absatzbasierten Kommentars">
     </figure>
     <p>Will ein Mitglied nun einen Antrag einreichen, kommt nun im Anschluss ein Bestätigungsbildschirm, in dem das Mitglied den Link auf den Antrag angezeigt
         bekommt. Dieser Link kann nun an weitere Personen weitergeleitet werden. Öffnen diese den Link, bekommen sie neben dem Antrag die Möglichkeit, den
