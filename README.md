@@ -361,7 +361,7 @@ Error Tracking for Client-Side errors can be enabled, either to a local log file
 }
 ```
 
-To use OpenTelemetry instead, simply set it to `otel://`.
+To use OpenTelemetry instead, simply set it to `otel://js.error`.
 
 ### Enable background job processing
 
