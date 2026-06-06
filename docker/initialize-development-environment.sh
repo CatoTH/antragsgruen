@@ -1,5 +1,5 @@
 #!/bin/sh
-composer install
+composer install --no-interaction
 echo "CREATE DATABASE antragsgruen" | mysql -h mysql -u root -proot
 if [ "$INSTALL_OPENTELEMETRY" = "true" ]; then
     echo "Installing OpenTelemetry dependencies..."

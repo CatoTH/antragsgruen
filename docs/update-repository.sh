@@ -30,7 +30,7 @@ GIT_OUTPUT=$(git pull 2>&1)
 if echo "$GIT_OUTPUT" | grep -q "Already up to date"; then
     echo "No incoming changes. Skipping composer/npm install."
 else
-  composer install
+  composer install --no-interaction
   pnpm ci
   pnpm run build
 fi
@@ -44,7 +44,7 @@ echo "Performing database migrations..."
 # If relevant: install SimpleSAML
 
 if [ "$ANTRAGSGRUEN_INSTALL_SIMPLESAML" == "true" ]; then
-  composer require simplesamlphp/simplesamlphp:^2
+  composer require --no-interaction simplesamlphp/simplesamlphp:^2
   git checkout composer.json composer.lock
 
   if [ ! -L "vendor/simplesamlphp/simplesamlphp/public/simplesaml" ]; then
