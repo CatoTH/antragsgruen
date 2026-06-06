@@ -14,15 +14,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: php-actions/composer@v6
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php_version: "8.2"
-          php_extensions: zip intl gd
-      - uses: php-actions/composer@v6
-        with:
-          php_version: "8.2"
-          php_extensions: zip intl gd
-          command: require yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
+          php-version: '8.2'
+          extensions: zip, intl, gd
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+      - name: Install extra packages
+        run: composer require --no-interaction yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
       - name: Generate baseline
         run: |
           php vendor/bin/phpstan analyse --configuration=phpstan.neon --error-format=github --generate-baseline
