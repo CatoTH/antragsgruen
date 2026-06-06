@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read   # ← Add this block
+  contents: read
 
 env:
   php: "

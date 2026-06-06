@@ -3,7 +3,7 @@ name: Node checks
 on: [ push, pull_request ]
 
 permissions:
-  contents: read   # ← Add this block
+  contents: read
 
 jobs:
   test-build:
