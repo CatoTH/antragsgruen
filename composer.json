@@ -103,10 +103,8 @@
     "optimize-autoloader": true,
     "sort-packages": true,
     "allow-plugins": {
-      "php-http/discovery": true,
       "simplesamlphp/composer-module-installer": true,
       "simplesamlphp/composer-xmlprovider-installer": true,
-      "tbachert/spi": true,
       "yiisoft/yii2-composer": true
     }
   },
