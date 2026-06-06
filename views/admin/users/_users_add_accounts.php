@@ -35,7 +35,9 @@ $layout->addJsTranslation("admin");
 ?>
 <script type="module">
     import { UserAdminCreate } from "/js/modules/backend/UserAdminCreate.js";
+    import { UserAdminCsvImport } from "/js/modules/backend/UserAdminCsvImport.js";
     new UserAdminCreate(document.getElementById("accountsCreateForm"));
+    new UserAdminCsvImport(document.getElementById("accountsCreateForm"));
 </script>
 <section id="accountsCreateForm" class="adminForm form-horizontal accountsCreateForm"
          data-organisations="<?= Html::encode(json_encode($consultation->getSettings()->organisations)) ?>"
@@ -179,6 +181,9 @@ $layout->addJsTranslation("admin");
             <button class="btn btn-link addUsersOpener email" type="button" data-type="email">
                 <?= Yii::t('admin', 'siteacc_add_email_btn') ?>
             </button>
+            <button class="btn btn-link addUsersOpener csv" type="button" data-type="csv">
+                CSV Import
+            </button>
             <?php
             foreach ($addMultipleForms as $authId => $form) {
                 if (!$form) {
@@ -266,5 +271,53 @@ $layout->addJsTranslation("admin");
         }
 
         ?>
+        
+        <form class="addUsersByLogin multiuser csv hidden" enctype="multipart/form-data" id="csvImportForm">
+            <div class="alert alert-info">
+                Upload a CSV file with the following columns: <code>email, first_name, last_name, organization, groups</code>. 
+                (Only <code>email</code> is strictly required. <code>groups</code> can be a comma-separated list of group names or external IDs).
+            </div>
+            <div class="stdTwoCols">
+                <label class="leftColumn">CSV File:</label>
+                <div class="rightColumn">
+                    <input type="file" class="form-control" name="csvFile" accept=".csv" required>
+                </div>
+            </div>
+            <div class="stdTwoCols">
+                <label class="leftColumn">Existing Users:</label>
+                <div class="rightColumn">
+                    <select class="form-control" name="collisionBehavior">
+                        <option value="skip">Skip existing users</option>
+                        <option value="merge">Update user and merge new groups</option>
+                        <option value="replace">Update user and replace groups</option>
+                    </select>
+                </div>
+            </div>
+            <?php if ($hasEmail) { ?>
+            <div class="stdTwoCols">
+                <label class="leftColumn">Welcome Email:</label>
+                <div class="rightColumn">
+                    <label>
+                        <input type="checkbox" name="sendEmail" id="csvSendEmail" value="1">
+                        Send welcome email to NEW users
+                    </label>
+                    <textarea id="csvEmailText" class="form-control hidden" name="emailText" rows="11"><?= Html::encode($preText) ?></textarea>
+                </div>
+            </div>
+            <?php } ?>
+            <div class="saveholder">
+                <button type="submit" class="btn btn-primary" id="csvSubmitBtn">Upload and Process CSV</button>
+            </div>
+            
+            <div id="csvProgressContainer" class="hidden" style="margin-top: 20px;">
+                <p id="csvProgressText">Processing...</p>
+                <div class="progress">
+                    <div id="csvProgressBar" class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div id="csvErrorLog" class="alert alert-danger hidden" style="max-height: 200px; overflow-y: auto;"></div>
+            </div>
+        </form>
+
+        <?php
     </div>
 </section>
