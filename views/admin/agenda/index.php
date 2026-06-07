@@ -70,7 +70,7 @@ echo '<h1>' . Yii::t('admin', 'agenda_title') . '</h1>';
     $layout->addJsTranslation('base');
     $layout->addJsTranslation('con');
     ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { AgendaEdit } from "/js/modules/backend/AgendaEdit.js";
         new AgendaEdit(document.querySelector('.agendaEditForm'));
     </script>

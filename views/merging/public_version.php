@@ -47,7 +47,7 @@ if ($consultation->getSettings()->hasSpeechLists) {
             </tr>
         </table>
     </div>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { MotionMergeAmendmentsPublic } from "/js/modules/frontend/MotionMergeAmendmentsPublic.js";
         new MotionMergeAmendmentsPublic(document.querySelector(".mergePublicDraft"));
     </script>

@@ -79,7 +79,7 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     $controller->layoutParams->addJS('npm/clipboard.min.js');
     $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)));
     ?><br>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { copyUrlToClipboard } from '/js/modules/frontend/CopyUrlToClipboard.js';
         copyUrlToClipboard(document.querySelector(".promoUrl"));
     </script>

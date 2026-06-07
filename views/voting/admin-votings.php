@@ -294,7 +294,7 @@ $CONSTANTS = array_merge($CONSTANTS, [
     $layout->addJsTranslation("motion");
     $layout->addJsTranslation("voting")
     ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import policySelect from "/js/vue/PolicySelect.js";
         policySelect.setConstants(
             <?= json_encode($groupLoadUrl) ?>,

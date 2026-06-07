@@ -89,7 +89,7 @@ echo '<div id="draftHint" class="hidden alert alert-info"
 $layout->addJsTranslation("motion");
 $layout->addJsTranslation("amend");
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { AmendmentEdit } from '/js/modules/frontend/AmendmentEdit.js';
     new AmendmentEdit(document.getElementById("amendmentEditForm"));
 </script>

@@ -29,7 +29,7 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
     ]);
 
     ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { EditorialEdit } from "/js/modules/frontend/EditorialEdit.js";
         new EditorialEdit(document.querySelector('.editorialEditForm'));
     </script>

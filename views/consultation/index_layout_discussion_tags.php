@@ -24,7 +24,7 @@ if (!$showPrefix) {
     });
 }
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { ConsultationDiscussionTags } from "/js/modules/frontend/ConsultationDiscussionTags.js";
     new ConsultationDiscussionTags(document.querySelector('.consultationDiscussionTags'));
 </script>

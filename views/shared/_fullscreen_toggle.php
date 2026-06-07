@@ -33,7 +33,7 @@ $layout->addJsTranslation("speech");
         <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
         <span class="sr-only"><?= Yii::t('motion', 'fullscreen') ?></span>
     </button>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
     import { setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     setSpeechUrls(
         <?= json_encode(UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS'])) ?>,

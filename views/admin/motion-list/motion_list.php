@@ -40,7 +40,7 @@ echo $this->render('_list_all_export', [
 
 $layout->addJsTranslation("motion");
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { MotionList } from "/js/modules/backend/MotionList.js";
     new MotionList()
 </script>

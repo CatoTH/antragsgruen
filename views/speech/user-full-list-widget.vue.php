@@ -17,7 +17,7 @@ $registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID
 $unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
 
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import translateDirective from "/js/vue/Translate.vue.js";

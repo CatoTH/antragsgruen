@@ -40,7 +40,7 @@ foreach ($amendment->getActiveSections() as $section) {
 ?>
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { MergeSingleAmendment } from "/js/modules/frontend/MergeSingleAmendment.js";
         new MergeSingleAmendment();
     </script>

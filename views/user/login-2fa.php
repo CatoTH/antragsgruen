@@ -24,7 +24,7 @@ echo Html::beginForm('', 'post', ['class' => 'tfaForm']);
 
 $layout->addJsTranslation("user");
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { LoginForm } from '/js/modules/frontend/LoginForm.js';
     new LoginForm();
 </script>

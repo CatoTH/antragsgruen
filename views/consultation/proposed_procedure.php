@@ -25,7 +25,7 @@ $reloadUrl = \app\components\UrlHelper::createUrl('consultation/proposed-procedu
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { ProposedProcedureOverview } from "/js/modules/frontend/ProposedProcedureOverview.js";
     new ProposedProcedureOverview(document.querySelector(".proposedProcedureReloadHolder"));
 </script>

@@ -24,7 +24,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { MergeInit } from "/js/modules/frontend/MergeInit.js";
     new MergeInit(document.querySelector(".motionMergeInit"));
 </script>

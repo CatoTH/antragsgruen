@@ -50,7 +50,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
 
 $layout->addJsTranslation("admin");
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { ConsultationSettings } from "/js/modules/backend/ConsultationSettings.js";
         new ConsultationSettings(document.getElementById('consultationSettingsForm'));
     </script>

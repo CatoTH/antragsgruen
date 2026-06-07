@@ -30,7 +30,7 @@ $controller->layoutParams->bodyCssClasses[] = 'createConfirmPage';
 echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
 
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { MotionCreateConfirm } from '/js/modules/frontend/MotionCreateConfirm.js';
         new MotionCreateConfirm(document.querySelector('.motionCreateToolbar'));
     </script>

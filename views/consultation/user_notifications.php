@@ -71,7 +71,7 @@ echo $controller->showErrors();
 
 
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { UserNotificationsForm } from "/js/modules/frontend/UserNotificationsForm.js";
         UserNotificationsForm();
     </script>

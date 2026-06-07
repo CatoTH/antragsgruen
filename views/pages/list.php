@@ -71,7 +71,7 @@ $foundPageIds = [];
     }
     ?>
 </div>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { ContentPageCreate } from '/js/modules/frontend/ContentPageCreate.js';
     new ContentPageCreate(document.querySelector(".createPageForm"));
 </script>

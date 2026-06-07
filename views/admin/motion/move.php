@@ -34,7 +34,7 @@ echo Html::beginForm($myUrl, 'post', [
 $targetConsultations = $form->getConsultationTargets();
 
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import {MotionMove} from "/js/modules/backend/MotionMove.js";
         new MotionMove(document.querySelector(".adminMoveForm"));
     </script>

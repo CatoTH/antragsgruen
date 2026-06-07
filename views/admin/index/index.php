@@ -25,7 +25,7 @@ echo '<h1>' . Yii::t('admin', 'index_settings') . '</h1>';
 
 $layout->addJsTranslation("admin");
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { AdminIndex } from '/js/modules/backend/AdminIndex.js';
         new AdminIndex();
     </script>

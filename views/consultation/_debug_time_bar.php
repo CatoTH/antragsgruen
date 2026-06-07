@@ -11,7 +11,7 @@ $simulatedTime = DateTools::getSimulatedTime($consultation);
 $locale        = Tools::getCurrentDateLocale();
 
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { deadlineDebugBar } from '/js/modules/frontend/DeadlineDebugBar.js';
     deadlineDebugBar(document.querySelector('.stickyAdminDebugFooter'));
 </script>

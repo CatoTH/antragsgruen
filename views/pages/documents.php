@@ -39,7 +39,7 @@ if ($contentAdmin) {
     $layout->loadCKEditor();
     $layout->addJsTranslation("admin");
     ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
         new ContentPageEdit(document.querySelector(".contentEditForm"));
     </script>
@@ -226,7 +226,7 @@ if ($contentAdmin) {
         <?= Html::endForm() ?>
     </section>
 
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { Documents } from "/js/modules/backend/Documents.js";
         new Documents();
     </script>

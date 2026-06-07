@@ -26,7 +26,7 @@ echo Html::beginForm('', 'post', [
 
 $layout->addJsTranslation("motion");
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { motionSupportBlock } from '/js/modules/frontend/MotionSupportBlock.js';
         motionSupportBlock(document.querySelector('.motionSupportForm'));
     </script>

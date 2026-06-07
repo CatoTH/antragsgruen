@@ -13,7 +13,7 @@ $motion       = $amendment->getMyMotion();
 $consultation = $motion->getMyConsultation();
 
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { initComments } from '/js/modules/frontend/Comments.js';
     initComments(document.querySelector(".commentsWidget"));
 </script>

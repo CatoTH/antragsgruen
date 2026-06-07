@@ -96,7 +96,7 @@ echo '</div>';
 
 $layout->addJsTranslation("motion");
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { MotionShow } from '/js/modules/frontend/MotionShow.js';
     new MotionShow();
 </script>
@@ -374,7 +374,7 @@ if ($commentWholeMotions && $maySeeComments && !$motion->isResolution() && !$alt
 }
 
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { initComments } from '/js/modules/frontend/Comments.js';
     document.querySelectorAll(".commentsWidget").forEach(widget => initComments(widget));
 </script>

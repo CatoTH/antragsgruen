@@ -32,7 +32,7 @@ $layout->addJsTranslation("motion");
 
 ?>
 <h1><?= Yii::t('admin', 'motion_type_edit') ?></h1>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { MotionTypeEdit } from "/js/modules/backend/MotionTypeEdit.js";
     new MotionTypeEdit();
 </script>

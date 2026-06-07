@@ -87,7 +87,7 @@ $layout->addJsTranslation("motion");
 $layout->addJsTranslation("amend");
 
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { MotionEditForm } from '/js/modules/frontend/MotionEditForm.js';
     new MotionEditForm(document.getElementById("motionEditForm"));
 </script>
