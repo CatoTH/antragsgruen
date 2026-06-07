@@ -4,6 +4,8 @@
 
     var CSRF = document.querySelector('head meta[name=csrf-token]').getAttribute('content');
     function sendError(payload) {
+        payload.url = window.location.href;
+        payload.userAgent = navigator.userAgent;
         var data = JSON.stringify(payload);
         fetch(ERROR_TRACK_URL, {
             method: 'POST',
@@ -19,8 +21,7 @@
             message: event.message || null,
             source: event.filename || null,
             line: event.lineno || null,
-            stack: (event.error && event.error.stack) ? event.error.stack : null,
-            url: window.location.href
+            stack: (event.error && event.error.stack) ? event.error.stack : null
         });
     });
 
@@ -29,8 +30,7 @@
         sendError({
             type: 'unhandledrejection',
             message: (reason instanceof Error) ? reason.message : String(reason),
-            stack: (reason instanceof Error && reason.stack) ? reason.stack : null,
-            url: window.location.href
+            stack: (reason instanceof Error && reason.stack) ? reason.stack : null
         });
     });
 </script>
