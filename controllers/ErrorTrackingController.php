@@ -48,6 +48,7 @@ class ErrorTrackingController extends Base
         }
 
         if ($parts['scheme'] == 'otel') {
+            /** @phpstan-ignore-next-line */
             if (!class_exists(Globals::class, true)) {
                 return new RestApiResponse(500, null, '{"success": true, "error": "OpenTelemetry is not installed"}');
             }
@@ -55,6 +56,7 @@ class ErrorTrackingController extends Base
             $tracer = Globals::tracerProvider()->getTracer('frontend-errors');
 
             $span = $tracer->spanBuilder($parts['host'] ?? 'js.error')
+                            /** @phpstan-ignore-next-line */
                            ->setSpanKind(SpanKind::KIND_SERVER)
                            ->startSpan();
 
@@ -71,6 +73,7 @@ class ErrorTrackingController extends Base
                     'telemetry.source'      => 'js',
                 ]);
 
+                /** @phpstan-ignore-next-line */
                 $span->setStatus(StatusCode::STATUS_ERROR, $data['message'] ?? '');
 
                 $span->recordException(new \RuntimeException(
