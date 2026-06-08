@@ -127,7 +127,7 @@ $layout->addJsTranslation("admin");
                 'text',
                 'newConsultation[urlPath]',
                 $createForm->urlPath,
-                array_merge($textOpts, ['id' => 'newPath', 'pattern' => '[\w_-]+'])
+                array_merge($textOpts, ['id' => 'newPath', 'pattern' => '[a-zA-Z0-9_\-]+'])
             );
             $routeParams = [
                 'consultation/index',

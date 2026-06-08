@@ -83,7 +83,7 @@ $layout->addJsTranslation("admin");
                     <label for="consultationPath" class="sr-only"><?= Yii::t('admin', 'con_url_path') ?></label>
                     <input type="text" required name="consultation[urlPath]"
                            value="<?= Html::encode($consultation->urlPath) ?>" class="form-control"
-                           pattern="[\w_\-]+" id="consultationPath">
+                           pattern="[a-zA-Z0-9_\-]+" id="consultationPath">
                     <small><?= Yii::t('admin', 'con_url_path_hint') ?></small>
                 </div>
             </div>

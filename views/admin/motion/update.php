@@ -232,7 +232,7 @@ if (count($consultation->agendaItems) > 0) {
                 <label for="motionSlug" class="sr-only"><?= Yii::t('admin', 'motion_url_path') ?></label>
                 <input type="text" <?php if ($motion->slug) echo 'required'; ?> name="motion[slug]"
                        value="<?= Html::encode($motion->slug ?: '') ?>" class="form-control"
-                       pattern="[\w_-]+" id="motionSlug">
+                       pattern="[a-zA-Z0-9_\-]+" id="motionSlug">
                 <small><?= Yii::t('admin', 'motion_url_path_hint') ?></small>
             </div>
         </div>
