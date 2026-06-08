@@ -305,6 +305,16 @@ class EnvironmentConfigLoader
             $config['confirmEmailAddresses'] = self::getBoolEnv('CONFIRM_EMAIL_ADDRESSES', true);
         }
 
+        // Background jobs
+        if (self::hasEnv('BACKGROUND_JOBS_NOTIFICATIONS')) {
+            $config['backgroundJobs'] = [
+                'notifications' => self::getBoolEnv('BACKGROUND_JOBS_NOTIFICATIONS', false)
+            ];
+        }
+        if ($key = self::getEnv('HEALTH_CHECK_KEY')) {
+            $config['healthCheckKey'] = $key;
+        }
+
         // Optional paths for external tools
         if ($path = self::getEnv('IMAGE_MAGICK_PATH')) {
             $config['imageMagickPath'] = $path;

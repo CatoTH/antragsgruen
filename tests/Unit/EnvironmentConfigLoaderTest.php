@@ -277,6 +277,18 @@ class EnvironmentConfigLoaderTest extends TestBase
         $this->assertEquals('/usr/bin/lualatex', $config['lualatexPath']);
     }
 
+    public function testGetApplicationConfigWithBackgroundJobs(): void
+    {
+        $_ENV['BACKGROUND_JOBS_NOTIFICATIONS'] = 'true';
+        $_ENV['HEALTH_CHECK_KEY'] = 'test-health-key';
+
+        $config = EnvironmentConfigLoader::getApplicationConfig();
+
+        $this->assertArrayHasKey('backgroundJobs', $config);
+        $this->assertTrue($config['backgroundJobs']['notifications']);
+        $this->assertEquals('test-health-key', $config['healthCheckKey']);
+    }
+
     public function testBooleanValueParsing(): void
     {
         // Test various boolean representations

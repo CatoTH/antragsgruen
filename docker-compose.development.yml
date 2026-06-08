@@ -31,6 +31,7 @@ services:
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otlp-collector:4318
       - OTEL_PROPAGATORS=baggage,tracecontext
+      - BACKGROUND_JOBS_NOTIFICATIONS=true
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
@@ -43,6 +44,47 @@ services:
     volumes:
       - "./:/var/www/antragsgruen:ro"
       - "./docker/nginx:/etc/nginx/conf.d"
+
+  worker:
+    build:
+      context: ./
+      dockerfile: docker/php/Dockerfile
+      target: development
+    command: /var/www/antragsgruen/yii background-job/run
+    environment:
+      - APP_DOMAIN=localhost:12380
+      - APP_PROTOCOL=http
+      - SITE_SUBDOMAIN=stdparteitag
+      - DB_HOST=mysql
+      - DB_NAME=antragsgruen
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - REDIS_HOST=redis
+      - MAILER_DISABLED=true
+      - RANDOM_SEED=${RANDOM_SEED}
+      - BACKGROUND_JOBS_NOTIFICATIONS=true
+    volumes:
+      - "./:/var/www/antragsgruen"
+      - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
+    depends_on:
+      - mysql
+
+  cron:
+    build:
+      context: ./
+      dockerfile: docker/php/Dockerfile
+      target: development
+    command: sh -c "while true; do /var/www/antragsgruen/yii background-job/cleanup; sleep 86400; done"
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=antragsgruen
+      - DB_USER=root
+      - DB_PASSWORD=root
+    volumes:
+      - "./:/var/www/antragsgruen"
+      - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
+    depends_on:
+      - mysql
 
   mysql:
     image: mariadb
