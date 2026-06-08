@@ -15,8 +15,8 @@ services:
       - SITE_SUBDOMAIN=std
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
-      - DB_USER=root
-      - DB_PASSWORD=root
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       - REDIS_HOST=redis
       - MAILER_DISABLED=true
       - MAIL_FROM_EMAIL=noreply@example.org
@@ -25,6 +25,40 @@ services:
       - WEASYPRINT_PATH=/usr/bin/weasyprint
       - QPDF_PATH=/usr/bin/qpdf
       - IMAGE_MAGICK_PATH=/usr/bin/convert
+      - BACKGROUND_JOBS_NOTIFICATIONS=true
+
+  worker:
+    image: tobiashoessl/antragsgruen:latest
+    command: /var/www/html/yii background-job/run
+    volumes:
+      - "antragsgruen-config:/var/www/html/config"
+    environment:
+      - APP_DOMAIN=localhost:12380
+      - APP_PROTOCOL=http
+      - SITE_SUBDOMAIN=std
+      - DB_HOST=mysql
+      - DB_NAME=antragsgruen
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
+      - REDIS_HOST=redis
+      - MAILER_DISABLED=true
+      - RANDOM_SEED=${RANDOM_SEED}
+      - BACKGROUND_JOBS_NOTIFICATIONS=true
+    depends_on:
+      - mysql
+
+  cron:
+    image: tobiashoessl/antragsgruen:latest
+    command: sh -c "while true; do /var/www/html/yii background-job/cleanup; sleep 86400; done"
+    volumes:
+      - "antragsgruen-config:/var/www/html/config"
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=antragsgruen
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
+    depends_on:
+      - mysql
 
   mysql:
     image: mariadb
@@ -33,7 +67,7 @@ services:
       - "13306:3306"
     environment:
       MARIADB_DATABASE: antragsgruen
-      MARIADB_ROOT_PASSWORD: root
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}
     volumes:
       - "mysql-data:/var/lib/mysql"
 
