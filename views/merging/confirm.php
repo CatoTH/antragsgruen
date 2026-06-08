@@ -27,7 +27,7 @@ $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 ?>
     <h1><?= Yii::t('amend', 'merge_confirm_title') ?></h1>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { MotionMergeAmendmentsConfirm } from "/js/modules/frontend/MotionMergeAmendmentsConfirm.js";
         new MotionMergeAmendmentsConfirm(document.getElementById("motionConfirmForm"));
     </script>

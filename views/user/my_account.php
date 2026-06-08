@@ -32,7 +32,7 @@ $externalAuthenticator = User::getExternalAuthenticator();
 $formUrl = UrlHelper::createUrl('user/myaccount');
 echo '<h1>' . Yii::t('user', 'my_acc_title') . '</h1>';
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { AccountEdit } from '/js/modules/frontend/AccountEdit.js';
         new AccountEdit();
     </script>

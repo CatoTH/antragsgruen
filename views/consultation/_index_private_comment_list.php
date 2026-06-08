@@ -60,7 +60,7 @@ foreach ($amendmentComments as $amendmentId => $commentTexts) {
 }
 echo '</div>';
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { MotionListPrivateComments } from "/js/modules/frontend/MotionListPrivateComments.js";
     MotionListPrivateComments(document.querySelector(".privateCommentList"));
 </script>

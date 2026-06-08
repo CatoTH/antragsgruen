@@ -53,7 +53,7 @@ $canInitiateAsOrganization = $settings->canInitiateAsOrganization($consultation)
 $layout->addJsTranslation("motion");
 
 echo '
-<script type="module">
+<script type="module" crossorigin="anonymous">
 import { InitiatorForm } from "/js/modules/frontend/InitiatorForm.js";
 document.querySelectorAll(".supporterForm").forEach(el => new InitiatorForm(el));
 </script>

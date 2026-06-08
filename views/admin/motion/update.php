@@ -88,7 +88,7 @@ if ($motion->isInScreeningProcess() && User::havePrivilege($consultation, Privil
 
 $layout->addJsTranslation("admin");
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { MotionEdit } from '/js/modules/backend/MotionEdit.js';
         new MotionEdit();
     </script>

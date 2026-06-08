@@ -20,7 +20,7 @@ $layout->loadDatepicker();
 
 ?>
     <h1><?= Yii::t('manager', 'title_install') ?></h1>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { SiteCreateWizard } from "/js/modules/shared/SiteCreateWizard.js";
 
         new SiteCreateWizard($("form.siteCreate"));

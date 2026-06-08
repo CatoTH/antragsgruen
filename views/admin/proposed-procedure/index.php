@@ -31,7 +31,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 
 $layout->addJsTranslation("motion");
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { ProposedProcedureOverview } from "/js/modules/backend/ProposedProcedureOverview.js";
         new ProposedProcedureOverview(document.querySelector(".proposedProcedureReloadHolder"));
     </script>
@@ -59,7 +59,7 @@ echo Html::beginForm('', 'post', [
         </div>
         <div class="right">
             <?= $this->render('_switch_dropdown') ?>
-            <script type="module">
+            <script type="module" crossorigin="anonymous">
                 import { ProposedProcedureExport } from "/js/modules/backend/ProposedProcedureExport.js";
                 new ProposedProcedureExport(document.querySelector(".exportProcedureDd"));
             </script>

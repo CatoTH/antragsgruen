@@ -46,7 +46,7 @@ $limitedDisabled = ($canBeChangedUnlimitedly ? null : true);
 
 $layout->addJsTranslation("motion");
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { ChangeProposedProcedure } from "/js/modules/backend/ChangeProposedProcedure.js";
     new ChangeProposedProcedure(document.getElementById('proposedChanges'));
 </script>

@@ -31,7 +31,7 @@ $boolSettingRow = function (ConsultationSettings $settings, string $field, array
 };
 
 ?><h1><?= Yii::t('admin', 'con_h1') ?></h1>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { AppearanceEdit } from '/js/modules/backend/AppearanceEdit.js';
         new AppearanceEdit(document.getElementById('consultationAppearanceForm'));
     </script>

@@ -61,7 +61,7 @@ echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
         $layout->addJsTranslation("amend");
         ?>
-        <script type="module">
+        <script type="module" crossorigin="anonymous">
             import { ProposedChangeEdit } from "/js/modules/backend/ProposedChangeEdit.js";
             new ProposedChangeEdit(document.getElementById("proposedChangeTextForm"));
         </script>

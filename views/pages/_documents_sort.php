@@ -34,7 +34,7 @@ $documentsJs = array_map(function (\app\models\db\ConsultationFileGroup $fileGro
     </div>
 </section>
 
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import vuedraggable from "/npm/vuedraggable.js";
     const sortSaveLabel = <?= json_encode(Yii::t('voting', 'settings_sort_save')) ?>;

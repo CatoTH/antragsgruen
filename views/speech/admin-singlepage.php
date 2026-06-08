@@ -70,7 +70,7 @@ $pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' 
     </section>
 </div>
 
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import translateDirective from "/js/vue/Translate.vue.js";
     import AdminWidgetComponent from "/js/vue/speech/AdminWidget.js";

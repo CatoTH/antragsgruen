@@ -33,7 +33,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
 
 $layout->addJsTranslation("admin");
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { UserAdminCreate } from "/js/modules/backend/UserAdminCreate.js";
     new UserAdminCreate(document.getElementById("accountsCreateForm"));
 </script>

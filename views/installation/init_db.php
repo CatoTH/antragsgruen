@@ -90,7 +90,7 @@ echo Html::beginForm('', 'post', [
 ]);
 
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { InitDb } from "/js/modules/installation/InitDb.js";
         new InitDb(document.querySelector('.antragsgruenInitForm'));
     </script>

@@ -195,6 +195,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $_ENV['RESOURCE_BASE'] = '/antragsgruen/';
         $_ENV['MAIL_FROM_EMAIL'] = 'noreply@example.org';
         $_ENV['MAIL_FROM_NAME'] = 'Motion Portal';
+        $_ENV['JS_ERROR_TRACKING'] = 'file:///tmp/test.log';
 
         $app = new AntragsgruenApp('{}');
 
@@ -205,6 +206,7 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $this->assertEquals('/antragsgruen/', $app->resourceBase);
         $this->assertEquals('noreply@example.org', $app->mailFromEmail);
         $this->assertEquals('Motion Portal', $app->mailFromName);
+        $this->assertEquals('file:///tmp/test.log', $app->jsErrorTracking);
     }
 
     public function testEnvironmentVariablesForBooleanFlags(): void

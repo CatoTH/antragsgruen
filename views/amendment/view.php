@@ -70,7 +70,7 @@ echo '</div>';
 
 $layout->addJsTranslation("motion");
 ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { AmendmentShow } from '/js/modules/frontend/AmendmentShow.js';
         new AmendmentShow();
     </script>

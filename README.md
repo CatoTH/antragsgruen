@@ -352,11 +352,23 @@ OpenTelemetry could be configured through the `php.ini`, but will practically ra
 
 If you are running the [docker-compose.development.yml](docker-compose.development.yml) for development, a sample collector is included, accessible through http://localhost:55679/debug/tracez .
 
+### Client-Side (JavaScrípt) Error Tracking
+
+Error Tracking for Client-Side errors can be enabled, either to a local log file, or via OpenTelemetry. To log to a local file `/var/log/antragsgruen/js_error.log`, use:
+```json
+{
+    "js_error_tracking": "file:///var/log/antragsgruen/js_error.log"
+}
+```
+
+If configuring Antragsgrün [using environment variables](./docs/environment-variables.md) instead, use the variable `JS_ERROR_TRACKING`.
+To use OpenTelemetry instead of a local log file, simply set the setting to `otel://js.error`.
+
 ### Enable background job processing
 
 Some processes that are potentially blocking or long-running can be executed as background jobs, by using a permanently running worker-job that executes these jobs asynchonously.
 
-The following example on how to run the background job processor uses [Supervisord](http://supervisord.org), but it is just as possible running it via any other process manager.
+The following example on how to run the background job processor uses [Supervisord](http://supervisord.org), but it is just as possible running it via any other process manager or using docker (as illustrated in [docker-compose.development.yml](./docker-compose.development.yml)).
 - Copy [supervisor.conf](docs/supervisor.conf) to your supervisord configuration directory, modify it to your needs, and run it.
 - Create an API key for the health checks (optional) and its hash (via `password_encode($password, PASSWORD_DEFAULT)`).
 - Enable background jobs by adding the following settings to your `config.json`.
@@ -370,6 +382,8 @@ The following example on how to run the background job processor uses [Superviso
     "healthCheckKey": "$2y$12$...."
 }
 ```
+
+If configuring Antragsgrün [using environment variables](./docs/environment-variables.md) instead, use the variables `BACKGROUND_JOBS_NOTIFICATIONS` and `HEALTH_CHECK_KEY`.
 
 Currently, this only affects the sending of e-mails.
 

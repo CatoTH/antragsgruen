@@ -239,6 +239,7 @@ class EnvironmentConfigLoader
      * - TABLE_PREFIX or DB_TABLE_PREFIX: Database table prefix (default: empty)
      * - MAIL_FROM_EMAIL: Default "from" email address
      * - MAIL_FROM_NAME: Default "from" name
+     * - JS_ERROR_TRACKING: Target for JS Error Tracking (e.g. file:///tmp/js_errors.log or otel://)
      * - PREPEND_WWW_TO_SUBDOMAIN: Prepend www to subdomain (true/false)
      * - ALLOW_REGISTRATION: Allow user registration (true/false)
      * - CONFIRM_EMAIL_ADDRESSES: Require email confirmation (true/false)
@@ -292,6 +293,10 @@ class EnvironmentConfigLoader
         }
         if ($name = self::getEnv('MAIL_FROM_NAME')) {
             $config['mailFromName'] = $name;
+        }
+
+        if ($name = self::getEnv('JS_ERROR_TRACKING')) {
+            $config['jsErrorTracking'] = $name;
         }
 
         // Boolean flags

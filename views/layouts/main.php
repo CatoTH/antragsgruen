@@ -91,7 +91,10 @@ if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
 
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
-echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '"></script>';
+if ($params->jsErrorTracking) {
+    echo $this->render('_error_tracking');
+}
+echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '" crossorigin="anonymous"></script>';
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
@@ -118,7 +121,7 @@ if (defined('YII_ENV') && YII_ENV == 'test') {
 echo '<body' . (count($bodyClasses) > 0 ? ' class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
 
 if (count($layout->getJsTranslations()) > 0) {
-    echo '<script type="module">
+    echo '<script type="module" crossorigin="anonymous">
     import translate from "/js/vue/Translate.vue.js";' . "\n";
     foreach ($layout->getJsTranslations() as $translation) {
         echo 'translate.registerTranslation("' . $translation . '", ' . json_encode(StaticResourceTools::getTranslations($consultation, $translation)) . ');' . "\n";
@@ -157,10 +160,10 @@ if (count($layout->connectLiveEvents) && $params->live && $consultation) {
 }
 
 foreach ($layout->getJSFiles() as $jsFile) {
-    echo '<script src="' . $jsFile . '"></script>' . "\n";
+    echo '<script src="' . $jsFile . '" crossorigin="anonymous"></script>' . "\n";
 }
 foreach ($layout->onloadJs as $js) {
-    echo '<script>' . $js . '</script>' . "\n";
+    echo '<script crossorigin="anonymous">' . $js . '</script>' . "\n";
 }
 
 $this->endBody();

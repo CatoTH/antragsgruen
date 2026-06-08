@@ -86,7 +86,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
 
 $layout->addJsTranslation("admin");
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { ConsultationCreate } from "/js/modules/backend/ConsultationCreate.js";
     new ConsultationCreate();
 </script>

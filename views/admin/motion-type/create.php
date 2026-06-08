@@ -23,7 +23,7 @@ echo Html::beginForm('', 'post', [
 ]);
 
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { MotionTypeCreate } from "/js/modules/backend/MotionTypeCreate.js";
     new MotionTypeCreate(document.querySelector('.motionTypeCreateForm'));
 </script>

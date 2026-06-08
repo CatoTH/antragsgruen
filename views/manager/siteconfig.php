@@ -17,7 +17,7 @@ $layout      = $controller->layoutParams;
 
 ?>
     <h1><?= Yii::t('manager', 'title_install') ?></h1>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { SiteConfig } from "/js/modules/backend/SiteConfig.js";
         SiteConfig();
     </script>

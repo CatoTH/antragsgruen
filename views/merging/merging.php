@@ -75,7 +75,7 @@ $statuses = [
 $layout->addJsTranslation('base');
 $layout->addJsTranslation('amend');
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import ParagraphAmendmentSettings from "/js/vue/merging/ParagraphAmendmentSettings.js";
     ParagraphAmendmentSettings.setStatuses(<?= json_encode($statuses) ?>);
 

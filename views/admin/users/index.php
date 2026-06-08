@@ -92,7 +92,7 @@ $privilegeDependencies = $privileges->getPrivilegeDependencies();
 $layout->addJsTranslation('admin');
 $layout->addJsTranslation('base');
 ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { UserAdmin } from "/js/modules/backend/UserAdmin.js";
     new UserAdmin(document.querySelector('.userAdminHolder'));
 </script>

@@ -37,7 +37,7 @@ foreach (Stylesheet::getAllSettings($default) as $key => $setting) {
     'class'                    => 'themingForm',
     'enctype'                  => 'multipart/form-data',
 ]) ?>
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { Theming } from "/js/modules/backend/Theming.js";
     new Theming(document.querySelector(".themingForm"));
 </script>

@@ -51,7 +51,7 @@ $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
     <div class="currentVoting"></div>
 </section>
 
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
     new VotingBlock(
         document.querySelector(".currentVotingWidget"),

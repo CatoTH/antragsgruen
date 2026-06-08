@@ -56,7 +56,7 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
     <div class="currentVoting"></div>
 </section>
 
-<script type="module">
+<script type="module" crossorigin="anonymous">
     import { VotingBlock } from "/js/modules/frontend/VotingBlock.js";
     new VotingBlock(
         document.querySelector(".currentVotingWidget"),

@@ -52,7 +52,7 @@ if ($admin) {
     $layout->loadSelectize();
     $layout->addJsTranslation("admin");
     ?>
-    <script type="module">
+    <script type="module" crossorigin="anonymous">
         import { ContentPageEdit } from '/js/modules/frontend/ContentPageEdit.js';
         new ContentPageEdit(document.querySelector(".contentEditForm"));
     </script>
