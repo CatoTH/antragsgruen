@@ -15,8 +15,8 @@ services:
       - SITE_SUBDOMAIN=std
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD:-root}
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       - REDIS_HOST=redis
       - MAILER_DISABLED=true
       - MAIL_FROM_EMAIL=noreply@example.org
@@ -38,8 +38,8 @@ services:
       - SITE_SUBDOMAIN=std
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD:-root}
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       - REDIS_HOST=redis
       - MAILER_DISABLED=true
       - RANDOM_SEED=${RANDOM_SEED}
@@ -55,8 +55,8 @@ services:
     environment:
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD:-root}
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
     depends_on:
       - mysql
 
@@ -67,7 +67,7 @@ services:
       - "13306:3306"
     environment:
       MARIADB_DATABASE: antragsgruen
-      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}
     volumes:
       - "mysql-data:/var/lib/mysql"
 

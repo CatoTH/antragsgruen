@@ -14,8 +14,8 @@ services:
       - SITE_SUBDOMAIN=stdparteitag
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD:-root}
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       - REDIS_HOST=redis
       - MAILER_DISABLED=true
       - MAIL_FROM_EMAIL=noreply@example.org
@@ -57,8 +57,8 @@ services:
       - SITE_SUBDOMAIN=stdparteitag
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD:-root}
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       - REDIS_HOST=redis
       - MAILER_DISABLED=true
       - RANDOM_SEED=${RANDOM_SEED}
@@ -78,8 +78,8 @@ services:
     environment:
       - DB_HOST=mysql
       - DB_NAME=antragsgruen
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD:-root}
+      - DB_USER=${DB_USER:?Please set DB_USER in .env}
+      - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
@@ -92,7 +92,7 @@ services:
     ports:
       - "13306:3306"
     environment:
-      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       MARIADB_DATABASE: antragsgruen
     volumes:
       - "mysql-data:/var/lib/mysql"
@@ -105,8 +105,8 @@ services:
   rabbitmq:
     image: 'rabbitmq:3-management-alpine'
     environment:
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-guest}
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-guest}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:?Please set RABBITMQ_DEFAULT_PASS in .env}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:?Please set RABBITMQ_DEFAULT_USER in .env}
     ports:
       - "5672:5672"
       - "15672:15672"
