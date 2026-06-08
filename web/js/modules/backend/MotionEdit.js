@@ -68,7 +68,6 @@ export class MotionEdit {
     initStatus() {
         const onChange = () => {
             const newStatus = parseInt(/** @type {HTMLSelectElement} */ (document.getElementById('motionStatus')).value, 10);
-            console.log(newStatus);
             if (newStatus === STATUS_OBSOLETED_BY_MOTION) {
                 document.querySelector('.motionStatusString').classList.add('hidden');
                 document.querySelector('.motionStatusMotion').classList.remove('hidden');
@@ -182,7 +181,7 @@ export class MotionEdit {
         $("#motionTextEditCaller").addClass("hidden");
         $("#motionTextEditHolder").removeClass("hidden");
 
-        $(".wysiwyg-textarea").each(function () {
+        $("#motionTextEditHolder .wysiwyg-textarea").each(function () {
             const $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
                 ckeditor = new AntragsgruenEditor($textarea.attr("id")),
