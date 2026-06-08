@@ -114,3 +114,49 @@ jobs:
           php -d register_argc_argv=On vendor/bin/codecept clean
           php -d register_argc_argv=On vendor/bin/codecept build
           php -d register_argc_argv=On vendor/bin/codecept run Unit
+
+  acceptance-codecept:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Start Docker Compose stack
+        run: |
+          echo "DB_USER=root" > .env
+          echo "DB_PASSWORD=root" >> .env
+          echo "RANDOM_SEED=12345" >> .env
+          echo "RABBITMQ_DEFAULT_USER=guest" >> .env
+          echo "RABBITMQ_DEFAULT_PASS=guest" >> .env
+          for i in {1..3}; do docker compose --profile acceptance -f docker-compose.development.yml pull && break || sleep 15; done
+          docker compose --profile acceptance -f docker-compose.development.yml up -d
+      - name: Initialize DB and test data
+        run: |
+          touch config/DEBUG
+          docker compose -f docker-compose.development.yml exec -T web sh -c 'until mysql -h mysql -u root -proot -e "select 1" > /dev/null 2>&1; do sleep 2; done'
+          docker compose -f docker-compose.development.yml exec -T web sh docker/initialize-development-environment.sh
+          cp config/config_tests.template.json config/config_tests.json
+          sed -i 's/127.0.0.1/mysql/' config/config_tests.json
+          sed -i 's/32768/3306/' config/config_tests.json
+          sed -i 's/dbname=yii/dbname=antragsgruen/' config/config_tests.json
+          sed -i 's/"username": "yii"/"username": "root"/' config/config_tests.json
+          sed -i 's/"password": "yii"/"password": "root"/' config/config_tests.json
+          sed -i 's/localhost:8080/test.antragsgruen.test/' config/config_tests.json
+          sed -i 's/host: 127.0.0.1/host: selenium/' tests/Acceptance.suite.yml
+          docker compose -f docker-compose.development.yml exec -T web php -d register_argc_argv=On vendor/bin/codecept build
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+          cache: true
+      - name: Build frontend assets
+        run: |
+          pnpm install
+          pnpm run build
+      - name: Run Acceptance Tests
+        run: docker compose -f docker-compose.development.yml exec -T web php -d register_argc_argv=On vendor/bin/codecept run Acceptance
+      - name: Upload acceptance test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-output
+          path: tests/_output/
+

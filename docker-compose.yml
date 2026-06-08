@@ -64,7 +64,7 @@ services:
     image: mariadb
     command: --max_allowed_packet=33554432
     ports:
-      - "13306:3306"
+      - "127.0.0.1:13306:3306"
     environment:
       MARIADB_DATABASE: antragsgruen
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}

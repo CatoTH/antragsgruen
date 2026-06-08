@@ -18,8 +18,8 @@
       "::1"
     ]
   },
-  "domainPlain": "http://localhost:8080/index-test.php",
-  "domainSubdomain": "http://localhost:8080/index-test.php",
+  "domainPlain": "http://localhost:8080/",
+  "domainSubdomain": "http://localhost:8080/<subdomain:[\\w_-]+>/",
   "prependWWWToSubdomain": false,
   "randomSeed": "123456",
   "mailFromName": "Antragsgrün Test",

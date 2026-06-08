@@ -45,6 +45,10 @@ services:
     volumes:
       - "./:/var/www/antragsgruen:ro"
       - "./docker/nginx:/etc/nginx/conf.d"
+    networks:
+      default:
+        aliases:
+          - test.antragsgruen.test
 
   worker:
     build:
@@ -142,3 +146,8 @@ services:
       - "4317:4317"
       - "4318:4318"
       - "55679:55679"
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    profiles:
+      - acceptance
