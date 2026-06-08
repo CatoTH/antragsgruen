@@ -6,6 +6,9 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   evaluate-pr:
     runs-on: ubuntu-latest
@@ -17,6 +20,7 @@ jobs:
         with:
           php-version: '8.2'
           extensions: zip, intl, gd
+          cache: composer
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
       - name: Install extra packages
