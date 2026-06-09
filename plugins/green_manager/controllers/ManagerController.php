@@ -54,7 +54,7 @@ class ManagerController extends Base
         $welcomeHtml .= 'you can edit this text and change it to a proper welcome message for your users ';
         $welcomeHtml .= 'by using the "Edit" button to the upper right.</p>';
         $welcomeHtml .= '<p>If you encounter any problems, please do not hesitate to contact us at ' .
-            '<a href="mailto:info@discuss.green">info@discuss.green</a>.</p>';
+            '<a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a>.</p>';
 
         $legalText                 = new ConsultationText();
         $legalText->siteId         = $consultation->siteId;

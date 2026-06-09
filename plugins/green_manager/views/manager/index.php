@@ -269,6 +269,6 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
         We are here to answer your questions and requests:
     </p>
     <ul>
-        <li>E-Mail: <a href="mailto:info@discuss.green">info@discuss.green</a></li>
+        <li>E-Mail: <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a></li>
     </ul>
 </div>
