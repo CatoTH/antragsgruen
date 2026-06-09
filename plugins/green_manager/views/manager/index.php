@@ -106,7 +106,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
             Also submitting <strong>candidacies</strong>, including images and PDF attachments is supported.</p>
 
         <figure class="homeFigure homeFigureAmendment">
-            <img src="/img/Screenshot-Amendment-en.png" alt="Screenshot of an amendment">
+            <img src="https://cdn.motion.tools/Screenshot-Amendment-en.png" alt="Screenshot of an amendment">
             <figcaption>
                 Amendments can be shown either separately or (as shown here) in the context of the motion.
             </figcaption>
@@ -117,7 +117,7 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
             to be discussed and decided by the board or the member's General Assembly.</p>
 
         <figure class="homeFigure homeFigurePrint">
-            <img src="/img/Screenshot-Print.png" alt="Druckvorlage">
+            <img src="https://cdn.motion.tools/Screenshot-Print.png" alt="Print Template">
             <figcaption>
                 Diverse export options, like a print template
             </figcaption>
@@ -169,14 +169,14 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
 
     <div class="homeFigureTwoHolder">
         <figure class="homeFigure homeFigureSpeech">
-            <img src="/img/Screenshot-Speaking.png" alt="Screenshot of a speaking list">
+            <img src="https://cdn.motion.tools/Screenshot-Speaking.png" alt="Screenshot of a speaking list">
             <figcaption>
                 Flexible administration of a speaking list
             </figcaption>
         </figure>
 
         <figure class="homeFigure homeFigureVoting">
-            <img src="/img/Screenshot-Voting.png" alt="Screenshot of a voting">
+            <img src="https://cdn.motion.tools/Screenshot-Voting.png" alt="Screenshot of a voting">
             <figcaption>
                 Votings over motions, amendments and arbitrary decisions
             </figcaption>
