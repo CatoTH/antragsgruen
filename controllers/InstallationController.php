@@ -57,7 +57,7 @@ class InstallationController extends Base
 
     private function createSite(string $installFile, string $delInstallFileCmd, string $configDir): HtmlResponse
     {
-        $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+        $configFile = $_SERVER['ANTRAGSGRUEN_CONFIG'] ?? dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.json';
         $siteForm   = new AntragsgruenInitSite($configFile);
 
         if ($this->isPostSet('create')) {

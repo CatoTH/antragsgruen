@@ -53,7 +53,7 @@ $controller->layoutParams->addInlineCss('
 
     <p>Many organizations are already using the tool successfully such as the
         <a href="https://www.youthforum.org/">European Youth Forum</a>, the <a href="https://www.gruene.de/">German</a> and
-        <a href="https://europeangreens.eu/">European Green Party</a>, and the
+        <a href="https://europeangreens.eu/">European Green Party</a>, <a href="https://volteuropa.org/">Volt Europa</a>, and the
         <a href="https://www.frauenrat.de/shortinfo/">National Council of German Women’s Organizations</a>.
         It can be easily adapted to a variety of scenarios.</p>
 </div>
@@ -81,7 +81,7 @@ $controller->layoutParams->addInlineCss('
             to be discussed and decided by the board or the member's General Assembly.</p>
 
         <figure class="homeFigure homeFigurePrint">
-            <img src="https://cdn.motion.tools/Screenshot-Print.png" alt="Druckvorlage">
+            <img src="https://cdn.motion.tools/Screenshot-Print.png" alt="Print Template">
             <figcaption>
                 Diverse export options, like a print template
             </figcaption>
