@@ -462,7 +462,7 @@ Then, you can run:
 echo "RANDOM_SEED=$(openssl rand -base64 32)" > .env # One time initialization of a local secret key
 touch config/DEBUG # optional, to enable debug mode
 docker-compose -f docker-compose.development.yml --profile pnpm-helper up
-docker exec -it antragsgruen-web-1 /var/www/antragsgruen/docker/initialize-development-environment.sh
+docker exec -it -e INSTALL_OPENTELEMETRY=true antragsgruen-web-1 /var/www/antragsgruen/docker/initialize-development-environment.sh
 ```
 
 After that, the following URL should be accessible:
