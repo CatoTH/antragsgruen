@@ -45,7 +45,8 @@ services:
       - RANDOM_SEED=${RANDOM_SEED}
       - BACKGROUND_JOBS_NOTIFICATIONS=true
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   cron:
     image: tobiashoessl/antragsgruen:latest
@@ -58,7 +59,8 @@ services:
       - DB_USER=${DB_USER:?Please set DB_USER in .env}
       - DB_PASSWORD=${DB_PASSWORD:?Please set DB_PASSWORD in .env}
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: mariadb
@@ -70,6 +72,12 @@ services:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}
     volumes:
       - "mysql-data:/var/lib/mysql"
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 3s
+      interval: 3s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: "redis:7"
