@@ -5,9 +5,17 @@ if (defined('YII_ENV')) {
     die('Recursive call?');
 }
 
-if (in_array(@$_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) && file_exists(__DIR__ . '/../config/TEST_DOMAIN')) {
+// Allow YII_ENV=test to be forced via environment variable (for CI/Docker environments
+// where REMOTE_ADDR is the nginx container IP, not 127.0.0.1).
+if (getenv('YII_ENV') === 'test') {
+    defined('YII_DEBUG') or define('YII_DEBUG', (bool) getenv('YII_DEBUG'));
+    defined('YII_ENV') or define('YII_ENV', 'test');
+    if (!isset($_SERVER['ANTRAGSGRUEN_CONFIG'])) {
+        $_SERVER['ANTRAGSGRUEN_CONFIG'] = __DIR__ . '/../config/config_tests.json';
+    }
+} elseif (in_array(@$_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) && file_exists(__DIR__ . '/../config/TEST_DOMAIN')) {
     if ($_SERVER['HTTP_HOST'] === trim(file_get_contents(__DIR__ . '/../config/TEST_DOMAIN'))) {
-        defined('YII_DEBUG') or define('YII_DEBUG', false);
+    defined('YII_DEBUG') or define('YII_DEBUG', (bool) getenv('YII_DEBUG'));
         defined('YII_ENV') or define('YII_ENV', 'test');
         if (!isset($_SERVER['ANTRAGSGRUEN_CONFIG'])) {
             $_SERVER['ANTRAGSGRUEN_CONFIG'] = __DIR__ . '/../config/config_tests.json';

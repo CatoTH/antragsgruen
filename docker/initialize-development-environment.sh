@@ -1,6 +1,7 @@
 #!/bin/sh
 composer install --no-interaction
-echo "CREATE DATABASE antragsgruen" | mysql -h mysql -u root -proot
+chown -R www-data:www-data web/assets runtime
+echo "DROP DATABASE IF EXISTS antragsgruen; CREATE DATABASE antragsgruen" | mysql -h mysql -u root -proot
 if [ "$INSTALL_OPENTELEMETRY" = "true" ]; then
     echo "Installing OpenTelemetry dependencies..."
     composer config --no-plugins allow-plugins.php-http/discovery true

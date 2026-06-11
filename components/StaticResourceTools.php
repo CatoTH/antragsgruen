@@ -29,7 +29,12 @@ class StaticResourceTools
     public static function getJsDependencies(): array
     {
         if (self::$jsDependencies === null) {
-            self::$jsDependencies = require(__DIR__ . '/../config/js-dependencies.php');
+            $file = __DIR__ . '/../config/js-dependencies.php';
+            if (file_exists($file)) {
+                self::$jsDependencies = require($file);
+            } else {
+                self::$jsDependencies = ['cdn_tag' => 'local', 'integrity' => []];
+            }
         }
         return self::$jsDependencies;
     }

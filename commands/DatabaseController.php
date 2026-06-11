@@ -20,6 +20,71 @@ class DatabaseController extends Controller
     public const TEST_MODE_DBWV = 'dbwv';
 
     /**
+     * Execute multi-statement SQL by splitting on statement boundaries
+     * and running each statement individually. Runs an optional second pass
+     * to handle statements that depend on tables created by other statements.
+     *
+     * Executes multi-statement SQL via mysql CLI with proc_open file descriptor.
+     */
+    private function executeMultiStatementSql(string $sql, bool $force = false): void
+    {
+        $sql = $this->applyTablePrefix($sql);
+
+        $db = \Yii::$app->db;
+        preg_match('/host=([^;]+)/', $db->dsn, $dsnParts);
+        $host = $dsnParts[1] ?? 'localhost';
+        $port = '3306';
+        if (preg_match('/port=(\d+)/', $db->dsn, $portMatch)) {
+            $port = $portMatch[1];
+        }
+        preg_match('/dbname=([^;]+)/', $db->dsn, $dsnParts);
+        $dbname = $dsnParts[1] ?? '';
+
+        $tmpFile = tempnam(sys_get_temp_dir(), 'ag_sql_');
+        file_put_contents($tmpFile, $sql);
+
+        $forceFlag = $force ? '--force' : '';
+
+        $command = sprintf(
+            'mysql %s -h %s -P %s -u %s -p%s %s',
+            $forceFlag,
+            escapeshellarg($host),
+            escapeshellarg($port),
+            escapeshellarg($db->username),
+            $db->password,
+            escapeshellarg($dbname)
+        );
+
+        $descriptorSpec = [
+            0 => ['file', $tmpFile, 'r'],
+            1 => ['file', '/dev/null', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+
+        $process = proc_open($command, $descriptorSpec, $pipes);
+        if (!is_resource($process)) {
+            unlink($tmpFile);
+            throw new \RuntimeException('Failed to start mysql process');
+        }
+
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        $returnVar = proc_close($process);
+        unlink($tmpFile);
+
+        if ($returnVar !== 0 || $stderr !== '') {
+            $prefix = $returnVar !== 0 ? 'SQL execution failed' : 'SQL warnings';
+            $this->stderr($prefix . ' (rc=' . $returnVar . '): ' . $stderr . "\n");
+        }
+    }
+
+    private function applyTablePrefix(string $sql): string
+    {
+        return str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $sql);
+    }
+
+    /**
      * Deletes the whole database. CAUTION!
      *
      * @throws \yii\db\Exception
@@ -31,10 +96,7 @@ class DatabaseController extends Controller
             return;
         }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
-            $deleteString = (string)file_get_contents(__DIR__ . '/../assets/db/delete.sql');
-            $deleteString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $deleteString);
-            $command      = \Yii::$app->db->createCommand($deleteString);
-            $command->execute();
+            $this->executeMultiStatementSql((string)file_get_contents(__DIR__ . '/../assets/db/delete.sql'));
         }
     }
 
@@ -49,15 +111,14 @@ class DatabaseController extends Controller
             $this->stderr('This action is only available in Debug-Mode' . "\n");
             return;
         }
-        $createString = (string)file_get_contents(__DIR__ . '/../assets/db/create.sql');
-        $createString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $createString);
-        $command      = \Yii::$app->db->createCommand($createString);
-        $command->execute();
-
-        $createString = (string)file_get_contents(__DIR__ . '/../assets/db/data.sql');
-        $createString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $createString);
-        $command      = \Yii::$app->db->createCommand($createString);
-        $command->execute();
+        $this->executeMultiStatementSql(
+            (string)file_get_contents(__DIR__ . '/../assets/db/create.sql'),
+            true
+        );
+        $this->executeMultiStatementSql(
+            (string)file_get_contents(__DIR__ . '/../assets/db/data.sql'),
+            true
+        );
     }
 
     /**
@@ -76,9 +137,7 @@ class DatabaseController extends Controller
             self::TEST_MODE_YFJ => (string)file_get_contents(__DIR__ . '/../tests/Support/Data/dbdata-yfj.sql'),
             default => (string)file_get_contents(__DIR__ . '/../tests/Support/Data/dbdata1.sql'),
         };
-        $testdata = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $testdata);
-        $command  = \Yii::$app->db->createCommand($testdata);
-        $command->execute();
+        $this->executeMultiStatementSql($testdata, true);
     }
 
     /**
@@ -93,11 +152,9 @@ class DatabaseController extends Controller
             return;
         }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
-            $deleteString = (string)file_get_contents(__DIR__ . '/../assets/db/delete.sql');
-            $deleteString = str_replace('###TABLE_PREFIX###', AntragsgruenApp::getInstance()->tablePrefix, $deleteString);
-            $command      = \Yii::$app->db->createCommand($deleteString);
-            $command->execute();
-            unset($command);
+            $this->executeMultiStatementSql(
+                (string)file_get_contents(__DIR__ . '/../assets/db/delete.sql')
+            );
 
             $this->actionCreate();
             $this->actionInsertTestData($testmode);

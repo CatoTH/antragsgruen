@@ -33,6 +33,8 @@ services:
       - OTEL_PROPAGATORS=baggage,tracecontext
       - BACKGROUND_JOBS_NOTIFICATIONS=true
       - JS_ERROR_TRACKING=otel://js.error
+      - YII_ENV=${YII_ENV:-}
+      - YII_DEBUG=${YII_DEBUG:-}
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
@@ -45,6 +47,10 @@ services:
     volumes:
       - "./:/var/www/antragsgruen:ro"
       - "./docker/nginx:/etc/nginx/conf.d"
+    networks:
+      default:
+        aliases:
+          - test.antragsgruen.test
 
   worker:
     build:
@@ -142,3 +148,8 @@ services:
       - "4317:4317"
       - "4318:4318"
       - "55679:55679"
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    profiles:
+      - acceptance
