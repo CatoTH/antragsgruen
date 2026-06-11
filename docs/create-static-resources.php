@@ -2,10 +2,10 @@
 <?php
 
 # Call:
-#  docs/create-js-dependencies.php [cdn-tag]
+#  docs/create-static-resources.php [cdn-tag]
 
 if (count($argv) < 2) {
-    die("Call: ./create-js-dependencies.php [cdn-tag]\n");
+    die("Call: ./create-static-resources.php [cdn-tag]\n");
 }
 
 $cdnTag = $argv[1];
