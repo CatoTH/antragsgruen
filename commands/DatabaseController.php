@@ -24,12 +24,13 @@ class DatabaseController extends Controller
      * and running each statement individually. Runs an optional second pass
      * to handle statements that depend on tables created by other statements.
      *
-     * Uses the mysql CLI internally for reliable multi-statement execution.
+     * Executes multi-statement SQL via mysql CLI with proc_open file descriptor.
      */
     private function executeMultiStatementSql(string $sql, bool $force = false): void
     {
+        $sql = $this->applyTablePrefix($sql);
+
         $db = \Yii::$app->db;
-        $dsnParts = [];
         preg_match('/host=([^;]+)/', $db->dsn, $dsnParts);
         $host = $dsnParts[1] ?? 'localhost';
         $port = '3306';
@@ -39,33 +40,38 @@ class DatabaseController extends Controller
         preg_match('/dbname=([^;]+)/', $db->dsn, $dsnParts);
         $dbname = $dsnParts[1] ?? '';
 
-        $sql = $this->applyTablePrefix($sql);
-
         $tmpFile = tempnam(sys_get_temp_dir(), 'ag_sql_');
         file_put_contents($tmpFile, $sql);
 
-        $stderrFile = tempnam(sys_get_temp_dir(), 'ag_err_');
         $forceFlag = $force ? '--force' : '';
 
         $command = sprintf(
-            'mysql %s -h %s -P %s -u %s -p%s %s < %s 2>%s',
+            'mysql %s -h %s -P %s -u %s -p%s %s',
             $forceFlag,
             escapeshellarg($host),
             escapeshellarg($port),
             escapeshellarg($db->username),
-            escapeshellarg($db->password),
-            escapeshellarg($dbname),
-            escapeshellarg($tmpFile),
-            escapeshellarg($stderrFile)
+            $db->password,
+            escapeshellarg($dbname)
         );
 
-        $output = [];
-        $returnVar = 0;
-        exec($command, $output, $returnVar);
-        unlink($tmpFile);
+        $descriptorSpec = [
+            0 => ['file', $tmpFile, 'r'],
+            1 => ['file', '/dev/null', 'w'],
+            2 => ['pipe', 'w'],
+        ];
 
-        $stderr = file_exists($stderrFile) ? file_get_contents($stderrFile) : '';
-        unlink($stderrFile);
+        $process = proc_open($command, $descriptorSpec, $pipes);
+        if (!is_resource($process)) {
+            unlink($tmpFile);
+            throw new \RuntimeException('Failed to start mysql process');
+        }
+
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        $returnVar = proc_close($process);
+        unlink($tmpFile);
 
         if ($returnVar !== 0 || $stderr !== '') {
             $prefix = $returnVar !== 0 ? 'SQL execution failed' : 'SQL warnings';

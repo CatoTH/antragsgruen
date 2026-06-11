@@ -31,10 +31,6 @@ WORKDIR /var/www/antragsgruen
 
 FROM production AS development
 
-# Allow PHP-FPM workers to see Docker environment variables (YII_ENV, etc.)
-# Default clear_env=yes strips env vars before PHP processes start.
-RUN echo 'clear_env = no' >> /usr/local/etc/php-fpm.d/www.conf
-
 RUN apt-get install -y --no-install-recommends \
     mariadb-client \
     vim \
