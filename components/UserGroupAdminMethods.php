@@ -665,4 +665,128 @@ class UserGroupAdminMethods
             }
         }
     }
+
+    /**
+     * @param resource $fp
+     * @param array<string, int> $headerMap
+     * @return array{processedRows: int, errors: string[]}
+     */
+    public function processCsvChunk($fp, array $headerMap, string $collisionBehavior, bool $sendEmail, string $emailText): array
+    {
+        $processedRows = 0;
+        $errors = [];
+        $maxRowsPerChunk = 50;
+
+        while ($processedRows < $maxRowsPerChunk && ($row = fgetcsv($fp)) !== false) {
+            if (empty(array_filter($row))) {
+                continue; // Skip empty rows
+            }
+            
+            $processedRows++;
+            
+            try {
+                $email = isset($headerMap['email'], $row[$headerMap['email']]) ? trim($row[$headerMap['email']]) : '';
+                if ($email === '') {
+                    $errors[] = 'Missing email on row.';
+                    continue;
+                }
+                
+                $firstName = isset($headerMap['first_name'], $row[$headerMap['first_name']]) ? trim($row[$headerMap['first_name']]) : '';
+                $lastName = isset($headerMap['last_name'], $row[$headerMap['last_name']]) ? trim($row[$headerMap['last_name']]) : '';
+                $organization = isset($headerMap['organization'], $row[$headerMap['organization']]) ? trim($row[$headerMap['organization']]) : '';
+                
+                $name = trim($firstName . ' ' . $lastName);
+                if ($name === '') {
+                    $name = $email;
+                }
+                
+                /** @var \app\models\db\ConsultationUserGroup[] $userGroups */
+                $userGroups = [];
+                if (isset($headerMap['groups']) && !empty($row[$headerMap['groups']])) {
+                    $groupNames = array_map('trim', explode(',', $row[$headerMap['groups']]));
+                    foreach ($groupNames as $groupName) {
+                        if ($groupName === '') continue;
+                        $group = \app\models\db\ConsultationUserGroup::find()
+                            ->where(['title' => $groupName])
+                            ->orWhere(['external_id' => $groupName])
+                            ->one();
+                        if ($group) {
+                            $userGroups[] = $group;
+                        } else {
+                            $errors[] = "$email: Warning: Group '$groupName' not found.";
+                        }
+                    }
+                }
+                if (empty($userGroups)) {
+                    $defaultGroup = $this->getDefaultUserGroup();
+                    if ($defaultGroup !== null) {
+                        $userGroups[] = $defaultGroup;
+                    }
+                }
+
+                $user = \app\models\db\User::findOne(['email' => $email]);
+                
+                if ($user) {
+                    if ($collisionBehavior === 'skip') {
+                        continue;
+                    }
+                    
+                    if ($firstName !== '' || $lastName !== '') {
+                        $user->nameGiven = $firstName;
+                        $user->nameFamily = $lastName;
+                        $user->name = $name;
+                    }
+                    if ($organization !== '') {
+                        $user->organization = $organization;
+                    }
+                    $user->save(false);
+                    
+                    if ($collisionBehavior === 'replace') {
+                        $user->unlinkAll('userGroups', true);
+                        foreach ($userGroups as $group) {
+                            $user->link('userGroups', $group);
+                            $this->logUserGroupAdd($user, $group);
+                        }
+                    } elseif ($collisionBehavior === 'merge') {
+                        $existingGroupIds = array_map(fn($g) => $g->id, $user->userGroups);
+                        foreach ($userGroups as $group) {
+                            if (!in_array($group->id, $existingGroupIds)) {
+                                $user->link('userGroups', $group);
+                                $this->logUserGroupAdd($user, $group);
+                            }
+                        }
+                    }
+                } else {
+                    $auth = \app\models\db\User::AUTH_EMAIL . ':' . mb_strtolower($email);
+                    $user = new \app\models\db\User();
+                    $user->auth = $auth;
+                    $user->email = mb_strtolower($email);
+                    $user->name = $name;
+                    if ($firstName !== '') $user->nameGiven = $firstName;
+                    if ($lastName !== '') $user->nameFamily = $lastName;
+                    if ($organization !== '') $user->organization = $organization;
+                    $user->pwdEnc = password_hash(\app\models\db\User::createPassword(), PASSWORD_DEFAULT);
+                    $user->status = \app\models\db\User::STATUS_CONFIRMED;
+                    $user->emailConfirmed = 1;
+                    $user->organizationIds = '';
+                    $user->save(false);
+                    
+                    foreach ($userGroups as $group) {
+                        $user->link('userGroups', $group);
+                        $this->logUserGroupAdd($user, $group);
+                    }
+                    if ($sendEmail) {
+                        $this->sendWelcomeEmail($user, $emailText, null);
+                    }
+                }
+            } catch (\Exception $e) {
+                $errors[] = $email . ': ' . $e->getMessage();
+            }
+        }
+        
+        return [
+            'processedRows' => $processedRows,
+            'errors' => $errors
+        ];
+    }
 }

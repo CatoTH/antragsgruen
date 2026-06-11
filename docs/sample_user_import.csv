@@ -1,0 +1,4 @@
+email,first_name,last_name,organization,groups
+ada.lovelace@example.com,Ada,Lovelace,Volt Europa,"Delegates"
+alan.turing@example.com,Alan,Turing,,
+grace.hopper@example.com,Grace,Hopper,Volt Germany,"Admin, Delegates"

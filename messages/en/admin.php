@@ -1084,4 +1084,44 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
         'text' => 'Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users.',
         'js' => true,
     ],
+    'csv_uploading' => [
+        'text' => 'Uploading file...',
+        'js' => true,
+    ],
+    'csv_init_failed' => [
+        'text' => 'Failed to initialize upload',
+        'js' => true,
+    ],
+    'csv_processing' => [
+        'text' => 'Processing... ({percent}%)',
+        'js' => true,
+    ],
+    'csv_chunk_failed' => [
+        'text' => 'Failed to process chunk',
+        'js' => true,
+    ],
+    'csv_success' => [
+        'text' => 'Successfully processed {processedRows} users.',
+        'js' => true,
+    ],
+    'csv_errors' => [
+        'text' => '<strong>Errors encountered:</strong><br>',
+        'js' => true,
+    ],
+    'csv_errors_count' => [
+        'text' => ' Encountered {errorCount} errors.',
+        'js' => true,
+    ],
+    'csv_reload' => [
+        'text' => ' You can reload the page to see them.',
+        'js' => true,
+    ],
+    'csv_error_prefix' => [
+        'text' => 'Error: {message}',
+        'js' => true,
+    ],
+    'csv_failed' => [
+        'text' => 'Import failed.',
+        'js' => true,
+    ],
 ];
