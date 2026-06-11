@@ -71,6 +71,9 @@ jobs:
       - name: Build frontend assets
         run: pnpm run build
 
+      - name: Build JS Manifest
+        run: docs/create-static-resources.php
+
       - name: Read version
         id: version
         run: |
