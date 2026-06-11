@@ -144,15 +144,6 @@ jobs:
           sed -i 's/localhost:8080/test.antragsgruen.test/' config/config_tests.json
           sed -i 's/host: 127.0.0.1/host: selenium/' tests/Acceptance.suite.yml
           docker compose -f docker-compose.development.yml exec -T web php -d register_argc_argv=On vendor/bin/codecept build
-      - name: Verify web app health
-        run: |
-          STATUS=$(docker compose -f docker-compose.development.yml exec -T web curl -s -o /tmp/resp.html -w "%{http_code}" -H "Host: test.antragsgruen.test" http://nginx/)
-          echo "HTTP $STATUS"
-          if [ "$STATUS" != "200" ]; then
-            docker compose -f docker-compose.development.yml exec -T web head -c 2000 /tmp/resp.html
-            echo ""
-            exit 1
-          fi
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
@@ -162,6 +153,17 @@ jobs:
         run: |
           pnpm install
           pnpm run build
+      - name: Verify web app health
+        run: |
+          RESPONSE=$(docker compose -f docker-compose.development.yml exec -T web curl -s -w "\n%{http_code}" -H "Host: test.antragsgruen.test" http://nginx/)
+          STATUS=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+          echo "HTTP $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "$BODY" | head -c 3000
+            echo ""
+            exit 1
+          fi
       - name: Run Acceptance Tests
         run: docker compose -f docker-compose.development.yml exec -T web php -d register_argc_argv=On vendor/bin/codecept run Acceptance
       - name: Upload acceptance test artifacts
