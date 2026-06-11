@@ -126,6 +126,7 @@ jobs:
           echo "RANDOM_SEED=12345" >> .env
           echo "RABBITMQ_DEFAULT_USER=guest" >> .env
           echo "RABBITMQ_DEFAULT_PASS=guest" >> .env
+          echo "YII_ENV=test" >> .env
           for i in {1..3}; do docker compose --profile acceptance -f docker-compose.development.yml pull && break || sleep 15; done
           docker compose --profile acceptance -f docker-compose.development.yml up -d
       - name: Initialize DB and test data

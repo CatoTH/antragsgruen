@@ -33,6 +33,7 @@ services:
       - OTEL_PROPAGATORS=baggage,tracecontext
       - BACKGROUND_JOBS_NOTIFICATIONS=true
       - JS_ERROR_TRACKING=otel://js.error
+      - YII_ENV=${YII_ENV:-}
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"

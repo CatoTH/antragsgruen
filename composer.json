@@ -76,7 +76,8 @@
   },
   "autoload": {
     "psr-4": {
-      "setasign\\FpdiPdfParser\\": "components/fpdi/src/"
+      "setasign\\FpdiPdfParser\\": "components/fpdi/src/",
+      "app\\": ""
     }
   },
   "autoload-dev": {
