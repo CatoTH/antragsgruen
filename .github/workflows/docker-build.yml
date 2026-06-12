@@ -172,6 +172,7 @@ jobs:
           target: minimal
           platforms: linux/amd64,linux/arm64
           #push: ${{ github.event_name != 'pull_request' }}
+          push: true
           build-args: |
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
@@ -209,7 +210,7 @@ jobs:
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       - name: Log in to Docker Hub
-        if: github.event_name != 'pull_request'
+        #if: github.event_name != 'pull_request'
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -223,6 +224,7 @@ jobs:
           target: full
           platforms: linux/amd64,linux/arm64
           #push: ${{ github.event_name != 'pull_request' }}
+          push: true
           build-args: |
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
