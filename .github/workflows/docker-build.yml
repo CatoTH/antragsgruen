@@ -36,10 +36,10 @@ jobs:
       version: ${{ steps.version.outputs.value }}
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
       - name: Set up PHP
-        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231 # v2.31.1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
           extensions: curl, dom, fileinfo, iconv, intl, mbstring, mysql, pdo, zip
@@ -49,7 +49,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache composer dependencies
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -59,7 +59,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-dev --no-interaction
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@08c4be7e2e672a47d11bd04269e27e5f3e8529cb # v6.0.0
+        uses: pnpm/action-setup@v6
         with:
           version: 10
 
@@ -101,36 +101,28 @@ jobs:
             . "$DIST_DIR"
 
           cd "$DIST_DIR"
-          rm -f config/DEBUG config/config.template.json config/TEST_DOMAIN
-          rm -f config/config.json config/config_tests.json
-          rm -f composer.json composer.lock package.json pnpm-lock.yaml pnpm-workspace.yaml
-          rm -f gulpfile.js eslint.config.mjs .eslintrc.cjs .eslintrc.js
-          rm -f phpstan.neon phpstan.neon.dist phpstan.use-baseline.neon phpstan-baseline.neon
-          rm -f .php-cs-fixer.php .php-cs-fixer.dist.php phpunit.xml phpunit9.xml.dist
-          rm -f codeception.yml phpci.yml .gitignore .gitattributes .editorconfig .travis.yml
-          rm -f Makefile UPGRADE.md .readthedocs.yaml .scrutinizer.yml .woodpecker.yml
-          rm -rf tests docker-vagrant docker-compose.development.yml docker-compose.yml
-          rm -rf assets/OpenOffice-Template-ods assets/OpenOffice-Template-odt assets/phpstan-helper.php
-          rm -rf web/js/src web/js/bower vendor/bin vendor/bower-asset
-          rm -rf migrations/m1* migrations/m20* migrations/m21* migrations/m22* migrations/m23* migrations/m24*
-          find vendor/ -name "README.md" -delete 2>/dev/null || true
-          find vendor/ -name "CHANGELOG.md" -delete 2>/dev/null || true
-          find vendor/ -type l -delete 2>/dev/null || true
-          find . -name "*.map" -delete 2>/dev/null || true
-          find . -name ".DS_Store" -delete 2>/dev/null || true
-          mv web/index-production.php web/index.php 2>/dev/null || true
-          sed -i -e 's/repository-source/dist/g' config/defines.php
-          touch config/INSTALLING
+
+          ./docs/create-dist-clean-repository.sh
+
           mkdir -p plugins runtime
           chmod 775 runtime web/assets
+          
+          mv web/index-production.php web/index.php 2>/dev/null || true
+          # touch config/INSTALLING # Not in Docker build
+          cp config/.htaccess runtime/
+          cp config/.htaccess plugins/
+          cp config/.htaccess vendor/
+          sed -i -e 's/repository-source/dist/g' config/defines.php
 
-          cd "$GITHUB_WORKSPACE"
-          mkdir -p docker/apache-single-container/releases
-          tar cfj "docker/apache-single-container/releases/antragsgruen-$VERSION.tar.bz2" \
-            -C local "antragsgruen-$VERSION"
+          cd "$GITHUB_WORKSPACE/local"
+          ls -la cdn/
+          mkdir -p "$GITHUB_WORKSPACE/docker/apache-single-container/releases"
+          tar cfj "$GITHUB_WORKSPACE/docker/apache-single-container/releases/antragsgruen-$VERSION.tar.bz2" "antragsgruen-$VERSION"
+          zip -r "$GITHUB_WORKSPACE/docker/apache-single-container/releases/antragsgruen-$VERSION.zip" "antragsgruen-$VERSION"
+          tar cfj "$GITHUB_WORKSPACE/docker/apache-single-container/releases/cdn-$VERSION.tar.bz2" "cdn/"
 
       - name: Upload distribution tarball
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@v7
         with:
           name: dist-tarball
           path: docker/apache-single-container/releases/
@@ -144,28 +136,28 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
       - name: Download distribution tarball
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.2.1
+        uses: actions/download-artifact@v8
         with:
           name: dist-tarball
           path: docker/apache-single-container/releases/
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and push minimal image
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        uses: docker/build-push-action@v7
         with:
           context: docker/apache-single-container
           file: docker/apache-single-container/Dockerfile
@@ -195,29 +187,29 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
       - name: Download distribution tarball
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.2.1
+        uses: actions/download-artifact@v8
         with:
           name: dist-tarball
           path: docker/apache-single-container/releases/
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to Docker Hub
         #if: github.event_name != 'pull_request'
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and push full image
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        uses: docker/build-push-action@v7
         with:
           context: docker/apache-single-container
           file: docker/apache-single-container/Dockerfile

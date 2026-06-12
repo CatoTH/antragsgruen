@@ -19,7 +19,7 @@ COPY ${APP_ARCHIVE} /tmp/app.tar.bz2
 RUN mkdir -p /var/www/html \
     && tar -xjf /tmp/app.tar.bz2 --strip-components=1 -C /var/www/html \
     && rm /tmp/app.tar.bz2 \
-    && rm /var/www/html/config/INSTALLING
+    && rm -f /var/www/html/config/INSTALLING
 
 # Allow Static View Caches
 RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache
