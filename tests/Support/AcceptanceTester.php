@@ -270,6 +270,7 @@ class AcceptanceTester extends Actor
 
     public function logout(): void
     {
+        $this->waitForJS('return document.readyState === "complete"', 10);
         $this->see('LOGOUT', '#logoutLink');
         $this->click('#logoutLink');
     }
