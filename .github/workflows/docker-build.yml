@@ -171,7 +171,7 @@ jobs:
           file: docker/apache-single-container/Dockerfile
           target: minimal
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
+          #push: ${{ github.event_name != 'pull_request' }}
           build-args: |
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
@@ -222,7 +222,7 @@ jobs:
           file: docker/apache-single-container/Dockerfile
           target: full
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
+          #push: ${{ github.event_name != 'pull_request' }}
           build-args: |
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
