@@ -34,8 +34,13 @@ jobs:
       contents: read
     outputs:
       version: ${{ steps.version.outputs.value }}
+      owner_lc: ${{ steps.lower.outputs.github_repository_owner_lc }}
 
     steps:
+      - name: Lowercase owner
+        id: lower
+        run: echo "github_repository_owner_lc=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_OUTPUT
+
       - uses: actions/checkout@v6
 
       - name: Set up PHP
@@ -134,6 +139,7 @@ jobs:
     needs: prepare
     permissions:
       contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v6
@@ -156,6 +162,13 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push minimal image
         uses: docker/build-push-action@v7
         with:
@@ -171,6 +184,9 @@ jobs:
             ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:latest-minimal
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest-minimal
           labels: |
             org.opencontainers.image.title=Antragsgruen
             org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen
@@ -185,6 +201,7 @@ jobs:
     needs: [ prepare, build-minimal ]
     permissions:
       contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v6
@@ -208,6 +225,13 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push full image
         uses: docker/build-push-action@v7
         with:
@@ -222,6 +246,8 @@ jobs:
           tags: |
             ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}-full
             ${{ env.IMAGE }}:latest-full
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}-full
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest-full
           labels: |
             org.opencontainers.image.title=Antragsgruen
             org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen
