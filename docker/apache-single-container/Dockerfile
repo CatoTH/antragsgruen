@@ -34,10 +34,12 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod 775 /var/www/html/yii \
     # Yii2 runtime and assets directories need to be writable
     && chmod -R 775 /var/www/html/runtime 2>/dev/null || true \
-    && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true
+    && chmod -R 775 /var/www/html/web/assets 2>/dev/null || true \
+    && chmod a+x /entrypoint.sh
 
 EXPOSE 80
 
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apache2-foreground"]
 
 
