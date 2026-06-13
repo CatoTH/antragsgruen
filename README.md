@@ -90,9 +90,19 @@ sudo chown -R www-data:www-data config #Can be skipped if you don't use the Inst
 
 ### Using the Docker Image
 
-A Docker Image is provided at [tobiashoessl/antragsgruen](tobiashoessl/antragsgruen). It comes in two flavors:
-- `full` contains everything, including better PDF generation (Weasyprint) and tools for image processing (for uploading applications).
+A Docker Image is provided on:
+- [Docker Hub: tobiashoessl/antragsgruen](https://hub.docker.com/repository/docker/tobiashoessl/antragsgruen/general)
+- [Github GHCR: ghcr.io/catoth/antragsgruen](https://github.com/CatoTH/antragsgruen/pkgs/container/antragsgruen)
+
+It comes in two flavors:
+- `full` (default) contains everything, including better PDF generation (Weasyprint) and tools for image processing (for uploading applications).
 - `minimal` contains everything, but without these extra tools. The image is therefore significantly smaller, but some functionality will be missing.
+
+Tagging conventions are:
+- `latest` points to the most recent **Release*, in `full` flavor.
+- `latest-minimal` points to the most recent **Release**, in `minimal` flavor.
+- Each release gets two version-specific tags. 4.17.0, for example, receives `4.17.0-full` and `4.17.0-minimal`.
+- Git-Tags can get their own Docker images, using the same tag as on git (minus leading `v`). Git-Tags do not set the `latest`/`latest-minimal` tags. This is used to provide interim releases on request for customers.
 
 A sample on how to use it can be seen in the bundles [docker-compose.yml](docker-compose.yml).
 

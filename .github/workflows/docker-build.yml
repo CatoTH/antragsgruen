@@ -1,0 +1,272 @@
+name: Docker image
+
+# Automates the multi-arch image build that is currently run by hand at release
+# time (see docs/create-dist.sh and the buildx commands in the Dockerfile header).
+# Publishes the `minimal` and `full` targets to Docker Hub, matching the existing
+# tobiashoessl/antragsgruen tagging scheme.
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      ANTRAGSGRUEN_VERSION:
+        description: 'Version string override (e.g. 4.17.0-rc1). Defaults to ANTRAGSGRUEN_VERSION from config/defines.php.'
+        required: false
+        type: string
+      ANTRAGSGRUEN_TAG_LATEST:
+        description: 'Set to 1 to also push the latest/latest-minimal tags.'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE: tobiashoessl/antragsgruen
+
+jobs:
+  prepare:
+    name: Build frontend assets and distribution tarball
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+      owner_lc: ${{ steps.lower.outputs.github_repository_owner_lc }}
+      tag_latest: ${{ steps.tag_latest.outputs.value }}
+
+    steps:
+      - name: Lowercase owner
+        id: lower
+        run: echo "github_repository_owner_lc=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: curl, dom, fileinfo, iconv, intl, mbstring, mysql, pdo, zip
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress --no-dev --no-interaction
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - name: Install Node.js dependencies
+        run: pnpm install
+
+      - name: Build frontend assets
+        run: pnpm run build
+
+      - name: Determine whether to push latest tags
+        id: tag_latest
+        run: |
+          if [[ "${{ github.event_name }}" == "release" || "${{ github.event.inputs.ANTRAGSGRUEN_TAG_LATEST }}" == "1" ]]; then
+            echo "value=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Read version
+        id: version
+        run: |
+          OVERRIDE="${{ github.event.inputs.ANTRAGSGRUEN_VERSION }}"
+          if [ -n "$OVERRIDE" ]; then
+            echo "value=$OVERRIDE" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_type }}" == "tag" ]]; then
+            # Strip a leading 'v' from the tag name (e.g. v4.17.0 -> 4.17.0)
+            TAG="${GITHUB_REF_NAME#v}"
+            echo "value=$TAG" >> "$GITHUB_OUTPUT"
+          else
+            VERSION=$(grep "ANTRAGSGRUEN_VERSION" config/defines.php | cut -d \' -f 4)
+            echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build JS Manifest
+        run: docs/create-static-resources.php ${{ steps.version.outputs.value }}
+
+      - name: Create distribution tarball
+        # Mirrors the pruning in docs/create-dist.sh closely enough to produce the
+        # same runnable application tree the Dockerfile's APP_ARCHIVE expects. The
+        # CDN/static-resource generation in create-dist.sh is intentionally skipped
+        # as it is not needed inside the image.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.value }}"
+          DIST_DIR="local/antragsgruen-$VERSION"
+          mkdir -p "$DIST_DIR"
+
+          rsync -a \
+            --exclude='local' --exclude='/dist' --exclude='/updates' \
+            --exclude='/plugins' --exclude='node_modules' --exclude='runtime' \
+            --exclude='web_src' --exclude='/docker' --exclude='.git' \
+            . "$DIST_DIR"
+
+          cd "$DIST_DIR"
+
+          ./docs/create-dist-clean-repository.sh
+
+          mkdir -p plugins runtime
+          chmod 775 runtime web/assets
+          
+          mv web/index-production.php web/index.php 2>/dev/null || true
+          # touch config/INSTALLING # Not in Docker build
+          cp config/.htaccess runtime/
+          cp config/.htaccess plugins/
+          cp config/.htaccess vendor/
+          sed -i -e 's/repository-source/dist/g' config/defines.php
+
+          cd "$GITHUB_WORKSPACE/local"
+          ls -la cdn/
+          mkdir -p "$GITHUB_WORKSPACE/docker/apache-single-container/releases"
+          tar cfj "$GITHUB_WORKSPACE/docker/apache-single-container/releases/antragsgruen-$VERSION.tar.bz2" "antragsgruen-$VERSION"
+          zip -r "$GITHUB_WORKSPACE/docker/apache-single-container/releases/antragsgruen-$VERSION.zip" "antragsgruen-$VERSION"
+          tar cfj "$GITHUB_WORKSPACE/docker/apache-single-container/releases/cdn-$VERSION.tar.bz2" "cdn/"
+
+      - name: Upload distribution tarball
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist-tarball
+          path: docker/apache-single-container/releases/
+          retention-days: 1
+
+  build-minimal:
+    name: Build minimal image
+    runs-on: ubuntu-latest
+    needs: prepare
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download distribution tarball
+        uses: actions/download-artifact@v8
+        with:
+          name: dist-tarball
+          path: docker/apache-single-container/releases/
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push minimal image
+        uses: docker/build-push-action@v7
+        with:
+          context: docker/apache-single-container
+          file: docker/apache-single-container/Dockerfile
+          target: minimal
+          platforms: linux/amd64,linux/arm64
+          #push: ${{ github.event_name != 'pull_request' }}
+          push: true
+          build-args: |
+            APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
+          tags: |
+            ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}-minimal
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('{0}:latest-minimal', env.IMAGE) || '' }}
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}-minimal
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('ghcr.io/{0}/antragsgruen:latest-minimal', needs.prepare.outputs.owner_lc) || '' }}
+          labels: |
+            org.opencontainers.image.title=Antragsgruen
+            org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen
+            org.opencontainers.image.version=${{ needs.prepare.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=minimal
+          cache-to: type=gha,mode=max,scope=minimal
+
+  build-full:
+    name: Build full image
+    runs-on: ubuntu-latest
+    needs: [ prepare, build-minimal ]
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download distribution tarball
+        uses: actions/download-artifact@v8
+        with:
+          name: dist-tarball
+          path: docker/apache-single-container/releases/
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to Docker Hub
+        #if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push full image
+        uses: docker/build-push-action@v7
+        with:
+          context: docker/apache-single-container
+          file: docker/apache-single-container/Dockerfile
+          target: full
+          platforms: linux/amd64,linux/arm64
+          #push: ${{ github.event_name != 'pull_request' }}
+          push: true
+          build-args: |
+            APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
+          tags: |
+            ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}-full
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('{0}:latest', env.IMAGE) || '' }}
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}-full
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('ghcr.io/{0}/antragsgruen:latest', needs.prepare.outputs.owner_lc) || '' }}
+          labels: |
+            org.opencontainers.image.title=Antragsgruen
+            org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen
+            org.opencontainers.image.version=${{ needs.prepare.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=minimal
+          cache-to: type=gha,mode=max,scope=full

@@ -1,0 +1,30 @@
+FROM php:8.5-apache
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libicu-dev \
+        libcurl4-openssl-dev \
+        libxml2-dev \
+        libonig-dev \
+        libzip-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install exif gd intl mysqli pdo_mysql curl xml mbstring zip iconv sysvsem \
+    && apt-get purge -y --auto-remove \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libicu-dev \
+        libcurl4-openssl-dev \
+        libxml2-dev \
+        libonig-dev \
+        libzip-dev \
+    && apt-get install -y --no-install-recommends \
+        libfreetype6 \
+        libjpeg62-turbo \
+        libpng16-16 \
+        libicu76 \
+        libzip5 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
