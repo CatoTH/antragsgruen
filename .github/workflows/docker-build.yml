@@ -8,14 +8,17 @@ name: Docker image
 on:
   release:
     types: [published]
-  pull_request:
-    paths:
-      - 'docker/apache-single-container/**'
-      - '.github/workflows/docker-build.yml'
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       ANTRAGSGRUEN_VERSION:
         description: 'Version string override (e.g. 4.17.0-rc1). Defaults to ANTRAGSGRUEN_VERSION from config/defines.php.'
+        required: false
+        type: string
+      ANTRAGSGRUEN_TAG_LATEST:
+        description: 'Set to 1 to also push the latest/latest-minimal tags.'
         required: false
         type: string
 
@@ -35,6 +38,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.value }}
       owner_lc: ${{ steps.lower.outputs.github_repository_owner_lc }}
+      tag_latest: ${{ steps.tag_latest.outputs.value }}
 
     steps:
       - name: Lowercase owner
@@ -74,12 +78,25 @@ jobs:
       - name: Build frontend assets
         run: pnpm run build
 
+      - name: Determine whether to push latest tags
+        id: tag_latest
+        run: |
+          if [[ "${{ github.event_name }}" == "release" || "${{ github.event.inputs.ANTRAGSGRUEN_TAG_LATEST }}" == "1" ]]; then
+            echo "value=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Read version
         id: version
         run: |
           OVERRIDE="${{ github.event.inputs.ANTRAGSGRUEN_VERSION }}"
           if [ -n "$OVERRIDE" ]; then
             echo "value=$OVERRIDE" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_type }}" == "tag" ]]; then
+            # Strip a leading 'v' from the tag name (e.g. v4.17.0 -> 4.17.0)
+            TAG="${GITHUB_REF_NAME#v}"
+            echo "value=$TAG" >> "$GITHUB_OUTPUT"
           else
             VERSION=$(grep "ANTRAGSGRUEN_VERSION" config/defines.php | cut -d \' -f 4)
             echo "value=$VERSION" >> "$GITHUB_OUTPUT"
@@ -182,9 +199,9 @@ jobs:
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
             ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}-minimal
-            ${{ env.IMAGE }}:latest-minimal
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('{0}:latest-minimal', env.IMAGE) || '' }}
             ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}-minimal
-            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest-minimal
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('ghcr.io/{0}/antragsgruen:latest-minimal', needs.prepare.outputs.owner_lc) || '' }}
           labels: |
             org.opencontainers.image.title=Antragsgruen
             org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen
@@ -243,9 +260,9 @@ jobs:
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
             ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}-full
-            ${{ env.IMAGE }}:latest
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('{0}:latest', env.IMAGE) || '' }}
             ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}-full
-            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest
+            ${{ needs.prepare.outputs.tag_latest == 'true' && format('ghcr.io/{0}/antragsgruen:latest', needs.prepare.outputs.owner_lc) || '' }}
           labels: |
             org.opencontainers.image.title=Antragsgruen
             org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen
