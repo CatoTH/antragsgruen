@@ -8,10 +8,10 @@ name: Docker image
 on:
   release:
     types: [published]
-  #pull_request:
-  #  paths:
-  #    - 'docker/apache-single-container/**'
-  #    - '.github/workflows/docker-build.yml'
+  pull_request:
+    paths:
+      - 'docker/apache-single-container/**'
+      - '.github/workflows/docker-build.yml'
   workflow_dispatch:
     inputs:
       ANTRAGSGRUEN_VERSION:

@@ -11,6 +11,7 @@ ARG APP_ARCHIVE=antragsgruen.tar.bz2
 RUN a2enmod rewrite remoteip
 
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY entrypoint.sh /entrypoint.sh
 COPY enable-installer.sh /root/enable-installer.sh
 COPY php.ini /usr/local/etc/php/conf.d/zz-antragsgruen.ini
 
@@ -19,7 +20,9 @@ COPY ${APP_ARCHIVE} /tmp/app.tar.bz2
 RUN mkdir -p /var/www/html \
     && tar -xjf /tmp/app.tar.bz2 --strip-components=1 -C /var/www/html \
     && rm /tmp/app.tar.bz2 \
-    && rm -f /var/www/html/config/INSTALLING
+    && rm -f /var/www/html/config/INSTALLING \
+    && mv /var/www/html/config/ /var/www/html/config-defaults/ \
+    && mkdir /var/www/html/config/
 
 # Allow Static View Caches
 RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache

@@ -5,6 +5,7 @@ volumes:
 services:
   web:
     image: tobiashoessl/antragsgruen:latest
+    entrypoint: ["/entrypoint.sh"]
     ports:
       - "12380:80"
     volumes:
@@ -29,6 +30,7 @@ services:
 
   worker:
     image: tobiashoessl/antragsgruen:latest
+    entrypoint: ["/entrypoint.sh"]
     command: /var/www/html/yii background-job/run
     volumes:
       - "antragsgruen-config:/var/www/html/config"
@@ -50,6 +52,7 @@ services:
 
   cron:
     image: tobiashoessl/antragsgruen:latest
+    entrypoint: ["/entrypoint.sh"]
     command: sh -c "while true; do /var/www/html/yii background-job/cleanup; sleep 86400; done"
     volumes:
       - "antragsgruen-config:/var/www/html/config"
