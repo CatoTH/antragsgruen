@@ -8,10 +8,10 @@ name: Docker image
 on:
   release:
     types: [published]
-  pull_request:
-    paths:
-      - 'docker/apache-single-container/**'
-      - '.github/workflows/docker-build.yml'
+  #pull_request:
+  #  paths:
+  #    - 'docker/apache-single-container/**'
+  #    - '.github/workflows/docker-build.yml'
   workflow_dispatch:
     inputs:
       ANTRAGSGRUEN_VERSION:
@@ -181,11 +181,9 @@ jobs:
           build-args: |
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
-            ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}
-            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}-minimal
             ${{ env.IMAGE }}:latest-minimal
-            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}
-            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}-minimal
             ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest-minimal
           labels: |
             org.opencontainers.image.title=Antragsgruen
@@ -245,9 +243,9 @@ jobs:
             APP_ARCHIVE=releases/antragsgruen-${{ needs.prepare.outputs.version }}.tar.bz2
           tags: |
             ${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}-full
-            ${{ env.IMAGE }}:latest-full
+            ${{ env.IMAGE }}:latest
             ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:${{ needs.prepare.outputs.version }}-full
-            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest-full
+            ghcr.io/${{ needs.prepare.outputs.owner_lc }}/antragsgruen:latest
           labels: |
             org.opencontainers.image.title=Antragsgruen
             org.opencontainers.image.source=https://github.com/CatoTH/antragsgruen

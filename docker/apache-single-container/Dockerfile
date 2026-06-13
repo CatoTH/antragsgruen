@@ -4,7 +4,7 @@
 # Full
 # docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP_ARCHIVE=releases/antragsgruen-4.17.0-b9.tar.bz2 --target full -t tobiashoessl/antragsgruen:4.17.0-b9-full -t tobiashoessl/antragsgruen:latest-full -f Dockerfile --push .
 
-FROM ghcr.io/catoth/antragsgruen-php-base:latest AS minimal
+FROM ghcr.io/catoth/antragsgruen-php-base:8.5-apache AS minimal
 
 ARG APP_ARCHIVE=antragsgruen.tar.bz2
 

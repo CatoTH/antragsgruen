@@ -88,6 +88,7 @@ rm phpstan.use-baseline.neon
 rm eslint.config.mjs
 rm .eslintrc.cjs
 rm .eslintrc.js
+rm .env.example
 rm docker-compose.development.yml
 rm docker-compose.yml
 rm docs/*.sh
