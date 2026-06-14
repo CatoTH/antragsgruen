@@ -39,6 +39,8 @@ echo $controller->showErrors();
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
+echo $this->render('_index_current_discussion', ['consultation' => $consultation]);
+
 if ($myself) {
     echo $this->render('_index_my_motions', ['consultation' => $consultation, 'myself' => $myself]);
 }
