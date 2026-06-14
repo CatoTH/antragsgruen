@@ -50,7 +50,7 @@
         "@rollup/plugin-commonjs": "^29.0.3",
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@selectize/selectize": "^0.15.2",
-        "@vue/compiler-sfc": "^3.5.35",
+        "@vue/compiler-sfc": "^3.5.38",
         "bootbox": "^6.0.4",
         "bootstrap-toggle": "^2.2.2",
         "clipboard": "^2.0.11",
@@ -60,7 +60,7 @@
         "requirejs": "^2.3.8",
         "rollup": "^4.61.1",
         "sortablejs": "^1.15.7",
-        "vue": "^3.5.35",
+        "vue": "^3.5.38",
         "vue-draggable-plus": "^0.6.1",
         "vuedraggable": "^4.1.0"
     },
