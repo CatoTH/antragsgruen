@@ -76,11 +76,15 @@ class AmendmentController extends AdminBase
         );
     }
 
-    public function actionPdfziplist(bool $inactive = false, bool $replaced = false): BinaryFileResponse
+    public function actionPdfziplist(bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
+
+        if (count($amendments) === 0) {
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
+        }
 
         $zip = new ZipWriter();
         foreach ($amendments as $amendmentGroup) {
@@ -103,11 +107,15 @@ class AmendmentController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'amendments_pdf');
     }
 
-    public function actionOdtziplist(bool $inactive = false, bool $replaced = false): BinaryFileResponse
+    public function actionOdtziplist(bool $inactive = false, bool $replaced = false): ResponseInterface
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
+
+        if (count($amendments) === 0) {
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
+        }
 
         $zip       = new ZipWriter();
         foreach ($amendments as $amendmentGroup) {

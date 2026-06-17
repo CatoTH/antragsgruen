@@ -227,6 +227,7 @@ return [
     'filter_responsibility'       => 'Zuständigkeit',
     'filter_show_replaced'        => 'Entwürfe, ersetzte &amp; alte Versionen anzeigen (%NUM%)',
     'filter_only_todo'            => 'Nur "To Do"\'s anzeigen (%NUM%)',
+    'filter_none_found'           => 'Keine passenden Dokumente gefunden.',
 
     'con_email_from'          => 'Absender-Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',
