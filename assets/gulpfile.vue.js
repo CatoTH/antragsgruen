@@ -94,7 +94,12 @@ function transformVueSfc(source, filePath, vueUrl) {
     });
 
     if (styleChunks.length) {
-        const allStyles = styleChunks.join('\n').replace(/`/g, '\\`');
+        const allStyles = styleChunks
+            .join('\n')
+            .replace(/\\/g, '\\\\')   // escape backslashes FIRST
+            .replace(/`/g, '\\`')      // then escape backticks
+            .replace(/\$\{/g, '\\${'); // and escape template literal interpolation
+
         parts.push(`
 (function injectStyles() {
   const el = document.createElement('style');

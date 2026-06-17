@@ -49,7 +49,13 @@ export class InitDb {
     gotoLanguageVariant = () => {
         let href = window.location.href.split("?")[0]
         href += "?language=" + $("#language").val()
-        window.location.href = href
+        const url = new URL(href, window.location.origin);
+        const path = url.pathname + url.search;
+        if (/^\/[a-zA-Z0-9\-_/?=&.,]*$/.test(path)) {
+            window.location.href = path;
+        } else {
+            console.error("Rejected unsafe redirect path:", path);
+        }
     }
 
     /**
