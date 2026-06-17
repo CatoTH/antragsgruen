@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\exceptions\ResponseException;
 use app\models\forms\AdminMotionFilterForm;
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
@@ -202,6 +203,8 @@ trait MotionExportTraits
                 return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
             }
             // Hint: If it is an amendmentOnly type, we will include the base motion here, too. Hence, no differentiation.
+        } catch (ResponseException $e) {
+            throw $e;
         } catch (ExceptionBase $e) {
             return new HtmlErrorResponse(404, $e->getMessage());
         }
@@ -234,7 +237,7 @@ trait MotionExportTraits
         try {
             list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, ($inactive === 1), ($resolutions === 1));
             if (count($imotions) === 0) {
-                return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
+                return new HtmlErrorResponse(404, \Yii::t('motion', 'filter_none_found'));
             }
             /** @var IMotion[] $imotions */
             $motionType = $imotions[0]->getMyMotionType();
@@ -245,9 +248,11 @@ trait MotionExportTraits
                     $imotions = array_merge($imotions, $motion->getFilteredAndSortedAmendments($filter));
                 }
                 if (count($imotions) === 0) {
-                    return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
+                    return new HtmlErrorResponse(404, \Yii::t('motion', 'filter_none_found'));
                 }
             }
+        } catch (ResponseException $e) {
+            throw $e;
         } catch (ExceptionBase $e) {
             return new HtmlErrorResponse(404, $e->getMessage());
         }

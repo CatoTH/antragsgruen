@@ -231,6 +231,7 @@ return [
     'filter_responsibility'       => 'Responsibility',
     'filter_show_replaced'        => 'Show drafts, old &amp; replaced versions (%NUM%)',
     'filter_only_todo'            => 'Show only "To Do"\'s (%NUM%)',
+    'filter_none_found'           => 'No matching documents found.',
 
     'con_email_from'          => 'From Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',

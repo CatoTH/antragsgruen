@@ -16,6 +16,7 @@
 - Private notes can be disabled for individual users, e.g. for designated shared accounts.
 - Bugfix: The "My Account" page showed consultations where the user did not actually have access.
 - Bugfix: In some situations, saving a motion could duplicate the initiator of it.
+- Bugfix: If one tried to export documents from the motion list, but no matching motions were found, the error messages were misleading.
 - Many text fragments that were static before (like alert boxes) can now also be translated and changed on the admin page.
 - A new console command `yii site/create` bootstraps the first site and its admin user without going through the web installer (useful for multisite setups, where setting `config/INSTALLING` would force every other instance into installer mode).
 

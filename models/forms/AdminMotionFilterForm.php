@@ -1141,7 +1141,7 @@ class AdminMotionFilterForm
 
         try {
             if (count($allIMotions) === 0) {
-                throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet')));
+                throw new ResponseException(new HtmlErrorResponse(404, \Yii::t('admin', 'filter_none_found')));
             }
             /** @var IMotion[] $imotions */
             $imotions = [];
@@ -1153,6 +1153,8 @@ class AdminMotionFilterForm
                     $imotions[] = $imotion;
                 }
             }
+        } catch (ResponseException $e) {
+            throw $e;
         } catch (ExceptionBase $e) {
             throw new ResponseException(new HtmlErrorResponse(404, $e->getMessage()));
         }
