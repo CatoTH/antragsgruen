@@ -95,7 +95,13 @@ export class MotionList {
                         link = link.replace("INACTIVE", inactive);
                         link = link.replace("REPLACED", replaced);
                         link = link.replace("MOTIONTYPES", motionTypes.join(","));
-                        $(this).attr("href", link);
+                        const url = new URL(link, window.location.origin);
+                        const path = url.pathname + url.search;
+                        if (/^\/[a-zA-Z0-9\-_/?=&.,]*$/.test(path)) {
+                            $(this).attr("href", path);
+                        } else {
+                            console.error("Rejected unsafe redirect path:", path);
+                        }
                     });
                 };
             $dd.find("input[type=checkbox]").on("change", recalcLinks).trigger("change");

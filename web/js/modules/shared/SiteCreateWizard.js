@@ -312,8 +312,14 @@ export class SiteCreateWizard {
 
         $form.find("#panelLanguage input").on("change", function () {
             const val = /** @type {string} */ ($form.find("#panelLanguage input:checked").val());
-            const url = $form.find("#panelLanguage").data("url").replace(/LNG/, val);
-            window.location.href = url;
+            const url = new URL($form.find("#panelLanguage").data("url").replace(/LNG/, val), window.location.origin);
+            const path = url.pathname + url.search;
+
+            if (/^\/[a-zA-Z0-9\-_/?=&.,]*$/.test(path)) {
+                window.location.href = path;
+            } else {
+                console.error("Rejected unsafe redirect path:", path);
+            }
         });
 
         // The enter key should not submit the form, but lead to the next panel

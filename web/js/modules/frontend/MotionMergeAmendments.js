@@ -592,10 +592,16 @@ class MotionMergeAmendmentsTextarea {
             html = html.replace(new RegExp(ent, 'g'), entities[ent]);
         });
 
-        return html.replace(/\s+</g, '<').replace(/>\s+/g, '>')
-            .replace(/<[^>]*ice-ins[^>]*>/g, 'ice-ins') // make sure accepted insertions are still recognized as change
-            .replace(/<ins[^>]*>/g, 'ice-ins')
-            .replace(/<[^>]*>/g, '');
+        let previous;
+        do {
+            previous = html;
+            html = html.replace(/\s+</g, '<').replace(/>\s+/g, '>')
+                .replace(/<[^>]*ice-ins[^>]*>/g, 'ice-ins') // make sure accepted insertions are still recognized as change
+                .replace(/<ins[^>]*>/g, 'ice-ins')
+                .replace(/<[^>]*>/g, '');
+        } while (html !== previous);
+
+        return html;
     }
 
     onChanged() {

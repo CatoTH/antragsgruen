@@ -47,7 +47,14 @@ export class AppearanceEdit {
             if ($selected.length === 0) {
                 $selected = $inputs.first();
             }
-            $editLink.attr("href", editLinkDefault.replace(/DEFAULT/, $selected.val()));
+
+            const parsed = new URL(editLinkDefault.replace(/DEFAULT/, $selected.val()), window.location.origin);
+            const path = parsed.pathname + parsed.search;
+            if (/^\/[a-zA-Z0-9\-_/?=&.,]*$/.test(path)) {
+                $editLink.attr("href", path);
+            } else {
+                console.error("Rejected unsafe redirect path:", path);
+            }
         };
         $inputs.on("change", onChange);
         onChange();
