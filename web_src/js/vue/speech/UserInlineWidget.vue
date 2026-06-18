@@ -130,7 +130,7 @@
                         <button class="btn btn-default btn-xs" type="button"
                                 v-if="queue.is_open && !queue.have_applied && showApplicationForm !== subqueue.id && !(!queue.allow_custom_names && registerName)"
                                 :disabled="loginWarning"
-                                @click="onShowApplicationForm($event, subqueue)"
+                                @click="onShowApplicationForm($event, subqueue, false)"
                                 v-t="['speech', 'apply']"
                         ></button>
                         <a :href="loginUrl" class="loginWarning" v-if="loginWarning">
@@ -158,7 +158,7 @@
                         <form @submit="register($event, subqueue)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                             <label :for="'speechRegisterName' + subqueue.id" class="sr-only" v-t="['speech', 'apply_name']"></label>
                             <div class="input-group">
-                                <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
+                                <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit" v-t="['speech', 'apply_do']"></button>
                                 </span>

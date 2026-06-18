@@ -217,8 +217,8 @@ export function getSpeechCommonMixins() {
                     this.showApplicationForm += '_poo';
                 }
                 this.$nextTick(function () {
-                    if (this.$refs.adderNameInputs) {
-                        this.$refs.adderNameInputs[0].focus();
+                    if (this.$refs.adderNameInput) {
+                        this.$refs.adderNameInput[0].focus();
                     } else if (this.$refs.adderNameInput) {
                         this.$refs.adderNameInput.focus();
                     }

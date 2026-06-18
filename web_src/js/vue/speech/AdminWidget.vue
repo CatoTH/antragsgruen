@@ -2,67 +2,66 @@
   <article class="speechAdmin" :class="{dragging: dragging}">
     <div class="toolbarBelowTitle settings">
       <div class="settingsActive" v-if="queue.is_active">
-        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-        <template v-t="['speech', 'admin_is_active']"></template>
-
-        <button class="btn btn-xs btn-default" type="button" @click="setInactive()" v-t="['speech', 'admin_deactivate']"></button>
+        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span
+          > <template v-t="['speech', 'admin_is_active']"></template
+          > <button class="btn btn-xs btn-default" type="button" @click="setInactive()" v-t="['speech', 'admin_deactivate']"></button>
       </div>
       <div class="settingsActive" v-if="!queue.is_active">
-        <span class="inactive" v-t="['speech', 'admin_is_inactive']"></span>
-        <button class="btn btn-xs btn-default" type="button" @click="setActive()" v-t="['speech', 'admin_activate']"></button>
-        <span v-if="queue.other_active_name" class="deactivateOthers" v-t="['speech', 'admin_deactivate_other']"></span>
+        <span class="inactive" v-t="['speech', 'admin_is_inactive']"></span
+          > <button class="btn btn-xs btn-default" type="button" @click="setActive()" v-t="['speech', 'admin_activate']"></button
+          > <span v-if="queue.other_active_name" class="deactivateOthers" v-t="['speech', 'admin_deactivate_other']"></span>
       </div>
       <div class="settingsOpen">
         <label class="settingOpen" v-if="queue.is_active">
-          <input type="checkbox" v-model="queue.settings.is_open" @change="settingsChanged()">
-          <template v-t="['speech', 'admin_setting_open']"></template>
+          <input type="checkbox" v-model="queue.settings.is_open" @change="settingsChanged()"
+            > <template v-t="['speech', 'admin_setting_open']"></template>
         </label>
         <label class="settingOpenPoo" v-if="queue.is_active">
-          <input type="checkbox" v-model="queue.settings.is_open_poo" @change="settingsChanged()">
-          <template v-t="['speech', 'admin_setting_open_poo']"></template>
+          <input type="checkbox" v-model="queue.settings.is_open_poo" @change="settingsChanged()"
+            > <template v-t="['speech', 'admin_setting_open_poo']"></template>
         </label>
       </div>
       <div class="settingsPolicy">
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <template v-t="['speech', 'admin_setting']"></template>
-            <span class="caret" aria-hidden="true"></span>
+            <template v-t="['speech', 'admin_setting']"
+              ></template> <span class="caret" aria-hidden="true"></span>
           </button>
           <ul class="dropdown-menu">
             <li class="checkbox">
               <label @click="$event.stopPropagation()">
-                <input type="checkbox" class="allowCustomNames" v-model="queue.settings.allow_custom_names" @change="settingsChanged()">
-                <template v-t="['speech', 'admin_allow_custom_names']"></template>
+                <input type="checkbox" class="allowCustomNames" v-model="queue.settings.allow_custom_names" @change="settingsChanged()"
+                  > <template v-t="['speech', 'admin_allow_custom_names']"></template>
               </label>
             </li>
             <li class="checkbox">
               <label @click="$event.stopPropagation()">
-                <input type="checkbox" class="preferNonspeaker" v-model="queue.settings.prefer_nonspeaker" @change="settingsChanged()">
-                <template v-t="['speech', 'admin_prefer_nonspeak']"></template>
+                <input type="checkbox" class="preferNonspeaker" v-model="queue.settings.prefer_nonspeaker" @change="settingsChanged()"
+                  > <template v-t="['speech', 'admin_prefer_nonspeak']"></template>
               </label>
             </li>
             <li class="checkbox">
               <label @click="$event.stopPropagation()">
-                <input type="checkbox" class="showNames" v-model="queue.settings.show_names" @change="settingsChanged()">
-                <template v-t="['speech', 'admin_show_names']"></template>
+                <input type="checkbox" class="showNames" v-model="queue.settings.show_names" @change="settingsChanged()"
+                  > <template v-t="['speech', 'admin_show_names']"></template>
               </label>
             </li>
             <li class="checkbox">
               <label @click="$event.stopPropagation()">
-                <input type="checkbox" class="hasSpeakingTime" v-model="hasSpeakingTime" @change="settingsChanged()">
-                <template v-t="['speech', 'admin_speaking_time']"></template>
+                <input type="checkbox" class="hasSpeakingTime" v-model="hasSpeakingTime" @change="settingsChanged()"
+                  > <template v-t="['speech', 'admin_speaking_time']"></template>
               </label>
             </li>
             <li v-if="hasSpeakingTime" class="speakingTime">
               <label @click="$event.stopPropagation()" class="input-group input-group-sm">
-                <input type="number" class="form-control" v-model="speakingTime" @change="settingsChanged()">
-                <span class="input-group-addon" v-t="['speech', 'admin_time_seconds']"></span>
+                <input type="number" class="form-control" v-model="speakingTime" @change="settingsChanged()"
+                  > <span class="input-group-addon" v-t="['speech', 'admin_time_seconds']"></span>
               </label>
             </li>
             <li class="link">
               <a :href="componentAdminLink">
-                <span class="icon glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <template v-t="['speech', 'admin_goto_components']"></template>
+                <span class="icon glyphicon glyphicon-chevron-right" aria-hidden="true"></span
+                  > <template v-t="['speech', 'admin_goto_components']"></template>
               </a>
             </li>
             <li class="randomizeQueues">

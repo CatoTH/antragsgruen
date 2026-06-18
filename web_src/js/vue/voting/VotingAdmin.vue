@@ -17,9 +17,8 @@
         </span>
 
       <label class="activateHeader">
-        <input type="checkbox" v-model="isUsed">
-        <template v-t="['voting', 'admin_voting_use']"></template>
-        <span class="glyphicon glyphicon-info-sign"
+        <input type="checkbox" v-model="isUsed"
+          > <template v-t="['voting', 'admin_voting_use']"></template> <span class="glyphicon glyphicon-info-sign"
               v-t:aria-label="['voting', 'admin_voting_use_h']"
               v-tooltip="['voting', 'admin_voting_use_h']"
         ></span>
@@ -298,7 +297,7 @@
       </fieldset>
       <fieldset class="votePolicy">
         <legend><template v-t="['voting', 'settings_votepolicy']"></template>:</legend>
-        <policy-select allow-anonymous="false" :disabled="!isPreparing && !isOffline" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
+        <policy-select allow-anonymous="false" :disabled="!isPreparing" :policy="votePolicy" :all-groups="voting.user_groups" @change="setPolicy($event)" ref="policy-select"></policy-select>
       </fieldset>
 
       <fieldset class="votesMaxVotes">

@@ -162,7 +162,7 @@
               <form @submit="register($event, subqueue, false)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">
                 <label :for="'speechRegisterName' + subqueue.id" class="sr-only" v-t="['speech', 'apply_name']"></label>
                 <div class="input-group">
-                  <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInputs">
+                  <input type="text" class="form-control speechRegisterName" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
                   <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit" v-t="['speech', 'apply_do']"></button>
                   </span>
