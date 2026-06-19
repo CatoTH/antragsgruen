@@ -279,39 +279,39 @@ $layout->addJsTranslation("admin");
                 <?= t('admin', 'user_csv_upload_info') ?>
             </div>
             <div class="stdTwoCols">
-                <label class="leftColumn">CSV File:</label>
+                <label class="leftColumn"><?= t('admin', 'user_csv_label_file') ?></label>
                 <div class="rightColumn">
                     <input type="file" class="form-control" name="csvFile" accept=".csv" required>
                 </div>
             </div>
             <div class="stdTwoCols">
-                <label class="leftColumn">Existing Users:</label>
+                <label class="leftColumn"><?= t('admin', 'user_csv_label_collision') ?></label>
                 <div class="rightColumn">
                     <select class="form-control" name="collisionBehavior">
-                        <option value="skip">Skip existing users</option>
-                        <option value="merge">Update user and merge new groups</option>
-                        <option value="replace">Update user and replace groups</option>
+                        <option value="skip"><?= t('admin', 'user_csv_collision_skip') ?></option>
+                        <option value="merge"><?= t('admin', 'user_csv_collision_merge') ?></option>
+                        <option value="replace"><?= t('admin', 'user_csv_collision_replace') ?></option>
                     </select>
                 </div>
             </div>
             <?php if ($hasEmail) { ?>
             <div class="stdTwoCols">
-                <label class="leftColumn">Welcome Email:</label>
+                <label class="leftColumn"><?= t('admin', 'user_csv_label_email') ?></label>
                 <div class="rightColumn">
                     <label>
                         <input type="checkbox" name="sendEmail" id="csvSendEmail" value="1">
-                        Send welcome email to NEW users
+                        <?= t('admin', 'user_csv_send_email') ?>
                     </label>
                     <textarea id="csvEmailText" class="form-control hidden" name="emailText" rows="11"><?= Html::encode($preText) ?></textarea>
                 </div>
             </div>
             <?php } ?>
             <div class="saveholder">
-                <button type="submit" class="btn btn-primary" id="csvSubmitBtn">Upload and Process CSV</button>
+                <button type="submit" class="btn btn-primary" id="csvSubmitBtn"><?= t('admin', 'user_csv_submit') ?></button>
             </div>
             
             <div id="csvProgressContainer" class="hidden" style="margin-top: 20px;">
-                <p id="csvProgressText">Processing...</p>
+                <p id="csvProgressText"><?= t('admin', 'user_csv_progress_init') ?></p>
                 <div class="progress">
                     <div id="csvProgressBar" class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%"></div>
                 </div>

@@ -932,5 +932,14 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
         'text' => 'Import fehlgeschlagen.',
         'js' => true,
     ],
-    'user_csv_upload_info' => 'Lade eine CSV-Datei mit den folgenden Spalten hoch: <code>email, first_name, last_name, organization, groups</code>. (Nur <code>email</code> ist zwingend erforderlich. <code>groups</code> kann eine kommagetrennte Liste von Gruppennamen oder externen IDs sein).'
+    'user_csv_upload_info' => 'Lade eine CSV-Datei mit den folgenden Spalten hoch: <code>email, first_name, last_name, organization, groups</code>. (Nur <code>email</code> ist zwingend erforderlich. <code>groups</code> kann eine kommagetrennte Liste von Gruppennamen oder externen IDs sein).',
+    'user_csv_label_file' => 'CSV-Datei:',
+    'user_csv_label_collision' => 'Bestehende Benutzer:',
+    'user_csv_collision_skip' => 'Bestehende Benutzer überspringen',
+    'user_csv_collision_merge' => 'Benutzer aktualisieren und neue Gruppen hinzufügen',
+    'user_csv_collision_replace' => 'Benutzer aktualisieren und Gruppen ersetzen',
+    'user_csv_label_email' => 'Willkommens-E-Mail:',
+    'user_csv_send_email' => 'Willkommens-E-Mail an NEUE Benutzer senden',
+    'user_csv_submit' => 'CSV hochladen und verarbeiten',
+    'user_csv_progress_init' => 'Verarbeitung...',
 ];

@@ -1124,5 +1124,14 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
         'text' => 'Import failed.',
         'js' => true,
     ],
-    'user_csv_upload_info' => 'Upload a CSV file with the following columns: <code>email, first_name, last_name, organization, groups</code>. (Only <code>email</code> is strictly required. <code>groups</code> can be a comma-separated list of group names or external IDs).'
+    'user_csv_upload_info' => 'Upload a CSV file with the following columns: <code>email, first_name, last_name, organization, groups</code>. (Only <code>email</code> is strictly required. <code>groups</code> can be a comma-separated list of group names or external IDs).',
+    'user_csv_label_file' => 'CSV File:',
+    'user_csv_label_collision' => 'Existing Users:',
+    'user_csv_collision_skip' => 'Skip existing users',
+    'user_csv_collision_merge' => 'Update user and merge new groups',
+    'user_csv_collision_replace' => 'Update user and replace groups',
+    'user_csv_label_email' => 'Welcome Email:',
+    'user_csv_send_email' => 'Send welcome email to NEW users',
+    'user_csv_submit' => 'Upload and Process CSV',
+    'user_csv_progress_init' => 'Processing...',
 ];
