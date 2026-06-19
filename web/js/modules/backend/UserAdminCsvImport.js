@@ -57,7 +57,7 @@ export class UserAdminCsvImport {
         formData.append('_csrf', csrfToken);
         
         try {
-            const initResponse = await fetch('/admin/users/upload-csv-init', {
+            const initResponse = await fetch(this.form.dataset.urlInit, {
                 method: 'POST',
                 body: formData
             });
@@ -92,7 +92,7 @@ export class UserAdminCsvImport {
                     chunkData.append('emailText', formData.get('emailText').toString());
                 }
                 
-                const chunkResponse = await fetch('/admin/users/process-csv-chunk', {
+                const chunkResponse = await fetch(this.form.dataset.urlChunk, {
                     method: 'POST',
                     body: chunkData
                 });

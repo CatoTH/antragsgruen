@@ -319,7 +319,7 @@ class UsersController extends AdminBase
         
         $tmpName = $_FILES['csvFile']['tmp_name'];
         $token = uniqid('csv_', true);
-        $filePath = \Yii::$app->getRuntimePath() . '/' . $token . '.csv';
+        $filePath = AntragsgruenApp::getInstance()->getTmpDir() . '/' . $token . '.csv';
         
         if (!move_uploaded_file($tmpName, $filePath)) {
             return new JsonResponse(['success' => false, 'error' => 'Failed to save uploaded file.']);
@@ -349,7 +349,7 @@ class UsersController extends AdminBase
             return new JsonResponse(['success' => false, 'error' => 'Invalid token.']);
         }
         
-        $filePath = \Yii::$app->getRuntimePath() . '/' . $token . '.csv';
+        $filePath = AntragsgruenApp::getInstance()->getTmpDir() . '/' . $token . '.csv';
         if (!file_exists($filePath)) {
             return new JsonResponse(['success' => false, 'error' => 'File not found or expired.']);
         }
@@ -375,9 +375,7 @@ class UsersController extends AdminBase
             return new JsonResponse(['success' => false, 'error' => 'CSV is missing the required "email" column.']);
         }
         
-        if ($offset === 0) {
-            $offset = ftell($fp);
-        } else {
+        if ($offset !== 0) {
             fseek($fp, $offset);
         }
         

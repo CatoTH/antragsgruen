@@ -272,10 +272,11 @@ $layout->addJsTranslation("admin");
 
         ?>
         
-        <form class="addUsersByLogin multiuser csv hidden" enctype="multipart/form-data" id="csvImportForm">
+        <form class="addUsersByLogin multiuser csv hidden" enctype="multipart/form-data" id="csvImportForm"
+            data-url-init="<?= yii\helpers\Url::to(['admin/users/upload-csv-init']) ?>"
+            data-url-chunk="<?= yii\helpers\Url::to(['admin/users/process-csv-chunk']) ?>">
             <div class="alert alert-info">
-                Upload a CSV file with the following columns: <code>email, first_name, last_name, organization, groups</code>. 
-                (Only <code>email</code> is strictly required. <code>groups</code> can be a comma-separated list of group names or external IDs).
+                <?= t('admin', 'user_csv_upload_info') ?>
             </div>
             <div class="stdTwoCols">
                 <label class="leftColumn">CSV File:</label>
@@ -318,6 +319,5 @@ $layout->addJsTranslation("admin");
             </div>
         </form>
 
-        <?php
     </div>
 </section>
