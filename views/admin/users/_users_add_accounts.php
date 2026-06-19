@@ -35,9 +35,7 @@ $layout->addJsTranslation("admin");
 ?>
 <script type="module">
     import { UserAdminCreate } from "/js/modules/backend/UserAdminCreate.js";
-    import { UserAdminCsvImport } from "/js/modules/backend/UserAdminCsvImport.js";
     new UserAdminCreate(document.getElementById("accountsCreateForm"));
-    new UserAdminCsvImport(document.getElementById("accountsCreateForm"));
 </script>
 <section id="accountsCreateForm" class="adminForm form-horizontal accountsCreateForm"
          data-organisations="<?= Html::encode(json_encode($consultation->getSettings()->organisations)) ?>"
