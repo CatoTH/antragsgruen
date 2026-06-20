@@ -262,7 +262,8 @@ export class SiteCreateWizard {
         $form.find(".radio-label input").on("change", function () {
             const $fieldset = $(this).parents("fieldset").first();
             $fieldset.find(".radio-label").removeClass("active");
-            $(this).parents(".radio-label").first().addClass("active");
+            const $active = $fieldset.find(".radio-label input:checked");
+            $active.parents(".radio-label").first().addClass("active");
         }).trigger("change");
         $form.find(".checkbox-label input").on("change", function () {
             const $this = $(this);
