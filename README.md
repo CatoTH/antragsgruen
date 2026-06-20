@@ -369,7 +369,7 @@ If you are running the [docker-compose.development.yml](docker-compose.developme
 Error Tracking for Client-Side errors can be enabled, either to a local log file, or via OpenTelemetry. To log to a local file `/var/log/antragsgruen/js_error.log`, use:
 ```json
 {
-    "js_error_tracking": "file:///var/log/antragsgruen/js_error.log"
+    "jsErrorTracking": "file:///var/log/antragsgruen/js_error.log"
 }
 ```
 

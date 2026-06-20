@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.17.0 [not released yet]
+## Version 4.17.0 (2026-06-20)
 
 - WARNING: if you are using a PHP 8.1 or older, then update to PHP 8.2 or newer first before installing this update!
 - The JavaScript-based frontend components were rewritten to make use or more modern and standardized technologies (ECMAScript Modules, compiled Vue modules).
