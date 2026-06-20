@@ -179,6 +179,9 @@ $layout->addJsTranslation("admin");
             <button class="btn btn-link addUsersOpener email" type="button" data-type="email">
                 <?= Yii::t('admin', 'siteacc_add_email_btn') ?>
             </button>
+            <button class="btn btn-link addUsersOpener csv" type="button" data-type="csv">
+                CSV Import
+            </button>
             <?php
             foreach ($addMultipleForms as $authId => $form) {
                 if (!$form) {
@@ -266,5 +269,53 @@ $layout->addJsTranslation("admin");
         }
 
         ?>
+
+        <form class="addUsersByLogin multiuser csv hidden" enctype="multipart/form-data" id="csvImportForm"
+            data-url-init="<?= UrlHelper::createUrl(['/admin/users/upload-csv-init']) ?>"
+            data-url-chunk="<?= UrlHelper::createUrl(['/admin/users/process-csv-chunk']) ?>">
+            <div class="alert alert-info">
+                <?= Yii::t('admin', 'user_csv_upload_info') ?>
+            </div>
+            <div class="stdTwoCols">
+                <label class="leftColumn"><?= Yii::t('admin', 'user_csv_label_file') ?></label>
+                <div class="rightColumn">
+                    <input type="file" class="form-control" name="csvFile" accept=".csv" required>
+                </div>
+            </div>
+            <div class="stdTwoCols">
+                <label class="leftColumn"><?= Yii::t('admin', 'user_csv_label_collision') ?></label>
+                <div class="rightColumn">
+                    <select class="form-control" name="collisionBehavior">
+                        <option value="skip"><?= Yii::t('admin', 'user_csv_collision_skip') ?></option>
+                        <option value="merge"><?= Yii::t('admin', 'user_csv_collision_merge') ?></option>
+                        <option value="replace"><?= Yii::t('admin', 'user_csv_collision_replace') ?></option>
+                    </select>
+                </div>
+            </div>
+            <?php if ($hasEmail) { ?>
+            <div class="stdTwoCols">
+                <label class="leftColumn"><?= Yii::t('admin', 'user_csv_label_email') ?></label>
+                <div class="rightColumn">
+                    <label>
+                        <input type="checkbox" name="sendEmail" id="csvSendEmail" value="1">
+                        <?= Yii::t('admin', 'user_csv_send_email') ?>
+                    </label>
+                    <textarea id="csvEmailText" class="form-control hidden" name="emailText" rows="11"><?= Html::encode($preText) ?></textarea>
+                </div>
+            </div>
+            <?php } ?>
+            <div class="saveholder">
+                <button type="submit" class="btn btn-primary" id="csvSubmitBtn"><?= Yii::t('admin', 'user_csv_submit') ?></button>
+            </div>
+
+            <div id="csvProgressContainer" class="hidden" style="margin-top: 20px;">
+                <p id="csvProgressText"><?= Yii::t('admin', 'user_csv_progress_init') ?></p>
+                <div class="progress">
+                    <div id="csvProgressBar" class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div id="csvErrorLog" class="alert alert-danger hidden" style="max-height: 200px; overflow-y: auto;"></div>
+            </div>
+        </form>
+
     </div>
 </section>

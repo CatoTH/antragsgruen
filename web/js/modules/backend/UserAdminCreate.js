@@ -8,6 +8,14 @@
 
 import translations from "../../vue/Translate.vue.js";
 
+function t(id, replacements = {}) {
+    let text = translations.getTranslation("admin", id) || id;
+    Object.keys(replacements).forEach(key => {
+        text = text.replace(key, replacements[key]);
+    });
+    return text;
+}
+
 /**
  * @typedef {Object} QueryUserResponse
  * @property {boolean}  exists
@@ -41,6 +49,7 @@ export class UserAdminCreate {
         this.initAddMultiple();
         this.initAddSingleInit();
         this.initAddSingleShow();
+        this.initCsvImport();
     }
 
     initAddMultiple() {
@@ -305,6 +314,136 @@ export class UserAdminCreate {
                     }
                 }
             });
+        }
+    }
+
+    initCsvImport() {
+        this.csvForm = this.element.querySelector('#csvImportForm');
+        if (!this.csvForm) return;
+
+        const sendEmailCheckbox = this.csvForm.querySelector('#csvSendEmail');
+        const emailTextarea = this.csvForm.querySelector('#csvEmailText');
+        
+        if (sendEmailCheckbox && emailTextarea) {
+            sendEmailCheckbox.addEventListener('change', () => {
+                if (sendEmailCheckbox.checked) {
+                    emailTextarea.classList.remove('hidden');
+                } else {
+                    emailTextarea.classList.add('hidden');
+                }
+            });
+        }
+        
+        this.csvForm.addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            this.startCsvImport();
+        });
+    }
+
+    async startCsvImport() {
+        if (!this.csvForm) return;
+
+        const submitBtn = /** @type {HTMLButtonElement} */ (this.csvForm.querySelector('#csvSubmitBtn'));
+        const progressContainer = this.csvForm.querySelector('#csvProgressContainer');
+        const progressBar = this.csvForm.querySelector('#csvProgressBar');
+        const progressText = this.csvForm.querySelector('#csvProgressText');
+        const errorLog = this.csvForm.querySelector('#csvErrorLog');
+        
+        submitBtn.disabled = true;
+        progressContainer.classList.remove('hidden');
+        errorLog.classList.add('hidden');
+        errorLog.innerHTML = '';
+        progressBar.style.width = '0%';
+        progressText.innerText = t('csv_uploading');
+        
+        const formData = new FormData(/** @type {HTMLFormElement} */ (this.csvForm));
+        const csrfToken = document.querySelector('head meta[name=csrf-token]').getAttribute('content');
+        formData.append('_csrf', csrfToken);
+        
+        try {
+            const initResponse = await fetch(this.csvForm.dataset.urlInit, {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!initResponse.ok) {
+                throw new Error(await initResponse.text());
+            }
+            
+            const initData = await initResponse.json();
+            if (!initData.success) {
+                throw new Error(initData.error || t('csv_init_failed'));
+            }
+            
+            let token = initData.token;
+            let totalSize = initData.totalSize;
+            let offset = initData.startOffset;
+            let processedRows = 0;
+            let allErrors = [];
+            
+            while (offset < totalSize) {
+                let percent = Math.round((offset / totalSize) * 100);
+                progressText.innerText = t('csv_processing', { '{percent}': percent });
+                progressBar.style.width = `${percent}%`;
+                
+                const chunkData = new URLSearchParams();
+                chunkData.append('_csrf', csrfToken);
+                chunkData.append('token', token);
+                chunkData.append('offset', offset.toString());
+                chunkData.append('collisionBehavior', formData.get('collisionBehavior').toString());
+                if (formData.get('sendEmail')) {
+                    chunkData.append('sendEmail', '1');
+                    chunkData.append('emailText', formData.get('emailText').toString());
+                }
+                
+                const chunkResponse = await fetch(this.csvForm.dataset.urlChunk, {
+                    method: 'POST',
+                    body: chunkData
+                });
+                
+                if (!chunkResponse.ok) {
+                    throw new Error(await chunkResponse.text());
+                }
+                
+                const chunkResult = await chunkResponse.json();
+                if (!chunkResult.success) {
+                    throw new Error(chunkResult.error || t('csv_chunk_failed'));
+                }
+                
+                offset = chunkResult.nextOffset;
+                processedRows += chunkResult.processed;
+                
+                if (chunkResult.errors && chunkResult.errors.length > 0) {
+                    allErrors.push(...chunkResult.errors);
+                }
+                
+                if (chunkResult.finished) {
+                    break;
+                }
+            }
+            
+            progressBar.style.width = '100%';
+            progressBar.classList.remove('active');
+            progressBar.classList.remove('progress-bar-striped');
+            progressBar.classList.add('progress-bar-success');
+            
+            let resultText = t('csv_success', { '{processedRows}': processedRows });
+            if (allErrors.length > 0) {
+                errorLog.classList.remove('hidden');
+                errorLog.innerHTML = t('csv_errors') + allErrors.map(e => `<div>${e}</div>`).join('');
+                resultText += t('csv_errors_count', { '{errorCount}': allErrors.length });
+            } else {
+                resultText += t('csv_reload');
+            }
+            progressText.innerText = resultText;
+            
+        } catch (e) {
+            errorLog.classList.remove('hidden');
+            errorLog.innerText = t('csv_error_prefix', { '{message}': e.message });
+            progressText.innerText = t('csv_failed');
+            progressBar.classList.add('progress-bar-danger');
+        } finally {
+            submitBtn.disabled = false;
         }
     }
 }

@@ -1085,4 +1085,54 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
         'text' => 'Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users.',
         'js' => true,
     ],
+    'csv_uploading' => [
+        'text' => 'Uploading file...',
+        'js' => true,
+    ],
+    'csv_init_failed' => [
+        'text' => 'Failed to initialize upload',
+        'js' => true,
+    ],
+    'csv_processing' => [
+        'text' => 'Processing... ({percent}%)',
+        'js' => true,
+    ],
+    'csv_chunk_failed' => [
+        'text' => 'Failed to process chunk',
+        'js' => true,
+    ],
+    'csv_success' => [
+        'text' => 'Successfully processed {processedRows} users.',
+        'js' => true,
+    ],
+    'csv_errors' => [
+        'text' => '<strong>Errors encountered:</strong><br>',
+        'js' => true,
+    ],
+    'csv_errors_count' => [
+        'text' => ' Encountered {errorCount} errors.',
+        'js' => true,
+    ],
+    'csv_reload' => [
+        'text' => ' You can reload the page to see them.',
+        'js' => true,
+    ],
+    'csv_error_prefix' => [
+        'text' => 'Error: {message}',
+        'js' => true,
+    ],
+    'csv_failed' => [
+        'text' => 'Import failed.',
+        'js' => true,
+    ],
+    'user_csv_upload_info' => 'Upload a CSV file with the following columns: <code>email, first_name, last_name, organization, groups</code>. (Only <code>email</code> is strictly required. <code>groups</code> can be a comma-separated list of group names or external IDs).',
+    'user_csv_label_file' => 'CSV File:',
+    'user_csv_label_collision' => 'Existing Users:',
+    'user_csv_collision_skip' => 'Skip existing users',
+    'user_csv_collision_merge' => 'Update user and merge new groups',
+    'user_csv_collision_replace' => 'Update user and replace groups',
+    'user_csv_label_email' => 'Welcome Email:',
+    'user_csv_send_email' => 'Send welcome email to NEW users',
+    'user_csv_submit' => 'Upload and Process CSV',
+    'user_csv_progress_init' => 'Processing...',
 ];

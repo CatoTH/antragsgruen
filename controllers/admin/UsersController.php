@@ -309,4 +309,92 @@ class UsersController extends AdminBase
 
         return new RestApiResponse(200, $this->getUsersWidgetData($consultation));
     }
+    public function actionUploadCsvInit(): JsonResponse
+    {
+        $this->getConsultationAndCheckAdminPermission();
+
+        if (empty($_FILES['csvFile']['tmp_name'])) {
+            return new JsonResponse(['success' => false, 'error' => 'No file uploaded.']);
+        }
+
+        $tmpName = $_FILES['csvFile']['tmp_name'];
+        $token = uniqid('csv_', true);
+        $filePath = AntragsgruenApp::getInstance()->getTmpDir() . '/' . $token . '.csv';
+
+        if (!move_uploaded_file($tmpName, $filePath)) {
+            return new JsonResponse(['success' => false, 'error' => 'Failed to save uploaded file.']);
+        }
+
+        $size = filesize($filePath);
+
+        return new JsonResponse([
+            'success' => true,
+            'token' => $token,
+            'totalSize' => $size,
+            'startOffset' => 0
+        ]);
+    }
+
+    public function actionProcessCsvChunk(): JsonResponse
+    {
+        $this->getConsultationAndCheckAdminPermission();
+
+        $token = $this->getPostValue('token', '');
+        $offset = (int) $this->getPostValue('offset', 0);
+        $collisionBehavior = $this->getPostValue('collisionBehavior', 'skip');
+        $sendEmail = (bool) $this->getPostValue('sendEmail', false);
+        $emailText = $this->getPostValue('emailText', '');
+
+        if (!$token || !preg_match('/^csv_[a-zA-Z0-9.]+$/', $token)) {
+            return new JsonResponse(['success' => false, 'error' => 'Invalid token.']);
+        }
+
+        $filePath = AntragsgruenApp::getInstance()->getTmpDir() . '/' . $token . '.csv';
+        if (!file_exists($filePath)) {
+            return new JsonResponse(['success' => false, 'error' => 'File not found or expired.']);
+        }
+
+        $fp = fopen($filePath, 'r');
+        if ($fp === false) {
+            return new JsonResponse(['success' => false, 'error' => 'Could not open file.']);
+        }
+
+        // Always read the header first to establish mappings
+        $header = fgetcsv($fp, escape: '\\');
+        if ($header === false) {
+            return new JsonResponse(['success' => false, 'error' => 'File is empty.']);
+        }
+
+        // Strip BOM from first column name if present
+        $header[0] = preg_replace('/^\xEF\xBB\xBF/', '', (string) $header[0]);
+        $headerMap = array_flip(array_map('trim', array_map(function($v) { return strtolower((string) $v); }, $header)));
+
+        if (!isset($headerMap['email'])) {
+            fclose($fp);
+            @unlink($filePath);
+            return new JsonResponse(['success' => false, 'error' => 'CSV is missing the required "email" column.']);
+        }
+
+        if ($offset !== 0) {
+            fseek($fp, $offset);
+        }
+
+        $result = $this->userGroupAdminMethods->processCsvChunk($fp, $headerMap, $collisionBehavior, $sendEmail, $emailText);
+        $nextOffset = ftell($fp);
+        $finished = feof($fp) || $result['processedRows'] === 0;
+
+        fclose($fp);
+
+        if ($finished) {
+            @unlink($filePath);
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'nextOffset' => $nextOffset,
+            'processed' => $result['processedRows'],
+            'errors' => $result['errors'],
+            'finished' => $finished
+        ]);
+    }
 }
