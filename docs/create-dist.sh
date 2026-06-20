@@ -44,7 +44,7 @@ cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar install --no-dev
 
-./docs/create-test-clean-repository.sh
+./docs/create-dist-clean-repository.sh
 
 mkdir plugins runtime
 chmod 775 runtime web/assets
