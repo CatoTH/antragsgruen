@@ -31,7 +31,7 @@ $motionPaths          .= '|merge-amendments-init-pdf|merge-amendments-draft-pdf'
 $motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax|save-merging-draft';
 $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collisions|ajax-diff';
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check|del-proposal-comment';
-$userPaths            = 'login|login2fa|login2fa-force-registration|login-force-pwd-change|logout|token|confirmregistration';
+$userPaths            = 'login|login2fa|login2fa-force-registration|login-force-pwd-change|login-jwt|logout|token|confirmregistration';
 $userPaths            .= '|emailblocklist|recovery|myaccount|emailchange|data-export';
 $adminMotionPaths     = 'get-amendment-rewrite-collisions|move|move-check';
 $adminTypePaths       = 'type|typecreate';
@@ -85,6 +85,7 @@ $urlRules = [
     $dom . 'admin/<_a:(siteconfig|health)>'   => 'manager/<_a>',
 
     $restBase                                                                        => 'consultation/rest-site',
+    $restBase . '/test'                                                              => '/rest/test/index',
     $restBase . '/js-error-track'                                                    => '/error-tracking/js',
     $restBase . '/health'                                                            => '/manager/health',
     $restBaseCon                                                                     => 'consultation/rest',
