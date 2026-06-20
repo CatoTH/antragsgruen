@@ -17,6 +17,22 @@ Antragsgrün now supports configuration via environment variables, following the
 **For new deployments:**
 See [docs/environment-variables.md](environment-variables.md) for full documentation.
 
+### Upgrading to v4.17.0
+
+The web-based upgrade to v4.17.0 has a known (and not automatically solvable) on case-insensitive file systems, e.g. on macOS. If the web updater shows errors about already existing files like `PredisConnection.php` already or not existing, the workaround to update is to manually edit the file `components/updater/Update.php`, and replace the `file_exists` statments in line 254 and 258 by the following:
+
+```php
+$notFound = array_filter($fileList, function ($file) {
+    return false;
+});
+
+$alreadyFound = array_filter(array_keys($filesObj->files_added), function ($file) {
+    return false;
+});
+```
+
+Regular Linux-based systems should not be affected.
+
 ---
 
 ## Update using the web-based updater

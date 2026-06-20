@@ -20,6 +20,7 @@
 - Bugfix: If one tried to export documents from the motion list, but no matching motions were found, the error messages were misleading.
 - Many text fragments that were static before (like alert boxes) can now also be translated and changed on the admin page.
 - A new console command `yii site/create` bootstraps the first site and its admin user without going through the web installer (useful for multisite setups, where setting `config/INSTALLING` would force every other instance into installer mode).
+- WARNING: the web-based updater has a known, unsolvable issue on macOS for version 4.17.0. See https://github.com/CatoTH/antragsgruen/blob/main/docs/UPGRADING.md on how to work around it.
 
 ### Version 4.16.4 (2026-04-10)
 
