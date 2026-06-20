@@ -121,7 +121,7 @@ To update to a newer version of Antragsgrün, remove the image and pull the `lat
 ```shell
 docker compose down
 docker image rm tobiashoessl/antragsgruen:latest
-docker compose start
+docker compose up
 docker exec -it antragsgruen-web-1 /var/www/html/yii migrate # To perform potential database updates.
 ```
 
@@ -471,7 +471,7 @@ Then, you can run:
 ```shell
 echo "RANDOM_SEED=$(openssl rand -base64 32)" > .env # One time initialization of a local secret key
 touch config/DEBUG # optional, to enable debug mode
-docker-compose -f docker-compose.development.yml --profile pnpm-helper up
+docker compose -f docker-compose.development.yml --profile pnpm-helper up
 docker exec -it -e INSTALL_OPENTELEMETRY=true antragsgruen-web-1 /var/www/antragsgruen/docker/initialize-development-environment.sh
 ```
 
@@ -495,7 +495,7 @@ docker exec antragsgruen-pnpm-helper-1 pnpm ci
 
 To run the watcher that compiles SCSS and Vue.JS files, use:
 ```shell
-docker-compose -f docker-compose.development.yml --profile pnpm-helper --profile gulp-watch up
+docker compose -f docker-compose.development.yml --profile pnpm-helper --profile gulp-watch up
 ```
 
 The embedded sample OpenTelemetry Collector is reachable under:
