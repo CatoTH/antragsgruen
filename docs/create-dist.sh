@@ -56,6 +56,7 @@ cp config/.htaccess runtime/
 cp config/.htaccess plugins/
 cp config/.htaccess vendor/
 sed -i -e 's/repository\-source/dist/g' config/defines.php
+rm -f config/defines.php-e
 
 docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
 
