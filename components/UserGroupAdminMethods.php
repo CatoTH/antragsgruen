@@ -677,38 +677,38 @@ class UserGroupAdminMethods
         $errors = [];
         $maxRowsPerChunk = 50;
 
-        while ($processedRows < $maxRowsPerChunk && ($row = fgetcsv($fp)) !== false) {
+        while ($processedRows < $maxRowsPerChunk && ($row = fgetcsv($fp, escape: '\\')) !== false) {
             if (empty(array_filter($row))) {
                 continue; // Skip empty rows
             }
-            
+
             $processedRows++;
-            
+
             try {
                 $email = isset($headerMap['email'], $row[$headerMap['email']]) ? trim($row[$headerMap['email']]) : '';
                 if ($email === '') {
                     $errors[] = 'Missing email on row.';
                     continue;
                 }
-                
+
                 $firstName = isset($headerMap['first_name'], $row[$headerMap['first_name']]) ? trim($row[$headerMap['first_name']]) : '';
                 $lastName = isset($headerMap['last_name'], $row[$headerMap['last_name']]) ? trim($row[$headerMap['last_name']]) : '';
                 $organization = isset($headerMap['organization'], $row[$headerMap['organization']]) ? trim($row[$headerMap['organization']]) : '';
-                
+
                 $name = trim($firstName . ' ' . $lastName);
                 if ($name === '') {
                     $name = $email;
                 }
-                
-                /** @var \app\models\db\ConsultationUserGroup[] $userGroups */
+
+                /** @var ConsultationUserGroup[] $userGroups */
                 $userGroups = [];
                 if (isset($headerMap['groups']) && !empty($row[$headerMap['groups']])) {
                     $groupNames = array_map('trim', explode(',', $row[$headerMap['groups']]));
                     foreach ($groupNames as $groupName) {
                         if ($groupName === '') continue;
-                        $group = \app\models\db\ConsultationUserGroup::find()
+                        $group = ConsultationUserGroup::find()
                             ->where(['title' => $groupName])
-                            ->orWhere(['external_id' => $groupName])
+                            ->orWhere(['externalId' => $groupName])
                             ->one();
                         if ($group) {
                             $userGroups[] = $group;
@@ -724,13 +724,13 @@ class UserGroupAdminMethods
                     }
                 }
 
-                $user = \app\models\db\User::findOne(['email' => $email]);
-                
+                $user = User::findOne(['email' => $email]);
+
                 if ($user) {
                     if ($collisionBehavior === 'skip') {
                         continue;
                     }
-                    
+
                     if ($firstName !== '' || $lastName !== '') {
                         $user->nameGiven = $firstName;
                         $user->nameFamily = $lastName;
@@ -740,7 +740,7 @@ class UserGroupAdminMethods
                         $user->organization = $organization;
                     }
                     $user->save(false);
-                    
+
                     if ($collisionBehavior === 'replace') {
                         $user->unlinkAll('userGroups', true);
                         foreach ($userGroups as $group) {
@@ -757,20 +757,20 @@ class UserGroupAdminMethods
                         }
                     }
                 } else {
-                    $auth = \app\models\db\User::AUTH_EMAIL . ':' . mb_strtolower($email);
-                    $user = new \app\models\db\User();
+                    $auth = User::AUTH_EMAIL . ':' . mb_strtolower($email);
+                    $user = new User();
                     $user->auth = $auth;
                     $user->email = mb_strtolower($email);
                     $user->name = $name;
                     if ($firstName !== '') $user->nameGiven = $firstName;
                     if ($lastName !== '') $user->nameFamily = $lastName;
                     if ($organization !== '') $user->organization = $organization;
-                    $user->pwdEnc = password_hash(\app\models\db\User::createPassword(), PASSWORD_DEFAULT);
-                    $user->status = \app\models\db\User::STATUS_CONFIRMED;
+                    $user->pwdEnc = password_hash(User::createPassword(), PASSWORD_DEFAULT);
+                    $user->status = User::STATUS_CONFIRMED;
                     $user->emailConfirmed = 1;
                     $user->organizationIds = '';
                     $user->save(false);
-                    
+
                     foreach ($userGroups as $group) {
                         $user->link('userGroups', $group);
                         $this->logUserGroupAdd($user, $group);
@@ -783,7 +783,7 @@ class UserGroupAdminMethods
                 $errors[] = $email . ': ' . $e->getMessage();
             }
         }
-        
+
         return [
             'processedRows' => $processedRows,
             'errors' => $errors
