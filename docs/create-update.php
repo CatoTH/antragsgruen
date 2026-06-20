@@ -38,9 +38,30 @@ $GLOBALS["FILES_UPDATED"]     = [];
 $GLOBALS["FILES_UPDATED_MD5"] = [];
 $GLOBALS["FILES_DELETED"]     = [];
 
+function dirExistsWithExactCasing(string $dirBase, string $dirRelative): bool
+{
+    // file_exists()/is_dir() resolve case-insensitively on APFS/macOS, which would let e.g. "Predis/"
+    // silently resolve to an on-disk "predis/" directory. To make the comparison reliable regardless of
+    // the underlying filesystem, we walk the path component by component and check the real casing via scandir().
+    $parts   = array_filter(explode('/', $dirRelative), fn ($p) => $p !== '');
+    $current = $dirBase;
+    foreach ($parts as $part) {
+        if (!is_dir($current)) {
+            return false;
+        }
+        $entries = scandir($current);
+        if ($entries === false || !in_array($part, $entries, true)) {
+            // Exact-case entry not found among the real directory entries
+            return false;
+        }
+        $current .= '/' . $part;
+    }
+    return true;
+}
+
 function getDirContent(string $dirBase, string $dirRelative): array
 {
-    if (!file_exists($dirBase . '/' . $dirRelative)) {
+    if (!dirExistsWithExactCasing($dirBase, $dirRelative)) {
         return [[], []];
     }
     $dirh  = opendir($dirBase . '/' . $dirRelative);

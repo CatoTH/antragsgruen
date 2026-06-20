@@ -313,18 +313,18 @@ class Update
             throw new \Exception('Could not open the ZIP file');
         }
 
+        foreach ($filesObj->files_deleted as $file) {
+            if (!unlink($this->getBasePath() . $file)) {
+                throw new \Exception('The file could not be deleted: ' . htmlentities($file, ENT_COMPAT, 'UTF-8'));
+            }
+        }
+
         $fileList = array_merge($filesObj->files_added, $filesObj->files_updated);
         foreach (array_keys($fileList) as $file) {
             $content = $zipfile->getFromName($file);
             $this->createDirectoriesRecursively(dirname($file));
             if (file_put_contents($this->getBasePath() . $file, $content) === false) {
                 throw new \Exception('The file could not be updated: ' . htmlentities($file, ENT_COMPAT, 'UTF-8'));
-            }
-        }
-
-        foreach ($filesObj->files_deleted as $file) {
-            if (!unlink($this->getBasePath() . $file)) {
-                throw new \Exception('The file could not be deleted: ' . htmlentities($file, ENT_COMPAT, 'UTF-8'));
             }
         }
 

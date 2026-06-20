@@ -129,6 +129,7 @@ jobs:
           mkdir -p plugins runtime
           chmod 775 runtime web/assets
           
+          cp ../../plugins/*php plugins/
           mv web/index-production.php web/index.php 2>/dev/null || true
           # touch config/INSTALLING # Not in Docker build
           cp config/.htaccess runtime/

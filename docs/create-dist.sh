@@ -49,6 +49,7 @@ curl -sS https://getcomposer.org/installer | php
 mkdir plugins runtime
 chmod 775 runtime web/assets
 
+cp ../../plugins/*php plugins/
 mv web/index-production.php web/index.php
 touch config/INSTALLING
 cp config/.htaccess runtime/
