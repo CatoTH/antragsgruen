@@ -92,18 +92,22 @@ foreach ($files as $file) {
     }
 }
 
-$files = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($localPluginDir, RecursiveDirectoryIterator::SKIP_DOTS)
-);
-foreach ($files as $file) {
-    /** @var SplFileInfo $file */
-    if (isPluginRelevantForCDN($file)) {
-        if (preg_match('/plugins\/(?<plugin>[a-z0-9_-]+)\/assets\/(?<filename>[a-z0-9_.\/-]+)$/siU', $file->getRealPath(), $matches)) {
-            copyWithDirectory($file, $cdnDir . "/plugins/" . $matches['plugin'] . "/" . $matches['filename']);
-        } else {
-            echo "Skipping Plugin Asset: " . $file->getRealPath() . "\n";
+if (file_exists($localPluginDir)) {
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($localPluginDir, RecursiveDirectoryIterator::SKIP_DOTS)
+    );
+    foreach ($files as $file) {
+        /** @var SplFileInfo $file */
+        if (isPluginRelevantForCDN($file)) {
+            if (preg_match('/plugins\/(?<plugin>[a-z0-9_-]+)\/assets\/(?<filename>[a-z0-9_.\/-]+)$/siU', $file->getRealPath(), $matches)) {
+                copyWithDirectory($file, $cdnDir . "/plugins/" . $matches['plugin'] . "/" . $matches['filename']);
+            } else {
+                echo "Skipping Plugin Asset: " . $file->getRealPath() . "\n";
+            }
         }
     }
+} else {
+    echo "Skipping Plugins\n";
 }
 
 // --- Pass 1: collect integrity hashes and direct imports ---

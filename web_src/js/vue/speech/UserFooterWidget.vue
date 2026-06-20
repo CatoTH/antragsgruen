@@ -80,8 +80,8 @@
 
         <form @submit="register($event, queue.subqueues, true)" v-if="queue.is_open_poo && !queue.have_applied && !queue.allow_custom_names && registerName">
           <button class="btn btn-link btn-sm applyOpenerPoo" type="submit">
-            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-            <template v-t="['speech', 'apply_poo_do']"></template>
+            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span
+              > <template v-t="['speech', 'apply_poo_do']"></template>
           </button>
         </form>
 
@@ -90,8 +90,8 @@
                 :disabled="loginWarning"
                 @click="onShowApplicationForm($event, queue.subqueues[0], true)"
         >
-          <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-          <template v-t="['speech', 'apply_poo_do']"></template>
+          <span class="glyphicon glyphicon-alert" aria-hidden="true"></span
+            > <template v-t="['speech', 'apply_poo_do']"></template>
         </button>
 
         <form @submit="register($event, queue.subqueues, true)" v-if="!queue.subqueues[0].have_applied && showApplicationForm === (queue.subqueues[0].id + '_poo')">
@@ -160,8 +160,8 @@
 
         <form @submit="register($event, subqueue, true)" v-if="queue.is_open_poo && !queue.have_applied && !queue.allow_custom_names && registerName">
           <button class="btn btn-link btn-sm applyOpenerPoo" type="submit">
-            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-            <template v-t="['speech', 'apply_poo_do']"></template>
+            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span
+              > <template v-t="['speech', 'apply_poo_do']"></template>
           </button>
         </form>
 
@@ -170,8 +170,8 @@
                 :disabled="loginWarning"
                 @click="onShowApplicationForm($event, subqueue, true)"
         >
-          <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-          <template v-t="['speech', 'apply_poo_do']"></template>
+          <span class="glyphicon glyphicon-alert" aria-hidden="true"></span
+            > <template v-t="['speech', 'apply_poo_do']"></template>
         </button>
 
         <form @submit="register($event, subqueue, true)" v-if="!subqueue.have_applied && showApplicationForm === (subqueue.id + '_poo')">

@@ -4,8 +4,8 @@
   <div class="filterHolder">
     <div class="orgaOpenerHolder">
       <button type="button" class="orgaOpener btn btn-link" @click="editOrganisations()">
-        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-        <template v-t="['admin', 'siteacc_orgas_opener']"></template>
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span
+          > <template v-t="['admin', 'siteacc_orgas_opener']"></template>
       </button>
     </div>
     <div class="groupFilter">
@@ -75,8 +75,8 @@
       </li>
     </ul>
     <button class="btn btn-link btnGroupCreate" type="button" @click="creatingGroups = true" v-if="!creatingGroups">
-      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
-      <template v-t="['admin', 'siteacc_groups_add_open']"></template>
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span
+        > <template v-t="['admin', 'siteacc_groups_add_open']"></template>
     </button>
     <form @submit="addGroupSubmit($event)" class="addGroupForm" v-if="creatingGroups">
       <label class="addGroupName">
@@ -85,8 +85,8 @@
       </label>
       <div class="actions">
         <button type="submit" class="btn btn-primary btnSave">
-          <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-          <template v-t="['base', 'save']"></template>
+          <span class="glyphicon glyphicon-ok" aria-hidden="true"></span
+            > <template v-t="['base', 'save']"></template>
         </button>
         <button type="button" class="btn btn-link btnCancel" @click="creatingGroups = false" v-t:title="['base', 'abort']">
           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>

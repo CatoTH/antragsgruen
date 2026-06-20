@@ -217,10 +217,12 @@ export function getSpeechCommonMixins() {
                     this.showApplicationForm += '_poo';
                 }
                 this.$nextTick(function () {
-                    if (this.$refs.adderNameInput) {
-                        this.$refs.adderNameInput[0].focus();
-                    } else if (this.$refs.adderNameInput) {
+                    if (this.$refs.adderNameInput instanceof HTMLInputElement) {
+                        // Single Queue
                         this.$refs.adderNameInput.focus();
+                    } else {
+                        // Multiple Queues
+                        this.$refs.adderNameInput[0].focus();
                     }
                 });
             },

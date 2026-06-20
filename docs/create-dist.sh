@@ -44,6 +44,7 @@ cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar install --no-dev
 
+./docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
 ./docs/create-dist-clean-repository.sh
 
 mkdir plugins runtime
@@ -57,8 +58,6 @@ cp config/.htaccess plugins/
 cp config/.htaccess vendor/
 sed -i -e 's/repository\-source/dist/g' config/defines.php
 rm -f config/defines.php-e
-
-docs/create-static-resources.php v$ANTRAGSGRUEN_VERSION
 
 cd ..
 mv antragsgruen-$ANTRAGSGRUEN_VERSION/local/cdn/v$ANTRAGSGRUEN_VERSION ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION-cdn

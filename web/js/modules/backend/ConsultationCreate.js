@@ -25,7 +25,6 @@ export class ConsultationCreate {
 
     settingsTypeChanged() {
         if (document.getElementById('settingsTypeWizard').checked) {
-            console.log("checked");
             document.querySelector('.settingsTypeWizard').classList.remove('hidden');
             document.querySelectorAll('.settingsTypeTemplate').forEach(el => el.classList.add('hidden'));
             document.querySelector('.templateSubselect').classList.add('hidden');
