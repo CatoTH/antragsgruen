@@ -125,7 +125,7 @@ class StaticResourceTools
 
             // For local files, let's add a cache buster if the file was changed recently
             if ($localAssets) {
-                $mtime = filemtime(__DIR__ . '/../web'. $path);
+                $mtime = filemtime(__DIR__ . '/../web/' . $fileName);
                 $lastModified = time() - $mtime;
                 if ($lastModified < self::INVALIDATE_MAX_HOURS * 3600) {
                     $path .= '?ts=' . $mtime;
