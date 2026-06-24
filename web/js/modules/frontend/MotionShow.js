@@ -130,14 +130,16 @@ export class MotionShow {
     }
 
     scrollFromHash = () => {
-        const sComm = window.location.hash.split('#comm');
-        if (sComm.length === 2) $('#comment' + sComm[1]).scrollintoview({top_offset: -100});
+        window.setTimeout(() => {
+            const sComm = window.location.hash.split('#comm');
+            if (sComm.length === 2 && document.getElementById('comment' + sComm[1])) $('#comment' + sComm[1]).scrollintoview({top_offset: -100});
 
-        const sNote = window.location.hash.split('#note');
-        if (sNote.length === 2) $('#privatenote' + sNote[1]).scrollintoview({top_offset: -100});
+            const sNote = window.location.hash.split('#note');
+            if (sNote.length === 2 && document.getElementById('privatenote' + sComm[1])) $('#privatenote' + sNote[1]).scrollintoview({top_offset: -100});
 
-        const sAmend = window.location.hash.split('#amendment');
-        if (sAmend.length === 2) $(".bookmarks .amendment" + sAmend[1]).first().scrollintoview({top_offset: -100});
+            const sAmend = window.location.hash.split('#amendment');
+            if (sAmend.length === 2 && document.querySelector(".bookmarks .amendment" + sAmend[1])) $(".bookmarks .amendment" + sAmend[1]).first().scrollintoview({top_offset: -100});
+        }, 100);
     }
 
     markMovedParagraphs = () => {
