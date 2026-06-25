@@ -63,6 +63,7 @@ curl -sS https://getcomposer.org/installer | php
 ./composer.phar install --prefer-dist
 pnpm install
 pnpm run build
+rm -Rf local/cdn/dev && docs/create-static-resources.php dev
 ```
 
 If [pnpm](https://pnpm.io) is not installed, you can either install it by `brew install pnpm` (macOS), `npm install -g pnpm` (NPM-based) or use the `pnpm-helper` image (Docker), as described in [Developing with Docker Compose](https://github.com/CatoTH/antragsgruen#developing-with-docker-compose).

@@ -28,11 +28,12 @@ GIT_OUTPUT=$(git pull 2>&1)
 
 # Check if there were incoming changes
 if echo "$GIT_OUTPUT" | grep -q "Already up to date"; then
-    echo "No incoming changes. Skipping composer/npm install."
+    echo "No incoming changes. Skipping composer/pnpm install."
 else
   composer install --no-interaction
   pnpm ci
   pnpm run build
+  rm -Rf local/cdn/dev && docs/create-static-resources.php dev
 fi
 
 # Update Antragsgrün Migrations
