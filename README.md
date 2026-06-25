@@ -416,7 +416,7 @@ As a rule of thumb, this setting should be considered if you expect close to 1.0
 
 ### JWT Key Signing
 
-Some of the more advanced features of Antragsgrün need JWT signing set up. Right now, this is only the integration of the Live Server, but in the future this will also enable logged in access to the REST API.
+Some of the more advanced features of Antragsgrün need JWT signing set up. Right now, this is only the integration of the Live Server. Authentication for the REST API uses it when available, but falls back to an alternative way otherwise.
 
 First, a Public/Private key pair used for JWT authentication needs to be generated:
 ```shell
@@ -425,12 +425,18 @@ openssl rsa -in bundle.pem -pubout -outform PEM -out public.key
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in bundle.pem -out private.key -nocrypt
 ```
 
-Move the keys to a safe place and point the `jwtPrivateKey` parameter in `config.json` to its absolute location, like:
+
+Move the keys to a safe place and point the `jwtPrivateKey` and `jwtPublicKey` parameter in `config.json` to its absolute location, like:
 ```json
 {
-    "jwtPrivateKey": "/var/www/antragsgruen/config/jwt.key"
+    "jwtPrivateKey": "/var/www/antragsgruen/config/private.key",
+    "jwtPublicKey": "/var/www/antragsgruen/config/public.key",
 }
 ```
+
+If configuring Antragsgrün [using environment variables](./docs/environment-variables.md) instead, use the variable `JWT_PUBLIC_KEY` and `JWT_PRIVATE_KEY`. Two ways of configuring it are available:
+- Providing the link to the path, either in `/var/www/antragsgruen/config/private.key` or `file:///var/www/antragsgruen/config/private.key` format.
+- Providing the key itself in the environment variables, starting with `-----BEGIN PUBLIC KEY-----` / `-----BEGIN PRIVATE KEY-----`.
 
 ### Enabling the Live Server
 

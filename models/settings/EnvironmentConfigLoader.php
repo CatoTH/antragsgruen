@@ -240,6 +240,8 @@ class EnvironmentConfigLoader
      * - MAIL_FROM_EMAIL: Default "from" email address
      * - MAIL_FROM_NAME: Default "from" name
      * - JS_ERROR_TRACKING: Target for JS Error Tracking (e.g. file:///tmp/js_errors.log or otel://)
+     * - JWT_PUBLIC_KEY: Either link to public key (file:///secret/public.pem), or content of public key
+     * - JWT_PRIVATE_KEY: Either link to private key (file:///secret/private.pem), or content of private key
      * - PREPEND_WWW_TO_SUBDOMAIN: Prepend www to subdomain (true/false)
      * - ALLOW_REGISTRATION: Allow user registration (true/false)
      * - CONFIRM_EMAIL_ADDRESSES: Require email confirmation (true/false)
@@ -295,8 +297,17 @@ class EnvironmentConfigLoader
             $config['mailFromName'] = $name;
         }
 
+        // JS Error Tracking
         if ($name = self::getEnv('JS_ERROR_TRACKING')) {
             $config['jsErrorTracking'] = $name;
+        }
+
+        // JWT Public/Private Keys
+        if ($name = self::getEnv('JWT_PUBLIC_KEY')) {
+            $config['jwtPublicKey'] = $name;
+        }
+        if ($name = self::getEnv('JWT_PRIVATE_KEY')) {
+            $config['jwtPrivateKey'] = $name;
         }
 
         // Boolean flags

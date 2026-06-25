@@ -22,7 +22,7 @@ use app\models\settings\{Privileges, AntragsgruenApp};
 class JwtCreator
 {
     private const ROLE_SPEECH_ADMIN = 'ROLE_SPEECH_ADMIN';
-    private const JWT_VALIDITY = 60; // 1 minute
+    private const JWT_VALIDITY = 60 * 10; // 10 minutes
 
     private const USER_PREFIX_REGULAR = 'login-';
     private const USER_PREFIX_ANONYMOUS = 'anonymous-';
@@ -33,10 +33,7 @@ class JwtCreator
     {
         $params = AntragsgruenApp::getInstance();
         if ($params->jwtPrivateKey !== null && $params->jwtPublicKey !== null) {
-            if (!file_exists($params->jwtPrivateKey)) {
-                throw new ConfigurationError('JWT Private key file not found');
-            }
-            $privateKey = (string)file_get_contents($params->jwtPrivateKey);
+            $privateKey = self::retrieveKey($params->jwtPrivateKey);
             $algorithm = 'RS256';
         } else {
             if (User::getCurrentUser()) {
@@ -68,6 +65,30 @@ class JwtCreator
         return JWT::encode($payload, $privateKey, $algorithm);
     }
 
+    private static function retrieveKey(string $fileOrContent): string
+    {
+        $fileOrContent = trim($fileOrContent);
+        if (str_starts_with($fileOrContent, '-----BEGIN')) {
+            return $fileOrContent;
+        }
+
+        if (str_starts_with($fileOrContent, 'file://')) {
+            $parts = parse_url($fileOrContent);
+            if (!isset($parts['path'])) {
+                throw new ConfigurationError('Incomplete file provided');
+            }
+            $file = $parts['path'];
+        } else {
+            $file = $fileOrContent;
+        }
+
+        if (!file_exists($file)) {
+            throw new ConfigurationError('JWT key file not found');
+        }
+
+        return (string)file_get_contents($file);
+    }
+
     public static function getAuthenticatedUserByToken(string $token): ?User
     {
         $parts = explode('.', $token);
@@ -86,11 +107,8 @@ class JwtCreator
 
         $params = AntragsgruenApp::getInstance();
         if ($params->jwtPrivateKey !== null && $params->jwtPublicKey !== null) {
-            if (!file_exists($params->jwtPublicKey)) {
-                throw new ConfigurationError('JWT Public key file not found');
-            }
-            $privateKey = (string)file_get_contents($params->jwtPublicKey);
-            $key = new Key($privateKey, 'RS256');
+            $publicKey = self::retrieveKey($params->jwtPublicKey);
+            $key = new Key($publicKey, 'RS256');
         } else {
             $key = new Key($user->getJwtSigningKey(), 'HS256');
         }

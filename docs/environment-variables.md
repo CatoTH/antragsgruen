@@ -82,6 +82,8 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `BACKGROUND_JOBS_NOTIFICATIONS` | false | Enable asynchronous background jobs for notifications |
 | `HEALTH_CHECK_KEY` | - | API key hash for background job health checks |
 | `JS_ERROR_TRACKING` | - | Target for JS Error Tracking (e.g. file:///tmp/js_errors.log or otel://) |
+| `JWT_PUBLIC_KEY` | - | Either link to public key (file:///secret/public.pem), or content of public key |
+| `JWT_PRIVATE_KEY` | - | Either link to private key (file:///secret/private.pem), or content of private key |
 
 ## Optional Tool Paths
 
