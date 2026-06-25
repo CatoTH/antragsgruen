@@ -4,10 +4,12 @@ import { IMotionShow } from "../shared/IMotionShow.js"
 
 export class AmendmentShow {
     constructor() {
-        let s= window.location.hash.split('#comm');
-        if (s.length === 2) {
-            $('#comment' + s[1]).scrollintoview({top_offset: -100});
-        }
+        window.setTimeout(() => {
+            let s = window.location.hash.split('#comm');
+            if (s.length === 2 && document.getElementById('#comment' + s[1])) {
+                $('#comment' + s[1]).scrollintoview({top_offset: -100});
+            }
+        }, 100);
 
         this.initPrivateComments();
 
