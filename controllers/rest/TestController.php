@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace app\controllers\rest;
 
+use app\models\api\user\UserInfo;
 use app\models\db\User;
+use app\models\http\RestApiResponse;
 
 class TestController extends RestBase
 {
-    public function actionIndex(): string
+    public function actionIndex(): RestApiResponse
     {
         $this->handleRestHeaders(['GET']);
+
         if (User::getCurrentUser()) {
-            return "Hello, " . User::getCurrentUser()->auth;
+            $info = UserInfo::fromEntity(User::getCurrentUser());
         } else {
-            return "Hello, Guest";
+            $info = null;
         }
+
+        return $this->createResponse(200, $info);
     }
 }

@@ -116,7 +116,7 @@ class JwtCreator
         try {
             $decoded = JWT::decode($token, $key);
         } catch (ExpiredException $e) {
-            throw new ApiResponseException('Token expired', 410, $e);
+            throw new ApiResponseException('Token expired', 403, $e);
         } catch (SignatureInvalidException $e) {
             throw new ApiResponseException('Signature Invalid', 403, $e);
         } catch (\Exception $e) {

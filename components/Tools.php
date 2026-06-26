@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\{ArrayDenormalizer, DateTimeNormalizer, ObjectNormalizer};
-use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, Serializer, SerializerInterface};
+use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, NameConverter\CamelCaseToSnakeCaseNameConverter, Serializer, SerializerInterface};
 
 class Tools
 {
@@ -25,7 +25,8 @@ class Tools
     {
         if (!isset(self::$serializer)) {
             $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
-            $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
+            $camelCaseToSnakeCase = new CamelCaseToSnakeCaseNameConverter();
+            $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory, $camelCaseToSnakeCase);
             $encoders = [new JsonEncoder()];
             $normalizers = [
                 new ArrayDenormalizer(),

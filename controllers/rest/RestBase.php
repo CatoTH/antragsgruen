@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace app\controllers\rest;
 
 use app\components\RequestContext;
+use app\components\Tools;
 use app\components\yii\OptionalHttpBearerAuth;
 use app\controllers\Base;
+use app\models\http\RestApiResponse;
 
 class RestBase extends Base
 {
@@ -28,5 +30,12 @@ class RestBase extends Base
                 'class' => OptionalHttpBearerAuth::class,
             ],
         ];
+    }
+
+    protected function createResponse(int $status, object $result): RestApiResponse
+    {
+        $json = Tools::getSerializer()->serialize($result, 'json');
+
+        return new RestApiResponse($status, null, $json);
     }
 }

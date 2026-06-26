@@ -5,26 +5,14 @@ declare(strict_types=1);
 namespace app\models\api;
 
 use app\models\db\ConsultationAgendaItem;
-use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class AgendaItemSettings
 {
-    #[SerializedName('has_speaking_list')] // only used for saving
     public bool $hasSpeakingList;
-
-    /**
-     * @var int[]
-     */
-    #[SerializedName('speaking_lists')] // used to create links to lists
-    public array $speakingLists;
-
-    #[SerializedName('in_proposed_procedures')]
+    /** @var int[] */
+    public array $speakingLists; // used to create links to lists
     public bool $inProposedProcedures;
-
-    /**
-     * @var int[]
-     */
-    #[SerializedName('motion_types')]
+    /** @var int[] */
     public array $motionTypes;
 
     public static function fromEntity(ConsultationAgendaItem $entity): self
