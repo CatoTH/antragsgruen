@@ -1,10 +1,10 @@
 # Version history
 
-## Version 4.17.1 [not released yet]
+### Version 4.17.2 [not released yet]
 
 - Bugfix: Automatic scrolling to motion/amendment comments was not working reliably.
 
-## Version 4.17.1 (2026-06-22)
+### Version 4.17.1 (2026-06-22)
 
 - Bugfix: Fixing a regression introduced in v4.17.0, preventing the system to work when running within a non-root directory.
 
