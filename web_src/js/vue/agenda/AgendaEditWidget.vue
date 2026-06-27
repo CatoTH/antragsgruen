@@ -33,7 +33,7 @@ export default {
         return this.modelValue.items;
       },
       set: function (value) {
-        this.$emit('update:modelValue', value);
+        this.$emit('update:modelValue', {"items": value});
       }
     },
     anyItemHasTime: function () {
