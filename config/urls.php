@@ -85,7 +85,7 @@ $urlRules = [
     $dom . 'admin/<_a:(siteconfig|health)>'   => 'manager/<_a>',
 
     $restBase                                                                        => 'consultation/rest-site',
-    $restBase . '/test'                                                              => '/rest/test/index',
+    $restBase . '/user'                                                              => '/rest/user/index',
     $restBase . '/js-error-track'                                                    => '/error-tracking/js',
     $restBase . '/health'                                                            => '/manager/health',
     $restBaseCon                                                                     => 'consultation/rest',

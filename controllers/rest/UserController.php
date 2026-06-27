@@ -8,7 +8,7 @@ use app\models\api\user\UserInfo;
 use app\models\db\User;
 use app\models\http\RestApiResponse;
 
-class TestController extends RestBase
+class UserController extends RestBase
 {
     public function actionIndex(): RestApiResponse
     {

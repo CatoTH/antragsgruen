@@ -28,12 +28,12 @@ $client = new Client([
 ]);
 
 
-$request = $client->get('rest/test');
+$request = $client->get('rest/user');
 $I->assertEquals(403, $request->getStatusCode());
 
-$request = $client->get('rest/test', [RequestOptions::HEADERS => [
+$request = $client->get('rest/user', [RequestOptions::HEADERS => [
     'Authorization' => 'Bearer ' . $token,
 ]]);
 $I->assertEquals(200, $request->getStatusCode());
-$I->assertJsonStringEqualsJsonString('{"user_auth": "email:testuser@example.org"}', $request->getBody()->getContents());
+$I->assertJsonStringEqualsJsonString('{"auth": "email:testuser@example.org"}', $request->getBody()->getContents());
 

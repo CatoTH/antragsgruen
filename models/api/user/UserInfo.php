@@ -8,13 +8,13 @@ use app\models\db\User;
 
 class UserInfo
 {
-    public string $userAuth;
+    public function __construct(
+        public string $auth,
+    ) {
+    }
 
     public static function fromEntity(User $entity): self
     {
-        $self = new self();
-        $self->userAuth = $entity->auth;
-
-        return $self;
+        return new self($entity->auth);
     }
 }
