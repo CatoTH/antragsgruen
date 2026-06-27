@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace app\models\forms;
 
-use app\models\api\AgendaItem;
+use app\models\api\agenda\{AgendaItem, AgendaList};
 use app\models\exceptions\NotFound;
 use app\models\db\{Consultation, ConsultationAgendaItem};
 use app\models\exceptions\FormError;
 
-class AgendaSaver
+readonly class AgendaSaver
 {
     public function __construct(
-        private readonly Consultation $consultation,
+        private Consultation $consultation,
     ) {
     }
 
@@ -31,15 +31,14 @@ class AgendaSaver
         return $item;
     }
 
-    public function saveAgendaFromApi(array $data): void
+    public function saveAgendaFromApi(AgendaList $data): void
     {
-        $newIds = $this->saveAgendaFromApiRec(null, $data);
+        $newIds = $this->saveAgendaFromApiRec(null, $data->items);
         $this->removeOldAgendaItems($newIds);
     }
 
     /**
      * @param AgendaItem[] $apiItems
-     *
      * @return int[]
      */
     private function saveAgendaFromApiRec(?ConsultationAgendaItem $parentItem, array $apiItems): array

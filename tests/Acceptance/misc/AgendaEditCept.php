@@ -34,11 +34,11 @@ $I->seeElement('.agendaEditWidget');
 // Remove code from first item
 // Add another item at the end
 $listData = json_decode($I->executeJs('return JSON.stringify(agendaWidget.$refs["agenda-edit-widget"].getAgendaTest())'), true);
-$lastItem = array_pop($listData);
+$lastItem = array_pop($listData['items']);
 $lastItem['code'] = '10.';
-$listData[0]['code'] = null;
-array_unshift($listData, $lastItem);
-$listData[] = [
+$listData['items'][0]['code'] = null;
+array_unshift($listData['items'], $lastItem);
+$listData['items'][] = [
     "type" => "item",
     "code" => null,
     "title" => "More motions",
@@ -49,6 +49,7 @@ $listData[] = [
     ],
     "children" => [],
 ];
+$listData['items'] = array_values($listData['items']);
 $newListData = json_encode($listData);
 $I->executeJs('agendaWidget.$refs["agenda-edit-widget"].setAgendaTest(' . $newListData . ');');
 $I->wait(0.3);
@@ -73,8 +74,8 @@ $I->clickJS('.showTimeSelector');
 $I->seeElement('.datetimepicker.time');
 
 $listData = json_decode($I->executeJs('return JSON.stringify(agendaWidget.$refs["agenda-edit-widget"].getAgendaTest())'), true);
-$listData[0]['time'] = '17:30';
-array_unshift($listData, [
+$listData['items'][0]['time'] = '17:30';
+array_unshift($listData['items'], [
     "type" => "date_separator",
     "date" => "2020-02-02",
     "title" => "",
@@ -85,6 +86,7 @@ array_unshift($listData, [
     ],
     "children" => [],
 ]);
+$listData['items'] = array_values($listData['items']);
 $newListData = json_encode($listData);
 $I->executeJs('agendaWidget.$refs["agenda-edit-widget"].setAgendaTest(' . $newListData . ');');
 $I->wait(0.3);
@@ -106,8 +108,9 @@ $I->click('.agendaEditLink');
 $I->seeElement('.datetimepicker.time');
 
 $listData = json_decode($I->executeJs('return JSON.stringify(agendaWidget.$refs["agenda-edit-widget"].getAgendaTest())'), true);
-array_shift($listData);
-array_pop($listData);
+array_shift($listData['items']);
+array_pop($listData['items']);
+$listData['items'] = array_values($listData['items']);
 $newListData = json_encode($listData);
 $I->executeJs('agendaWidget.$refs["agenda-edit-widget"].setAgendaTest(' . $newListData . ');');
 $I->wait(0.3);

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers\admin;
 
-use app\components\LiveTools;
-use app\models\api\AgendaItem as AgendaItemApi;
+use app\models\api\agenda\AgendaList as AgendaListApi;
 use app\models\settings\Privileges;
 use app\models\http\{HtmlResponse, RestApiResponse};
 use app\components\Tools;
@@ -31,8 +30,8 @@ class AgendaController extends AdminBase
 
         if ($this->getHttpMethod() === 'POST') {
             try {
-                /** @var AgendaItemApi[] $data */
-                $data = $serializer->deserialize($this->getPostBody(), AgendaItemApi::class . '[]', 'json');
+                /** @var AgendaListApi $data */
+                $data = $serializer->deserialize($this->getPostBody(), AgendaListApi::class, 'json');
             } catch (NotNormalizableValueException $e) {
                 return new RestApiResponse(400, ['error' => $e->getMessage()]);
             }
@@ -42,7 +41,7 @@ class AgendaController extends AdminBase
             $this->consultation->refresh();
         }
 
-        $savedAgenda = AgendaItemApi::getItemsFromConsultation($this->consultation);
+        $savedAgenda = AgendaListApi::getItemsFromConsultation($this->consultation);
 
         // Not implemented in live server yet
         //LiveTools::sendAgenda($this->consultation, $savedAgenda);

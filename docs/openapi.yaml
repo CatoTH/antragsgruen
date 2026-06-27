@@ -6,7 +6,10 @@ info:
 paths:
   /rest:
     get:
+      operationId: getConsultations
       summary: List of consultations in this site
+      tags:
+        - Consultations
       responses:
         '200':
           description: Consultation list
@@ -15,21 +18,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConsultationLinkList'
         '403':
-          description: The REST API is not enabled for this consultation
+          $ref: '#/components/responses/ApiDisabled'
+
+  /rest/user:
+    get:
+      operationId: getUser
+      summary: Gets user information
+      tags:
+        - User
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: User information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorApiDisabled'
+                $ref: '#/components/schemas/UserInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /rest/{consultationPath}:
     get:
+      operationId: getConsultation
       summary: Overview over this consultation, with links to motions and amendments.
+      tags:
+        - Consultations
       parameters:
-        - in: path
-          name: consultationPath
-          required: true
-          example: std-parteitag
-          schema:
-            type: string
+        - $ref: '#/components/parameters/consultationPath'
       responses:
         '200':
           description: Consultation info, motion and amendment links
@@ -38,27 +54,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConsultationWithLinks'
         '403':
-          description: The REST API is not enabled for this consultation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorApiDisabled'
+          $ref: '#/components/responses/ApiDisabled'
         '404':
-          description: The consultation was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorNotFound'
+          $ref: '#/components/responses/NotFound'
+
   /rest/{consultationPath}/proposed-procedure:
     get:
+      operationId: getProposedProcedure
       summary: Gets the public proposed procedure of this consultation
+      tags:
+        - Consultations
       parameters:
-        - in: path
-          name: consultationPath
-          required: true
-          example: std-parteitag
-          schema:
-            type: string
+        - $ref: '#/components/parameters/consultationPath'
       responses:
         '200':
           description: The proposed procedure
@@ -67,173 +74,193 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProposedProcedure'
         '403':
-          description: The REST API is not enabled for this consultation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorApiDisabled'
+          $ref: '#/components/responses/ApiDisabled'
         '404':
-          description: The consultation was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorNotFound'
+          $ref: '#/components/responses/NotFound'
+
   /rest/{consultationPath}/motion/{motionSlug}:
     get:
+      operationId: getMotion
       summary: Details of this motion
       description: The URL of this endpoint is not 100% predictable (because of motionSlug) - please only use the links provided by the consultation index
+      tags:
+        - Motions
       parameters:
-        - in: path
-          name: consultationPath
-          required: true
-          example: std-parteitag
-          schema:
-            type: string
-        - in: path
-          name: motionSlug
-          required: true
-          example: 123-motion
-          schema:
-            type: string
-        - in: query
-          name: lineNumbers
-          required: false
-          example: true
-          description: If true, then line number markers will be returned in the text (if there are any)
-          schema:
-            type: boolean
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+        - $ref: '#/components/parameters/lineNumbers'
       responses:
-        '200': # status code
+        '200':
           description: Motion info, including links to amendments
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MotionDetails'
         '403':
-          description: The REST API is not enabled for this consultation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorApiDisabled'
+          $ref: '#/components/responses/ApiDisabled'
         '404':
-          description: The consultation was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorNotFound'
+          $ref: '#/components/responses/NotFound'
+
   /rest/{consultationPath}/motion/{motionSlug}/amendment/{amendmentId}:
     get:
+      operationId: getAmendment
       summary: Details of this amendment
       description: The URL of this endpoint is not 100% predictable (because of motionSlug) - please only use the links provided by the consultation index
+      tags:
+        - Amendments
       parameters:
-        - in: path
-          name: consultationPath
-          required: true
-          example: std-parteitag
-          schema:
-            type: string
-        - in: path
-          name: motionSlug
-          required: true
-          example: 123-motion
-          schema:
-            type: string
-        - in: path
-          name: amendmentId
-          required: true
-          example: 42
-          schema:
-            type: string
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+        - $ref: '#/components/parameters/amendmentId'
       responses:
-        '200': # status code
-          description: Motion info, including links to amendments
+        '200':
+          description: Amendment info, including links to amendments
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AmendmentDetails'
         '403':
-          description: The REST API is not enabled for this consultation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorApiDisabled'
+          $ref: '#/components/responses/ApiDisabled'
         '404':
-          description: The consultation was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorNotFound'
+          $ref: '#/components/responses/NotFound'
+
   /rest/{consultationPath}/agenda:
     get:
+      operationId: getAgenda
       summary: Gets the agenda of this consultation
+      tags:
+        - Agenda
       parameters:
-        - in: path
-          name: consultationPath
-          required: true
-          example: std-parteitag
-          schema:
-            type: string
+        - $ref: '#/components/parameters/consultationPath'
       responses:
         '200':
           description: The agenda
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Agenda'
+                $ref: '#/components/schemas/AgendaList'
+        '403':
+          $ref: '#/components/responses/ApiDisabled'
         '404':
-          description: The consultation was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorNotFound'
+          $ref: '#/components/responses/NotFound'
     post:
+      operationId: saveAgenda
       summary: Save the new agenda
+      tags:
+        - Agenda
+      security:
+        - bearerAuth: [ ]
       parameters:
-        - in: path
-          name: consultationPath
-          required: true
-          example: std-parteitag
-          schema:
-            type: string
+        - $ref: '#/components/parameters/consultationPath'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Agenda'
+              $ref: '#/components/schemas/AgendaList'
       responses:
         '200':
           description: The agenda
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Agenda'
+                $ref: '#/components/schemas/AgendaList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: No permission to edit the agenda
+          description: No permission to edit the agenda, or the REST API is not enabled for this consultation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNoPermission'
         '404':
-          description: The consultation was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorNotFound'
+          $ref: '#/components/responses/NotFound'
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Send a JWT in the `Authorization: Bearer <token>` header."
+
+  parameters:
+    consultationPath:
+      in: path
+      name: consultationPath
+      description: The URL-path-segment identifying the consultation
+      required: true
+      example: std-parteitag
+      schema:
+        type: string
+    motionSlug:
+      in: path
+      name: motionSlug
+      description: The URL-path-segment identifying the motion. Not guaranteed to be stable - only use the values provided by the consultation index links.
+      required: true
+      example: 123-motion
+      schema:
+        type: string
+    amendmentId:
+      in: path
+      name: amendmentId
+      description: The numeric ID of the amendment
+      required: true
+      example: 42
+      schema:
+        type: string
+    lineNumbers:
+      in: query
+      name: lineNumbers
+      required: false
+      description: If true, then line number markers will be returned in the text (if there are any)
+      example: true
+      schema:
+        type: boolean
+
+  responses:
+    ApiDisabled:
+      description: The REST API is not enabled for this consultation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorApiDisabled'
+    NotFound:
+      description: The consultation (or the requested resource within it) was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorNotFound'
+    Unauthorized:
+      description: Missing, invalid, or expired bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorUnauthorized'
+
   schemas:
-    Agenda:
-      type: array
-      items:
-        $ref: '#/components/schemas/AgendaItem'
+    AgendaList:
+      x-php-namespace: agenda
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgendaItem'
 
     AgendaItem:
+      x-php-namespace: agenda
       type: object
       required:
         - type
         - title
+        - settings
+        - children
       properties:
         id:
-          type: number
+          type: integer
           description: Always set when retrieving the agenda; only optional when saving, for newly created items.
           example: 12
         type:
@@ -257,51 +284,75 @@ components:
           example: "2020-12-31"
           description: Only relevant for type=date_separator. Format is YYYY-MM-DD
         settings:
-          type: object
-          required:
-            - has_speaking_list
-            - in_proposed_procedures
-          properties:
-            has_speaking_list:
-              type: boolean
-            in_proposed_procedures:
-              type: boolean
-            motion_types:
-              type: array
-              items:
-                type: number
-              description: List of Motion Type IDs permissible for this agenda item. At the moment, only one is supported, subject to future enhancements.
-              example:
-                - 12
+          $ref: '#/components/schemas/AgendaItemSettings'
         children:
           type: array
           items:
             $ref: '#/components/schemas/AgendaItem'
 
+    AgendaItemSettings:
+      x-php-namespace: agenda
+      type: object
+      required:
+        - has_speaking_list
+        - in_proposed_procedures
+        - motion_types
+      properties:
+        has_speaking_list:
+          type: boolean
+        speaking_lists:
+          type: array
+          nullable: true
+          items:
+            type: integer
+          desription: Only set when this object is returned from the API; ignored when using the object for saving the agenda.
+        in_proposed_procedures:
+          type: boolean
+        motion_types:
+          type: array
+          items:
+            type: integer
+          description: List of Motion Type IDs permissible for this agenda item. At the moment, only one is supported, subject to future enhancements.
+          example:
+            - 12
+
     ConsultationLinkList:
-      type: array
-      items:
-        type: object
-        properties:
-          title:
-            type: string
-            example: 44. Bundesdelegiertenkonferenz
-          title_short:
-            type: string
-            example: 44. BDK
-          date_published:
-            type: string
-            example: "2015-03-30T03:27:20+02:00"
-          url_path:
-            type: string
-            example: consultation
-          url_json:
-            type: string
-            example: https://test.antragsgruen.de/rest/consultation
-          url_html:
-            type: string
-            example: https://test.antragsgruen.de/consultation
+      x-php-namespace: consultation
+      type: object
+      required:
+        - consultations
+      properties:
+        consultations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsultationLink'
+
+    ConsultationLink:
+      x-php-namespace: consultation
+      type: object
+      properties:
+        title:
+          type: string
+          example: 44. Bundesdelegiertenkonferenz
+        title_short:
+          type: string
+          example: 44. BDK
+        date_published:
+          type: string
+          example: "2015-03-30T03:27:20+02:00"
+        url_path:
+          type: string
+          example: consultation
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/rest/consultation
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation
+
     ConsultationWithLinks:
+      x-php-namespace: consultation
+      type: object
       properties:
         title:
           type: string
@@ -327,7 +378,10 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation
+
     MotionLinkWithAmendmentLinks:
+      x-php-namespace: imotion
+      type: object
       properties:
         type:
           type: string
@@ -336,7 +390,7 @@ components:
             - motion
             - amendment
         id:
-          type: number
+          type: integer
           example: 23
         agenda_item:
           type: string
@@ -354,7 +408,7 @@ components:
           type: string
           example: "A1: Pure title of the motion"
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -373,10 +427,12 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
+
     PageLinks:
+      type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         in_menu:
           type: boolean
@@ -390,10 +446,13 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/page/testpage
+
     MotionLink:
+      x-php-namespace: imotion
+      type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         agenda_item:
           type: string
@@ -419,13 +478,16 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
+
     MotionDetails:
+      x-php-namespace: imotion
+      type: object
       properties:
         type:
           type: string
           example: motion
         id:
-          type: number
+          type: integer
           example: 23
         agenda_item:
           type: string
@@ -443,7 +505,7 @@ components:
           type: string
           example: "A1: Pure title of the motion"
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -479,16 +541,19 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
+
     AmendmentLink:
+      x-php-namespace: imotion
+      type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         prefix:
           type: string
           example: Ä1
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -503,13 +568,16 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion/42
+
     AmendmentDetails:
+      x-php-namespace: imotion
+      type: object
       properties:
         type:
           type: string
           example: amendment
         id:
-          type: number
+          type: integer
           example: 23
         prefix:
           type: string
@@ -521,11 +589,11 @@ components:
           type: string
           example: "Ä1 zu A1: My motion"
         first_line:
-          type: number
+          type: integer
           example: 1
           description: The first line affected by this amendment
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -559,7 +627,10 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion/42
+
     Supporter:
+      x-php-namespace: imotion
+      type: object
       properties:
         type:
           type: string
@@ -574,7 +645,10 @@ components:
         organization:
           type: string
           example: E Corp
+
     MotionSection:
+      x-php-namespace: imotion
+      type: object
       properties:
         type:
           type: string
@@ -597,7 +671,10 @@ components:
           type: boolean
           example: true
           description: In case of a two-column layout, true indicates this section is to be shown on the right
+
     AmendmentSection:
+      x-php-namespace: imotion
+      type: object
       properties:
         type:
           type: string
@@ -616,11 +693,15 @@ components:
         html:
           type: string
           example: "<h3>Antragstext</h3><h4 class=\"lineSummary\">Von Zeile 23 bis 26:</h4><div><p>Dolor lorem. <ins style=\"color:#008000;text-decoration:underline;\">Bavaria</ins> ipsum dolor</p></div>"
+
     AmendmentProposedProcedure:
+      x-php-namespace: proposedprocedure
+      type: object
+      nullable: true
       description: this object is only set if the proposed procedure exists and is public; otherwise the field is "null"
       properties:
         status_id:
-          type: number
+          type: integer
           example: 6
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -631,24 +712,34 @@ components:
           description: The proposed changed version of amendment sections; if there are propsed changes
           items:
             $ref: '#/components/schemas/AmendmentSection'
+
     MotionProposedProcedure:
+      x-php-namespace: proposedprocedure
+      type: object
+      nullable: true
       description: this object is only set if the proposed procedure exists and is public; otherwise the field is "null"
       properties:
         status_id:
-          type: number
+          type: integer
           example: 6
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
           type: string
           example: Modifizierte Übernahme
+
     ProposedProcedure:
-      description: ...
+      x-php-namespace: proposedprocedure
+      type: object
+      description: The public proposed procedure, grouped into outer blocks of voting blocks
       properties:
         proposed_procedure:
           type: array
           items:
             $ref: '#/components/schemas/ProposedProcedureOuterBlock'
+
     ProposedProcedureOuterBlock:
+      x-php-namespace: proposedprocedure
+      type: object
       description: An outer proposed procedure block
       properties:
         title:
@@ -658,22 +749,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProposedProcedureVotingBlock'
+
     ProposedProcedureVotingBlock:
+      x-php-namespace: proposedprocedure
+      type: object
       description: A voting block
       properties:
         id:
           type: string
           example: "19"
+          nullable: true
           description: ID or null
         title:
           type: string
           example: "Abstimmung: Wohnungstausch"
+          nullable: true
           description: title or null
         items:
           type: array
           items:
             $ref: '#/components/schemas/ProposedProcedureVotingItem'
+
     ProposedProcedureVotingItem:
+      x-php-namespace: proposedprocedure
+      type: object
       description: An individual item (motion or amendment) in a voting block
       properties:
         type:
@@ -683,7 +782,7 @@ components:
             - Motion
             - Amendment
         id:
-          type: number
+          type: integer
           example: 23
           description: the ID of the motion or amendment
         prefix:
@@ -704,10 +803,13 @@ components:
         procedure:
           type: string
           example: "<p>Abstimmung (Angenommen)</p><p class=\"explanation\">Das Thema der Abstimmung wird an mehreren Stellen im Antrag beantragt. Die Antragskommission schlägt vor, eine Abstimmung zwischen W-01-034-2 und W-01-035 durchzuführen. Wenn W-01-034-2 angenommen wird, sind W-01-433 und W-01-599 in den Beschlusstext übernommen. Wenn W-01-035 angenommen wird, werden die beiden Anträge W-01-433 und W-01-599 nicht in den Beschlusstext übernommen.</p>"
+
     SpeakingList:
+      x-php-namespace: speakingList
+      type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         is_open:
           type: boolean
@@ -730,25 +832,31 @@ components:
           items:
             $ref: '#/components/schemas/SpeakingListSlot'
         current_time:
-          type: number
+          type: integer
           example: 1650106796832
           description: unix timestamp in milliseconds of the time the request was served on server side. Can be used to calculate time offset of the browser.
         speaking_time:
-          type: number
+          type: integer
+          nullable: true
           example: 300
           description: if not null, then this indicates the time in seconds each speaker has
+
     SpeakingListSubqueue:
+      x-php-namespace: speakingList
+      type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
+          nullable: true
           description: can be null, if this is a default subqueue
         name:
           type: string
           example: Member group 1
+          nullable: true
           description: can be null, if this is a default subqueue
         num_applied:
-          type: number
+          type: integer
           example: 4
           description: number of users that have already applied for this subqueue
         have_applied:
@@ -760,17 +868,20 @@ components:
           items:
             $ref: '#/components/schemas/SpeakingListApplicant'
           description: list of users that have applied. Only provided if list the list is public.
+
     SpeakingListApplicant:
+      x-php-namespace: speakingList
+      type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
           description: application id
         name:
           type: string
           example: Johanna Doe
         user_id:
-          type: number
+          type: integer
           example: 23
           description: user id
         is_point_of_order:
@@ -779,45 +890,66 @@ components:
         applied_at:
           type: string
           example: "2015-03-30T03:27:20+02:00"
+
     SpeakingListSlot:
+      x-php-namespace: speakingList
+      type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
+          nullable: true
           description: can be null, if this is a default subqueue
         subqueue:
           type: object
           properties:
             id:
-              type: number
+              type: integer
               example: 23
+              nullable: true
               description: can be null, if this is a default subqueue
             name:
               type: string
               example: Member group 1
+              nullable: true
               description: can be null, if this is a default subqueue
         name:
           type: string
           example: Johanna Doe
         user_id:
-          type: number
+          type: integer
           example: 123
         position:
-          type: number
+          type: integer
           example: 1
         date_started:
           type: string
+          nullable: true
           example: "2015-03-30T03:27:20+02:00"
           description: When the speaking started. null if not yet started.
         date_stopped:
           type: string
+          nullable: true
           example: "2015-03-30T03:27:20+02:00"
           description: When the speaking stopped. null if not yet stopped. If this is null and date_started is set, then the person is currently speaking.
         date_applied:
           type: string
           example: "2015-03-30T03:27:20+02:00"
           description: When the speaker applied. Always set.
+
+    UserInfo:
+      x-php-namespace: user
+      type: object
+      required:
+        - auth
+      properties:
+        auth:
+          type: string
+          example: email:test@example.org
+
     ErrorNoPermission:
+      x-php-namespace: errors
+      type: object
       properties:
         success:
           type: boolean
@@ -825,7 +957,10 @@ components:
         error:
           type: string
           example: No permission to edit the agenda
+
     ErrorNotFound:
+      x-php-namespace: errors
+      type: object
       properties:
         success:
           type: boolean
@@ -833,7 +968,10 @@ components:
         error:
           type: string
           example: Object not found
+
     ErrorApiDisabled:
+      x-php-namespace: errors
+      type: object
       properties:
         success:
           type: boolean
@@ -841,3 +979,14 @@ components:
         error:
           type: string
           example: API disabled
+
+    ErrorUnauthorized:
+      x-php-namespace: errors
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Missing or invalid bearer token

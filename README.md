@@ -416,7 +416,7 @@ As a rule of thumb, this setting should be considered if you expect close to 1.0
 
 ### JWT Key Signing
 
-Some of the more advanced features of Antragsgrün need JWT signing set up. Right now, this is only the integration of the Live Server, but in the future this will also enable logged in access to the REST API.
+Some of the more advanced features of Antragsgrün need JWT signing set up. Right now, this is only the integration of the Live Server. Authentication for the REST API uses it when available, but falls back to an alternative way otherwise.
 
 First, a Public/Private key pair used for JWT authentication needs to be generated:
 ```shell
@@ -425,12 +425,18 @@ openssl rsa -in bundle.pem -pubout -outform PEM -out public.key
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in bundle.pem -out private.key -nocrypt
 ```
 
-Move the keys to a safe place and point the `jwtPrivateKey` parameter in `config.json` to its absolute location, like:
+
+Move the keys to a safe place and point the `jwtPrivateKey` and `jwtPublicKey` parameter in `config.json` to its absolute location, like:
 ```json
 {
-    "jwtPrivateKey": "/var/www/antragsgruen/config/jwt.key"
+    "jwtPrivateKey": "/var/www/antragsgruen/config/private.key",
+    "jwtPublicKey": "/var/www/antragsgruen/config/public.key",
 }
 ```
+
+If configuring Antragsgrün [using environment variables](./docs/environment-variables.md) instead, use the variable `JWT_PUBLIC_KEY` and `JWT_PRIVATE_KEY`. Two ways of configuring it are available:
+- Providing the link to the path, either in `/var/www/antragsgruen/config/private.key` or `file:///var/www/antragsgruen/config/private.key` format.
+- Providing the key itself in the environment variables, starting with `-----BEGIN PUBLIC KEY-----` / `-----BEGIN PRIVATE KEY-----`.
 
 ### Enabling the Live Server
 
@@ -587,11 +593,16 @@ On larger setups, there might be a need to share language variants between diffe
 
 ## REST-API
 
-An optional API is under development for Antragsgrün, extended by functionality as needed by external applications. Currently, starting with version 4.7.0, it gives read-only access to consultations, motions, amendments and the proposed procedure of consultations.
+A REST API is under development for Antragsgrün, used both by the frontend as well as external apps. It does not cover all functionality of Antragsgrün though and is extended based on demand.
 
-The API is disabled by default and can be enabled under "Settings" -> "Appearance and components of this site" -> "Enable the REST-API".
+Unauthenticated access to the API is disabled by default and can be enabled under "Settings" -> "Appearance and components of this site" -> "Enable the REST-API".
 
 All endpoints of the API are located under `/rest`. An OpenAPI-based description of the API can be found at [docs/openapi.yaml](docs/openapi.yaml). A [SwaggerUI](https://swagger.io/tools/swagger-ui/)-based viewer of the documentation can be installed by uploading the [swagger_ui](plugins/swagger_ui) plugin to `/plugins/` and adding it to the list of plugins in `config/config.json`.
+
+The PHP DTOs used to create the response are (for newer endpoints) automatically generated from the OpenAPI specification. So to add properties or classes, the flow is:
+- Make the necessary changes to [docs/openapi.yaml](docs/openapi.yaml)
+- Run the [DTO Generator](docs/openapi-generate-dtos.php) (see its own documentation on how to do so)
+- Check that the generated DTOs are correctly generated under [models/api](models/api)
 
 ## Testing
 

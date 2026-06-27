@@ -97,7 +97,7 @@ if ($params->jsErrorTracking) {
 echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '" crossorigin="anonymous"></script>';
 
 $consultation = $controller->consultation;
-if ($layout->provideJwt && $params->jwtPrivateKey && $consultation) {
+if ($layout->provideJwt && $consultation) {
     $jwtConfig = \app\components\JwtCreator::getJwtConfigForCurrUser($consultation);
     echo '<meta name="user-jwt-config" content="' . Html::encode(json_encode($jwtConfig)) . '">' . "\n";
 }

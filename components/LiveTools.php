@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\api\{AgendaItem, SpeechQueue};
+use app\models\api\{agenda\AgendaList, SpeechQueue};
 use app\models\exceptions\{ConfigurationError, Internal};
 use app\models\db\Consultation;
 use app\models\settings\AntragsgruenApp;
@@ -79,10 +79,7 @@ class LiveTools
         self::sendToRabbitMq($routingKey, $json);
     }
 
-    /**
-     * @param AgendaItem[] $agendaItem
-     */
-    public static function sendAgenda(Consultation $consultation, array $agendaItem, bool $debug = false): void
+    public static function sendAgenda(Consultation $consultation, AgendaList $agenda, bool $debug = false): void
     {
         $params = AntragsgruenApp::getInstance()->live;
         if (!$params) {
@@ -90,7 +87,7 @@ class LiveTools
         }
 
         $serializer = Tools::getSerializer();
-        $json = $serializer->serialize($agendaItem, 'json');
+        $json = $serializer->serialize($agenda, 'json');
 
         if ($debug) {
             echo $json . "\n";

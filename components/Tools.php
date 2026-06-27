@@ -10,12 +10,14 @@ use app\models\exceptions\Internal;
 use app\views\pdfLayouts\IPdfWriter;
 use setasign\Fpdi\FpdiException;
 use setasign\Fpdi\PdfParser\StreamReader;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
-use Symfony\Component\Serializer\Normalizer\{ArrayDenormalizer, DateTimeNormalizer, ObjectNormalizer};
-use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, Serializer, SerializerInterface};
+use Symfony\Component\Serializer\Normalizer\{ArrayDenormalizer, BackedEnumNormalizer, DateTimeNormalizer, ObjectNormalizer};
+use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, NameConverter\CamelCaseToSnakeCaseNameConverter, Serializer, SerializerInterface};
 
 class Tools
 {
@@ -24,13 +26,23 @@ class Tools
     public static function getSerializer(): SerializerInterface
     {
         if (!isset(self::$serializer)) {
+            $reflectionExtractor = new ReflectionExtractor();
+            $phpDocExtractor = new PhpDocExtractor();
+            $propertyTypeExtractor = new PropertyInfoExtractor(
+                listExtractors: [$reflectionExtractor],
+                typeExtractors: [$phpDocExtractor, $reflectionExtractor], // PhpDoc first
+            );
+
             $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
-            $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
+            $camelCaseToSnakeCase = new CamelCaseToSnakeCaseNameConverter();
+            $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory, $camelCaseToSnakeCase);
+
             $encoders = [new JsonEncoder()];
             $normalizers = [
                 new ArrayDenormalizer(),
                 new DateTimeNormalizer(),
-                new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, new ReflectionExtractor()),
+                new BackedEnumNormalizer(),
+                new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, $propertyTypeExtractor),
             ];
             self::$serializer = new Serializer($normalizers, $encoders);
         }

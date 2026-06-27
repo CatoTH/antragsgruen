@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.18.0 [not released yet]
+
+- The REST API has been improved and now supports authenticated calls.
+
 ### Version 4.17.2 [not released yet]
 
 - Bugfix: Automatic scrolling to motion/amendment comments was not working reliably.

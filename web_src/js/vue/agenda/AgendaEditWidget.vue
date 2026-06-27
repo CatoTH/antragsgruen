@@ -24,16 +24,16 @@
 <script type="module">
 export default {
   props: {
-    modelValue: { type: Array },
+    modelValue: { type: Object },
     motionTypes: { type: Array }
   },
   computed: {
     list: {
       get: function () {
-        return this.modelValue;
+        return this.modelValue.items;
       },
       set: function (value) {
-        this.$emit('update:modelValue', value);
+        this.$emit('update:modelValue', {"items": value});
       }
     },
     anyItemHasTime: function () {
@@ -48,7 +48,7 @@ export default {
         }
         return false;
       };
-      return checkItemRec(this.modelValue);
+      return checkItemRec(this.modelValue.items);
     }
   },
   data() {

@@ -4,7 +4,14 @@ namespace app\models\db;
 
 use app\models\layoutHooks\Layout;
 use app\models\settings\PrivilegeQueryContext;
-use app\components\{ExternalPasswordAuthenticatorInterface, MotionNumbering, RequestContext, Tools, UrlHelper, mail\Tools as MailTools};
+use app\components\{ExternalPasswordAuthenticatorInterface,
+    JwtCreator,
+    MotionNumbering,
+    RequestContext,
+    Tools,
+    UrlHelper,
+    mail\Tools as MailTools,
+    yii\OptionalHttpBearerAuth};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, MailNotSent, ServerConfiguration};
 use app\models\settings\AntragsgruenApp;
@@ -334,18 +341,12 @@ class User extends ActiveRecord implements IdentityInterface
         return static::findOne($userId);
     }
 
-    /**
-     * Finds an identity by the given token.
-     * @param mixed $token the token to be looked for
-     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
-     * For example, [[\Yii\filters\auth\HttpBearerAuth]] will set this parameter to be
-     * `yii\filters\auth\HttpBearerAuth`.
-     * @return IdentityInterface the identity object that matches the given token.
-     * Null should be returned if such an identity cannot be found
-     * or the identity is not in an active state (disabled, deleted, etc.)
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): ?User
     {
+        if ($type === OptionalHttpBearerAuth::class) {
+            return JwtCreator::getAuthenticatedUserByToken($token);
+        }
+
         return static::findOne(['authKey' => $token]);
     }
 
@@ -429,6 +430,11 @@ class User extends ActiveRecord implements IdentityInterface
             $this->save();
         }
         return $this->secretKey;
+    }
+
+    public function getJwtSigningKey(): string
+    {
+        return $this->getSecretKey() . AntragsgruenApp::getInstance()->randomSeed;
     }
 
     private function createConfirmationCode(string $base): string
