@@ -593,11 +593,16 @@ On larger setups, there might be a need to share language variants between diffe
 
 ## REST-API
 
-An optional API is under development for Antragsgrün, extended by functionality as needed by external applications. Currently, starting with version 4.7.0, it gives read-only access to consultations, motions, amendments and the proposed procedure of consultations.
+A REST API is under development for Antragsgrün, used both by the frontend as well as external apps. It does not cover all functionality of Antragsgrün though and is extended based on demand.
 
-The API is disabled by default and can be enabled under "Settings" -> "Appearance and components of this site" -> "Enable the REST-API".
+Unauthenticated access to the API is disabled by default and can be enabled under "Settings" -> "Appearance and components of this site" -> "Enable the REST-API".
 
 All endpoints of the API are located under `/rest`. An OpenAPI-based description of the API can be found at [docs/openapi.yaml](docs/openapi.yaml). A [SwaggerUI](https://swagger.io/tools/swagger-ui/)-based viewer of the documentation can be installed by uploading the [swagger_ui](plugins/swagger_ui) plugin to `/plugins/` and adding it to the list of plugins in `config/config.json`.
+
+The PHP DTOs used to create the response are (for newer endpoints) automatically generated from the OpenAPI specification. So to add properties or classes, the flow is:
+- Make the necessary changes to [docs/openapi.yaml](docs/openapi.yaml)
+- Run the [DTO Generator](docs/openapi-generate-dtos.php) (see its own documentation on how to do so)
+- Check that the generated DTOs are correctly generated under [models/api](models/api)
 
 ## Testing
 

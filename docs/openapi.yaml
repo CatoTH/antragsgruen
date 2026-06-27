@@ -303,6 +303,28 @@ components:
           items:
             $ref: '#/components/schemas/AgendaItem'
 
+    AgendaItemSettings:
+      x-php-namespace: agenda
+      type: object
+      required:
+        - has_speaking_list
+        - speaking_lists
+        - in_proposed_procedure
+        - motion_types
+      properties:
+        has_speaking_list:
+          type: boolean
+        speaking_lists:
+          type: array
+          items:
+            type: integer
+        in_proposed_procedure:
+          type: boolean
+        motion_types:
+          type: array
+          items:
+            type: integer
+
     ConsultationLinkList:
       x-php-namespace: consultation
       type: object

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers\rest;
 
-use app\components\RequestContext;
-use app\components\Tools;
-use app\components\yii\OptionalHttpBearerAuth;
+use app\components\{RequestContext, Tools, yii\OptionalHttpBearerAuth};
 use app\controllers\Base;
 use app\models\http\RestApiResponse;
 

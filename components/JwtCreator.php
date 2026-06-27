@@ -116,15 +116,15 @@ class JwtCreator
         try {
             $decoded = JWT::decode($token, $key);
         } catch (ExpiredException $e) {
-            throw new ApiResponseException('Token expired', 403, $e);
+            throw new ApiResponseException('Token expired', 401, $e);
         } catch (SignatureInvalidException $e) {
-            throw new ApiResponseException('Signature Invalid', 403, $e);
+            throw new ApiResponseException('Signature Invalid', 401, $e);
         } catch (\Exception $e) {
-            throw new ApiResponseException('Invalid Token: ' . $e->getMessage(), 403, $e);
+            throw new ApiResponseException('Invalid Token: ' . $e->getMessage(), 401, $e);
         }
 
         if ($decoded->sub !== self::USER_PREFIX_REGULAR . $user->id) {
-            throw new ApiResponseException('Invalid Subject', 403);
+            throw new ApiResponseException('Invalid Subject', 401);
         }
 
         return $user;
