@@ -23,7 +23,7 @@ $layout->loadDatepicker();
 $this->title = Yii::t('admin', 'agenda_title');
 $layout->addBreadcrumb(Yii::t('admin', 'agenda_bc'));
 
-$apiModel = \app\models\api\AgendaItem::getItemsFromConsultation($consultation);
+$apiModel = \app\models\api\agenda\AgendaList::getItemsFromConsultation($consultation);
 $motionTypesData = array_map(fn (ConsultationMotionType $item) => [
     'id' => $item->id,
     'title' => $item->titlePlural,

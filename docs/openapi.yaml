@@ -256,9 +256,11 @@ components:
       required:
         - type
         - title
+        - settings
+        - children
       properties:
         id:
-          type: number
+          type: integer
           description: Always set when retrieving the agenda; only optional when saving, for newly created items.
           example: 12
         type:
@@ -282,22 +284,7 @@ components:
           example: "2020-12-31"
           description: Only relevant for type=date_separator. Format is YYYY-MM-DD
         settings:
-          type: object
-          required:
-            - has_speaking_list
-            - in_proposed_procedures
-          properties:
-            has_speaking_list:
-              type: boolean
-            in_proposed_procedures:
-              type: boolean
-            motion_types:
-              type: array
-              items:
-                type: number
-              description: List of Motion Type IDs permissible for this agenda item. At the moment, only one is supported, subject to future enhancements.
-              example:
-                - 12
+          $ref: '#/components/schemas/AgendaItemSettings'
         children:
           type: array
           items:
@@ -308,22 +295,26 @@ components:
       type: object
       required:
         - has_speaking_list
-        - speaking_lists
-        - in_proposed_procedure
+        - in_proposed_procedures
         - motion_types
       properties:
         has_speaking_list:
           type: boolean
         speaking_lists:
           type: array
+          nullable: true
           items:
             type: integer
-        in_proposed_procedure:
+          desription: Only set when this object is returned from the API; ignored when using the object for saving the agenda.
+        in_proposed_procedures:
           type: boolean
         motion_types:
           type: array
           items:
             type: integer
+          description: List of Motion Type IDs permissible for this agenda item. At the moment, only one is supported, subject to future enhancements.
+          example:
+            - 12
 
     ConsultationLinkList:
       x-php-namespace: consultation
@@ -399,7 +390,7 @@ components:
             - motion
             - amendment
         id:
-          type: number
+          type: integer
           example: 23
         agenda_item:
           type: string
@@ -417,7 +408,7 @@ components:
           type: string
           example: "A1: Pure title of the motion"
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -441,7 +432,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         in_menu:
           type: boolean
@@ -461,7 +452,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         agenda_item:
           type: string
@@ -496,7 +487,7 @@ components:
           type: string
           example: motion
         id:
-          type: number
+          type: integer
           example: 23
         agenda_item:
           type: string
@@ -514,7 +505,7 @@ components:
           type: string
           example: "A1: Pure title of the motion"
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -556,13 +547,13 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         prefix:
           type: string
           example: Ä1
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -586,7 +577,7 @@ components:
           type: string
           example: amendment
         id:
-          type: number
+          type: integer
           example: 23
         prefix:
           type: string
@@ -598,11 +589,11 @@ components:
           type: string
           example: "Ä1 zu A1: My motion"
         first_line:
-          type: number
+          type: integer
           example: 1
           description: The first line affected by this amendment
         status_id:
-          type: number
+          type: integer
           example: 3
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -710,7 +701,7 @@ components:
       description: this object is only set if the proposed procedure exists and is public; otherwise the field is "null"
       properties:
         status_id:
-          type: number
+          type: integer
           example: 6
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -729,7 +720,7 @@ components:
       description: this object is only set if the proposed procedure exists and is public; otherwise the field is "null"
       properties:
         status_id:
-          type: number
+          type: integer
           example: 6
           description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
@@ -791,7 +782,7 @@ components:
             - Motion
             - Amendment
         id:
-          type: number
+          type: integer
           example: 23
           description: the ID of the motion or amendment
         prefix:
@@ -818,7 +809,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
         is_open:
           type: boolean
@@ -841,11 +832,11 @@ components:
           items:
             $ref: '#/components/schemas/SpeakingListSlot'
         current_time:
-          type: number
+          type: integer
           example: 1650106796832
           description: unix timestamp in milliseconds of the time the request was served on server side. Can be used to calculate time offset of the browser.
         speaking_time:
-          type: number
+          type: integer
           nullable: true
           example: 300
           description: if not null, then this indicates the time in seconds each speaker has
@@ -855,7 +846,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
           nullable: true
           description: can be null, if this is a default subqueue
@@ -865,7 +856,7 @@ components:
           nullable: true
           description: can be null, if this is a default subqueue
         num_applied:
-          type: number
+          type: integer
           example: 4
           description: number of users that have already applied for this subqueue
         have_applied:
@@ -883,14 +874,14 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
           description: application id
         name:
           type: string
           example: Johanna Doe
         user_id:
-          type: number
+          type: integer
           example: 23
           description: user id
         is_point_of_order:
@@ -905,7 +896,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           example: 23
           nullable: true
           description: can be null, if this is a default subqueue
@@ -913,7 +904,7 @@ components:
           type: object
           properties:
             id:
-              type: number
+              type: integer
               example: 23
               nullable: true
               description: can be null, if this is a default subqueue
@@ -926,10 +917,10 @@ components:
           type: string
           example: Johanna Doe
         user_id:
-          type: number
+          type: integer
           example: 123
         position:
-          type: number
+          type: integer
           example: 1
         date_started:
           type: string

@@ -628,18 +628,23 @@ function resolvePhpType($schema, array $allSchemas, array $schemaFullNamespace =
     if ($schema instanceof \cebe\openapi\spec\Reference) {
         $refName = refTargetName($schema);
         if ($refName !== null) {
-            $className = toClassName($refName);
-            $targetNamespace = $schemaFullNamespace[$refName] ?? $currentNamespace;
-
-            if ($targetNamespace !== '' && $targetNamespace !== $currentNamespace) {
-                // Different namespace -> fully-qualified to avoid needing
-                // to manage `use` imports for every generated file.
-                return '\\' . $targetNamespace . '\\' . $className;
-            }
-
-            return $className;
+            return classNameForSchema($refName, $schemaFullNamespace, $currentNamespace);
         }
         $schema = $schema->resolve();
+    }
+
+    // cebe/php-openapi auto-resolves $ref'd schemas (object properties,
+    // array items, etc.) into the *same instance* as the named component
+    // schema, rather than leaving a Reference wrapper in place. Detect this
+    // by identity match against all named schemas, so a directly-referenced
+    // property (e.g. `settings: { $ref: '#/components/schemas/Settings' }`)
+    // resolves to the real class instead of falling through to a generic
+    // 'object' type below.
+    if ($schema instanceof Schema) {
+        $matchedName = findNamedSchemaForInstance($schema, $allSchemas);
+        if ($matchedName !== null) {
+            return classNameForSchema($matchedName, $schemaFullNamespace, $currentNamespace);
+        }
     }
 
     if (!$schema instanceof Schema) {
@@ -671,6 +676,41 @@ function resolvePhpType($schema, array $allSchemas, array $schemaFullNamespace =
 }
 
 /**
+ * Builds the FQCN (or short class name, if same namespace as the class
+ * currently being rendered) for a named component schema.
+ */
+function classNameForSchema(string $schemaName, array $schemaFullNamespace, string $currentNamespace): string
+{
+    $className = toClassName($schemaName);
+    $targetNamespace = $schemaFullNamespace[$schemaName] ?? $currentNamespace;
+
+    if ($targetNamespace !== '' && $targetNamespace !== $currentNamespace) {
+        return '\\' . $targetNamespace . '\\' . $className;
+    }
+
+    return $className;
+}
+
+/**
+ * Finds the raw schema name (the key under components.schemas) whose
+ * resolved Schema instance is identical (===) to the given $schema. This is
+ * how we detect cebe/php-openapi's auto-resolved $refs, since at that point
+ * we no longer have the original Reference wrapper (or its $ref string) to
+ * read the target name from -- only object identity ties it back to a name.
+ */
+function findNamedSchemaForInstance(Schema $schema, array $allSchemas): ?string
+{
+    foreach ($allSchemas as $schemaName => $namedSchema) {
+        $resolved = resolveSchema($namedSchema);
+        if ($resolved !== null && $resolved === $schema) {
+            return $schemaName;
+        }
+    }
+
+    return null;
+}
+
+/**
  * Extracts the schema name a $ref points to, e.g. "#/components/schemas/Foo" -> "Foo".
  */
 function refTargetName(\cebe\openapi\spec\Reference $ref): ?string
@@ -690,26 +730,10 @@ function arrayItemDocType(Schema $schema, array $allSchemas, array $schemaFullNa
         return null;
     }
 
-    $items = $schema->items;
-
-    // cebe/php-openapi auto-resolves $ref items into Schema objects that are
-    // the *same instance* as the top-level named schema. Match by identity to
-    // recover the schema name and emit the correct class instead of "object".
-    if ($items instanceof Schema) {
-        foreach ($allSchemas as $schemaName => $namedSchema) {
-            $resolved = resolveSchema($namedSchema);
-            if ($resolved !== null && $resolved === $items) {
-                $className = toClassName($schemaName);
-                $targetNamespace = $schemaFullNamespace[$schemaName] ?? $currentNamespace;
-                if ($targetNamespace !== '' && $targetNamespace !== $currentNamespace) {
-                    return '\\' . $targetNamespace . '\\' . $className . '[]';
-                }
-                return $className . '[]';
-            }
-        }
-    }
-
-    $itemType = resolvePhpType($items, $allSchemas, $schemaFullNamespace, $currentNamespace);
+    // resolvePhpType() handles cebe/php-openapi's auto-resolved $refs
+    // (matching by object identity against named component schemas), so
+    // array items get the same treatment as any other $ref'd property.
+    $itemType = resolvePhpType($schema->items, $allSchemas, $schemaFullNamespace, $currentNamespace);
 
     return $itemType . '[]';
 }
