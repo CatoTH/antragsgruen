@@ -27,7 +27,7 @@
     "catoth/html2opendocument": "0.19",
     "colinodell/json5": "^3.0",
     "endroid/qr-code": "^5.0",
-    "ezyang/htmlpurifier": "dev-main as v4.19.1",
+    "ezyang/htmlpurifier": "^4.19.1",
     "firebase/php-jwt": "^7.0",
     "guzzlehttp/guzzle": "^7.7",
     "paragonie/sodium_compat": "^2.0",

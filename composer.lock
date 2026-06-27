@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c84a8e19e8fd7a55a90c62980af4d48b",
+    "content-hash": "b42646972bcdeabbb798594aec808a7c",
     "packages": [
         {
             "name": "async-aws/core",
@@ -863,7 +863,7 @@
         },
         {
             "name": "ezyang/htmlpurifier",
-            "version": "dev-main",
+            "version": "v4.19.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/htmlpurifier.git",
@@ -888,7 +888,6 @@
                 "ext-iconv": "Converts text to and from non-UTF-8 encodings",
                 "ext-tidy": "Used for pretty-printing HTML"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -917,7 +916,7 @@
                 "html"
             ],
             "support": {
-                "source": "https://github.com/CatoTH/htmlpurifier/tree/main"
+                "source": "https://github.com/CatoTH/htmlpurifier/tree/v4.19.1"
             },
             "time": "2025-12-24T13:25:07+00:00"
         },
@@ -9969,12 +9968,6 @@
     ],
     "aliases": [
         {
-            "package": "ezyang/htmlpurifier",
-            "version": "dev-main",
-            "alias": "v4.19.1",
-            "alias_normalized": "4.19.1.0"
-        },
-        {
             "package": "s1syphos/php-simple-captcha",
             "version": "dev-main",
             "alias": "2.4.0",
@@ -9983,7 +9976,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ezyang/htmlpurifier": 20,
         "s1syphos/php-simple-captcha": 20
     },
     "prefer-stable": false,
