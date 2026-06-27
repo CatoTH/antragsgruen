@@ -73,7 +73,8 @@
     "symfony/filesystem": ">=7.0.0",
     "symfony/finder": ">=7.0.0",
     "symfony/var-exporter": ">=7.0.0",
-    "symfony/yaml": ">=7.0.0"
+    "symfony/yaml": ">=7.0.0",
+    "webmozart/assert": ">= 2.0.0"
   },
   "autoload": {
     "psr-4": {
