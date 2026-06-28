@@ -34,8 +34,8 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
-      - name: Install extra packages
-        run: composer require --no-interaction yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
+      - name: Install PHPStan extras
+        run: composer install --prefer-dist --no-progress --no-interaction --working-dir=.github/phpstan
       - name: Generate baseline
         run: |
           php vendor/bin/phpstan analyse --configuration=phpstan.neon --error-format=github --generate-baseline

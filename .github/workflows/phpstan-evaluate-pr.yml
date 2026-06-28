@@ -31,8 +31,8 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
-      - name: Install extra packages
-        run: composer require --no-interaction yiisoft/yii2-redis predis/predis simplesamlphp/simplesamlphp
+      - name: Install PHPStan extras
+        run: composer install --prefer-dist --no-progress --no-interaction --working-dir=.github/phpstan
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v21
         with:
