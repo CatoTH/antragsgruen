@@ -117,7 +117,7 @@ class AmendmentProposal extends IProposal
 
     public function getAmendment(): ?Amendment
     {
-        return $this->getCachedConsultation()->getAmendment($this->amendmentId);
+        return $this->getCachedConsultation()?->getAmendment($this->amendmentId);
     }
 
     public static function createNew(Amendment $amendment, int $version): AmendmentProposal

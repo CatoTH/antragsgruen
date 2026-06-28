@@ -3,6 +3,7 @@
 ### Version 4.17.2 [not released yet]
 
 - Bugfix: Automatic scrolling to motion/amendment comments was not working reliably.
+- Bugfix: If a modified adoption of an amendment was proposed, and the amendment was later on deleted, then merging other amendments into the base motion failed.
 
 ### Version 4.17.1 (2026-06-22)
 
