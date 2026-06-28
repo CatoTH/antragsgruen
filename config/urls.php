@@ -103,6 +103,7 @@ $urlRules = [
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
     $restBaseCon . '/page/<pageSlug:[^\/]+>'                                         => '/pages/get-rest',
 
+    $restBaseCon . '/motion-types'                                                       => '/rest/motion-type/index',
     $restBaseCon . '/agenda' => '/admin/agenda/rest-index',
     $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
     $restBaseCon . '/votings/closed' => '/voting/get-closed-voting-blocks',

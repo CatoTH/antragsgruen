@@ -1,0 +1,145 @@
+<?php
+
+/** @var \Codeception\Scenario $scenario */
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use Tests\Support\AcceptanceTester;
+
+$I = new AcceptanceTester($scenario);
+$I->populateDBData1();
+
+$I->gotoConsultationHome();
+$I->loginAsStdUser();
+
+$I->amOnPage(str_replace(
+    ['{SUBDOMAIN}', '{CONSULTATION}', '{PATH}'],
+    ['stdparteitag', 'std-parteitag', 'token'],
+    AcceptanceTester::ABSOLUTE_URL_TEMPLATE
+));
+$text = $I->grabPageSource();
+$text = explode('"token":"', $text);
+$token = explode('"', $text[1])[0];
+
+
+$client = new Client([
+    'base_uri' => str_replace(['{SUBDOMAIN}', '{PATH}'], ['stdparteitag', ''], AcceptanceTester::ABSOLUTE_URL_TEMPLATE_SITE),
+    RequestOptions::HTTP_ERRORS => false,
+]);
+
+$request = $client->get('rest/std-parteitag/motion-types', [RequestOptions::HEADERS => [
+    'Authorization' => 'Bearer ' . $token,
+]]);
+$I->assertEquals(200, $request->getStatusCode());
+
+
+$I->assertJsonStringEqualsJsonString('{
+  "items": [
+    {
+      "id": 1,
+      "labels": {
+        "singular": "Antrag",
+        "plural": "Antr\u00e4ge",
+        "create": "Antrag stellen"
+      },
+      "settings": {
+        "amendments_only": false,
+        "amendment_multiple_paragraphs": "multiple",
+        "has_proposed_procedure": true,
+        "has_responsibilities": false,
+        "allow_amendments_to_amendments": false,
+        "merging_deadlines": []
+      },
+      "policies": {
+        "motions": {
+          "id": "all",
+          "description": "Alle",
+          "deadlines": [],
+          "user_group_ids": null
+        },
+        "amendments": {
+          "id": "all",
+          "description": "Alle",
+          "deadlines": [],
+          "user_group_ids": null
+        },
+        "comments": {
+          "id": "all",
+          "description": "Alle",
+          "deadlines": [],
+          "user_group_ids": null
+        },
+        "support_motions": {
+          "id": "nobody",
+          "description": "Niemand",
+          "deadlines": [],
+          "user_group_ids": null
+        },
+        "support_amendments": {
+          "id": "nobody",
+          "description": "Niemand",
+          "deadlines": [],
+          "user_group_ids": null
+        }
+      },
+      "sections": [
+        {
+          "id": 1,
+          "type": "Title",
+          "title": "\u00dcberschrift",
+          "required": "yes",
+          "max_len": 0,
+          "line_numbers": true,
+          "has_amendments": true,
+          "has_comments": "none",
+          "position_right": false
+        },
+        {
+          "id": 2,
+          "type": "TextSimple",
+          "title": "Antragstext",
+          "required": "yes",
+          "max_len": 0,
+          "line_numbers": true,
+          "has_amendments": true,
+          "has_comments": "motion",
+          "position_right": false
+        },
+        {
+          "id": 4,
+          "type": "TextSimple",
+          "title": "Antragstext 2",
+          "required": "no",
+          "max_len": 0,
+          "line_numbers": true,
+          "has_amendments": true,
+          "has_comments": "motion",
+          "position_right": false
+        },
+        {
+          "id": 3,
+          "type": "TextSimple",
+          "title": "Begr\u00fcndung",
+          "required": "no",
+          "max_len": 0,
+          "line_numbers": false,
+          "has_amendments": false,
+          "has_comments": "none",
+          "position_right": false
+        },
+        {
+          "id": 5,
+          "type": "Image",
+          "title": "Abbildung",
+          "required": "no",
+          "max_len": 0,
+          "line_numbers": true,
+          "has_amendments": false,
+          "has_comments": "none",
+          "position_right": false
+        }
+      ],
+      "motion_prefix": "A"
+    }
+  ]
+}', $request->getBody()->getContents());
+

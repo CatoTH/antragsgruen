@@ -18,4 +18,19 @@ class MotionTypeSectionDefinition
         public bool $positionRight,
     ) {
     }
+
+    public static function fromEntity(\app\models\db\ConsultationSettingsMotionSection $section): self
+    {
+        return new self(
+            id: $section->id,
+            type: MotionTypeSectionDefinitionType::fromTypeId($section->type),
+            title: $section->title,
+            required: MotionTypeSectionDefinitionRequired::fromDbValue($section->required),
+            maxLen: $section->maxLen,
+            lineNumbers: (bool) $section->lineNumbers,
+            hasAmendments: (bool) $section->hasAmendments,
+            hasComments: MotionTypeSectionDefinitionHasComments::fromDbValue($section->hasComments),
+            positionRight: (bool) $section->positionRight,
+        );
+    }
 }
