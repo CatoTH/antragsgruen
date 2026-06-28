@@ -1,0 +1,14 @@
+{
+    "require": {
+        "simplesamlphp/simplesamlphp": "^2.0"
+    },
+    "config": {
+        "platform": {
+          "php": "8.2.30"
+        },
+        "allow-plugins": {
+            "simplesamlphp/composer-module-installer": true,
+            "simplesamlphp/composer-xmlprovider-installer": true
+        }
+    }
+}

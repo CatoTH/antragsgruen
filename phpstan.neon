@@ -22,6 +22,8 @@ parameters:
     excludePaths:
       # Has too many symbols that are not installed by default, and not worth installing them just for this file
       - components/OpenTelemetryLogTarget.php
+    bootstrapFiles:
+      - .github/phpstan/bootstrap.php
     scanFiles:
       - views/motion/LayoutHelper.php
       - views/amendment/LayoutHelper.php

@@ -635,6 +635,12 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 
 ### phpstan
 
+When running phpstan locally, set up optional libraries before running phpstan:
+
+```bash
+composer install --prefer-dist --no-progress --no-interaction --working-dir=.github/phpstan
+```
+
 1. Before changing code, generate a baseline.
 
 ```bash
