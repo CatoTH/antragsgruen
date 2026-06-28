@@ -58,6 +58,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/motion-types:
+    get:
+      operationId: getMotionTypes
+      summary: List of motion types defined for this consultation
+      tags:
+        - Motion Types
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: Motion type list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionTypeList'
+        '403':
+          $ref: '#/components/responses/ApiDisabled'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /rest/{consultationPath}/proposed-procedure:
     get:
       operationId: getProposedProcedure
@@ -990,3 +1010,266 @@ components:
         error:
           type: string
           example: Missing or invalid bearer token
+
+    MotionTypeList:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionType'
+
+    MotionType:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - id
+        - labels
+        - motion_prefix
+        - settings
+        - policies
+        - sections
+      properties:
+        id:
+          type: integer
+          example: 3
+        labels:
+          $ref: '#/components/schemas/MotionTypeLabels'
+        motion_prefix:
+          type: string
+          nullable: true
+          description: Alphanumeric prefix prepended to motion numbering (e.g. "A" → A1, A2 …). Null means no prefix.
+          example: A
+        settings:
+          $ref: '#/components/schemas/MotionTypeSettings'
+        policies:
+          $ref: '#/components/schemas/MotionTypePolicies'
+        sections:
+          type: array
+          description: Ordered list of text/content sections that make up a motion of this type
+          items:
+            $ref: '#/components/schemas/MotionTypeSectionDefinition'
+
+    MotionTypeLabels:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - singular
+        - plural
+        - create
+      properties:
+        singular:
+          type: string
+          description: Singular label for one motion of this type
+          example: Motion
+        plural:
+          type: string
+          description: Plural label for motions of this type
+          example: Motions
+        create:
+          type: string
+          description: Label shown on the button/link that creates a new motion of this type
+          example: Submit a motion
+
+    MotionTypeSettings:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - amendments_only
+        - amendment_multiple_paragraphs
+        - has_proposed_procedure
+        - has_responsibilities
+        - allow_amendments_to_amendments
+        - merging_deadlines
+      properties:
+        amendments_only:
+          type: boolean
+          description: If true, no new top-level motions can be submitted — only amendments to existing ones
+          example: false
+        amendment_multiple_paragraphs:
+          type: string
+          description: >
+            Controls how many paragraphs an amendment may affect.
+            `multiple` — any number of paragraphs;
+            `single_paragraph` — exactly one paragraph;
+            `single_change` — exactly one contiguous change.
+          enum:
+            - multiple
+            - single_paragraph
+            - single_change
+          example: multiple
+        has_proposed_procedure:
+          type: boolean
+          description: Whether a proposed procedure (Antragskommission recommendation) can be attached to motions of this type
+          example: true
+        has_responsibilities:
+          type: boolean
+          description: Whether responsibility assignments are tracked for this motion type
+          example: false
+        allow_amendments_to_amendments:
+          type: boolean
+          description: Whether amendments to amendments (sub-amendments) are permitted
+          example: false
+        merging_deadlines:
+          type: array
+          description: Deadline windows for the amendment merging phase (not tied to a submission policy)
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+
+    MotionTypePolicies:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - motions
+        - amendments
+        - comments
+        - support_motions
+        - support_amendments
+      properties:
+        motions:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        amendments:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        comments:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        support_motions:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        support_amendments:
+          $ref: '#/components/schemas/MotionTypePolicy'
+
+    MotionTypePolicy:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - id
+        - description
+        - deadlines
+      properties:
+        id:
+          type: string
+          description: Policy identifier
+          enum:
+            - nobody
+            - all
+            - logged_in
+            - admins
+            - user_groups
+          example: all
+        description:
+          type: string
+          description: Human-readable label for the policy (language depends on the site locale)
+          example: Everybody
+        user_group_ids:
+          type: array
+          nullable: true
+          description: Only present when id=user_groups. Lists the IDs of the permitted user groups.
+          items:
+            type: integer
+          example:
+            - 4
+            - 7
+        deadlines:
+          type: array
+          description: >
+            Deadline windows for this policy's activity. An empty array means no deadline is enforced
+            (always open). Multiple entries represent named windows; the activity is open if the
+            current time falls within at least one window.
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+
+    MotionTypeDeadlineEntry:
+      x-php-namespace: motionType
+      type: object
+      properties:
+        start:
+          type: string
+          nullable: true
+          description: ISO 8601 datetime from which the window is open. Null means "from the beginning of time".
+          example: "2025-09-01T00:00:00+02:00"
+        end:
+          type: string
+          nullable: true
+          description: ISO 8601 datetime at which the window closes. Null means "no end".
+          example: "2025-10-15T23:59:59+02:00"
+        title:
+          type: string
+          nullable: true
+          description: Optional label for this window shown in the UI (e.g. "Early submission period")
+          example: "Early submission period"
+
+    MotionTypeSectionDefinition:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - id
+        - type
+        - title
+        - required
+        - max_len
+        - line_numbers
+        - has_amendments
+        - has_comments
+        - position_right
+      properties:
+        id:
+          type: integer
+          example: 12
+        type:
+          type: string
+          description: Determines how the section content is stored and rendered
+          enum:
+            - Title
+            - TextSimple
+            - TextHTML
+            - TextEditorial
+            - Image
+            - TabularData
+            - PDFAttachment
+            - PDFAlternative
+            - VideoEmbed
+            - Choice
+          example: TextSimple
+        title:
+          type: string
+          description: Label shown above the section in the motion form and detail view
+          example: Motion text
+        required:
+          type: string
+          description: >
+            Whether submitters must fill in this section.
+            `no` — optional; `yes` — mandatory; `encouraged` — shown as recommended but not enforced.
+          enum:
+            - no
+            - yes
+            - encouraged
+          example: yes
+        max_len:
+          type: integer
+          description: Maximum character length enforced on submission. 0 means no limit.
+          example: 0
+        line_numbers:
+          type: boolean
+          description: Whether line numbers are displayed for this section
+          example: true
+        has_amendments:
+          type: boolean
+          description: Whether amendments may modify this section
+          example: true
+        has_comments:
+          type: string
+          description: >
+            Comment granularity for this section.
+            `none` — no comments; `motion` — one comment thread per section;
+            `paragraphs` — one thread per paragraph.
+          enum:
+            - none
+            - motion
+            - paragraphs
+          example: none
+        position_right:
+          type: boolean
+          description: In a two-column merging layout, true places this section in the right column
+          example: false
