@@ -12,4 +12,13 @@ class MotionTypeLabels
         public string $create,
     ) {
     }
+
+    public static function fromEntity(\app\models\db\ConsultationMotionType $motionType): self
+    {
+        return new self(
+            singular: $motionType->titleSingular,
+            plural: $motionType->titlePlural,
+            create: $motionType->createTitle,
+        );
+    }
 }
