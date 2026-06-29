@@ -561,6 +561,25 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
+        pagination:
+          $ref: '#/components/schemas/MotionPagination'
+
+    MotionPagination:
+      x-php-namespace: imotion
+      type: object
+      nullable: true
+      description: Links to the previous and next motion in the consultation's sorted order. Null when the consultation has prev/next navigation disabled.
+      properties:
+        prev:
+          type: string
+          nullable: true
+          description: REST URL of the previous motion, or null if this is the first one.
+          example: https://test.antragsgruen.de/rest/consultation/122-previous-motion
+        next:
+          type: string
+          nullable: true
+          description: REST URL of the next motion, or null if this is the last one.
+          example: https://test.antragsgruen.de/rest/consultation/124-next-motion
 
     AmendmentLink:
       x-php-namespace: imotion
@@ -681,6 +700,8 @@ components:
             - TabularData
             - PDFAttachment
             - PDFAlternative
+            - VideoEmbed
+            - Choice
         title:
           type: string
           example: Motion text
@@ -707,6 +728,8 @@ components:
             - TabularData
             - PDFAttachment
             - PDFAlternative
+            - VideoEmbed
+            - Choice
         title:
           type: string
           example: Motion text

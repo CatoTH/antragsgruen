@@ -228,7 +228,12 @@ class UrlHelper
 
     public static function createMotionUrl(Motion $motion, string $mode = 'view', array $addParams = []): string
     {
-        $params = array_merge(['/motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
+        if ($mode === 'rest') {
+            $route = '/rest/motion/get';
+        } else {
+            $route = '/motion/' . $mode;
+        }
+        $params = array_merge([$route, 'motionSlug' => $motion->getMotionSlug()], $addParams);
         return self::createUrl($params, $motion->getMyConsultation());
     }
 

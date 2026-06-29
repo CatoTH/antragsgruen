@@ -338,28 +338,6 @@ trait MotionExportTraits
         );
     }
 
-    public function actionRest(string $motionSlug, ?string $lineNumbers = null): RestApiResponse
-    {
-        $this->handleRestHeaders(['GET']);
-
-        $lineNumbers = ($lineNumbers !== null && in_array(strtolower($lineNumbers), ['true', '1']));
-
-        try {
-            $motion = $this->getMotionWithCheck($motionSlug, true);
-        } catch (\Exception $e) {
-            return $this->returnRestResponseFromException($e);
-        }
-
-        if (!$motion->isReadable()) {
-            return $this->returnRestResponseFromException(new NotFound('Motion is not readable'));
-        }
-
-        return new RestApiResponse(200, null, $this->renderPartial('rest_get', [
-            'motion' => $motion,
-            'lineNumbers' => $lineNumbers,
-        ]));
-    }
-
     public function actionViewChangesOdt(string $motionSlug): ResponseInterface
     {
         $motion       = $this->getMotionWithCheck($motionSlug);
