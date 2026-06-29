@@ -5,6 +5,7 @@ namespace app\models\forms;
 use app\components\HTMLTools;
 use app\components\RequestContext;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\models\exceptions\Internal;
 use app\models\db\{Consultation,
     ConsultationAgendaItem,
     ConsultationMotionType,
@@ -14,6 +15,8 @@ use app\models\db\{Consultation,
     MotionSection,
     MotionSupporter,
     User};
+use app\models\api\imotion\{MotionCreateInitiator, MotionCreateRequest, SupporterType};
+use app\models\db\ISupporter;
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
 
@@ -49,6 +52,39 @@ class MotionEditForm
             }
         }
         $this->setSection($motion);
+    }
+
+    /**
+     * @throws Internal
+     * @throws \app\models\exceptions\NotFound
+     * @return array{ConsultationMotionType, ConsultationAgendaItem|null}
+     */
+    public static function getMotionTypeForCreate(Consultation $consultation, int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): array
+    {
+        if ($agendaItemId > 0) {
+            $agendaItem = $consultation->getAgendaItem($agendaItemId);
+            if (!$agendaItem) {
+                throw new Internal('Could not find agenda item');
+            }
+            if (!$agendaItem->getMyMotionType()) {
+                throw new Internal('Agenda item does not have motions');
+            }
+            $motionType = $agendaItem->getMyMotionType();
+        } elseif ($motionTypeId > 0) {
+            $motionType = $consultation->getMotionType($motionTypeId);
+            $agendaItem = null;
+        } elseif ($cloneFrom > 0) {
+            $motion = $consultation->getMotion($cloneFrom);
+            if (!$motion) {
+                throw new Internal('Could not find referenced motion');
+            }
+            $motionType = $motion->getMyMotionType();
+            $agendaItem = $motion->agendaItem;
+        } else {
+            throw new Internal('Could not resolve motion type');
+        }
+
+        return [$motionType, $agendaItem];
     }
 
 
@@ -113,16 +149,21 @@ class MotionEditForm
         }
     }
 
-    public function setAttributes(array $values, array $files): void
+    public function setAttributes(MotionCreateRequest $request): void
     {
         $this->fileUploadErrors = [];
 
-        if (isset($values['agendaItem']) && $values['agendaItem']) {
+        if ($request->agendaItemId !== null) {
             foreach ($this->motionType->agendaItems as $agendaItem) {
-                if ($agendaItem->id === IntVal($values['agendaItem'])) {
+                if ($agendaItem->id === $request->agendaItemId) {
                     $this->agendaItem = $agendaItem;
                 }
             }
+        }
+
+        $requestSectionsById = [];
+        foreach ($request->sections as $requestSection) {
+            $requestSectionsById[$requestSection->sectionId] = $requestSection;
         }
 
         foreach ($this->sections as $section) {
@@ -130,48 +171,38 @@ class MotionEditForm
                 // Updating the text is done separately, including amendment rewriting
                 continue;
             }
-            if ($section->getSettings()->type === ISectionType::TYPE_TITLE && isset($values['motion']['title'])) {
-                $section->getSectionType()->setMotionData($values['motion']['title']);
+            $requestSection = $requestSectionsById[$section->sectionId] ?? null;
+            if ($requestSection === null) {
+                continue;
             }
-            if (isset($values['sectionDelete']) && isset($values['sectionDelete'][$section->sectionId])) {
+            if ($requestSection->deleted) {
                 if ($section->getSettings()->required !== ConsultationSettingsMotionSection::REQUIRED_YES) {
                     $section->getSectionType()->deleteMotionData();
                 }
-            }
-            if (isset($values['sections'][$section->sectionId])) {
-                $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
-            }
-            if (isset($files['sections']['tmp_name'])) {
-                if (!empty($files['sections']['tmp_name'][$section->sectionId])) {
-                    $data = [];
-                    foreach ($files['sections'] as $key => $vals) {
-                        if (isset($vals[$section->sectionId])) {
-                            $data[$key] = $vals[$section->sectionId];
-                        }
-                    }
-                    $section->getSectionType()->setMotionData($data);
-                }
-                if (!empty($files['sections']['error'][$section->sectionId])) {
-                    $error = $files['sections']['error'][$section->sectionId];
+            } elseif ($requestSection->fileData !== null) {
+                $section->getSectionType()->setMotionData($requestSection->fileData);
+                if (!empty($requestSection->fileData['error'])) {
+                    $error = $requestSection->fileData['error'];
                     if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
                         $this->fileUploadErrors[] = $section->getSettings()->title . ': Uploaded file is too big';
                     }
                 }
+            } elseif ($requestSection->data !== null) {
+                $section->getSectionType()->setMotionData($requestSection->data);
             }
         }
 
         if ($this->motionType->getConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-            $this->tags = array_map(fn (string $id): int => intval($id), $values['tags'] ?? []);
+            $this->tags = $request->tags ?? [];
         }
     }
 
     /**
      * @throws FormError
      */
-    private function createMotionVerify(): void
+    private function verifySections(): void
     {
         $errors = [];
-
         foreach ($this->sections as $section) {
             $type = $section->getSettings();
             if ($section->getData() === '' && $type->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
@@ -182,13 +213,24 @@ class MotionEditForm
             }
         }
         $errors = array_merge($errors, $this->fileUploadErrors);
+        if (count($errors) > 0) {
+            throw new FormError($errors);
+        }
+    }
 
+    /**
+     * @throws FormError
+     */
+    private function createMotionVerify(): void
+    {
+        $this->verifySections();
+
+        $errors = [];
         try {
             $this->motionType->getMotionSupportTypeClass()->validateMotion();
         } catch (FormError $e) {
-            $errors = array_merge($errors, $e->getMessages());
+            $errors = $e->getMessages();
         }
-
         if (count($errors) > 0) {
             throw new FormError($errors);
         }
@@ -264,23 +306,68 @@ class MotionEditForm
         return Motion::VERSION_DEFAULT;
     }
 
+
+
+    public function setInitiatorsFromDto(MotionCreateRequest $dto): void
+    {
+        $currentUser = User::getCurrentUser();
+
+        $this->supporters = [];
+        $position = 0;
+        foreach ($dto->initiators as $initiator) {
+            $supporter = new MotionSupporter();
+            $supporter->role = MotionSupporter::ROLE_INITIATOR;
+            $supporter->position = $position;
+            $supporter->personType = ($initiator->personType === SupporterType::ORGANIZATION)
+                ? ISupporter::PERSON_ORGANIZATION
+                : ISupporter::PERSON_NATURAL;
+            $supporter->userId = ($position === 0 && $currentUser) ? $currentUser->id : null;
+            $position++;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
+
+            if ($supporter->personType === ISupporter::PERSON_NATURAL) {
+                $supporter->name = $initiator->name;
+                $supporter->organization = $initiator->organization ?? '';
+                $supporter->contactName = $initiator->contactName ?? '';
+            } else {
+                $supporter->organization = $initiator->name;
+                $supporter->contactName = $initiator->contactName ?? '';
+            }
+            $supporter->contactEmail = $initiator->contactEmail ?? '';
+            $supporter->contactPhone = $initiator->contactPhone ?? '';
+            if ($initiator->gender !== null) {
+                $supporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER, $initiator->gender);
+            }
+            if ($initiator->resolutionDate !== null) {
+                $supporter->resolutionDate = $initiator->resolutionDate;
+            }
+
+            $this->supporters[] = $supporter;
+        }
+    }
+
     /**
      * @throws FormError
+     * @throws \Exception
      */
-    public function createMotion(): Motion
+    public function createMotion(?MotionCreateRequest $dto = null): Motion
     {
-        $consultation = $this->motionType->getConsultation();
-
         if (!$this->motionType->getMotionPolicy()->checkCurrUserMotion()) {
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
         }
 
+        $consultation = $this->motionType->getConsultation();
         $motion = new Motion();
 
-        $this->setAttributes(RequestContext::getAllPostVars(), $_FILES);
-        $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
-
-        $this->createMotionVerify();
+        if ($dto !== null) {
+            $this->setAttributes($dto);
+            $this->setInitiatorsFromDto($dto);
+            $this->verifySections();
+        } else {
+            $this->setAttributes(MotionCreateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $this->motionType));
+            $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
+            $this->createMotionVerify();
+        }
 
         $motion->status = Motion::STATUS_DRAFT;
         $motion->consultationId = $this->motionType->consultationId;
@@ -294,26 +381,33 @@ class MotionEditForm
         $motion->cache = '';
         $motion->agendaItemId = ($this->agendaItem ? $this->agendaItem->id : null);
 
-        if ($motion->save()) {
-            $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
-
-            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
-            }
-
-            foreach ($this->sections as $section) {
-                $section->motionId = $motion->id;
-                $section->save();
-            }
-
-            $motion->refreshTitle();
-            $motion->slug = $motion->createSlug();
-            $motion->save();
-
-            return $motion;
-        } else {
+        if (!$motion->save()) {
             throw new FormError(\Yii::t('motion', 'err_create'));
         }
+
+        if ($dto !== null) {
+            foreach ($this->supporters as $supporter) {
+                $supporter->motionId = $motion->id;
+                $supporter->save();
+            }
+        } else {
+            $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
+        }
+
+        if ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode) {
+            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
+        }
+
+        foreach ($this->sections as $section) {
+            $section->motionId = $motion->id;
+            $section->save();
+        }
+
+        $motion->refreshTitle();
+        $motion->slug = $motion->createSlug();
+        $motion->save();
+
+        return $motion;
     }
 
     /**
