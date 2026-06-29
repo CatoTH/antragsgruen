@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   title: Antragsgrün API
-  description: Read-Only-API for [Antragsgrün](https://antragsgruen.de/)
-  version: 0.3.0
+  description: REST API for [Antragsgrün](https://antragsgruen.de/)
+  version: 0.4.0
 paths:
   /rest:
     get:
@@ -97,6 +97,46 @@ paths:
           $ref: '#/components/responses/ApiDisabled'
         '404':
           $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/motion:
+    post:
+      operationId: createMotion
+      summary: Create a new motion in this consultation
+      tags:
+        - Motions
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotionCreateRequest'
+      responses:
+        '201':
+          description: Motion was created successfully. Returns the full motion details, including the URL under which it can be retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: No permission to create motions, or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. required section missing, text too long)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
 
   /rest/{consultationPath}/motion/{motionSlug}:
     get:
@@ -581,6 +621,112 @@ components:
           description: REST URL of the next motion, or null if this is the last one.
           example: https://test.antragsgruen.de/rest/consultation/124-next-motion
 
+    MotionCreateRequest:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - motion_type_id
+        - sections
+        - initiators
+      properties:
+        motion_type_id:
+          type: integer
+          description: ID of the motion type to create this motion under
+          example: 3
+        agenda_item_id:
+          type: integer
+          nullable: true
+          description: ID of the agenda item to associate this motion with. Null means no agenda item.
+          example: 5
+        sections:
+          type: array
+          description: Content for each section, identified by the section definition ID from MotionTypeSectionDefinition.
+          items:
+            $ref: '#/components/schemas/MotionCreateSection'
+        initiators:
+          type: array
+          description: At least one initiator must be provided.
+          items:
+            $ref: '#/components/schemas/MotionCreateInitiator'
+        tags:
+          type: array
+          nullable: true
+          description: IDs of public topic tags to apply. Only effective when the consultation allows user-defined tags.
+          items:
+            type: integer
+          example:
+            - 7
+
+    MotionCreateSection:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - section_id
+      properties:
+        section_id:
+          type: integer
+          description: ID of the section definition (from MotionTypeSectionDefinition) this data belongs to.
+          example: 12
+        data:
+          type: string
+          nullable: true
+          description: >
+            Content for this section. For Title and TextSimple sections, plain text or HTML as accepted
+            by the section type. For Image and PDF sections, a base64-encoded file is expected.
+            Null or omitted means the section is left empty (only valid for optional sections).
+          example: "<p>This is the motion text</p>"
+        deleted:
+          type: boolean
+          default: false
+          description: If true, the section content is cleared. Only allowed for optional sections.
+
+    MotionCreateInitiator:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - person_type
+        - name
+      properties:
+        person_type:
+          type: string
+          enum:
+            - person
+            - organization
+          description: Whether this initiator is a natural person or an organization.
+          example: person
+        name:
+          type: string
+          description: For person_type=person, the person's full name. For person_type=organization, the organization's name.
+          example: Ava
+        organization:
+          type: string
+          nullable: true
+          description: For person_type=person, their organizational affiliation.
+          example: E Corp
+        contact_name:
+          type: string
+          nullable: true
+          description: For person_type=organization, the name of the contact person within the organization.
+          example: Johanna Doe
+        contact_email:
+          type: string
+          nullable: true
+          example: contact@example.org
+        contact_phone:
+          type: string
+          nullable: true
+          example: "+49 30 12345678"
+        gender:
+          type: string
+          nullable: true
+          description: Optional gender, if collected by the consultation.
+          example: female
+        resolution_date:
+          type: string
+          nullable: true
+          description: For organization initiators, the date of the board resolution in YYYY-MM-DD format.
+          example: "2025-01-15"
+
     AmendmentLink:
       x-php-namespace: imotion
       type: object
@@ -1000,6 +1146,20 @@ components:
         error:
           type: string
           example: No permission to edit the agenda
+
+    ErrorValidation:
+      x-php-namespace: errors
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+            - "Motion text: No data given"
 
     ErrorNotFound:
       x-php-namespace: errors

@@ -90,6 +90,7 @@ $urlRules = [
     $restBase . '/health'                                                            => '/manager/health',
     $restBaseCon                                                                     => 'consultation/rest',
     $restBaseCon . '/proposed-procedure'                                             => 'consultation/proposed-procedure-rest',
+    $restBaseCon . '/motion'                                                         => '/rest/motion/create',
     $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/rest/motion/get',
     $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'         => '/amendment/rest',
     $restBaseCon . '/speech/<queueIds:[^\/]+>'                                       => '/speech/get-queue',

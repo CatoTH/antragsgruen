@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace app\controllers\rest;
 
 use app\components\Tools;
-use app\models\api\imotion\MotionDetails;
-use app\models\exceptions\NotFound;
-use app\models\http\RestApiResponse;
+use app\components\UrlHelper;
+use app\models\api\errors\ValidationError;
+use app\models\api\imotion\{MotionCreateRequest, MotionDetails};
+use app\models\db\ConsultationMotionType;
+use app\models\exceptions\{ExceptionBase, FormError, NotFound};
+use app\models\forms\MotionEditForm;
+use app\models\http\{HtmlErrorResponse, RedirectResponse, RestApiExceptionResponse, RestApiResponse};
 
 class MotionController extends RestBase
 {
@@ -30,5 +34,44 @@ class MotionController extends RestBase
         $motionDto = MotionDetails::fromEntity($motion, $lineNumbers);
 
         return new RestApiResponse(200, null, Tools::getSerializer()->serialize($motionDto, 'json'));
+    }
+
+    public function actionCreate(): RestApiResponse
+    {
+        $this->handleRestHeaders(['POST']);
+
+        try {
+            /** @var MotionCreateRequest $dto */
+            $dto = Tools::getSerializer()->deserialize($this->getPostBody(), MotionCreateRequest::class, 'json');
+        } catch (\Throwable $e) {
+            return new RestApiExceptionResponse(400, 'Invalid JSON body: ' . $e->getMessage());
+        }
+
+        try {
+            $ret = MotionEditForm::getMotionTypeForCreate($this->consultation, $dto->motionTypeId, $dto->agendaItemId);
+            list($motionType, $agendaItem) = $ret;
+
+        } catch (ExceptionBase $e) {
+            $this->getHttpSession()->setFlash('error', $e->getMessage());
+
+            return $this->returnRestResponseFromException($e);
+        }
+
+        $policy = $motionType->getMotionPolicy();
+        if (!$policy->checkCurrUserMotion()) {
+            return new RestApiExceptionResponse(403, \Yii::t('motion', 'err_create_permission'));
+        }
+
+        $form = new MotionEditForm($motionType, $agendaItem, null);
+
+        try {
+            $motion = $form->createMotion($dto);
+        } catch (FormError $e) {
+            return $this->createResponse(422, new ValidationError(errors: $e->getMessages()));
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
+
+        return $this->createResponse(201, MotionDetails::fromEntity($motion, false));
     }
 }
