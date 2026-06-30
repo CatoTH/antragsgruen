@@ -179,10 +179,10 @@ class MotionEditForm
                 if ($section->getSettings()->required !== ConsultationSettingsMotionSection::REQUIRED_YES) {
                     $section->getSectionType()->deleteMotionData();
                 }
-            } elseif ($requestSection->fileData !== null) {
-                $section->getSectionType()->setMotionData($requestSection->fileData);
-                if (!empty($requestSection->fileData['error'])) {
-                    $error = $requestSection->fileData['error'];
+            } elseif ($requestSection->getFileData() !== null) {
+                $section->getSectionType()->setMotionData($requestSection->getFileData());
+                if (!empty($requestSection->getFileData()['error'])) {
+                    $error = $requestSection->getFileData()['error'];
                     if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
                         $this->fileUploadErrors[] = $section->getSettings()->title . ': Uploaded file is too big';
                     }
