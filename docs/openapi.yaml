@@ -688,12 +688,7 @@ components:
         - name
       properties:
         person_type:
-          type: string
-          enum:
-            - person
-            - organization
-          description: Whether this initiator is a natural person or an organization.
-          example: person
+          $ref: '#/components/schemas/SupporterType'
         name:
           type: string
           description: For person_type=person, the person's full name. For person_type=organization, the organization's name.
@@ -818,18 +813,22 @@ components:
       type: object
       properties:
         type:
-          type: string
-          example: person
-          description: Describes if it is a natural person or an organization
-          enum:
-            - person
-            - organization
+          $ref: '#/components/schemas/SupporterType'
         name:
           type: string
           example: Ava
         organization:
           type: string
           example: E Corp
+
+    SupporterType:
+      x-php-namespace: imotion
+      type: string
+      example: person
+      description: Describes if it is a natural person or an organization
+      enum:
+        - person
+        - organization
 
     MotionSection:
       x-php-namespace: imotion
