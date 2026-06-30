@@ -6,7 +6,7 @@ namespace app\controllers\rest;
 
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\api\errors\ValidationError;
+use app\models\api\errors\ErrorValidation;
 use app\models\api\imotion\{MotionCreateRequest, MotionDetails};
 use app\models\db\ConsultationMotionType;
 use app\models\exceptions\{ExceptionBase, FormError, NotFound};
@@ -67,7 +67,7 @@ class MotionController extends RestBase
         try {
             $motion = $form->createMotion($dto);
         } catch (FormError $e) {
-            return $this->createResponse(422, new ValidationError(errors: $e->getMessages()));
+            return $this->createResponse(422, new ErrorValidation(errors: $e->getMessages()));
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
         }
