@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\RequestContext;
 use app\components\UrlHelper;
 use app\models\db\{Amendment,
     ConsultationAgendaItem,
@@ -329,7 +330,8 @@ class MotionController extends Base
 
         if ($this->isPostSet('save')) {
             try {
-                $motion = $form->createMotion();
+                $createDto = MotionCreateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motionType);
+                $motion = $form->createMotion($createDto);
 
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
