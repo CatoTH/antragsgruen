@@ -90,7 +90,8 @@ $urlRules = [
     $restBase . '/health'                                                            => '/manager/health',
     $restBaseCon                                                                     => 'consultation/rest',
     $restBaseCon . '/proposed-procedure'                                             => 'consultation/proposed-procedure-rest',
-    $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/motion/rest',
+    $restBaseCon . '/motion'                                                         => '/rest/motion/create',
+    $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/rest/motion/get',
     $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'         => '/amendment/rest',
     $restBaseCon . '/speech/<queueIds:[^\/]+>'                                       => '/speech/get-queue',
     $restBaseCon . '/speech/<queueId:[^\/]+>/item'                                   => '/speech/register',
@@ -103,6 +104,7 @@ $urlRules = [
     $restBaseCon . '/speech/<queueId:[^\/]+>/admin/item/<itemId:[^\/]+>/<op:[^\/]+>' => '/speech/post-item-operation',
     $restBaseCon . '/page/<pageSlug:[^\/]+>'                                         => '/pages/get-rest',
 
+    $restBaseCon . '/motion-types'                                                       => '/rest/motion-type/index',
     $restBaseCon . '/agenda' => '/admin/agenda/rest-index',
     $restBaseCon . '/votings/open' => '/voting/get-open-voting-blocks',
     $restBaseCon . '/votings/closed' => '/voting/get-closed-voting-blocks',

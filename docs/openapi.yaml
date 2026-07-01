@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   title: Antragsgrün API
-  description: Read-Only-API for [Antragsgrün](https://antragsgruen.de/)
-  version: 0.3.0
+  description: REST API for [Antragsgrün](https://antragsgruen.de/)
+  version: 0.4.0
 paths:
   /rest:
     get:
@@ -58,6 +58,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/motion-types:
+    get:
+      operationId: getMotionTypes
+      summary: List of motion types defined for this consultation
+      tags:
+        - Motion Types
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: Motion type list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionTypeList'
+        '403':
+          $ref: '#/components/responses/ApiDisabled'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /rest/{consultationPath}/proposed-procedure:
     get:
       operationId: getProposedProcedure
@@ -77,6 +97,46 @@ paths:
           $ref: '#/components/responses/ApiDisabled'
         '404':
           $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/motion:
+    post:
+      operationId: createMotion
+      summary: Create a new motion in this consultation
+      tags:
+        - Motions
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotionCreateRequest'
+      responses:
+        '201':
+          description: Motion was created successfully. Returns the full motion details, including the URL under which it can be retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: No permission to create motions, or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. required section missing, text too long)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
 
   /rest/{consultationPath}/motion/{motionSlug}:
     get:
@@ -541,6 +601,148 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
+        pagination:
+          $ref: '#/components/schemas/MotionPagination'
+
+    MotionPagination:
+      x-php-namespace: imotion
+      type: object
+      nullable: true
+      description: Links to the previous and next motion in the consultation's sorted order. Null when the consultation has prev/next navigation disabled.
+      properties:
+        prev:
+          type: string
+          nullable: true
+          description: REST URL of the previous motion, or null if this is the first one.
+          example: https://test.antragsgruen.de/rest/consultation/122-previous-motion
+        next:
+          type: string
+          nullable: true
+          description: REST URL of the next motion, or null if this is the last one.
+          example: https://test.antragsgruen.de/rest/consultation/124-next-motion
+
+    MotionCreateRequest:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - motion_type_id
+        - sections
+        - initiators
+      properties:
+        motion_type_id:
+          type: integer
+          description: ID of the motion type to create this motion under
+          example: 3
+        agenda_item_id:
+          type: integer
+          nullable: true
+          description: ID of the agenda item to associate this motion with. Null means no agenda item.
+          example: 5
+        sections:
+          type: array
+          description: Content for each section, identified by the section definition ID from MotionTypeSectionDefinition.
+          items:
+            $ref: '#/components/schemas/MotionCreateSection'
+        initiators:
+          type: array
+          description: At least one initiator must be provided.
+          items:
+            $ref: '#/components/schemas/IMotionUpdateInitiator'
+        supporters:
+          type: array
+          nullable: true
+          description: Optional list of supporters for this motion.
+          items:
+            $ref: '#/components/schemas/IMotionUpdateSupporter'
+        tags:
+          type: array
+          nullable: true
+          description: IDs of public topic tags to apply. Only effective when the consultation allows user-defined tags.
+          items:
+            type: integer
+          example:
+            - 7
+
+    IMotionUpdateSupporter:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Full name of the supporter.
+          example: Ava
+        organization:
+          type: string
+          nullable: true
+          description: Optional organizational affiliation of the supporter.
+          example: E Corp
+
+    MotionCreateSection:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - section_id
+      properties:
+        section_id:
+          type: integer
+          description: ID of the section definition (from MotionTypeSectionDefinition) this data belongs to.
+          example: 12
+        data:
+          type: string
+          nullable: true
+          description: >
+            Content for this section. For Title and TextSimple sections, plain text or HTML as accepted
+            by the section type. For Image and PDF sections, a base64-encoded file is expected.
+            Null or omitted means the section is left empty (only valid for optional sections).
+          example: "<p>This is the motion text</p>"
+        deleted:
+          type: boolean
+          default: false
+          description: If true, the section content is cleared. Only allowed for optional sections.
+
+    IMotionUpdateInitiator:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - person_type
+        - name
+      properties:
+        person_type:
+          $ref: '#/components/schemas/SupporterType'
+        name:
+          type: string
+          description: For person_type=person, the person's full name. For person_type=organization, the organization's name.
+          example: Ava
+        organization:
+          type: string
+          nullable: true
+          description: For person_type=person, their organizational affiliation.
+          example: E Corp
+        contact_name:
+          type: string
+          nullable: true
+          description: For person_type=organization, the name of the contact person within the organization.
+          example: Johanna Doe
+        contact_email:
+          type: string
+          nullable: true
+          example: contact@example.org
+        contact_phone:
+          type: string
+          nullable: true
+          example: "+49 30 12345678"
+        gender:
+          type: string
+          nullable: true
+          description: Optional gender, if collected by the consultation.
+          example: female
+        resolution_date:
+          type: string
+          nullable: true
+          description: For organization initiators, the date of the board resolution in YYYY-MM-DD format.
+          example: "2025-01-15"
 
     AmendmentLink:
       x-php-namespace: imotion
@@ -633,18 +835,22 @@ components:
       type: object
       properties:
         type:
-          type: string
-          example: person
-          description: Describes if it is a natural person or an organization
-          enum:
-            - person
-            - organization
+          $ref: '#/components/schemas/SupporterType'
         name:
           type: string
           example: Ava
         organization:
           type: string
           example: E Corp
+
+    SupporterType:
+      x-php-namespace: imotion
+      type: string
+      example: person
+      description: Describes if it is a natural person or an organization
+      enum:
+        - person
+        - organization
 
     MotionSection:
       x-php-namespace: imotion
@@ -661,6 +867,8 @@ components:
             - TabularData
             - PDFAttachment
             - PDFAlternative
+            - VideoEmbed
+            - Choice
         title:
           type: string
           example: Motion text
@@ -687,6 +895,8 @@ components:
             - TabularData
             - PDFAttachment
             - PDFAlternative
+            - VideoEmbed
+            - Choice
         title:
           type: string
           example: Motion text
@@ -958,6 +1168,20 @@ components:
           type: string
           example: No permission to edit the agenda
 
+    ErrorValidation:
+      x-php-namespace: errors
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+            - "Motion text: No data given"
+
     ErrorNotFound:
       x-php-namespace: errors
       type: object
@@ -990,3 +1214,266 @@ components:
         error:
           type: string
           example: Missing or invalid bearer token
+
+    MotionTypeList:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionType'
+
+    MotionType:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - id
+        - labels
+        - motion_prefix
+        - settings
+        - policies
+        - sections
+      properties:
+        id:
+          type: integer
+          example: 3
+        labels:
+          $ref: '#/components/schemas/MotionTypeLabels'
+        motion_prefix:
+          type: string
+          nullable: true
+          description: Alphanumeric prefix prepended to motion numbering (e.g. "A" → A1, A2 …). Null means no prefix.
+          example: A
+        settings:
+          $ref: '#/components/schemas/MotionTypeSettings'
+        policies:
+          $ref: '#/components/schemas/MotionTypePolicies'
+        sections:
+          type: array
+          description: Ordered list of text/content sections that make up a motion of this type
+          items:
+            $ref: '#/components/schemas/MotionTypeSectionDefinition'
+
+    MotionTypeLabels:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - singular
+        - plural
+        - create
+      properties:
+        singular:
+          type: string
+          description: Singular label for one motion of this type
+          example: Motion
+        plural:
+          type: string
+          description: Plural label for motions of this type
+          example: Motions
+        create:
+          type: string
+          description: Label shown on the button/link that creates a new motion of this type
+          example: Submit a motion
+
+    MotionTypeSettings:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - amendments_only
+        - amendment_multiple_paragraphs
+        - has_proposed_procedure
+        - has_responsibilities
+        - allow_amendments_to_amendments
+        - merging_deadlines
+      properties:
+        amendments_only:
+          type: boolean
+          description: If true, no new top-level motions can be submitted — only amendments to existing ones
+          example: false
+        amendment_multiple_paragraphs:
+          type: string
+          description: >
+            Controls how many paragraphs an amendment may affect.
+            `multiple` — any number of paragraphs;
+            `single_paragraph` — exactly one paragraph;
+            `single_change` — exactly one contiguous change.
+          enum:
+            - multiple
+            - single_paragraph
+            - single_change
+          example: multiple
+        has_proposed_procedure:
+          type: boolean
+          description: Whether a proposed procedure (Antragskommission recommendation) can be attached to motions of this type
+          example: true
+        has_responsibilities:
+          type: boolean
+          description: Whether responsibility assignments are tracked for this motion type
+          example: false
+        allow_amendments_to_amendments:
+          type: boolean
+          description: Whether amendments to amendments (sub-amendments) are permitted
+          example: false
+        merging_deadlines:
+          type: array
+          description: Deadline windows for the amendment merging phase (not tied to a submission policy)
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+
+    MotionTypePolicies:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - motions
+        - amendments
+        - comments
+        - support_motions
+        - support_amendments
+      properties:
+        motions:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        amendments:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        comments:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        support_motions:
+          $ref: '#/components/schemas/MotionTypePolicy'
+        support_amendments:
+          $ref: '#/components/schemas/MotionTypePolicy'
+
+    MotionTypePolicy:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - id
+        - description
+        - deadlines
+      properties:
+        id:
+          type: string
+          description: Policy identifier
+          enum:
+            - nobody
+            - all
+            - logged_in
+            - admins
+            - user_groups
+          example: all
+        description:
+          type: string
+          description: Human-readable label for the policy (language depends on the site locale)
+          example: Everybody
+        user_group_ids:
+          type: array
+          nullable: true
+          description: Only present when id=user_groups. Lists the IDs of the permitted user groups.
+          items:
+            type: integer
+          example:
+            - 4
+            - 7
+        deadlines:
+          type: array
+          description: >
+            Deadline windows for this policy's activity. An empty array means no deadline is enforced
+            (always open). Multiple entries represent named windows; the activity is open if the
+            current time falls within at least one window.
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+
+    MotionTypeDeadlineEntry:
+      x-php-namespace: motionType
+      type: object
+      properties:
+        start:
+          type: string
+          nullable: true
+          description: ISO 8601 datetime from which the window is open. Null means "from the beginning of time".
+          example: "2025-09-01T00:00:00+02:00"
+        end:
+          type: string
+          nullable: true
+          description: ISO 8601 datetime at which the window closes. Null means "no end".
+          example: "2025-10-15T23:59:59+02:00"
+        title:
+          type: string
+          nullable: true
+          description: Optional label for this window shown in the UI (e.g. "Early submission period")
+          example: "Early submission period"
+
+    MotionTypeSectionDefinition:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - id
+        - type
+        - title
+        - required
+        - max_len
+        - line_numbers
+        - has_amendments
+        - has_comments
+        - position_right
+      properties:
+        id:
+          type: integer
+          example: 12
+        type:
+          type: string
+          description: Determines how the section content is stored and rendered
+          enum:
+            - Title
+            - TextSimple
+            - TextHTML
+            - TextEditorial
+            - Image
+            - TabularData
+            - PDFAttachment
+            - PDFAlternative
+            - VideoEmbed
+            - Choice
+          example: TextSimple
+        title:
+          type: string
+          description: Label shown above the section in the motion form and detail view
+          example: Motion text
+        required:
+          type: string
+          description: >
+            Whether submitters must fill in this section.
+            `no` — optional; `yes` — mandatory; `encouraged` — shown as recommended but not enforced.
+          enum:
+            - no
+            - yes
+            - encouraged
+          example: yes
+        max_len:
+          type: integer
+          description: Maximum character length enforced on submission. 0 means no limit.
+          example: 0
+        line_numbers:
+          type: boolean
+          description: Whether line numbers are displayed for this section
+          example: true
+        has_amendments:
+          type: boolean
+          description: Whether amendments may modify this section
+          example: true
+        has_comments:
+          type: string
+          description: >
+            Comment granularity for this section.
+            `none` — no comments; `motion` — one comment thread per section;
+            `paragraphs` — one thread per paragraph.
+          enum:
+            - none
+            - motion
+            - paragraphs
+          example: none
+        position_right:
+          type: boolean
+          description: In a two-column merging layout, true places this section in the right column
+          example: false

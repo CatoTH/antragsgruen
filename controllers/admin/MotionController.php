@@ -8,6 +8,7 @@ use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationLog, ConsultationMotionType, ConsultationSettingsTag, Motion, MotionSupporter, User};
 use app\models\exceptions\FormError;
 use app\models\events\MotionEvent;
+use app\models\api\imotion\MotionCreateRequest;
 use app\models\forms\{MotionDeepCopy, MotionEditForm, MotionMover};
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
@@ -166,7 +167,7 @@ class MotionController extends AdminBase
             try {
                 $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
                 $form->setAdminMode(true);
-                $form->setAttributes($post, $_FILES);
+                $form->setAttributes(MotionCreateRequest::fromWebRequest($post, $_FILES, $motion->getMyMotionType()));
 
                 $votingData = $motion->getVotingData();
                 $votingData->setFromPostData($post['votes']);
