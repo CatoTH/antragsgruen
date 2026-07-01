@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace app\models\api\imotion;
 
-use app\models\db\ISupporter;
+use app\models\db\{ConsultationMotionType, ISupporter, User};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 
-class MotionCreateInitiator
+class IMotionUpdateInitiator
 {
+    public ?int $userId = null; // Only to be set by web request for now, by admins
+
     public function __construct(
         public SupporterType $personType,
         public string $name,
@@ -20,14 +23,17 @@ class MotionCreateInitiator
     ) {
     }
 
-    /** @param array<string, mixed> $postInitiator */
-    public static function fromPostData(array $postInitiator): self
+    /** @param array<string, mixed> $post */
+    public static function fromPostData(ConsultationMotionType $motionType, array $post): self
     {
-        $personType = ((int)($postInitiator['personType'] ?? 0) === ISupporter::PERSON_ORGANIZATION)
+        $postInitiator = $post['Initiator'];
+        $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motionType($motionType->id));
+
+        $personType = ((int)($postInitiator['personType'] ?? SupporterType::PERSON) === ISupporter::PERSON_ORGANIZATION)
             ? SupporterType::ORGANIZATION
             : SupporterType::PERSON;
 
-        return new self(
+        $initiator = new self(
             personType: $personType,
             name: $postInitiator['primaryName'] ?? '',
             organization: $postInitiator['organization'] ?? null,
@@ -37,5 +43,13 @@ class MotionCreateInitiator
             gender: $postInitiator['gender'] ?? null,
             resolutionDate: $postInitiator['resolutionDate'] ?? null,
         );
+
+
+        $initiator->userId = null;
+        if (!(isset($post['otherInitiator']) && $othersPrivilege)) {
+            $initiator->userId = User::getCurrentUser()?->id;
+        }
+
+        return $initiator;
     }
 }

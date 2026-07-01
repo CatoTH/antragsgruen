@@ -647,7 +647,13 @@ components:
           type: array
           description: At least one initiator must be provided.
           items:
-            $ref: '#/components/schemas/MotionCreateInitiator'
+            $ref: '#/components/schemas/IMotionUpdateInitiator'
+        supporters:
+          type: array
+          nullable: true
+          description: Optional list of supporters for this motion.
+          items:
+            $ref: '#/components/schemas/IMotionUpdateSupporter'
         tags:
           type: array
           nullable: true
@@ -656,6 +662,22 @@ components:
             type: integer
           example:
             - 7
+
+    IMotionUpdateSupporter:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Full name of the supporter.
+          example: Ava
+        organization:
+          type: string
+          nullable: true
+          description: Optional organizational affiliation of the supporter.
+          example: E Corp
 
     MotionCreateSection:
       x-php-namespace: imotion
@@ -680,7 +702,7 @@ components:
           default: false
           description: If true, the section content is cleared. Only allowed for optional sections.
 
-    MotionCreateInitiator:
+    IMotionUpdateInitiator:
       x-php-namespace: imotion
       type: object
       required:

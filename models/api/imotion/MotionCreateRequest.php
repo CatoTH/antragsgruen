@@ -11,7 +11,7 @@ class MotionCreateRequest
 {
     /**
      * @param MotionCreateSection[] $sections
-     * @param MotionCreateInitiator[] $initiators
+     * @param IMotionUpdateInitiator[] $initiators
      * @param int[]|null $tags
      */
 
@@ -19,9 +19,11 @@ class MotionCreateRequest
         public int $motionTypeId,
         /** @var MotionCreateSection[] */
         public array $sections,
-        /** @var MotionCreateInitiator[] */
+        /** @var IMotionUpdateInitiator[] */
         public array $initiators,
         public ?int $agendaItemId = null,
+        /** @var IMotionUpdateSupporter[]|null */
+        public ?array $supporters = null,
         /** @var int[]|null */
         public ?array $tags = null,
     ) {
@@ -57,7 +59,7 @@ class MotionCreateRequest
 
         $initiators = [];
         if (isset($post['Initiator']) && is_array($post['Initiator'])) {
-            $initiators[] = MotionCreateInitiator::fromPostData($post['Initiator']);
+            $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post);
         }
 
         return new self(
@@ -65,6 +67,7 @@ class MotionCreateRequest
             sections: $sections,
             initiators: $initiators,
             agendaItemId: isset($post['agendaItem']) && $post['agendaItem'] ? intval($post['agendaItem']) : null,
+            supporters: IMotionUpdateSupporter::fromPostData($post),
             tags: array_map('intval', $post['tags'] ?? []),
         );
     }

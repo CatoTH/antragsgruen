@@ -15,7 +15,7 @@ use app\models\db\{Consultation,
     MotionSection,
     MotionSupporter,
     User};
-use app\models\api\imotion\{MotionCreateInitiator, MotionCreateRequest, SupporterType};
+use app\models\api\imotion\{MotionCreateRequest, SupporterType};
 use app\models\db\ISupporter;
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
@@ -219,24 +219,6 @@ class MotionEditForm
     }
 
     /**
-     * @throws FormError
-     */
-    private function createMotionVerify(): void
-    {
-        $this->verifySections();
-
-        $errors = [];
-        try {
-            $this->motionType->getMotionSupportTypeClass()->validateMotion();
-        } catch (FormError $e) {
-            $errors = $e->getMessages();
-        }
-        if (count($errors) > 0) {
-            throw new FormError($errors);
-        }
-    }
-
-    /**
      * Returns true, if the rewriting was successful
      *
      * @param string[] $newHtmls
@@ -307,50 +289,11 @@ class MotionEditForm
     }
 
 
-
-    public function setInitiatorsFromDto(MotionCreateRequest $dto): void
-    {
-        $currentUser = User::getCurrentUser();
-
-        $this->supporters = [];
-        $position = 0;
-        foreach ($dto->initiators as $initiator) {
-            $supporter = new MotionSupporter();
-            $supporter->role = MotionSupporter::ROLE_INITIATOR;
-            $supporter->position = $position;
-            $supporter->personType = ($initiator->personType === SupporterType::ORGANIZATION)
-                ? ISupporter::PERSON_ORGANIZATION
-                : ISupporter::PERSON_NATURAL;
-            $supporter->userId = ($position === 0 && $currentUser) ? $currentUser->id : null;
-            $position++;
-            $supporter->dateCreation = date('Y-m-d H:i:s');
-
-            if ($supporter->personType === ISupporter::PERSON_NATURAL) {
-                $supporter->name = $initiator->name;
-                $supporter->organization = $initiator->organization ?? '';
-                $supporter->contactName = $initiator->contactName ?? '';
-            } else {
-                $supporter->organization = $initiator->name;
-                $supporter->contactName = $initiator->contactName ?? '';
-            }
-            $supporter->contactEmail = $initiator->contactEmail ?? '';
-            $supporter->contactPhone = $initiator->contactPhone ?? '';
-            if ($initiator->gender !== null) {
-                $supporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER, $initiator->gender);
-            }
-            if ($initiator->resolutionDate !== null) {
-                $supporter->resolutionDate = $initiator->resolutionDate;
-            }
-
-            $this->supporters[] = $supporter;
-        }
-    }
-
     /**
      * @throws FormError
      * @throws \Exception
      */
-    public function createMotion(?MotionCreateRequest $dto = null): Motion
+    public function createMotion(MotionCreateRequest $dto): Motion
     {
         if (!$this->motionType->getMotionPolicy()->checkCurrUserMotion()) {
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
@@ -358,16 +301,11 @@ class MotionEditForm
 
         $consultation = $this->motionType->getConsultation();
         $motion = new Motion();
+        $this->setAttributes($dto);
+        $supporters = $this->motionType->getMotionSupportTypeClass()->getValidatedMotionSupporters($this->motionType, $dto);
 
-        if ($dto !== null) {
-            $this->setAttributes($dto);
-            $this->setInitiatorsFromDto($dto);
-            $this->verifySections();
-        } else {
-            $this->setAttributes(MotionCreateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $this->motionType));
-            $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
-            $this->createMotionVerify();
-        }
+        $this->verifySections();
+        $this->motionType->getMotionSupportTypeClass()->validateMotion();
 
         $motion->status = Motion::STATUS_DRAFT;
         $motion->consultationId = $this->motionType->consultationId;
@@ -379,20 +317,13 @@ class MotionEditForm
         $motion->dateContentModification = date('Y-m-d H:i:s');
         $motion->motionTypeId = $this->motionType->id;
         $motion->cache = '';
-        $motion->agendaItemId = ($this->agendaItem ? $this->agendaItem->id : null);
+        $motion->agendaItemId = $this->agendaItem?->id;
 
         if (!$motion->save()) {
             throw new FormError(\Yii::t('motion', 'err_create'));
         }
 
-        if ($dto !== null) {
-            foreach ($this->supporters as $supporter) {
-                $supporter->motionId = $motion->id;
-                $supporter->save();
-            }
-        } else {
-            $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
-        }
+        $this->motionType->getMotionSupportTypeClass()->submitMotion($motion, $supporters);
 
         if ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode) {
             $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
@@ -474,13 +405,11 @@ class MotionEditForm
             }
         }
 
-        if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
-            $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
-        }
-
         if ($motion->save()) {
             if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion)))) {
-                $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
+                $supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion); // @TODO Replace by DTOs
+                $this->motionType->getMotionSupportTypeClass()->submitMotion($motion, $supporters);
+                die("!");
             }
 
             if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
