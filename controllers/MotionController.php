@@ -5,9 +5,7 @@ namespace app\controllers;
 use app\components\RequestContext;
 use app\components\UrlHelper;
 use app\models\db\{Amendment,
-    ConsultationAgendaItem,
     ConsultationLog,
-    ConsultationMotionType,
     ConsultationSettingsMotionSection,
     IProposal,
     ISupporter,
@@ -16,6 +14,7 @@ use app\models\db\{Amendment,
     SpeechQueue,
     User,
     UserNotification};
+use app\models\api\imotion\MotionUpdateRequest;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\Privileges;
 use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal, ResponseException};
@@ -244,30 +243,29 @@ class MotionController extends Base
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
         if (!$motion->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
-        $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+        $form = new MotionEditForm($motion->motionType, $motion->agendaItem);
+        $form->initializeSectionsAndTags($motion);
         if (!$motion->canEditInitiators()) {
             $form->setAllowEditingInitiators(false);
         }
         $fromMode = ($motion->status === Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if ($this->isPostSet('save')) {
-            $post = $this->getPostValues();
             $motion->flushCache(true);
-            $form->setAttributes(MotionCreateRequest::fromWebRequest($post, $_FILES, $motion->motionType));
+
+            // Needs to be moved into saveMotion
             try {
-                $form->saveMotion($motion);
-                if (isset($post['sections'])) {
-                    $form->updateTextRewritingAmendments($motion, $post['sections']);
-                }
+                $updateDto = MotionUpdateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motion->getMyMotionType());
+                $form->saveMotion($motion, $updateDto, []);
 
                 if ($motion->isVisible()) {
                     ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
@@ -282,7 +280,7 @@ class MotionController extends Base
                 }
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
-                $form->setSectionTextWithoutSaving($motion, $post['sections']);
+                // $form->setSectionTextWithoutSaving($motion, $post['sections']); // @TODO SHould not be necessary anymore?
             }
         }
 
@@ -295,7 +293,6 @@ class MotionController extends Base
             ]
         ));
     }
-
 
     public function actionCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): ResponseInterface
     {
@@ -324,7 +321,7 @@ class MotionController extends Base
             }
         }
 
-        $form = new MotionEditForm($motionType, $agendaItem, null);
+        $form = new MotionEditForm($motionType, $agendaItem);
         $supportType = $motionType->getMotionSupportTypeClass();
         $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 
@@ -363,6 +360,7 @@ class MotionController extends Base
             $form->cloneMotionText($motion);
         }
 
+        $form->initializeSectionsAndTags(null);
 
         if (count($form->supporters) === 0) {
             $form->supporters[] = MotionSupporter::createInitiator($this->consultation, $supportType, $iAmAdmin);

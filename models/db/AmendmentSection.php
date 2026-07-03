@@ -227,7 +227,7 @@ class AmendmentSection extends IMotionSection
      * @param string[] $overrides
      * @throws Internal
      */
-    public function canRewrite(string $newMotionHtml, array $overrides = []): bool
+    public function canRewrite(string $newMotionHtml, array $overrides): bool
     {
         if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');

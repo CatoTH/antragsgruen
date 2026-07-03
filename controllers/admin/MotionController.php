@@ -2,9 +2,10 @@
 
 namespace app\controllers\admin;
 
+use app\models\api\imotion\MotionUpdateRequest;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, RequestContext, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationLog, ConsultationMotionType, ConsultationSettingsTag, Motion, MotionSupporter, User};
 use app\models\exceptions\FormError;
 use app\models\events\MotionEvent;
@@ -165,9 +166,10 @@ class MotionController extends AdminBase
             }
 
             try {
-                $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
+                $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem);
                 $form->setAdminMode(true);
-                $form->setAttributes(MotionCreateRequest::fromWebRequest($post, $_FILES, $motion->getMyMotionType()));
+                $form->initializeSectionsAndTags($motion);
+                // $form->setAttributes(MotionCreateRequest::fromWebRequest($post, $_FILES, $motion->getMyMotionType())); @TODO
 
                 $votingData = $motion->getVotingData();
                 $votingData->setFromPostData($post['votes']);
@@ -195,18 +197,13 @@ class MotionController extends AdminBase
                     ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
                 }
 
-                $form->saveMotion($motion);
+                $overrides = [];
                 if (isset($post['sections']) && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $privCtx)) {
                     $overrides = $post['amendmentOverride'] ?? [];
-                    $newHtmls  = [];
-                    foreach ($post['sections'] as $sectionId => $html) {
-                        $htmlTypes = [ISectionType::TYPE_TEXT_SIMPLE, ISectionType::TYPE_TEXT_HTML];
-                        if (isset($sectionTypes[$sectionId]) && in_array($sectionTypes[$sectionId], $htmlTypes)) {
-                            $newHtmls[$sectionId] = HTMLTools::cleanSimpleHtml($html);
-                        }
-                    }
-                    $form->updateTextRewritingAmendments($motion, $newHtmls, $overrides);
                 }
+
+                $updateRequest = MotionUpdateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motion->getMyMotionType());
+                $form->saveMotion($motion, $updateRequest, $overrides);
 
                 $motion->setProtocol(
                     $this->getPostValue('protocol'),
@@ -322,8 +319,9 @@ class MotionController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
+        $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem);
         $form->setAdminMode(true);
+        $form->initializeSectionsAndTags($motion);
 
         return new HtmlResponse($this->render('update', ['motion' => $motion, 'form' => $form]));
     }

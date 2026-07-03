@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace app\models\api\imotion;
 
-class MotionCreateSection
+class MotionUpdateSection
 {
     private ?array $fileData = null;
 
     public function __construct(
         public int $sectionId,
         public ?string $data = null,
-        public ?bool $deleted = null,
     ) {
     }
 

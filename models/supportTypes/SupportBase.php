@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\supportTypes;
 
 use app\components\RequestContext;
@@ -155,7 +157,7 @@ abstract class SupportBase
      *
      * @return MotionSupporter[]
      */
-    private function getMotionInitiatorsFromDto(ConsultationMotionType $motionType, array $initiatorDtos): array
+    public function getMotionInitiatorsFromDto(ConsultationMotionType $motionType, array $initiatorDtos): array
     {
         $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motionType($motionType->id));
 
@@ -203,54 +205,65 @@ abstract class SupportBase
      *
      * @return MotionSupporter[]
      */
-    private function getMotionSupportersFromDto(ConsultationMotionType $motionType, array $supporterDtos): array
+    public function getMotionSupportersFromDto(ConsultationMotionType $motionType, array $supporterDtos): array
     {
-        return []; // @TODO
+        $return = [];
+
+        if ($this->hasInitiatorGivenSupporters()) {
+            $supporters = $this->parseSupporters(new MotionSupporter(), $supporterDtos);
+            foreach ($supporters as $sup) {
+                /** @var MotionSupporter $sup */
+                $sup->dateCreation = date('Y-m-d H:i:s');
+                $return[]          = $sup;
+            }
+        }
+
+        return $return;
     }
 
     /**
      * @return MotionSupporter[]
      */
-    public function getValidatedMotionSupporters(ConsultationMotionType $motionType, MotionCreateRequest $dto): array
+    public function getMotionInitiators(ConsultationMotionType $motionType, MotionCreateRequest $dto): array
     {
-        return array_merge(
-            $this->getMotionInitiatorsFromDto($motionType, $dto->initiators),
-            $this->getMotionSupportersFromDto($motionType, $dto->supporters),
-        );
+        $initiators = $this->getMotionInitiatorsFromDto($motionType, $dto->initiators);
+        $supporters = $this->getMotionSupportersFromDto($motionType, $dto->supporters);
+
+        foreach ($initiators as $initiator) {
+            // Is only one at the moment
+            $this->motionType->getMotionSupportTypeClass()->validateMotion($initiator, $supporters);
+        }
+
+        return array_merge($initiators, $supporters);
     }
 
     /**
+     * @param ISupporter[] $supporters
      * @throws FormError
      */
-    public function validateMotion(): void
+    public function validateMotion(ISupporter $initiator, array $supporters): void
     {
-        $post = RequestContext::getAllPostVars();
-        if (!isset($post['Initiator'])) {
-            throw new FormError('No Initiator data given');
-        }
-
-        $initiator = $post['Initiator'];
         $settings  = $this->getSettingsObj();
 
         $errors = [];
 
-        if (!isset($initiator['primaryName']) || !$this->isValidName($initiator['primaryName'])) {
+        if (!$this->isValidName($initiator->name)) {
             $errors[] = \Yii::t('motion', 'err_invalid_name');
         }
 
-        $emailSet   = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) !== '');
+        $emailSet   = (isset($initiator->contactEmail) && trim($initiator->contactEmail) !== '');
         $checkEmail = ($settings->contactEmail === InitiatorForm::CONTACT_REQUIRED || $emailSet);
-        if ($checkEmail && !filter_var(trim($initiator['contactEmail']), FILTER_VALIDATE_EMAIL)) {
+        if ($checkEmail && !filter_var(trim($initiator->contactEmail ?? ''), FILTER_VALIDATE_EMAIL)) {
             $errors[] = \Yii::t('motion', 'err_invalid_email');
         }
 
-        $phoneSet   = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) !== '');
+        $phoneSet   = (isset($initiator->contactPhone) && trim($initiator->contactPhone) !== '');
         $checkPhone = ($settings->contactPhone === InitiatorForm::CONTACT_REQUIRED || $phoneSet);
-        if ($checkPhone && empty($initiator['contactPhone'])) {
+        if ($checkPhone && empty($initiator->contactPhone)) {
             $errors[] = \Yii::t('motion', 'err_invalid_phone');
         }
 
-        if (!isset($initiator['personType'])) {
+        if (!isset($initiator->personType)) {
             $errors[] = \Yii::t('motion', 'err_invalid_person_type');
             $personType = null;
         } else {
@@ -264,27 +277,27 @@ abstract class SupportBase
         }
         if ($personType === ISupporter::PERSON_ORGANIZATION &&
             $settings->hasResolutionDate === InitiatorForm::CONTACT_REQUIRED &&
-            empty($initiator['resolutionDate'])) {
+            empty($initiator->resolutionDate)) {
             $errors[] = \Yii::t('motion', 'err_no_resolution_date');
         }
         if ($personType === ISupporter::PERSON_NATURAL) {
             $validGenderValues = array_keys(static::getGenderSelection());
+            $setGender = $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER);
             if ($settings->contactGender === InitiatorForm::CONTACT_REQUIRED) {
-                if (!isset($initiator['gender']) || !in_array($initiator['gender'], $validGenderValues)) {
+                if (!isset($initiator->resolutionDate) || !in_array($setGender, $validGenderValues)) {
                     $errors[] = \Yii::t('motion', 'err_invalid_gender');
                 }
             }
             if ($settings->contactGender === InitiatorForm::CONTACT_OPTIONAL) {
                 $validGenderValues[] = '';
-                if (isset($initiator['gender']) && !in_array($initiator['gender'], $validGenderValues)) {
+                if (isset($setGender) && !in_array($setGender, $validGenderValues)) {
                     $errors[] = \Yii::t('motion', 'err_invalid_gender');
                 }
             }
         }
 
         if ($this->hasInitiatorGivenSupporters()) {
-            $supporterDtos = IMotionUpdateSupporter::fromPostData($post);
-            $num        = count($supporterDtos);
+            $num        = count($supporters);
             if ($personType !== ISupporter::PERSON_ORGANIZATION) {
                 if ($num < $settings->minSupporters) {
                     $errors[] = \Yii::t('motion', 'err_not_enough_supporters');
@@ -332,19 +345,15 @@ abstract class SupportBase
         }
 
         foreach ($supporters as $sup) {
-            echo $sup->name . "<br>\n";
             if (in_array($sup->role, $affectedRoles)) {
                 $sup->motionId = $motion->id;
-                echo $sup->id . "<br>\n";
-                echo $sup->motionId . "<br>\n";
                 if (isset($sup->userId) && isset($preCreatedByAdmin[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
                 }
                 if (isset($sup->userId) && isset($preNonPublic[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
                 }
-                var_dump($sup->save());
-                var_dump($sup->getErrors());
+                $sup->save();
             }
         }
     }
@@ -522,7 +531,6 @@ abstract class SupportBase
     }
 
     /**
-     * @param IMotionUpdateSupporter[] $updateDtos
      * @return MotionSupporter[]
      */
     public function getMotionSupporters(Motion $motion): array

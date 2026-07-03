@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\supportTypes;
 
 use app\controllers\Base;
-use app\models\db\Amendment;
-use app\models\db\ConsultationMotionType;
+use app\models\db\{Amendment, ConsultationMotionType, ISupporter, Motion};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
-use app\models\db\Motion;
 
 class NoInitiator extends SupportBase
 {
@@ -36,7 +36,7 @@ class NoInitiator extends SupportBase
         return '';
     }
 
-    public function validateMotion(): void
+    public function validateMotion(ISupporter $initiator, array $supporters): void
     {
     }
 
@@ -44,7 +44,7 @@ class NoInitiator extends SupportBase
     {
     }
 
-    public function submitMotion(Motion $motion): void
+    public function submitMotion(Motion $motion, array $supporters): void
     {
     }
 

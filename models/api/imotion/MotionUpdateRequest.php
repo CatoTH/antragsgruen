@@ -7,16 +7,9 @@ namespace app\models\api\imotion;
 use app\models\db\ConsultationMotionType;
 use app\models\sectionTypes\ISectionType;
 
-class MotionCreateRequest
+class MotionUpdateRequest
 {
-    /**
-     * @param MotionUpdateSection[] $sections
-     * @param IMotionUpdateInitiator[] $initiators
-     * @param int[]|null $tags
-     */
-
     public function __construct(
-        public int $motionTypeId,
         /** @var MotionUpdateSection[] */
         public array $sections,
         /** @var IMotionUpdateInitiator[] */
@@ -40,6 +33,8 @@ class MotionCreateRequest
             $sectionId = $sectionDef->id;
             if ($sectionDef->type === ISectionType::TYPE_TITLE && isset($post['motion']['title'])) {
                 $sections[] = new MotionUpdateSection($sectionId, $post['motion']['title']);
+            } elseif (isset($post['sectionDelete'][$sectionId])) {
+                $sections[] = new MotionUpdateSection($sectionId, deleted: true);
             } elseif (!empty($files['sections']['tmp_name'][$sectionId])) {
                 $sectionDto = new MotionUpdateSection($sectionId);
                 $fileData = [];
@@ -61,7 +56,6 @@ class MotionCreateRequest
         }
 
         return new self(
-            motionTypeId: $motionType->id,
             sections: $sections,
             initiators: $initiators,
             agendaItemId: isset($post['agendaItem']) && $post['agendaItem'] ? intval($post['agendaItem']) : null,
