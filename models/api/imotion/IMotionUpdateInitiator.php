@@ -54,4 +54,25 @@ class IMotionUpdateInitiator
 
         return $initiator;
     }
+
+    /**
+     * @param array<string, mixed> $post
+     * @return self[]
+     */
+    public static function moreFromPostData(array $post): array
+    {
+        $moreInitiators = [];
+
+        $postInitiator = $post['moreInitiators'] ?? [];
+        foreach (array_keys($postInitiator['name']) as $i) {
+            $moreInitiators[] = new self(
+                id: isset($postInitiator['id'][$i]) && $postInitiator['id'][$i] > 0 ? intval($postInitiator['id'][$i]) : null,
+                personType: SupporterType::PERSON,
+                name: $postInitiator['name'][$i] ?? '',
+                organization: $postInitiator['organization'][$i] ?? null,
+            );
+        }
+
+        return $moreInitiators;
+    }
 }

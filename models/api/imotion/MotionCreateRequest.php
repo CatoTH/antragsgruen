@@ -59,6 +59,7 @@ class MotionCreateRequest
         if (isset($post['Initiator']) && is_array($post['Initiator'])) {
             $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post);
         }
+        $initiators = array_merge($initiators, IMotionUpdateInitiator::moreFromPostData($post));
 
         return new self(
             motionTypeId: $motionType->id,
