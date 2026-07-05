@@ -414,6 +414,7 @@ class MotionEditForm
         if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
             $this->overwriteSections($motion);
         }
+        @TODO
         */
 
         $motion->refreshTitle();

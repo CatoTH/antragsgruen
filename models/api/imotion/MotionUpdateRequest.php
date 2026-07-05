@@ -34,7 +34,7 @@ class MotionUpdateRequest
             if ($sectionDef->type === ISectionType::TYPE_TITLE && isset($post['motion']['title'])) {
                 $sections[] = new MotionUpdateSection($sectionId, $post['motion']['title']);
             } elseif (isset($post['sectionDelete'][$sectionId])) {
-                $sections[] = new MotionUpdateSection($sectionId, deleted: true);
+                $sections[] = new MotionUpdateSection($sectionId, null);
             } elseif (!empty($files['sections']['tmp_name'][$sectionId])) {
                 $sectionDto = new MotionUpdateSection($sectionId);
                 $fileData = [];

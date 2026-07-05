@@ -739,22 +739,6 @@ components:
           example:
             - 7
 
-    IMotionUpdateSupporter:
-      x-php-namespace: imotion
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          description: Full name of the supporter.
-          example: Ava
-        organization:
-          type: string
-          nullable: true
-          description: Optional organizational affiliation of the supporter.
-          example: E Corp
-
     MotionUpdateSection:
       x-php-namespace: imotion
       type: object
@@ -781,6 +765,9 @@ components:
         - person_type
         - name
       properties:
+        id:
+          type: integer
+          description: ID of the initiator. Recommended to set when updating initiators
         person_type:
           $ref: '#/components/schemas/SupporterType'
         name:
@@ -808,13 +795,37 @@ components:
         gender:
           type: string
           nullable: true
-          description: Optional gender, if collected by the consultation.
+          description: Optional gender. Might be required by consultation.
           example: female
         resolution_date:
           type: string
           nullable: true
           description: For organization initiators, the date of the board resolution in YYYY-MM-DD format.
           example: "2025-01-15"
+
+    IMotionUpdateSupporter:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          description: ID of the support. Recommended to set when updating supporters
+        name:
+          type: string
+          description: Full name of the supporter.
+          example: Ava
+        organization:
+          type: string
+          nullable: true
+          description: Optional organizational affiliation of the supporter.
+          example: E Corp
+        gender:
+          type: string
+          nullable: true
+          description: Optional gender.
+          example: female
 
     AmendmentLink:
       x-php-namespace: imotion
@@ -905,7 +916,13 @@ components:
     Supporter:
       x-php-namespace: imotion
       type: object
+      required:
+        - id
+        - name
       properties:
+        id:
+          type: integer
+          description: ID of the support
         type:
           $ref: '#/components/schemas/SupporterType'
         name:
@@ -914,6 +931,11 @@ components:
         organization:
           type: string
           example: E Corp
+        gender:
+          type: string
+          nullable: true
+          description: Optional gender.
+          example: female
 
     SupporterType:
       x-php-namespace: imotion

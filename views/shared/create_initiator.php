@@ -113,6 +113,7 @@ if ($canInitiateAsPerson && $canInitiateAsOrganization) {
     <?php
 }
 
+echo '<input type="hidden" name="Initiator[id]" value="' . $initiator->id . '">';
 if (!$canInitiateAsPerson && !$canInitiateAsOrganization) {
     echo '<div class="alert alert-danger noProposerTypeFoundError"><p>' . Yii::t('motion', 'err_neither_person_orga') . '</p></div>';
 }
@@ -322,6 +323,7 @@ $getInitiatorRow = function (ISupporter $initiator, InitiatorForm $settings) {
     $str = '<div class="initiatorRow stdTwoCols">';
     $str .= '<div class="leftColumn">' . Yii::t('initiator', 'moreInitiators') . '</div>';
     $str .= '<div class="rightColumn"><div class="nameCol">';
+    $str .= '<input type="hidden" name="moreInitiators[id][]" value="' . $initiator->id . '">';
     $str .= Html::textInput(
         'moreInitiators[name][]',
         $initiator->name,

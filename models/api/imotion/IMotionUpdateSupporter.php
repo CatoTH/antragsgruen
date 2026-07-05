@@ -8,7 +8,9 @@ class IMotionUpdateSupporter
 {
     public function __construct(
         public string $name,
+        public ?int $id = null,
         public ?string $organization = null,
+        public ?string $gender = null,
     ) {
     }
 
@@ -31,8 +33,10 @@ class IMotionUpdateSupporter
                 ? trim((string)$post['supporters']['organization'][$i])
                 : null;
             $supporters[] = new self(
+                id: isset($post['supporters']['id']) && $post['supporters']['id'][$i] > 0 ? intval($post['supporters']['id'][$i]) : null,
                 name: $name,
                 organization: $organization !== '' ? $organization : null,
+                gender: $post['supporters']['gender'][$i] ?? null,
             );
         }
         return $supporters;

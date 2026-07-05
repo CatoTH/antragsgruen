@@ -36,11 +36,17 @@ class NoInitiator extends SupportBase
         return '';
     }
 
+    /**
+     * @param ISupporter[] $supporters
+     */
     public function validateMotion(ISupporter $initiator, array $supporters): void
     {
     }
 
-    public function validateAmendment(): void
+    /**
+     * @param ISupporter[] $supporters
+     */
+    public function validateAmendment(ISupporter $initiator, array $supporters): void
     {
     }
 

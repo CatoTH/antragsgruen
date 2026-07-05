@@ -14,6 +14,7 @@ class IMotionUpdateInitiator
     public function __construct(
         public SupporterType $personType,
         public string $name,
+        public ?int $id = null,
         public ?string $organization = null,
         public ?string $contactName = null,
         public ?string $contactEmail = null,
@@ -34,6 +35,7 @@ class IMotionUpdateInitiator
             : SupporterType::PERSON;
 
         $initiator = new self(
+            id: isset($postInitiator['id']) && $postInitiator['id'] > 0 ? intval($postInitiator['id']) : null,
             personType: $personType,
             name: $postInitiator['primaryName'] ?? '',
             organization: $postInitiator['organization'] ?? null,
