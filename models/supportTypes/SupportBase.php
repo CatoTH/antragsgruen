@@ -159,19 +159,18 @@ abstract class SupportBase
     }
 
     /**
+     * @template T of ISupporter
+     * @param class-string<T> $supporterClass
      * @param IMotionUpdateInitiator[] $initiatorDtos
-     *
-     * @return MotionSupporter[]
+     * @return T[]
      */
-    public function getMotionInitiatorsFromDto(ConsultationMotionType $motionType, array $initiatorDtos): array
+    private function buildInitiatorsFromDto(string $supporterClass, bool $othersPrivilege, array $initiatorDtos): array
     {
-        $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motionType($motionType->id));
-
         $initiators = [];
         $position = 0;
         foreach ($initiatorDtos as $initiator) {
-            $supporter = new MotionSupporter();
-            $supporter->role = MotionSupporter::ROLE_INITIATOR;
+            $supporter = new $supporterClass();
+            $supporter->role = ISupporter::ROLE_INITIATOR;
             $supporter->position = $position;
             $supporter->personType = ($initiator->personType === SupporterType::ORGANIZATION)
                 ? ISupporter::PERSON_ORGANIZATION
@@ -210,24 +209,85 @@ abstract class SupportBase
     }
 
     /**
+     * @template T of ISupporter
+     * @param class-string<T> $supporterClass
      * @param IMotionUpdateSupporter[] $supporterDtos
-     *
+     * @return T[]
+     */
+    private function buildSupportersFromDto(string $supporterClass, array $supporterDtos): array
+    {
+        $return = [];
+        foreach ($supporterDtos as $i => $supporterDto) {
+            if (!$this->isValidName($supporterDto->name)) {
+                continue;
+            }
+            $sup = new $supporterClass();
+            $sup->name = trim($supporterDto->name);
+            $sup->role = ISupporter::ROLE_SUPPORTER;
+            $sup->userId = null;
+            $sup->personType = ISupporter::PERSON_NATURAL;
+            $sup->position = $i;
+            $sup->dateCreation = date('Y-m-d H:i:s');
+            if ($supporterDto->id) {
+                $sup->id = $supporterDto->id;
+            }
+            if ($supporterDto->organization) {
+                $sup->organization = trim($supporterDto->organization);
+            }
+            if ($supporterDto->gender !== null) {
+                $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER, $supporterDto->gender);
+            }
+            $return[] = $sup;
+        }
+        return $return;
+    }
+
+    /**
+     * @param IMotionUpdateInitiator[] $initiatorDtos
+     * @return MotionSupporter[]
+     */
+    public function getMotionInitiatorsFromDto(ConsultationMotionType $motionType, array $initiatorDtos): array
+    {
+        $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motionType($motionType->id));
+        return $this->buildInitiatorsFromDto(MotionSupporter::class, $othersPrivilege, $initiatorDtos);
+    }
+
+    /**
+     * @param IMotionUpdateSupporter[] $supporterDtos
      * @return MotionSupporter[]
      */
     public function getMotionSupportersFromDto(ConsultationMotionType $motionType, array $supporterDtos): array
     {
-        $return = [];
-
-        if ($this->hasInitiatorGivenSupporters()) {
-            $supporters = $this->parseSupporters(new MotionSupporter(), $supporterDtos);
-            foreach ($supporters as $sup) {
-                /** @var MotionSupporter $sup */
-                $sup->dateCreation = date('Y-m-d H:i:s');
-                $return[]          = $sup;
-            }
+        if (!$this->hasInitiatorGivenSupporters()) {
+            return [];
         }
+        return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
+    }
 
-        return $return;
+    /**
+     * @param IMotionUpdateInitiator[] $initiatorDtos
+     * @return AmendmentSupporter[]
+     */
+    public function getAmendmentInitiatorsFromDto(Amendment $amendment, array $initiatorDtos): array
+    {
+        $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
+        return $this->buildInitiatorsFromDto(AmendmentSupporter::class, $othersPrivilege, $initiatorDtos);
+    }
+
+    /**
+     * @param IMotionUpdateSupporter[] $supporterDtos
+     * @return AmendmentSupporter[]
+     */
+    public function getAmendmentSupportersFromDto(Amendment $amendment, array $supporterDtos): array
+    {
+        if (!$this->hasInitiatorGivenSupporters()) {
+            return [];
+        }
+        $supporters = $this->buildSupportersFromDto(AmendmentSupporter::class, $supporterDtos);
+        foreach ($supporters as $sup) {
+            $sup->amendmentId = $amendment->id;
+        }
+        return $supporters;
     }
 
     /**
@@ -371,9 +431,10 @@ abstract class SupportBase
 
 
     /**
+     * @param AmendmentSupporter[] $supporters
      * @throws \Throwable
      */
-    public function submitAmendment(Amendment $amendment): void
+    public function submitAmendment(Amendment $amendment, array $supporters): void
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
         if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
@@ -392,9 +453,8 @@ abstract class SupportBase
             }
         }
 
-        $supportersAndInitiators = $this->getAmendmentSupporters($amendment);
         $initiators = [];
-        foreach ($supportersAndInitiators as $sup) {
+        foreach ($supporters as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
                 $sup->amendmentId = $amendment->id;
                 if ($sup->userId !== null && isset($preCreatedByAdmin[$sup->userId])) {
@@ -539,127 +599,5 @@ abstract class SupportBase
             ],
             $controller
         );
-    }
-
-    /**
-     * @return AmendmentSupporter[]
-     */
-    public function getAmendmentSupporters(Amendment $amendment): array
-    {
-        /** @var AmendmentSupporter[] $return */
-        $return = [];
-        $post = RequestContext::getAllPostVars();
-
-        $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
-        $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
-
-        if (RequestContext::getYiiUser()->isGuest) {
-            $init               = new AmendmentSupporter();
-            $init->dateCreation = date('Y-m-d H:i:s');
-            $init->userId       = null;
-            $user               = null;
-        } else {
-            if ($otherInitiator) {
-                $userId = null;
-                $user   = null;
-                foreach ($amendment->amendmentSupporters as $supporter) {
-                    if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
-                        $userId = $supporter->userId;
-                        $user   = $supporter->user;
-                    }
-                }
-            } else {
-                $user   = User::getCurrentUser();
-                $userId = $user->id;
-            }
-
-            $init = AmendmentSupporter::findOne(
-                [
-                    'amendmentId' => $amendment->id,
-                    'role'        => AmendmentSupporter::ROLE_INITIATOR,
-                    'userId'      => $userId,
-                ]
-            );
-            if (!$init) {
-                $init               = new AmendmentSupporter();
-                $init->dateCreation = date('Y-m-d H:i:s');
-                $init->userId       = $userId;
-                if ($otherInitiator) {
-                    $init->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
-                }
-            }
-        }
-
-        $posCount = 0;
-
-        $init->setAttributes($post['Initiator']);
-        $init->amendmentId = $amendment->id;
-        $init->role        = AmendmentSupporter::ROLE_INITIATOR;
-        $init->position    = $posCount++;
-        if ($init->personType === ISupporter::PERSON_NATURAL) {
-            if ($user && ($user->fixedData & User::FIXED_NAME) && !$otherInitiator) {
-                $init->name         = trim($user->name);
-                $init->organization = $user->organization;
-            } else {
-                $init->name = trim($post['Initiator']['primaryName']);
-                if (isset($post['Initiator']['organization'])) {
-                    $init->organization = $post['Initiator']['organization'];
-                } else {
-                    $init->organization = '';
-                }
-            }
-            $init->contactName = $post['Initiator']['contactName'] ?? '';
-        } else {
-            if ($user && ($user->fixedData & User::FIXED_ORGA) && !$otherInitiator) {
-                $init->organization = $user->organization;
-            } else {
-                $init->organization = $post['Initiator']['primaryName'];
-            }
-            $init->contactName  = $post['Initiator']['contactName'];
-        }
-
-        $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
-        $return[]             = $init;
-
-        if (isset($post['moreInitiators']['name'])) {
-            // ADMIn Case
-            foreach ($post['moreInitiators']['name'] as $i => $name) {
-                $init               = new AmendmentSupporter();
-                $init->amendmentId  = $amendment->id;
-                $init->role         = AmendmentSupporter::ROLE_INITIATOR;
-                $init->position     = $posCount++;
-                $init->personType   = MotionSupporter::PERSON_NATURAL;
-                $init->name         = $name;
-                $init->dateCreation = date('Y-m-d H:i:s');
-                if (isset($post['moreInitiators']['organization'])) {
-                    $init->organization = $post['moreInitiators']['organization'][$i];
-                }
-                $return[] = $init;
-            }
-        } else {
-            // USER Case -> just copy other initiators
-            foreach ($amendment->amendmentSupporters as $supporter) {
-                if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0 && $supporter->userId !== User::getCurrentUser()?->id) {
-                    $init = new AmendmentSupporter();
-                    $init->setAttributes($supporter->getAttributes(), false);
-                    $init->position = $posCount++;
-                    $init->id = null;
-                    $return[] = $init;
-                }
-            }
-        }
-
-        if ($this->hasInitiatorGivenSupporters()) {
-            $supporterDtos = IMotionUpdateSupporter::fromPostData($post);
-            $supporters = $this->parseSupporters(new AmendmentSupporter(), $supporterDtos);
-            foreach ($supporters as $sup) {
-                /** @var AmendmentSupporter $sup */
-                $sup->amendmentId  = $amendment->id;
-                $sup->dateCreation = date('Y-m-d H:i:s');
-                $return[]          = $sup;
-            }
-        }
-
-        return $return;
     }
 }

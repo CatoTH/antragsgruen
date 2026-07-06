@@ -11,6 +11,7 @@ use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{IMotionStatusFilter, Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, Motion, User};
 use app\models\events\AmendmentEvent;
+use app\models\api\imotion\AmendmentUpdateRequest;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
@@ -247,14 +248,14 @@ class AmendmentController extends AdminBase
             }
             $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, null, null);
             $form->setAdminMode(true);
-            $form->setAttributes($post, $_FILES);
+            $dto = AmendmentUpdateRequest::fromWebRequest($post, $_FILES, $amendment);
 
             $votingData = $amendment->getVotingData();
             $votingData->setFromPostData($post['votes']);
             $amendment->setVotingData($votingData);
 
             try {
-                $form->saveAmendment($amendment);
+                $form->saveAmendment($amendment, $dto);
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }

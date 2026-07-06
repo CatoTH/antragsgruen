@@ -200,6 +200,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorValidation'
 
+  /rest/{consultationPath}/motion/{motionSlug}/amendment:
+    post:
+      operationId: createAmendment
+      summary: Create a new amendment to this motion
+      tags:
+        - Amendments
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmendmentCreateRequest'
+      responses:
+        '201':
+          description: Amendment was created successfully. Returns the full amendment details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmendmentDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: No permission to create amendments, or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. required section missing, text too long)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+
   /rest/{consultationPath}/motion/{motionSlug}/amendment/{amendmentId}:
     get:
       operationId: getAmendment
@@ -222,6 +263,46 @@ paths:
           $ref: '#/components/responses/ApiDisabled'
         '404':
           $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateAmendment
+      summary: Updates this amendment
+      tags:
+        - Amendments
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+        - $ref: '#/components/parameters/amendmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmendmentUpdateRequest'
+      responses:
+        '200':
+          description: Amendment was updated successfully. Returns the full amendment details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmendmentDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: No permission to edit this amendment, or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. required section missing, text too long)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
 
   /rest/{consultationPath}/agenda:
     get:
@@ -757,6 +838,124 @@ components:
             by the section type. For Image and PDF sections, a base64-encoded file is expected.
             Null or omitted means the section is left empty (only valid for optional sections).
           example: "<p>This is the motion text</p>"
+
+    AmendmentCreateRequest:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - sections
+        - initiators
+      properties:
+        sections:
+          type: array
+          description: Content for each amended section, identified by the section definition ID from MotionTypeSectionDefinition.
+          items:
+            $ref: '#/components/schemas/AmendmentUpdateSection'
+        initiators:
+          type: array
+          description: At least one initiator must be provided.
+          items:
+            $ref: '#/components/schemas/IMotionUpdateInitiator'
+        supporters:
+          type: array
+          nullable: true
+          description: Optional list of supporters for this amendment.
+          items:
+            $ref: '#/components/schemas/IMotionUpdateSupporter'
+        tags:
+          type: array
+          nullable: true
+          description: IDs of public topic tags to apply. Only effective when the consultation allows user-defined tags.
+          items:
+            type: integer
+          example:
+            - 7
+        reason:
+          type: string
+          nullable: true
+          description: Explanation or reasoning for this amendment (maps to changeExplanation).
+          example: "<p>This change is necessary because...</p>"
+        editorial:
+          type: string
+          nullable: true
+          description: Editorial note accompanying the amendment (maps to changeEditorial).
+          example: "<p>Editorial remark</p>"
+        global_alternative:
+          type: boolean
+          nullable: true
+          description: Whether this amendment is a global alternative replacing the entire motion.
+          example: false
+        amending_amendment_id:
+          type: integer
+          nullable: true
+          description: ID of an existing amendment that this amendment itself amends (for amendments-to-amendments). Null means this amends the base motion directly.
+          example: null
+
+    AmendmentUpdateRequest:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - sections
+        - initiators
+      properties:
+        sections:
+          type: array
+          description: Content for each amended section, identified by the section definition ID from MotionTypeSectionDefinition.
+          items:
+            $ref: '#/components/schemas/AmendmentUpdateSection'
+        initiators:
+          type: array
+          description: At least one initiator must be provided.
+          items:
+            $ref: '#/components/schemas/IMotionUpdateInitiator'
+        supporters:
+          type: array
+          nullable: true
+          description: Optional list of supporters for this amendment.
+          items:
+            $ref: '#/components/schemas/IMotionUpdateSupporter'
+        tags:
+          type: array
+          nullable: true
+          description: IDs of public topic tags to apply. Only effective when the consultation allows user-defined tags.
+          items:
+            type: integer
+          example:
+            - 7
+        reason:
+          type: string
+          nullable: true
+          description: Explanation or reasoning for this amendment (maps to changeExplanation).
+          example: "<p>This change is necessary because...</p>"
+        editorial:
+          type: string
+          nullable: true
+          description: Editorial note accompanying the amendment (maps to changeEditorial).
+          example: "<p>Editorial remark</p>"
+        global_alternative:
+          type: boolean
+          nullable: true
+          description: Whether this amendment is a global alternative replacing the entire motion.
+          example: false
+
+    AmendmentUpdateSection:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - section_id
+      properties:
+        section_id:
+          type: integer
+          description: ID of the section definition (from MotionTypeSectionDefinition) this data belongs to.
+          example: 12
+        data:
+          type: string
+          nullable: true
+          description: >
+            The full amended HTML content for this section. For TextSimple sections this is the complete
+            amended text (not a diff); the server computes the diff against the original motion section.
+            For Image and PDF sections, a base64-encoded file. Null or omitted leaves the section unchanged.
+          example: "<p>This is the amended text</p>"
 
     IMotionUpdateInitiator:
       x-php-namespace: imotion

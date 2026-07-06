@@ -63,7 +63,7 @@ class IMotionUpdateInitiator
     {
         $moreInitiators = [];
 
-        $postInitiator = $post['moreInitiators'] ?? [];
+        $postInitiator = $post['moreInitiators'] ?? ['name' => [], 'organization' => []];
         foreach (array_keys($postInitiator['name']) as $i) {
             $moreInitiators[] = new self(
                 id: isset($postInitiator['id'][$i]) && $postInitiator['id'][$i] > 0 ? intval($postInitiator['id'][$i]) : null,

@@ -17,6 +17,7 @@ use app\components\{diff\AmendmentCollissionDetector, HTMLTools, Tools, UrlHelpe
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentProposal, AmendmentSupporter, ConsultationLog, IMotion, IProposal, ISupporter, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
+use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
@@ -323,9 +324,9 @@ class AmendmentController extends Base
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);
-            $form->setAttributes($this->getPostValues(), $_FILES);
             try {
-                $form->saveAmendment($amendment);
+                $dto = AmendmentUpdateRequest::fromWebRequest($this->getPostValues(), $_FILES, $amendment);
+                $form->saveAmendment($amendment, $dto);
 
                 if ($amendment->isVisible()) {
                     ConsultationLog::logCurrUser($this->consultation, ConsultationLog::AMENDMENT_CHANGE, $amendment->id);
@@ -366,7 +367,7 @@ class AmendmentController extends Base
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
         if (!$motion->isCurrentlyAmendable()) {
@@ -390,7 +391,8 @@ class AmendmentController extends Base
 
         if ($this->isPostSet('save')) {
             try {
-                $amendment = $form->createAmendment();
+                $dto = AmendmentCreateRequest::fromWebRequest($this->getPostValues(), $_FILES, $motion);
+                $amendment = $form->createAmendment($dto);
 
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {

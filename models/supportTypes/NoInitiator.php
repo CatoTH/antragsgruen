@@ -54,7 +54,7 @@ class NoInitiator extends SupportBase
     {
     }
 
-    public function submitAmendment(Amendment $amendment): void
+    public function submitAmendment(Amendment $amendment, array $supporters): void
     {
     }
 
