@@ -410,12 +410,9 @@ class MotionEditForm
             $supportForm->submitMotion($motion, $this->supporters);
         }
 
-        /*
         if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
             $this->overwriteSections($motion);
         }
-        @TODO
-        */
 
         $motion->refreshTitle();
         $motion->dateContentModification = date('Y-m-d H:i:s');

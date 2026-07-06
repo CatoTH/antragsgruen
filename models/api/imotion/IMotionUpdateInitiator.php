@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\api\imotion;
 
+use app\components\Tools;
 use app\models\db\{ConsultationMotionType, ISupporter, User};
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 
@@ -43,7 +44,7 @@ class IMotionUpdateInitiator
             contactEmail: $postInitiator['contactEmail'] ?? null,
             contactPhone: $postInitiator['contactPhone'] ?? null,
             gender: $postInitiator['gender'] ?? null,
-            resolutionDate: $postInitiator['resolutionDate'] ?? null,
+            resolutionDate: Tools::dateBootstrapdate2sql($postInitiator['resolutionDate'] ?? null),
         );
 
 
