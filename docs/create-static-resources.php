@@ -138,8 +138,9 @@ foreach ($relevantJsFiles as $file) {
     //   import ... from '/foo.js'
     //   import('./foo.js')
     //   export ... from './foo.js'
+    // Note: minified code has no whitespace around "from" (e.g. import{x}from"./a.js")
     preg_match_all(
-        '/(?:import\s*(?:[^"\']*?\s+from\s*)?|export\s+[^"\']*?\s+from\s*|import\s*\()\s*["\']([^"\']+\.js)["\']/',
+        '/(?:import\s*(?:[^"\']*?\s*from\s*)?|export\s*[^"\']*?\s*from\s*|import\s*\()\s*["\']([^"\']+\.js)["\']/',
         $contents,
         $matches
     );
