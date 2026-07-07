@@ -167,10 +167,6 @@ class MotionEditForm
         $fileUploadErrors = []; // @TODO
         foreach ($this->sections as $section) {
             $sectionSettings = $section->getSettings();
-            if ($this->motionId && $sectionSettings->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                // Updating the text is done separately, including amendment rewriting
-                continue;
-            }
             $requestSection = $requestSectionsById[$section->sectionId] ?? null;
             if ($requestSection === null) {
                 continue;
@@ -365,10 +361,8 @@ class MotionEditForm
      */
     public function saveMotion(Motion $motion, MotionUpdateRequest $dto, array $amendmentOverrides): void
     {
-        if (!$this->adminMode) {
-            if (!$motion->canEditText()) {
-                throw new FormError(\Yii::t('motion', 'err_create_permission'));
-            }
+        if (!$this->adminMode && !$motion->canEditText()) {
+            throw new FormError(\Yii::t('motion', 'err_create_permission'));
         }
 
         $consultation = $this->motionType->getConsultation();

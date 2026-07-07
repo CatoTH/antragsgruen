@@ -4,24 +4,17 @@ declare(strict_types=1);
 
 namespace app\models\supportTypes;
 
-use app\components\RequestContext;
-use app\components\Tools;
 use app\controllers\Base;
-use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, MotionSupporter, User};
-use app\models\api\imotion\IMotionUpdateInitiator;
-use app\models\api\imotion\IMotionUpdateSupporter;
-use app\models\api\imotion\MotionCreateRequest;
-use app\models\api\imotion\SupporterType;
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSupporter, User};
+use app\models\api\imotion\{IMotionUpdateInitiator, IMotionUpdateSupporter, SupporterType};
+use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\exceptions\{FormError, Internal};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
-use app\models\settings\InitiatorForm;
 use yii\web\View;
 
 abstract class SupportBase
 {
-    // Also defined in Typescript
+    // Also defined in JavaScript
     public const ONLY_INITIATOR        = 0;
     public const GIVEN_BY_INITIATOR    = 1;
     public const COLLECTING_SUPPORTERS = 2;
@@ -32,8 +25,13 @@ abstract class SupportBase
     public const LIKEDISLIKE_SUPPORT = 4;
 
     protected bool $adminMode = false;
-    protected InitiatorForm $settingsObject;
-    protected ConsultationMotionType $motionType;
+
+    public function __construct(
+        protected readonly ConsultationMotionType $motionType,
+        protected InitiatorForm $settingsObject,
+    ) {
+        $this->fixSettings();
+    }
 
     /**
      * @return SupportBase[]|string[]
@@ -73,13 +71,6 @@ abstract class SupportBase
             'diverse' => \Yii::t('structure', 'gender_diverse'),
             'na'      => \Yii::t('structure', 'gender_na'),
         ];
-    }
-
-    public function __construct(ConsultationMotionType $motionType, InitiatorForm $settings)
-    {
-        $this->motionType = $motionType;
-        $this->settingsObject = $settings;
-        $this->fixSettings();
     }
 
     public function getSettingsObj(): InitiatorForm
@@ -128,37 +119,6 @@ abstract class SupportBase
     }
 
     /**
-     * @param IMotionUpdateSupporter[] $supporterDtos
-     * @return ISupporter[]
-     */
-    protected function parseSupporters(ISupporter $model, ?array $supporterDtos): array
-    {
-        $ret  = [];
-        foreach ($supporterDtos as $i => $supporterDto) {
-            if (!$this->isValidName($supporterDto->name)) {
-                continue;
-            }
-            $sup             = clone $model;
-            $sup->name       = trim($supporterDto->name);
-            $sup->role       = ISupporter::ROLE_SUPPORTER;
-            $sup->userId     = null;
-            $sup->personType = ISupporter::PERSON_NATURAL;
-            $sup->position   = $i;
-            if ($supporterDto->id) {
-                $sup->id = $supporterDto->id; // Hint: the actual validation that this is a valid ID is done in saveMotion/saveAmendment
-            }
-            if ($supporterDto->organization) {
-                $sup->organization = trim($supporterDto->organization);
-            }
-            if ($supporterDto->gender !== null) {
-                $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER, $supporterDto->gender);
-            }
-            $ret[] = $sup;
-        }
-        return $ret;
-    }
-
-    /**
      * @template T of ISupporter
      * @param class-string<T> $supporterClass
      * @param IMotionUpdateInitiator[] $initiatorDtos
@@ -179,6 +139,12 @@ abstract class SupportBase
             if ($initiator->userId === null && $othersPrivilege) {
                 $supporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
             }
+            if ($initiator->userId > 0) {
+                $user = User::findOne($initiator->userId);
+            } else {
+                $user = null;
+            }
+
             $position++;
             $supporter->dateCreation = date('Y-m-d H:i:s');
 
@@ -188,11 +154,16 @@ abstract class SupportBase
             if ($supporter->personType === ISupporter::PERSON_NATURAL) {
                 $supporter->name = $initiator->name;
                 $supporter->organization = $initiator->organization ?? '';
-                $supporter->contactName = $initiator->contactName ?? '';
+                if ($user && ($user->fixedData & User::FIXED_NAME) > 0) {
+                    $supporter->name = $user->name;
+                }
+                if ($user && ($user->fixedData & User::FIXED_ORGA) > 0) {
+                    $supporter->organization = $user->organization;
+                }
             } else {
                 $supporter->organization = $initiator->name;
-                $supporter->contactName = $initiator->contactName ?? '';
             }
+            $supporter->contactName = $initiator->contactName ?? '';
             $supporter->contactEmail = $initiator->contactEmail ?? '';
             $supporter->contactPhone = $initiator->contactPhone ?? '';
             if ($initiator->gender !== null) {
@@ -296,7 +267,7 @@ abstract class SupportBase
      */
     public function validateMotion(ISupporter $initiator, array $supporters): void
     {
-        if (!$this->adminMode) {
+        if ($this->adminMode) {
             return;
         }
 
@@ -304,7 +275,8 @@ abstract class SupportBase
 
         $errors = [];
 
-        if (!$this->isValidName($initiator->name)) {
+        $nameToValidate = ($initiator->personType === ISupporter::PERSON_ORGANIZATION ? $initiator->organization : $initiator->name);
+        if (!$this->isValidName($nameToValidate ?? '')) {
             $errors[] = \Yii::t('motion', 'err_invalid_name');
         }
 

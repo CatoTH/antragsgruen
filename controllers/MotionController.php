@@ -262,7 +262,6 @@ class MotionController extends Base
         if ($this->isPostSet('save')) {
             $motion->flushCache(true);
 
-            // Needs to be moved into saveMotion
             try {
                 $updateDto = MotionUpdateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motion->getMyMotionType());
                 $form->saveMotion($motion, $updateDto, []);
