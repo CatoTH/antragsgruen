@@ -15,8 +15,9 @@ Whenever there are non-trivial design decisions, ask rather than make assumption
 ### Build / Assets
 ```bash
 pnpm install                   # Install JS dependencies
-pnpm run build                 # Compile SCSS/JS/Vue (runs gulp + rollup, see gulpfile.js and assets/rollup.js)
-pnpm run watch                 # Watch and recompile on change (gulp watch)
+pnpm run build                 # Compile SCSS/JS/Vue (runs Vite, see vite.config.js)
+pnpm run watch                 # Watch and recompile on change
+docs/create-static-resources.php dev   # Create static resource manifests (run after pnpm build)
 ```
 
 ### PHP dependencies
@@ -146,12 +147,11 @@ Motion-related privileges (restrictable to motion type / agenda item / tag):
 #### Consultation access gating
 `components/ConsultationAccess.php` restricts access to a whole consultation, checked before controllers run: maintenance mode (only users with `PRIVILEGE_CONSULTATION_SETTINGS` get in), `forceLogin`, `managedUserAccounts` (user must belong to a user group of the consultation; registration requests are queued in `UserConsultationScreening`), a consultation access password (`accessPwd`), and the site's allowed `loginMethods`. Plugins can grant limited access to specific pages.
 
-### Frontend
-- Legacy JS: `web_src/js/antragsgruen.js` and the other files listed in `gulpfile.js` are concatenated and minified into `web/js/antragsgruen.min.js` (gulp-concat + gulp-terser).
-- Vue.js components: `web_src/js/vue/**/*.vue` (complex widgets: voting, speaking list, amendment merging), compiled per-file by gulp using `@vue/compiler-sfc` (see `assets/gulpfile.vue.js`) into `web/js/vue/`.
+- Legacy JS: `web_src/js/antragsgruen.js` bundled into `web/js/antragsgruen.min.js` (concat + terser, see `assets/vite/legacy-bundles-plugin.js`).
+- Vue.js components: `web_src/js/vue/` (complex widgets: voting, speaking list, amendment merging).
 - TypeScript: `web_src/typescript/` only typings provided, not actually used.
-- SCSS: lives in `web/css/`, plugin asset directories, and `assets/html2pdf/`; gulp compiles it in place next to the sources (dart-sass + autoprefixer).
-- Third-party npm packages: gulp's `copy-files` task copies prebuilt files to `web/npm/`; `rollup -c assets/rollup.js` bundles ESM-only packages (e.g. vuedraggable) into `web/npm/` as well.
+- SCSS: lives in `web_src/css/` and plugin asset directories; compiled to `web/css/`.
+- Third-party npm packages copied to `web/npm/` by the Vite build (`assets/vite/copy-npm-files-plugin.js`).
 
 ### Plugins
 Each plugin lives in `plugins/<id>/` and extends `plugins/ModuleBase.php`. Activated via the `plugins` array in `config/config.json`. Plugins can provide:
