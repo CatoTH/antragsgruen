@@ -51,15 +51,15 @@ $I->gotoConsultationHome();
 $I->click('.agendaEditLink');
 $I->wait(0.5);
 
-$listData = [];
-$listData[] = [
+$listData = ["items" => []];
+$listData["items"][] = [
     "type" => "item",
     "code" => null,
     "title" => "Earth",
     "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
     "children" => [],
 ];
-$listData[] = [
+$listData["items"][] = [
     "type" => "item",
     "code" => null,
     "title" => "Mars",

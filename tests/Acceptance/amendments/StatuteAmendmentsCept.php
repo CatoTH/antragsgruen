@@ -108,22 +108,22 @@ $I->click('.agendaEditLink');
 $I->wait(0.3);
 $I->seeElement('.agendaEditWidget');
 
-$listData = [];
-$listData[] = [
+$listData = ["items" => []];
+$listData["items"][] = [
     "type" => "item",
     "code" => null,
     "title" => "Earth",
     "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
     "children" => [],
 ];
-$listData[] = [
+$listData["items"][] = [
     "type" => "item",
     "code" => null,
     "title" => "Mars",
     "settings" => ["has_speaking_list" => false, "in_proposed_procedures" => true, "motion_types" => []],
     "children" => [],
 ];
-$listData[] = [
+$listData["items"][] = [
     "type" => "item",
     "code" => null,
     "title" => "venus",
