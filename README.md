@@ -502,7 +502,7 @@ docker exec antragsgruen-pnpm-helper-1 pnpm ci
 
 To run the watcher that compiles SCSS and Vue.JS files, use:
 ```shell
-docker compose -f docker-compose.development.yml --profile pnpm-helper --profile gulp-watch up
+docker compose -f docker-compose.development.yml --profile pnpm-helper --profile vite-watch up
 ```
 
 The embedded sample OpenTelemetry Collector is reachable under:
@@ -512,7 +512,7 @@ The embedded sample OpenTelemetry Collector is reachable under:
 
 You can enable debug mode by creating an empty file config/DEBUG.
 
-To compile the JavaScript- and CSS-Files, you need to install Gulp:
+The JavaScript- and CSS-Files are compiled using [Vite](https://vitejs.dev/):
 ```bash
 pnpm install # Installs all required packages
 
@@ -524,7 +524,7 @@ After updating the source code from git, do:
 ```bash
 ./composer.phar install
 ./yii migrate
-gulp
+pnpm run build
 ```
 
 
@@ -573,7 +573,7 @@ The most frequent use case for plugins is custom themes / layouts. You can devel
 - The ``Module.php`` needs the static method ``getProvidedLayout`` that returns the asset bundle. See the [gruen_ci](plugins/gruen_ci/Module.php) for examples.
 - Create a file ```plugins/mylayout/assets/mylayout.scss```. Again, use the existing plugins as an example to get the imports right.
 - Adapt the SCSS variables and add custom styles
-- Run ```gulp``` to compile the SCSS into CSS
+- Run ```pnpm run build``` to compile the SCSS into CSS
 - Activate the plugin as said above.
 - Now, you can choose your new theme in the consultation settings
 
