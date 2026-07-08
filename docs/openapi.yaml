@@ -831,11 +831,15 @@ components:
           description: ID of the section definition (from MotionTypeSectionDefinition) this data belongs to.
           example: 12
         data:
-          type: string
           nullable: true
+          oneOf:
+            - type: string
+            - type: array
+              items: {}
           description: >
             Content for this section. For Title and TextSimple sections, plain text or HTML as accepted
             by the section type. For Image and PDF sections, a base64-encoded file is expected.
+            Section types with structured data (e.g. tabular data) expect an indexed array.
             Null or omitted means the section is left empty (only valid for optional sections).
           example: "<p>This is the motion text</p>"
 

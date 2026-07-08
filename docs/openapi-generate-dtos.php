@@ -853,7 +853,8 @@ function buildConstructorParams(
             $phpType = resolvePhpType($propSchema, $allSchemas, $schemaFullNamespace, $currentNamespace);
         }
 
-        $typeDeclaration = ($nullable ? '?' : '') . $phpType;
+        // "mixed" already includes null; "?mixed" is invalid PHP.
+        $typeDeclaration = ($nullable && $phpType !== 'mixed' ? '?' : '') . $phpType;
         $default = $nullable ? ' = null' : '';
 
         $entryLines = [];

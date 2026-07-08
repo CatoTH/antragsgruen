@@ -10,7 +10,7 @@ class MotionUpdateSection
 
     public function __construct(
         public int $sectionId,
-        public ?string $data = null,
+        public mixed $data = null,
     ) {
     }
 
