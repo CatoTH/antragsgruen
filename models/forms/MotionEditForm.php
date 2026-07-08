@@ -190,7 +190,7 @@ class MotionEditForm
                 $errors[] = str_replace('%FIELD%', $sectionSettings->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%MAX%', $sectionSettings->title, \Yii::t('base', 'err_max_len_exceed'));
+                $errors[] = str_replace('%MAX%', (string) $sectionSettings->maxLen, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
 
@@ -217,7 +217,7 @@ class MotionEditForm
     }
 
     /**
-     * Returns true, if the rewriting was successful
+     * Returns true, if the rewriting was successful.
      *
      * @param MotionUpdateSection[] $newSections
      * @param array<int, array<int, string[]>> $overrides
@@ -232,6 +232,9 @@ class MotionEditForm
         /** @var string[] $newHtmls */
         $newHtmls = [];
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            if (!isset($unsanitizedHtml[$section->sectionId])) {
+                throw new FormError('No content found for section ' . $section->sectionId);
+            }
             $forbiddenFormattings = $section->getSettings()->getForbiddenMotionFormattings();
             $newHtmls[$section->sectionId] = HTMLTools::cleanSimpleHtml($unsanitizedHtml[$section->sectionId], $forbiddenFormattings);
         }

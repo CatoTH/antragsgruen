@@ -352,13 +352,14 @@ class MotionController extends Base
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
-        } elseif ($cloneFrom > 0) {
+        }
+
+        $form->initializeSectionsAndTags(null);
+        if ($cloneFrom > 0) {
             $motion = $this->consultation->getMotion($cloneFrom);
             $form->cloneSupporters($motion);
             $form->cloneMotionText($motion);
         }
-
-        $form->initializeSectionsAndTags(null);
 
         if (count($form->supporters) === 0) {
             $form->supporters[] = MotionSupporter::createInitiator($this->consultation, $supportType, $iAmAdmin);

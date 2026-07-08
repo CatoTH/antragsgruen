@@ -274,7 +274,7 @@ abstract class SupportBase
      */
     public function getAmendmentSupportersFromDto(Amendment $amendment, array $supporterDtos): array
     {
-        if (!$this->hasInitiatorGivenSupporters()) {
+        if (!$this->hasInitiatorGivenSupporters() || $this->adminMode) {
             return [];
         }
         $supporters = $this->buildSupportersFromDto(AmendmentSupporter::class, $supporterDtos);
