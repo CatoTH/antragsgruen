@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\api\imotion;
 
 use app\components\Tools;
+use app\models\exceptions\FormError;
 use app\models\db\{ConsultationMotionType, ISupporter, User};
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use Symfony\Component\Serializer\Attribute\Ignore;
@@ -51,9 +52,19 @@ class IMotionUpdateInitiator
             resolutionDate: Tools::dateBootstrapdate2sql($postInitiator['resolutionDate'] ?? null),
         );
 
-
-        $initiator->userId = null;
-        if (!(isset($post['otherInitiator']) && $othersPrivilege)) {
+        if ($othersPrivilege && isset($post['otherInitiator'])) {
+            $setType = $post['initiatorSetType'] ?? '';
+            $setUsername = $post['initiatorSetUsername'] ?? '';
+            if (isset($post['initiatorSet']) && $post['initiatorSet'] === '1' && trim($setUsername) !== '') {
+                $user = User::findByAuthTypeAndName($setType, $setUsername);
+                if (!$user) {
+                    throw new FormError(\Yii::t('motion', 'err_user_not_found'));
+                }
+                $initiator->userId = $user->id;
+            } else {
+                $initiator->userId = null;
+            }
+        } else {
             $initiator->userId = User::getCurrentUser()?->id;
         }
 

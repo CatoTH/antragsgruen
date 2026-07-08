@@ -313,6 +313,7 @@ class AmendmentEditForm
         $consultation = $this->motion->getMyConsultation();
         $ctx = PrivilegeQueryContext::amendment($amendment);
         $supportType = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
+        $supportType->setAdminMode($this->adminMode);
 
         // 1. Set data from DTO (retained on $this for re-render if validation fails)
         if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {

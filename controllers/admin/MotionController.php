@@ -89,11 +89,6 @@ class MotionController extends AdminBase
         if ($this->isPostSet('save') && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $privCtx)) {
             $modat = $post['motion'];
 
-            $sectionTypes = [];
-            foreach ($motion->getMyMotionType()->motionSections as $section) {
-                $sectionTypes[$section->id] = $section->type;
-            }
-
             try {
                 $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem);
                 $form->setAdminMode(true);

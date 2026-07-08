@@ -6,7 +6,7 @@ namespace app\models\supportTypes;
 
 use app\controllers\Base;
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSupporter, User};
-use app\models\api\imotion\{IMotionUpdateInitiator, IMotionUpdateSupporter, SupporterType};
+use app\models\api\imotion\{IMotionUpdateInitiator, IMotionUpdateSupporter, Supporter, SupporterType};
 use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\exceptions\{FormError, Internal};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
@@ -252,10 +252,10 @@ abstract class SupportBase
      */
     public function getMotionSupportersFromDto(ConsultationMotionType $motionType, array $supporterDtos): array
     {
-        if (!$this->hasInitiatorGivenSupporters()) {
-            return [];
+        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
+            return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
         }
-        return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
+        return [];
     }
 
     /**
@@ -336,7 +336,7 @@ abstract class SupportBase
             $validGenderValues = array_keys(static::getGenderSelection());
             $setGender = $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER);
             if ($settings->contactGender === InitiatorForm::CONTACT_REQUIRED) {
-                if (!isset($initiator->resolutionDate) || !in_array($setGender, $validGenderValues)) {
+                if (!isset($setGender) || !in_array($setGender, $validGenderValues)) {
                     $errors[] = \Yii::t('motion', 'err_invalid_gender');
                 }
             }
@@ -349,7 +349,7 @@ abstract class SupportBase
         }
 
         if ($this->hasInitiatorGivenSupporters()) {
-            $num        = count($supporters);
+            $num = count(array_filter($supporters, fn($supporter) => $supporter->role === ISupporter::ROLE_SUPPORTER));
             if ($personType !== ISupporter::PERSON_ORGANIZATION) {
                 if ($num < $settings->minSupporters) {
                     $errors[] = \Yii::t('motion', 'err_not_enough_supporters');
@@ -381,7 +381,7 @@ abstract class SupportBase
     public function submitMotion(Motion $motion, array $supporters): void
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
-        if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
+        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
             $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
         }
 

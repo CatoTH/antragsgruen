@@ -291,6 +291,10 @@ class MotionEditForm
             $sectionsById[$section->sectionId] = $section;
         }
         foreach ($this->sections as $section) {
+            if ($this->motionId && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                // Updating the text is done separately, including amendment rewriting
+                continue;
+            }
             if (isset($sectionsById[$section->sectionId])) {
                 $section = $sectionsById[$section->sectionId];
             }
@@ -381,6 +385,7 @@ class MotionEditForm
 
         $consultation = $this->motionType->getConsultation();
         $supportForm = $this->motionType->getMotionSupportTypeClass();
+        $supportForm->setAdminMode($this->adminMode);
 
         // 1. Set data, but don't validate yet
         $initiators = $supportForm->getMotionInitiatorsFromDto($this->motionType, $dto->initiators);
