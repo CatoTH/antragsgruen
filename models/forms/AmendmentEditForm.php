@@ -203,17 +203,13 @@ class AmendmentEditForm
      */
     private function createAmendmentVerify(): void
     {
-        $errors = [];
-        try {
-            $initiator = $this->getInitiatorSupporter();
-            if ($initiator) {
-                $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment($initiator, $this->supporters);
-            }
-        } catch (FormError $e) {
-            $errors = array_merge($errors, $e->getMessages());
+        $supportType = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
+        $initiator = $this->getInitiatorSupporter();
+        if ($supportType->requiresInitiator() && $initiator === null) {
+            throw new FormError(\Yii::t('motion', 'err_no_initiator'));
         }
-        if (count($errors) > 0) {
-            throw new FormError($errors);
+        if ($initiator) {
+            $supportType->validateAmendment($initiator, $this->supporters);
         }
     }
 
@@ -223,9 +219,13 @@ class AmendmentEditForm
     private function saveAmendmentVerify(): void
     {
         if ($this->allowEditingInitiators) {
+            $supportType = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
             $initiator = $this->getInitiatorSupporter();
+            if ($supportType->requiresInitiator() && $initiator === null) {
+                throw new FormError(\Yii::t('motion', 'err_no_initiator'));
+            }
             if ($initiator) {
-                $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment($initiator, $this->supporters);
+                $supportType->validateAmendment($initiator, $this->supporters);
             }
         }
     }

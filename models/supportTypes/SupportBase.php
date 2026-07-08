@@ -113,6 +113,15 @@ abstract class SupportBase
         return false;
     }
 
+    /**
+     * Whether at least one initiator must be present when creating or editing a motion/amendment.
+     * Only NoInitiator opts out.
+     */
+    public function requiresInitiator(): bool
+    {
+        return true;
+    }
+
     public function hasFullTextSupporterField(): bool
     {
         return false;
@@ -126,6 +135,8 @@ abstract class SupportBase
      */
     private function buildInitiatorsFromDto(string $supporterClass, bool $othersPrivilege, array $initiatorDtos): array
     {
+        $currentUserId = User::getCurrentUser()?->id;
+
         $initiators = [];
         $position = 0;
         foreach ($initiatorDtos as $initiator) {
@@ -135,12 +146,24 @@ abstract class SupportBase
             $supporter->personType = ($initiator->personType === SupporterType::ORGANIZATION)
                 ? ISupporter::PERSON_ORGANIZATION
                 : ISupporter::PERSON_NATURAL;
-            $supporter->userId = $initiator->userId;
-            if ($initiator->userId === null && $othersPrivilege) {
+
+            // Attributing an initiator to another user account requires PRIVILEGE_MOTION_INITIATORS.
+            // Without it, the primary initiator is always the submitting user; additional initiators have no user account.
+            $userId = $initiator->userId;
+            if (!$othersPrivilege) {
+                if ($userId !== null && $userId !== $currentUserId) {
+                    $userId = $currentUserId;
+                }
+                if ($position === 0 && $userId === null) {
+                    $userId = $currentUserId;
+                }
+            }
+            $supporter->userId = $userId;
+            if ($userId === null && $othersPrivilege) {
                 $supporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
             }
-            if ($initiator->userId > 0) {
-                $user = User::findOne($initiator->userId);
+            if ($userId > 0) {
+                $user = User::findOne($userId);
             } else {
                 $user = null;
             }

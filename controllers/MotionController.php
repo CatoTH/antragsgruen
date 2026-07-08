@@ -279,7 +279,6 @@ class MotionController extends Base
                 }
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
-                // $form->setSectionTextWithoutSaving($motion, $post['sections']); // @TODO SHould not be necessary anymore?
             }
         }
 

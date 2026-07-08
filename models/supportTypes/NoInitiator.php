@@ -20,6 +20,11 @@ class NoInitiator extends SupportBase
         return false;
     }
 
+    public function requiresInitiator(): bool
+    {
+        return false;
+    }
+
     protected function fixSettings(): void
     {
         $this->settingsObject->minSupporters       = 0;

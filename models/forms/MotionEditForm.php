@@ -17,6 +17,7 @@ use app\models\db\{Consultation,
 use app\models\api\imotion\{MotionCreateRequest, MotionUpdateRequest, MotionUpdateSection};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
+use app\models\supportTypes\SupportBase;
 
 class MotionEditForm
 {
@@ -200,6 +201,22 @@ class MotionEditForm
     }
 
     /**
+     * @param MotionSupporter[] $initiators
+     * @param MotionSupporter[] $supporters
+     * @throws FormError
+     */
+    private function validateInitiators(SupportBase $supportForm, array $initiators, array $supporters): void
+    {
+        if ($supportForm->requiresInitiator() && count($initiators) === 0) {
+            throw new FormError(\Yii::t('motion', 'err_no_initiator'));
+        }
+        foreach ($initiators as $initiator) {
+            // Is only one at the moment
+            $supportForm->validateMotion($initiator, $supporters);
+        }
+    }
+
+    /**
      * Returns true, if the rewriting was successful
      *
      * @param MotionUpdateSection[] $newSections
@@ -298,7 +315,7 @@ class MotionEditForm
         // 1. Set data, but don't validate yet
         $this->initializeSectionsAndTags(null);
         $initiators = $supportForm->getMotionInitiatorsFromDto($this->motionType, $dto->initiators);
-        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters);
+        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters ?? []);
         $this->supporters = array_merge($initiators, $supporters); // Used by edit form in case validation fails
 
         if ($dto->agendaItemId !== null) {
@@ -314,10 +331,7 @@ class MotionEditForm
 
         // 2. Validate data
         $this->setAndVerifySectionContent($dto->sections);
-        foreach ($initiators as $initiator) {
-            // Is only one at the moment
-            $supportForm->validateMotion($initiator, $supporters);
-        }
+        $this->validateInitiators($supportForm, $initiators, $supporters);
 
         // 3. Save
 
@@ -370,7 +384,7 @@ class MotionEditForm
 
         // 1. Set data, but don't validate yet
         $initiators = $supportForm->getMotionInitiatorsFromDto($this->motionType, $dto->initiators);
-        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters);
+        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters ?? []);
         $this->supporters = array_merge($initiators, $supporters); // Used by edit form in case validation fails
 
         if ($dto->agendaItemId !== null) {
@@ -389,22 +403,29 @@ class MotionEditForm
             }
         }
 
+        // Initiators are only edited (validated and persisted) when the user is allowed to; otherwise the existing ones are kept.
+        $editingInitiators = $this->allowEditingInitiators
+            && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion)));
+
+        // In admin mode, editing the motion text (including rewriting affected amendments) requires PRIVILEGE_MOTION_TEXT_EDIT.
+        // Users editing their own motion are already gated by the canEditText() check above.
+        $mayEditText = !$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion));
+
         // 2. Validate data
         $this->setAndVerifySectionContent($dto->sections);
-        foreach ($initiators as $initiator) {
-            // Is only one at the moment
-            $supportForm->validateMotion($initiator, $supporters);
+        if ($editingInitiators) {
+            $this->validateInitiators($supportForm, $initiators, $supporters);
         }
 
         // Save Data
         if (!$motion->save()) {
             throw new FormError(\Yii::t('motion', 'err_create'));
         }
-        if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion)))) {
+        if ($editingInitiators) {
             $supportForm->submitMotion($motion, $this->supporters);
         }
 
-        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
+        if ($mayEditText) {
             $this->overwriteSections($motion);
         }
 
@@ -414,6 +435,8 @@ class MotionEditForm
 
         $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
 
-        $this->updateTextRewritingAmendments($motion, $dto->sections, $amendmentOverrides);
+        if ($mayEditText) {
+            $this->updateTextRewritingAmendments($motion, $dto->sections, $amendmentOverrides);
+        }
     }
 }

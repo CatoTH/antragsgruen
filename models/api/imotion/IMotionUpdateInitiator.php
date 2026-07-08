@@ -7,9 +7,13 @@ namespace app\models\api\imotion;
 use app\components\Tools;
 use app\models\db\{ConsultationMotionType, ISupporter, User};
 use app\models\settings\{PrivilegeQueryContext, Privileges};
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 class IMotionUpdateInitiator
 {
+    // Not part of the public API schema and must never be deserialized from a request body:
+    // attributing an initiator to another user requires PRIVILEGE_MOTION_INITIATORS (enforced in SupportBase::buildInitiatorsFromDto).
+    #[Ignore]
     public ?int $userId = null; // Only to be set by web request for now, by admins
 
     public function __construct(
