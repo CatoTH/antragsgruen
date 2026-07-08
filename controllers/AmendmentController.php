@@ -11,8 +11,7 @@ use app\models\http\{BinaryFileResponse,
     JsonResponse,
     RedirectResponse,
     ResponseInterface,
-    RestApiExceptionResponse,
-    RestApiResponse};
+    RestApiExceptionResponse};
 use app\components\{diff\AmendmentCollissionDetector, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentProposal, AmendmentSupporter, ConsultationLog, IMotion, IProposal, ISupporter, User};
 use app\models\events\AmendmentEvent;
@@ -140,24 +139,6 @@ class AmendmentController extends Base
             $amendment->getFilenameBase(false),
             $this->layoutParams->isRobotsIndex($this->action)
         );
-    }
-
-    public function actionRest(string $motionSlug, int $amendmentId): RestApiResponse
-    {
-        $this->handleRestHeaders(['GET']);
-
-        try {
-            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
-            $this->amendment = $amendment;
-        } catch (\Exception $e) {
-            return new RestApiExceptionResponse(404, $e->getMessage());
-        }
-
-        if (!$amendment->isReadable()) {
-            return new RestApiExceptionResponse(403, 'Amendment is not readable');
-        }
-
-        return new RestApiResponse(200, null, $this->renderPartial('rest_get', ['amendment' => $amendment]));
     }
 
     public function actionView(string $motionSlug, int $amendmentId, int $commentId = 0, ?string $procedureToken = null, ?int $proposalVersion = null): ResponseInterface

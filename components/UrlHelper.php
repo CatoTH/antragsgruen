@@ -255,8 +255,13 @@ class UrlHelper
 
     public static function createAmendmentUrl(Amendment $amendment, string $mode = 'view', array $addParams = []): string
     {
+        if ($mode === 'rest') {
+            $route = '/rest/amendment/get';
+        } else {
+            $route = '/amendment/' . $mode;
+        }
         $params = array_merge([
-            '/amendment/' . $mode,
+            $route,
             'motionSlug'  => $amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendment->id
         ], $addParams);
