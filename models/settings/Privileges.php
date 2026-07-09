@@ -8,7 +8,7 @@ class Privileges
 {
     public const PRIVILEGE_ANY = 0;  // SPECIAL CASE: refers to "any" other privilege mentioned below
     public const PRIVILEGE_CONSULTATION_SETTINGS = 1;
-    public const PRIVILEGE_CONTENT_EDIT = 2;  // Editing pages, uploaded documents (not motions), agenda
+    public const PRIVILEGE_CONTENT_EDIT = 2;  // Editing pages, uploaded documents (not motions). The agenda is covered by PRIVILEGE_AGENDA.
     public const PRIVILEGE_SPEECH_QUEUES = 8;
     public const PRIVILEGE_VOTINGS = 9;
     public const PRIVILEGE_AGENDA = 15;
@@ -22,7 +22,8 @@ class Privileges
     // View the admin motion list (incl. reading). No extra editing permissions yet.
     public const PRIVILEGE_MOTION_SEE_UNPUBLISHED = 13;
 
-    // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting. BUT: allows everything SCREENING does.
+    // Editing statuses, signatures, tags, title. NOT: text, initiators, deleting.
+    // Dedicated screening actions require PRIVILEGE_SCREENING; however, setting statuses through the admin form achieves the same effect.
     public const PRIVILEGE_MOTION_STATUS_EDIT = 4;
 
     // Editing the text. Merging amendments into motions.

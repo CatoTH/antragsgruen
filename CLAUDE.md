@@ -100,7 +100,7 @@ Special values:
 
 General privileges (not motion-restrictable):
 - `PRIVILEGE_CONSULTATION_SETTINGS` (1) — manage consultation settings, motion types, user groups; also retains access when the consultation is in maintenance mode.
-- `PRIVILEGE_CONTENT_EDIT` (2) — edit content pages/texts and uploaded documents, see draft motions (not edit motions). (The "agenda" mention in the code comment predates `PRIVILEGE_AGENDA`.)
+- `PRIVILEGE_CONTENT_EDIT` (2) — edit content pages/texts and uploaded documents, see draft motions (not edit motions).
 - `PRIVILEGE_AGENDA` (15) — manage the agenda.
 - `PRIVILEGE_SPEECH_QUEUES` (8) — manage speech queues.
 - `PRIVILEGE_VOTINGS` (9) — manage votings.
@@ -108,7 +108,7 @@ General privileges (not motion-restrictable):
 Motion-related privileges (restrictable to motion type / agenda item / tag):
 - `PRIVILEGE_SCREENING` (3) — review & publish (screen) submitted motions, amendments, and comments.
 - `PRIVILEGE_MOTION_SEE_UNPUBLISHED` (13) — see the admin motion list including unpublished motions/amendments (read-only, no editing rights).
-- `PRIVILEGE_MOTION_STATUS_EDIT` (4) — edit motion/amendment metadata: status, supporters/signatures, tags, title. Not text, initiators, or deletion — but since it includes status changes, it effectively covers everything screening does. Also the privilege behind the `Admins` policy.
+- `PRIVILEGE_MOTION_STATUS_EDIT` (4) — edit motion/amendment metadata: status, supporters/signatures, tags, title. Not text, initiators, or deletion. Dedicated screening actions require `PRIVILEGE_SCREENING`, but setting statuses through the admin form achieves the same effect. Also the privilege behind the `Admins` policy.
 - `PRIVILEGE_MOTION_TEXT_EDIT` (11) — edit the text; merge amendments into motions. In the admin UI it can only be granted together with `PRIVILEGE_MOTION_STATUS_EDIT` (see `Privilege::$dependentOnId`).
 - `PRIVILEGE_MOTION_INITIATORS` (5) — edit initiators; create motions in the name of someone else; move motions *to* this consultation. Also only grantable together with `PRIVILEGE_MOTION_STATUS_EDIT`.
 - `PRIVILEGE_MOTION_DELETE` (12) — delete motions/amendments; move motions away *from* this consultation.
