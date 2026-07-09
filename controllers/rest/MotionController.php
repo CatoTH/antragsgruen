@@ -62,7 +62,7 @@ class MotionController extends RestBase
             return new RestApiExceptionResponse(403, \Yii::t('motion', 'err_create_permission'));
         }
 
-        $form = new MotionEditForm($motionType, $agendaItem);
+        $form = MotionEditForm::createForCreating($this->consultation, $motionType, $agendaItem);
 
         try {
             $motion = $form->createMotion($dto, false);

@@ -298,10 +298,7 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, null, null);
-        if (!$amendment->canEditInitiators()) {
-            $form->setAllowEditingInitiators(false);
-        }
+        $form = AmendmentEditForm::createForUserEdit($amendment, null, null);
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);
@@ -366,7 +363,7 @@ class AmendmentController extends Base
             $agendaItem = null;
         }
 
-        $form = new AmendmentEditForm($motion, $agendaItem, null, $sectionId, $paragraphNo);
+        $form = AmendmentEditForm::createForCreating($motion, $agendaItem, $sectionId, $paragraphNo);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
         $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 

@@ -176,8 +176,7 @@ class AmendmentController extends AdminBase
             if (!isset($post['edittext'])) {
                 unset($post['sections']);
             }
-            $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, null, null);
-            $form->setAdminMode(true);
+            $form = AmendmentEditForm::createForAdminEdit($amendment, null, null);
             $dto = AmendmentUpdateRequest::fromWebRequest($post, $_FILES, $amendment);
 
             $votingData = $amendment->getVotingData();
@@ -270,8 +269,7 @@ class AmendmentController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
         }
 
-        $form = new AmendmentEditForm($amendment->getMyMotion(),$amendment->getMyAgendaItem(), $amendment, null, null);
-        $form->setAdminMode(true);
+        $form = AmendmentEditForm::createForAdminEdit($amendment, null, null);
 
         return new HtmlResponse($this->render('update', ['amendment' => $amendment, 'form' => $form]));
     }

@@ -41,16 +41,50 @@ class MotionEditForm
 
     public ?int $motionId = null;
 
-    /** @var string[] */
-    public array $fileUploadErrors = [];
-
+    private bool $allowEditingInitiators;
+    private bool $allowTextEdit;
+    private bool $allowSetTags;
     private bool $adminMode = false;
-    private bool $allowEditingInitiators = true; // Only affects updating
 
-    public function __construct(
+    private function __construct(
         public readonly ConsultationMotionType $motionType,
         public ?ConsultationAgendaItem $agendaItem
     ) {
+    }
+
+    public static function createForCreating(Consultation $consultation, ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem): self
+    {
+        $form = new self($motionType, $agendaItem);
+        $form->initializeSectionsAndTags(null);
+        $form->allowEditingInitiators = true;
+        $form->allowTextEdit = true;
+        $form->allowSetTags = $consultation->getSettings()->allowUsersToSetTags;
+
+        return $form;
+    }
+
+    public static function createForUserEdit(Motion $motion): self
+    {
+        $form = new self($motion->getMyMotionType(), $motion->agendaItem);
+        $form->initializeSectionsAndTags($motion);
+        $form->allowEditingInitiators = $motion->canEditInitiators();
+        $form->allowTextEdit = $motion->canEditText();
+        $form->allowSetTags = $motion->getMyConsultation()->getSettings()->allowUsersToSetTags;
+
+        return $form;
+    }
+
+    public static function createForAdminEdit(Motion $motion): self
+    {
+        $con = $motion->getMyConsultation();
+        $form = new self($motion->getMyMotionType(), $motion->agendaItem);
+        $form->initializeSectionsAndTags($motion);
+        $form->adminMode = true;
+        $form->allowEditingInitiators = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion));
+        $form->allowTextEdit = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion));
+        $form->allowSetTags = true;
+
+        return $form;
     }
 
     /**
@@ -111,16 +145,6 @@ class MotionEditForm
                 $this->tags[] = $tag->id;
             }
         }
-    }
-
-    public function setAdminMode(bool $set): void
-    {
-        $this->adminMode = $set;
-    }
-
-    public function setAllowEditingInitiators(bool $set): void
-    {
-        $this->allowEditingInitiators = $set;
     }
 
     public function getAllowEditinginitiators(): bool
@@ -333,7 +357,7 @@ class MotionEditForm
                 }
             }
         }
-        if ($this->motionType->getConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+        if ($this->allowSetTags) {
             $this->tags = $dto->tags ?? [];
         }
 
@@ -362,8 +386,8 @@ class MotionEditForm
 
         $supportForm->submitMotion($motion, $this->supporters);
 
-        if ($dto->tags && ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode)) {
-            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $dto->tags);
+        if ($this->allowSetTags) {
+            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $dto->tags ?? []);
         }
 
         foreach ($this->sections as $section) {
@@ -391,11 +415,10 @@ class MotionEditForm
      */
     public function saveMotion(Motion $motion, MotionUpdateRequest $dto, array $amendmentOverrides): void
     {
-        if (!$this->adminMode && !$motion->canEditText()) {
+        if (!$this->adminMode && !$this->allowTextEdit) {
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
         }
 
-        $consultation = $this->motionType->getConsultation();
         $supportForm = $this->motionType->getMotionSupportTypeClass();
         $supportForm->setAdminMode($this->adminMode);
 
@@ -420,17 +443,11 @@ class MotionEditForm
             }
         }
 
-        // Initiators are only edited (validated and persisted) when the user is allowed to; otherwise the existing ones are kept.
-        $editingInitiators = $this->allowEditingInitiators
-            && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion)));
-
-        // In admin mode, editing the motion text (including rewriting affected amendments) requires PRIVILEGE_MOTION_TEXT_EDIT.
-        // Users editing their own motion are already gated by the canEditText() check above.
-        $mayEditText = !$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion));
-
         // 2. Validate data
-        $this->setAndVerifySectionContent($dto->sections);
-        if ($editingInitiators) {
+        if ($this->allowTextEdit) {
+            $this->setAndVerifySectionContent($dto->sections);
+        }
+        if ($this->allowEditingInitiators) {
             $this->validateInitiators($supportForm, $initiators, $supporters);
         }
 
@@ -438,11 +455,11 @@ class MotionEditForm
         if (!$motion->save()) {
             throw new FormError(\Yii::t('motion', 'err_create'));
         }
-        if ($editingInitiators) {
+        if ($this->allowEditingInitiators) {
             $supportForm->submitMotion($motion, $this->supporters);
         }
 
-        if ($mayEditText) {
+        if ($this->allowTextEdit) {
             $this->overwriteSections($motion);
         }
 
@@ -450,9 +467,11 @@ class MotionEditForm
         $motion->dateContentModification = date('Y-m-d H:i:s');
         $motion->save();
 
-        $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
+        if ($this->allowSetTags) {
+            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
+        }
 
-        if ($mayEditText) {
+        if ($this->allowTextEdit) {
             $this->updateTextRewritingAmendments($motion, $dto->sections, $amendmentOverrides);
         }
     }

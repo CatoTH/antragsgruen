@@ -90,9 +90,7 @@ class MotionController extends AdminBase
             $modat = $post['motion'];
 
             try {
-                $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem);
-                $form->setAdminMode(true);
-                $form->initializeSectionsAndTags($motion);
+                $form = MotionEditForm::createForAdminEdit($motion);
 
                 $votingData = $motion->getVotingData();
                 $votingData->setFromPostData($post['votes']);
@@ -237,9 +235,7 @@ class MotionController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem);
-        $form->setAdminMode(true);
-        $form->initializeSectionsAndTags($motion);
+        $form = MotionEditForm::createForAdminEdit($motion);
 
         return new HtmlResponse($this->render('update', ['motion' => $motion, 'form' => $form]));
     }

@@ -4,14 +4,9 @@ namespace app\models\forms;
 
 use app\components\HTMLTools;
 use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest, AmendmentUpdateSection};
-use app\models\db\{Amendment,
-    AmendmentSection,
-    AmendmentSupporter,
-    ConsultationAgendaItem,
-    ConsultationSettingsTag,
-    Motion,
-    User};
+use app\models\db\{Amendment, AmendmentSection, AmendmentSupporter, ConsultationAgendaItem, ConsultationSettingsTag, Motion, User};
 use app\models\exceptions\FormError;
+use app\models\supportTypes\SupportBase;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\sectionTypes\{ISectionType, TextSimple};
 
@@ -29,10 +24,13 @@ class AmendmentEditForm
     public string $editorial = '';
     public ?int $toAnotherAmendment = null;
     public bool $globalAlternative = false;
-    private bool $adminMode = false;
-    private bool $allowEditingInitiators = true; // Only affects updating
 
-    public function __construct(
+    private bool $allowEditingInitiators;
+    private bool $allowTextEdit;
+    private bool $allowSetTags;
+    private bool $adminMode = false;
+
+    private function __construct(
         public Motion $motion,
         public ?ConsultationAgendaItem $agendaItem,
         ?Amendment $amendment,
@@ -94,14 +92,36 @@ class AmendmentEditForm
         }
     }
 
-    public function setAdminMode(bool $set): void
+    public static function createForCreating(Motion $motion, ?ConsultationAgendaItem $agendaItem, ?int $initSectionId, ?int $initParagraphNo): self
     {
-        $this->adminMode = $set;
+        $form = new self($motion, $agendaItem, null, $initSectionId, $initParagraphNo);
+        $form->allowEditingInitiators = true;
+        $form->allowTextEdit = true;
+        $form->allowSetTags = $motion->getMyConsultation()->getSettings()->allowUsersToSetTags;
+
+        return $form;
     }
 
-    public function setAllowEditingInitiators(bool $set): void
+    public static function createForUserEdit(Amendment $amendment, ?int $initSectionId, ?int $initParagraphNo): self
     {
-        $this->allowEditingInitiators = $set;
+        $form = new self($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, $initSectionId, $initParagraphNo);
+        $form->allowEditingInitiators = $amendment->canEditInitiators();
+        $form->allowTextEdit = $amendment->canEditText();
+        $form->allowSetTags = $amendment->getMyConsultation()->getSettings()->allowUsersToSetTags;
+
+        return $form;
+    }
+
+    public static function createForAdminEdit(Amendment $amendment, ?int $initSectionId, ?int $initParagraphNo): self
+    {
+        $con = $amendment->getMyConsultation();
+        $form = new self($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, $initSectionId, $initParagraphNo);
+        $form->adminMode = true;
+        $form->allowEditingInitiators = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
+        $form->allowTextEdit = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment));
+        $form->allowSetTags = true;
+
+        return $form;
     }
 
     public function getAllowEditinginitiators(): bool
@@ -137,16 +157,6 @@ class AmendmentEditForm
                 $section->dataRaw = $byId[$section->sectionId]->dataRaw;
             }
         }
-    }
-
-    private function getInitiatorSupporter(): ?AmendmentSupporter
-    {
-        foreach ($this->supporters as $supporter) {
-            if ($supporter->role === AmendmentSupporter::ROLE_INITIATOR) {
-                return $supporter;
-            }
-        }
-        return null;
     }
 
     /**
@@ -199,34 +209,18 @@ class AmendmentEditForm
     }
 
     /**
+     * @param AmendmentSupporter[] $initiators
+     * @param AmendmentSupporter[] $supporters
      * @throws FormError
      */
-    private function createAmendmentVerify(): void
+    private function validateInitiators(SupportBase $supportForm, array $initiators, array $supporters): void
     {
-        $supportType = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
-        $initiator = $this->getInitiatorSupporter();
-        if ($supportType->requiresInitiator() && $initiator === null) {
+        if ($supportForm->requiresInitiator() && count($initiators) === 0) {
             throw new FormError(\Yii::t('motion', 'err_no_initiator'));
         }
-        if ($initiator) {
-            $supportType->validateAmendment($initiator, $this->supporters);
-        }
-    }
-
-    /**
-     * @throws FormError
-     */
-    private function saveAmendmentVerify(): void
-    {
-        if ($this->allowEditingInitiators) {
-            $supportType = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
-            $initiator = $this->getInitiatorSupporter();
-            if ($supportType->requiresInitiator() && $initiator === null) {
-                throw new FormError(\Yii::t('motion', 'err_no_initiator'));
-            }
-            if ($initiator) {
-                $supportType->validateAmendment($initiator, $this->supporters);
-            }
+        foreach ($initiators as $initiator) {
+            // Is only one at the moment
+            $supportForm->validateMotion($initiator, $supporters);
         }
     }
 
@@ -244,7 +238,7 @@ class AmendmentEditForm
         }
 
         $amendment = new Amendment();
-        $supportType = $this->motion->motionType->getAmendmentSupportTypeClass();
+        $supportForm = $this->motion->motionType->getAmendmentSupportTypeClass();
 
         // 1. Set data from DTO (retained on $this for re-render if validation fails)
         $this->reason = $dto->reason !== null ? HTMLTools::cleanSimpleHtml($dto->reason) : '';
@@ -252,17 +246,17 @@ class AmendmentEditForm
         $this->globalAlternative = ($dto->globalAlternative ?? false) && $consultation->getSettings()->globalAlternatives;
         $this->toAnotherAmendment = $dto->amendingAmendmentId;
 
-        if ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode) {
+        if ($this->allowSetTags) {
             $this->tags = $dto->tags ?? [];
         }
 
-        $initiators = $supportType->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
-        $supporters = $supportType->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
+        $initiators = $supportForm->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
+        $supporters = $supportForm->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
         $this->supporters = array_merge($initiators, $supporters);
 
         // 2. Validate
         $this->setAndVerifySectionContent($dto->sections);
-        $this->createAmendmentVerify();
+        $this->validateInitiators($supportForm, $initiators, $supporters);
 
         // 3. Save
         $amendment->status = Motion::STATUS_DRAFT;
@@ -272,9 +266,11 @@ class AmendmentEditForm
         $amendment->titlePrefix = '';
         $amendment->dateCreation = date('Y-m-d H:i:s');
         $amendment->dateContentModification = date('Y-m-d H:i:s');
-        $amendment->changeEditorial = $this->editorial;
-        $amendment->changeExplanation = $this->reason;
-        $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
+        if ($this->allowTextEdit) {
+            $amendment->changeEditorial = $this->editorial;
+            $amendment->changeExplanation = $this->reason;
+            $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
+        }
         $amendment->agendaItemId = $this->agendaItem?->id;
         $amendment->changeText = '';
         $amendment->cache = '';
@@ -283,24 +279,28 @@ class AmendmentEditForm
             $amendment->amendingAmendmentId = $this->toAnotherAmendment;
         }
 
-        if ($amendment->save()) {
-            $supportType->submitAmendment($amendment, $this->supporters);
+        if (!$amendment->save()) {
+            throw new FormError(\Yii::t('amend', 'err_create'));
+        }
 
-            if ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode) {
-                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, $this->tags);
-            }
+        if ($this->allowEditingInitiators) {
+            $supportForm->submitAmendment($amendment, $this->supporters);
+        }
 
+        if ($this->allowSetTags) {
+            $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, $this->tags);
+        }
+
+        if ($this->allowTextEdit) {
             foreach ($this->sections as $section) {
                 $section->amendmentId = $amendment->id;
                 $section->save();
             }
-
-            $amendment->save();
-
-            return $amendment;
-        } else {
-            throw new FormError(\Yii::t('amend', 'err_create'));
         }
+
+        $amendment->save();
+
+        return $amendment;
     }
 
     /**
@@ -310,25 +310,27 @@ class AmendmentEditForm
      */
     public function saveAmendment(Amendment $amendment, AmendmentUpdateRequest $dto): void
     {
+        if (!$this->adminMode && !$this->allowTextEdit) {
+            throw new FormError(\Yii::t('motion', 'err_create_permission'));
+        }
+
         $consultation = $this->motion->getMyConsultation();
         $ctx = PrivilegeQueryContext::amendment($amendment);
-        $supportType = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
-        $supportType->setAdminMode($this->adminMode);
+        $supportForm = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
+        $supportForm->setAdminMode($this->adminMode);
 
         // 1. Set data from DTO (retained on $this for re-render if validation fails)
-        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {
+        if ($this->allowTextEdit) {
             $this->reason = $dto->reason !== null ? HTMLTools::cleanSimpleHtml($dto->reason) : '';
             $this->editorial = $dto->editorial !== null ? HTMLTools::cleanSimpleHtml($dto->editorial) : '';
             $this->globalAlternative = ($dto->globalAlternative ?? false) && $consultation->getSettings()->globalAlternatives;
         }
 
-        if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
-            $initiators = $supportType->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
-            $supporters = $supportType->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
-            $this->supporters = array_merge($initiators, $supporters);
-        }
+        $initiators = $supportForm->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
+        $supporters = $supportForm->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
+        $this->supporters = array_merge($initiators, $supporters);
 
-        if ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode) {
+        if ($this->allowSetTags) {
             $this->tags = $dto->tags ?? [];
         } else {
             $this->tags = [];
@@ -338,14 +340,11 @@ class AmendmentEditForm
         }
 
         // 2. Validate
-        if (!$this->adminMode) {
-            if (!$amendment->canEditText()) {
-                throw new FormError(\Yii::t('amend', 'err_create_permission'));
-            }
+        if ($this->allowTextEdit) {
             $this->setAndVerifySectionContent($dto->sections);
-            $this->saveAmendmentVerify();
-        } elseif (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {
-            $this->setAndVerifySectionContent($dto->sections);
+        }
+        if ($this->allowEditingInitiators) {
+            $this->validateInitiators($supportForm, $initiators, $supporters);
         }
 
         // 3. Save
@@ -357,7 +356,7 @@ class AmendmentEditForm
 
         if ($amendment->save()) {
             if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
-                $supportType->submitAmendment($amendment, $this->supporters);
+                $supportForm->submitAmendment($amendment, $this->supporters);
             }
 
             if ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode) {

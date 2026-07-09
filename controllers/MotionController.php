@@ -252,11 +252,8 @@ class MotionController extends Base
             return new RedirectResponse(UrlHelper::homeUrl());
         }
 
-        $form = new MotionEditForm($motion->motionType, $motion->agendaItem);
-        $form->initializeSectionsAndTags($motion);
-        if (!$motion->canEditInitiators()) {
-            $form->setAllowEditingInitiators(false);
-        }
+        $form = MotionEditForm::createForUserEdit($motion);
+
         $fromMode = ($motion->status === Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if ($this->isPostSet('save')) {
@@ -319,7 +316,7 @@ class MotionController extends Base
             }
         }
 
-        $form = new MotionEditForm($motionType, $agendaItem);
+        $form = MotionEditForm::createForCreating($this->consultation, $motionType, $agendaItem);
         $supportType = $motionType->getMotionSupportTypeClass();
         $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 
@@ -354,7 +351,6 @@ class MotionController extends Base
             }
         }
 
-        $form->initializeSectionsAndTags(null);
         if ($cloneFrom > 0) {
             $motion = $this->consultation->getMotion($cloneFrom);
             $form->cloneSupporters($motion);
