@@ -190,22 +190,13 @@ class MotionEditForm
         }
 
         $errors = [];
-        $fileUploadErrors = []; // @TODO
         foreach ($this->sections as $section) {
             $sectionSettings = $section->getSettings();
             $requestSection = $requestSectionsById[$section->sectionId] ?? null;
             if ($requestSection === null) {
                 continue;
             }
-            if ($requestSection->getFileData() !== null) {
-                $section->getSectionType()->setMotionData($requestSection->getFileData());
-                if (!empty($requestSection->getFileData()['error'])) {
-                    $error = $requestSection->getFileData()['error'];
-                    if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
-                        $fileUploadErrors[] = $sectionSettings->title . ': Uploaded file is too big';
-                    }
-                }
-            } elseif ($requestSection->data !== null) {
+            if ($requestSection->data !== null) {
                 $section->getSectionType()->setMotionData($requestSection->data);
             } else {
                 $section->getSectionType()->deleteMotionData();
@@ -219,7 +210,6 @@ class MotionEditForm
             }
         }
 
-        $errors = array_merge($errors, $fileUploadErrors);
         if (count($errors) > 0) {
             throw new FormError($errors);
         }

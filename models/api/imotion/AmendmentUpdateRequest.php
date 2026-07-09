@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace app\models\api\imotion;
 
 use app\models\db\{Amendment, ConsultationMotionType};
+use app\models\exceptions\FormError;
+use app\models\sectionTypes\UploadedFileRef;
 
 class AmendmentUpdateRequest
 {
@@ -62,15 +64,15 @@ class AmendmentUpdateRequest
                 continue;
             }
             $sectionId = $sectionDef->id;
-            if (!empty($files['sections']['tmp_name'][$sectionId])) {
-                $sectionDto = new AmendmentUpdateSection($sectionId);
-                $fileData = [];
-                foreach ($files['sections'] as $key => $vals) {
-                    if (isset($vals[$sectionId])) {
-                        $fileData[$key] = $vals[$sectionId];
-                    }
+
+            if (!empty($files['sections']['error'][$sectionId]) && $files['sections']['error'][$sectionId] > 0) {
+                $error = $files['sections']['error'][$sectionId];
+                if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
+                    throw new FormError(\Yii::t('base', 'err_max_filesize'));
                 }
-                $sectionDto->setRawData($fileData);
+            } elseif (!empty($files['sections']['tmp_name'][$sectionId])) {
+                $sectionDto = new AmendmentUpdateSection($sectionId);
+                $sectionDto->setRawData(new UploadedFileRef($files['sections']['tmp_name'][$sectionId]));
                 $sections[] = $sectionDto;
             } elseif (isset($post['sections'][$sectionId])) {
                 $rawValue = $post['sections'][$sectionId];

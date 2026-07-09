@@ -19,7 +19,6 @@ use app\models\exceptions\{FormError, MailNotSent, ResponseException};
 use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
-use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
 use yii\web\NotFoundHttpException;

@@ -184,45 +184,57 @@ class Image extends ISectionType
     }
 
     /**
-     * @param array $data
+     * @param string|UploadedFileRef $data base64-encoded file content, or a reference to an uploaded file
      * @throws FormError
      */
     public function setMotionData($data): void
     {
-        if (!isset($data['tmp_name'])) {
-            throw new FormError('Invalid Image');
-        }
-        $mime = mime_content_type($data['tmp_name']);
         $toDeleteTmpFiles = [];
-        if ($mime === 'application/pdf' && $this->supportsPdf()) {
-            $pngFile = $this->convertPdfToTmpPng($data['tmp_name']);
-            $data['tmp_name'] = $pngFile;
-            $toDeleteTmpFiles[] = $pngFile;
-            $mime = 'image/png';
+
+        if ($data instanceof UploadedFileRef) {
+            $filename = $data->path;
+        } else {
+            $rawData = base64_decode($data, true);
+            if ($rawData === false) {
+                throw new FormError('Invalid base64 data uploaded');
+            }
+            $filename = AntragsgruenApp::getInstance()->getTmpDir() . 'upload-' . uniqid();
+            file_put_contents($filename, $rawData);
+            $toDeleteTmpFiles[] = $filename;
         }
 
-        $imagedata = getimagesize($data['tmp_name']);
-        if (!$imagedata || !$mime) {
-            throw new FormError('Could not read image.');
-        }
+        try {
+            $mime = mime_content_type($filename);
+            if ($mime === 'application/pdf' && $this->supportsPdf()) {
+                $pngFile = $this->convertPdfToTmpPng($filename);
+                $filename = $pngFile;
+                $toDeleteTmpFiles[] = $pngFile;
+                $mime = 'image/png';
+            }
 
-        $fileExt = static::getFileExtensionFromMimeType($mime);
-        if ($fileExt === null) {
-            throw new FormError('Image type not supported. Supported formats are: JPEG, PNG and GIF.');
-        }
-        $optimized = static::getOptimizedImage($data['tmp_name'], $fileExt);
+            $imagedata = getimagesize($filename);
+            if (!$imagedata || !$mime) {
+                throw new FormError('Could not read image.');
+            }
 
-        $metadata = [
-            'width'    => $imagedata[0],
-            'height'   => $imagedata[1],
-            'filesize' => strlen($optimized),
-            'mime'     => $mime
-        ];
-        $this->section->setData($optimized);
-        $this->section->metadata = json_encode($metadata, JSON_THROW_ON_ERROR);
+            $fileExt = static::getFileExtensionFromMimeType($mime);
+            if ($fileExt === null) {
+                throw new FormError('Image type not supported. Supported formats are: JPEG, PNG and GIF.');
+            }
+            $optimized = static::getOptimizedImage($filename, $fileExt);
 
-        foreach ($toDeleteTmpFiles as $deleteTmpFile) {
-            unlink($deleteTmpFile);
+            $metadata = [
+                'width'    => $imagedata[0],
+                'height'   => $imagedata[1],
+                'filesize' => strlen($optimized),
+                'mime'     => $mime
+            ];
+            $this->section->setData($optimized);
+            $this->section->metadata = json_encode($metadata, JSON_THROW_ON_ERROR);
+        } finally {
+            foreach ($toDeleteTmpFiles as $deleteTmpFile) {
+                unlink($deleteTmpFile);
+            }
         }
     }
 
@@ -233,7 +245,7 @@ class Image extends ISectionType
     }
 
     /**
-     * @param array $data
+     * @param string|UploadedFileRef $data base64-encoded file content, or a reference to an uploaded file
      * @throws FormError
      */
     public function setAmendmentData($data): void

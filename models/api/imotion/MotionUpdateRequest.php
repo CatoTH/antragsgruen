@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace app\models\api\imotion;
 
 use app\models\db\ConsultationMotionType;
-use app\models\sectionTypes\ISectionType;
+use app\models\exceptions\FormError;
+use app\models\sectionTypes\{ISectionType, UploadedFileRef};
 
 class MotionUpdateRequest
 {
@@ -35,16 +36,14 @@ class MotionUpdateRequest
                 $sections[] = new MotionUpdateSection($sectionId, $post['motion']['title']);
             } elseif (isset($post['sectionDelete'][$sectionId])) {
                 $sections[] = new MotionUpdateSection($sectionId, null);
-            } elseif (!empty($files['sections']['tmp_name'][$sectionId])) {
-                $sectionDto = new MotionUpdateSection($sectionId);
-                $fileData = [];
-                foreach ($files['sections'] as $key => $vals) {
-                    if (isset($vals[$sectionId])) {
-                        $fileData[$key] = $vals[$sectionId];
-                    }
+            } elseif (!empty($files['sections']['error'][$sectionId]) && $files['sections']['error'][$sectionId] > 0) {
+                $error = $files['sections']['error'][$sectionId];
+                if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
+                    throw new FormError(\Yii::t('base', 'err_max_filesize'));
                 }
-                $sectionDto->setFileData($fileData);
-                $sections[] = $sectionDto;
+            } elseif (!empty($files['sections']['tmp_name'][$sectionId])) {
+                $file = new UploadedFileRef($files['sections']['tmp_name'][$sectionId]);
+                $sections[] = new MotionUpdateSection($sectionId, $file);
             } elseif (isset($post['sections'][$sectionId])) {
                 $sections[] = new MotionUpdateSection($sectionId, $post['sections'][$sectionId]);
             }
