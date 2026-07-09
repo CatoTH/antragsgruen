@@ -292,7 +292,7 @@ class MotionController extends Base
         ));
     }
 
-    public function actionCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): ResponseInterface
+    public function actionCreate(?int $motionTypeId = null, ?int $agendaItemId = null, ?int $cloneFrom = null): ResponseInterface
     {
         try {
             $ret = MotionEditForm::getMotionTypeForCreate($this->consultation, $motionTypeId, $agendaItemId, $cloneFrom);
@@ -326,7 +326,7 @@ class MotionController extends Base
         if ($this->isPostSet('save')) {
             try {
                 $createDto = MotionCreateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motionType);
-                $motion = $form->createMotion($createDto);
+                $motion = $form->createMotion($createDto, true);
 
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {

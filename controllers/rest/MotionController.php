@@ -28,7 +28,7 @@ class MotionController extends RestBase
         }
 
         if (!$motion->isReadable()) {
-            return $this->returnRestResponseFromException(new NotFound('Motion is not readable'));
+            return $this->returnRestResponseFromException(new NotFound('Motion is not readable', 404));
         }
 
         $motionDto = MotionDetails::fromEntity($motion, $lineNumbers);
@@ -48,7 +48,7 @@ class MotionController extends RestBase
         }
 
         try {
-            $ret = MotionEditForm::getMotionTypeForCreate($this->consultation, $dto->motionTypeId, $dto->agendaItemId);
+            $ret = MotionEditForm::getMotionTypeForCreate($this->consultation, $dto->motionTypeId, $dto->agendaItemId, null);
             list($motionType, $agendaItem) = $ret;
 
         } catch (ExceptionBase $e) {
@@ -65,7 +65,7 @@ class MotionController extends RestBase
         $form = new MotionEditForm($motionType, $agendaItem);
 
         try {
-            $motion = $form->createMotion($dto);
+            $motion = $form->createMotion($dto, false);
         } catch (FormError $e) {
             return $this->createResponse(422, new ErrorValidation(errors: $e->getMessages()));
         } catch (\Exception $e) {

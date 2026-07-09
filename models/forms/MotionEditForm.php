@@ -4,6 +4,7 @@ namespace app\models\forms;
 
 use app\components\HTMLTools;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
 use app\models\db\{Consultation,
     ConsultationAgendaItem,
@@ -57,7 +58,7 @@ class MotionEditForm
      * @throws \app\models\exceptions\NotFound
      * @return array{ConsultationMotionType, ConsultationAgendaItem|null}
      */
-    public static function getMotionTypeForCreate(Consultation $consultation, int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): array
+    public static function getMotionTypeForCreate(Consultation $consultation, ?int $motionTypeId, ?int $agendaItemId, ?int $cloneFrom): array
     {
         if ($agendaItemId > 0) {
             $agendaItem = $consultation->getAgendaItem($agendaItemId);
@@ -310,7 +311,7 @@ class MotionEditForm
      * @throws FormError
      * @throws \Exception
      */
-    public function createMotion(MotionCreateRequest $dto): Motion
+    public function createMotion(MotionCreateRequest $dto, bool $asDraft): Motion
     {
         if (!$this->motionType->getMotionPolicy()->checkCurrUserMotion()) {
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
@@ -373,6 +374,14 @@ class MotionEditForm
         $motion->refreshTitle();
         $motion->slug = $motion->createSlug();
         $motion->save();
+
+        if (!$asDraft) {
+            $motion->trigger(Motion::EVENT_CREATED, new MotionEvent($motion));
+
+            if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
+                $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
+            }
+        }
 
         return $motion;
     }

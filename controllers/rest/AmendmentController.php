@@ -21,7 +21,7 @@ class AmendmentController extends RestBase
         }
 
         if (!$amendment->isReadable()) {
-            return $this->returnRestResponseFromException(new NotFound('Amendment is not readable'));
+            return $this->returnRestResponseFromException(new NotFound('Amendment is not readable', 404));
         }
 
         return $this->createResponse(200, AmendmentDetails::fromEntity($amendment));
