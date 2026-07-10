@@ -59,6 +59,8 @@ $I->assertJsonStringEqualsJsonString('{
     "supporters": [],
     "initiators": [
         {
+            "gender": null,
+            "id": 499,
             "type": "person",
             "name": "Testuser",
             "organization": ""

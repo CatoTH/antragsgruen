@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\supportTypes;
 
 use app\controllers\Base;
-use app\models\db\Amendment;
-use app\models\db\ConsultationMotionType;
+use app\models\db\{Amendment, ConsultationMotionType, ISupporter, Motion};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
-use app\models\db\Motion;
 
 class NoInitiator extends SupportBase
 {
@@ -16,6 +16,11 @@ class NoInitiator extends SupportBase
     }
 
     public static function hasInitiatorGivenSupporters(): bool
+    {
+        return false;
+    }
+
+    public function requiresInitiator(): bool
     {
         return false;
     }
@@ -36,19 +41,25 @@ class NoInitiator extends SupportBase
         return '';
     }
 
-    public function validateMotion(): void
+    /**
+     * @param ISupporter[] $supporters
+     */
+    public function validateMotion(ISupporter $initiator, array $supporters): void
     {
     }
 
-    public function validateAmendment(): void
+    /**
+     * @param ISupporter[] $supporters
+     */
+    public function validateAmendment(ISupporter $initiator, array $supporters): void
     {
     }
 
-    public function submitMotion(Motion $motion): void
+    public function submitMotion(Motion $motion, array $supporters): void
     {
     }
 
-    public function submitAmendment(Amendment $amendment): void
+    public function submitAmendment(Amendment $amendment, array $supporters): void
     {
     }
 

@@ -183,15 +183,14 @@ abstract class ISectionType
     /**
      * @throws FormError
      */
-    abstract public function setMotionData(array|string $data): void;
+    abstract public function setMotionData(array|string|UploadedFileRef $data): void;
 
     abstract public function deleteMotionData(): void;
 
     /**
-     * @param array $data
      * @throws FormError
      */
-    abstract public function setAmendmentData(array|string $data): void;
+    abstract public function setAmendmentData(array|string|UploadedFileRef $data): void;
 
     abstract public function getSimple(bool $isRight, bool $showAlways = false): string;
 

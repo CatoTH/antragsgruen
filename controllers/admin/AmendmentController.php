@@ -9,8 +9,9 @@ use app\views\pdfLayouts\IPDFLayout;
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{IMotionStatusFilter, Tools, UrlHelper, ZipWriter};
-use app\models\db\{Amendment, AmendmentSupporter, ConsultationLog, Motion, User};
+use app\models\db\{Amendment, ConsultationLog, Motion, User};
 use app\models\events\AmendmentEvent;
+use app\models\api\imotion\AmendmentUpdateRequest;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
@@ -132,76 +133,6 @@ class AmendmentController extends AdminBase
         return new BinaryFileResponse(BinaryFileResponse::TYPE_ZIP, $zip->getContentAndFlush(), true, 'amendments_odt');
     }
 
-    /**
-     * @throws \Exception
-     */
-    private function saveAmendmentSupporters(Amendment $amendment): void
-    {
-        $names         = $this->getHttpRequest()->post('supporterName', []);
-        $orgas         = $this->getHttpRequest()->post('supporterOrga', []);
-        $genders       = $this->getHttpRequest()->post('supporterGender', []);
-        $preIds        = $this->getHttpRequest()->post('supporterId', []);
-        $newSupporters = [];
-        /** @var AmendmentSupporter[] $preSupporters */
-        $preSupporters = [];
-        foreach ($amendment->getSupporters(true) as $supporter) {
-            $preSupporters[$supporter->id] = $supporter;
-        }
-        for ($i = 0; $i < count($names); $i++) {
-            if (trim($names[$i]) === '' && trim($orgas[$i]) === '') {
-                continue;
-            }
-            if (isset($preSupporters[$preIds[$i]])) {
-                $supporter = $preSupporters[$preIds[$i]];
-            } else {
-                $supporter               = new AmendmentSupporter();
-                $supporter->amendmentId  = $amendment->id;
-                $supporter->role         = AmendmentSupporter::ROLE_SUPPORTER;
-                $supporter->personType   = AmendmentSupporter::PERSON_NATURAL;
-                $supporter->dateCreation = date('Y-m-d H:i:s');
-            }
-            $supporter->name         = $names[$i];
-            $supporter->organization = $orgas[$i];
-            $supporter->position     = $i;
-            $supporter->setExtraDataEntry('gender', $genders[$i] ?? null);
-            if (!$supporter->save()) {
-                var_dump($supporter->getErrors());
-                die();
-            }
-            $newSupporters[$supporter->id] = $supporter;
-        }
-
-        foreach ($preSupporters as $supporter) {
-            if (!isset($newSupporters[$supporter->id])) {
-                $supporter->delete();
-            }
-        }
-
-        $amendment->refresh();
-    }
-
-    private function saveAmendmentInitiator(Amendment $motion): void
-    {
-        if ($this->getHttpRequest()->post('initiatorSet') !== '1') {
-            return;
-        }
-        $setType = $this->getHttpRequest()->post('initiatorSetType');
-        $setUsername = $this->getHttpRequest()->post('initiatorSetUsername');
-        $user = User::findByAuthTypeAndName($setType, $setUsername);
-
-        if ($setUsername && !$user) {
-            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
-            return;
-        }
-
-        foreach ($motion->getInitiators() as $initiator) {
-            $initiator->userId = ($user ? $user->id : null);
-            $initiator->save();
-            $initiator->refresh();
-        }
-        $motion->refresh();
-    }
-
     public function actionUpdate(int $amendmentId): ResponseInterface
     {
         $consultation = $this->consultation;
@@ -245,18 +176,18 @@ class AmendmentController extends AdminBase
             if (!isset($post['edittext'])) {
                 unset($post['sections']);
             }
-            $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, null, null);
-            $form->setAdminMode(true);
-            $form->setAttributes($post, $_FILES);
-
-            $votingData = $amendment->getVotingData();
-            $votingData->setFromPostData($post['votes']);
-            $amendment->setVotingData($votingData);
-
             try {
-                $form->saveAmendment($amendment);
+                $form = AmendmentEditForm::createForAdminEdit($amendment, null, null);
+                $dto = AmendmentUpdateRequest::fromWebRequest($post, $_FILES, $amendment);
+
+                $votingData = $amendment->getVotingData();
+                $votingData->setFromPostData($post['votes']);
+                $amendment->setVotingData($votingData);
+
+                $form->saveAmendment($amendment, $dto);
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
+                goto viewamendment;
             }
 
             $amdat                        = $post['amendment'];
@@ -330,11 +261,6 @@ class AmendmentController extends AdminBase
 
             $amendment->save();
 
-            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
-                $this->saveAmendmentSupporters($amendment);
-                $this->saveAmendmentInitiator($amendment);
-            }
-
             // This forces recalculating the motion's view page. This is necessary at least when the text has changed
             // or the names of the initiators.
             $amendment->getMyMotion()->flushViewCache();
@@ -344,8 +270,8 @@ class AmendmentController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
         }
 
-        $form = new AmendmentEditForm($amendment->getMyMotion(),$amendment->getMyAgendaItem(), $amendment, null, null);
-        $form->setAdminMode(true);
+        viewamendment:
+        $form = AmendmentEditForm::createForAdminEdit($amendment, null, null);
 
         return new HtmlResponse($this->render('update', ['amendment' => $amendment, 'form' => $form]));
     }

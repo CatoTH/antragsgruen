@@ -2,11 +2,10 @@
 
 namespace app\controllers;
 
+use app\components\RequestContext;
 use app\components\UrlHelper;
 use app\models\db\{Amendment,
-    ConsultationAgendaItem,
     ConsultationLog,
-    ConsultationMotionType,
     ConsultationSettingsMotionSection,
     IProposal,
     ISupporter,
@@ -15,9 +14,11 @@ use app\models\db\{Amendment,
     SpeechQueue,
     User,
     UserNotification};
+use app\models\api\imotion\MotionUpdateRequest;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\settings\Privileges;
 use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal, ResponseException};
+use app\models\api\imotion\MotionCreateRequest;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
@@ -242,30 +243,25 @@ class MotionController extends Base
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
 
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
         if (!$motion->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
-        $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
-        if (!$motion->canEditInitiators()) {
-            $form->setAllowEditingInitiators(false);
-        }
+        $form = MotionEditForm::createForUserEdit($motion);
+
         $fromMode = ($motion->status === Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if ($this->isPostSet('save')) {
-            $post = $this->getPostValues();
             $motion->flushCache(true);
-            $form->setAttributes($post, $_FILES);
+
             try {
-                $form->saveMotion($motion);
-                if (isset($post['sections'])) {
-                    $form->updateTextRewritingAmendments($motion, $post['sections']);
-                }
+                $updateDto = MotionUpdateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motion->getMyMotionType());
+                $form->saveMotion($motion, $updateDto, []);
 
                 if ($motion->isVisible()) {
                     ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
@@ -280,7 +276,6 @@ class MotionController extends Base
                 }
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
-                $form->setSectionTextWithoutSaving($motion, $post['sections']);
             }
         }
 
@@ -294,44 +289,10 @@ class MotionController extends Base
         ));
     }
 
-    /**
-     * @throws Internal
-     * @throws \app\models\exceptions\NotFound
-     * @return array{ConsultationMotionType, ConsultationAgendaItem|null}
-     */
-    private function getMotionTypeForCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): array
-    {
-        if ($agendaItemId > 0) {
-            $agendaItem = $this->consultation->getAgendaItem($agendaItemId);
-            if (!$agendaItem) {
-                throw new Internal('Could not find agenda item');
-            }
-            if (!$agendaItem->getMyMotionType()) {
-                throw new Internal('Agenda item does not have motions');
-            }
-            $motionType = $agendaItem->getMyMotionType();
-        } elseif ($motionTypeId > 0) {
-            $motionType = $this->consultation->getMotionType($motionTypeId);
-            $agendaItem = null;
-        } elseif ($cloneFrom > 0) {
-            $motion = $this->consultation->getMotion($cloneFrom);
-            if (!$motion) {
-                throw new Internal('Could not find referenced motion');
-            }
-            $motionType = $motion->getMyMotionType();
-            $agendaItem = $motion->agendaItem;
-        } else {
-            throw new Internal('Could not resolve motion type');
-        }
-
-        return [$motionType, $agendaItem];
-    }
-
-
-    public function actionCreate(int $motionTypeId = 0, int $agendaItemId = 0, int $cloneFrom = 0): ResponseInterface
+    public function actionCreate(?int $motionTypeId = null, ?int $agendaItemId = null, ?int $cloneFrom = null): ResponseInterface
     {
         try {
-            $ret = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId, $cloneFrom);
+            $ret = MotionEditForm::getMotionTypeForCreate($this->consultation, $motionTypeId, $agendaItemId, $cloneFrom);
             list($motionType, $agendaItem) = $ret;
 
         } catch (ExceptionBase $e) {
@@ -355,13 +316,14 @@ class MotionController extends Base
             }
         }
 
-        $form = new MotionEditForm($motionType, $agendaItem, null);
+        $form = MotionEditForm::createForCreating($this->consultation, $motionType, $agendaItem);
         $supportType = $motionType->getMotionSupportTypeClass();
         $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 
         if ($this->isPostSet('save')) {
             try {
-                $motion = $form->createMotion();
+                $createDto = MotionCreateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motionType);
+                $motion = $form->createMotion($createDto, true);
 
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
@@ -387,12 +349,13 @@ class MotionController extends Base
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
-        } elseif ($cloneFrom > 0) {
+        }
+
+        if ($cloneFrom > 0) {
             $motion = $this->consultation->getMotion($cloneFrom);
             $form->cloneSupporters($motion);
             $form->cloneMotionText($motion);
         }
-
 
         if (count($form->supporters) === 0) {
             $form->supporters[] = MotionSupporter::createInitiator($this->consultation, $supportType, $iAmAdmin);

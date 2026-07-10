@@ -3,15 +3,10 @@
 namespace app\models\forms;
 
 use app\components\HTMLTools;
-use app\models\db\{Amendment,
-    ConsultationAgendaItem,
-    ConsultationSettingsTag,
-    Motion,
-    AmendmentSection,
-    AmendmentSupporter,
-    User};
-use app\components\RequestContext;
+use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest, AmendmentUpdateSection};
+use app\models\db\{Amendment, AmendmentSection, AmendmentSupporter, ConsultationAgendaItem, ConsultationSettingsTag, Motion, User};
 use app\models\exceptions\FormError;
+use app\models\supportTypes\SupportBase;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\sectionTypes\{ISectionType, TextSimple};
 
@@ -29,10 +24,13 @@ class AmendmentEditForm
     public string $editorial = '';
     public ?int $toAnotherAmendment = null;
     public bool $globalAlternative = false;
-    private bool $adminMode = false;
-    private bool $allowEditingInitiators = true; // Only affects updating
 
-    public function __construct(
+    private bool $allowEditingInitiators;
+    private bool $allowTextEdit;
+    private bool $allowSetTags;
+    private bool $adminMode = false;
+
+    private function __construct(
         public Motion $motion,
         public ?ConsultationAgendaItem $agendaItem,
         ?Amendment $amendment,
@@ -94,14 +92,36 @@ class AmendmentEditForm
         }
     }
 
-    public function setAdminMode(bool $set): void
+    public static function createForCreating(Motion $motion, ?ConsultationAgendaItem $agendaItem, ?int $initSectionId, ?int $initParagraphNo): self
     {
-        $this->adminMode = $set;
+        $form = new self($motion, $agendaItem, null, $initSectionId, $initParagraphNo);
+        $form->allowEditingInitiators = true;
+        $form->allowTextEdit = true;
+        $form->allowSetTags = $motion->getMyConsultation()->getSettings()->allowUsersToSetTags;
+
+        return $form;
     }
 
-    public function setAllowEditingInitiators(bool $set): void
+    public static function createForUserEdit(Amendment $amendment, ?int $initSectionId, ?int $initParagraphNo): self
     {
-        $this->allowEditingInitiators = $set;
+        $form = new self($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, $initSectionId, $initParagraphNo);
+        $form->allowEditingInitiators = $amendment->canEditInitiators();
+        $form->allowTextEdit = $amendment->canEditText();
+        $form->allowSetTags = $amendment->getMyConsultation()->getSettings()->allowUsersToSetTags;
+
+        return $form;
+    }
+
+    public static function createForAdminEdit(Amendment $amendment, ?int $initSectionId, ?int $initParagraphNo): self
+    {
+        $con = $amendment->getMyConsultation();
+        $form = new self($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, $initSectionId, $initParagraphNo);
+        $form->adminMode = true;
+        $form->allowEditingInitiators = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
+        $form->allowTextEdit = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::amendment($amendment));
+        $form->allowSetTags = true;
+
+        return $form;
     }
 
     public function getAllowEditinginitiators(): bool
@@ -139,77 +159,48 @@ class AmendmentEditForm
         }
     }
 
-    public function setAttributes(array $values, array $files): void
-    {
-        $consultation = $this->motion->getMyConsultation();
-        if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($this->motion))) {
-            foreach ($this->sections as $section) {
-                if (isset($values['sections'][$section->getSettings()->id])) {
-                    $sectionType = $section->getSectionType();
-                    if ($this->adminMode && $section->getSettings() && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                        /** @var TextSimple $sectionType */
-                        $sectionType->forceMultipleParagraphMode(true);
-                    }
-                    $sectionType->setAmendmentData($values['sections'][$section->getSettings()->id]);
-                }
-                if (isset($files['sections']['tmp_name'])) {
-                    if (!empty($files['sections']['tmp_name'][$section->getSettings()->id])) {
-                        $data = [];
-                        foreach ($files['sections'] as $key => $vals) {
-                            if (isset($vals[$section->getSettings()->id])) {
-                                $data[$key] = $vals[$section->getSettings()->id];
-                            }
-                        }
-                        $section->getSectionType()->setAmendmentData($data);
-                    }
-                }
-            }
-            if (isset($values['amendmentReason'])) {
-                $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
-            }
-            if (isset($values['amendmentEditorial'])) {
-                $this->editorial = HTMLTools::cleanSimpleHtml($values['amendmentEditorial']);
-            } else {
-                $this->editorial = '';
-            }
-
-            $this->globalAlternative = (isset($values['globalAlternative']) && $consultation->getSettings()->globalAlternatives);
-        }
-
-        if (isset($values['createFromAmendment']) && $this->motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
-            $baseAmendment = $consultation->getAmendment((int)$values['createFromAmendment']);
-            if ($baseAmendment && $baseAmendment->motionId === $this->motion->id) {
-                $this->toAnotherAmendment = $baseAmendment->id;
-            }
-        }
-
-        if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-            $this->tags = array_map(fn (string $id): int => intval($id), $values['tags'] ?? []);
-        }
-    }
-
-
     /**
+     * @param AmendmentUpdateSection[] $requestSections
      * @throws FormError
      */
-    private function createAmendmentVerify(): void
+    private function setAndVerifySectionContent(array $requestSections): void
     {
-        $errors = [];
-
-        foreach ($this->sections as $section) {
-            $type = $section->getSettings();
-            if ($section->data == '' && $type->required) {
-                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
-            }
-            if (!$section->checkLength()) {
-                $errors[] = str_replace('%MAX%', (string)$type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
-            }
+        $requestSectionsById = [];
+        foreach ($requestSections as $requestSection) {
+            $requestSectionsById[$requestSection->sectionId] = $requestSection;
         }
 
-        try {
-            $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment();
-        } catch (FormError $e) {
-            $errors = array_merge($errors, $e->getMessages());
+        $errors = [];
+        foreach ($this->sections as $section) {
+            $sectionSettings = $section->getSettings();
+            $requestSection = $requestSectionsById[$section->sectionId] ?? null;
+            if ($requestSection === null) {
+                continue;
+            }
+
+            $sectionType = $section->getSectionType();
+            if ($this->adminMode && $sectionSettings->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                /** @var TextSimple $sectionType */
+                $sectionType->forceMultipleParagraphMode(true);
+            }
+            /** @var ISectionType $sectionType */
+
+            if ($requestSection->getRawData() !== null) {
+                $sectionType->setAmendmentData($requestSection->getRawData());
+            } elseif ($requestSection->data !== null) {
+                if ($sectionSettings->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                    $sectionType->setAmendmentData(['consolidated' => $requestSection->data, 'raw' => '']);
+                } else {
+                    $sectionType->setAmendmentData($requestSection->data);
+                }
+            }
+
+            if ($section->data == '' && $sectionSettings->required) {
+                $errors[] = str_replace('%FIELD%', $sectionSettings->title, \Yii::t('base', 'err_no_data_given'));
+            }
+            if (!$section->checkLength()) {
+                $errors[] = str_replace('%MAX%', (string)$sectionSettings->maxLen, \Yii::t('base', 'err_max_len_exceed'));
+            }
         }
 
         if (count($errors) > 0) {
@@ -218,11 +209,27 @@ class AmendmentEditForm
     }
 
     /**
+     * @param AmendmentSupporter[] $initiators
+     * @param AmendmentSupporter[] $supporters
+     * @throws FormError
+     */
+    private function validateInitiators(SupportBase $supportForm, array $initiators, array $supporters): void
+    {
+        if ($supportForm->requiresInitiator() && count($initiators) === 0) {
+            throw new FormError(\Yii::t('motion', 'err_no_initiator'));
+        }
+        foreach ($initiators as $initiator) {
+            // Is only one at the moment
+            $supportForm->validateMotion($initiator, $supporters);
+        }
+    }
+
+    /**
      * @throws FormError
      * @throws \Throwable
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function createAmendment(): Amendment
+    public function createAmendment(AmendmentCreateRequest $dto): Amendment
     {
         $consultation = $this->motion->getMyConsultation();
 
@@ -231,13 +238,27 @@ class AmendmentEditForm
         }
 
         $amendment = new Amendment();
+        $supportForm = $this->motion->motionType->getAmendmentSupportTypeClass();
 
-        $this->setAttributes(RequestContext::getAllPostVars(), $_FILES);
-        $this->supporters = $this->motion->motionType->getAmendmentSupportTypeClass()
-            ->getAmendmentSupporters($amendment);
+        // 1. Set data from DTO (retained on $this for re-render if validation fails)
+        $this->reason = $dto->reason !== null ? HTMLTools::cleanSimpleHtml($dto->reason) : '';
+        $this->editorial = $dto->editorial !== null ? HTMLTools::cleanSimpleHtml($dto->editorial) : '';
+        $this->globalAlternative = ($dto->globalAlternative ?? false) && $consultation->getSettings()->globalAlternatives;
+        $this->toAnotherAmendment = $dto->amendingAmendmentId;
 
-        $this->createAmendmentVerify();
+        if ($this->allowSetTags) {
+            $this->tags = $dto->tags ?? [];
+        }
 
+        $initiators = $supportForm->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
+        $supporters = $supportForm->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
+        $this->supporters = array_merge($initiators, $supporters);
+
+        // 2. Validate
+        $this->setAndVerifySectionContent($dto->sections);
+        $this->validateInitiators($supportForm, $initiators, $supporters);
+
+        // 3. Save
         $amendment->status = Motion::STATUS_DRAFT;
         $amendment->statusString = '';
         $amendment->motionId = $this->motion->id;
@@ -245,9 +266,11 @@ class AmendmentEditForm
         $amendment->titlePrefix = '';
         $amendment->dateCreation = date('Y-m-d H:i:s');
         $amendment->dateContentModification = date('Y-m-d H:i:s');
-        $amendment->changeEditorial = $this->editorial;
-        $amendment->changeExplanation = $this->reason;
-        $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
+        if ($this->allowTextEdit) {
+            $amendment->changeEditorial = $this->editorial;
+            $amendment->changeExplanation = $this->reason;
+            $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
+        }
         $amendment->agendaItemId = $this->agendaItem?->id;
         $amendment->changeText = '';
         $amendment->cache = '';
@@ -256,75 +279,75 @@ class AmendmentEditForm
             $amendment->amendingAmendmentId = $this->toAnotherAmendment;
         }
 
-        if ($amendment->save()) {
-            $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
+        if (!$amendment->save()) {
+            throw new FormError(\Yii::t('amend', 'err_create'));
+        }
 
-            if ($this->motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-                $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, $this->tags);
-            }
+        if ($this->allowEditingInitiators) {
+            $supportForm->submitAmendment($amendment, $this->supporters);
+        }
 
+        if ($this->allowSetTags) {
+            $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, $this->tags);
+        }
+
+        if ($this->allowTextEdit) {
             foreach ($this->sections as $section) {
                 $section->amendmentId = $amendment->id;
                 $section->save();
             }
-
-            $amendment->save();
-
-            return $amendment;
-        } else {
-            throw new FormError(\Yii::t('amend', 'err_create'));
         }
-    }
 
+        $amendment->save();
+
+        return $amendment;
+    }
 
     /**
      * @throws FormError
-     */
-    private function saveAmendmentVerify(): void
-    {
-        $errors = [];
-
-        foreach ($this->sections as $section) {
-            $type = $section->getSettings();
-            if ($section->data == '' && $type->required) {
-                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
-            }
-            if (!$section->checkLength()) {
-                $errors[] = str_replace('%MAX%', (string)$type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
-            }
-        }
-
-        if ($this->allowEditingInitiators) {
-            $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->validateAmendment();
-        }
-
-        if (count($errors) > 0) {
-            throw new FormError(implode("\n", $errors));
-        }
-    }
-
-
-    /**
      * @throws \Throwable
      * @throws \app\models\exceptions\NotAmendable
      */
-    public function saveAmendment(Amendment $amendment): void
+    public function saveAmendment(Amendment $amendment, AmendmentUpdateRequest $dto): void
     {
+        if (!$this->adminMode && !$this->allowTextEdit) {
+            throw new FormError(\Yii::t('motion', 'err_create_permission'));
+        }
+
         $consultation = $this->motion->getMyConsultation();
         $ctx = PrivilegeQueryContext::amendment($amendment);
+        $supportForm = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass();
+        $supportForm->setAdminMode($this->adminMode);
 
-        if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
-            $this->supporters = $this->motion->getMyMotionType()->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
+        // 1. Set data from DTO (retained on $this for re-render if validation fails)
+        if ($this->allowTextEdit) {
+            $this->reason = $dto->reason !== null ? HTMLTools::cleanSimpleHtml($dto->reason) : '';
+            $this->editorial = $dto->editorial !== null ? HTMLTools::cleanSimpleHtml($dto->editorial) : '';
+            $this->globalAlternative = ($dto->globalAlternative ?? false) && $consultation->getSettings()->globalAlternatives;
         }
 
-        if (!$this->adminMode) {
-            if (!$amendment->canEditText()) {
-                throw new FormError(\Yii::t('amend', 'err_create_permission'));
+        $initiators = $supportForm->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
+        $supporters = $supportForm->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
+        $this->supporters = array_merge($initiators, $supporters);
+
+        if ($this->allowSetTags) {
+            $this->tags = $dto->tags ?? [];
+        } else {
+            $this->tags = [];
+            foreach ($amendment->getPublicTopicTags() as $tag) {
+                $this->tags[] = $tag->id;
             }
-
-            $this->saveAmendmentVerify();
         }
 
+        // 2. Validate
+        if ($this->allowTextEdit) {
+            $this->setAndVerifySectionContent($dto->sections);
+        }
+        if ($this->allowEditingInitiators) {
+            $this->validateInitiators($supportForm, $initiators, $supporters);
+        }
+
+        // 3. Save
         if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {
             $amendment->changeExplanation = $this->reason;
             $amendment->changeEditorial = $this->editorial;
@@ -332,18 +355,15 @@ class AmendmentEditForm
         }
 
         if ($amendment->save()) {
-            $motionType = $this->motion->getMyMotionType();
-
             if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
-                $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
+                $supportForm->submitAmendment($amendment, $this->supporters);
             }
 
-            if ($amendment->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+            if ($consultation->getSettings()->allowUsersToSetTags || $this->adminMode) {
                 $amendment->setTags(ConsultationSettingsTag::TYPE_PUBLIC_AMENDMENT, $this->tags);
             }
 
             if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $ctx)) {
-                // Sections
                 foreach ($amendment->getActiveSections() as $section) {
                     $section->delete();
                 }

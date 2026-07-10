@@ -94,25 +94,42 @@ class PDF extends ISectionType
     }
 
     /**
-     * @param array $data
+     * @param string|UploadedFileRef $data base64-encoded file content, or a reference to an uploaded file
      * @throws FormError
      */
     public function setMotionData($data): void
     {
-        if (!isset($data['tmp_name'])) {
-            throw new FormError('Invalid Image');
-        }
-        $mime = mime_content_type($data['tmp_name']);
-        if (!in_array($mime, ['application/pdf'])) {
-            throw new FormError('Please only upload PDFs.');
+        $toDeleteTmpFiles = [];
+
+        if ($data instanceof UploadedFileRef) {
+            $filename = $data->path;
+        } else {
+            $rawData = base64_decode($data, true);
+            if ($rawData === false) {
+                throw new FormError('Invalid base64 data uploaded');
+            }
+            $filename = AntragsgruenApp::getInstance()->getTmpDir() . 'upload-' . uniqid();
+            file_put_contents($filename, $rawData);
+            $toDeleteTmpFiles[] = $filename;
         }
 
-        $pdf = $this->decryptPdf($data['tmp_name']);
-        $metadata                = [
-            'filesize' => strlen($pdf),
-        ];
-        $this->section->setData($pdf);
-        $this->section->metadata = json_encode($metadata, JSON_THROW_ON_ERROR);
+        try {
+            $mime = mime_content_type($filename);
+            if (!in_array($mime, ['application/pdf'])) {
+                throw new FormError('Please only upload PDFs.');
+            }
+
+            $pdf = $this->decryptPdf($filename);
+            $metadata                = [
+                'filesize' => strlen($pdf),
+            ];
+            $this->section->setData($pdf);
+            $this->section->metadata = json_encode($metadata, JSON_THROW_ON_ERROR);
+        } finally {
+            foreach ($toDeleteTmpFiles as $deleteTmpFile) {
+                unlink($deleteTmpFile);
+            }
+        }
     }
 
     private function decryptPdf(string $pdfFile): string
@@ -147,7 +164,7 @@ class PDF extends ISectionType
     }
 
     /**
-     * @param array $data
+     * @param string|UploadedFileRef $data base64-encoded file content, or a reference to an uploaded file
      * @throws FormError
      */
     public function setAmendmentData($data): void

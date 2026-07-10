@@ -190,6 +190,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'err_user_not_found'                 => 'Benutzer*in nicht gefunden',
     'err_no_pdf'                         => 'Die PDF-Anzeige wurde deaktiviert.',
     'err_invalid_name'                   => 'Bitte gib deinen Namen ein.',
+    'err_no_initiator'                   => 'Keine Antragsteller*in angegeben.',
     'err_invalid_email'                  => 'Die eingegebene E-Mail-Adresse ist ungültig.',
     'err_invalid_phone'                  => 'Die eingegebene Telefonnummer ist ungültig.',
     'err_invalid_person_type'            => 'Bitte gib einen Personentyp an.',

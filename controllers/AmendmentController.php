@@ -11,15 +11,14 @@ use app\models\http\{BinaryFileResponse,
     JsonResponse,
     RedirectResponse,
     ResponseInterface,
-    RestApiExceptionResponse,
-    RestApiResponse};
+    RestApiExceptionResponse};
 use app\components\{diff\AmendmentCollissionDetector, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentProposal, AmendmentSupporter, ConsultationLog, IMotion, IProposal, ISupporter, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
+use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
-use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
@@ -139,24 +138,6 @@ class AmendmentController extends Base
             $amendment->getFilenameBase(false),
             $this->layoutParams->isRobotsIndex($this->action)
         );
-    }
-
-    public function actionRest(string $motionSlug, int $amendmentId): RestApiResponse
-    {
-        $this->handleRestHeaders(['GET']);
-
-        try {
-            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
-            $this->amendment = $amendment;
-        } catch (\Exception $e) {
-            return new RestApiExceptionResponse(404, $e->getMessage());
-        }
-
-        if (!$amendment->isReadable()) {
-            return new RestApiExceptionResponse(403, 'Amendment is not readable');
-        }
-
-        return new RestApiResponse(200, null, $this->renderPartial('rest_get', ['amendment' => $amendment]));
     }
 
     public function actionView(string $motionSlug, int $amendmentId, int $commentId = 0, ?string $procedureToken = null, ?int $proposalVersion = null): ResponseInterface
@@ -316,16 +297,13 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment->getMyAgendaItem(), $amendment, null, null);
-        if (!$amendment->canEditInitiators()) {
-            $form->setAllowEditingInitiators(false);
-        }
+        $form = AmendmentEditForm::createForUserEdit($amendment, null, null);
 
         if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren(null);
-            $form->setAttributes($this->getPostValues(), $_FILES);
             try {
-                $form->saveAmendment($amendment);
+                $dto = AmendmentUpdateRequest::fromWebRequest($this->getPostValues(), $_FILES, $amendment);
+                $form->saveAmendment($amendment, $dto);
 
                 if ($amendment->isVisible()) {
                     ConsultationLog::logCurrUser($this->consultation, ConsultationLog::AMENDMENT_CHANGE, $amendment->id);
@@ -366,7 +344,7 @@ class AmendmentController extends Base
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl());
         }
 
         if (!$motion->isCurrentlyAmendable()) {
@@ -384,13 +362,14 @@ class AmendmentController extends Base
             $agendaItem = null;
         }
 
-        $form = new AmendmentEditForm($motion, $agendaItem, null, $sectionId, $paragraphNo);
+        $form = AmendmentEditForm::createForCreating($motion, $agendaItem, $sectionId, $paragraphNo);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
         $iAmAdmin = $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null);
 
         if ($this->isPostSet('save')) {
             try {
-                $amendment = $form->createAmendment();
+                $dto = AmendmentCreateRequest::fromWebRequest($this->getPostValues(), $_FILES, $motion);
+                $amendment = $form->createAmendment($dto);
 
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {

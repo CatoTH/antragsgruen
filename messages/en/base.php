@@ -47,6 +47,7 @@ return [
     'err_js_or_login'       => 'To use this, you need to be logged in or JavaScript needs to be enabled.',
     'err_no_data_given'     => 'No data entered (field: %FIELD%)',
     'err_max_len_exceed'    => 'Maximum length of %MAX% exceeded',
+    'err_max_filesize'      => 'Maximum file size exceeded',
     'err_no_site_internal'  => 'No site given. This is probably an installation error.',
     'err_amend_not_consult' => 'Invalid URL: this amendment does not belong to the given motion.',
     'err_amend_no_parent'   => 'The parent amendment for this amendment was deleted.',

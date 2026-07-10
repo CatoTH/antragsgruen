@@ -23,6 +23,7 @@ $I->fillField('#initiatorPrimaryName', 'Another test user');
 $I->fillField('#initiatorOrga', 'KV Test');
 $I->fillField('#initiatorEmail', 'test2@example.org');
 $I->fillField('#initiatorPhone', '01234567');
+$I->submitForm('#amendmentUpdateForm', [], 'save');
 
 $I->dontSeeElement('.initiatorSetUsername');
 $I->clickJS('.initiatorCurrentUsername .btnEdit');

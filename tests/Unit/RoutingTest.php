@@ -132,7 +132,7 @@ class RoutingTest extends TestBase
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/rest/std-parteitag/motion/630');
         $this->assertEquals([
-            'motion/rest',
+            '/rest/motion/get',
             [
                 'subdomain' => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',
@@ -145,7 +145,7 @@ class RoutingTest extends TestBase
     {
         $resolvedRoute = $this->resolveRequest('GET', '/stdparteitag/rest/std-parteitag/motion/Testing_proposed_changes-630/amendment/12345');
         $this->assertEquals([
-            'amendment/rest',
+            '/rest/amendment/get',
             [
                 'subdomain' => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',

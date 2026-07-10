@@ -2,7 +2,10 @@
 
 ## Version 4.18.0 [not released yet]
 
-- The REST API has been improved and now supports authenticated calls.
+- The REST API has been improved. It supports (on top of previous functionality):
+   - Authenticated calls.
+   - Retrieving Motion Type Information.
+   - Creating motions.
 
 ### Version 4.17.2 [not released yet]
 

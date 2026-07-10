@@ -2,10 +2,11 @@
 
 namespace app\controllers\admin;
 
+use app\models\api\imotion\MotionUpdateRequest;
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
-use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{Consultation, ConsultationLog, ConsultationMotionType, ConsultationSettingsTag, Motion, MotionSupporter, User};
+use app\components\{RequestContext, Tools, UrlHelper};
+use app\models\db\{Consultation, ConsultationLog, ConsultationMotionType, Motion, User};
 use app\models\exceptions\FormError;
 use app\models\events\MotionEvent;
 use app\models\forms\{MotionDeepCopy, MotionEditForm, MotionMover};
@@ -19,76 +20,6 @@ class MotionController extends AdminBase
         Privileges::PRIVILEGE_MOTION_TEXT_EDIT,
         Privileges::PRIVILEGE_MOTION_INITIATORS,
     ];
-
-    /**
-     * @throws \Throwable
-     */
-    private function saveMotionSupporters(Motion $motion): void
-    {
-        $names         = $this->getHttpRequest()->post('supporterName', []);
-        $orgas         = $this->getHttpRequest()->post('supporterOrga', []);
-        $genders       = $this->getHttpRequest()->post('supporterGender', []);
-        $preIds        = $this->getHttpRequest()->post('supporterId', []);
-        $newSupporters = [];
-        /** @var MotionSupporter[] $preSupporters */
-        $preSupporters = [];
-        foreach ($motion->getSupporters(true) as $supporter) {
-            $preSupporters[$supporter->id] = $supporter;
-        }
-        for ($i = 0; $i < count($names); $i++) {
-            if (trim($names[$i]) === '' && trim($orgas[$i]) === '') {
-                continue;
-            }
-            if (isset($preSupporters[$preIds[$i]])) {
-                $supporter = $preSupporters[$preIds[$i]];
-            } else {
-                $supporter               = new MotionSupporter();
-                $supporter->motionId     = $motion->id;
-                $supporter->role         = MotionSupporter::ROLE_SUPPORTER;
-                $supporter->personType   = MotionSupporter::PERSON_NATURAL;
-                $supporter->dateCreation = date('Y-m-d H:i:s');
-            }
-            $supporter->name         = $names[$i];
-            $supporter->organization = $orgas[$i];
-            $supporter->position     = $i;
-            $supporter->setExtraDataEntry('gender', $genders[$i] ?? null);
-            if (!$supporter->save()) {
-                var_dump($supporter->getErrors());
-                die();
-            }
-            $newSupporters[$supporter->id] = $supporter;
-        }
-
-        foreach ($preSupporters as $supporter) {
-            if (!isset($newSupporters[$supporter->id])) {
-                $supporter->delete();
-            }
-        }
-
-        $motion->refresh();
-    }
-
-    private function saveMotionInitiator(Motion $motion): void
-    {
-        if ($this->getHttpRequest()->post('initiatorSet') !== '1') {
-            return;
-        }
-        $setType = $this->getHttpRequest()->post('initiatorSetType');
-        $setUsername = $this->getHttpRequest()->post('initiatorSetUsername');
-        $user = User::findByAuthTypeAndName($setType, $setUsername);
-
-        if ($setUsername && !$user) {
-            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_user_not_found'));
-            return;
-        }
-
-        foreach ($motion->getInitiators() as $initiator) {
-            $initiator->userId = $user?->id;
-            $initiator->save();
-            $initiator->refresh();
-        }
-        $motion->refresh();
-    }
 
     public function actionGetAmendmentRewriteCollisions(int $motionId): HtmlResponse
     {
@@ -158,15 +89,8 @@ class MotionController extends AdminBase
         if ($this->isPostSet('save') && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, $privCtx)) {
             $modat = $post['motion'];
 
-            $sectionTypes = [];
-            foreach ($motion->getMyMotionType()->motionSections as $section) {
-                $sectionTypes[$section->id] = $section->type;
-            }
-
             try {
-                $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
-                $form->setAdminMode(true);
-                $form->setAttributes($post, $_FILES);
+                $form = MotionEditForm::createForAdminEdit($motion);
 
                 $votingData = $motion->getVotingData();
                 $votingData->setFromPostData($post['votes']);
@@ -194,18 +118,13 @@ class MotionController extends AdminBase
                     ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SET_PROPOSAL, $motion->id, $ppChanges->jsonSerialize());
                 }
 
-                $form->saveMotion($motion);
+                $overrides = [];
                 if (isset($post['sections']) && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, $privCtx)) {
                     $overrides = $post['amendmentOverride'] ?? [];
-                    $newHtmls  = [];
-                    foreach ($post['sections'] as $sectionId => $html) {
-                        $htmlTypes = [ISectionType::TYPE_TEXT_SIMPLE, ISectionType::TYPE_TEXT_HTML];
-                        if (isset($sectionTypes[$sectionId]) && in_array($sectionTypes[$sectionId], $htmlTypes)) {
-                            $newHtmls[$sectionId] = HTMLTools::cleanSimpleHtml($html);
-                        }
-                    }
-                    $form->updateTextRewritingAmendments($motion, $newHtmls, $overrides);
                 }
+
+                $updateRequest = MotionUpdateRequest::fromWebRequest(RequestContext::getAllPostVars(), $_FILES, $motion->getMyMotionType());
+                $form->saveMotion($motion, $updateRequest, $overrides);
 
                 $motion->setProtocol(
                     $this->getPostValue('protocol'),
@@ -213,6 +132,7 @@ class MotionController extends AdminBase
                 );
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
+                goto viewmotion;
             }
 
             if (intval($modat['motionType']) !== $motion->motionTypeId) {
@@ -312,17 +232,12 @@ class MotionController extends AdminBase
 
             $motion->save();
 
-            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $privCtx)) {
-                $this->saveMotionSupporters($motion);
-                $this->saveMotionInitiator($motion);
-            }
-
             $motion->flushCache(true);
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        $form = new MotionEditForm($motion->getMyMotionType(), $motion->agendaItem, $motion);
-        $form->setAdminMode(true);
+        viewmotion:
+        $form = MotionEditForm::createForAdminEdit($motion);
 
         return new HtmlResponse($this->render('update', ['motion' => $motion, 'form' => $form]));
     }

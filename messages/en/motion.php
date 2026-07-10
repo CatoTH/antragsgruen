@@ -182,6 +182,7 @@ return [
     'err_user_not_found'        => 'User not found',
     'err_no_pdf'                => 'The PDF view was deactivated.',
     'err_invalid_name'          => 'No valid name entered.',
+    'err_no_initiator'          => 'No proposer given.',
     'err_invalid_email'         => 'No valid e-mail-address given.',
     'err_invalid_phone'         => 'No valid phone number given given.',
     'err_invalid_person_type'   => 'Invalid person type.',

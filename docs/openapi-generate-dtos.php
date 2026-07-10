@@ -16,10 +16,11 @@ declare(strict_types=1);
  * Usage:
  *   - copy into a separate directory
  *   - composer require cebe/php-openapi
- *   - php openapi-generate-dtos.php ../antragsgruen/docs/openapi.yaml ../antragsgruen/models/api/ "app\\models\\api"
+ *   - VENDOR_DIR=.../vendor php openapi-generate-dtos.php docs/openapi.yaml models/api/ "app\\models\\api"
  */
 
-require __DIR__ . '/vendor/autoload.php';
+$vendorDir = getenv('VENDOR_DIR') ?: (__DIR__ . '/vendor');
+require rtrim($vendorDir, '/') . '/autoload.php';
 
 use cebe\openapi\Reader;
 use cebe\openapi\spec\Schema;
@@ -836,9 +837,15 @@ function buildConstructorParams(
         $resolvedSchema = resolveSchema($propSchema);
         $isRef = $propSchema instanceof \cebe\openapi\spec\Reference;
 
+        // cebe/php-openapi auto-resolves $ref properties into the same Schema
+        // instance as the named component, so $isRef is false even for $ref
+        // properties. Detect this case so we don't generate a spurious inline
+        // enum when the property actually points to a named schema.
+        $isNamedSchemaRef = $isRef || ($resolvedSchema !== null && findNamedSchemaForInstance($resolvedSchema, $allSchemas) !== null);
+
         $nullable = $isRequired === false || ($resolvedSchema !== null && $resolvedSchema->nullable === true);
 
-        if (!$isRef && $resolvedSchema !== null && !empty($resolvedSchema->enum)) {
+        if (!$isNamedSchemaRef && $resolvedSchema !== null && !empty($resolvedSchema->enum)) {
             $enumClassName = $className . ucfirst($phpName);
             writeEnumFile($enumClassName, $currentNamespace, $resolvedSchema, $outputDir);
             $phpType = $enumClassName;
@@ -846,7 +853,8 @@ function buildConstructorParams(
             $phpType = resolvePhpType($propSchema, $allSchemas, $schemaFullNamespace, $currentNamespace);
         }
 
-        $typeDeclaration = ($nullable ? '?' : '') . $phpType;
+        // "mixed" already includes null; "?mixed" is invalid PHP.
+        $typeDeclaration = ($nullable && $phpType !== 'mixed' ? '?' : '') . $phpType;
         $default = $nullable ? ' = null' : '';
 
         $entryLines = [];

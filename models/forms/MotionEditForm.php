@@ -3,8 +3,9 @@
 namespace app\models\forms;
 
 use app\components\HTMLTools;
-use app\components\RequestContext;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
+use app\models\events\MotionEvent;
+use app\models\exceptions\Internal;
 use app\models\db\{Consultation,
     ConsultationAgendaItem,
     ConsultationMotionType,
@@ -14,18 +15,25 @@ use app\models\db\{Consultation,
     MotionSection,
     MotionSupporter,
     User};
+use app\models\api\imotion\{MotionCreateRequest, MotionUpdateRequest, MotionUpdateSection};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
+use app\models\supportTypes\SupportBase;
 
 class MotionEditForm
 {
-    public ConsultationMotionType $motionType;
-    public ?ConsultationAgendaItem $agendaItem;
-
-    /** @var MotionSupporter[] */
+    /**
+     * @var MotionSupporter[]
+     * Are initialized exclusively from the request.
+     * Only after validation it's merged into potentially existing previous supporters.
+     */
     public array $supporters = [];
 
-    /** @var MotionSection[] */
+    /**
+     * @var MotionSection[]
+     * Are first initialized using empty sections, then (if applicable) from the existing motion. Finally, content is set from request.
+     * After validation, it's simply safed (not merged)
+     */
     public array $sections = [];
 
     /** @var int[] */
@@ -33,26 +41,86 @@ class MotionEditForm
 
     public ?int $motionId = null;
 
-    /** @var string[] */
-    public array $fileUploadErrors = [];
-
+    private bool $allowEditingInitiators;
+    private bool $allowTextEdit;
+    private bool $allowSetTags;
     private bool $adminMode = false;
-    private bool $allowEditingInitiators = true; // Only affects updating
 
-    public function __construct(ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, ?Motion $motion)
-    {
-        $this->motionType = $motionType;
-        $this->agendaItem = $agendaItem;
-        if ($motion) {
-            foreach ($motion->getPublicTopicTags() as $tag) {
-                $this->tags[] = $tag->id;
-            }
-        }
-        $this->setSection($motion);
+    private function __construct(
+        public readonly ConsultationMotionType $motionType,
+        public ?ConsultationAgendaItem $agendaItem
+    ) {
     }
 
+    public static function createForCreating(Consultation $consultation, ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem): self
+    {
+        $form = new self($motionType, $agendaItem);
+        $form->initializeSectionsAndTags(null);
+        $form->allowEditingInitiators = true;
+        $form->allowTextEdit = true;
+        $form->allowSetTags = $consultation->getSettings()->allowUsersToSetTags;
 
-    private function setSection(?Motion $motion): void
+        return $form;
+    }
+
+    public static function createForUserEdit(Motion $motion): self
+    {
+        $form = new self($motion->getMyMotionType(), $motion->agendaItem);
+        $form->initializeSectionsAndTags($motion);
+        $form->allowEditingInitiators = $motion->canEditInitiators();
+        $form->allowTextEdit = $motion->canEditText();
+        $form->allowSetTags = $motion->getMyConsultation()->getSettings()->allowUsersToSetTags;
+
+        return $form;
+    }
+
+    public static function createForAdminEdit(Motion $motion): self
+    {
+        $con = $motion->getMyConsultation();
+        $form = new self($motion->getMyMotionType(), $motion->agendaItem);
+        $form->initializeSectionsAndTags($motion);
+        $form->adminMode = true;
+        $form->allowEditingInitiators = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion));
+        $form->allowTextEdit = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion));
+        $form->allowSetTags = true;
+
+        return $form;
+    }
+
+    /**
+     * @throws Internal
+     * @throws \app\models\exceptions\NotFound
+     * @return array{ConsultationMotionType, ConsultationAgendaItem|null}
+     */
+    public static function getMotionTypeForCreate(Consultation $consultation, ?int $motionTypeId, ?int $agendaItemId, ?int $cloneFrom): array
+    {
+        if ($agendaItemId > 0) {
+            $agendaItem = $consultation->getAgendaItem($agendaItemId);
+            if (!$agendaItem) {
+                throw new Internal('Could not find agenda item');
+            }
+            if (!$agendaItem->getMyMotionType()) {
+                throw new Internal('Agenda item does not have motions');
+            }
+            $motionType = $agendaItem->getMyMotionType();
+        } elseif ($motionTypeId > 0) {
+            $motionType = $consultation->getMotionType($motionTypeId);
+            $agendaItem = null;
+        } elseif ($cloneFrom > 0) {
+            $motion = $consultation->getMotion($cloneFrom);
+            if (!$motion) {
+                throw new Internal('Could not find referenced motion');
+            }
+            $motionType = $motion->getMyMotionType();
+            $agendaItem = $motion->agendaItem;
+        } else {
+            throw new Internal('Could not resolve motion type');
+        }
+
+        return [$motionType, $agendaItem];
+    }
+
+    public function initializeSectionsAndTags(?Motion $motion): void
     {
         $motionSections = [];
         if ($motion) {
@@ -70,16 +138,13 @@ class MotionEditForm
                 $this->sections[] = MotionSection::createEmpty($sectionType->id, $sectionType->getSettingsObj()->public);
             }
         }
-    }
 
-    public function setAdminMode(bool $set): void
-    {
-        $this->adminMode = $set;
-    }
-
-    public function setAllowEditingInitiators(bool $set): void
-    {
-        $this->allowEditingInitiators = $set;
+        $this->tags = [];
+        if ($motion) {
+            foreach ($motion->getPublicTopicTags() as $tag) {
+                $this->tags[] = $tag->id;
+            }
+        }
     }
 
     public function getAllowEditinginitiators(): bool
@@ -113,80 +178,36 @@ class MotionEditForm
         }
     }
 
-    public function setAttributes(array $values, array $files): void
-    {
-        $this->fileUploadErrors = [];
-
-        if (isset($values['agendaItem']) && $values['agendaItem']) {
-            foreach ($this->motionType->agendaItems as $agendaItem) {
-                if ($agendaItem->id === IntVal($values['agendaItem'])) {
-                    $this->agendaItem = $agendaItem;
-                }
-            }
-        }
-
-        foreach ($this->sections as $section) {
-            if ($this->motionId && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                // Updating the text is done separately, including amendment rewriting
-                continue;
-            }
-            if ($section->getSettings()->type === ISectionType::TYPE_TITLE && isset($values['motion']['title'])) {
-                $section->getSectionType()->setMotionData($values['motion']['title']);
-            }
-            if (isset($values['sectionDelete']) && isset($values['sectionDelete'][$section->sectionId])) {
-                if ($section->getSettings()->required !== ConsultationSettingsMotionSection::REQUIRED_YES) {
-                    $section->getSectionType()->deleteMotionData();
-                }
-            }
-            if (isset($values['sections'][$section->sectionId])) {
-                $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
-            }
-            if (isset($files['sections']['tmp_name'])) {
-                if (!empty($files['sections']['tmp_name'][$section->sectionId])) {
-                    $data = [];
-                    foreach ($files['sections'] as $key => $vals) {
-                        if (isset($vals[$section->sectionId])) {
-                            $data[$key] = $vals[$section->sectionId];
-                        }
-                    }
-                    $section->getSectionType()->setMotionData($data);
-                }
-                if (!empty($files['sections']['error'][$section->sectionId])) {
-                    $error = $files['sections']['error'][$section->sectionId];
-                    if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
-                        $this->fileUploadErrors[] = $section->getSettings()->title . ': Uploaded file is too big';
-                    }
-                }
-            }
-        }
-
-        if ($this->motionType->getConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-            $this->tags = array_map(fn (string $id): int => intval($id), $values['tags'] ?? []);
-        }
-    }
-
     /**
+     * @param MotionUpdateSection[] $requestSections
      * @throws FormError
      */
-    private function createMotionVerify(): void
+    private function setAndVerifySectionContent(array $requestSections): void
     {
-        $errors = [];
+        $requestSectionsById = [];
+        foreach ($requestSections as $requestSection) {
+            $requestSectionsById[$requestSection->sectionId] = $requestSection;
+        }
 
+        $errors = [];
         foreach ($this->sections as $section) {
-            $type = $section->getSettings();
-            if ($section->getData() === '' && $type->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
-                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
+            $sectionSettings = $section->getSettings();
+            $requestSection = $requestSectionsById[$section->sectionId] ?? null;
+            if ($requestSection === null) {
+                continue;
+            }
+            if ($requestSection->data !== null) {
+                $section->getSectionType()->setMotionData($requestSection->data);
+            } else {
+                $section->getSectionType()->deleteMotionData();
+            }
+
+            if ($section->getData() === '' && $sectionSettings->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
+                $errors[] = str_replace('%FIELD%', $sectionSettings->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%MAX%', $type->title, \Yii::t('base', 'err_max_len_exceed'));
+                $errors[] = str_replace('%MAX%', (string) $sectionSettings->maxLen, \Yii::t('base', 'err_max_len_exceed'));
             }
-        }
-        $errors = array_merge($errors, $this->fileUploadErrors);
-
-        try {
-            $this->motionType->getMotionSupportTypeClass()->validateMotion();
-        } catch (FormError $e) {
-            $errors = array_merge($errors, $e->getMessages());
         }
 
         if (count($errors) > 0) {
@@ -195,26 +216,52 @@ class MotionEditForm
     }
 
     /**
-     * Returns true, if the rewriting was successful
-     *
-     * @param string[] $newHtmls
-     * @param array $overrides
+     * @param MotionSupporter[] $initiators
+     * @param MotionSupporter[] $supporters
+     * @throws FormError
      */
-    public function updateTextRewritingAmendments(Motion $motion, array $newHtmls, array $overrides = []): bool
+    private function validateInitiators(SupportBase $supportForm, array $initiators, array $supporters): void
     {
+        if ($supportForm->requiresInitiator() && count($initiators) === 0) {
+            throw new FormError(\Yii::t('motion', 'err_no_initiator'));
+        }
+        foreach ($initiators as $initiator) {
+            // Is only one at the moment
+            $supportForm->validateMotion($initiator, $supporters);
+        }
+    }
+
+    /**
+     * Returns true, if the rewriting was successful.
+     *
+     * @param MotionUpdateSection[] $newSections
+     * @param array<int, array<int, string[]>> $overrides
+     */
+    private function updateTextRewritingAmendments(Motion $motion, array $newSections, array $overrides): bool
+    {
+        $unsanitizedHtml = [];
+        foreach ($newSections as $requestSection) {
+            $unsanitizedHtml[$requestSection->sectionId] = $requestSection->data;
+        }
+
+        /** @var string[] $newHtmls */
+        $newHtmls = [];
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            if (!isset($unsanitizedHtml[$section->sectionId])) {
+                throw new FormError('No content found for section ' . $section->sectionId);
+            }
             $forbiddenFormattings = $section->getSettings()->getForbiddenMotionFormattings();
-            $newHtmls[$section->sectionId] = HTMLTools::cleanSimpleHtml($newHtmls[$section->sectionId], $forbiddenFormattings);
+            $newHtmls[$section->sectionId] = HTMLTools::cleanSimpleHtml($unsanitizedHtml[$section->sectionId], $forbiddenFormattings);
         }
 
         foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
-                    $section_overrides = $overrides[$amendment->id][$section->sectionId];
+                    $sectionOverrides = $overrides[$amendment->id][$section->sectionId];
                 } else {
-                    $section_overrides = [];
+                    $sectionOverrides = [];
                 }
-                if (!$section->canRewrite($newHtmls[$section->sectionId], $section_overrides)) {
+                if (!$section->canRewrite($newHtmls[$section->sectionId], $sectionOverrides)) {
                     return false;
                 }
             }
@@ -223,11 +270,11 @@ class MotionEditForm
         foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
-                    $section_overrides = $overrides[$amendment->id][$section->sectionId];
+                    $sectionOverrides = $overrides[$amendment->id][$section->sectionId];
                 } else {
-                    $section_overrides = [];
+                    $sectionOverrides = [];
                 }
-                $section->performRewrite($newHtmls[$section->sectionId], $section_overrides);
+                $section->performRewrite($newHtmls[$section->sectionId], $sectionOverrides);
                 $section->save();
             }
         }
@@ -237,19 +284,9 @@ class MotionEditForm
             $section->save();
         }
 
-        $this->setSection($motion);
+        $this->initializeSectionsAndTags($motion);
 
         return true;
-    }
-
-    /**
-     * @param string[] $newHtmls
-     */
-    public function setSectionTextWithoutSaving(Motion $motion, array $newHtmls): void
-    {
-        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $section->setData($newHtmls[$section->sectionId]);
-        }
     }
 
     private function getInitialVersion(Consultation $consultation, Motion $motion): string
@@ -264,24 +301,63 @@ class MotionEditForm
         return Motion::VERSION_DEFAULT;
     }
 
+    private function overwriteSections(Motion $motion): void
+    {
+        /** @var MotionSection[] $sectionsById */
+        $sectionsById = [];
+        foreach ($motion->getActiveSections() as $section) {
+            $sectionsById[$section->sectionId] = $section;
+        }
+        foreach ($this->sections as $section) {
+            if ($this->motionId && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                // Updating the text is done separately, including amendment rewriting
+                continue;
+            }
+            if (isset($sectionsById[$section->sectionId])) {
+                $section = $sectionsById[$section->sectionId];
+            }
+            $section->motionId = $motion->id;
+            $section->save();
+        }
+    }
+
     /**
      * @throws FormError
+     * @throws \Exception
      */
-    public function createMotion(): Motion
+    public function createMotion(MotionCreateRequest $dto, bool $asDraft): Motion
     {
-        $consultation = $this->motionType->getConsultation();
-
         if (!$this->motionType->getMotionPolicy()->checkCurrUserMotion()) {
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
         }
 
+        $consultation = $this->motionType->getConsultation();
+        $supportForm = $this->motionType->getMotionSupportTypeClass();
+
+        // 1. Set data, but don't validate yet
+        $this->initializeSectionsAndTags(null);
+        $initiators = $supportForm->getMotionInitiatorsFromDto($this->motionType, $dto->initiators);
+        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters ?? []);
+        $this->supporters = array_merge($initiators, $supporters); // Used by edit form in case validation fails
+
+        if ($dto->agendaItemId !== null) {
+            foreach ($this->motionType->agendaItems as $agendaItem) {
+                if ($agendaItem->id === $dto->agendaItemId) {
+                    $this->agendaItem = $agendaItem;
+                }
+            }
+        }
+        if ($this->allowSetTags) {
+            $this->tags = $dto->tags ?? [];
+        }
+
+        // 2. Validate data
+        $this->setAndVerifySectionContent($dto->sections);
+        $this->validateInitiators($supportForm, $initiators, $supporters);
+
+        // 3. Save
+
         $motion = new Motion();
-
-        $this->setAttributes(RequestContext::getAllPostVars(), $_FILES);
-        $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
-
-        $this->createMotionVerify();
-
         $motion->status = Motion::STATUS_DRAFT;
         $motion->consultationId = $this->motionType->consultationId;
         $motion->textFixed = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
@@ -292,116 +368,101 @@ class MotionEditForm
         $motion->dateContentModification = date('Y-m-d H:i:s');
         $motion->motionTypeId = $this->motionType->id;
         $motion->cache = '';
-        $motion->agendaItemId = ($this->agendaItem ? $this->agendaItem->id : null);
+        $motion->agendaItemId = $this->agendaItem?->id;
 
-        if ($motion->save()) {
-            $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
-
-            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
-            }
-
-            foreach ($this->sections as $section) {
-                $section->motionId = $motion->id;
-                $section->save();
-            }
-
-            $motion->refreshTitle();
-            $motion->slug = $motion->createSlug();
-            $motion->save();
-
-            return $motion;
-        } else {
+        if (!$motion->save()) {
             throw new FormError(\Yii::t('motion', 'err_create'));
         }
-    }
 
-    /**
-     * @throws FormError
-     */
-    private function saveMotionVerify(): void
-    {
-        $errors = [];
+        $supportForm->submitMotion($motion, $this->supporters);
+
+        if ($this->allowSetTags) {
+            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $dto->tags ?? []);
+        }
 
         foreach ($this->sections as $section) {
-            $type = $section->getSettings();
-            if ($this->motionId && $type->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                // Updating the text is done separately, including amendment rewriting
-                continue;
-            }
-            if ($section->getData() === '' && $type->required === ConsultationSettingsMotionSection::REQUIRED_YES) {
-                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
-            }
-            if (!$section->checkLength()) {
-                $errors[] = str_replace('%MAX%', $type->title, \Yii::t('base', 'err_max_len_exceed'));
-            }
-        }
-        $errors = array_merge($errors, $this->fileUploadErrors);
-
-        if ($this->allowEditingInitiators) {
-            $this->motionType->getMotionSupportTypeClass()->validateMotion();
-        }
-
-        if (count($errors) > 0) {
-            throw new FormError(implode("\n", $errors));
-        }
-    }
-
-    private function overwriteSections(Motion $motion): void
-    {
-        /** @var MotionSection[] $sectionsById */
-        $sectionsById = [];
-        foreach ($motion->getActiveSections() as $section) {
-            $sectionsById[$section->sectionId] = $section;
-        }
-        foreach ($this->sections as $section) {
-            if (isset($sectionsById[$section->sectionId])) {
-                $section = $sectionsById[$section->sectionId];
-            }
             $section->motionId = $motion->id;
             $section->save();
         }
-    }
 
+        $motion->refreshTitle();
+        $motion->slug = $motion->createSlug();
+        $motion->save();
+
+        if (!$asDraft) {
+            $motion->trigger(Motion::EVENT_CREATED, new MotionEvent($motion));
+
+            if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
+                $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
+            }
+        }
+
+        return $motion;
+    }
 
     /**
      * @throws FormError
      */
-    public function saveMotion(Motion $motion): void
+    public function saveMotion(Motion $motion, MotionUpdateRequest $dto, array $amendmentOverrides): void
     {
-        $consultation = $this->motionType->getConsultation();
-        $ctx = PrivilegeQueryContext::motion($motion);
+        if (!$this->adminMode && !$this->allowTextEdit) {
+            throw new FormError(\Yii::t('motion', 'err_create_permission'));
+        }
 
-        if (!$this->adminMode) {
-            $this->saveMotionVerify();
+        $supportForm = $this->motionType->getMotionSupportTypeClass();
+        $supportForm->setAdminMode($this->adminMode);
 
-            if (!$motion->canEditText()) {
-                throw new FormError(\Yii::t('motion', 'err_create_permission'));
+        // 1. Set data, but don't validate yet
+        $initiators = $supportForm->getMotionInitiatorsFromDto($this->motionType, $dto->initiators);
+        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters ?? []);
+        $this->supporters = array_merge($initiators, $supporters); // Used by edit form in case validation fails
+
+        if ($dto->agendaItemId !== null) {
+            foreach ($this->motionType->agendaItems as $agendaItem) {
+                if ($agendaItem->id === $dto->agendaItemId) {
+                    $this->agendaItem = $agendaItem;
+                }
             }
         }
 
-        if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, $ctx))) {
-            $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
-        }
-
-        if ($motion->save()) {
-            if ($this->allowEditingInitiators && (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion)))) {
-                $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
-            }
-
-            if ($motion->getMyConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
-                $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
-            }
-
-            if (!$this->adminMode || User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion))) {
-                $this->overwriteSections($motion);
-            }
-
-            $motion->refreshTitle();
-            $motion->dateContentModification = date('Y-m-d H:i:s');
-            $motion->save();
+        if ($this->motionType->getConsultation()->getSettings()->allowUsersToSetTags || $this->adminMode) {
+            $this->tags = $dto->tags ?? [];
         } else {
+            foreach ($motion->getPublicTopicTags() as $tag) {
+                $this->tags[] = $tag->id;
+            }
+        }
+
+        // 2. Validate data
+        if ($this->allowTextEdit) {
+            $this->setAndVerifySectionContent($dto->sections);
+        }
+        if ($this->allowEditingInitiators) {
+            $this->validateInitiators($supportForm, $initiators, $supporters);
+        }
+
+        // Save Data
+        if (!$motion->save()) {
             throw new FormError(\Yii::t('motion', 'err_create'));
+        }
+        if ($this->allowEditingInitiators) {
+            $supportForm->submitMotion($motion, $this->supporters);
+        }
+
+        if ($this->allowTextEdit) {
+            $this->overwriteSections($motion);
+        }
+
+        $motion->refreshTitle();
+        $motion->dateContentModification = date('Y-m-d H:i:s');
+        $motion->save();
+
+        if ($this->allowSetTags) {
+            $motion->setTags(ConsultationSettingsTag::TYPE_PUBLIC_TOPIC, $this->tags);
+        }
+
+        if ($this->allowTextEdit) {
+            $this->updateTextRewritingAmendments($motion, $dto->sections, $amendmentOverrides);
         }
     }
 }

@@ -1,21 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\supportTypes;
 
-use app\components\RequestContext;
-use app\components\Tools;
 use app\controllers\Base;
-use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, MotionSupporter, User};
-use app\models\settings\PrivilegeQueryContext;
-use app\models\settings\Privileges;
+use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSupporter, User};
+use app\models\api\imotion\{IMotionUpdateInitiator, IMotionUpdateSupporter, Supporter, SupporterType};
+use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\exceptions\{FormError, Internal};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
-use app\models\settings\InitiatorForm;
 use yii\web\View;
 
 abstract class SupportBase
 {
-    // Also defined in Typescript
+    // Also defined in JavaScript
     public const ONLY_INITIATOR        = 0;
     public const GIVEN_BY_INITIATOR    = 1;
     public const COLLECTING_SUPPORTERS = 2;
@@ -26,8 +25,13 @@ abstract class SupportBase
     public const LIKEDISLIKE_SUPPORT = 4;
 
     protected bool $adminMode = false;
-    protected InitiatorForm $settingsObject;
-    protected ConsultationMotionType $motionType;
+
+    public function __construct(
+        protected readonly ConsultationMotionType $motionType,
+        protected InitiatorForm $settingsObject,
+    ) {
+        $this->fixSettings();
+    }
 
     /**
      * @return SupportBase[]|string[]
@@ -67,13 +71,6 @@ abstract class SupportBase
             'diverse' => \Yii::t('structure', 'gender_diverse'),
             'na'      => \Yii::t('structure', 'gender_na'),
         ];
-    }
-
-    public function __construct(ConsultationMotionType $motionType, InitiatorForm $settings)
-    {
-        $this->motionType = $motionType;
-        $this->settingsObject = $settings;
-        $this->fixSettings();
     }
 
     public function getSettingsObj(): InitiatorForm
@@ -116,71 +113,209 @@ abstract class SupportBase
         return false;
     }
 
+    /**
+     * Whether at least one initiator must be present when creating or editing a motion/amendment.
+     * Only NoInitiator opts out.
+     */
+    public function requiresInitiator(): bool
+    {
+        return true;
+    }
+
     public function hasFullTextSupporterField(): bool
     {
         return false;
     }
 
     /**
-     * @return ISupporter[]
+     * @template T of ISupporter
+     * @param class-string<T> $supporterClass
+     * @param IMotionUpdateInitiator[] $initiatorDtos
+     * @return T[]
      */
-    protected function parseSupporters(ISupporter $model): array
+    private function buildInitiatorsFromDto(string $supporterClass, bool $othersPrivilege, array $initiatorDtos): array
     {
-        $ret  = [];
-        $post = RequestContext::getAllPostVars();
-        if (isset($post['supporters']) && is_array($post['supporters']['name'])) {
-            foreach ($post['supporters']['name'] as $i => $name) {
-                if (!$this->isValidName($name)) {
-                    continue;
+        $currentUserId = User::getCurrentUser()?->id;
+
+        $initiators = [];
+        $position = 0;
+        foreach ($initiatorDtos as $initiator) {
+            $supporter = new $supporterClass();
+            $supporter->role = ISupporter::ROLE_INITIATOR;
+            $supporter->position = $position;
+            $supporter->personType = ($initiator->personType === SupporterType::ORGANIZATION)
+                ? ISupporter::PERSON_ORGANIZATION
+                : ISupporter::PERSON_NATURAL;
+
+            // Attributing an initiator to another user account requires PRIVILEGE_MOTION_INITIATORS.
+            // Without it, the primary initiator is always the submitting user; additional initiators have no user account.
+            $userId = $initiator->userId;
+            if (!$othersPrivilege) {
+                if ($userId !== null && $userId !== $currentUserId) {
+                    $userId = $currentUserId;
                 }
-                $sup             = clone $model;
-                $sup->name       = trim($name);
-                $sup->role       = ISupporter::ROLE_SUPPORTER;
-                $sup->userId     = null;
-                $sup->personType = ISupporter::PERSON_NATURAL;
-                $sup->position   = $i;
-                if (isset($post['supporters']['organization'][$i])) {
-                    $sup->organization = trim($post['supporters']['organization'][$i]);
+                if ($position === 0 && $userId === null) {
+                    $userId = $currentUserId;
                 }
-                $ret[] = $sup;
             }
+            $supporter->userId = $userId;
+            if ($userId === null && $othersPrivilege) {
+                $supporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
+            }
+            if ($userId > 0) {
+                $user = User::findOne($userId);
+            } else {
+                $user = null;
+            }
+
+            $position++;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
+
+            if ($initiator->id) {
+                $supporter->id = $initiator->id; // Hint: the actual validation that this is a valid ID is done in saveMotion/saveAmendment
+            }
+            if ($supporter->personType === ISupporter::PERSON_NATURAL) {
+                $supporter->name = $initiator->name;
+                $supporter->organization = $initiator->organization ?? '';
+                if ($user && ($user->fixedData & User::FIXED_NAME) > 0) {
+                    $supporter->name = $user->name;
+                }
+                if ($user && ($user->fixedData & User::FIXED_ORGA) > 0) {
+                    $supporter->organization = $user->organization;
+                }
+            } else {
+                $supporter->organization = $initiator->name;
+            }
+            $supporter->contactName = $initiator->contactName ?? '';
+            $supporter->contactEmail = $initiator->contactEmail ?? '';
+            $supporter->contactPhone = $initiator->contactPhone ?? '';
+            if ($initiator->gender !== null) {
+                $supporter->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER, $initiator->gender);
+            }
+            if ($initiator->resolutionDate !== null) {
+                $supporter->resolutionDate = $initiator->resolutionDate;
+            }
+
+            $initiators[] = $supporter;
         }
-        return $ret;
+
+        return $initiators;
     }
 
+    /**
+     * @template T of ISupporter
+     * @param class-string<T> $supporterClass
+     * @param IMotionUpdateSupporter[] $supporterDtos
+     * @return T[]
+     */
+    private function buildSupportersFromDto(string $supporterClass, array $supporterDtos): array
+    {
+        $return = [];
+        foreach ($supporterDtos as $i => $supporterDto) {
+            if (!$this->isValidName($supporterDto->name)) {
+                continue;
+            }
+            $sup = new $supporterClass();
+            $sup->name = trim($supporterDto->name);
+            $sup->role = ISupporter::ROLE_SUPPORTER;
+            $sup->userId = null;
+            $sup->personType = ISupporter::PERSON_NATURAL;
+            $sup->position = $i;
+            $sup->dateCreation = date('Y-m-d H:i:s');
+            if ($supporterDto->id) {
+                $sup->id = $supporterDto->id;
+            }
+            if ($supporterDto->organization) {
+                $sup->organization = trim($supporterDto->organization);
+            }
+            if ($supporterDto->gender !== null) {
+                $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER, $supporterDto->gender);
+            }
+            $return[] = $sup;
+        }
+        return $return;
+    }
 
     /**
+     * @param IMotionUpdateInitiator[] $initiatorDtos
+     * @return MotionSupporter[]
+     */
+    public function getMotionInitiatorsFromDto(ConsultationMotionType $motionType, array $initiatorDtos): array
+    {
+        $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motionType($motionType->id));
+        return $this->buildInitiatorsFromDto(MotionSupporter::class, $othersPrivilege, $initiatorDtos);
+    }
+
+    /**
+     * @param IMotionUpdateSupporter[] $supporterDtos
+     * @return MotionSupporter[]
+     */
+    public function getMotionSupportersFromDto(ConsultationMotionType $motionType, array $supporterDtos): array
+    {
+        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
+            return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
+        }
+        return [];
+    }
+
+    /**
+     * @param IMotionUpdateInitiator[] $initiatorDtos
+     * @return AmendmentSupporter[]
+     */
+    public function getAmendmentInitiatorsFromDto(Amendment $amendment, array $initiatorDtos): array
+    {
+        $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
+        return $this->buildInitiatorsFromDto(AmendmentSupporter::class, $othersPrivilege, $initiatorDtos);
+    }
+
+    /**
+     * @param IMotionUpdateSupporter[] $supporterDtos
+     * @return AmendmentSupporter[]
+     */
+    public function getAmendmentSupportersFromDto(Amendment $amendment, array $supporterDtos): array
+    {
+        if (!$this->hasInitiatorGivenSupporters() || $this->adminMode) {
+            return [];
+        }
+        $supporters = $this->buildSupportersFromDto(AmendmentSupporter::class, $supporterDtos);
+        foreach ($supporters as $sup) {
+            $sup->amendmentId = $amendment->id;
+        }
+        return $supporters;
+    }
+
+    /**
+     * @param ISupporter[] $supporters
      * @throws FormError
      */
-    public function validateMotion(): void
+    public function validateMotion(ISupporter $initiator, array $supporters): void
     {
-        $post = RequestContext::getAllPostVars();
-        if (!isset($post['Initiator'])) {
-            throw new FormError('No Initiator data given');
+        if ($this->adminMode) {
+            return;
         }
 
-        $initiator = $post['Initiator'];
         $settings  = $this->getSettingsObj();
 
         $errors = [];
 
-        if (!isset($initiator['primaryName']) || !$this->isValidName($initiator['primaryName'])) {
+        $nameToValidate = ($initiator->personType === ISupporter::PERSON_ORGANIZATION ? $initiator->organization : $initiator->name);
+        if (!$this->isValidName($nameToValidate ?? '')) {
             $errors[] = \Yii::t('motion', 'err_invalid_name');
         }
 
-        $emailSet   = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) !== '');
+        $emailSet   = (isset($initiator->contactEmail) && trim($initiator->contactEmail) !== '');
         $checkEmail = ($settings->contactEmail === InitiatorForm::CONTACT_REQUIRED || $emailSet);
-        if ($checkEmail && !filter_var(trim($initiator['contactEmail']), FILTER_VALIDATE_EMAIL)) {
+        if ($checkEmail && !filter_var(trim($initiator->contactEmail ?? ''), FILTER_VALIDATE_EMAIL)) {
             $errors[] = \Yii::t('motion', 'err_invalid_email');
         }
 
-        $phoneSet   = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) !== '');
+        $phoneSet   = (isset($initiator->contactPhone) && trim($initiator->contactPhone) !== '');
         $checkPhone = ($settings->contactPhone === InitiatorForm::CONTACT_REQUIRED || $phoneSet);
-        if ($checkPhone && empty($initiator['contactPhone'])) {
+        if ($checkPhone && empty($initiator->contactPhone)) {
             $errors[] = \Yii::t('motion', 'err_invalid_phone');
         }
 
-        if (!isset($initiator['personType'])) {
+        if (!isset($initiator->personType)) {
             $errors[] = \Yii::t('motion', 'err_invalid_person_type');
             $personType = null;
         } else {
@@ -194,27 +329,27 @@ abstract class SupportBase
         }
         if ($personType === ISupporter::PERSON_ORGANIZATION &&
             $settings->hasResolutionDate === InitiatorForm::CONTACT_REQUIRED &&
-            empty($initiator['resolutionDate'])) {
+            empty($initiator->resolutionDate)) {
             $errors[] = \Yii::t('motion', 'err_no_resolution_date');
         }
         if ($personType === ISupporter::PERSON_NATURAL) {
             $validGenderValues = array_keys(static::getGenderSelection());
+            $setGender = $initiator->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER);
             if ($settings->contactGender === InitiatorForm::CONTACT_REQUIRED) {
-                if (!isset($initiator['gender']) || !in_array($initiator['gender'], $validGenderValues)) {
+                if (!isset($setGender) || !in_array($setGender, $validGenderValues)) {
                     $errors[] = \Yii::t('motion', 'err_invalid_gender');
                 }
             }
             if ($settings->contactGender === InitiatorForm::CONTACT_OPTIONAL) {
                 $validGenderValues[] = '';
-                if (isset($initiator['gender']) && !in_array($initiator['gender'], $validGenderValues)) {
+                if (isset($setGender) && !in_array($setGender, $validGenderValues)) {
                     $errors[] = \Yii::t('motion', 'err_invalid_gender');
                 }
             }
         }
 
         if ($this->hasInitiatorGivenSupporters()) {
-            $supporters = $this->parseSupporters(new MotionSupporter());
-            $num        = count($supporters);
+            $num = count(array_filter($supporters, fn($supporter) => $supporter->role === ISupporter::ROLE_SUPPORTER));
             if ($personType !== ISupporter::PERSON_ORGANIZATION) {
                 if ($num < $settings->minSupporters) {
                     $errors[] = \Yii::t('motion', 'err_not_enough_supporters');
@@ -231,27 +366,31 @@ abstract class SupportBase
     }
 
     /**
+     * @param ISupporter[] $supporters
      * @throws FormError
      */
-    public function validateAmendment(): void
+    public function validateAmendment(ISupporter $initiator, array $supporters): void
     {
-        $this->validateMotion();
+        $this->validateMotion($initiator, $supporters);
     }
 
     /**
+     * @param MotionSupporter[] $supporters
      * @throws \Throwable
      */
-    public function submitMotion(Motion $motion): void
+    public function submitMotion(Motion $motion, array $supporters): void
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
-        if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
+        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
             $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
         }
 
         $preCreatedByAdmin = [];
         $preNonPublic = [];
+        $previousById = [];
         foreach ($motion->motionSupporters as $supp) {
             if (in_array($supp->role, $affectedRoles)) {
+                $previousById[$supp->id] = $supp;
                 if ($supp->userId) {
                     $preCreatedByAdmin[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false);
                     $preNonPublic[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, false);
@@ -260,9 +399,15 @@ abstract class SupportBase
             }
         }
 
-        $supporters = $this->getMotionSupporters($motion);
         foreach ($supporters as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
+                if (isset($sup->id) && $sup->id > 0 && isset($previousById[$sup->id])) {
+                    $previousById[$sup->id]->setAttributes($sup->getAttributes(), false);
+                    $sup = $previousById[$sup->id];
+                    unset($previousById[$sup->id]);
+                } else {
+                    $sup->id = null;
+                }
                 $sup->motionId = $motion->id;
                 if (isset($sup->userId) && isset($preCreatedByAdmin[$sup->userId])) {
                     $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
@@ -273,13 +418,18 @@ abstract class SupportBase
                 $sup->save();
             }
         }
+
+        foreach ($previousById as $sup) {
+            $sup->delete();
+        }
     }
 
 
     /**
+     * @param AmendmentSupporter[] $supporters
      * @throws \Throwable
      */
-    public function submitAmendment(Amendment $amendment): void
+    public function submitAmendment(Amendment $amendment, array $supporters): void
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
         if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
@@ -298,9 +448,8 @@ abstract class SupportBase
             }
         }
 
-        $supportersAndInitiators = $this->getAmendmentSupporters($amendment);
         $initiators = [];
-        foreach ($supportersAndInitiators as $sup) {
+        foreach ($supporters as $sup) {
             if (in_array($sup->role, $affectedRoles)) {
                 $sup->amendmentId = $amendment->id;
                 if ($sup->userId !== null && isset($preCreatedByAdmin[$sup->userId])) {
@@ -334,7 +483,7 @@ abstract class SupportBase
 
         if ($initiatorAdmin || $user === null) {
             foreach ($supporters as $supp) {
-                if ($supp->position === 0) {
+                if ($supp->position === 0 && $supp->role === ISupporter::ROLE_INITIATOR) {
                     return $supp;
                 }
             }
@@ -445,254 +594,5 @@ abstract class SupportBase
             ],
             $controller
         );
-    }
-
-    /**
-     * @return MotionSupporter[]
-     */
-    public function getMotionSupporters(Motion $motion): array
-    {
-        /** @var MotionSupporter[] $return */
-        $return = [];
-
-        $post = RequestContext::getAllPostVars();
-        $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion));
-        $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
-
-        if (RequestContext::getYiiUser()->isGuest) {
-            $init               = new MotionSupporter();
-            $init->dateCreation = date('Y-m-d H:i:s');
-            $init->userId       = null;
-            $user               = null;
-        } else {
-            if ($otherInitiator) {
-                $user   = null;
-                $userId = null;
-                foreach ($motion->motionSupporters as $supporter) {
-                    if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
-                        $user   = $supporter->user;
-                        $userId = $supporter->userId;
-                    }
-                }
-            } else {
-                $user   = User::getCurrentUser();
-                $userId = $user->id;
-            }
-
-            $init = MotionSupporter::findOne(
-                [
-                    'motionId' => $motion->id,
-                    'role'     => MotionSupporter::ROLE_INITIATOR,
-                    'userId'   => $userId,
-                ]
-            );
-            if (!$init) {
-                $init               = new MotionSupporter();
-                $init->dateCreation = date('Y-m-d H:i:s');
-                $init->userId       = $userId;
-                if ($otherInitiator) {
-                    $init->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
-                }
-            }
-        }
-
-        $posCount = 0;
-
-        if (!$otherInitiator && isset($post['Initiator']['gender'])) {
-            RequestContext::getWebApplication()->session->set('user_gender', $post['Initiator']['gender']);
-        }
-
-        $init->setAttributes($post['Initiator']);
-        $init->motionId = $motion->id;
-        $init->role     = MotionSupporter::ROLE_INITIATOR;
-        $init->position = $posCount++;
-        if ($init->personType === ISupporter::PERSON_NATURAL) {
-            if ($user && $user->fixedData && !$otherInitiator) {
-                $init->name         = trim($user->name);
-                $init->organization = $user->organization;
-            } else {
-                $init->name = trim($post['Initiator']['primaryName']);
-                if (isset($post['Initiator']['organization'])) {
-                    $init->organization = $post['Initiator']['organization'];
-                } else {
-                    $init->organization = '';
-                }
-            }
-            $init->contactName = $post['Initiator']['contactName'] ?? '';
-        } else {
-            $init->organization = $post['Initiator']['primaryName'];
-            $init->contactName  = $post['Initiator']['contactName'];
-        }
-
-
-        $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
-        $return[]             = $init;
-
-        if (isset($post['moreInitiators']['name'])) {
-            // ADMIN Case
-            foreach ($post['moreInitiators']['name'] as $i => $name) {
-                $isOrganization = (
-                    isset($post['moreInitiators']['organization'][$i]) &&
-                    trim($post['moreInitiators']['organization'][$i]) !== '' &&
-                    trim($name) === ''
-                );
-
-                $init               = new MotionSupporter();
-                $init->dateCreation = date('Y-m-d H:i:s');
-                $init->motionId     = $motion->id;
-                $init->role         = MotionSupporter::ROLE_INITIATOR;
-                $init->position     = $posCount++;
-                $init->personType   = ($isOrganization ? MotionSupporter::PERSON_ORGANIZATION : MotionSupporter::PERSON_NATURAL);
-                $init->name         = $name;
-                if (isset($post['moreInitiators']['organization'])) {
-                    $init->organization = $post['moreInitiators']['organization'][$i];
-                }
-                $return[] = $init;
-            }
-        } else {
-            // USER Case -> just copy other initiators
-            foreach ($motion->motionSupporters as $supporter) {
-                if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0 && $supporter->userId !== User::getCurrentUser()?->id) {
-                    $init = new MotionSupporter();
-                    $init->setAttributes($supporter->getAttributes(), false);
-                    $init->position = $posCount++;
-                    $init->id = null;
-                    $return[] = $init;
-                }
-            }
-        }
-
-        if ($this->hasInitiatorGivenSupporters()) {
-            $supporters = $this->parseSupporters(new MotionSupporter());
-            foreach ($supporters as $sup) {
-                /** @var MotionSupporter $sup */
-                $sup->motionId     = $motion->id;
-                $sup->dateCreation = date('Y-m-d H:i:s');
-                $return[]          = $sup;
-            }
-        }
-
-        return $return;
-    }
-
-    /**
-     * @return AmendmentSupporter[]
-     */
-    public function getAmendmentSupporters(Amendment $amendment): array
-    {
-        /** @var AmendmentSupporter[] $return */
-        $return = [];
-        $post = RequestContext::getAllPostVars();
-
-        $othersPrivilege = User::havePrivilege($this->motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment));
-        $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
-
-        if (RequestContext::getYiiUser()->isGuest) {
-            $init               = new AmendmentSupporter();
-            $init->dateCreation = date('Y-m-d H:i:s');
-            $init->userId       = null;
-            $user               = null;
-        } else {
-            if ($otherInitiator) {
-                $userId = null;
-                $user   = null;
-                foreach ($amendment->amendmentSupporters as $supporter) {
-                    if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
-                        $userId = $supporter->userId;
-                        $user   = $supporter->user;
-                    }
-                }
-            } else {
-                $user   = User::getCurrentUser();
-                $userId = $user->id;
-            }
-
-            $init = AmendmentSupporter::findOne(
-                [
-                    'amendmentId' => $amendment->id,
-                    'role'        => AmendmentSupporter::ROLE_INITIATOR,
-                    'userId'      => $userId,
-                ]
-            );
-            if (!$init) {
-                $init               = new AmendmentSupporter();
-                $init->dateCreation = date('Y-m-d H:i:s');
-                $init->userId       = $userId;
-                if ($otherInitiator) {
-                    $init->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, true);
-                }
-            }
-        }
-
-        $posCount = 0;
-
-        $init->setAttributes($post['Initiator']);
-        $init->amendmentId = $amendment->id;
-        $init->role        = AmendmentSupporter::ROLE_INITIATOR;
-        $init->position    = $posCount++;
-        if ($init->personType === ISupporter::PERSON_NATURAL) {
-            if ($user && ($user->fixedData & User::FIXED_NAME) && !$otherInitiator) {
-                $init->name         = trim($user->name);
-                $init->organization = $user->organization;
-            } else {
-                $init->name = trim($post['Initiator']['primaryName']);
-                if (isset($post['Initiator']['organization'])) {
-                    $init->organization = $post['Initiator']['organization'];
-                } else {
-                    $init->organization = '';
-                }
-            }
-            $init->contactName = $post['Initiator']['contactName'] ?? '';
-        } else {
-            if ($user && ($user->fixedData & User::FIXED_ORGA) && !$otherInitiator) {
-                $init->organization = $user->organization;
-            } else {
-                $init->organization = $post['Initiator']['primaryName'];
-            }
-            $init->contactName  = $post['Initiator']['contactName'];
-        }
-
-        $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
-        $return[]             = $init;
-
-        if (isset($post['moreInitiators']['name'])) {
-            // ADMIn Case
-            foreach ($post['moreInitiators']['name'] as $i => $name) {
-                $init               = new AmendmentSupporter();
-                $init->amendmentId  = $amendment->id;
-                $init->role         = AmendmentSupporter::ROLE_INITIATOR;
-                $init->position     = $posCount++;
-                $init->personType   = MotionSupporter::PERSON_NATURAL;
-                $init->name         = $name;
-                $init->dateCreation = date('Y-m-d H:i:s');
-                if (isset($post['moreInitiators']['organization'])) {
-                    $init->organization = $post['moreInitiators']['organization'][$i];
-                }
-                $return[] = $init;
-            }
-        } else {
-            // USER Case -> just copy other initiators
-            foreach ($amendment->amendmentSupporters as $supporter) {
-                if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0 && $supporter->userId !== User::getCurrentUser()?->id) {
-                    $init = new AmendmentSupporter();
-                    $init->setAttributes($supporter->getAttributes(), false);
-                    $init->position = $posCount++;
-                    $init->id = null;
-                    $return[] = $init;
-                }
-            }
-        }
-
-        if ($this->hasInitiatorGivenSupporters()) {
-            $supporters = $this->parseSupporters(new AmendmentSupporter());
-            foreach ($supporters as $sup) {
-                /** @var AmendmentSupporter $sup */
-                $sup->amendmentId  = $amendment->id;
-                $sup->dateCreation = date('Y-m-d H:i:s');
-                $return[]          = $sup;
-            }
-        }
-
-        return $return;
     }
 }
