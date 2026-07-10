@@ -176,17 +176,18 @@ class AmendmentController extends AdminBase
             if (!isset($post['edittext'])) {
                 unset($post['sections']);
             }
-            $form = AmendmentEditForm::createForAdminEdit($amendment, null, null);
-            $dto = AmendmentUpdateRequest::fromWebRequest($post, $_FILES, $amendment);
-
-            $votingData = $amendment->getVotingData();
-            $votingData->setFromPostData($post['votes']);
-            $amendment->setVotingData($votingData);
-
             try {
+                $form = AmendmentEditForm::createForAdminEdit($amendment, null, null);
+                $dto = AmendmentUpdateRequest::fromWebRequest($post, $_FILES, $amendment);
+
+                $votingData = $amendment->getVotingData();
+                $votingData->setFromPostData($post['votes']);
+                $amendment->setVotingData($votingData);
+
                 $form->saveAmendment($amendment, $dto);
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
+                goto viewamendment;
             }
 
             $amdat                        = $post['amendment'];
@@ -269,6 +270,7 @@ class AmendmentController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
         }
 
+        viewamendment:
         $form = AmendmentEditForm::createForAdminEdit($amendment, null, null);
 
         return new HtmlResponse($this->render('update', ['amendment' => $amendment, 'form' => $form]));

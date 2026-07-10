@@ -132,6 +132,7 @@ class MotionController extends AdminBase
                 );
             } catch (FormError $e) {
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
+                goto viewmotion;
             }
 
             if (intval($modat['motionType']) !== $motion->motionTypeId) {
@@ -235,6 +236,7 @@ class MotionController extends AdminBase
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
+        viewmotion:
         $form = MotionEditForm::createForAdminEdit($motion);
 
         return new HtmlResponse($this->render('update', ['motion' => $motion, 'form' => $form]));

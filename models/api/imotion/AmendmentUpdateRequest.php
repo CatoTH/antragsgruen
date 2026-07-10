@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\api\imotion;
 
-use app\models\db\{Amendment, ConsultationMotionType};
+use app\models\db\{Amendment, AmendmentSupporter, ConsultationMotionType};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\UploadedFileRef;
 
@@ -36,7 +36,7 @@ class AmendmentUpdateRequest
 
         $initiators = [];
         if (isset($post['Initiator']) && is_array($post['Initiator'])) {
-            $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post);
+            $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post, AmendmentSupporter::class);
         }
         $initiators = array_merge($initiators, IMotionUpdateInitiator::moreFromPostData($post));
 
@@ -85,6 +85,7 @@ class AmendmentUpdateRequest
                     $sections[] = new AmendmentUpdateSection($sectionId, (string)$rawValue);
                 }
             } elseif (array_key_exists('sections', $post)) {
+                // In admin mode, "sections" is only set when explicitly editing the text
                 $sections[] = new AmendmentUpdateSection($sectionId, null);
             }
         }

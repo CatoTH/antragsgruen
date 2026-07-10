@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\api\imotion;
 
 use app\models\exceptions\FormError;
-use app\models\db\{ConsultationMotionType, Motion};
+use app\models\db\{AmendmentSupporter, ConsultationMotionType, Motion};
 use app\models\sectionTypes\UploadedFileRef;
 
 class AmendmentCreateRequest
@@ -37,7 +37,7 @@ class AmendmentCreateRequest
 
         $initiators = [];
         if (isset($post['Initiator']) && is_array($post['Initiator'])) {
-            $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post);
+            $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post, AmendmentSupporter::class);
         }
         $initiators = array_merge($initiators, IMotionUpdateInitiator::moreFromPostData($post));
 

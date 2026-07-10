@@ -30,8 +30,11 @@ class IMotionUpdateInitiator
     ) {
     }
 
-    /** @param array<string, mixed> $post */
-    public static function fromPostData(ConsultationMotionType $motionType, array $post): self
+    /**
+     * @param array<string, mixed> $post
+     * @param class-string<ISupporter> $supporterClass
+     */
+    public static function fromPostData(ConsultationMotionType $motionType, array $post, string $supporterClass): self
     {
         $postInitiator = $post['Initiator'];
         $othersPrivilege = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motionType($motionType->id));
@@ -55,14 +58,23 @@ class IMotionUpdateInitiator
         if ($othersPrivilege && isset($post['otherInitiator'])) {
             $setType = $post['initiatorSetType'] ?? '';
             $setUsername = $post['initiatorSetUsername'] ?? '';
-            if (isset($post['initiatorSet']) && $post['initiatorSet'] === '1' && trim($setUsername) !== '') {
-                $user = User::findByAuthTypeAndName($setType, $setUsername);
-                if (!$user) {
-                    throw new FormError(\Yii::t('motion', 'err_user_not_found'));
+            if (isset($post['initiatorSet']) && $post['initiatorSet'] === '1') {
+                if (trim($setUsername) !== '') {
+                    $user = User::findByAuthTypeAndName($setType, $setUsername);
+                    if (!$user) {
+                        throw new FormError(\Yii::t('motion', 'err_user_not_found'));
+                    }
+                    $initiator->userId = $user->id;
+                } else {
+                    $initiator->userId = null;
                 }
-                $initiator->userId = $user->id;
             } else {
-                $initiator->userId = null;
+                if ($initiator->id) {
+                    $supporter = $supporterClass::findOne($initiator->id);
+                    $initiator->userId = $supporter?->userId;
+                } else {
+                    $initiator->userId = null;
+                }
             }
         } else {
             $initiator->userId = User::getCurrentUser()?->id;

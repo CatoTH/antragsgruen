@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\api\imotion;
 
 use app\models\db\ConsultationMotionType;
+use app\models\db\MotionSupporter;
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\{ISectionType, UploadedFileRef};
 
@@ -51,7 +52,7 @@ class MotionUpdateRequest
 
         $initiators = [];
         if (isset($post['Initiator']) && is_array($post['Initiator'])) {
-            $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post);
+            $initiators[] = IMotionUpdateInitiator::fromPostData($motionType, $post, MotionSupporter::class);
         }
         $initiators = array_merge($initiators, IMotionUpdateInitiator::moreFromPostData($post));
 
