@@ -1142,6 +1142,13 @@ INSERT INTO `###TABLE_PREFIX###userGroup` (`userId`, `groupId`) VALUES
 (9, 39);
 
 --
+-- Dumping data for table `debateItem`
+--
+-- Ongoing debate (dateStopped IS NULL) on motion 2 ("O’zapft is!", A2) of consultation 1
+INSERT INTO `###TABLE_PREFIX###debateItem` (`id`, `consultationId`, `motionId`, `amendmentId`, `agendaItemId`, `votingBlockId`, `dateStarted`, `dateStopped`, `settings`) VALUES
+(1, 1, 2, NULL, NULL, NULL, '2015-03-30 10:00:00', NULL, NULL);
+
+--
 -- Dumping data for table `motion`
 --
 INSERT INTO `motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `version`, `dateCreation`, `dateSubmission`, `datePublication`, `dateResolution`, `dateContentModification`, `status`, `statusString`, `nonAmendable`, `notCommentable`, `noteInternal`, `cache`, `textFixed`, `slug`, `proposalStatus`, `proposalReferenceId`, `proposalComment`, `proposalVisibleFrom`, `proposalNotification`, `proposalUserStatus`, `proposalExplanation`, `votingStatus`, `votingBlockId`, `votingData`, `responsibilityId`, `responsibilityComment`, `extraData`) VALUES

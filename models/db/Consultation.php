@@ -35,6 +35,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property ConsultationFileGroup[] $fileGroups
  * @property ConsultationLog[] $logEntries
  * @property SpeechQueue[] $speechQueues
+ * @property DebateItem[] $debateItems
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
  * @property VotingQuestion[] $votingQuestions
@@ -419,6 +420,14 @@ class Consultation extends ActiveRecord
     public function getSpeechQueues(): ActiveQuery
     {
         return $this->hasMany(SpeechQueue::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery<DebateItem>
+     */
+    public function getDebateItems(): ActiveQuery
+    {
+        return $this->hasMany(DebateItem::class, ['consultationId' => 'id']);
     }
 
     public function getActiveSpeechQueue(): ?SpeechQueue
