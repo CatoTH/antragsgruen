@@ -64,6 +64,7 @@ export class ChangeProposedProcedure {
         this.initVotingBlock();
         this.initExplanation();
         this.initTags();
+        this.initNewVersionSetter();
         this.$widget.on("submit", ev => ev.preventDefault());
         this.setVotingBlockSettings();
     }
@@ -130,6 +131,7 @@ export class ChangeProposedProcedure {
         this.commentsScrollBottom();
         this.initExplanation();
         this.initTags();
+        this.initNewVersionSetter();
         this.$widget.find('.newBlock').addClass('hidden');
         this.$widget.find('.notifyProposerSection').addClass('hidden');
         this.$widget.find('#votingBlockId').trigger('change');
@@ -325,6 +327,40 @@ export class ChangeProposedProcedure {
             this.$widget.find('.notifyProposerSection').scrollintoview({top_offset: -50});
         });
         this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
+    }
+
+    initNewVersionSetter() {
+        const originalValues = {
+            status: this.$widget.find('.statusForm input[type=radio]:checked').val(),
+            referredTo: this.$widget.find('#referredTo').val(),
+            obsoletedByMotion: this.$widget.find('#obsoletedByMotion').val(),
+            obsoletedByAmendment: this.$widget.find('#obsoletedByAmendment').val(),
+            statusCustomStr: this.$widget.find('#statusCustomStr').val(),
+        }
+        const onChanged = () => {
+            this.$widget.addClass('isChanged');
+
+            if (!this.$widget.find('.versionSelect').data('new-on-change')) {
+                return;
+            }
+            if (
+                originalValues.status === this.$widget.find('.statusForm input[type=radio]:checked').val() &&
+                originalValues.referredTo === this.$widget.find('#referredTo').val() &&
+                originalValues.obsoletedByMotion === this.$widget.find('#obsoletedByMotion').val() &&
+                originalValues.obsoletedByAmendment === this.$widget.find('#obsoletedByAmendment').val() &&
+                originalValues.statusCustomStr === this.$widget.find('#statusCustomStr').val()
+            ) {
+                this.$widget.find('.versionSelect input[name=newVersion][value=current]').prop('checked', true);
+            } else {
+                this.$widget.find('.versionSelect input[name=newVersion][value=new]').prop('checked', true);
+            }
+        }
+
+        this.$widget.find('.statusForm input[type=radio]').on('change', onChanged.bind(this));
+        this.$widget.find('#referredTo').on('change', onChanged.bind(this));
+        this.$widget.find('#obsoletedByMotion').on('change', onChanged.bind(this));
+        this.$widget.find('#obsoletedByAmendment').on('change', onChanged.bind(this));
+        this.$widget.find('#statusCustomStr').on('change', onChanged.bind(this));
     }
 
     setVotingBlockSettings() {
