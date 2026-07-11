@@ -2,6 +2,7 @@
 
 ### Version 4.17.2 [not released yet]
 
+- Automatic versioning of proposed procedures (creating new versions when users have already accepted/rejected a proposal) can now be turned off.
 - Bugfix: Automatic scrolling to motion/amendment comments was not working reliably.
 - Bugfix: If a modified adoption of an amendment was proposed, and the amendment was later on deleted, then merging other amendments into the base motion failed.
 

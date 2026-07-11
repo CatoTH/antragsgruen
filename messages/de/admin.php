@@ -549,6 +549,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_initiator_amend' => 'Antragsteller*in / Unterstützer*innen: Änderungsanträge',
     'motion_type_proposed'        => 'Verfahrensvorschläge',
     'motion_type_proposed_label'  => 'Admins können Verfahrensvorschläge für Anträge festlegen',
+    'motion_type_proposed_versio' => 'Automatische Versionierung von Verfahrensvorschlägen',
     'motion_type_translations'    => 'Antragstyp-spezifische Texte / Übersetzungen',
     'motion_type_respons'         => 'Zuständigkeiten',
     'motion_type_respons_label'   => 'Jeder (Änderungs-)Antrag lässt sich einer Administrierenden zuordnen',

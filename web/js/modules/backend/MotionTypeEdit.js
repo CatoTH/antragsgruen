@@ -59,6 +59,16 @@ export class MotionTypeEdit {
             }
         }).trigger("change");
 
+        const $typeProposedProcedure = $("#typeProposedProcedure"),
+            $typeProposedProcedureVersioningRow = $("#typeProposedProcedureVersioningSelect");
+        $typeProposedProcedure.on('change', () => {
+            if ($typeProposedProcedure.prop('checked')) {
+                $typeProposedProcedureVersioningRow.removeClass('hidden');
+            } else {
+                $typeProposedProcedureVersioningRow.addClass('hidden');
+            }
+        }).trigger('change');
+
         const $typeAmendSinglePara = $("#typeAmendSinglePara"),
             $typeAmendSingleChangeHolder = $("#typeAmendSingleChange").parents('label').first();
         $typeAmendSinglePara.on('change', () => {
