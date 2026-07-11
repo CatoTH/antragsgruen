@@ -40,6 +40,9 @@ echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
 if ($consultation->getSettings()->hasCurrentlyDebated) {
+    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
+        echo $this->render('_index_debate_admin', ['consultation' => $consultation]);
+    }
     echo $this->render('_index_debate', ['consultation' => $consultation]);
 }
 
