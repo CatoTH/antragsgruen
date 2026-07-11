@@ -681,6 +681,33 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/debate:
+    get:
+      operationId: getCurrentDebate
+      summary: The current state of the "Currently debated" section
+      description: >
+        Returns the motion, amendment, or agenda item that is currently being debated.
+        This endpoint is available without authentication as long as the "Currently debated"
+        feature is enabled for the consultation, independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The current debate state. `current` is null if nothing is being debated right now.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -891,6 +918,73 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation
+
+    DebateState:
+      x-php-namespace: debate
+      type: object
+      properties:
+        current:
+          $ref: '#/components/schemas/DebateItem'
+
+    DebateItem:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: The currently debated item. Null if nothing is being debated right now.
+      required:
+        - id
+        - target_type
+        - target_id
+        - title
+        - date_started
+      properties:
+        id:
+          type: integer
+          example: 1
+        target_type:
+          type: string
+          enum:
+            - motion
+            - amendment
+            - agenda_item
+        target_id:
+          type: integer
+          description: The ID of the debated motion, amendment, or agenda item (depending on target_type)
+          example: 2
+        title:
+          type: string
+          example: "O’zapft is!"
+        title_with_prefix:
+          type: string
+          nullable: true
+          example: "A2: O’zapft is!"
+        initiators_html:
+          type: string
+          nullable: true
+          description: Formatted list of the initiators. Null for agenda items.
+        date_started:
+          type: string
+          example: "2026-07-10T10:00:00+02:00"
+        url_json:
+          type: string
+          nullable: true
+          description: REST URL of the debated motion or amendment. Null for agenda items.
+          example: https://test.antragsgruen.de/rest/consultation/2-ozapft-is
+        url_html:
+          type: string
+          nullable: true
+          description: URL of the HTML page of the debated motion or amendment. Null for agenda items.
+          example: https://test.antragsgruen.de/consultation/2-ozapft-is
+        speech_queue_id:
+          type: integer
+          nullable: true
+          description: ID of the speaking list attached to the debated item, usable with the speech endpoints
+          example: 23
+        voting_block_id:
+          type: integer
+          nullable: true
+          description: ID of the voting block attached to this debate
+          example: 42
 
     MotionLinkWithAmendmentLinks:
       x-php-namespace: imotion
