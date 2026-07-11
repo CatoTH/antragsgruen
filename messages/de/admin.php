@@ -255,6 +255,7 @@ return [
     'con_document_page'       => '<strong>Dokumentenverwaltung</strong> auf eigener Unterseite',
     'con_voting_page'         => '<strong>Abstimmungen</strong> auf eigener Unterseite',
     'con_speech_page'         => 'Redelisten auf eigener Unterseite',
+    'con_currently_debated'   => '<strong>Aktuell debattiert</strong> auf der Startseite',
     'con_fb_img'              => 'Facebook-Bild',
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Neues Logo hochladen',
