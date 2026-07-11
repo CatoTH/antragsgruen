@@ -25,6 +25,16 @@ pnpm run watch                 # Watch and recompile on change (gulp watch)
 ./yii migrate                  # Apply database migrations
 ```
 
+### Creating new DB entities / migrations
+When creating or changing database tables, follow this flow:
+1. Create / update the ActiveRecord model in `models/db/`
+2. Create a new migration under `migrations/`
+3. Test that the migration can be applied and reverted: `./yii migrate` / `./yii migrate/down`
+4. Add / update the table definition in `assets/db/create.sql`
+5. Register the new migration as applied in `assets/db/data.sql` (the `INSERT INTO migration` rows)
+6. Update `assets/db/delete.sql` if necessary
+7. Add dummy data to the test fixture `tests/Support/Data/dbdata1.sql` if applicable (feel free to ask the user if necessary)
+
 ### After a git pull
 ```bash
 ./composer.phar install && ./yii migrate && pnpm run build
