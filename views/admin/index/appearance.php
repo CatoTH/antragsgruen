@@ -214,6 +214,7 @@ $handledSiteSettings = [];
             <?php
             $boolSettingRow($settings, 'documentPage', $handledSettings, Yii::t('admin', 'con_document_page'));
             $boolSettingRow($settings, 'votingPage', $handledSettings, Yii::t('admin', 'con_voting_page'));
+            $boolSettingRow($settings, 'hasCurrentlyDebated', $handledSettings, Yii::t('admin', 'con_currently_debated'));
             ?>
 
             <div class="speechLists">
