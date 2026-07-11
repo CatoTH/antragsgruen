@@ -1,4 +1,4 @@
-.currentDebateInline {
+.currentDebateInline, .currentDebateAdmin {
   .nothingDebated {
     margin: 10px 0;
     text-align: center;
@@ -23,7 +23,9 @@
       }
     }
   }
+}
 
+.currentDebateInline {
   .secondaryMotionRow {
     border-top: solid 1px #ccc;
     display: flex;
@@ -44,5 +46,65 @@
       flex-basis: 34%;
       align-self: center;
     }
+  }
+}
+
+.currentDebateAdmin {
+  .debateAdminTabs {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .tab {
+      flex: 1 1 25%;
+      text-align: center;
+      background: none;
+      border: none;
+      padding: 7px 5px;
+      color: green;
+
+      &.active {
+        font-weight: bold;
+        color: inherit;
+      }
+    }
+  }
+
+  .startDebateTitle {
+    font-weight: bold;
+    margin: 15px 0 10px;
+  }
+
+  .selectRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .rowLabel {
+      width: 170px;
+      flex-shrink: 0;
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+
+    .rowSelect {
+      width: 360px;
+
+      select {
+        max-width: 100%;
+      }
+    }
+
+    .rowButton {
+      margin-left: 10px;
+    }
+  }
+
+  .underConstruction {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    padding: 20px 0;
   }
 }
