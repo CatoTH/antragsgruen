@@ -1,0 +1,48 @@
+.currentDebateInline {
+  .nothingDebated {
+    margin: 10px 0;
+    text-align: center;
+    font-style: italic;
+    color: #777;
+  }
+
+  .debatedItem {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+
+    .title {
+      font-size: 20px;
+    }
+
+    .proposer {
+      font-size: 12px;
+
+      .fulltextLink {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .secondaryMotionRow {
+    border-top: solid 1px #ccc;
+    display: flex;
+    width: 100%;
+
+    .raisedSecondaryMotions {
+      text-align: left;
+      flex-basis: 66%;
+
+      .noSecondaryMotion {
+        font-style: italic;
+        color: #777;
+      }
+    }
+
+    .raiseSecondaryMotion {
+      text-align: right;
+      flex-basis: 34%;
+      align-self: center;
+    }
+  }
+}
