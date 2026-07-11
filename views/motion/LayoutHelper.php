@@ -1122,6 +1122,13 @@ class LayoutHelper
      */
     public static function getPrevNextLinks(Motion $motion): array
     {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $override = $plugin::getPrevNextLinks($motion);
+            if ($override !== null) {
+                return $override;
+            }
+        }
+
         $consultation = $motion->getMyConsultation();
 
         $prevMotion = null;

@@ -394,4 +394,12 @@ class ModuleBase extends Module
     {
         return null;
     }
+
+    /**
+     * @return array{prev: IMotion|null, next: IMotion|null}|null
+     */
+    public static function getPrevNextLinks(Motion $motion): ?array
+    {
+        return null;
+    }
 }
