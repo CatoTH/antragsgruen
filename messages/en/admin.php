@@ -720,6 +720,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_initiator_amend' => 'Proposer / supporters: amendments',
     'motion_type_proposed'        => 'Proposed procedure',
     'motion_type_proposed_label'  => 'Admins can specify a proposed procedure for these motions',
+    'motion_type_proposed_versio' => 'Automatic Versioning of Proposed Procedures',
     'motion_type_translations'    => 'Motion type specific texts / translations',
     'motion_type_respons'         => 'Responsibilities',
     'motion_type_respons_label'   => 'Each motion/amendment can be assigned to an admin',
