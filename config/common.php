@@ -9,6 +9,11 @@ use app\models\settings\AntragsgruenApp;
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'defines.php');
 
+if (!defined('K_PATH_FONTS')) {
+    // Needs to be set before the TCPDF classes are loaded, as its autoconfig would resolve a non-existing path
+    define('K_PATH_FONTS', dirname(__DIR__) . '/vendor/tecnickcom/tc-lib-pdf-font/target/fonts/');
+}
+
 if (ini_get('date.timezone') == '') {
     $timezone = 'Europe/Berlin';
     date_default_timezone_set($timezone);
@@ -16,6 +21,8 @@ if (ini_get('date.timezone') == '') {
 }
 ini_set('tidy.clean_output', false);
 ini_set('default_charset', 'UTF-8');
+
+
 
 if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
     $domp         = trim($params->domainPlain, '/');
