@@ -33,6 +33,7 @@ $controller->layoutParams->addBreadcrumb('Help');
                 <li>Tutorial coming soon: Support for applications</li>
                 <li>Tutorial coming soon: Consolidate submitted amendments into a final resolution</li>
                 <li><a href="/help/progress-reports">Progress reports</a></li>
+                <li><a href="/help/roberts-rules">Running a meeting under Robert’s Rules of Order</a></li>
                 <li>Tutorial coming soon: Proposed procedures</li>
                 <li>Tutorial coming soon: Votings</li>
             </ul>

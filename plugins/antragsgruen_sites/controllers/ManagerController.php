@@ -229,6 +229,15 @@ class ManagerController extends Base
         }
     }
 
+    public function actionRobertsRules(): HtmlResponse
+    {
+        if (\Yii::$app->language === 'de') {
+            return new HtmlResponse($this->render('help_robertsrules_de'));
+        } else {
+            return new HtmlResponse($this->render('help_robertsrules_en'));
+        }
+    }
+
     /**
      * @return Site[]
      */
