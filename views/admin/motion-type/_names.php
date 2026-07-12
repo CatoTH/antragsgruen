@@ -107,6 +107,15 @@ use yii\helpers\Html;
                 $motionType->getSettingsObj()->hasProposedProcedure,
                 'typeProposedProcedure'
             );
+
+            echo '<div id="typeProposedProcedureVersioningSelect">';
+            echo HTMLTools::labeledCheckbox(
+                'type[proposedProcedureVersioning]',
+                Yii::t('admin', 'motion_type_proposed_versio'),
+                $motionType->getSettingsObj()->proposedProcedureVersioning,
+                'typeProposedProcedureVersioning'
+            );
+            echo '</div>';
             ?>
         </div>
     </div>

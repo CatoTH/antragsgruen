@@ -206,6 +206,6 @@ abstract class IProposal extends ActiveRecord
 
     public function editingShouldCreateNewVersion(): bool
     {
-        return $this->userStatus !== null;
+        return $this->userStatus !== null && $this->getMyIMotion()->getMyMotionType()->getSettingsObj()->proposedProcedureVersioning;
     }
 }

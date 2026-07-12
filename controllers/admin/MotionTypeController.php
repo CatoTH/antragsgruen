@@ -151,6 +151,7 @@ class MotionTypeController extends AdminBase
             $settings->pdfIntroduction      = $input['pdfIntroduction'];
             $settings->motionTitleIntro     = $input['typeMotionIntro'];
             $settings->hasProposedProcedure = isset($input['proposedProcedure']);
+            $settings->proposedProcedureVersioning = isset($input['proposedProcedureVersioning']);
             $settings->hasResponsibilities  = isset($input['responsibilities']);
             $settings->commentsRestrictViewToWritables = isset($input['commentsRestrictViewToWritables']);
             $settings->allowAmendmentsToAmendments = isset($input['allowAmendmentsToAmendments']);
