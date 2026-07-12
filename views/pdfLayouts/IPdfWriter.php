@@ -2,13 +2,21 @@
 
 namespace app\views\pdfLayouts;
 
-use app\components\HTMLTools;
 use app\models\db\MotionSection;
 use setasign\Fpdi\Tcpdf\Fpdi;
-use TCPDF_STATIC;
 
 class IPdfWriter extends Fpdi
 {
+    /**
+     * Maps the class-based list styles of HTMLTools::KNOWN_OL_CLASSES to standard CSS list-style-types
+     * natively supported by the tc-lib-pdf HTML renderer.
+     * decimalCircle ("(1)") has no CSS equivalent and is handled separately in prepareHtmlListMarkup().
+     */
+    private const OL_CLASS_LIST_STYLES = [
+        'decimalDot' => 'decimal',
+        'lowerAlpha' => 'lower-alpha',
+        'upperAlpha' => 'upper-alpha',
+    ];
     /**
      * This adds <br>-tags where necessary.
      * Test cases are collected in the "Listen-Test"-motion.
@@ -133,247 +141,309 @@ class IPdfWriter extends Fpdi
         }
     }
 
-    protected function openHTMLTagHandler($dom, $key, $cell)
+    /**
+     * TCPDF 7 renders HTML through the tc-lib-pdf engine. The engine natively supports
+     * <ol start="..."> and the standard CSS list-style-types, but neither our class-based list styles
+     * (HTMLTools::KNOWN_OL_CLASSES) nor <li value="...">, so they are rewritten into supported markup:
+     * - <ol class="decimalDot|lowerAlpha|upperAlpha"> => <ol style="list-style-type: ...">
+     * - <ol class="decimalCircle"> => list-style-type:none, writing "(n)" directly into the <li>s
+     * - <li value="n"> => the list is split into </ol><ol start="n"> (zeroing the margins at the split)
+     * - in nested lists, a <p> directly at the beginning of a <li> is unwrapped, as the engine
+     *   would otherwise render the list marker on a separate line above the paragraph
+     * - plain lists nested inside a restyled list get an explicit default list-style-type, as the
+     *   engine would let them inherit the outer list-style-type (unlike browsers with their UA stylesheet)
+     */
+    public static function prepareHtmlListMarkup(string $html): string
     {
-        $return = parent::openHTMLTagHandler($dom, $key, $cell);
+        if (stripos($html, '<li') === false) {
+            return $html;
+        }
 
-        $tag    = $dom[$key];
-        $parent = $dom[($dom[$key]['parent'])];
+        $tokens = preg_split('/(<[^>]+>)/siu', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+        if ($tokens === false) {
+            return $html;
+        }
+        $output = [];
+        /** @var array<array{ordered: bool, circle: bool, styled: bool, counter: int|string, reopenAttrs: array<string, string>, openAttrs: array<string, string>, openIdx: int}> $listStack */
+        $listStack = [];
+        $pendingListMarker = null;
+        $dropLiFirstParagraph = false;
+        $dropParagraphClose = false;
 
-        switch ($tag['value']) {
-            case 'ol':
-                if (isset($tag['attribute']['start'])) {
-                    $this->listcount[$this->listnum] = intval($tag['attribute']['start']) - 1;
-                } else {
-                    $this->listcount[$this->listnum] = 0;
+        foreach ($tokens as $token) {
+            if ($dropLiFirstParagraph && $token !== '') {
+                if (preg_match('/^<p\b/siu', $token)) {
+                    $dropLiFirstParagraph = false;
+                    $dropParagraphClose = true;
+                    continue;
                 }
-                break;
-            case 'li':
-                if ($this->listordered[$this->listnum]) {
-                    if (isset($tag['attribute']['value'])) {
-                        if (preg_match('/^\d+$/siu', $tag['attribute']['value'])) {
-                            $this->listcount[$this->listnum] = intval($tag['attribute']['value']);
-                        } elseif (preg_match('/^[a-z]$/siu', $tag['attribute']['value'])) {
-                            $this->listcount[$this->listnum] = ord($tag['attribute']['value']) - ord("a") + 1;
-                        } elseif (preg_match('/^[A-Z]$/siu', $tag['attribute']['value'])) {
-                            $this->listcount[$this->listnum] = ord((string)intval($tag['attribute']['value'])) - ord("A") + 1;
-                        } else {
-                            $this->listcount[$this->listnum] = $tag['attribute']['value'];
+                if ($token[0] === '<' || trim($token) !== '') {
+                    $dropLiFirstParagraph = false;
+                }
+            }
+            if ($dropParagraphClose && preg_match('/^<\/p\s*>$/siu', $token)) {
+                $dropParagraphClose = false;
+                continue;
+            }
+
+            if ($pendingListMarker !== null && $token !== '') {
+                if (preg_match('/^<(p|div|blockquote)\b/siu', $token)) {
+                    // Write the marker inside the li's first block-level element; before it, it would force a line break
+                    $output[] = $token;
+                    $output[] = $pendingListMarker;
+                    $pendingListMarker = null;
+                    continue;
+                }
+                if ($token[0] === '<' || trim($token) !== '') {
+                    $output[] = $pendingListMarker;
+                    $pendingListMarker = null;
+                }
+                // whitespace-only text: emit it below and keep the marker pending
+            }
+
+            if (!preg_match('/^<(?<closing>\/?)(?<tag>ol|ul|li)\b/siu', $token, $tagMatch)) {
+                $output[] = $token;
+                continue;
+            }
+            $tagName = strtolower($tagMatch['tag']);
+
+            if ($tagMatch['closing'] === '/') {
+                if ($tagName !== 'li' && count($listStack) > 0) {
+                    array_pop($listStack);
+                }
+                $output[] = $token;
+                continue;
+            }
+
+            if ($tagName === 'ul') {
+                $styled = false;
+                if (self::hasStyledListInStack($listStack)) {
+                    // The engine inherits list-style-type into nested lists, so a plain <ul> inside a
+                    // restyled list would inherit e.g. "none". Set the default bullet explicitly.
+                    $attrs = self::parseTagAttributes($token);
+                    if (!self::hasOwnListStyle($attrs)) {
+                        $attrs['style'] = (isset($attrs['style']) ? rtrim(trim($attrs['style']), ';') . ';' : '') . 'list-style-type:disc';
+                        $token = self::buildTag('ul', $attrs);
+                    }
+                    $styled = true;
+                }
+                $listStack[] = ['ordered' => false, 'circle' => false, 'styled' => $styled, 'counter' => 1, 'reopenAttrs' => [], 'openAttrs' => [], 'openIdx' => count($output)];
+                $output[] = $token;
+                continue;
+            }
+
+            if ($tagName === 'ol') {
+                $attrs = self::parseTagAttributes($token);
+                $circle = false;
+                $listStyle = null;
+                if (isset($attrs['class'])) {
+                    $classes = preg_split('/\s+/', trim($attrs['class']), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+                    foreach ($classes as $i => $class) {
+                        if ($class === 'decimalCircle') {
+                            $circle = true;
+                            unset($classes[$i]);
+                        } elseif (isset(self::OL_CLASS_LIST_STYLES[$class])) {
+                            $listStyle = self::OL_CLASS_LIST_STYLES[$class];
+                            unset($classes[$i]);
                         }
                     }
-                }
-                if (isset($parent['attribute']['class']) AND !TCPDF_STATIC::empty_string($parent['attribute']['class'])) {
-                    $classes = explode(" ", $parent['attribute']['class']);
-                    foreach (HTMLTools::KNOWN_OL_CLASSES as $olClass) {
-                        if (in_array($olClass, $classes)) {
-                            $this->lispacer = $olClass;
-                        }
+                    if (count($classes) > 0) {
+                        $attrs['class'] = implode(' ', $classes);
+                    } else {
+                        unset($attrs['class']);
                     }
                 }
-                break;
+                if ($circle) {
+                    $listStyle = 'none';
+                }
+                if ($listStyle === null && !self::hasOwnListStyle($attrs) && self::hasStyledListInStack($listStack)) {
+                    // The engine inherits list-style-type into nested lists, so a plain <ol> inside a
+                    // restyled list would inherit e.g. "none". Set the default numbering explicitly.
+                    $listStyle = 'decimal';
+                }
+                if ($listStyle !== null) {
+                    $attrs['style'] = (isset($attrs['style']) ? rtrim(trim($attrs['style']), ';') . ';' : '') . 'list-style-type:' . $listStyle;
+                }
+
+                $counter = (isset($attrs['start']) && preg_match('/^\d+$/', $attrs['start'])) ? intval($attrs['start']) : 1;
+                $reopenAttrs = $attrs;
+                unset($reopenAttrs['start']);
+
+                $listStack[] = ['ordered' => true, 'circle' => $circle, 'styled' => ($listStyle !== null || self::hasOwnListStyle($attrs)), 'counter' => $counter, 'reopenAttrs' => $reopenAttrs, 'openAttrs' => $attrs, 'openIdx' => count($output)];
+                $output[] = self::buildTag('ol', $attrs);
+                continue;
+            }
+
+            // <li>
+            $dropLiFirstParagraph = (count($listStack) >= 2);
+            if (count($listStack) === 0 || !$listStack[count($listStack) - 1]['ordered']) {
+                $output[] = $token;
+                continue;
+            }
+            $currentList = &$listStack[count($listStack) - 1];
+
+            $attrs = self::parseTagAttributes($token);
+            if (isset($attrs['value'])) {
+                $rawValue = $attrs['value'];
+                $newCounter = self::listItemValueToNumber($rawValue);
+                unset($attrs['value']);
+                $token = self::buildTag('li', $attrs);
+                if ($currentList['circle']) {
+                    // The markers are written by us, so non-numeric values like "1b" can be shown verbatim
+                    $currentList['counter'] = ($newCounter !== null ? $newCounter : $rawValue);
+                } elseif ($newCounter !== null) {
+                    $currentList['counter'] = $newCounter;
+
+                    // Split the list into a new one starting at the given number. Zero out the margins
+                    // at the split, as the renderer applies a default 1em vertical margin to lists.
+                    $currentList['openAttrs']['style'] = (isset($currentList['openAttrs']['style']) ? rtrim(trim($currentList['openAttrs']['style']), ';') . ';' : '') . 'margin-bottom:0';
+                    $output[$currentList['openIdx']] = self::buildTag('ol', $currentList['openAttrs']);
+
+                    $reopenAttrs = $currentList['reopenAttrs'];
+                    $reopenAttrs['start'] = (string)$newCounter;
+                    $reopenAttrs['style'] = (isset($reopenAttrs['style']) ? rtrim(trim($reopenAttrs['style']), ';') . ';' : '') . 'margin-top:0';
+                    $output[] = '</ol>';
+                    $currentList['openAttrs'] = $reopenAttrs;
+                    $currentList['openIdx'] = count($output);
+                    $output[] = self::buildTag('ol', $reopenAttrs);
+                }
+            }
+            $output[] = $token;
+            if ($currentList['circle']) {
+                $pendingListMarker = '(' . $currentList['counter'] . ')&nbsp;';
+            }
+            $currentList['counter'] = self::incrementListCounter($currentList['counter']);
+            unset($currentList);
+        }
+        if ($pendingListMarker !== null) {
+            $output[] = $pendingListMarker;
         }
 
-        return $return;
+        return implode('', $output);
     }
 
-    public function setLIsymbol($symbol = '!'): void
+    /**
+     * @param array<array{styled: bool}> $listStack
+     */
+    private static function hasStyledListInStack(array $listStack): bool
     {
-        // check for custom image symbol
-        if (substr($symbol, 0, 4) == 'img|') {
-            $this->lisymbol = $symbol;
+        foreach ($listStack as $entry) {
+            if ($entry['styled']) {
+                return true;
+            }
+        }
 
-            return;
-        }
-        $symbol        = strtolower($symbol);
-        $valid_symbols = [
-            '!',
-            '#',
-            'disc',
-            'circle',
-            'square',
-            '1',
-            'decimal',
-            'decimal-leading-zero',
-            'i',
-            'lower-roman',
-            'I',
-            'upper-roman',
-            'a',
-            'lower-alpha',
-            'lower-latin',
-            'A',
-            'upper-alpha',
-            'upper-latin',
-            'lower-greek'
-        ];
-        $valid_symbols = array_merge($valid_symbols, HTMLTools::KNOWN_OL_CLASSES);
-        if (in_array($symbol, $valid_symbols)) {
-            $this->lisymbol = $symbol;
-        } else {
-            $this->lisymbol = '';
-        }
+        return false;
     }
 
-    protected function putHtmlListBullet($listdepth, $listtype = '', $size = 10): void
+    /**
+     * @param array<string, string> $attrs
+     */
+    private static function hasOwnListStyle(array $attrs): bool
     {
-        if ($this->state != 2) {
-            return;
+        return isset($attrs['style']) && preg_match('/list-style(-type)?\s*:/i', $attrs['style']) === 1;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function parseTagAttributes(string $tag): array
+    {
+        $attrs = [];
+        preg_match_all('/(?<name>[a-z][a-z0-9_-]*)\s*=\s*(?:"(?<dq>[^"]*)"|\'(?<sq>[^\']*)\')/siu', $tag, $matches, PREG_SET_ORDER);
+        foreach ($matches as $match) {
+            $attrs[strtolower($match['name'])] = (($match['dq'] ?? '') !== '' ? $match['dq'] : ($match['sq'] ?? ''));
         }
 
-        $size        /= $this->k;
-        $bgcolor     = $this->bgcolor;
-        $color       = $this->fgcolor;
-        $strokecolor = $this->strokecolor;
-        $textitem    = '';
-        $tmpx        = $this->x;
-        $lspace      = (float)$this->GetStringWidth('  ');
-        if ($listtype == '^') {
-            // special symbol used for avoid justification of rect bullet
-            $this->lispacer = '';
+        return $attrs;
+    }
 
-            return;
-        } elseif ($listtype == '!') {
-            // set default list type for unordered list
-            $deftypes = ['disc', 'circle', 'square'];
-            $listtype = $deftypes[($listdepth - 1) % 3];
-        } elseif ($listtype == '#') {
-            // set default list type for ordered list
-            $listtype = 'decimal';
+    /**
+     * @param array<string, string> $attrs
+     */
+    private static function buildTag(string $name, array $attrs): string
+    {
+        $tag = '<' . $name;
+        foreach ($attrs as $attrName => $value) {
+            $tag .= ' ' . $attrName . '="' . str_replace('"', '&quot;', $value) . '"';
         }
 
-        switch ($listtype) {
-            // unordered types
-            case 'none':
-            {
-                break;
-            }
-            case 'disc':
-            {
-                $r      = $size / 6;
-                $lspace += (2 * $r);
-                if ($this->rtl) {
-                    $this->x += $lspace;
-                } else {
-                    $this->x -= $lspace;
-                }
-                $this->Circle(($this->x + $r), ($this->y + ($this->lasth / 2)), $r, 0, 360, 'F', [], $color, 8);
-                break;
-            }
-            case 'circle':
-            {
-                $r      = $size / 6;
-                $lspace += (2 * $r);
-                if ($this->rtl) {
-                    $this->x += $lspace;
-                } else {
-                    $this->x -= $lspace;
-                }
-                $prev_line_style = $this->linestyleWidth . ' ' . $this->linestyleCap . ' ' . $this->linestyleJoin . ' ' . $this->linestyleDash . ' ' . $this->DrawColor;
-                $new_line_style  = ['width' => ($r / 3), 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'phase' => 0, 'color' => $color];
-                $this->Circle(($this->x + $r), ($this->y + ($this->lasth / 2)), ($r * (1 - (1 / 6))), 0, 360, 'D', $new_line_style, [], 8);
-                $this->_out($prev_line_style); // restore line settings
-                break;
-            }
-            case 'square':
-            {
-                $l      = $size / 3;
-                $lspace += $l;
-                if ($this->rtl) {
-                    ;
-                    $this->x += $lspace;
-                } else {
-                    $this->x -= $lspace;
-                }
-                $this->Rect($this->x, ($this->y + (($this->lasth - $l) / 2)), $l, $l, 'F', [], $color);
-                break;
-            }
-            // ordered types
-            // $this->listcount[$this->listnum];
-            // $textitem
-            case '1':
-            case 'decimalCircle':
-            case 'decimal':
-            {
-                $textitem = $this->listcount[$this->listnum];
-                break;
-            }
-            case 'decimal-leading-zero':
-            {
-                $textitem = sprintf('%02d', $this->listcount[$this->listnum]);
-                break;
-            }
-            case 'i':
-            case 'lower-roman':
-            {
-                $textitem = strtolower(TCPDF_STATIC::intToRoman($this->listcount[$this->listnum]));
-                break;
-            }
-            case 'I':
-            case 'upper-roman':
-            {
-                $textitem = TCPDF_STATIC::intToRoman($this->listcount[$this->listnum]);
-                break;
-            }
-            case 'a':
-            case 'lower-alpha':
-            case 'lowerAlpha':
-            case 'lower-latin':
-            {
-                if (is_int($this->listcount[$this->listnum])) {
-                    $textitem = chr(97 + $this->listcount[$this->listnum] - 1);
-                } else {
-                    $textitem = $this->listcount[$this->listnum];
-                }
-                break;
-            }
-            case 'A':
-            case 'upper-alpha':
-            case 'upperAlpha':
-            case 'upper-latin':
-            {
-                if (is_int($this->listcount[$this->listnum])) {
-                    $textitem = chr(65 + $this->listcount[$this->listnum] - 1);
-                } else {
-                    $textitem = $this->listcount[$this->listnum];
-                }
-                break;
-            }
-            default:
-            {
-                $textitem = $this->listcount[$this->listnum];
-            }
+        return $tag . '>';
+    }
+
+    /**
+     * Increments alphanumeric string counters like str_increment() ("1b" => "1c"),
+     * which only exists as of PHP 8.3. Mimics the old TCPDF 6 behavior for such values.
+     */
+    private static function incrementListCounter(int|string $counter): int|string
+    {
+        if (is_int($counter)) {
+            return $counter + 1;
         }
-        if (!TCPDF_STATIC::empty_string($textitem)) {
-            // Check whether we need a new page or new column
-            $prev_y = $this->y;
-            $h      = $this->getCellHeight($this->FontSize);
-            if ($this->checkPageBreak($h) OR ($this->y < $prev_y)) {
-                $tmpx = $this->x;
-            }
-            // print ordered item
-            if ($listtype === 'decimalCircle') {
-                $textitem = '(' . $textitem . ')';
-            } else {
-                if ($this->rtl) {
-                    $textitem = '.' . $textitem;
-                } else {
-                    $textitem = $textitem . '.';
-                }
-            }
-            $strWidth = (float)$this->GetStringWidth($textitem);
-            $lspace += $strWidth;
-            if ($this->rtl) {
-                $this->x += $lspace;
-            } else {
-                $this->x -= $lspace;
-            }
-            $this->Write($this->lasth, $textitem, '', false, '', false, 0, false);
+        if (!preg_match('/^[a-zA-Z0-9]+$/', $counter)) {
+            return $counter;
         }
-        $this->x        = $tmpx;
-        $this->lispacer = '^';
-        // restore colors
-        $this->SetFillColorArray($bgcolor);
-        $this->SetDrawColorArray($strokecolor);
-        $this->SettextColorArray($color);
+
+        $chars = str_split($counter);
+        for ($i = count($chars) - 1; $i >= 0; $i--) {
+            $char = $chars[$i];
+            if ($char !== 'z' && $char !== 'Z' && $char !== '9') {
+                $chars[$i] = chr(ord($char) + 1);
+
+                return implode('', $chars);
+            }
+            // Overflow: wrap around and carry over to the character on the left
+            $chars[$i] = ($char === 'z' ? 'a' : ($char === 'Z' ? 'A' : '0'));
+        }
+
+        $first = $counter[0];
+
+        return (ctype_digit($first) ? '1' : ($first === strtoupper($first) ? 'A' : 'a')) . implode('', $chars);
+    }
+
+    private static function listItemValueToNumber(string $value): ?int
+    {
+        if (preg_match('/^\d+$/', $value)) {
+            return intval($value);
+        }
+        if (preg_match('/^[a-z]$/', $value)) {
+            return ord($value) - ord('a') + 1;
+        }
+        if (preg_match('/^[A-Z]$/', $value)) {
+            return ord($value) - ord('A') + 1;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $html
+     * @param bool $ln
+     * @param bool $fill
+     * @param bool $reseth
+     * @param bool $cell
+     * @param string $align
+     */
+    public function writeHTML($html, $ln = true, $fill = false, $reseth = false, $cell = false, $align = ''): void
+    {
+        parent::writeHTML(self::prepareHtmlListMarkup((string)$html), $ln, $fill, $reseth, $cell, $align);
+    }
+
+    /**
+     * @param float $w
+     * @param float $h
+     * @param float|null $x
+     * @param float|null $y
+     * @param string $html
+     * @param int|string|array<string, mixed> $border
+     * @param int $ln
+     * @param bool $fill
+     * @param bool $reseth
+     * @param string $align
+     * @param bool $autopadding
+     */
+    public function writeHTMLCell($w, $h, $x, $y, $html = '', $border = 0, $ln = 0, $fill = false, $reseth = true, $align = '', $autopadding = true): void
+    {
+        parent::writeHTMLCell($w, $h, $x, $y, self::prepareHtmlListMarkup((string)$html), $border, $ln, $fill, $reseth, $align, $autopadding);
     }
 }
