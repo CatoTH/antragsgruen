@@ -36,7 +36,6 @@
     "predis/predis": "^3.0",
     "s1syphos/php-simple-captcha": "dev-main#26d63ec7d3da30ea214d796eb613a8b6c2c51d81 as 2.4.0",
     "scssphp/scssphp": "^2.0",
-    "setasign/fpdi": "^2.3.7",
     "spomky-labs/otphp": "^11.4",
     "symfony/amazon-mailer": "^6.4",
     "symfony/lock": "^6.4",
@@ -75,11 +74,6 @@
     "symfony/var-exporter": ">=7.0.0",
     "symfony/yaml": ">=7.0.0",
     "webmozart/assert": ">= 2.0.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "setasign\\FpdiPdfParser\\": "components/fpdi/src/"
-    }
   },
   "autoload-dev": {
     "psr-4": {
