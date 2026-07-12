@@ -110,6 +110,10 @@ $controller->layoutParams->addInlineCss('
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 Tutorial: Submission of amendments
             </a><br>
+            <a href="/help/roberts-rules">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                Concepts: Antragsgrün and Robert’s Rules of Order
+            </a><br>
         </p>
 
         <br style="clear: both;">
