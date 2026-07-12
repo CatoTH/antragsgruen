@@ -26,74 +26,62 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
     /** Block tags that should share the line with the list marker when they are the first child of a <li> */
     private const LI_INLINE_BLOCK_TAGS = ['p', 'div', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre'];
 
-    /** Closed block elements after which TCPDF 6 added an extra line break when a list was opened.
-     * Must match the block elements checked in IPdfWriter::printMotionToPDFAddLinebreaks(). */
-    private const LEGACY_BLOCK_CLOSE_TAGS = ['div', 'p', 'blockquote', 'ul', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-
     /** @var string|null The value attribute of the list item currently being opened, to be rendered verbatim */
     private ?string $currentLiValue = null;
 
     /**
-     * @param THTMLRenderContext $hrc
-     */
-    protected function parseHTMLTagOPENol(array &$hrc, int $key, float &$tpx, float &$tpy, float &$tpw, float &$tph): string
-    {
-        $this->applyLegacyListSpacing($hrc, $key, $tpy);
-
-        return parent::parseHTMLTagOPENol($hrc, $key, $tpx, $tpy, $tpw, $tph);
-    }
-
-    /**
-     * @param THTMLRenderContext $hrc
-     */
-    protected function parseHTMLTagOPENul(array &$hrc, int $key, float &$tpx, float &$tpy, float &$tpw, float &$tph): string
-    {
-        $this->applyLegacyListSpacing($hrc, $key, $tpy);
-
-        return parent::parseHTMLTagOPENul($hrc, $key, $tpx, $tpy, $tpw, $tph);
-    }
-
-    /**
-     * TCPDF 6 performed a line break when opening an ol/ul in situations where the new engine
-     * does not, resulting in one empty line at the beginning of a list. The markup created by
-     * IPdfWriter::printMotionSection() and the line numbers printed next to motion texts rely
-     * on exactly this behavior, so it is replicated here.
-     * (The spacing between list items via "</li><br><li>"-markup needs no special handling,
-     * as the <br> creates the empty line by itself.)
+     * TCPDF 6 swallowed a <br> at the very beginning of a written cell (more precisely: a <br>
+     * that was only preceded by opening block tags). The markup created for line-numbered motion
+     * sections relies on this: IPdfWriter::printMotionSection() inserts an empty slot into the
+     * line number column for every line starting a list, pairing with the <br>-joined text lines.
      *
      * @param THTMLRenderContext $hrc
      */
-    private function applyLegacyListSpacing(array &$hrc, int $key, float &$tpy): void
+    protected function shouldSkipHTMLBrAdvance(array &$hrc, int $key, float $tpx): bool
     {
+        if ($this->isBrOnlyPrecededByOpeningTags($hrc, $key)) {
+            return true;
+        }
+
+        return parent::shouldSkipHTMLBrAdvance($hrc, $key, $tpx);
+    }
+
+    /**
+     * @param THTMLRenderContext $hrc
+     */
+    private function isBrOnlyPrecededByOpeningTags(array &$hrc, int $key): bool
+    {
+        $ancestors = [];
+        $parent = $hrc['dom'][$key]['parent'] ?? -1;
+        $guard = 0;
+        while ($parent >= 0 && $guard < 256) {
+            $ancestors[$parent] = true;
+            $next = $hrc['dom'][$parent]['parent'] ?? -1;
+            if ($next === $parent) {
+                break;
+            }
+            $parent = $next;
+            $guard++;
+        }
+
         for ($k = $key - 1; $k >= 0; $k--) {
             $node = $hrc['dom'][$k] ?? null;
             if ($node === null) {
-                return;
+                return true;
             }
             if (!$node['tag']) {
                 if (trim($node['value']) === '') {
                     continue; // whitespace between tags
                 }
 
-                return; // inline text directly before: the parent method breaks the line itself
+                return false;
             }
-
-            if ($node['value'] === 'br') {
-                // an explicit line break directly before: TCPDF 6 added another one when opening the list
-                $tpy += $this->getHTMLLineAdvance($hrc, $key);
-            } elseif (!$node['opening']) {
-                // a closed block element directly before, like a previous list or paragraph
-                if (in_array($node['value'], self::LEGACY_BLOCK_CLOSE_TAGS, true)) {
-                    $tpy += $this->getHTMLLineAdvance($hrc, $key);
-                }
-            } else {
-                // an opening tag directly before is the parent element: the list is the first
-                // content of the cell or of its surrounding block element
-                $tpy += $this->getHTMLLineAdvance($hrc, $key);
+            if (!$node['opening'] || !isset($ancestors[$k])) {
+                return false;
             }
-
-            return;
         }
+
+        return true;
     }
 
     /**

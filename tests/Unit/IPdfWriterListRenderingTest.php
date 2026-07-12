@@ -179,25 +179,55 @@ class IPdfWriterListRenderingTest extends TestBase
 
     public function testSetHtmlVSpaceDisablesDefaultBlockMargins(): void
     {
-        // With setHtmlVSpace() configured (as done by all PDF layouts), an <ol> following
-        // a <br> must start exactly one line further down - crucial for the line numbers
-        // printed next to motion texts.
-        // 10pt font, cell height ratio 1.5, one empty line from the <br> => exactly 2 lines of 15pt
+        // With setHtmlVSpace() configured (as done by all PDF layouts), an <ol> following a <br>
+        // must start on the very next line, like in TCPDF 6 - crucial for the line numbers
+        // printed next to motion texts. (10pt font, cell height ratio 1.5 => 15pt per line)
         $positions = $this->getRenderedStringYPositionsWithVSpace('first line<br><ol start="2"><li>list line</li></ol>');
 
         $this->assertArrayHasKey('first line', $positions);
         $this->assertArrayHasKey('list line', $positions);
-        $this->assertEqualsWithDelta(2 * 15.0, $positions['first line'] - $positions['list line'], 0.1);
+        $this->assertEqualsWithDelta(15.0, $positions['first line'] - $positions['list line'], 0.1);
+    }
+
+    public function testLeadingBrIsSwallowed(): void
+    {
+        // Like TCPDF 6, a <br> at the very beginning of a cell must not advance the line:
+        // printMotionSection() relies on this for the additional empty slots it inserts
+        // into the line number column
+        $plain = $this->getRenderedStringYPositionsWithVSpace('erste Zeile<br>zweite Zeile');
+        $leadingBr = $this->getRenderedStringYPositionsWithVSpace('<br>erste Zeile<br>zweite Zeile');
+
+        $this->assertEqualsWithDelta($plain['erste Zeile'], $leadingBr['erste Zeile'], 0.1);
+        // ... but only the first one
+        $doubleBr = $this->getRenderedStringYPositionsWithVSpace('<br><br>erste Zeile');
+        $this->assertEqualsWithDelta(15.0, $plain['erste Zeile'] - $doubleBr['erste Zeile'], 0.1);
     }
 
     public function testListItemSpacingMarkup(): void
     {
-        // printMotionSection() creates the spacing between list items with </li><br><li>-markup,
-        // which must result in exactly one empty line between the items
+        // printMotionSection() separates list items with </li><br><li>-markup.
+        // Matching TCPDF 6: for plain list items the <br> advances one line,
+        // for <p>-wrapped items the closing </p> adds another one (empty line between the items)
         $positions = $this->getRenderedStringYPositionsWithVSpace('<ol start="6"><li>Punkt sechs</li><br><li>Punkt sieben</li></ol>');
+        $this->assertEqualsWithDelta(15.0, $positions['Punkt sechs'] - $positions['Punkt sieben'], 0.1);
 
-        $this->assertArrayHasKey('Punkt sechs', $positions);
-        $this->assertArrayHasKey('Punkt sieben', $positions);
+        $positions = $this->getRenderedStringYPositionsWithVSpace('<ol start="6"><li><p>Punkt sechs</p></li><br><li><p>Punkt sieben</p></li></ol>');
         $this->assertEqualsWithDelta(2 * 15.0, $positions['Punkt sechs'] - $positions['Punkt sieben'], 0.1);
+    }
+
+    public function testNestedListStartsWithOneEmptyLine(): void
+    {
+        // The junction "...</p><br><ol..." (nested list after a <p>-wrapped text, joined by
+        // printMotionSection) must result in exactly one empty line, like in TCPDF 6
+        $positions = $this->getRenderedStringYPositionsWithVSpace(
+            '<ol class="decimalCircle" start="2"><li value="1b"><p>Haupttext</p><br><ol class="lowerAlpha"><li><p>Untertext</p></li></ol></li></ol>'
+        );
+
+        $this->assertArrayHasKey('Haupttext', $positions);
+        $this->assertArrayHasKey('Untertext', $positions);
+        $this->assertEqualsWithDelta(2 * 15.0, $positions['Haupttext'] - $positions['Untertext'], 0.1);
+        // markers share the line with their text
+        $this->assertEqualsWithDelta($positions['Haupttext'], $positions['(1b)'], 0.1);
+        $this->assertEqualsWithDelta($positions['Untertext'], $positions['a.'], 0.1);
     }
 }
