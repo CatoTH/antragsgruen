@@ -47,7 +47,7 @@
     "symfony/serializer": "^6.4",
     "symfony/string": "^6.4",
     "symfony/translation-contracts": "^3.0",
-    "tecnickcom/tcpdf": "^6.6.2",
+    "tecnickcom/tcpdf": "^7.0.2",
     "tijsverkoyen/css-to-inline-styles": "^2.3",
     "yiisoft/yii2": "~2.0.47",
     "yiisoft/yii2-authclient": "^2.2.14",
