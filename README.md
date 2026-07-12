@@ -177,14 +177,6 @@ A bash script that performs `git pull` for the current branch, installs dependen
 Generating PDFs is performed by the PHP-Library [TCPDF](https://github.com/tecnickcom/tcpdf) by default.
 In some cases, nicer and easier to customize PDFs can be generated though by using a separate command line tool to generate them. They need to be set up and configured by hand on the server though.
 
-### PHP-Based PDF-Rendering
-
-The PHP-processes need writing permissions to the folder.
-If this is not possible, you need to specify an alternative writable folder by hand by adding the following line to the beginning of `web/index.php`:
-```php
-define("K_PATH_FONTS", "/path/to/writable/directory/");
-```
-
 ### Weasyprint-based PDF-rendering
 
 As an optional alternative way to create PDFs that are slighly more aesthetically pleasing, Antragsgrün supports using [Weasyprint](https://weasyprint.org) as a rendering backend. This needs to be installed on the command line. Also, the [qpdf](https://github.com/qpdf/qpdf) command line tool is necessary, to improve compatibility of the generated PDF files.

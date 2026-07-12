@@ -38,11 +38,9 @@ class BDKPDF extends IPdfWriter
         $this->headerTitle  = $title;
     }
 
-    // @codingStandardsIgnoreStart
-
     public function Header(): void
     {
-        if (count($this->pagegroups) === 0) {
+        if (!$this->pagegroupsused) {
             // This is most likely a PDF-only application => we don't need the header
             return;
         }
@@ -66,7 +64,7 @@ class BDKPDF extends IPdfWriter
 
     public function Footer(): void
     {
-        if (count($this->pagegroups) === 0) {
+        if (!$this->pagegroupsused) {
             // This is most likely a PDF-only application => we don't need page numbers
             return;
         }
@@ -88,5 +86,4 @@ class BDKPDF extends IPdfWriter
             'M'
         );
     }
-    // @codingStandardsIgnoreEnd
 }

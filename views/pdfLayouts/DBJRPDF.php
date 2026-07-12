@@ -35,7 +35,7 @@ class DBJRPDF extends IPdfWriter
 
     public function Header(): void
     {
-        if (count($this->pagegroups) === 0) {
+        if (!$this->pagegroupsused) {
             // This is most likely a PDF-only application => we don't need page numbers
             return;
         }
@@ -43,10 +43,9 @@ class DBJRPDF extends IPdfWriter
         parent::Header();
     }
 
-    // @codingStandardsIgnoreStart
     public function Footer(): void
     {
-        if (count($this->pagegroups) === 0) {
+        if (!$this->pagegroupsused) {
             // This is most likely a PDF-only application => we don't need page numbers
             return;
         }
@@ -71,5 +70,4 @@ class DBJRPDF extends IPdfWriter
             'M'
         );
     }
-    // @codingStandardsIgnoreEnd
 }
