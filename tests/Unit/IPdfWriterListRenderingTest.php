@@ -205,11 +205,12 @@ class IPdfWriterListRenderingTest extends TestBase
 
     public function testListItemSpacingMarkup(): void
     {
-        // printMotionSection() separates list items with </li><br><li>-markup.
-        // Matching TCPDF 6: for plain list items the <br> advances one line,
-        // for <p>-wrapped items the closing </p> adds another one (empty line between the items)
+        // printMotionSection() separates list items with </li><br><li>-markup and inserts an
+        // empty slot into the line number column for each item, so exactly one empty line is
+        // expected between the items. (For plain list items, TCPDF 6 rendered no empty line
+        // here, so its line numbers drifted; for <p>-wrapped items it behaved the same way.)
         $positions = $this->getRenderedStringYPositionsWithVSpace('<ol start="6"><li>Punkt sechs</li><br><li>Punkt sieben</li></ol>');
-        $this->assertEqualsWithDelta(15.0, $positions['Punkt sechs'] - $positions['Punkt sieben'], 0.1);
+        $this->assertEqualsWithDelta(2 * 15.0, $positions['Punkt sechs'] - $positions['Punkt sieben'], 0.1);
 
         $positions = $this->getRenderedStringYPositionsWithVSpace('<ol start="6"><li><p>Punkt sechs</p></li><br><li><p>Punkt sieben</p></li></ol>');
         $this->assertEqualsWithDelta(2 * 15.0, $positions['Punkt sechs'] - $positions['Punkt sieben'], 0.1);
