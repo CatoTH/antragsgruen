@@ -51,12 +51,16 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
      */
     private function isBrOnlyPrecededByOpeningTags(array &$hrc, int $key): bool
     {
+        // Read into a plain local variable first: PHPStan cannot keep the precise THTMLAttrib
+        // shape for a chained access like $hrc['dom'][$k] inside a loop, since $hrc is by-ref
+        // and could in theory be mutated through another alias between iterations.
+        $dom = $hrc['dom'];
         $ancestors = [];
-        $parent = $hrc['dom'][$key]['parent'] ?? -1;
+        $parent = $dom[$key]['parent'] ?? -1;
         $guard = 0;
         while ($parent >= 0 && $guard < 256) {
             $ancestors[$parent] = true;
-            $next = $hrc['dom'][$parent]['parent'] ?? -1;
+            $next = $dom[$parent]['parent'] ?? -1;
             if ($next === $parent) {
                 break;
             }
@@ -65,7 +69,7 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
         }
 
         for ($k = $key - 1; $k >= 0; $k--) {
-            $node = $hrc['dom'][$k] ?? null;
+            $node = $dom[$k] ?? null;
             if ($node === null) {
                 return true;
             }
@@ -135,19 +139,22 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
      */
     private function isFirstBlockOfListItem(array &$hrc, int $key): bool
     {
-        $elm = $hrc['dom'][$key] ?? null;
+        // See isBrOnlyPrecededByOpeningTags() for why $hrc['dom'] is copied into a local
+        // variable before being indexed with a loop variable.
+        $dom = $hrc['dom'];
+        $elm = $dom[$key] ?? null;
         if ($elm === null || !in_array($elm['value'], self::LI_INLINE_BLOCK_TAGS, true)) {
             return false;
         }
 
-        $parent = $hrc['dom'][$elm['parent']] ?? null;
+        $parent = $dom[$elm['parent']] ?? null;
         if ($parent === null || $parent['value'] !== 'li' || !$parent['tag']) {
             return false;
         }
 
         // Only if nothing except whitespace comes between the <li> and this element
         for ($k = $elm['parent'] + 1; $k < $key; $k++) {
-            $node = $hrc['dom'][$k] ?? null;
+            $node = $dom[$k] ?? null;
             if ($node === null || $node['tag'] || trim($node['value']) !== '') {
                 return false;
             }
