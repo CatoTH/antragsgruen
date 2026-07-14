@@ -251,25 +251,13 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @throws FormError
+     * @throws Access
      */
     private function amendmentSupportRevoke(Amendment $amendment): void
     {
-        $currentUser          = User::getCurrentUser();
-        $loginlessSupported = AmendmentSupporter::getMyLoginlessSupportIds();
-        foreach ($amendment->amendmentSupporters as $supp) {
-            if (($currentUser && $supp->userId == $currentUser->id) || in_array($supp->id, $loginlessSupported)) {
-                if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
-                    if (!$amendment->isSupportingPossibleAtThisStatus()) {
-                        throw new FormError('Not possible given the current amendment status');
-                    }
-                }
-                $amendment->unlink('amendmentSupporters', $supp, true);
-            }
-        }
-        $amendment->flushCacheWithChildren(null);
-        $consultation = $amendment->getMyConsultation();
-        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_UNLIKE, $amendment->id);
+        $currentUser = User::getCurrentUser();
+        AmendmentSupporter::revokeSupportFromRequest($amendment, $currentUser, AmendmentSupporter::getMyLoginlessSupportIds());
+
         $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'neutral_done'));
     }
 

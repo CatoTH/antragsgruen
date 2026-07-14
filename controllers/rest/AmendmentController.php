@@ -32,12 +32,24 @@ class AmendmentController extends RestBase
 
     public function actionSupport(string $motionSlug, int $amendmentId): RestApiResponse
     {
-        $this->handleRestHeaders(['POST']);
+        $this->handleRestHeaders(['POST', 'DELETE']);
 
         try {
             $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
+        }
+
+        if ($this->getHttpMethod() === 'DELETE') {
+            try {
+                AmendmentSupporter::revokeSupportFromRequest($amendment, User::getCurrentUser());
+            } catch (Access $e) {
+                return new RestApiExceptionResponse(403, $e->getMessage());
+            } catch (\Exception $e) {
+                return $this->returnRestResponseFromException($e);
+            }
+
+            return $this->createResponse(200, AmendmentDetails::fromEntity($amendment));
         }
 
         try {

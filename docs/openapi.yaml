@@ -347,6 +347,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorValidation'
+    delete:
+      operationId: revokeMotionSupport
+      summary: Revoke the current user's support/like/dislike of this motion
+      description: "Idempotent: if the current user does not support this motion, this is a no-op."
+      tags:
+        - Motions
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+      responses:
+        '200':
+          description: Support was revoked (or did not exist). Returns the full motion details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Revoking support is not possible given the current motion status, or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /rest/{consultationPath}/motion/{motionSlug}/amendment/{amendmentId}/support:
     post:
@@ -392,6 +420,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorValidation'
+    delete:
+      operationId: revokeAmendmentSupport
+      summary: Revoke the current user's support/like/dislike of this amendment
+      description: "Idempotent: if the current user does not support this amendment, this is a no-op."
+      tags:
+        - Amendments
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+        - $ref: '#/components/parameters/amendmentId'
+      responses:
+        '200':
+          description: Support was revoked (or did not exist). Returns the full amendment details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmendmentDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Revoking support is not possible given the current amendment status, or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /rest/{consultationPath}/agenda:
     get:

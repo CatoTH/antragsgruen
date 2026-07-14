@@ -247,24 +247,13 @@ trait MotionActionsTrait
     }
 
     /**
-     * @throws FormError
+     * @throws Access
      */
     private function motionSupportRevoke(Motion $motion): void
     {
-        $currentUser          = User::getCurrentUser();
-        $loginlessSupported = MotionSupporter::getMyLoginlessSupportIds();
-        foreach ($motion->motionSupporters as $supp) {
-            if (($currentUser && $supp->userId === $currentUser->id) || in_array($supp->id, $loginlessSupported)) {
-                if ($supp->role === MotionSupporter::ROLE_SUPPORTER) {
-                    if (!$motion->isSupportingPossibleAtThisStatus()) {
-                        throw new FormError('Not possible given the current motion status');
-                    }
-                }
-                $motion->unlink('motionSupporters', $supp, true);
-            }
-        }
+        $currentUser = User::getCurrentUser();
+        MotionSupporter::revokeSupportFromRequest($motion, $currentUser, MotionSupporter::getMyLoginlessSupportIds());
 
-        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
         $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'neutral_done'));
     }
 

@@ -176,6 +176,26 @@ class MotionSupporter extends ISupporter
         return true;
     }
 
+    /**
+     * Shared by the regular web supporting flow and the REST API. Revokes all supports/likes/dislikes
+     * of the given (logged-in or loginless) user on this motion.
+     * @param int[] $loginlessSupportedIds ids of supports tracked in the session for the current loginless user (web only)
+     * @throws Access
+     */
+    public static function revokeSupportFromRequest(Motion $motion, ?User $user, array $loginlessSupportedIds = []): void
+    {
+        foreach ($motion->motionSupporters as $supp) {
+            if (($user && $supp->userId === $user->id) || in_array($supp->id, $loginlessSupportedIds)) {
+                if ($supp->role === static::ROLE_SUPPORTER && !$motion->isSupportingPossibleAtThisStatus()) {
+                    throw new Access('Not possible given the current motion status', 403);
+                }
+                $motion->unlink('motionSupporters', $supp, true);
+            }
+        }
+
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
+    }
+
     public static function checkOfficialSupportNumberReached(MotionSupporterEvent $event): void
     {
         $support = $event->supporter;

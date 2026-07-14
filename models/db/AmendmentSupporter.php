@@ -176,6 +176,27 @@ class AmendmentSupporter extends ISupporter
         return true;
     }
 
+    /**
+     * Shared by the regular web supporting flow and the REST API. Revokes all supports/likes/dislikes
+     * of the given (logged-in or loginless) user on this amendment.
+     * @param int[] $loginlessSupportedIds ids of supports tracked in the session for the current loginless user (web only)
+     * @throws Access
+     */
+    public static function revokeSupportFromRequest(Amendment $amendment, ?User $user, array $loginlessSupportedIds = []): void
+    {
+        foreach ($amendment->amendmentSupporters as $supp) {
+            if (($user && $supp->userId === $user->id) || in_array($supp->id, $loginlessSupportedIds)) {
+                if ($supp->role === self::ROLE_SUPPORTER && !$amendment->isSupportingPossibleAtThisStatus()) {
+                    throw new Access('Not possible given the current amendment status', 403);
+                }
+                $amendment->unlink('amendmentSupporters', $supp, true);
+            }
+        }
+        $amendment->flushCacheWithChildren(null);
+
+        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_UNLIKE, $amendment->id);
+    }
+
     public static function checkOfficialSupportNumberReached(AmendmentSupporterEvent $event): void
     {
         $support = $event->supporter;

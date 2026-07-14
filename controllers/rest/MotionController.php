@@ -77,12 +77,24 @@ class MotionController extends RestBase
 
     public function actionSupport(string $motionSlug): RestApiResponse
     {
-        $this->handleRestHeaders(['POST']);
+        $this->handleRestHeaders(['POST', 'DELETE']);
 
         try {
             $motion = $this->getMotionWithCheck($motionSlug, true);
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
+        }
+
+        if ($this->getHttpMethod() === 'DELETE') {
+            try {
+                MotionSupporter::revokeSupportFromRequest($motion, User::getCurrentUser());
+            } catch (Access $e) {
+                return new RestApiExceptionResponse(403, $e->getMessage());
+            } catch (\Exception $e) {
+                return $this->returnRestResponseFromException($e);
+            }
+
+            return $this->createResponse(200, MotionDetails::fromEntity($motion, false));
         }
 
         try {
