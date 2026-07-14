@@ -3,7 +3,9 @@
 namespace app\models\db;
 
 use app\components\{EmailNotifications, RequestContext};
+use app\models\api\imotion\SupportRequest;
 use app\models\events\AmendmentSupporterEvent;
+use app\models\exceptions\{Access, FormError};
 use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
 use yii\db\ActiveQuery;
@@ -139,6 +141,39 @@ class AmendmentSupporter extends ISupporter
         $amendment->flushCacheWithChildren(null);
 
         $support->trigger(AmendmentSupporter::EVENT_SUPPORTED, new AmendmentSupporterEvent($support, $hadEnoughSupportersBefore));
+    }
+
+    /**
+     * Shared by the regular web supporting flow and the REST API. Validates the request, checks the
+     * amendment's status/policy and creates the support entry.
+     * @return bool true if a new support entry was created, false if the user already supported this amendment (no-op)
+     * @throws Access
+     * @throws FormError
+     */
+    public static function createSupportFromRequest(Amendment $amendment, ?User $user, SupportRequest $request): bool
+    {
+        if (!$amendment->isSupportingPossibleAtThisStatus()) {
+            throw new Access('Not possible given the current amendment status', 403);
+        }
+        if ($user) {
+            foreach ($amendment->getSupporters(true) as $supporter) {
+                if ($supporter->userId === $user->id) {
+                    return false;
+                }
+            }
+        }
+        if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
+            throw new Access('Supporting this amendment is not possible', 403);
+        }
+
+        $supportType = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
+        $request->validate($supportType);
+
+        self::createSupport($amendment, $user, $request->name, $request->organization ?? '', self::ROLE_SUPPORTER, $request->gender ?? '', (bool)$request->nonPublic);
+
+        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SUPPORT, $amendment->id);
+
+        return true;
     }
 
     public static function checkOfficialSupportNumberReached(AmendmentSupporterEvent $event): void

@@ -2,13 +2,14 @@
 
 namespace app\controllers;
 
+use app\models\api\imotion\SupportRequest;
 use app\models\consultationLog\ProposedProcedureAgreement;
 use app\components\{RequestContext, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, ConsultationSettingsTag, IComment, Consultation, User};
 use app\models\events\AmendmentEvent;
 use app\models\http\{JsonResponse, RedirectResponse};
-use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
-use app\models\exceptions\{DB, FormError, Internal, ResponseException};
+use app\models\settings\{PrivilegeQueryContext, Privileges};
+use app\models\exceptions\{Access, DB, FormError, Internal, ResponseException};
 use app\models\forms\CommentForm;
 use app\models\supportTypes\SupportBase;
 use yii\web\{Request, Session};
@@ -183,57 +184,22 @@ trait AmendmentActionsTrait
     }
 
     /**
+     * @throws Access
      * @throws FormError
      */
     private function amendmentSupport(Amendment $amendment): void
     {
-        if (!$amendment->isSupportingPossibleAtThisStatus()) {
-            throw new FormError('Not possible given the current amendment status');
-        }
-        foreach ($amendment->getSupporters(true) as $supporter) {
-            if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
-                $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'support_already'));
-                return;
-            }
-        }
-        $supportClass = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
-        $role = AmendmentSupporter::ROLE_SUPPORTER;
         $user = User::getCurrentUser();
-        $gender = $this->getHttpRequest()->post('motionSupportGender', '');
-        $nonPublic = ($supportClass->getSettingsObj()->offerNonPublicSupports && RequestContext::getWebRequest()->post('motionSupportPublic') === null);
-        if ($user && ($user->fixedData & User::FIXED_NAME)) {
-            $name = $user->name;
-        } else {
-            $name = $this->getHttpRequest()->post('motionSupportName', '');
-        }
-        if ($user && ($user->fixedData & User::FIXED_ORGA)) {
-            $orga = $user->organization;
-        } else {
-            $orga = $this->getHttpRequest()->post('motionSupportOrga', '');
-        }
-        if ($supportClass->getSettingsObj()->hasOrganizations && trim($orga) === '') {
-            $this->getHttpSession()->setFlash('error', 'No organization entered');
+        $supportType = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
+        $dto = SupportRequest::fromWebRequest($this->getPostValues(), $user, $supportType);
+
+        if (!AmendmentSupporter::createSupportFromRequest($amendment, $user, $dto)) {
+            $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'support_already'));
             return;
         }
-        if (trim($name) === '') {
-            $this->getHttpSession()->setFlash('error', 'You need to enter a name');
-            return;
-        }
-        $validGenderKeys = array_keys(SupportBase::getGenderSelection());
-        if ($supportClass->getSettingsObj()->contactGender === InitiatorForm::CONTACT_REQUIRED) {
-            if (!in_array($gender, $validGenderKeys)) {
-                $this->getHttpSession()->setFlash('error', 'You need to fill the gender field');
-                return;
-            }
-        }
-        if (!in_array($gender, $validGenderKeys)) {
-            $gender = '';
-        }
 
-        $this->getHttpSession()->set('user_gender', $gender);
-
-        $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga, $gender, $nonPublic);
-        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SUPPORT, $amendment->id);
+        $this->getHttpSession()->set('user_gender', $dto->gender ?? '');
+        $this->getHttpSession()->setFlash('success', \Yii::t('amend', 'support_done'));
     }
 
     /**

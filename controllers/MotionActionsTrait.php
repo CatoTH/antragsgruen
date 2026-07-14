@@ -3,8 +3,9 @@
 namespace app\controllers;
 
 use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureChange, ProposedProcedureUserNotification};
+use app\models\api\imotion\SupportRequest;
 use app\models\forms\ProposedChangeForm;
-use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, InitiatorForm};
+use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextEditorial;
 use app\models\http\{HtmlErrorResponse,
@@ -26,7 +27,7 @@ use app\models\db\{Amendment,
     MotionSupporter,
     User,
     Consultation};
-use app\models\exceptions\{DB, FormError, Internal, MailNotSent, ResponseException};
+use app\models\exceptions\{Access, DB, FormError, Internal, MailNotSent, ResponseException};
 use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
@@ -211,59 +212,22 @@ trait MotionActionsTrait
     }
 
     /**
+     * @throws Access
      * @throws FormError
-     * @throws Internal
      */
     private function motionSupport(Motion $motion): void
     {
-        if (!$motion->isSupportingPossibleAtThisStatus()) {
-            throw new FormError('Not possible given the current motion status');
-        }
-        foreach ($motion->getSupporters(true) as $supporter) {
-            if (User::getCurrentUser() && $supporter->userId === User::getCurrentUser()->id) {
-                $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'support_already'));
-                return;
-            }
-        }
-        $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
-        $role = MotionSupporter::ROLE_SUPPORTER;
         $user = User::getCurrentUser();
-        $gender = $this->getHttpRequest()->post('motionSupportGender', '');
-        $nonPublic = ($supportType->getSettingsObj()->offerNonPublicSupports && $this->getHttpRequest()->post('motionSupportPublic') === null);
-        if ($user && ($user->fixedData & User::FIXED_NAME)) {
-            $name = $user->name;
-        } else {
-            $name = $this->getHttpRequest()->post('motionSupportName', '');
-        }
-        if ($user && ($user->fixedData & User::FIXED_ORGA)) {
-            $orga = $user->organization;
-        } else {
-            $orga = $this->getHttpRequest()->post('motionSupportOrga', '');
-        }
+        $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
+        $dto = SupportRequest::fromWebRequest($this->getPostValues(), $user, $supportType);
 
-        if ($supportType->getSettingsObj()->hasOrganizations && $orga === '') {
-            $this->getHttpSession()->setFlash('error', 'No organization entered');
+        if (!MotionSupporter::createSupportFromRequest($motion, $user, $dto)) {
+            $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'support_already'));
             return;
         }
-        if (trim($name) === '') {
-            $this->getHttpSession()->setFlash('error', 'You need to enter a name');
-            return;
-        }
-        $validGenderKeys = array_keys(SupportBase::getGenderSelection());
-        if ($supportType->getSettingsObj()->contactGender === InitiatorForm::CONTACT_REQUIRED) {
-            if (!in_array($gender, $validGenderKeys)) {
-                $this->getHttpSession()->setFlash('error', 'You need to fill the gender field');
-                return;
-            }
-        }
-        if (!in_array($gender, $validGenderKeys)) {
-            $gender = '';
-        }
 
-        $this->getHttpSession()->set('user_gender', $gender);
-
-        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga, $gender, $nonPublic);
-        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
+        $this->getHttpSession()->set('user_gender', $dto->gender ?? '');
+        $this->getHttpSession()->setFlash('success', \Yii::t('motion', 'support_done'));
     }
 
     /**

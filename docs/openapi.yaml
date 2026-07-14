@@ -304,6 +304,95 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorValidation'
 
+  /rest/{consultationPath}/motion/{motionSlug}/support:
+    post:
+      operationId: supportMotion
+      summary: Support this motion (or the pending secondary motion it represents) as the current user
+      description: >
+        Idempotent: if the current user already supports this motion, no additional support entry is created
+        and the current motion state is returned unchanged.
+      tags:
+        - Motions
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportRequest'
+      responses:
+        '200':
+          description: Support was registered (or already existed). Returns the full motion details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Supporting this motion is not possible (policy, deadline or status), or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. name missing, organization required)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+
+  /rest/{consultationPath}/motion/{motionSlug}/amendment/{amendmentId}/support:
+    post:
+      operationId: supportAmendment
+      summary: Support this amendment as the current user
+      description: >
+        Idempotent: if the current user already supports this amendment, no additional support entry is created
+        and the current amendment state is returned unchanged.
+      tags:
+        - Amendments
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+        - $ref: '#/components/parameters/amendmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportRequest'
+      responses:
+        '200':
+          description: Support was registered (or already existed). Returns the full amendment details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmendmentDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Supporting this amendment is not possible (policy, deadline or status), or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. name missing, organization required)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+
   /rest/{consultationPath}/agenda:
     get:
       operationId: getAgenda
@@ -1029,6 +1118,32 @@ components:
           nullable: true
           description: Optional gender.
           example: female
+
+    SupportRequest:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Full name of the supporter. Ignored and replaced by the account name if the current user's profile has a fixed name.
+          example: Ava
+        organization:
+          type: string
+          nullable: true
+          description: Optional organizational affiliation of the supporter. Required if the motion type's support settings require organizations.
+          example: E Corp
+        gender:
+          type: string
+          nullable: true
+          description: Optional gender. Might be required by the motion type's support settings.
+          example: female
+        non_public:
+          type: boolean
+          nullable: true
+          description: Whether this support should be hidden from the public supporter list. Only effective if the support settings allow non-public supports.
+          example: false
 
     AmendmentLink:
       x-php-namespace: imotion
