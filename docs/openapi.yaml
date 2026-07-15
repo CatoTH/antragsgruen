@@ -78,6 +78,52 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/motion-types/{motionTypeId}:
+    patch:
+      operationId: updateMotionType
+      summary: Updates the settings of an existing motion type
+      description: >
+        Partial update: only the top-level groups present in the request body are changed (e.g. omitting "policies"
+        leaves the existing policies untouched). A group that is present must be provided in full, replacing
+        whatever was previously configured for that group. Does not create, delete, or reorder motion types, and
+        does not touch section definitions - only existing settings of an existing motion type are updated.
+      tags:
+        - Motion Types
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionTypeId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotionTypeUpdateRequest'
+      responses:
+        '200':
+          description: Motion type was updated successfully. Returns the full, updated motion type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionType'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: No permission to change consultation settings, or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. unknown pdf_layout_id, invalid deadline dates, amendment_initiator_settings missing "settings" while same_as_motion is false)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+
   /rest/{consultationPath}/proposed-procedure:
     get:
       operationId: getProposedProcedure
@@ -622,6 +668,14 @@ components:
       description: The numeric ID of the amendment
       required: true
       example: 42
+      schema:
+        type: string
+    motionTypeId:
+      in: path
+      name: motionTypeId
+      description: The numeric ID of the motion type
+      required: true
+      example: 3
       schema:
         type: string
     lineNumbers:
@@ -1862,6 +1916,20 @@ components:
           description: Label shown on the button/link that creates a new motion of this type
           example: Submit a motion
 
+    MotionTypeSettingsAmendmentMultipleParagraphs:
+      x-php-namespace: motionType
+      type: string
+      description: >
+        Controls how many paragraphs an amendment may affect.
+        `multiple` — any number of paragraphs;
+        `single_paragraph` — exactly one paragraph;
+        `single_change` — exactly one contiguous change.
+      enum:
+        - multiple
+        - single_paragraph
+        - single_change
+      example: multiple
+
     MotionTypeSettings:
       x-php-namespace: motionType
       type: object
@@ -1878,17 +1946,7 @@ components:
           description: If true, no new top-level motions can be submitted — only amendments to existing ones
           example: false
         amendment_multiple_paragraphs:
-          type: string
-          description: >
-            Controls how many paragraphs an amendment may affect.
-            `multiple` — any number of paragraphs;
-            `single_paragraph` — exactly one paragraph;
-            `single_change` — exactly one contiguous change.
-          enum:
-            - multiple
-            - single_paragraph
-            - single_change
-          example: multiple
+          $ref: '#/components/schemas/MotionTypeSettingsAmendmentMultipleParagraphs'
         has_proposed_procedure:
           type: boolean
           description: Whether a proposed procedure (Antragskommission recommendation) can be attached to motions of this type
@@ -1928,6 +1986,18 @@ components:
         support_amendments:
           $ref: '#/components/schemas/MotionTypePolicy'
 
+    MotionTypePolicyId:
+      x-php-namespace: motionType
+      type: string
+      description: Policy identifier
+      enum:
+        - nobody
+        - all
+        - logged_in
+        - admins
+        - user_groups
+      example: all
+
     MotionTypePolicy:
       x-php-namespace: motionType
       type: object
@@ -1937,15 +2007,7 @@ components:
         - deadlines
       properties:
         id:
-          type: string
-          description: Policy identifier
-          enum:
-            - nobody
-            - all
-            - logged_in
-            - admins
-            - user_groups
-          example: all
+          $ref: '#/components/schemas/MotionTypePolicyId'
         description:
           type: string
           description: Human-readable label for the policy (language depends on the site locale)
@@ -2061,3 +2123,318 @@ components:
           type: boolean
           description: In a two-column merging layout, true places this section in the right column
           example: false
+
+    MotionTypeContactRequirement:
+      x-php-namespace: motionType
+      type: string
+      description: "`none` — field is not collected; `optional` — may be filled in; `required` — must be filled in."
+      enum:
+        - none
+        - optional
+        - required
+      example: optional
+
+    MotionTypeLikeDislikeFlag:
+      x-php-namespace: motionType
+      type: string
+      description: >
+        `like`/`dislike` — visitors may express informal approval/disapproval;
+        `support` — an official support/signature is required before this can be officially considered submitted.
+      enum:
+        - like
+        - dislike
+        - support
+      example: like
+
+    MotionTypeInitiatorsCanMergeAmendments:
+      x-php-namespace: motionType
+      type: string
+      description: >
+        Whether initiators are allowed to merge amendments into their own motion.
+        `never` — not allowed;
+        `no_collision` — allowed only for amendments that don't collide with other pending amendments;
+        `with_collision` — allowed even if merging would obsolete colliding amendments.
+      enum:
+        - never
+        - no_collision
+        - with_collision
+      example: never
+
+    MotionTypeUpdateRequest:
+      x-php-namespace: motionType
+      type: object
+      description: >
+        Partial update of a motion type's settings. Every top-level property is optional; a property that is
+        omitted leaves that part of the configuration untouched. A property that is present replaces the entire
+        corresponding group (e.g. sending "labels" always sets all three of singular/plural/create).
+      properties:
+        labels:
+          $ref: '#/components/schemas/MotionTypeLabelsRequest'
+        motion_prefix:
+          type: string
+          nullable: true
+          description: Alphanumeric prefix prepended to motion numbering (e.g. "A" → A1, A2 …). Null means no prefix.
+          example: A
+        sidebar_create_button:
+          type: boolean
+          description: Whether a "create new motion" button for this type is shown in the sidebar
+          example: true
+        amendment_multiple_paragraphs:
+          $ref: '#/components/schemas/MotionTypeSettingsAmendmentMultipleParagraphs'
+        initiators_can_merge_amendments:
+          $ref: '#/components/schemas/MotionTypeInitiatorsCanMergeAmendments'
+        settings:
+          $ref: '#/components/schemas/MotionTypeSettingsUpdateRequest'
+        policies:
+          $ref: '#/components/schemas/MotionTypePoliciesUpdateRequest'
+        deadlines:
+          $ref: '#/components/schemas/MotionTypeDeadlinesUpdateRequest'
+        pdf_layout_id:
+          type: string
+          description: >
+            Identifier of the PDF layout to use, matching one of the ids returned by the (not yet REST-exposed)
+            selectable-layouts list, e.g. "php0", "html2pdf3", "latex5". Sending an unknown id is a validation error.
+          example: php0
+        motion_likes_dislikes:
+          type: array
+          description: Which informal reaction/support mechanisms are enabled for motions of this type
+          items:
+            $ref: '#/components/schemas/MotionTypeLikeDislikeFlag'
+          example:
+            - like
+            - support
+        amendment_likes_dislikes:
+          type: array
+          description: Which informal reaction/support mechanisms are enabled for amendments of this type
+          items:
+            $ref: '#/components/schemas/MotionTypeLikeDislikeFlag'
+          example:
+            - like
+            - support
+        motion_initiator_settings:
+          $ref: '#/components/schemas/MotionTypeInitiatorSettingsUpdateRequest'
+        amendment_initiator_settings:
+          $ref: '#/components/schemas/MotionTypeAmendmentInitiatorSettingsUpdateRequest'
+
+    MotionTypeLabelsRequest:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - singular
+        - plural
+        - create
+      properties:
+        singular:
+          type: string
+          example: Motion
+        plural:
+          type: string
+          example: Motions
+        create:
+          type: string
+          example: Submit a motion
+
+    MotionTypeSettingsUpdateRequest:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - pdf_introduction
+        - motion_title_intro
+        - has_proposed_procedure
+        - proposed_procedure_versioning
+        - has_responsibilities
+        - comments_restrict_view_to_writables
+        - allow_amendments_to_amendments
+        - show_proposals_in_exports
+      properties:
+        pdf_introduction:
+          type: string
+          description: Free text shown as an introduction on generated PDFs
+          example: ""
+        motion_title_intro:
+          type: string
+          description: Text prepended to the title of motions of this type
+          example: ""
+        has_proposed_procedure:
+          type: boolean
+          description: Whether a proposed procedure (Antragskommission recommendation) can be attached to motions of this type
+          example: true
+        proposed_procedure_versioning:
+          type: boolean
+          description: Whether proposed-procedure versioning is enabled (only relevant when has_proposed_procedure is true)
+          example: true
+        has_responsibilities:
+          type: boolean
+          description: Whether responsibility assignments are tracked for this motion type
+          example: false
+        comments_restrict_view_to_writables:
+          type: boolean
+          description: If true, only users who could also comment may view existing comments
+          example: false
+        allow_amendments_to_amendments:
+          type: boolean
+          description: Whether amendments to amendments (sub-amendments) are permitted
+          example: false
+        show_proposals_in_exports:
+          type: boolean
+          description: Whether the proposed procedure is included in PDF/document exports
+          example: false
+
+    MotionTypePoliciesUpdateRequest:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - motions
+        - amendments
+        - comments
+        - support_motions
+        - support_amendments
+      properties:
+        motions:
+          $ref: '#/components/schemas/MotionTypePolicyUpdateRequest'
+        amendments:
+          $ref: '#/components/schemas/MotionTypePolicyUpdateRequest'
+        comments:
+          $ref: '#/components/schemas/MotionTypePolicyUpdateRequest'
+        support_motions:
+          $ref: '#/components/schemas/MotionTypePolicyUpdateRequest'
+        support_amendments:
+          $ref: '#/components/schemas/MotionTypePolicyUpdateRequest'
+
+    MotionTypePolicyUpdateRequest:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/MotionTypePolicyId'
+        user_group_ids:
+          type: array
+          nullable: true
+          description: Only used when id=user_groups. IDs of the permitted user groups; unknown IDs are ignored.
+          items:
+            type: integer
+          example:
+            - 4
+            - 7
+
+    MotionTypeDeadlinesUpdateRequest:
+      x-php-namespace: motionType
+      type: object
+      description: Replaces all deadline windows of the motion type. Each array may be empty to mean "no deadline".
+      required:
+        - motions
+        - amendments
+        - merging
+        - comments
+      properties:
+        motions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+        amendments:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+        merging:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+
+    MotionTypeInitiatorSettingsUpdateRequest:
+      x-php-namespace: motionType
+      type: object
+      description: Full settings for who may initiate/support motions (or amendments) of this type.
+      required:
+        - type
+        - initiator_can_be_person
+        - initiator_can_be_organization
+        - person_policy
+        - organization_policy
+        - min_supporters
+        - min_supporters_female
+        - allow_more_supporters
+        - allow_supporting_after_publication
+        - offer_non_public_supports
+        - has_organizations
+        - contact_name
+        - contact_email
+        - contact_phone
+        - contact_gender
+        - has_resolution_date
+      properties:
+        type:
+          type: string
+          description: >
+            `only_initiator` — only the initiator submits, no separate supporter collection;
+            `given_by_initiator` — the initiator enters supporters on their behalf;
+            `collecting_supporters` — supporters register themselves after submission;
+            `no_initiator` — no distinct initiator role.
+          enum:
+            - only_initiator
+            - given_by_initiator
+            - collecting_supporters
+            - no_initiator
+          example: only_initiator
+        initiator_can_be_person:
+          type: boolean
+          example: true
+        initiator_can_be_organization:
+          type: boolean
+          example: true
+        person_policy:
+          $ref: '#/components/schemas/MotionTypePolicyUpdateRequest'
+        organization_policy:
+          $ref: '#/components/schemas/MotionTypePolicyUpdateRequest'
+        min_supporters:
+          type: integer
+          example: 1
+        min_supporters_female:
+          type: integer
+          nullable: true
+          example: null
+        allow_more_supporters:
+          type: boolean
+          example: true
+        allow_supporting_after_publication:
+          type: boolean
+          example: false
+        offer_non_public_supports:
+          type: boolean
+          example: false
+        has_organizations:
+          type: boolean
+          example: true
+        contact_name:
+          $ref: '#/components/schemas/MotionTypeContactRequirement'
+        contact_email:
+          $ref: '#/components/schemas/MotionTypeContactRequirement'
+        contact_phone:
+          $ref: '#/components/schemas/MotionTypeContactRequirement'
+        contact_gender:
+          $ref: '#/components/schemas/MotionTypeContactRequirement'
+        has_resolution_date:
+          $ref: '#/components/schemas/MotionTypeContactRequirement'
+
+    MotionTypeAmendmentInitiatorSettingsUpdateRequest:
+      x-php-namespace: motionType
+      type: object
+      required:
+        - same_as_motion
+      properties:
+        same_as_motion:
+          type: boolean
+          description: If true, amendments inherit the motion's initiator settings and "settings"/max_pdf_supporters below are ignored.
+          example: false
+        settings:
+          $ref: '#/components/schemas/MotionTypeInitiatorSettingsUpdateRequest'
+        max_pdf_supporters:
+          type: integer
+          nullable: true
+          description: Maximum number of supporters listed on generated PDFs for amendments. Null means no limit.
+          example: null

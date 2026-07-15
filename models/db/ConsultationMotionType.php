@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\models\api\motionType\{MotionTypeInitiatorSettingsUpdateRequest, MotionTypeUpdateRequest};
+use app\models\exceptions\FormError;
 use app\models\forms\MotionDeepCopy;
 use app\models\policies\Nobody;
 use CatoTH\HTML2OpenDocument\Text;
@@ -287,6 +289,137 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
             static::DEADLINE_MOTIONS    => [['start' => null, 'end' => $deadlineMotions, 'title' => null]],
             static::DEADLINE_AMENDMENTS => [['start' => null, 'end' => $deadlineAmendments, 'title' => null]],
         ]);
+    }
+
+    /**
+     * Applies a partial settings update from the REST API - only the groups present in $dto are touched.
+     * Corresponds to the "save" part of admin/MotionTypeController::actionType (not create/delete, and does
+     * not touch section definitions).
+     * @throws FormError
+     */
+    public function applySettingsUpdate(MotionTypeUpdateRequest $dto): void
+    {
+        $consultation = $this->getConsultation();
+
+        if ($dto->labels !== null) {
+            $this->titleSingular = $dto->labels->singular;
+            $this->titlePlural   = $dto->labels->plural;
+            $this->createTitle   = $dto->labels->create;
+        }
+        if ($dto->motionPrefix !== null) {
+            $this->motionPrefix = $dto->motionPrefix;
+        }
+        if ($dto->sidebarCreateButton !== null) {
+            $this->sidebarCreateButton = ($dto->sidebarCreateButton ? 1 : 0);
+        }
+        if ($dto->amendmentMultipleParagraphs !== null) {
+            $this->amendmentMultipleParagraphs = $dto->amendmentMultipleParagraphs->toDbValue();
+        }
+        if ($dto->initiatorsCanMergeAmendments !== null) {
+            $this->initiatorsCanMergeAmendments = $dto->initiatorsCanMergeAmendments->toDbValue();
+        }
+
+        if ($dto->settings !== null) {
+            $settings                              = $this->getSettingsObj();
+            $settings->pdfIntroduction              = $dto->settings->pdfIntroduction;
+            $settings->motionTitleIntro             = $dto->settings->motionTitleIntro;
+            $settings->hasProposedProcedure         = $dto->settings->hasProposedProcedure;
+            $settings->proposedProcedureVersioning  = $dto->settings->proposedProcedureVersioning;
+            $settings->hasResponsibilities          = $dto->settings->hasResponsibilities;
+            $settings->commentsRestrictViewToWritables = $dto->settings->commentsRestrictViewToWritables;
+            $settings->allowAmendmentsToAmendments  = $dto->settings->allowAmendmentsToAmendments;
+            $settings->showProposalsInExports       = $dto->settings->showProposalsInExports;
+            $this->setSettingsObj($settings);
+        }
+
+        if ($dto->policies !== null) {
+            $this->setMotionPolicy($dto->policies->motions->toPolicy($consultation, $this));
+            $this->setAmendmentPolicy($dto->policies->amendments->toPolicy($consultation, $this));
+            $this->setCommentPolicy($dto->policies->comments->toPolicy($consultation, $this));
+            $this->setMotionSupportPolicy($dto->policies->supportMotions->toPolicy($consultation, $this));
+            $this->setAmendmentSupportPolicy($dto->policies->supportAmendments->toPolicy($consultation, $this));
+        }
+
+        if ($dto->deadlines !== null) {
+            $this->setAllDeadlines([
+                static::DEADLINE_MOTIONS    => array_map(fn($e) => $e->toArray(), $dto->deadlines->motions),
+                static::DEADLINE_AMENDMENTS => array_map(fn($e) => $e->toArray(), $dto->deadlines->amendments),
+                static::DEADLINE_MERGING    => array_map(fn($e) => $e->toArray(), $dto->deadlines->merging),
+                static::DEADLINE_COMMENTS   => array_map(fn($e) => $e->toArray(), $dto->deadlines->comments),
+            ]);
+        }
+
+        if ($dto->pdfLayoutId !== null) {
+            $layout = null;
+            foreach (IPDFLayout::getSelectablePdfLayouts() as $candidate) {
+                if ($candidate->getHtmlId() === $dto->pdfLayoutId) {
+                    $layout = $candidate;
+                }
+            }
+            if ($layout === null) {
+                throw new FormError('Unknown pdf_layout_id: ' . $dto->pdfLayoutId);
+            }
+            $this->pdfLayout      = $layout->id ?? 0;
+            $this->texTemplateId  = $layout->latexId;
+        }
+
+        if ($dto->motionLikesDislikes !== null) {
+            $this->motionLikesDislikes = 0;
+            foreach ($dto->motionLikesDislikes as $flag) {
+                $this->motionLikesDislikes |= $flag->toFlag();
+            }
+        }
+        if ($dto->amendmentLikesDislikes !== null) {
+            $this->amendmentLikesDislikes = 0;
+            foreach ($dto->amendmentLikesDislikes as $flag) {
+                $this->amendmentLikesDislikes |= $flag->toFlag();
+            }
+        }
+
+        if ($dto->motionInitiatorSettings !== null) {
+            $settings = $this->getMotionSupportTypeClass()->getSettingsObj();
+            self::applyInitiatorSettingsUpdate($settings, $dto->motionInitiatorSettings, $consultation, $this);
+            $this->supportTypeMotions = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+        }
+
+        if ($dto->amendmentInitiatorSettings !== null) {
+            if ($dto->amendmentInitiatorSettings->sameAsMotion) {
+                $this->supportTypeAmendments = null;
+            } else {
+                if ($dto->amendmentInitiatorSettings->settings === null) {
+                    throw new FormError('amendment_initiator_settings.settings is required when same_as_motion is false');
+                }
+                $settings = $this->getAmendmentSupportTypeClass()->getSettingsObj();
+                self::applyInitiatorSettingsUpdate($settings, $dto->amendmentInitiatorSettings->settings, $consultation, $this);
+                $settings->maxPdfSupporters = $dto->amendmentInitiatorSettings->maxPdfSupporters;
+                $this->supportTypeAmendments = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+            }
+        }
+    }
+
+    private static function applyInitiatorSettingsUpdate(InitiatorForm $settings, MotionTypeInitiatorSettingsUpdateRequest $dto, Consultation $consultation, ConsultationMotionType $motionType): void
+    {
+        $settings->type                        = $dto->type->toSupportBaseValue();
+        $settings->initiatorCanBePerson        = $dto->initiatorCanBePerson;
+        $settings->initiatorCanBeOrganization  = $dto->initiatorCanBeOrganization;
+        if (!$settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
+            // Probably a mistake
+            $settings->initiatorCanBePerson       = true;
+            $settings->initiatorCanBeOrganization = true;
+        }
+        $settings->setInitiatorPersonPolicyObject($dto->personPolicy->toPolicy($consultation, $motionType));
+        $settings->setInitiatorOrganizationPolicyObject($dto->organizationPolicy->toPolicy($consultation, $motionType));
+        $settings->minSupporters                    = $dto->minSupporters;
+        $settings->minSupportersFemale              = $dto->minSupportersFemale;
+        $settings->allowMoreSupporters              = $dto->allowMoreSupporters;
+        $settings->allowSupportingAfterPublication  = $dto->allowSupportingAfterPublication;
+        $settings->offerNonPublicSupports           = $dto->offerNonPublicSupports;
+        $settings->hasOrganizations                 = $dto->hasOrganizations;
+        $settings->contactName                      = $dto->contactName->toDbValue();
+        $settings->contactEmail                     = $dto->contactEmail->toDbValue();
+        $settings->contactPhone                     = $dto->contactPhone->toDbValue();
+        $settings->contactGender                    = $dto->contactGender->toDbValue();
+        $settings->hasResolutionDate                = $dto->hasResolutionDate->toDbValue();
     }
 
     public static function isInDeadlineRange(array $deadline, ?int $timestamp = null): bool

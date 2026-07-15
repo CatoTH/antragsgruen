@@ -30,4 +30,19 @@ class MotionTypeDeadlineEntry
             $motionType->getDeadlinesByType($deadlineType)
         );
     }
+
+    /**
+     * @throws \app\models\exceptions\FormError
+     */
+    public function toArray(): array
+    {
+        try {
+            $start = ($this->start !== null ? (new \DateTime($this->start))->format('Y-m-d H:i:s') : null);
+            $end = ($this->end !== null ? (new \DateTime($this->end))->format('Y-m-d H:i:s') : null);
+        } catch (\Exception $e) {
+            throw new \app\models\exceptions\FormError('Invalid deadline date: ' . $e->getMessage());
+        }
+
+        return ['start' => $start, 'end' => $end, 'title' => $this->title];
+    }
 }

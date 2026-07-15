@@ -19,4 +19,13 @@ enum MotionTypeSettingsAmendmentMultipleParagraphs: string
             default => throw new \InvalidArgumentException('Unknown amendment multiple paragraphs value: ' . $value),
         };
     }
+
+    public function toDbValue(): int
+    {
+        return match ($this) {
+            self::MULTIPLE => \app\models\db\ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE,
+            self::SINGLE_PARAGRAPH => \app\models\db\ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH,
+            self::SINGLE_CHANGE => \app\models\db\ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE,
+        };
+    }
 }

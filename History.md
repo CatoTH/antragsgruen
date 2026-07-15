@@ -4,7 +4,7 @@
 
 - The REST API has been improved. It supports (on top of previous functionality):
    - Authenticated calls.
-   - Retrieving Motion Type Information.
+   - Retrieving and updating Motion Type Information.
    - Creating motions.
    - Supporting motions and amendments and withdrawing support.
    - Screening motions and amendments as admin.
