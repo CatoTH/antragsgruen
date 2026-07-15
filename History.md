@@ -7,6 +7,7 @@
    - Retrieving Motion Type Information.
    - Creating motions.
    - Supporting motions and amendments and withdrawing support.
+   - Screening motions and amendments as admin.
 
 ### Version 4.17.2 [not released yet]
 

@@ -200,6 +200,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorValidation'
 
+  /rest/{consultationPath}/motion/{motionSlug}/screen:
+    post:
+      operationId: screenMotion
+      summary: Screens (publishes) this motion, assigning it its final prefix and version
+      description: >
+        Only possible while the motion is in the screening process (submitted, unscreened) and the current
+        user holds the screening privilege for this motion type.
+      tags:
+        - Motions
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotionScreenRequest'
+      responses:
+        '200':
+          description: Motion was screened successfully. Returns the full motion details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Screening this motion is not possible (missing privilege, or the motion is not in the screening process), or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. the given prefix/version is already used by another motion)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+
   /rest/{consultationPath}/motion/{motionSlug}/amendment:
     post:
       operationId: createAmendment
@@ -449,6 +493,51 @@ paths:
                 $ref: '#/components/schemas/ErrorNoPermission'
         '404':
           $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/motion/{motionSlug}/amendment/{amendmentId}/screen:
+    post:
+      operationId: screenAmendment
+      summary: Screens (publishes) this amendment, assigning it its final prefix
+      description: >
+        Only possible while the amendment is in the screening process (submitted, unscreened) and the current
+        user holds the screening privilege for this motion type.
+      tags:
+        - Amendments
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/motionSlug'
+        - $ref: '#/components/parameters/amendmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmendmentScreenRequest'
+      responses:
+        '200':
+          description: Amendment was screened successfully. Returns the full amendment details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmendmentDetails'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Screening this amendment is not possible (missing privilege, or the amendment is not in the screening process), or the REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Validation error (e.g. the given prefix is already used by another amendment)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
 
   /rest/{consultationPath}/agenda:
     get:
@@ -1202,6 +1291,32 @@ components:
           description: Whether this support should be hidden from the public supporter list. Only effective if the support settings allow non-public supports.
           example: false
 
+    MotionScreenRequest:
+      x-php-namespace: imotion
+      type: object
+      required:
+        - version
+      properties:
+        title_prefix:
+          type: string
+          nullable: true
+          description: The final prefix to assign to this motion (e.g. "A1"). Truncated to 50 characters. Must not collide with the prefix/version of another non-deleted motion in this consultation. If omitted or null, the next available prefix is generated automatically.
+          example: A1
+        version:
+          type: string
+          description: The version label to assign to this motion.
+          example: "1"
+
+    AmendmentScreenRequest:
+      x-php-namespace: imotion
+      type: object
+      properties:
+        title_prefix:
+          type: string
+          nullable: true
+          description: The final prefix to assign to this amendment (e.g. "AM1"). Truncated to 45 characters. Must not collide with the prefix of another amendment to the same motion. If omitted or null, the next available prefix is generated automatically.
+          example: AM1
+
     AmendmentLink:
       x-php-namespace: imotion
       type: object
@@ -1211,7 +1326,7 @@ components:
           example: 23
         prefix:
           type: string
-          example: Ä1
+          example: AM1
         status_id:
           type: integer
           example: 3
@@ -1241,13 +1356,13 @@ components:
           example: 23
         prefix:
           type: string
-          example: Ä1
+          example: AM1
         title:
           type: string
-          example: "Ä1 zu A1: My motion"
+          example: "AM1 to M1: My motion"
         title_with_prefix:
           type: string
-          example: "Ä1 zu A1: My motion"
+          example: "AM1 to M1: My motion"
         first_line:
           type: integer
           example: 1

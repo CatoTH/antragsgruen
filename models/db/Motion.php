@@ -13,7 +13,7 @@ use app\models\notifications\{MotionPublished,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
 use app\components\{HashedStaticCache, IMotionStatusFilter, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
-use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
+use app\models\exceptions\{Access, FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
 use app\models\events\MotionEvent;
@@ -845,6 +845,36 @@ class Motion extends IMotion implements IRSSItem
         $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_UNSCREEN, $this->id);
+    }
+
+    /**
+     * Screens this motion with an admin-provided prefix/version. A null prefix is auto-generated.
+     * Shared by the admin web screening flow and the REST API.
+     * @throws Access
+     * @throws FormError
+     */
+    public function screen(?string $titlePrefix, string $version): void
+    {
+        $consultation = $this->getMyConsultation();
+        $privCtx = PrivilegeQueryContext::motion($this);
+        if (!$this->isInScreeningProcess() || !User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
+            throw new Access('Screening this motion is not possible', 403);
+        }
+
+        if ($titlePrefix === null) {
+            $titlePrefix = $consultation->getNextMotionPrefix($this->motionTypeId, $this->getPublicTopicTags());
+        }
+
+        $toSetPrefix = (mb_strlen($titlePrefix) > 50 ? mb_substr($titlePrefix, 0, 50) : $titlePrefix);
+        if ($consultation->findMotionWithPrefixAndVersion($toSetPrefix, $version, $this)) {
+            throw new FormError(\Yii::t('admin', 'motion_prefix_collision'));
+        }
+
+        $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+        $this->titlePrefix = $toSetPrefix;
+        $this->version = $version;
+        $this->save();
+        $this->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($this));
     }
 
     public function getLatestProposal(bool $skipVisibilityCheck = false): MotionProposal

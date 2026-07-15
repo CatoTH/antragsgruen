@@ -7,8 +7,7 @@ use app\models\consultationLog\ProposedProcedureChange;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
 use app\components\{RequestContext, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationLog, ConsultationMotionType, Motion, User};
-use app\models\exceptions\FormError;
-use app\models\events\MotionEvent;
+use app\models\exceptions\{Access, FormError};
 use app\models\forms\{MotionDeepCopy, MotionEditForm, MotionMover};
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
@@ -65,17 +64,14 @@ class MotionController extends AdminBase
         $this->layout = 'column2';
         $post         = $this->getPostValues();
 
-        if ($this->isPostSet('screen') && $motion->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
-            $toSetPrefix = (mb_strlen($post['titlePrefix']) > 50 ? mb_substr($post['titlePrefix'], 0, 50) : $post['titlePrefix']);
-            if ($consultation->findMotionWithPrefixAndVersion($toSetPrefix, $post['version'], $motion)) {
-                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
-            } else {
-                $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
-                $motion->titlePrefix = $toSetPrefix;
-                $motion->version = $post['version'];
-                $motion->save();
-                $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
+        if ($this->isPostSet('screen')) {
+            try {
+                $motion->screen($post['titlePrefix'], $post['version']);
                 $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'motion_screened'));
+            } catch (FormError $e) {
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
+            } catch (Access $e) {
+                // No privilege, or the motion is not in the screening process (anymore) => silently ignore, as before
             }
         }
 
