@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
-use app\components\{ConsultationAccess, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
+use app\components\{ConsultationAccess, JwtCreator, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, repostory\MotionRepository, Site, User};
 use Yii;
@@ -303,6 +303,9 @@ class Base extends Controller
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
 
+        if (JwtCreator::isCurrentTokenRestrictedToOtherSite($this->site)) {
+            throw new ApiResponseException('Token not valid for this site', 401);
+        }
         if (!$this->site->getSettings()->apiEnabled && !$alwaysEnabled && !User::getCurrentUser()) {
             throw new ApiResponseException('Public API disabled', 403);
         }

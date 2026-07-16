@@ -80,7 +80,9 @@ paths:
               $ref: '#/components/schemas/UserLoginRequest'
       responses:
         '200':
-          description: Login successful. Returns a JWT to be used as a bearer token for subsequent requests.
+          description: >
+            Login successful. Returns a JWT to be used as a bearer token for subsequent requests.
+            The token is only valid on the site it was issued on, and is invalidated by a password change.
           content:
             application/json:
               schema:

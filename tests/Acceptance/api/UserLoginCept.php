@@ -151,6 +151,33 @@ $I->assertEquals(200, $request->getStatusCode());
 $token = json_decode($request->getBody()->getContents(), true)['token'];
 
 
+$I->wantTo('confirm the token is still valid before the password is changed');
+
+$request = $client->get('rest/user', [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token]]);
+$I->assertEquals(200, $request->getStatusCode());
+
+
+$I->wantTo('confirm the token is revoked once the account password is changed');
+
+$user = User::findOne(['id' => 2]);
+$user->changePassword('a-brand-new-password');
+
+$request = $client->get('rest/user', [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token]]);
+$I->assertEquals(401, $request->getStatusCode());
+$body = json_decode($request->getBody()->getContents(), true);
+$I->assertFalse($body['success']);
+
+
+$I->wantTo('log in with the new password and use a fresh token');
+
+$request = $client->post($loginPath, [RequestOptions::JSON => ['username' => 'testuser@example.org', 'password' => 'a-brand-new-password']]);
+$I->assertEquals(200, $request->getStatusCode());
+$token = json_decode($request->getBody()->getContents(), true)['token'];
+
+$request = $client->get('rest/user', [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token]]);
+$I->assertEquals(200, $request->getStatusCode());
+
+
 $I->wantTo('use a still-valid token of an account that has been deleted in the meantime');
 
 $user = User::findOne(['id' => 2]);
