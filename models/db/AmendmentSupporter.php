@@ -156,6 +156,11 @@ class AmendmentSupporter extends ISupporter
             throw new Access('Not possible given the current amendment status', 403);
         }
         if ($user) {
+            foreach ($amendment->getInitiators() as $initiator) {
+                if ($initiator->userId === $user->id) {
+                    throw new Access('Initiators cannot support their own amendment', 403);
+                }
+            }
             foreach ($amendment->getSupporters(true) as $supporter) {
                 if ($supporter->userId === $user->id) {
                     return false;

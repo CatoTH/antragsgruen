@@ -27,7 +27,7 @@ $I->assertJsonStringEqualsJsonString('{"success":false,"message":"Public API dis
 
 $I->wantTo('enable the API');
 
-$I->apiSetApiEnabled('stdparteitag', 'std-parteitag', true);
+$I->apiSetApiEnabled();
 
 
 $I->wantTo('log in with valid credentials');

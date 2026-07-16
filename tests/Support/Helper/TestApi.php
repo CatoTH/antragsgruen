@@ -68,7 +68,7 @@ class TestApi extends Module
         $this->assertTrue($ret['success']);
     }
 
-    public function apiSetApiEnabled($subdomain, $consultationUrl, $enabled): void
+    public function apiSetApiEnabled($subdomain = 'stdparteitag', $consultationUrl = 'std-parteitag', $enabled = true): void
     {
         $ret = $this->executeCall($subdomain, $consultationUrl, 'set-api-enabled', [
             'enabled' => $enabled ? '1' : '0',
