@@ -29,15 +29,16 @@ class JwtCreator
 
     private static ?string $currUserId = null;
 
-    public static function createJwt(Consultation $consultation, string $userId, array $roles = []): string
+    public static function createJwt(Consultation $consultation, string $userId, array $roles = [], ?User $signingUser = null): string
     {
         $params = AntragsgruenApp::getInstance();
         if ($params->jwtPrivateKey !== null && $params->jwtPublicKey !== null) {
             $privateKey = self::retrieveKey($params->jwtPrivateKey);
             $algorithm = 'RS256';
         } else {
-            if (User::getCurrentUser()) {
-                $privateKey = User::getCurrentUser()->getJwtSigningKey();
+            $signingUser ??= User::getCurrentUser();
+            if ($signingUser) {
+                $privateKey = $signingUser->getJwtSigningKey();
                 $algorithm = 'HS256';
             } else {
                 throw new ConfigurationError('Cannot sign JWT for unauthenticated user');
@@ -158,6 +159,19 @@ class JwtCreator
             'token' => JwtCreator::createJwt($consultation, $userId, $roles),
             'exp' => time() + self::JWT_VALIDITY,
             'reload_uri' => UrlHelper::createUrl("/user/token"),
+        ];
+    }
+
+    public static function getJwtConfigForUser(Consultation $consultation, User $user): array
+    {
+        $roles = [];
+        if ($user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
+            $roles[] = self::ROLE_SPEECH_ADMIN;
+        }
+
+        return [
+            'token' => self::createJwt($consultation, self::USER_PREFIX_REGULAR . $user->id, $roles, $user),
+            'exp' => time() + self::JWT_VALIDITY,
         ];
     }
 }

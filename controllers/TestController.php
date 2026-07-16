@@ -30,6 +30,8 @@ class TestController extends Base
                 return $this->actionSetUserFixedData();
             case 'user-votes':
                 return $this->actionUserVotes();
+            case 'set-api-enabled':
+                return $this->actionSetApiEnabled();
         }
 
         return json_encode(['success' => false, 'message' => 'Unknown action: ' . $action], JSON_THROW_ON_ERROR);
@@ -71,6 +73,16 @@ id=270&status=3
         $user->name = $this->getHttpRequest()->post('nameGiven') . ' ' . $this->getHttpRequest()->post('nameFamily');
         $user->organization = $this->getHttpRequest()->post('organisation');
         $user->save();
+
+        return json_encode(['success' => true], JSON_THROW_ON_ERROR);
+    }
+
+    private function actionSetApiEnabled(): string
+    {
+        $settings = $this->site->getSettings();
+        $settings->apiEnabled = ($this->getHttpRequest()->post('enabled') === '1');
+        $this->site->setSettings($settings);
+        $this->site->save();
 
         return json_encode(['success' => true], JSON_THROW_ON_ERROR);
     }

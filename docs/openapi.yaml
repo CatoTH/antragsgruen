@@ -58,6 +58,52 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/user/login:
+    post:
+      operationId: loginUser
+      summary: Log in with username and password to retrieve a JWT
+      description: >
+        Only succeeds if the account could also log in without any further interactive step on the website: the
+        e-mail address must already be confirmed, no forced password change must be pending, no captcha must
+        currently be required (e.g. after repeated failed login attempts), and the account must not have
+        two-factor authentication set up or enforced. Accounts hitting any of these cases have to log in through
+        the regular web UI instead.
+      tags:
+        - User
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Login successful. Returns a JWT to be used as a bearer token for subsequent requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponse'
+        '401':
+          description: Invalid username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: >
+            Login is not possible via the API: the REST API is not enabled for this consultation, the site's
+            login method does not allow username/password login, the e-mail address is not confirmed yet, a
+            password change is required, a captcha is required, or two-factor authentication is set up/enforced
+            for this account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /rest/{consultationPath}/motion-types:
     get:
       operationId: getMotionTypes
@@ -1794,6 +1840,37 @@ components:
         auth:
           type: string
           example: email:test@example.org
+
+    UserLoginRequest:
+      x-php-namespace: user
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: The user's e-mail address (or other identifier used for login)
+          example: test@example.org
+        password:
+          type: string
+          example: "correct horse battery staple"
+
+    UserLoginResponse:
+      x-php-namespace: user
+      type: object
+      required:
+        - token
+        - exp
+      properties:
+        token:
+          type: string
+          description: "JWT to be sent as `Authorization: Bearer <token>` on subsequent REST API requests"
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        exp:
+          type: integer
+          description: Unix timestamp when the token expires
+          example: 1751020800
 
     ErrorNoPermission:
       x-php-namespace: errors

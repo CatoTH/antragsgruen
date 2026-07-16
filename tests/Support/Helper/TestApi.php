@@ -68,6 +68,15 @@ class TestApi extends Module
         $this->assertTrue($ret['success']);
     }
 
+    public function apiSetApiEnabled($subdomain, $consultationUrl, $enabled): void
+    {
+        $ret = $this->executeCall($subdomain, $consultationUrl, 'set-api-enabled', [
+            'enabled' => $enabled ? '1' : '0',
+        ]);
+
+        $this->assertTrue($ret['success']);
+    }
+
     public function apiSetUserVoted(
         string $subdomain,
         string $consultationUrl,
