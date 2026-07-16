@@ -19,24 +19,24 @@ class MotionTypeUpdateRequest
         public ?MotionTypePoliciesUpdateRequest $policies = null,
         public ?MotionTypeDeadlinesUpdateRequest $deadlines = null,
         public ?string $pdfLayoutId = null,
-        /** @var MotionTypeLikeDislikeFlag[]|null */
-        public ?array $motionLikesDislikes = null,
-        /** @var MotionTypeLikeDislikeFlag[]|null */
-        public ?array $amendmentLikesDislikes = null,
+        /** @var MotionTypeSupportType[]|null */
+        public ?array $motionSupportTypes = null,
+        /** @var MotionTypeSupportType[]|null */
+        public ?array $amendmentSupportTypes = null,
         public ?MotionTypeInitiatorSettingsUpdateRequest $motionInitiatorSettings = null,
         public ?MotionTypeAmendmentInitiatorSettingsUpdateRequest $amendmentInitiatorSettings = null,
     ) {
     }
 
     /** @param int[] $values */
-    private static function likeDislikeFlagsFromPost(array $values): array
+    private static function supportTypesFromPost(array $values): array
     {
         $flags = [];
         foreach ($values as $val) {
             $flag = match (intval($val)) {
-                SupportBase::LIKEDISLIKE_LIKE => MotionTypeLikeDislikeFlag::LIKE,
-                SupportBase::LIKEDISLIKE_DISLIKE => MotionTypeLikeDislikeFlag::DISLIKE,
-                SupportBase::LIKEDISLIKE_SUPPORT => MotionTypeLikeDislikeFlag::SUPPORT,
+                SupportBase::LIKEDISLIKE_LIKE => MotionTypeSupportType::LIKE,
+                SupportBase::LIKEDISLIKE_DISLIKE => MotionTypeSupportType::DISLIKE,
+                SupportBase::LIKEDISLIKE_SUPPORT => MotionTypeSupportType::SUPPORT,
                 default => null,
             };
             if ($flag !== null) {
@@ -132,8 +132,8 @@ class MotionTypeUpdateRequest
             ),
             deadlines: MotionTypeDeadlinesUpdateRequest::fromWebRequest($post['deadlines'] ?? []),
             pdfLayoutId: $post['pdfTemplate'] ?? '',
-            motionLikesDislikes: self::likeDislikeFlagsFromPost($input['motionLikesDislikes'] ?? []),
-            amendmentLikesDislikes: self::likeDislikeFlagsFromPost($input['amendmentLikesDislikes'] ?? []),
+            motionSupportTypes: self::supportTypesFromPost($input['motionLikesDislikes'] ?? []),
+            amendmentSupportTypes: self::supportTypesFromPost($input['amendmentLikesDislikes'] ?? []),
             motionInitiatorSettings: $motionInitiatorSettings,
             amendmentInitiatorSettings: new MotionTypeAmendmentInitiatorSettingsUpdateRequest(
                 sameAsMotion: $sameInitiatorSettingsForAmendments,

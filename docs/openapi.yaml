@@ -2211,7 +2211,7 @@ components:
         - required
       example: optional
 
-    MotionTypeLikeDislikeFlag:
+    MotionTypeSupportType:
       x-php-namespace: motionType
       type: string
       description: >
@@ -2272,19 +2272,19 @@ components:
             Identifier of the PDF layout to use, matching one of the ids returned by the (not yet REST-exposed)
             selectable-layouts list, e.g. "php0", "html2pdf3", "latex5". Sending an unknown id is a validation error.
           example: php0
-        motion_likes_dislikes:
+        motion_support_types:
           type: array
           description: Which informal reaction/support mechanisms are enabled for motions of this type
           items:
-            $ref: '#/components/schemas/MotionTypeLikeDislikeFlag'
+            $ref: '#/components/schemas/MotionTypeSupportType'
           example:
             - like
             - support
-        amendment_likes_dislikes:
+        amendment_support_types:
           type: array
           description: Which informal reaction/support mechanisms are enabled for amendments of this type
           items:
-            $ref: '#/components/schemas/MotionTypeLikeDislikeFlag'
+            $ref: '#/components/schemas/MotionTypeSupportType'
           example:
             - like
             - support

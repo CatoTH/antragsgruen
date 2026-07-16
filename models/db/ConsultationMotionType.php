@@ -363,15 +363,15 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
             $this->texTemplateId  = $layout->latexId;
         }
 
-        if ($dto->motionLikesDislikes !== null) {
+        if ($dto->motionSupportTypes !== null) {
             $this->motionLikesDislikes = 0;
-            foreach ($dto->motionLikesDislikes as $flag) {
+            foreach ($dto->motionSupportTypes as $flag) {
                 $this->motionLikesDislikes |= $flag->toFlag();
             }
         }
-        if ($dto->amendmentLikesDislikes !== null) {
+        if ($dto->amendmentSupportTypes !== null) {
             $this->amendmentLikesDislikes = 0;
-            foreach ($dto->amendmentLikesDislikes as $flag) {
+            foreach ($dto->amendmentSupportTypes as $flag) {
                 $this->amendmentLikesDislikes |= $flag->toFlag();
             }
         }

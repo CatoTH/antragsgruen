@@ -39,7 +39,7 @@ $typeUpdateData = [
         'support_motions' => ['id' => 'logged_in'],
         'support_amendments' => ['id' => 'nobody'],
     ],
-    'motion_likes_dislikes' => ['support'],
+    'motion_support_types' => ['support'],
     'motion_initiator_settings' => [
         'type' => 'collecting_supporters',
         'initiator_can_be_person' => true,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\api\motionType;
 
-enum MotionTypeLikeDislikeFlag: string
+enum MotionTypeSupportType: string
 {
     case LIKE = 'like';
     case DISLIKE = 'dislike';
