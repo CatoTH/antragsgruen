@@ -43,8 +43,9 @@ class UserController extends RestBase
 
         try {
             $user = $form->getOrCreateUser($this->site);
-        } catch (LoginInvalidUser | LoginInvalidPassword $e) {
-            return new RestApiExceptionResponse(401, $e->getMessage());
+        } catch (LoginInvalidUser | LoginInvalidPassword) {
+            // Deliberately not passing on the specific error message, to prevent user enumeration
+            return new RestApiExceptionResponse(401, 'Invalid username or password');
         } catch (Login $e) {
             // E.g. login disabled for this site, or a captcha would be required
             return new RestApiExceptionResponse(403, $e->getMessage());

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\exceptions\{ApiResponseException, NotFound, ConfigurationError};
+use app\models\exceptions\{ApiResponseException, ConfigurationError};
 use app\models\db\{Consultation, User};
 use Firebase\JWT\{ExpiredException, Key, SignatureInvalidException, JWT};
 use app\models\settings\{Privileges, AntragsgruenApp};
@@ -93,17 +93,25 @@ class JwtCreator
     public static function getAuthenticatedUserByToken(string $token): ?User
     {
         $parts = explode('.', $token);
+        if (count($parts) !== 3) {
+            throw new ApiResponseException('Invalid Token', 401);
+        }
         $payload = json_decode(JWT::urlsafeB64Decode($parts[1]), true);
+        if (!is_array($payload)) {
+            throw new ApiResponseException('Invalid Token', 401);
+        }
 
         $subject = $payload['sub'] ?? null;
-        if ($subject === null || !str_starts_with($subject, self::USER_PREFIX_REGULAR)) {
+        if ($subject === null || !is_string($subject) || !str_starts_with($subject, self::USER_PREFIX_REGULAR)) {
             return null;
         }
         $userId = intval(explode('-', $subject)[1]);
         /** @var User|null $user */
         $user = User::findOne(['id' => $userId]);
-        if ($user === null) {
-            throw new NotFound('User not found');
+        if ($user === null || $user->status === User::STATUS_DELETED) {
+            // Hint: needs to be checked before the signature validation, as validating the signature of a deleted
+            // user would re-generate its secretKey in the HS256 code path below
+            throw new ApiResponseException('Invalid Token', 401);
         }
 
         $params = AntragsgruenApp::getInstance();
