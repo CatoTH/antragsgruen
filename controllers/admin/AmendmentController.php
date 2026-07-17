@@ -10,9 +10,8 @@ use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, Redire
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\components\{IMotionStatusFilter, Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, ConsultationLog, Motion, User};
-use app\models\events\AmendmentEvent;
 use app\models\api\imotion\AmendmentUpdateRequest;
-use app\models\exceptions\FormError;
+use app\models\exceptions\{Access, FormError};
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
 
@@ -152,16 +151,14 @@ class AmendmentController extends AdminBase
 
         $post = $this->getPostValues();
 
-        if ($this->isPostSet('screen') && $amendment->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, $privCtx)) {
-            $toSetPrefix = (mb_strlen($post['titlePrefix']) > 45 ? mb_substr($post['titlePrefix'], 0, 45) : $post['titlePrefix']);
-            if ($amendment->getMyMotion()->findAmendmentWithPrefix($toSetPrefix, $amendment)) {
-                $this->getHttpSession()->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
-            } else {
-                $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
-                $amendment->titlePrefix = $toSetPrefix;
-                $amendment->save();
-                $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
+        if ($this->isPostSet('screen')) {
+            try {
+                $amendment->screen($post['titlePrefix']);
                 $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'amend_screened'));
+            } catch (FormError $e) {
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
+            } catch (Access $e) {
+                // No privilege, or the amendment is not in the screening process (anymore) => silently ignore, as before
             }
         }
 

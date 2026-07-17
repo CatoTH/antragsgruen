@@ -4,7 +4,9 @@ namespace app\models\db;
 
 use app\components\EmailNotifications;
 use app\components\RequestContext;
+use app\models\api\imotion\SupportRequest;
 use app\models\events\MotionSupporterEvent;
+use app\models\exceptions\{Access, FormError};
 use app\models\settings\AntragsgruenApp;
 use yii\base\Event;
 use yii\db\ActiveQuery;
@@ -139,6 +141,64 @@ class MotionSupporter extends ISupporter
         $motion->refresh();
 
         $support->trigger(MotionSupporter::EVENT_SUPPORTED, new MotionSupporterEvent($support, $hadEnoughSupportersBefore));
+    }
+
+    /**
+     * Shared by the regular web supporting flow and the REST API. Validates the request, checks the
+     * motion's status/policy and creates the support entry.
+     * @return bool true if a new support entry was created, false if the user already supported this motion (no-op)
+     * @throws Access
+     * @throws FormError
+     */
+    public static function createSupportFromRequest(Motion $motion, ?User $user, SupportRequest $request): bool
+    {
+        if (!$motion->isSupportingPossibleAtThisStatus()) {
+            throw new Access('Not possible given the current motion status', 403);
+        }
+        if ($user) {
+            foreach ($motion->getInitiators() as $initiator) {
+                if ($initiator->userId === $user->id) {
+                    throw new Access('Initiators cannot support their own motion', 403);
+                }
+            }
+            foreach ($motion->getSupporters(true) as $supporter) {
+                if ($supporter->userId === $user->id) {
+                    return false;
+                }
+            }
+        }
+        if (!$motion->getMyMotionType()->getMotionSupportPolicy()->checkCurrUser()) {
+            throw new Access('Supporting this motion is not possible', 403);
+        }
+
+        $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
+        $request->validate($supportType);
+
+        static::createSupport($motion, $user, $request->name, $request->organization ?? '', static::ROLE_SUPPORTER, $request->gender ?? '', (bool)$request->nonPublic);
+
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
+
+        return true;
+    }
+
+    /**
+     * Shared by the regular web supporting flow and the REST API. Revokes all supports/likes/dislikes
+     * of the given (logged-in or loginless) user on this motion.
+     * @param int[] $loginlessSupportedIds ids of supports tracked in the session for the current loginless user (web only)
+     * @throws Access
+     */
+    public static function revokeSupportFromRequest(Motion $motion, ?User $user, array $loginlessSupportedIds = []): void
+    {
+        foreach ($motion->motionSupporters as $supp) {
+            if (($user && $supp->userId === $user->id) || in_array($supp->id, $loginlessSupportedIds)) {
+                if ($supp->role === static::ROLE_SUPPORTER && !$motion->isSupportingPossibleAtThisStatus()) {
+                    throw new Access('Not possible given the current motion status', 403);
+                }
+                $motion->unlink('motionSupporters', $supp, true);
+            }
+        }
+
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
     }
 
     public static function checkOfficialSupportNumberReached(MotionSupporterEvent $event): void

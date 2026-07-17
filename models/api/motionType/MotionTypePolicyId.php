@@ -25,4 +25,15 @@ enum MotionTypePolicyId: string
             default => throw new \InvalidArgumentException('Unknown policy id: ' . $id),
         };
     }
+
+    public function toPolicyInt(): int
+    {
+        return match ($this) {
+            self::NOBODY => IPolicy::POLICY_NOBODY,
+            self::ALL => IPolicy::POLICY_ALL,
+            self::LOGGED_IN => IPolicy::POLICY_LOGGED_IN,
+            self::ADMINS => IPolicy::POLICY_ADMINS,
+            self::USER_GROUPS => IPolicy::POLICY_USER_GROUPS,
+        };
+    }
 }

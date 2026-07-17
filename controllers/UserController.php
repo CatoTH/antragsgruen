@@ -244,7 +244,7 @@ class UserController extends Base
                 $msg = \Yii::t('user', 'err_pwd_length');
                 $error = str_replace('%MINLEN%', (string)$pwMinLen, $msg);
             } else {
-                $sessionUser->pwdEnc = password_hash($this->getPostValue('pwd'), PASSWORD_DEFAULT);
+                $sessionUser->changePassword($this->getPostValue('pwd'));
                 $settings = $sessionUser->getSettingsObj();
                 $settings->forcePasswordChange = false;
                 $sessionUser->setSettingsObj($settings);
@@ -483,7 +483,7 @@ class UserController extends Base
                     $msg = \Yii::t('user', 'err_pwd_length');
                     $this->getHttpSession()->setFlash('error', str_replace('%MINLEN%', (string)$pwMinLen, $msg));
                 } else {
-                    $user->pwdEnc = password_hash($post['pwd'], PASSWORD_DEFAULT);
+                    $user->changePassword($post['pwd']);
                 }
             }
 

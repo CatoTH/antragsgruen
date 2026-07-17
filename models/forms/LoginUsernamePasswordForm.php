@@ -16,6 +16,10 @@ class LoginUsernamePasswordForm extends Model
 {
     public const PASSWORD_MIN_LEN = 8;
 
+    // Used to mitigate timing-based user enumeration: if no user account matches, a password verification
+    // is performed against this hash, so the response takes about as long as with an existing user.
+    private const DUMMY_PASSWORD_HASH = '$2y$12$gk7CVoFtWfAAho1jxv.zMehuiGDaFHoEtzesyXkwXH2VCahOxLxg6';
+
     public ?string $username = null;
     public ?string $password = null;
     public ?string $passwordConfirm = null;
@@ -189,12 +193,8 @@ class LoginUsernamePasswordForm extends Model
      */
     private function getCandidatesStdLogin(): array
     {
-        $tableName = User::tableName();
-        $sqlWhere1 = "`auth` = 'email:" . addslashes($this->username) . "'";
-
-        /** @noinspection SqlResolve */
         /** @var User[] $users */
-        $users = User::findBySql("SELECT * FROM `" . $tableName . "` WHERE $sqlWhere1")->all();
+        $users = User::find()->where(['auth' => 'email:' . $this->username])->all();
         return $users;
     }
 
@@ -250,6 +250,7 @@ class LoginUsernamePasswordForm extends Model
         $candidates = $this->getCandidates($site);
 
         if (count($candidates) === 0) {
+            password_verify((string)$this->password, self::DUMMY_PASSWORD_HASH);
             FailedLoginAttempt::logAttempt($this->username);
             $this->error = \Yii::t('user', 'login_err_username');
             throw new LoginInvalidUser($this->error);

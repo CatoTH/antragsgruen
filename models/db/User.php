@@ -569,6 +569,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function changePassword(string $newPassword): void
     {
         $this->pwdEnc        = password_hash($newPassword, PASSWORD_DEFAULT);
+        // Rotating the secret key invalidates all previously issued JWTs and other secret-derived codes
+        $this->secretKey     = \Yii::$app->getSecurity()->generateRandomString(32);
         $this->recoveryToken = null;
         $this->recoveryAt    = null;
         $this->save();

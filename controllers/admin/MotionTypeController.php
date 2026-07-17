@@ -2,18 +2,17 @@
 
 namespace app\controllers\admin;
 
-use app\views\pdfLayouts\IPDFLayout;
+use app\models\api\motionType\MotionTypeUpdateRequest;
 use app\components\{DateTools, UrlHelper};
-use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection, ConsultationUserGroup, TexTemplate, User};
+use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection, TexTemplate, User};
 use app\models\exceptions\{ExceptionBase, FormError};
-use app\models\forms\DeadlineForm;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
 use app\models\motionTypeTemplates\Application as ApplicationTemplate;
 use app\models\motionTypeTemplates\Motion as MotionTemplate;
 use app\models\motionTypeTemplates\PDFApplication as PDFApplicationTemplate;
 use app\models\motionTypeTemplates\Statutes as StatutesTemplate;
 use app\models\motionTypeTemplates\ProgressReport as ProgressReportTemplate;
-use app\models\policies\{All, IPolicy, Nobody, UserGroups};
+use app\models\policies\{All, IPolicy, Nobody};
 use app\models\settings\{InitiatorForm, MotionSection, MotionType, Privileges};
 use app\models\supportTypes\SupportBase;
 
@@ -76,17 +75,6 @@ class MotionTypeController extends AdminBase
         }
     }
 
-    private function getPolicyFromUpdateData(ConsultationMotionType $motionType, array $data): IPolicy
-    {
-        $consultation = $motionType->getConsultation();
-        $policy = IPolicy::getInstanceFromDb($data['id'], $consultation, $motionType);
-        if (is_a($policy, UserGroups::class)) {
-            $groups = ConsultationUserGroup::loadGroupsByIdForConsultation($motionType->getConsultation(), $data['groups'] ?? []);
-            $policy->setAllowedUserGroups($groups);
-        }
-        return $policy;
-    }
-
     public function actionType(string $motionTypeId): ResponseInterface
     {
         $motionTypeId = intval($motionTypeId);
@@ -107,122 +95,24 @@ class MotionTypeController extends AdminBase
             }
         }
         if ($this->isPostSet('save')) {
-            $input = $this->getHttpRequest()->post('type');
-            $motionType->setAttributes($input);
-            if (isset($input['typeAmendSingleChange'])) {
-                $motionType->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_CHANGE;
-            } elseif (isset($input['amendSinglePara'])) {
-                $motionType->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_SINGLE_PARAGRAPH;
-            } else {
-                $motionType->amendmentMultipleParagraphs = ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE;
-            }
-            $motionType->sidebarCreateButton         = (isset($input['sidebarCreateButton']) ? 1 : 0);
-            $motionType->setMotionPolicy($this->getPolicyFromUpdateData($motionType, $input['policyMotions']));
-            $motionType->setMotionSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportMotions']));
-            $motionType->setAmendmentPolicy($this->getPolicyFromUpdateData($motionType, $input['policyAmendments']));
-            $motionType->setAmendmentSupportPolicy($this->getPolicyFromUpdateData($motionType, $input['policySupportAmendments']));
-            $motionType->setCommentPolicy($this->getPolicyFromUpdateData($motionType, $input['policyComments']));
+            try {
+                $dto = MotionTypeUpdateRequest::fromWebRequest($this->getPostValues());
+                $motionType->applySettingsUpdate($dto);
+                $motionType->save();
 
-            $deadlineForm = DeadlineForm::createFromInput($this->getHttpRequest()->post('deadlines'));
-            $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
+                $this->sectionsSave($motionType);
+                $this->sectionsDelete($motionType);
 
-            $pdfTemplate = $this->getHttpRequest()->post('pdfTemplate', '');
-            foreach (IPDFLayout::getSelectablePdfLayouts() as $layout) {
-                if ($layout->getHtmlId() === $pdfTemplate) {
-                    $motionType->pdfLayout = $layout->id ?? 0;
-                    $motionType->texTemplateId = $layout->latexId;
+                DateTools::setDeadlineDebugMode($this->consultation, $this->isPostSet('activateDeadlineDebugMode'));
+
+                $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
+                $motionType->refresh();
+
+                foreach ($this->consultation->getMotionsOfType($motionType) as $motion) {
+                    $motion->flushCacheStart(null);
                 }
-            }
-
-            $motionType->motionLikesDislikes = 0;
-            if (isset($input['motionLikesDislikes'])) {
-                foreach ($input['motionLikesDislikes'] as $val) {
-                    $motionType->motionLikesDislikes += $val;
-                }
-            }
-            $motionType->amendmentLikesDislikes = 0;
-            if (isset($input['amendmentLikesDislikes'])) {
-                foreach ($input['amendmentLikesDislikes'] as $val) {
-                    $motionType->amendmentLikesDislikes += $val;
-                }
-            }
-
-            $settings                       = $motionType->getSettingsObj();
-            $settings->pdfIntroduction      = $input['pdfIntroduction'];
-            $settings->motionTitleIntro     = $input['typeMotionIntro'];
-            $settings->hasProposedProcedure = isset($input['proposedProcedure']);
-            $settings->proposedProcedureVersioning = isset($input['proposedProcedureVersioning']);
-            $settings->hasResponsibilities  = isset($input['responsibilities']);
-            $settings->commentsRestrictViewToWritables = isset($input['commentsRestrictViewToWritables']);
-            $settings->allowAmendmentsToAmendments = isset($input['allowAmendmentsToAmendments']);
-            $settings->showProposalsInExports = isset($input['showProposalsInExports']);
-            $motionType->setSettingsObj($settings);
-
-            // Motion Initiators / Supporters
-            $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
-            $settings->saveFormTyped(
-                $this->getHttpRequest()->post('motionInitiatorSettings', []),
-                $this->getHttpRequest()->post('motionInitiatorSettingFields', [])
-            );
-            $settings->initiatorCanBeOrganization = $this->isPostSet('initiatorCanBeOrganization');
-            $settings->initiatorCanBePerson       = $this->isPostSet('initiatorCanBePerson');
-            if (!$settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
-                // Probably a mistake
-                $settings->initiatorCanBeOrganization = true;
-                $settings->initiatorCanBePerson       = true;
-            }
-            if (isset($input['initiatorSetPermissions'])) {
-                $settings->setInitiatorPersonPolicyObject($this->getPolicyFromUpdateData($motionType, $input['initiatorPersonPolicy']));
-                $settings->setInitiatorOrganizationPolicyObject($this->getPolicyFromUpdateData($motionType, $input['initiatorOrgaPolicy']));
-            } else {
-                $settings->setInitiatorPersonPolicyObject(new All($this->consultation, $settings, null));
-                $settings->setInitiatorOrganizationPolicyObject(new All($this->consultation, $settings, null));
-            }
-            $motionType->supportTypeMotions = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
-
-            if ($this->isPostSet('sameInitiatorSettingsForAmendments')) {
-                $motionType->supportTypeAmendments = null;
-            } else {
-                // Amendment Initiators / Supporters
-                $settings = $motionType->getAmendmentSupportTypeClass()->getSettingsObj();
-                $settings->saveFormTyped(
-                    $this->getHttpRequest()->post('amendmentInitiatorSettings', []),
-                    $this->getHttpRequest()->post('amendmentInitiatorSettingFields', [])
-                );
-                $settings->initiatorCanBeOrganization = $this->isPostSet('amendmentInitiatorCanBeOrganization');
-                $settings->initiatorCanBePerson       = $this->isPostSet('amendmentInitiatorCanBePerson');
-                if (!$settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
-                    // Probably a mistake
-                    $settings->initiatorCanBeOrganization = true;
-                    $settings->initiatorCanBePerson       = true;
-                }
-                if (isset($input['amendmentInitiatorSetPermissions'])) {
-                    $settings->setInitiatorPersonPolicyObject($this->getPolicyFromUpdateData($motionType, $input['amendmentInitiatorPersonPolicy']));
-                    $settings->setInitiatorOrganizationPolicyObject($this->getPolicyFromUpdateData($motionType, $input['amendmentInitiatorOrgaPolicy']));
-                } else {
-                    $settings->setInitiatorPersonPolicyObject(new All($this->consultation, $settings, null));
-                    $settings->setInitiatorOrganizationPolicyObject(new All($this->consultation, $settings, null));
-                }
-                if (is_numeric($this->getHttpRequest()->post('maxPdfSupporters'))) {
-                    $settings->maxPdfSupporters = intval($this->getPostValue('maxPdfSupporters'));
-                } else {
-                    $settings->maxPdfSupporters = null;
-                }
-                $motionType->supportTypeAmendments = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
-            }
-
-            $motionType->save();
-
-            $this->sectionsSave($motionType);
-            $this->sectionsDelete($motionType);
-
-            DateTools::setDeadlineDebugMode($this->consultation, $this->isPostSet('activateDeadlineDebugMode'));
-
-            $this->getHttpSession()->setFlash('success', \Yii::t('admin', 'saved'));
-            $motionType->refresh();
-
-            foreach ($this->consultation->getMotionsOfType($motionType) as $motion) {
-                $motion->flushCacheStart(null);
+            } catch (FormError $e) {
+                $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         }
 

@@ -7,22 +7,9 @@ use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
+$I->apiSetApiEnabled();
 
-$I->gotoConsultationHome();
-$I->loginAsStdUser();
-
-$grabToken = function () use ($I): string {
-    $I->amOnPage(str_replace(
-        ['{SUBDOMAIN}', '{CONSULTATION}', '{PATH}'],
-        ['stdparteitag', 'std-parteitag', 'token'],
-        AcceptanceTester::ABSOLUTE_URL_TEMPLATE
-    ));
-    $text = explode('"token":"', $I->grabPageSource());
-
-    return explode('"', $text[1])[0];
-};
-$token = $grabToken();
-
+$token = $I->apiLoginAsStdAdmin();
 
 $client = new Client([
     'base_uri' => str_replace(['{SUBDOMAIN}', '{PATH}'], ['stdparteitag', ''], AcceptanceTester::ABSOLUTE_URL_TEMPLATE_SITE),
@@ -35,119 +22,58 @@ $request = $client->get('rest/std-parteitag/motion-types', [RequestOptions::HEAD
 $I->assertEquals(200, $request->getStatusCode());
 
 
-$I->assertJsonStringEqualsJsonString('{
-  "items": [
-    {
-      "id": 1,
-      "labels": {
-        "singular": "Antrag",
-        "plural": "Antr\u00e4ge",
-        "create": "Antrag stellen"
-      },
-      "settings": {
-        "amendments_only": false,
-        "amendment_multiple_paragraphs": "multiple",
-        "has_proposed_procedure": true,
-        "has_responsibilities": false,
-        "allow_amendments_to_amendments": false,
-        "merging_deadlines": []
-      },
-      "policies": {
-        "motions": {
-          "id": "all",
-          "description": "Alle",
-          "deadlines": [],
-          "user_group_ids": null
-        },
-        "amendments": {
-          "id": "all",
-          "description": "Alle",
-          "deadlines": [],
-          "user_group_ids": null
-        },
-        "comments": {
-          "id": "all",
-          "description": "Alle",
-          "deadlines": [],
-          "user_group_ids": null
-        },
-        "support_motions": {
-          "id": "nobody",
-          "description": "Niemand",
-          "deadlines": [],
-          "user_group_ids": null
-        },
-        "support_amendments": {
-          "id": "nobody",
-          "description": "Niemand",
-          "deadlines": [],
-          "user_group_ids": null
-        }
-      },
-      "sections": [
-        {
-          "id": 1,
-          "type": "Title",
-          "title": "\u00dcberschrift",
-          "required": "yes",
-          "max_len": 0,
-          "line_numbers": true,
-          "has_amendments": true,
-          "has_comments": "none",
-          "position_right": false
-        },
-        {
-          "id": 2,
-          "type": "TextSimple",
-          "title": "Antragstext",
-          "required": "yes",
-          "max_len": 0,
-          "line_numbers": true,
-          "has_amendments": true,
-          "has_comments": "motion",
-          "position_right": false
-        },
-        {
-          "id": 4,
-          "type": "TextSimple",
-          "title": "Antragstext 2",
-          "required": "no",
-          "max_len": 0,
-          "line_numbers": true,
-          "has_amendments": true,
-          "has_comments": "motion",
-          "position_right": false
-        },
-        {
-          "id": 3,
-          "type": "TextSimple",
-          "title": "Begr\u00fcndung",
-          "required": "no",
-          "max_len": 0,
-          "line_numbers": false,
-          "has_amendments": false,
-          "has_comments": "none",
-          "position_right": false
-        },
-        {
-          "id": 5,
-          "type": "Image",
-          "title": "Abbildung",
-          "required": "no",
-          "max_len": 0,
-          "line_numbers": true,
-          "has_amendments": false,
-          "has_comments": "none",
-          "position_right": false
-        }
-      ],
-      "motion_prefix": "A"
-    }
-  ]
-}', $request->getBody()->getContents());
+$expectedMotionTypeData = file_get_contents(__DIR__ . '/../../Support/Data/api-motion-types-default.json');
+$I->assertJsonStringEqualsJsonString($expectedMotionTypeData, $request->getBody()->getContents());
 
 
-// Create a motion, based on the motion type definition above
+// Update the motion type: motions now need a collecting phase (at least one official supporter, given by a
+// logged-in user) before they can be published.
+
+$token = $I->apiLoginAsStdAdmin();
+
+$typeUpdateData = [
+    'policies' => [
+        'motions' => ['id' => 'all'],
+        'amendments' => ['id' => 'all'],
+        'comments' => ['id' => 'all'],
+        'support_motions' => ['id' => 'logged_in'],
+        'support_amendments' => ['id' => 'nobody'],
+    ],
+    'motion_support_types' => ['support'],
+    'motion_initiator_settings' => [
+        'type' => 'collecting_supporters',
+        'initiator_can_be_person' => true,
+        'initiator_can_be_organization' => true,
+        'person_policy' => ['id' => 'all'],
+        'organization_policy' => ['id' => 'all'],
+        'min_supporters' => 1,
+        'allow_more_supporters' => true,
+        'allow_supporting_after_publication' => false,
+        'offer_non_public_supports' => false,
+        'has_organizations' => true,
+        'contact_name' => 'none',
+        'contact_email' => 'required',
+        'contact_phone' => 'optional',
+        'contact_gender' => 'none',
+        'has_resolution_date' => 'required',
+    ],
+];
+
+$request = $client->patch('rest/std-parteitag/motion-types/1', [
+    RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token],
+    RequestOptions::JSON => $typeUpdateData,
+]);
+$I->assertEquals(200, $request->getStatusCode());
+
+$updatedType = json_decode($request->getBody()->getContents(), true);
+$I->assertSame('logged_in', $updatedType['policies']['support_motions']['id']);
+
+
+// Create a motion, based on the (now updated) motion type definition above.
+// Created by a regular, non-privileged user: with PRIVILEGE_MOTION_INITIATORS (e.g. an admin), the initiator
+// would not actually be attributed to any user account, which we need for the "self-support" check below.
+
+$token = $I->apiLoginAsStdUser();
 
 $motionTitle = 'Testing REST motion creation';
 $motionText = '<p>This is the motion text, submitted via the REST API.</p>';
@@ -182,7 +108,7 @@ $created = json_decode($request->getBody()->getContents(), true);
 $I->assertSame('motion', $created['type']);
 $I->assertIsInt($created['id']);
 $I->assertGreaterThan(0, $created['id']);
-$I->assertSame(\app\models\db\IMotion::STATUS_SUBMITTED_SCREENED, $created['status_id']);
+$I->assertSame(\app\models\db\IMotion::STATUS_COLLECTING_SUPPORTERS, $created['status_id']);
 $I->assertSame($motionTitle, $created['title']);
 $I->assertNotEmpty($created['url_json']);
 
@@ -199,7 +125,7 @@ $fetched = json_decode($request->getBody()->getContents(), true);
 
 $I->assertSame($created['id'], $fetched['id']);
 $I->assertSame($motionTitle, $fetched['title']);
-$I->assertSame(\app\models\db\IMotion::STATUS_SUBMITTED_SCREENED, $fetched['status_id']);
+$I->assertSame(\app\models\db\IMotion::STATUS_COLLECTING_SUPPORTERS, $fetched['status_id']);
 
 $sectionsByTitle = [];
 foreach ($fetched['sections'] as $section) {
@@ -222,4 +148,30 @@ $I->assertSame([], $fetched['amendment_links']);
 
 unset($created['pagination'], $fetched['pagination']);
 $I->assertEquals($created, $fetched);
+
+
+$I->wantTo('try to officially support the motion as its own initiator - this must fail');
+
+$request = $client->post($created['url_json'] . '/support', [
+    RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token], // still the initiator's (testuser's) token
+    RequestOptions::JSON => ['name' => 'Testuser', 'organization' => 'Test Organization'],
+]);
+$I->assertEquals(403, $request->getStatusCode());
+$selfSupportError = json_decode($request->getBody()->getContents(), true);
+$I->assertFalse($selfSupportError['success']);
+
+
+$I->wantTo('support the motion as a different, regular user - this must succeed');
+
+$fixedDataToken = $I->apiLoginAsFixedDataUser();
+
+$request = $client->post($created['url_json'] . '/support', [
+    RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $fixedDataToken],
+    RequestOptions::JSON => ['name' => 'Fixed Data', 'organization' => 'MotionTools'],
+]);
+$I->assertEquals(200, $request->getStatusCode());
+
+$supported = json_decode($request->getBody()->getContents(), true);
+$I->assertCount(1, $supported['supporters']);
+$I->assertSame('Fixed Data', $supported['supporters'][0]['name']);
 

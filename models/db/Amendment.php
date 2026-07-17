@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\exceptions\{Internal, NotFound, FormError};
+use app\models\exceptions\{Access, Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
 use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, RequestContext, RSSExporter, Tools, UrlHelper};
@@ -915,6 +915,34 @@ class Amendment extends IMotion implements IRSSItem
         $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
+    }
+
+    /**
+     * Screens this amendment with an admin-provided prefix. A null prefix is auto-generated.
+     * Shared by the admin web screening flow and the REST API.
+     * @throws Access
+     * @throws FormError
+     */
+    public function screen(?string $titlePrefix): void
+    {
+        $privCtx = PrivilegeQueryContext::amendment($this);
+        if (!$this->isInScreeningProcess() || !User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_SCREENING, $privCtx)) {
+            throw new Access('Screening this amendment is not possible', 403);
+        }
+
+        if ($titlePrefix === null) {
+            $titlePrefix = Amendment::getNewNumberForAmendment($this);
+        }
+
+        $toSetPrefix = (mb_strlen($titlePrefix) > 45 ? mb_substr($titlePrefix, 0, 45) : $titlePrefix);
+        if ($this->getMyMotion()->findAmendmentWithPrefix($toSetPrefix, $this)) {
+            throw new FormError(\Yii::t('admin', 'amend_prefix_collision'));
+        }
+
+        $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
+        $this->titlePrefix = $toSetPrefix;
+        $this->save();
+        $this->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($this));
     }
 
     public function getLatestProposal(bool $skipVisibilityCheck = false): AmendmentProposal

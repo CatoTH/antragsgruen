@@ -4,6 +4,8 @@ namespace Tests\Support;
 use app\models\db\Motion;
 use Codeception\Actor;
 use Codeception\Lib\Friend;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Tests\_pages\AdminIndexPage;
 use Tests\_pages\AdminMotionListPage;
 use Tests\_pages\AmendmentPage;
@@ -234,6 +236,63 @@ class AcceptanceTester extends Actor
     public function loginAsFixedDataUser(): self
     {
         return $this->loginWithData('fixeddata@example.org', 'testuser');
+    }
+
+    /**
+     * Logs in via the REST API (POST /rest/{consultationPath}/user/login) and returns the JWT.
+     * Requires the REST API to already be enabled for the site, e.g. via apiSetApiEnabled().
+     */
+    protected function restLoginWithData(string $username, string $password, string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): string
+    {
+        $baseUri = str_replace(['{SUBDOMAIN}', '{PATH}'], [$subdomain, ''], self::ABSOLUTE_URL_TEMPLATE_SITE);
+        $client  = new Client([
+            'base_uri' => $baseUri,
+            RequestOptions::HTTP_ERRORS => false,
+        ]);
+
+        $response = $client->post('rest/' . $path . '/user/login', [
+            RequestOptions::JSON => ['username' => $username, 'password' => $password],
+        ]);
+        $responseBody = $response->getBody()->getContents();
+        $this->assertEquals(200, $response->getStatusCode(), 'REST login failed: ' . $responseBody);
+
+        $data = json_decode($responseBody, true);
+        return $data['token'];
+    }
+
+    public function apiLoginAsStdAdmin(): string
+    {
+        return $this->restLoginWithData('testadmin@example.org', 'testadmin');
+    }
+
+    public function apiLoginAsConsultationAdmin(): string
+    {
+        return $this->restLoginWithData('consultationadmin@example.org', 'consultationadmin');
+    }
+
+    public function apiLoginAsProposalAdmin(): string
+    {
+        return $this->restLoginWithData('proposaladmin@example.org', 'proposaladmin');
+    }
+
+    public function apiLoginAsProgressAdmin(): string
+    {
+        return $this->restLoginWithData('progress@example.org', 'proposaladmin');
+    }
+
+    public function apiLoginAsGlobalAdmin(): string
+    {
+        return $this->restLoginWithData('globaladmin@example.org', 'testadmin');
+    }
+
+    public function apiLoginAsStdUser(): string
+    {
+        return $this->restLoginWithData('testuser@example.org', 'testuser');
+    }
+
+    public function apiLoginAsFixedDataUser(): string
+    {
+        return $this->restLoginWithData('fixeddata@example.org', 'testuser');
     }
 
     public function loginAsDbwvTestUser(string $username): self

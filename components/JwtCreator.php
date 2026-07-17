@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\exceptions\{ApiResponseException, NotFound, ConfigurationError};
-use app\models\db\{Consultation, User};
+use app\models\exceptions\{ApiResponseException, ConfigurationError};
+use app\models\db\{Consultation, Site, User};
 use Firebase\JWT\{ExpiredException, Key, SignatureInvalidException, JWT};
 use app\models\settings\{Privileges, AntragsgruenApp};
 
@@ -29,15 +29,21 @@ class JwtCreator
 
     private static ?string $currUserId = null;
 
-    public static function createJwt(Consultation $consultation, string $userId, array $roles = []): string
+    // Set when the current request was authenticated using a bearer JWT; holds the subdomain of the site
+    // the token was issued for. Used to restrict tokens to the site they were created on.
+    private static bool $currTokenAuthenticated = false;
+    private static ?string $currTokenSite = null;
+
+    public static function createJwt(Consultation $consultation, string $userId, array $roles = [], ?User $signingUser = null): string
     {
         $params = AntragsgruenApp::getInstance();
+        $signingUser ??= User::getCurrentUser();
         if ($params->jwtPrivateKey !== null && $params->jwtPublicKey !== null) {
             $privateKey = self::retrieveKey($params->jwtPrivateKey);
             $algorithm = 'RS256';
         } else {
-            if (User::getCurrentUser()) {
-                $privateKey = User::getCurrentUser()->getJwtSigningKey();
+            if ($signingUser) {
+                $privateKey = $signingUser->getJwtSigningKey();
                 $algorithm = 'HS256';
             } else {
                 throw new ConfigurationError('Cannot sign JWT for unauthenticated user');
@@ -61,8 +67,27 @@ class JwtCreator
                 'roles' => $roles,
             ],
         ];
+        if ($signingUser) {
+            // Binds the token to the current signing key, so rotating the key (e.g. on password change)
+            // invalidates the token even in RS256 mode, where the signature does not depend on it
+            $payload['key_fp'] = self::getKeyFingerprint($signingUser);
+        }
 
         return JWT::encode($payload, $privateKey, $algorithm);
+    }
+
+    private static function getKeyFingerprint(User $user): string
+    {
+        return substr(hash('sha256', $user->getJwtSigningKey()), 0, 16);
+    }
+
+    /**
+     * Returns true if the current request was authenticated by a bearer JWT that was issued for a different site.
+     * JWTs are only valid on the site they were created on.
+     */
+    public static function isCurrentTokenRestrictedToOtherSite(Site $site): bool
+    {
+        return self::$currTokenAuthenticated && self::$currTokenSite !== $site->subdomain;
     }
 
     private static function retrieveKey(string $fileOrContent): string
@@ -92,17 +117,25 @@ class JwtCreator
     public static function getAuthenticatedUserByToken(string $token): ?User
     {
         $parts = explode('.', $token);
+        if (count($parts) !== 3) {
+            throw new ApiResponseException('Invalid Token', 401);
+        }
         $payload = json_decode(JWT::urlsafeB64Decode($parts[1]), true);
+        if (!is_array($payload)) {
+            throw new ApiResponseException('Invalid Token', 401);
+        }
 
         $subject = $payload['sub'] ?? null;
-        if ($subject === null || !str_starts_with($subject, self::USER_PREFIX_REGULAR)) {
+        if ($subject === null || !is_string($subject) || !str_starts_with($subject, self::USER_PREFIX_REGULAR)) {
             return null;
         }
         $userId = intval(explode('-', $subject)[1]);
         /** @var User|null $user */
         $user = User::findOne(['id' => $userId]);
-        if ($user === null) {
-            throw new NotFound('User not found');
+        if ($user === null || $user->status === User::STATUS_DELETED) {
+            // Hint: needs to be checked before the signature validation, as validating the signature of a deleted
+            // user would re-generate its secretKey in the HS256 code path below
+            throw new ApiResponseException('Invalid Token', 401);
         }
 
         $params = AntragsgruenApp::getInstance();
@@ -126,6 +159,16 @@ class JwtCreator
         if ($decoded->sub !== self::USER_PREFIX_REGULAR . $user->id) {
             throw new ApiResponseException('Invalid Subject', 401);
         }
+
+        if (($decoded->key_fp ?? null) !== self::getKeyFingerprint($user)) {
+            // The signing key was rotated after this token was issued, e.g. by a password change
+            throw new ApiResponseException('Token has been revoked', 401);
+        }
+
+        // The site cannot be checked here, as this runs before the site of the request is resolved.
+        // It is stored here and checked in Base::handleRestHeaders.
+        self::$currTokenAuthenticated = true;
+        self::$currTokenSite = $decoded->payload->site ?? null;
 
         return $user;
     }
@@ -158,6 +201,19 @@ class JwtCreator
             'token' => JwtCreator::createJwt($consultation, $userId, $roles),
             'exp' => time() + self::JWT_VALIDITY,
             'reload_uri' => UrlHelper::createUrl("/user/token"),
+        ];
+    }
+
+    public static function getJwtConfigForUser(Consultation $consultation, User $user): array
+    {
+        $roles = [];
+        if ($user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
+            $roles[] = self::ROLE_SPEECH_ADMIN;
+        }
+
+        return [
+            'token' => self::createJwt($consultation, self::USER_PREFIX_REGULAR . $user->id, $roles, $user),
+            'exp' => time() + self::JWT_VALIDITY,
         ];
     }
 }
