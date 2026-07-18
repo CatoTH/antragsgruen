@@ -18,7 +18,7 @@ class DebateController extends RestBase
     {
         // Always enabled: the "Currently debated" widget polls this endpoint for all visitors,
         // independently of whether general API access is enabled for the site
-        $this->handleRestHeaders(['GET', 'PUT'], true);
+        $this->handleRestHeaders(['GET', 'PUT', 'DELETE'], true);
 
         if (!$this->consultation || !$this->consultation->getSettings()->hasCurrentlyDebated) {
             return $this->returnRestResponseFromException(
@@ -29,17 +29,17 @@ class DebateController extends RestBase
         if ($this->getHttpMethod() === 'PUT') {
             return $this->startDebate();
         }
+        if ($this->getHttpMethod() === 'DELETE') {
+            return $this->endDebate();
+        }
 
         return $this->createResponse(200, DebateState::fromConsultation($this->consultation));
     }
 
     private function startDebate(): RestApiResponse
     {
-        if (!User::getCurrentUser()) {
-            return new RestApiExceptionResponse(401, 'Not authenticated');
-        }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
-            return new RestApiExceptionResponse(403, 'Missing privilege to moderate debates');
+        if ($error = $this->getModerationPermissionError()) {
+            return $error;
         }
 
         try {
@@ -63,6 +63,29 @@ class DebateController extends RestBase
         return $this->createResponse(200, DebateState::fromConsultation($this->consultation));
     }
 
+    private function endDebate(): RestApiResponse
+    {
+        if ($error = $this->getModerationPermissionError()) {
+            return $error;
+        }
+
+        DebateTools::endDebate($this->consultation);
+
+        return $this->createResponse(200, DebateState::fromConsultation($this->consultation));
+    }
+
+    private function getModerationPermissionError(): ?RestApiExceptionResponse
+    {
+        if (!User::getCurrentUser()) {
+            return new RestApiExceptionResponse(401, 'Not authenticated');
+        }
+        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
+            return new RestApiExceptionResponse(403, 'Missing privilege to moderate debates');
+        }
+
+        return null;
+    }
+
     public function actionSelectable(): RestApiResponse
     {
         // Always enabled: the debate moderation widget is used from the homepage,
@@ -75,11 +98,8 @@ class DebateController extends RestBase
             );
         }
 
-        if (!User::getCurrentUser()) {
-            return new RestApiExceptionResponse(401, 'Not authenticated');
-        }
-        if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
-            return new RestApiExceptionResponse(403, 'Missing privilege to moderate debates');
+        if ($error = $this->getModerationPermissionError()) {
+            return $error;
         }
 
         return $this->createResponse(200, DebateSelectables::fromConsultation($this->consultation));

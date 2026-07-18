@@ -20,6 +20,11 @@
                         <template v-t="['debate', 'fulltext']"></template>
                     </a>
                 </div>
+                <button type="button" class="btn btn-default btn-xs stopDebateBtn" :disabled="starting || stopping"
+                        @click="stopDebate()">
+                    <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                    <template v-t="['debate', 'admin_stop_do']"></template>
+                </button>
             </div>
 
             <div v-if="loadError" class="alert alert-danger">{{ loadError }}</div>
@@ -37,7 +42,7 @@
                         </select>
                     </div>
                     <div class="rowButton">
-                        <button type="button" class="btn btn-default" :disabled="selected[group.id] === null || starting"
+                        <button type="button" class="btn btn-default" :disabled="selected[group.id] === null || starting || stopping"
                                 @click="startDebate(group.id)" v-t="['debate', 'admin_select_do']"></button>
                     </div>
                 </div>
@@ -50,7 +55,7 @@
 </template>
 
 <script>
-import ApiClient from "/js/vue/ApiClient.vue.js";
+import { authorizedFetch, putJson, deleteJson } from "/js/modules/shared/ApiClient.js";
 import Translate from "/js/vue/Translate.vue.js";
 
 export default {
@@ -81,6 +86,7 @@ export default {
                 agenda_item: null,
             },
             starting: false,
+            stopping: false,
             loadError: null,
             startError: null,
         };
@@ -99,7 +105,7 @@ export default {
     },
     methods: {
         loadSelectables() {
-            ApiClient.authorizedFetch(this.selectableUrl)
+            authorizedFetch(this.selectableUrl)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('HTTP status ' + response.status);
@@ -120,13 +126,18 @@ export default {
                 return;
             }
             this.starting = true;
-            ApiClient.putJson(this.debateUrl, {
+            putJson(this.debateUrl, {
                 target_type: targetType,
                 target_id: this.selected[targetType],
             })
                 .then(state => {
                     this.state = state;
                     this.startError = null;
+                    this.selected = {
+                        motion: null,
+                        amendment: null,
+                        agenda_item: null,
+                    };
                 })
                 .catch(err => {
                     console.error('Could not start the debate', err);
@@ -134,6 +145,24 @@ export default {
                 })
                 .finally(() => {
                     this.starting = false;
+                });
+        },
+        stopDebate() {
+            if (this.stopping) {
+                return;
+            }
+            this.stopping = true;
+            deleteJson(this.debateUrl)
+                .then(state => {
+                    this.state = state;
+                    this.startError = null;
+                })
+                .catch(err => {
+                    console.error('Could not end the debate', err);
+                    this.startError = Translate.getTranslation('debate', 'admin_stop_err');
+                })
+                .finally(() => {
+                    this.stopping = false;
                 });
         },
     },

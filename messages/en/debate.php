@@ -76,4 +76,12 @@ return [
         'text' => 'Could not start the debate.',
         'js' => true,
     ],
+    'admin_stop_do'           => [
+        'text' => 'End debate',
+        'js' => true,
+    ],
+    'admin_stop_err'          => [
+        'text' => 'Could not end the debate.',
+        'js' => true,
+    ],
 ];

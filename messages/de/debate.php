@@ -76,4 +76,12 @@ return [
         'text' => 'Die Debatte konnte nicht gestartet werden.',
         'js' => true,
     ],
+    'admin_stop_do'           => [
+        'text' => 'Debatte beenden',
+        'js' => true,
+    ],
+    'admin_stop_err'          => [
+        'text' => 'Die Debatte konnte nicht beendet werden.',
+        'js' => true,
+    ],
 ];
