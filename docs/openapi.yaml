@@ -707,6 +707,91 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
+    put:
+      operationId: startDebate
+      summary: Start a debate over a motion, amendment, or agenda item
+      description: >
+        Makes the given item the consultation's currently debated item, ending the debate over
+        another item if one is going on. If the given item is already being debated, nothing
+        changes (no new debate history entry is created). Requires the privilege to moderate
+        debates. Like the GET endpoint, it works independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateStartRequest'
+      responses:
+        '200':
+          description: The debate was started; the new debate state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '400':
+          description: The request body could not be parsed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: >
+            The consultation or the item to be debated was not found (this includes motions and
+            amendments that are not published), or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    delete:
+      operationId: endDebate
+      summary: End the ongoing debate
+      description: >
+        Ends the debate over the currently debated item, if there is one; the item goes into the
+        debate history. Does nothing if no debate is going on. Requires the privilege to moderate
+        debates. Like the GET endpoint, it works independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The debate was ended; the new debate state (with `current` being null) is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
 
 components:
   securitySchemes:
@@ -926,6 +1011,30 @@ components:
         current:
           $ref: '#/components/schemas/DebateItem'
 
+    DebateItemTargetType:
+      x-php-namespace: debate
+      type: string
+      description: The type of item a debate refers to
+      enum:
+        - motion
+        - amendment
+        - agenda_item
+
+    DebateStartRequest:
+      x-php-namespace: debate
+      type: object
+      description: Names the motion, amendment, or agenda item to be debated from now on
+      required:
+        - target_type
+        - target_id
+      properties:
+        target_type:
+          $ref: '#/components/schemas/DebateItemTargetType'
+        target_id:
+          type: integer
+          description: The ID of the motion, amendment, or agenda item to be debated
+          example: 2
+
     DebateItem:
       x-php-namespace: debate
       type: object
@@ -942,11 +1051,7 @@ components:
           type: integer
           example: 1
         target_type:
-          type: string
-          enum:
-            - motion
-            - amendment
-            - agenda_item
+          $ref: '#/components/schemas/DebateItemTargetType'
         target_id:
           type: integer
           description: The ID of the debated motion, amendment, or agenda item (depending on target_type)

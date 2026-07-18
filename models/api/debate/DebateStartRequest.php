@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace app\models\api\debate;
 
 /**
- * Hand-written DTO (not part of docs/openapi.yaml): request body of PUT /rest/{site}/{con}/debate,
- * naming the motion, amendment, or agenda item to be debated from now on.
- * Sent as e.g. {"target_type": "motion", "target_id": 123}.
+ * Request body of PUT /rest/{site}/{con}/debate, naming the motion, amendment, or agenda item
+ * to be debated from now on. Sent as e.g. {"target_type": "motion", "target_id": 123}.
  */
 class DebateStartRequest
 {
