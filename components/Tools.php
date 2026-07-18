@@ -94,7 +94,7 @@ class Tools
         };
     }
 
-    public static function dateBootstraptime2sql(string $time, ?string $locale = null): string
+    public static function dateBootstraptime2sql(string $time, ?string $locale = null): ?string
     {
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
@@ -175,7 +175,7 @@ class Tools
             throw new Internal('Unsupported Locale: ' . $locale);
         }
 
-        return '';
+        return null;
     }
 
     public static function dateSql2bootstrapdate(?string $date, ?string $locale = null): string

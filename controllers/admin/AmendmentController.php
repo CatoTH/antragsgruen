@@ -188,7 +188,7 @@ class AmendmentController extends AdminBase
             }
 
             $amdat                        = $post['amendment'];
-            $amendment->dateCreation      = Tools::dateBootstraptime2sql($amdat['dateCreation']);
+            $amendment->dateCreation      = Tools::dateBootstraptime2sql($amdat['dateCreation']) ?? '';
             $amendment->noteInternal      = $amdat['noteInternal'];
             $amendment->globalAlternative = (isset($amdat['globalAlternative']) ? 1 : 0);
             $amendment->dateSubmission    = null;
