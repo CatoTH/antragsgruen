@@ -34,7 +34,7 @@ class JwtCreator
     private static bool $currTokenAuthenticated = false;
     private static ?string $currTokenSite = null;
 
-    public static function createJwt(Consultation $consultation, string $userId, array $roles = [], ?User $signingUser = null): string
+    public static function createJwt(Site $site, ?Consultation $consultation, string $userId, array $roles = [], ?User $signingUser = null): string
     {
         $params = AntragsgruenApp::getInstance();
         $signingUser ??= User::getCurrentUser();
@@ -62,8 +62,8 @@ class JwtCreator
             'exp' => time() + self::JWT_VALIDITY,
             'sub' => $userId,
             'payload' => [
-                'consultation' => $consultation->urlPath,
-                'site' => $consultation->site->subdomain,
+                'consultation' => $consultation?->urlPath,
+                'site' => $site->subdomain,
                 'roles' => $roles,
             ],
         ];
@@ -198,21 +198,16 @@ class JwtCreator
         }
 
         return [
-            'token' => JwtCreator::createJwt($consultation, $userId, $roles),
+            'token' => JwtCreator::createJwt($consultation->site, $consultation, $userId, $roles),
             'exp' => time() + self::JWT_VALIDITY,
             'reload_uri' => UrlHelper::createUrl("/user/token"),
         ];
     }
 
-    public static function getJwtConfigForUser(Consultation $consultation, User $user): array
+    public static function getJwtConfigForUser(Site $site, User $user): array
     {
-        $roles = [];
-        if ($user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
-            $roles[] = self::ROLE_SPEECH_ADMIN;
-        }
-
         return [
-            'token' => self::createJwt($consultation, self::USER_PREFIX_REGULAR . $user->id, $roles, $user),
+            'token' => self::createJwt($site, null, self::USER_PREFIX_REGULAR . $user->id, [], $user),
             'exp' => time() + self::JWT_VALIDITY,
         ];
     }

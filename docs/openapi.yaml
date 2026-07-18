@@ -38,27 +38,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /rest/{consultationPath}:
-    get:
-      operationId: getConsultation
-      summary: Overview over this consultation, with links to motions and amendments.
-      tags:
-        - Consultations
-      parameters:
-        - $ref: '#/components/parameters/consultationPath'
-      responses:
-        '200':
-          description: Consultation info, motion and amendment links
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConsultationWithLinks'
-        '403':
-          $ref: '#/components/responses/ApiDisabled'
-        '404':
-          $ref: '#/components/responses/NotFound'
-
-  /rest/{consultationPath}/user/login:
+  /rest/user/login:
     post:
       operationId: loginUser
       summary: Log in with username and password to retrieve a JWT
@@ -70,8 +50,6 @@ paths:
         the regular web UI instead.
       tags:
         - User
-      parameters:
-        - $ref: '#/components/parameters/consultationPath'
       requestBody:
         required: true
         content:
@@ -95,7 +73,7 @@ paths:
                 $ref: '#/components/schemas/ErrorUnauthorized'
         '403':
           description: >
-            Login is not possible via the API: the REST API is not enabled for this consultation, the site's
+            Login is not possible via the API: the REST API is not enabled for this site, the site's
             login method does not allow username/password login, the e-mail address is not confirmed yet, a
             password change is required, a captcha is required, or two-factor authentication is set up/enforced
             for this account.
@@ -103,6 +81,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorNoPermission'
+
+  /rest/{consultationPath}:
+    get:
+      operationId: getConsultation
+      summary: Overview over this consultation, with links to motions and amendments.
+      tags:
+        - Consultations
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: Consultation info, motion and amendment links
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultationWithLinks'
+        '403':
+          $ref: '#/components/responses/ApiDisabled'
         '404':
           $ref: '#/components/responses/NotFound'
 

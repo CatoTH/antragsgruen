@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\api\user;
 
 use app\components\JwtCreator;
-use app\models\db\{Consultation, User};
+use app\models\db\{Site, User};
 
 class UserLoginResponse
 {
@@ -15,9 +15,9 @@ class UserLoginResponse
     ) {
     }
 
-    public static function fromLogin(Consultation $consultation, User $user): self
+    public static function fromLogin(Site $site, User $user): self
     {
-        $jwt = JwtCreator::getJwtConfigForUser($consultation, $user);
+        $jwt = JwtCreator::getJwtConfigForUser($site, $user);
 
         return new self($jwt['token'], $jwt['exp']);
     }

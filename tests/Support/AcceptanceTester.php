@@ -239,10 +239,10 @@ class AcceptanceTester extends Actor
     }
 
     /**
-     * Logs in via the REST API (POST /rest/{consultationPath}/user/login) and returns the JWT.
+     * Logs in via the REST API (POST /rest/user/login) and returns the JWT.
      * Requires the REST API to already be enabled for the site, e.g. via apiSetApiEnabled().
      */
-    protected function restLoginWithData(string $username, string $password, string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): string
+    protected function restLoginWithData(string $username, string $password, string $subdomain = 'stdparteitag'): string
     {
         $baseUri = str_replace(['{SUBDOMAIN}', '{PATH}'], [$subdomain, ''], self::ABSOLUTE_URL_TEMPLATE_SITE);
         $client  = new Client([
@@ -250,7 +250,7 @@ class AcceptanceTester extends Actor
             RequestOptions::HTTP_ERRORS => false,
         ]);
 
-        $response = $client->post('rest/' . $path . '/user/login', [
+        $response = $client->post('rest/user/login', [
             RequestOptions::JSON => ['username' => $username, 'password' => $password],
         ]);
         $responseBody = $response->getBody()->getContents();
