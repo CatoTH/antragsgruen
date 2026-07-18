@@ -16,7 +16,7 @@ $layout = $controller->layoutParams;
 $layout->addJsTranslation('debate');
 
 $initState = Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json');
-$pollUrl = UrlHelper::createUrl(['/rest/debate/get']);
+$pollUrl = UrlHelper::createUrl(['/rest/debate/index']);
 
 ?>
 <section class="currentDebateInline currentSpeechPageWidth" aria-labelledby="currentDebateWidgetTitle"

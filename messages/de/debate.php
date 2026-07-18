@@ -72,4 +72,8 @@ return [
         'text' => 'Die auswählbaren Einträge konnten nicht geladen werden.',
         'js' => true,
     ],
+    'admin_start_err'         => [
+        'text' => 'Die Debatte konnte nicht gestartet werden.',
+        'js' => true,
+    ],
 ];

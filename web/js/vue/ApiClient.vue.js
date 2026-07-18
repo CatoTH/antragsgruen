@@ -81,16 +81,17 @@ export default {
     },
 
     /**
-     * POSTs the given object as application/json to the backend (authenticated via JWT)
+     * Sends the given object as application/json to the backend (authenticated via JWT)
      * and resolves to the parsed JSON response.
      *
+     * @param {string} method
      * @param {string} url
      * @param {object} body
      * @returns {Promise<any>}
      */
-    postJson(url, body) {
+    sendJson(method, url, body) {
         return this.authorizedFetch(url, {
-            method: 'POST',
+            method,
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -101,5 +102,23 @@ export default {
             }
             return response.json();
         });
+    },
+
+    /**
+     * @param {string} url
+     * @param {object} body
+     * @returns {Promise<any>}
+     */
+    postJson(url, body) {
+        return this.sendJson('POST', url, body);
+    },
+
+    /**
+     * @param {string} url
+     * @param {object} body
+     * @returns {Promise<any>}
+     */
+    putJson(url, body) {
+        return this.sendJson('PUT', url, body);
     },
 };

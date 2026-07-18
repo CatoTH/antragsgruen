@@ -23,6 +23,7 @@
             </div>
 
             <div v-if="loadError" class="alert alert-danger">{{ loadError }}</div>
+            <div v-if="startError" class="alert alert-danger">{{ startError }}</div>
             <template v-if="selectables">
                 <div class="startDebateTitle" v-t="['debate', 'admin_start_debate', false, {}, ':']"></div>
                 <div v-for="group in selectableGroups" :key="group.id" class="selectRow">
@@ -36,9 +37,8 @@
                         </select>
                     </div>
                     <div class="rowButton">
-                        <!-- Placeholder: will call the debate moderation endpoint to start the debate once it exists -->
-                        <button type="button" class="btn btn-default" disabled
-                                v-t="['debate', 'admin_select_do']"></button>
+                        <button type="button" class="btn btn-default" :disabled="selected[group.id] === null || starting"
+                                @click="startDebate(group.id)" v-t="['debate', 'admin_select_do']"></button>
                     </div>
                 </div>
             </template>
@@ -60,6 +60,10 @@ export default {
             type: Object,
             required: true,
         },
+        debateUrl: {
+            type: String,
+            required: true,
+        },
         selectableUrl: {
             type: String,
             required: true,
@@ -76,7 +80,9 @@ export default {
                 amendment: null,
                 agenda_item: null,
             },
+            starting: false,
             loadError: null,
+            startError: null,
         };
     },
     computed: {
@@ -107,6 +113,27 @@ export default {
                 .catch(err => {
                     console.error('Could not load the selectable debate items from the backend', err);
                     this.loadError = Translate.getTranslation('debate', 'admin_selectables_err');
+                });
+        },
+        startDebate(targetType) {
+            if (this.selected[targetType] === null || this.starting) {
+                return;
+            }
+            this.starting = true;
+            ApiClient.putJson(this.debateUrl, {
+                target_type: targetType,
+                target_id: this.selected[targetType],
+            })
+                .then(state => {
+                    this.state = state;
+                    this.startError = null;
+                })
+                .catch(err => {
+                    console.error('Could not start the debate', err);
+                    this.startError = Translate.getTranslation('debate', 'admin_start_err');
+                })
+                .finally(() => {
+                    this.starting = false;
                 });
         },
     },

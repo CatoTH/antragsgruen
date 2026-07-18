@@ -17,11 +17,13 @@ $layout->addJsTranslation('debate');
 $layout->provideJwt = true;
 
 $initState = Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json');
+$debateUrl = UrlHelper::createUrl(['/rest/debate/index']);
 $selectableUrl = UrlHelper::createUrl(['/rest/debate/selectable']);
 
 ?>
 <section class="currentDebateAdmin currentSpeechPageWidth" aria-labelledby="currentDebateAdminTitle"
          data-init-state="<?= Html::encode($initState) ?>"
+         data-debate-url="<?= Html::encode($debateUrl) ?>"
          data-selectable-url="<?= Html::encode($selectableUrl) ?>"
 >
     <h2 class="green" id="currentDebateAdminTitle"><?= Yii::t('debate', 'admin_title') ?></h2>
@@ -40,12 +42,14 @@ $selectableUrl = UrlHelper::createUrl(['/rest/debate/selectable']);
         render() {
             return h(resolveComponent('debate-admin-widget'), {
                 initState: this.initState,
+                debateUrl: this.debateUrl,
                 selectableUrl: this.selectableUrl,
             });
         },
         data() {
             return {
                 initState: $element.data('init-state'),
+                debateUrl: $element.data('debate-url'),
                 selectableUrl: $element.data('selectable-url'),
             };
         }
