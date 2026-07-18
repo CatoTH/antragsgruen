@@ -94,7 +94,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m250608_180000_multiple_proposals', '1751805105'),
   ('m250817_080222_date_submission', '1755418040'),
   ('m250829_055949_increase_category_length', '1756447301'),
-  ('m250916_234203_maxLen_not_nullable', '1758066393')
+  ('m250916_234203_maxLen_not_nullable', '1758066393'),
+  ('m260717_120000_screening_per_motion_type', '1784381301')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

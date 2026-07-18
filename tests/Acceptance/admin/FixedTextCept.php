@@ -8,10 +8,10 @@ $I->populateDBData1();
 
 $I->wantTo('switch on screening and create two motions and amendments');
 
-$I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
 $I->checkOption('#screeningMotions');
 $I->checkOption('#screeningAmendments');
-$I->submitForm('#consultationSettingsForm', [], 'save');
+$I->submitForm('.adminTypeForm', [], 'save');
 
 $page = $I->gotoConsultationHome()->gotoAmendmentCreatePage(2);
 $I->executeJS('window.newText = CKEDITOR.instances.sections_2_wysiwyg.getData();');

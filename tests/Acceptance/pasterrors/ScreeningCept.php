@@ -8,10 +8,10 @@ $I->populateDBData1();
 
 $I->wantTo('activate screening');
 
-$I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
 $I->checkOption('#screeningMotions');
 $I->checkOption('#screeningAmendments');
-$I->submitForm('#consultationSettingsForm', [], 'save');
+$I->submitForm('.adminTypeForm', [], 'save');
 
 
 

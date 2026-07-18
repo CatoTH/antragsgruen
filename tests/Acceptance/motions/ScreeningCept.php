@@ -10,10 +10,10 @@ $I->wantTo('switch to motion screening mode');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->dontSeeElement('#adminTodo');
-$consultationSettingPage = $I->gotoStdAdminPage()->gotoConsultation();
+$motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->cantSeeCheckboxIsChecked('#screeningMotions');
 $I->checkOption('#screeningMotions');
-$consultationSettingPage->saveForm();
+$motionTypePage->saveForm();
 $I->canSeeCheckboxIsChecked('#screeningMotions');
 
 

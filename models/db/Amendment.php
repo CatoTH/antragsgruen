@@ -858,7 +858,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         if ($this->needsCollectionPhase()) {
             return \Yii::t('amend', 'button_submit_create');
-        } elseif ($this->getMyConsultation()->getSettings()->screeningAmendments) {
+        } elseif ($this->getMyMotionType()->getSettingsObj()->screeningAmendments) {
             return \Yii::t('amend', 'button_submit_submit');
         } else {
             return \Yii::t('amend', 'button_submit_publish');
@@ -884,7 +884,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         if ($this->needsCollectionPhase()) {
             $this->status = Amendment::STATUS_COLLECTING_SUPPORTERS;
-        } elseif ($this->getMyConsultation()->getSettings()->screeningAmendments) {
+        } elseif ($this->getMyMotionType()->getSettingsObj()->screeningAmendments) {
             $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
             $this->dateSubmission = date('Y-m-d H:i:s');
         } else {

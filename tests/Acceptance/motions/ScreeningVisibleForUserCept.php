@@ -8,9 +8,9 @@ $I->populateDBData1();
 
 $I->wantTo('activate screening');
 $I->gotoConsultationHome();
-$I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
 $I->checkOption('#screeningMotions');
-$I->submitForm('#consultationSettingsForm', [], 'save');
+$I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoConsultationHome();
 $I->logout();

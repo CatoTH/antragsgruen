@@ -803,7 +803,7 @@ class Motion extends IMotion implements IRSSItem
     {
         if ($this->needsCollectionPhase()) {
             return \Yii::t('motion', 'button_submit_create');
-        } elseif ($this->getMyConsultation()->getSettings()->screeningMotions) {
+        } elseif ($this->getMyMotionType()->getSettingsObj()->screeningMotions) {
             return \Yii::t('motion', 'button_submit_submit');
         } else {
             return \Yii::t('motion', 'button_submit_publish');
@@ -814,7 +814,7 @@ class Motion extends IMotion implements IRSSItem
     {
         if ($this->needsCollectionPhase()) {
             $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
-        } elseif ($this->getMyConsultation()->getSettings()->screeningMotions) {
+        } elseif ($this->getMyMotionType()->getSettingsObj()->screeningMotions) {
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
             $this->dateSubmission = date('Y-m-d H:i:s');
         } else {

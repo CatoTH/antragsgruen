@@ -195,16 +195,6 @@ class SiteCreateForm extends Model
 
         $settings                  = $con->getSettings();
         $settings->maintenanceMode = !$this->openNow;
-        if ($this->motionsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
-            $settings->screeningMotions = false;
-        } else {
-            $settings->screeningMotions = $this->motionScreening;
-        }
-        if ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
-            $settings->screeningAmendments = false;
-        } else {
-            $settings->screeningAmendments = $this->amendScreening;
-        }
         if (in_array(static::FUNCTIONALITY_AGENDA, $this->functionality)) {
             $settings->startLayoutType = \app\models\settings\Consultation::START_LAYOUT_AGENDA_LONG;
         } else {
@@ -250,6 +240,23 @@ class SiteCreateForm extends Model
     /**
      * @throws FormError
      */
+    private function applyScreeningSettings(ConsultationMotionType $type): void
+    {
+        $settings = $type->getSettingsObj();
+        if ($this->motionsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
+            $settings->screeningMotions = false;
+        } else {
+            $settings->screeningMotions = $this->motionScreening;
+        }
+        if ($this->amendmentsInitiatedBy === self::MOTION_INITIATED_ADMINS) {
+            $settings->screeningAmendments = false;
+        } else {
+            $settings->screeningAmendments = $this->amendScreening;
+        }
+        $type->setSettingsObj($settings);
+        $type->save();
+    }
+
     public function createMotionTypes(Consultation $con, User $user): void
     {
         $type = null;
@@ -263,18 +270,22 @@ class SiteCreateForm extends Model
                 Application::doCreateApplicationSections($type);
             }
             $this->doFixApplicationMotionType($type);
+            $this->applyScreeningSettings($type);
         }
         if (in_array(static::FUNCTIONALITY_MANIFESTO, $this->functionality)) {
             $type = $this->doCreateManifestoType($con);
             Manifesto::doCreateManifestoSections($type);
+            $this->applyScreeningSettings($type);
         }
         if (in_array(static::FUNCTIONALITY_MOTIONS, $this->functionality)) {
             $type = $this->doCreateMotionType($con);
             \app\models\motionTypeTemplates\Motion::doCreateMotionSections($type);
+            $this->applyScreeningSettings($type);
         }
         if (in_array(static::FUNCTIONALITY_STATUTE_AMENDMENTS, $this->functionality)) {
             $type = $this->doCreateStatutesType($con);
             \app\models\motionTypeTemplates\Statutes::doCreateStatutesSections($type);
+            $this->applyScreeningSettings($type);
         }
 
         if ($this->singleMotion && $type) {
@@ -306,9 +317,13 @@ class SiteCreateForm extends Model
 
             $conSett = $this->consultation->getSettings();
             $conSett->forceMotion = $motion->id;
-            $conSett->screeningMotions = false;
             $this->consultation->setSettings($conSett);
             $this->consultation->save();
+
+            $typeSettings = $type->getSettingsObj();
+            $typeSettings->screeningMotions = false;
+            $type->setSettingsObj($typeSettings);
+            $type->save();
         }
     }
 

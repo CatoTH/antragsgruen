@@ -328,6 +328,8 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
             $settings->hasResponsibilities          = $dto->settings->hasResponsibilities;
             $settings->commentsRestrictViewToWritables = $dto->settings->commentsRestrictViewToWritables;
             $settings->allowAmendmentsToAmendments  = $dto->settings->allowAmendmentsToAmendments;
+            $settings->screeningMotions             = $dto->settings->screeningMotions;
+            $settings->screeningAmendments          = $dto->settings->screeningAmendments;
             $settings->showProposalsInExports       = $dto->settings->showProposalsInExports;
             $this->setSettingsObj($settings);
         }

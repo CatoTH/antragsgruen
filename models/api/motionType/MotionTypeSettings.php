@@ -11,6 +11,8 @@ class MotionTypeSettings
     public function __construct(
         public bool $amendmentsOnly,
         public MotionTypeSettingsAmendmentMultipleParagraphs $amendmentMultipleParagraphs,
+        public bool $screeningMotions,
+        public bool $screeningAmendments,
         public bool $hasProposedProcedure,
         public bool $hasResponsibilities,
         public bool $allowAmendmentsToAmendments,
@@ -26,6 +28,8 @@ class MotionTypeSettings
         return new self(
             amendmentsOnly: (bool) $motionType->amendmentsOnly,
             amendmentMultipleParagraphs: MotionTypeSettingsAmendmentMultipleParagraphs::fromDbValue($motionType->amendmentMultipleParagraphs),
+            screeningMotions: $settings->screeningMotions,
+            screeningAmendments: $settings->screeningAmendments,
             hasProposedProcedure: $settings->hasProposedProcedure,
             hasResponsibilities: $settings->hasResponsibilities,
             allowAmendmentsToAmendments: $settings->allowAmendmentsToAmendments,

@@ -8,6 +8,7 @@
    - Creating motions.
    - Supporting motions and amendments and withdrawing support.
    - Screening motions and amendments as admin.
+- Motion screening can now be configured on a per-motion-type basis.
 
 ### Version 4.17.2 [not released yet]
 

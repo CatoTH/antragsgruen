@@ -10,10 +10,10 @@ $I->wantTo('switch to amendment screening mode');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->dontSeeElement('#adminTodo');
-$consultationSettingPage = $I->gotoStdAdminPage()->gotoConsultation();
+$motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->cantSeeCheckboxIsChecked('#screeningAmendments');
 $I->checkOption('#screeningAmendments');
-$consultationSettingPage->saveForm();
+$motionTypePage->saveForm();
 $I->canSeeCheckboxIsChecked('#screeningAmendments');
 
 
