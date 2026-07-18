@@ -86,10 +86,10 @@ $urlRules = [
 
     $restBase                                                                        => 'consultation/rest-site',
     $restBase . '/user'                                                              => '/rest/user/index',
+    $restBase . '/user/login'                                                        => '/rest/user/login',
     $restBase . '/js-error-track'                                                    => '/error-tracking/js',
     $restBase . '/health'                                                            => '/manager/health',
     $restBaseCon                                                                     => 'consultation/rest',
-    $restBaseCon . '/user/login'                                                     => '/rest/user/login',
     $restBaseCon . '/proposed-procedure'                                             => 'consultation/proposed-procedure-rest',
     $restBaseCon . '/motion'                                                         => '/rest/motion/create',
     $restBaseCon . '/motion/<motionSlug:[^\/]+>'                                     => '/rest/motion/get',

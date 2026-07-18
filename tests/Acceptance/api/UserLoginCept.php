@@ -15,7 +15,7 @@ $client  = new Client([
     RequestOptions::HTTP_ERRORS => false,
 ]);
 
-$loginPath = 'rest/std-parteitag/user/login';
+$loginPath = 'rest/user/login';
 
 
 $I->wantTo('log in while the API is still disabled');

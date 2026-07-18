@@ -63,6 +63,6 @@ class UserController extends RestBase
             return new RestApiExceptionResponse(403, 'Two-factor authentication is required for this account');
         }
 
-        return $this->createResponse(200, UserLoginResponse::fromLogin($this->consultation, $user));
+        return $this->createResponse(200, UserLoginResponse::fromLogin($this->site, $user));
     }
 }
