@@ -115,7 +115,7 @@ docker compose start
 docker exec antragsgruen-web-1 /root/enable-installer.sh # To enable the install mode
 ```
 
-Atfer this, http://localhost:12380/ should show the installer. The database connection is pre-configured in to use the MariaDB in the Docker-Compose.yml, so no need to change it.
+After this, http://localhost:12380/ should show the installer. The database connection is pre-configured in to use the MariaDB in the Docker-Compose.yml, so no need to change it.
 
 To update to a newer version of Antragsgrün, remove the image and pull the `latest` tag:
 
@@ -187,7 +187,7 @@ define("K_PATH_FONTS", "/path/to/writable/directory/");
 
 ### Weasyprint-based PDF-rendering
 
-As an optional alternative way to create PDFs that are slighly more aesthetically pleasing, Antragsgrün supports using [Weasyprint](https://weasyprint.org) as a rendering backend. This needs to be installed on the command line. Also, the [qpdf](https://github.com/qpdf/qpdf) command line tool is necessary, to improve compatibility of the generated PDF files.
+As an optional alternative way to create PDFs that are slightly more aesthetically pleasing, Antragsgrün supports using [Weasyprint](https://weasyprint.org) as a rendering backend. This needs to be installed on the command line. Also, the [qpdf](https://github.com/qpdf/qpdf) command line tool is necessary, to improve compatibility of the generated PDF files.
 
 When using the docker image, the `full` image variant comes preconfigured with Weasyprint. When using the regular way (downloading the source code or zip/bz2-bundle), it needs to be installed on the system by hand:
 
@@ -379,7 +379,7 @@ To use OpenTelemetry instead of a local log file, simply set the setting to `ote
 
 ### Enable background job processing
 
-Some processes that are potentially blocking or long-running can be executed as background jobs, by using a permanently running worker-job that executes these jobs asynchonously.
+Some processes that are potentially blocking or long-running can be executed as background jobs, by using a permanently running worker-job that executes these jobs asynchronously.
 
 The following example on how to run the background job processor uses [Supervisord](http://supervisord.org), but it is just as possible running it via any other process manager or using docker (as illustrated in [docker-compose.development.yml](./docker-compose.development.yml)).
 - Copy [supervisor.conf](docs/supervisor.conf) to your supervisord configuration directory, modify it to your needs, and run it.

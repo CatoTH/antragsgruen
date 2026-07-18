@@ -97,7 +97,7 @@ readonly class ConsultationAccess
 
         if ($this->consultation->getSettings()->managedUserAccounts) {
             if (count($user->getUserGroupsForConsultation($this->consultation)) === 0) {
-                // Allow plugins to grant limited access for specific sub-pages to users even if they are not regularily allowed to access.
+                // Allow plugins to grant limited access for specific sub-pages to users even if they are not regularly allowed to access.
                 $restrictedAccess = $this->allowAccessToProtectedPage($user, $controllerClass, $actionId);
                 if ($restrictedAccess['allowed']) {
                     return ['denied' => false, 'limitedAccessBecauseOfOverride' => $restrictedAccess['limitedAccessBecauseOfOverride'] ?? null];
