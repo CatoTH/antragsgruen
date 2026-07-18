@@ -72,4 +72,8 @@ return [
         'text' => 'Could not load the list of selectable items.',
         'js' => true,
     ],
+    'admin_start_err'         => [
+        'text' => 'Could not start the debate.',
+        'js' => true,
+    ],
 ];
