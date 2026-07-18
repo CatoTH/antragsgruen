@@ -177,14 +177,6 @@ A bash script that performs `git pull` for the current branch, installs dependen
 Generating PDFs is performed by the PHP-Library [TCPDF](https://github.com/tecnickcom/tcpdf) by default.
 In some cases, nicer and easier to customize PDFs can be generated though by using a separate command line tool to generate them. They need to be set up and configured by hand on the server though.
 
-### PHP-Based PDF-Rendering
-
-The PHP-processes need writing permissions to the folder.
-If this is not possible, you need to specify an alternative writable folder by hand by adding the following line to the beginning of `web/index.php`:
-```php
-define("K_PATH_FONTS", "/path/to/writable/directory/");
-```
-
 ### Weasyprint-based PDF-rendering
 
 As an optional alternative way to create PDFs that are slightly more aesthetically pleasing, Antragsgrün supports using [Weasyprint](https://weasyprint.org) as a rendering backend. This needs to be installed on the command line. Also, the [qpdf](https://github.com/qpdf/qpdf) command line tool is necessary, to improve compatibility of the generated PDF files.
@@ -213,16 +205,6 @@ Add the following settings to your config.json (and adapt them to your needs):
     "qpdfPath": "/usr/bin/qpdf"
 }
 ```
-
-### FPDI-PDF
-
-If you run into the error "This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)" and decide to use the commercial plugin, you can install the package using the following steps:
-- Extract the content of the package into the directory ``components/fpdi``, so there exists a subdirectory ``src``.
-- Run the command ``./composer.phar dump-autoload``
-
-After that, newer PDF files should be able to be parsed as well.
-
-Alternatively, you can install the `qpdf` tool and set it up using `qpdfPath` as outlined in the section above, even when not using Weasyprint. This will only work for newly uploaded PDF Files, though.
 
 ## Deployment and Performance Optimization
 
