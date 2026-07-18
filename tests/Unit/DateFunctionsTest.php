@@ -6,8 +6,6 @@ use Tests\Support\Helper\TestBase;
 
 class DateFunctionsTest extends TestBase
 {
-    /**
-     */
     public function testBootstrapDatesql(): void
     {
         $ret = Tools::dateBootstrapdate2sql('2.1.2016', 'de');
@@ -21,8 +19,6 @@ class DateFunctionsTest extends TestBase
         $this->assertEquals('2016-02-01', $ret);
     }
 
-    /**
-     */
     public function testBootstrapTime2sql(): void
     {
         $ret = Tools::dateBootstraptime2sql('2.1.2016 11:05', 'de');

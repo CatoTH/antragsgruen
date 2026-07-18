@@ -173,14 +173,14 @@ class MotionController extends AdminBase
                 }
             }
 
-            $roundedDate = Tools::dateBootstraptime2sql($modat['dateCreation']);
+            $roundedDate = Tools::dateBootstraptime2sql($modat['dateCreation']) ?? '';
             if (substr($roundedDate, 0, 16) !== substr($motion->dateCreation, 0, 16)) {
                 $motion->dateCreation = $roundedDate;
             }
 
             if ($modat['dateSubmission'] !== '') {
                 $roundedDate = Tools::dateBootstraptime2sql($modat['dateSubmission']);
-                if (substr($roundedDate, 0, 16) !== substr($motion->dateSubmission, 0, 16)) {
+                if (substr($roundedDate ?? '', 0, 16) !== substr($motion->dateSubmission, 0, 16)) {
                     $motion->dateSubmission = $roundedDate;
                 }
             } else {
@@ -189,7 +189,7 @@ class MotionController extends AdminBase
 
             if ($modat['dateResolution'] !== '') {
                 $roundedDate = Tools::dateBootstraptime2sql($modat['dateResolution']);
-                if (substr($roundedDate, 0, 16) !== substr($motion->dateResolution ?: '', 0, 16)) {
+                if (substr($roundedDate ?? '', 0, 16) !== substr($motion->dateResolution ?: '', 0, 16)) {
                     $motion->dateResolution = $roundedDate;
                 }
             } else {
@@ -198,7 +198,7 @@ class MotionController extends AdminBase
 
             if ($modat['datePublication'] !== '') {
                 $roundedDate = Tools::dateBootstraptime2sql($modat['datePublication']);
-                if (substr($roundedDate, 0, 16) !== substr($motion->datePublication ?: '', 0, 16)) {
+                if (substr($roundedDate ?? '', 0, 16) !== substr($motion->datePublication ?: '', 0, 16)) {
                     $motion->datePublication = $roundedDate;
                 }
             } else {
