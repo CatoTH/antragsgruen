@@ -2014,6 +2014,8 @@ components:
         - has_proposed_procedure
         - has_responsibilities
         - allow_amendments_to_amendments
+        - screening_motions
+        - screening_amendments
         - merging_deadlines
       properties:
         amendments_only:
@@ -2022,6 +2024,14 @@ components:
           example: false
         amendment_multiple_paragraphs:
           $ref: '#/components/schemas/MotionTypeSettingsAmendmentMultipleParagraphs'
+        screening_motions:
+          type: boolean
+          description: Whether newly submitted motions of this type need to be screened by an admin before publication
+          example: false
+        screening_amendments:
+          type: boolean
+          description: Whether newly submitted amendments of this type need to be screened by an admin before publication
+          example: false
         has_proposed_procedure:
           type: boolean
           description: Whether a proposed procedure (Antragskommission recommendation) can be attached to motions of this type
@@ -2320,6 +2330,8 @@ components:
         - has_responsibilities
         - comments_restrict_view_to_writables
         - allow_amendments_to_amendments
+        - screening_motions
+        - screening_amendments
         - show_proposals_in_exports
       properties:
         pdf_introduction:
@@ -2349,6 +2361,14 @@ components:
         allow_amendments_to_amendments:
           type: boolean
           description: Whether amendments to amendments (sub-amendments) are permitted
+          example: false
+        screening_motions:
+          type: boolean
+          description: Whether newly submitted motions of this type need to be screened by an admin before publication
+          example: false
+        screening_amendments:
+          type: boolean
+          description: Whether newly submitted amendments of this type need to be screened by an admin before publication
           example: false
         show_proposals_in_exports:
           type: boolean

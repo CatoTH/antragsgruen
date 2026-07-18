@@ -10,6 +10,8 @@ class MotionType implements \JsonSerializable
     public ?string $cssIcon = null;
     public string $motionTitleIntro = '';
 
+    public bool $screeningMotions = false;
+    public bool $screeningAmendments = false;
     public bool $hasProposedProcedure = false;
     public bool $proposedProcedureVersioning = true;
     public bool $hasResponsibilities = false;

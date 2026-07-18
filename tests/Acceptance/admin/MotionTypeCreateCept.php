@@ -98,3 +98,41 @@ $I->checkOption('.presetNone');
 $I->submitForm('.motionTypeCreateForm', [], 'create');
 
 $I->see('Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.');
+
+
+$I->wantTo('enable screening for the newest motion type');
+$I->cantSeeCheckboxIsChecked('#screeningMotions');
+$I->checkOption('#screeningMotions');
+$I->submitForm('.adminTypeForm', [], 'save');
+$I->canSeeCheckboxIsChecked('#screeningMotions');
+$I->cantSeeCheckboxIsChecked('#screeningAmendments');
+
+
+$I->wantTo('create a motion type from a built-in template, inheriting the screening settings');
+$I->click('#adminLink');
+$I->click('.motionTypeCreate a');
+$I->fillField('#typeTitleSingular', 'Def1');
+$I->fillField('#typeTitlePlural', 'Def2');
+$I->fillField('#typeCreateTitle', 'Def3');
+$I->fillField('#typeMotionPrefix', 'D');
+$I->checkOption('.presetApplication');
+$I->submitForm('.motionTypeCreateForm', [], 'create');
+
+$I->see('Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.');
+$I->canSeeCheckboxIsChecked('#screeningMotions');
+$I->cantSeeCheckboxIsChecked('#screeningAmendments');
+
+
+$I->wantTo('create a motion type based on a non-screened motion type, taking over its screening settings');
+$I->click('#adminLink');
+$I->click('.motionTypeCreate a');
+$I->fillField('#typeTitleSingular', 'Ghi1');
+$I->fillField('#typeTitlePlural', 'Ghi2');
+$I->fillField('#typeCreateTitle', 'Ghi3');
+$I->fillField('#typeMotionPrefix', 'E');
+$I->checkOption('.preset1');
+$I->submitForm('.motionTypeCreateForm', [], 'create');
+
+$I->see('Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.');
+$I->cantSeeCheckboxIsChecked('#screeningMotions');
+$I->cantSeeCheckboxIsChecked('#screeningAmendments');

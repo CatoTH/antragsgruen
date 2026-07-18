@@ -166,6 +166,32 @@ class MotionTypeController extends AdminBase
         ]));
     }
 
+    /**
+     * Motion types created from a built-in template or without a template inherit the screening settings
+     * from the motion type of this consultation with the highest ID.
+     * (Types created based on an existing motion type copy all of its settings anyway.)
+     */
+    private function inheritScreeningSettings(ConsultationMotionType $motionType): void
+    {
+        $latestType = null;
+        foreach ($this->consultation->motionTypes as $otherType) {
+            if ($otherType->id === $motionType->id) {
+                continue;
+            }
+            if ($latestType === null || $otherType->id > $latestType->id) {
+                $latestType = $otherType;
+            }
+        }
+        if ($latestType === null) {
+            return;
+        }
+
+        $settings = $motionType->getSettingsObj();
+        $settings->screeningMotions    = $latestType->getSettingsObj()->screeningMotions;
+        $settings->screeningAmendments = $latestType->getSettingsObj()->screeningAmendments;
+        $motionType->setSettingsObj($settings);
+    }
+
     public function actionTypecreate(): ResponseInterface
     {
         if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
@@ -175,6 +201,7 @@ class MotionTypeController extends AdminBase
         if ($this->isPostSet('create')) {
             $type         = $this->getHttpRequest()->post('type');
             $sectionsFrom = null;
+            $inheritScreening = true;
             if (isset($type['preset']) && $type['preset'] === 'application') {
                 $motionType = ApplicationTemplate::doCreateApplicationType($this->consultation);
                 ApplicationTemplate::doCreateApplicationSections($motionType);
@@ -198,6 +225,8 @@ class MotionTypeController extends AdminBase
                         $motionType->setAttributes($cType->getAttributes(), false);
                         $motionType->id = null;
                         $sectionsFrom   = $cType;
+                        // The template's settings, including the screening settings, are copied as they are
+                        $inheritScreening = false;
                     }
                 }
                 if (!$motionType) {
@@ -232,6 +261,10 @@ class MotionTypeController extends AdminBase
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
                 }
             }
+            if ($inheritScreening) {
+                $this->inheritScreeningSettings($motionType);
+            }
+
             $motionType->titleSingular = $type['titleSingular'];
             $motionType->titlePlural   = $type['titlePlural'];
             $motionType->createTitle   = $type['createTitle'];

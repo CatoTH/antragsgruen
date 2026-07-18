@@ -40,6 +40,19 @@ foreach (IPolicy::getPolicies() as $policy) {
         ?>
     </div>
 </div>
+<div class="stdTwoCols checkboxNoPadding hideForAmendmentsOnly">
+    <div class="leftColumn"></div>
+    <div class="rightColumn">
+        <?php
+        echo HTMLTools::labeledCheckbox(
+            'type[screeningMotions]',
+            Yii::t('admin', 'con_motion_screening'),
+            $motionType->getSettingsObj()->screeningMotions,
+            'screeningMotions'
+        );
+        ?>
+    </div>
+</div>
 
 <!--Support policy for motions -->
 
@@ -149,6 +162,19 @@ foreach (IPolicy::getPolicies() as $policy) {
             Yii::t('admin', 'motion_type_allow_amend_amend'),
             $motionType->getSettingsObj()->allowAmendmentsToAmendments,
             'allowAmendmentsToAmendments'
+        );
+        ?>
+    </div>
+</div>
+<div class="stdTwoCols checkboxNoPadding">
+    <div class="leftColumn"></div>
+    <div class="rightColumn">
+        <?php
+        echo HTMLTools::labeledCheckbox(
+            'type[screeningAmendments]',
+            Yii::t('admin', 'con_amend_screening'),
+            $motionType->getSettingsObj()->screeningAmendments,
+            'screeningAmendments'
         );
         ?>
     </div>

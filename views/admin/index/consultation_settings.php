@@ -279,18 +279,6 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             </label></div>
 
 
-        <div><label>
-                <?php
-                $handledSettings[] = 'screeningMotions';
-                echo Html::checkbox(
-                    'settings[screeningMotions]',
-                    $settings->screeningMotions,
-                    ['id' => 'screeningMotions']
-                );
-                echo ' ' . Yii::t('admin', 'con_motion_screening');
-                ?>
-            </label></div>
-
         <?php
         $boolSettingRow($settings, 'adminsMayEdit', $handledSettings, Yii::t('admin', 'con_admins_may_edit'));
 
@@ -320,18 +308,6 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             </div>
         </div>
 
-
-        <div><label>
-                <?php
-                $handledSettings[] = 'screeningAmendments';
-                echo Html::checkbox(
-                    'settings[screeningAmendments]',
-                    $settings->screeningAmendments,
-                    ['id' => 'screeningAmendments']
-                );
-                echo ' ' . Yii::t('admin', 'con_amend_screening');
-                ?>
-            </label></div>
 
         <div><label>
                 <?php

@@ -37,8 +37,6 @@ class Consultation implements \JsonSerializable
     // SETTINGS WITH TEST CASES
 
     public bool $maintenanceMode = false;
-    public bool $screeningMotions = false;
-    public bool $screeningAmendments = false;
     public bool $lineNumberingGlobal = false;
     public bool $iniatorsMayEdit = false;
     public bool $hideTitlePrefix = false;

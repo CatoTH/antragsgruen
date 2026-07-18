@@ -14,6 +14,8 @@ class MotionTypeSettingsUpdateRequest
         public bool $hasResponsibilities,
         public bool $commentsRestrictViewToWritables,
         public bool $allowAmendmentsToAmendments,
+        public bool $screeningMotions,
+        public bool $screeningAmendments,
         public bool $showProposalsInExports,
     ) {
     }

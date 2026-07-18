@@ -121,6 +121,8 @@ class MotionTypeUpdateRequest
                 hasResponsibilities: isset($input['responsibilities']),
                 commentsRestrictViewToWritables: isset($input['commentsRestrictViewToWritables']),
                 allowAmendmentsToAmendments: isset($input['allowAmendmentsToAmendments']),
+                screeningMotions: isset($input['screeningMotions']),
+                screeningAmendments: isset($input['screeningAmendments']),
                 showProposalsInExports: isset($input['showProposalsInExports']),
             ),
             policies: new MotionTypePoliciesUpdateRequest(

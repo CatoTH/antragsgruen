@@ -8,10 +8,14 @@ use Tests\Support\AcceptanceTester;
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('activate confirmation e-mails');
-$I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->wantTo('activate screening');
+$I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
 $I->checkOption('#screeningMotions');
 $I->checkOption('#screeningAmendments');
+$I->submitForm('.adminTypeForm', [], 'save');
+
+$I->wantTo('activate confirmation e-mails');
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->checkOption('#initiatorConfirmEmails');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 
