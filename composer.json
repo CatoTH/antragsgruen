@@ -121,6 +121,14 @@
       ]
     }
   },
+  "scripts": {
+    "post-install-cmd": [
+      "git config core.hooksPath .githooks || true"
+    ],
+    "post-update-cmd": [
+      "git config core.hooksPath .githooks || true"
+    ]
+  },
   "repositories": [
     {
       "type": "composer",
