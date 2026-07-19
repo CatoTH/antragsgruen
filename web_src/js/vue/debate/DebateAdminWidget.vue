@@ -31,7 +31,7 @@
             <div v-if="startError" class="alert alert-danger">{{ startError }}</div>
             <template v-if="selectables">
                 <div class="startDebateTitle" v-t="['debate', 'admin_start_debate', false, {}, ':']"></div>
-                <div v-for="group in selectableGroups" :key="group.id" class="selectRow">
+                <div v-for="group in selectableGroups" :key="group.id" class="selectRow" :class="'selectRow-' + group.id">
                     <label class="rowLabel" :for="'debateAdminSelect-' + group.id"
                            v-t="['debate', 'admin_select_' + group.id, false, {}, ':']"></label>
                     <div class="rowSelect">
