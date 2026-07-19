@@ -681,6 +681,118 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/debate:
+    get:
+      operationId: getCurrentDebate
+      summary: The current state of the "Currently debated" section
+      description: >
+        Returns the motion, amendment, or agenda item that is currently being debated.
+        This endpoint is available without authentication as long as the "Currently debated"
+        feature is enabled for the consultation, independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The current debate state. `current` is null if nothing is being debated right now.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    put:
+      operationId: startDebate
+      summary: Start a debate over a motion, amendment, or agenda item
+      description: >
+        Makes the given item the consultation's currently debated item, ending the debate over
+        another item if one is going on. If the given item is already being debated, nothing
+        changes (no new debate history entry is created). Requires the privilege to moderate
+        debates. Like the GET endpoint, it works independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateStartRequest'
+      responses:
+        '200':
+          description: The debate was started; the new debate state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '400':
+          description: The request body could not be parsed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: >
+            The consultation or the item to be debated was not found (this includes motions and
+            amendments that are not published), or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    delete:
+      operationId: endDebate
+      summary: End the ongoing debate
+      description: >
+        Ends the debate over the currently debated item, if there is one; the item goes into the
+        debate history. Does nothing if no debate is going on. Requires the privilege to moderate
+        debates. Like the GET endpoint, it works independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The debate was ended; the new debate state (with `current` being null) is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -891,6 +1003,93 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation
+
+    DebateState:
+      x-php-namespace: debate
+      type: object
+      properties:
+        current:
+          $ref: '#/components/schemas/DebateItem'
+
+    DebateItemTargetType:
+      x-php-namespace: debate
+      type: string
+      description: The type of item a debate refers to
+      enum:
+        - motion
+        - amendment
+        - agenda_item
+
+    DebateStartRequest:
+      x-php-namespace: debate
+      type: object
+      description: Names the motion, amendment, or agenda item to be debated from now on
+      required:
+        - target_type
+        - target_id
+      properties:
+        target_type:
+          $ref: '#/components/schemas/DebateItemTargetType'
+        target_id:
+          type: integer
+          description: The ID of the motion, amendment, or agenda item to be debated
+          example: 2
+
+    DebateItem:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: The currently debated item. Null if nothing is being debated right now.
+      required:
+        - id
+        - target_type
+        - target_id
+        - title
+        - date_started
+      properties:
+        id:
+          type: integer
+          example: 1
+        target_type:
+          $ref: '#/components/schemas/DebateItemTargetType'
+        target_id:
+          type: integer
+          description: The ID of the debated motion, amendment, or agenda item (depending on target_type)
+          example: 2
+        title:
+          type: string
+          example: "O’zapft is!"
+        title_with_prefix:
+          type: string
+          nullable: true
+          example: "A2: O’zapft is!"
+        initiators_html:
+          type: string
+          nullable: true
+          description: Formatted list of the initiators. Null for agenda items.
+        date_started:
+          type: string
+          example: "2026-07-10T10:00:00+02:00"
+        url_json:
+          type: string
+          nullable: true
+          description: REST URL of the debated motion or amendment. Null for agenda items.
+          example: https://test.antragsgruen.de/rest/consultation/2-ozapft-is
+        url_html:
+          type: string
+          nullable: true
+          description: URL of the HTML page of the debated motion or amendment. Null for agenda items.
+          example: https://test.antragsgruen.de/consultation/2-ozapft-is
+        speech_queue_id:
+          type: integer
+          nullable: true
+          description: ID of the speaking list attached to the debated item, usable with the speech endpoints
+          example: 23
+        voting_block_id:
+          type: integer
+          nullable: true
+          description: ID of the voting block attached to this debate
+          example: 42
 
     MotionLinkWithAmendmentLinks:
       x-php-namespace: imotion
@@ -2090,6 +2289,7 @@ components:
         - id
         - description
         - deadlines
+        - current_user_permitted
       properties:
         id:
           $ref: '#/components/schemas/MotionTypePolicyId'
@@ -2097,6 +2297,13 @@ components:
           type: string
           description: Human-readable label for the policy (language depends on the site locale)
           example: Everybody
+        current_user_permitted:
+          type: boolean
+          description: >
+            Whether the user performing the request fulfills this policy right now, including
+            deadline restrictions where applicable. Computed for the anonymous public if the
+            request is unauthenticated.
+          example: true
         user_group_ids:
           type: array
           nullable: true

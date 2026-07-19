@@ -390,6 +390,26 @@ CREATE TABLE `###TABLE_PREFIX###consultationUserGroup` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `debateItem`
+--
+
+CREATE TABLE `###TABLE_PREFIX###debateItem` (
+  `id` BIGINT(20) UNSIGNED NOT NULL,
+  `consultationId` INT(11) NOT NULL,
+  `motionId` INT(11) DEFAULT NULL,
+  `amendmentId` INT(11) DEFAULT NULL,
+  `agendaItemId` INT(11) DEFAULT NULL,
+  `votingBlockId` INT(11) DEFAULT NULL,
+  `dateStarted` TIMESTAMP NOT NULL,
+  `dateStopped` TIMESTAMP NULL DEFAULT NULL,
+  `settings` TEXT NULL DEFAULT NULL
+)
+  ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `emailBlocklist`
 --
 
@@ -1028,6 +1048,18 @@ ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
 
 
 --
+-- Indexes for table `debateItem`
+--
+ALTER TABLE `###TABLE_PREFIX###debateItem`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_debate_consultation` (`consultationId`),
+  ADD KEY `fk_debate_motion` (`motionId`),
+  ADD KEY `fk_debate_amendment` (`amendmentId`),
+  ADD KEY `fk_debate_agenda_item` (`agendaItemId`),
+  ADD KEY `fk_debate_voting_block` (`votingBlockId`),
+  ADD KEY `ix_debate_current` (`consultationId`, `dateStopped`);
+
+--
 -- Indexes for table `emailBlocklist`
 --
 ALTER TABLE `###TABLE_PREFIX###emailBlocklist`
@@ -1320,6 +1352,11 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
 ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `debateItem`
+--
+ALTER TABLE `###TABLE_PREFIX###debateItem`
+  MODIFY `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `emailLog`
 --
 ALTER TABLE `###TABLE_PREFIX###emailLog`
@@ -1570,6 +1607,16 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
 ALTER TABLE `###TABLE_PREFIX###consultationUserGroup`
   ADD CONSTRAINT `usergroup_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
   ADD CONSTRAINT `usergroup_fk_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`);
+
+--
+-- Constraints for table `debateItem`
+--
+ALTER TABLE `###TABLE_PREFIX###debateItem`
+  ADD CONSTRAINT `fk_debate_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
+  ADD CONSTRAINT `fk_debate_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
+  ADD CONSTRAINT `fk_debate_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
+  ADD CONSTRAINT `fk_debate_agenda_item` FOREIGN KEY (`agendaItemId`) REFERENCES `###TABLE_PREFIX###consultationAgendaItem` (`id`),
+  ADD CONSTRAINT `fk_debate_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `###TABLE_PREFIX###votingBlock` (`id`);
 
 --
 -- Constraints for table `emailLog`

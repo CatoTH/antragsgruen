@@ -258,6 +258,7 @@ return [
     'con_document_page'       => '<strong>Document / file management</strong> on separate page',
     'con_voting_page'         => '<strong>Votings</strong> on separate page',
     'con_speech_page'         => 'Speaking lists on separate page',
+    'con_currently_debated'   => '<strong>Currently debated</strong> section on the home page',
     'con_fb_img'              => 'Facebook image',
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Upload new logo',

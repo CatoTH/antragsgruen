@@ -39,6 +39,15 @@ echo $controller->showErrors();
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
+if ($consultation->getSettings()->hasCurrentlyDebated) {
+    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
+        echo $this->render('_index_debate_admin', ['consultation' => $consultation]);
+    }
+    echo $this->render('_index_debate', ['consultation' => $consultation]);
+}
+
+echo $this->render('_index_current_discussion', ['consultation' => $consultation]);
+
 if ($myself) {
     echo $this->render('_index_my_motions', ['consultation' => $consultation, 'myself' => $myself]);
 }
