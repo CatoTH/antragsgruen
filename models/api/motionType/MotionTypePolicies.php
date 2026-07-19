@@ -22,18 +22,29 @@ class MotionTypePolicies
         return new self(
             motions: MotionTypePolicy::fromPolicy(
                 $motionType->getMotionPolicy(),
-                MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_MOTIONS)
+                MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_MOTIONS),
+                $motionType->getMotionPolicy()->checkCurrUserMotion()
             ),
             amendments: MotionTypePolicy::fromPolicy(
                 $motionType->getAmendmentPolicy(),
-                MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_AMENDMENTS)
+                MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_AMENDMENTS),
+                $motionType->getAmendmentPolicy()->checkCurrUserAmendment()
             ),
             comments: MotionTypePolicy::fromPolicy(
                 $motionType->getCommentPolicy(),
-                MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_COMMENTS)
+                MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_COMMENTS),
+                $motionType->getCommentPolicy()->checkCurrUserComment()
             ),
-            supportMotions: MotionTypePolicy::fromPolicy($motionType->getMotionSupportPolicy(), []),
-            supportAmendments: MotionTypePolicy::fromPolicy($motionType->getAmendmentSupportPolicy(), []),
+            supportMotions: MotionTypePolicy::fromPolicy(
+                $motionType->getMotionSupportPolicy(),
+                [],
+                $motionType->getMotionSupportPolicy()->checkCurrUser()
+            ),
+            supportAmendments: MotionTypePolicy::fromPolicy(
+                $motionType->getAmendmentSupportPolicy(),
+                [],
+                $motionType->getAmendmentSupportPolicy()->checkCurrUser()
+            ),
         );
     }
 }

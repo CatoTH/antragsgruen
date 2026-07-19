@@ -26,6 +26,22 @@ return [
         'text' => 'Verfahrensantrag stellen',
         'js' => true,
     ],
+    'secondary_form_cancel' => [
+        'text' => 'Abbrechen',
+        'js' => true,
+    ],
+    'secondary_form_submit' => [
+        'text' => 'Einreichen',
+        'js' => true,
+    ],
+    'secondary_form_created' => [
+        'text' => 'Der Verfahrensantrag wurde gestellt.',
+        'js' => true,
+    ],
+    'secondary_form_err' => [
+        'text' => 'Der Verfahrensantrag konnte nicht gestellt werden.',
+        'js' => true,
+    ],
 
     'admin_title'             => 'Aktuell debattiert [Administration]',
     'admin_tab_debated'       => [

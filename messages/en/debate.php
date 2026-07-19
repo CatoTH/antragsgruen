@@ -26,6 +26,22 @@ return [
         'text' => 'Raise Secondary Motion',
         'js' => true,
     ],
+    'secondary_form_cancel' => [
+        'text' => 'Cancel',
+        'js' => true,
+    ],
+    'secondary_form_submit' => [
+        'text' => 'Submit',
+        'js' => true,
+    ],
+    'secondary_form_created' => [
+        'text' => 'The secondary motion has been raised.',
+        'js' => true,
+    ],
+    'secondary_form_err' => [
+        'text' => 'The secondary motion could not be raised.',
+        'js' => true,
+    ],
 
     'admin_title'             => 'Currently debated [Administration]',
     'admin_tab_debated'       => [

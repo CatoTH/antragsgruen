@@ -2289,6 +2289,7 @@ components:
         - id
         - description
         - deadlines
+        - current_user_permitted
       properties:
         id:
           $ref: '#/components/schemas/MotionTypePolicyId'
@@ -2296,6 +2297,13 @@ components:
           type: string
           description: Human-readable label for the policy (language depends on the site locale)
           example: Everybody
+        current_user_permitted:
+          type: boolean
+          description: >
+            Whether the user performing the request fulfills this policy right now, including
+            deadline restrictions where applicable. Computed for the anonymous public if the
+            request is unauthenticated.
+          example: true
         user_group_ids:
           type: array
           nullable: true
