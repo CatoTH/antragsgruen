@@ -106,9 +106,12 @@ class OidcProvider
      */
     public function getAccessToken(string $code): AccessToken
     {
-        return $this->provider->getAccessToken('authorization_code', [
+        /** @var AccessToken $token */
+        $token = $this->provider->getAccessToken('authorization_code', [
             'code' => $code
         ]);
+
+        return $token;
     }
 
     /**
