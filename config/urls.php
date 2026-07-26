@@ -100,6 +100,7 @@ $urlRules = [
     $restBaseCon . '/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>/screen'  => '/rest/amendment/screen',
     $restBaseCon . '/debate'                                                         => '/rest/debate/index',
     $restBaseCon . '/debate/selectable'                                              => '/rest/debate/selectable',
+    $restBaseCon . '/debate/speech-queue'                                            => '/rest/debate/speech-queue',
     $restBaseCon . '/speech/<queueIds:[^\/]+>'                                       => '/speech/get-queue',
     $restBaseCon . '/speech/<queueId:[^\/]+>/item'                                   => '/speech/register',
     $restBaseCon . '/speech/<queueId:[^\/]+>/unregister'                             => '/speech/unregister',

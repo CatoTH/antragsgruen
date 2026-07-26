@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace app\controllers\rest;
 
 use app\components\{DebateTools, Tools};
+use app\models\api\{SpeechQueue as SpeechQueueApi};
 use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateStartRequest, DebateState};
-use app\models\db\{ConsultationAgendaItem, User};
+use app\models\db\{ConsultationAgendaItem, DebateItem, User};
 use app\models\exceptions\NotFound;
 use app\models\http\{RestApiExceptionResponse, RestApiResponse};
 use app\models\settings\Privileges;
@@ -103,5 +104,38 @@ class DebateController extends RestBase
         }
 
         return $this->createResponse(200, DebateSelectables::fromConsultation($this->consultation));
+    }
+
+    /**
+     * Get-or-create the speech queue of the currently debated motion or agenda item and return its
+     * admin representation, so the "Speaking List" tab can embed the regular speech-admin widget.
+     */
+    public function actionSpeechQueue(): RestApiResponse
+    {
+        // Always enabled: the debate moderation widget is used from the homepage,
+        // independently of whether general API access is enabled for the site
+        $this->handleRestHeaders(['POST'], true);
+
+        if (!$this->consultation || !$this->consultation->getSettings()->hasCurrentlyDebated) {
+            return $this->returnRestResponseFromException(
+                new NotFound('The "Currently debated" feature is not enabled for this consultation', 404)
+            );
+        }
+
+        if ($error = $this->getModerationPermissionError()) {
+            return $error;
+        }
+
+        $debate = DebateItem::getCurrentForConsultation($this->consultation);
+        if ($debate === null) {
+            return $this->returnRestResponseFromException(new NotFound('No debate is going on right now', 404));
+        }
+        if ($debate->motionId === null && $debate->agendaItemId === null) {
+            return new RestApiExceptionResponse(400, 'A speech queue can only be attached to a debated motion or agenda item');
+        }
+
+        $queue = DebateTools::getOrCreateSpeechQueue($debate);
+
+        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
     }
 }

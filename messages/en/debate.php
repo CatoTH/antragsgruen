@@ -100,4 +100,16 @@ return [
         'text' => 'Could not end the debate.',
         'js' => true,
     ],
+    'admin_speech_loading'    => [
+        'text' => 'Loading the speaking list…',
+        'js' => true,
+    ],
+    'admin_speech_err'        => [
+        'text' => 'Could not load the speaking list.',
+        'js' => true,
+    ],
+    'admin_speech_no_amendment' => [
+        'text' => 'Speaking lists cannot be attached to amendments yet.',
+        'js' => true,
+    ],
 ];
