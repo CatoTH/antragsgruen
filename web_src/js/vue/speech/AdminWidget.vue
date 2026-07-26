@@ -201,6 +201,8 @@
 </template>
 
 <script>
+import { getJson, postForm } from "/js/modules/shared/ApiClient.js";
+
 export default {
   props: ['initQueue', 'csrf', 'componentAdminLink', 'pollUrl', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
   data() {
@@ -321,21 +323,16 @@ export default {
   },
   methods: {
     _performOperation: function (itemId, op, additionalProps) {
-      let postData = {
-        _csrf: this.csrf,
-      };
-      if (additionalProps) {
-        postData = Object.assign(postData, additionalProps);
-      }
+      const postData = additionalProps ? Object.assign({}, additionalProps) : {};
       const widget = this;
       const url = this.itemPerformOperationUrl
           .replace(/QUEUEID/, widget.queue.id)
           .replace(/ITEMID/, itemId)
           .replace(/OPERATION/, op);
-      $.post(url, postData, function (data) {
+      postForm(url, postData).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     getPreviousForSubqueue: function (subqueue) {
@@ -399,26 +396,25 @@ export default {
       const widget = this;
       bootbox.confirm(resetConfirmation, function(result) {
         if (result) {
-          $.post(this.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), { _csrf: widget.csrf }, function (data) {
+          postForm(widget.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
             widget.queue = data;
           }).catch(function (err) {
-            alert(err.responseText);
+            alert(err.message);
           });
         }
       });
     },
     settingsChanged: function () {
       const widget = this;
-      $.post(this.setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
+      postForm(this.setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
         is_active: (this.queue.is_active ? 1 : 0),
         is_open: (this.queue.settings.is_open ? 1 : 0),
         is_open_poo: (this.queue.settings.is_open_poo ? 1 : 0),
         prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
         allow_custom_names: (this.queue.settings.allow_custom_names ? 1 : 0),
         show_names: (this.queue.settings.show_names ? 1 : 0),
-        speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : null),
-        _csrf: this.csrf,
-      }, function (data) {
+        speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : ''),
+      }).then(function (data) {
         widget.queue = data['queue'];
 
         widget.changedSettings.speakingTime = null;
@@ -429,29 +425,28 @@ export default {
           // @TODO Secondary sidebar
         }
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     randomizeQueues: function ($event) {
       $event.preventDefault();
       $event.stopPropagation();
       const widget = this;
-      $.post(this.randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), { _csrf: widget.csrf }, function (data) {
+      postForm(this.randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     addItemToSubqueue: function (subqueue, itemName) {
       const widget = this;
-      $.post(this.createItemUrl.replace(/QUEUEID/, widget.queue.id), {
+      postForm(this.createItemUrl.replace(/QUEUEID/, widget.queue.id), {
         subqueue: subqueue.id,
         name: itemName,
-        _csrf: this.csrf,
-      }, function (data) {
+      }).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     recalcTimeOffset: function (serverTime) {
@@ -481,12 +476,11 @@ export default {
         return;
       }
 
-      $.get(
-          this.pollUrl.replace(/QUEUEID/, widget.queue.id),
-          this.setData.bind(this)
-      ).catch(function(err) {
-        console.error("Could not load speech queue data from backend", err);
-      });
+      getJson(this.pollUrl.replace(/QUEUEID/, widget.queue.id))
+          .then(this.setData.bind(this))
+          .catch(function(err) {
+            console.error("Could not load speech queue data from backend", err);
+          });
     },
     formatUsernameHtml: function (item) {
       let name = item.name;

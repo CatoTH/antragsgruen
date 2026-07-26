@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\controllers\{MotionController, PagesController, SpeechController, rest\RestBase, UserController, VotingController};
+use app\controllers\{MotionController, PagesController, UserController, VotingController};
+use app\controllers\rest\{RestBase, SpeechController};
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
 use Endroid\QrCode\Label\Font\FontInterface;

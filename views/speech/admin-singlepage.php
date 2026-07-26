@@ -47,12 +47,12 @@ if ($queue->motion) {
 }
 
 $componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpeechLists';
-$setStatusUrl      = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
-$itemPerformOpUrl  = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
-$createItemUrl     = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
-$resetQueueUrl     = UrlHelper::createUrl(['/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
-$randomizeQueueUrl = UrlHelper::createUrl(['/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
-$pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
+$setStatusUrl      = UrlHelper::createUrl(['/rest/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
+$itemPerformOpUrl  = UrlHelper::createUrl(['/rest/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
+$createItemUrl     = UrlHelper::createUrl(['/rest/speech/admin-create-item', 'queueId' => 'QUEUEID']);
+$resetQueueUrl     = UrlHelper::createUrl(['/rest/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
+$randomizeQueueUrl = UrlHelper::createUrl(['/rest/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
+$pollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
