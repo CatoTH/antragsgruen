@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, DebateItem, Motion};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, DebateItem, Motion, SpeechQueue};
 
 /**
  * Domain logic of the "Currently debated" module. All changes to the debate state go through this class,
@@ -63,6 +63,39 @@ class DebateTools
                 throw new \RuntimeException('Could not end the debate: ' . print_r($openDebate->getErrors(), true));
             }
         }
+    }
+
+    /**
+     * Finds the speech queue attached to the debated motion or agenda item, creating a fresh, inactive one
+     * (with the consultation's configured subqueues) if none exists yet. The admin activates it afterwards
+     * through the regular speech-admin endpoints. Amendments cannot carry a speech queue yet.
+     */
+    public static function getOrCreateSpeechQueue(DebateItem $debate): SpeechQueue
+    {
+        $consultation = $debate->getMyConsultation();
+
+        if ($debate->motionId === null && $debate->agendaItemId === null) {
+            throw new \RuntimeException('A speech queue can only be attached to a debated motion or agenda item');
+        }
+
+        foreach ($consultation->speechQueues as $queue) {
+            if ($debate->motionId !== null && $queue->motionId === $debate->motionId) {
+                return $queue;
+            }
+            if ($debate->agendaItemId !== null && $queue->agendaItemId === $debate->agendaItemId) {
+                return $queue;
+            }
+        }
+
+        $queue = SpeechQueue::createWithSubqueues($consultation, false);
+        $queue->motionId = $debate->motionId;
+        $queue->agendaItemId = $debate->agendaItemId;
+        if (!$queue->save()) {
+            throw new \RuntimeException('Could not attach the speech queue to the debated item: ' . print_r($queue->getErrors(), true));
+        }
+        $consultation->refresh();
+
+        return $queue;
     }
 
     private static function isDebateOver(DebateItem $debate, Motion|Amendment|ConsultationAgendaItem $target): bool

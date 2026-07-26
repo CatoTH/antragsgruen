@@ -100,4 +100,16 @@ return [
         'text' => 'Die Debatte konnte nicht beendet werden.',
         'js' => true,
     ],
+    'admin_speech_loading'    => [
+        'text' => 'Die Redeliste wird geladen…',
+        'js' => true,
+    ],
+    'admin_speech_err'        => [
+        'text' => 'Die Redeliste konnte nicht geladen werden.',
+        'js' => true,
+    ],
+    'admin_speech_no_amendment' => [
+        'text' => 'Redelisten können noch nicht an Änderungsanträge angehängt werden.',
+        'js' => true,
+    ],
 ];
