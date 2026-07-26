@@ -7,9 +7,9 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
 
-$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
-$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
-$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
+$pollUrl       = UrlHelper::createUrl(['/rest/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
+$registerUrl   = UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']);
+$unregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']);
 
 $layout->addJsTranslation('speech');
 ?>

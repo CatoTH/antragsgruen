@@ -80,6 +80,60 @@ export function authorizedFetch(url, options = {}) {
 }
 
 /**
+ * Turns a fetch() Response into parsed JSON, throwing an Error carrying the server-provided
+ * message (from the {success, message} error body, falling back to the raw text / status) on failure.
+ *
+ * @param {Response} response
+ * @returns {Promise<any>}
+ */
+function parseJsonResponse(response) {
+    if (response.ok) {
+        return response.json();
+    }
+    return response.text().then(text => {
+        let message = text;
+        try {
+            const parsed = JSON.parse(text);
+            if (parsed && parsed.message) {
+                message = parsed.message;
+            }
+        } catch (e) {
+            // Not a JSON body - keep the raw text
+        }
+        throw new Error(message || ('HTTP status ' + response.status));
+    });
+}
+
+/**
+ * GETs the given URL (authenticated via JWT) and resolves to the parsed JSON response.
+ *
+ * @param {string} url
+ * @returns {Promise<any>}
+ */
+export function getJson(url) {
+    return authorizedFetch(url).then(parseJsonResponse);
+}
+
+/**
+ * POSTs the given data as application/x-www-form-urlencoded to the backend (authenticated via JWT)
+ * and resolves to the parsed JSON response. Used for endpoints that read individual form fields
+ * via Yii's request->post().
+ *
+ * @param {string} url
+ * @param {Object<string, any>} data
+ * @returns {Promise<any>}
+ */
+export function postForm(url, data) {
+    return authorizedFetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(data).toString(),
+    }).then(parseJsonResponse);
+}
+
+/**
  * Sends the given object as application/json to the backend (authenticated via JWT)
  * and resolves to the parsed JSON response.
  *

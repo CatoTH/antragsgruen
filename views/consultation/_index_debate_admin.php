@@ -23,15 +23,15 @@ $debateUrl = UrlHelper::createUrl(['/rest/debate/index']);
 $selectableUrl = UrlHelper::createUrl(['/rest/debate/selectable']);
 $speechQueueUrl = UrlHelper::createUrl(['/rest/debate/speech-queue']);
 
-// Endpoints of the embedded speech-admin widget (session-based, shared with the standalone speech admin page).
+// Endpoints of the embedded speech-admin widget (JWT REST API, shared with the standalone speech admin page).
 // The "QUEUEID" placeholder is substituted with the concrete queue id inside the Vue widget.
 $speechComponentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpeechLists';
-$speechSetStatusUrl      = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
-$speechItemPerformOpUrl  = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
-$speechCreateItemUrl     = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
-$speechResetQueueUrl     = UrlHelper::createUrl(['/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
-$speechRandomizeQueueUrl = UrlHelper::createUrl(['/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
-$speechPollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
+$speechSetStatusUrl      = UrlHelper::createUrl(['/rest/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
+$speechItemPerformOpUrl  = UrlHelper::createUrl(['/rest/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
+$speechCreateItemUrl     = UrlHelper::createUrl(['/rest/speech/admin-create-item', 'queueId' => 'QUEUEID']);
+$speechResetQueueUrl     = UrlHelper::createUrl(['/rest/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
+$speechRandomizeQueueUrl = UrlHelper::createUrl(['/rest/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
+$speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 
 ?>
 <section class="currentDebateAdmin currentSpeechPageWidth" aria-labelledby="currentDebateAdminTitle"

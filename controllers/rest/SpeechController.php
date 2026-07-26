@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\controllers\rest;
 
 use app\components\CookieUser;
 use app\components\LiveTools;
@@ -10,7 +10,7 @@ use app\models\settings\Privileges;
 use app\views\speech\LayoutHelper;
 use app\models\db\{SpeechQueue, SpeechQueueItem, User};
 
-class SpeechController extends Base
+class SpeechController extends RestBase
 {
     public const VIEW_ID_GET_QUEUE = 'get-queue';
 

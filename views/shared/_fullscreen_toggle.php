@@ -27,6 +27,9 @@ $layout->addJsTranslation("motion");
 $layout->addJsTranslation("pages");
 $layout->addJsTranslation("speech");
 
+// The fullscreen projector may poll the speech REST endpoints, which authenticate via JWT.
+$layout->provideJwt = true;
+
 ?>
 <button type="button" title="<?= Yii::t('motion', 'fullscreen') ?>" class="btn btn-link btnFullscreen"
         data-vue-element="fullscreen-projector" data-vue-initdata="<?= Html::encode($fullscreenInitData) ?>">
@@ -36,9 +39,9 @@ $layout->addJsTranslation("speech");
     <script type="module" crossorigin="anonymous">
     import { setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     setSpeechUrls(
-        <?= json_encode(UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS'])) ?>,
-        <?= json_encode(UrlHelper::createUrl(['/speech/register', 'queueIds' => 'QUEUEIDS'])) ?>,
-        <?= json_encode(UrlHelper::createUrl(['/speech/unregister', 'queueIds' => 'QUEUEIDS'])) ?>
+        <?= json_encode(UrlHelper::createUrl(['/rest/speech/get-queue', 'queueIds' => 'QUEUEIDS'])) ?>,
+        <?= json_encode(UrlHelper::createUrl(['/rest/speech/register', 'queueIds' => 'QUEUEIDS'])) ?>,
+        <?= json_encode(UrlHelper::createUrl(['/rest/speech/unregister', 'queueIds' => 'QUEUEIDS'])) ?>
     );
     import { FullscreenToggle } from "/js/modules/frontend/FullscreenToggle.js";
     new FullscreenToggle(document.querySelector(".btnFullscreen"));

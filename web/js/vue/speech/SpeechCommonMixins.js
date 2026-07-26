@@ -1,6 +1,7 @@
 // @ts-check
 
 import translate from "/js/vue/Translate.vue.js";
+import { getJson, postForm } from "/js/modules/shared/ApiClient.js";
 
 class SpeechPoller {
     timeOffset = 0;
@@ -49,12 +50,11 @@ class SpeechPoller {
             return;
         }
 
-        $.get(
-            TEMPLATE_POLL_URL.replace(/QUEUEIDS/, queues.join(",")),
-            this.setData.bind(this)
-        ).catch(function (err) {
-            console.error("Could not load speech queue data from backend", err);
-        });
+        getJson(TEMPLATE_POLL_URL.replace(/QUEUEIDS/, queues.join(",")))
+            .then(this.setData.bind(this))
+            .catch(function (err) {
+                console.error("Could not load speech queue data from backend", err);
+            });
     };
 
     pollReloadData() {
@@ -197,16 +197,15 @@ export function getSpeechCommonMixins() {
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(TEMPLATE_REGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
+                postForm(TEMPLATE_REGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     username: this.registerName,
                     pointOfOrder: (pointOfOrder ? '1' : '0'),
-                    _csrf: this.csrf,
-                }, function (data) {
+                }).then(function (data) {
                     widget.queue = data;
                     widget.showApplicationForm = widget.defaultApplicationForm;
                 }).catch(function (err) {
-                    alert(err.responseText);
+                    alert(err.message);
                 });
             },
             onShowApplicationForm: function ($event, subqueue, pointOfOrder) {
@@ -230,13 +229,12 @@ export function getSpeechCommonMixins() {
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
-                    _csrf: this.csrf,
-                }, function (data) {
-                    widget.queue = data;
-                }).catch(function (err) {
-                    alert(err.responseText);
-                });
+                postForm(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {})
+                    .then(function (data) {
+                        widget.queue = data;
+                    }).catch(function (err) {
+                        alert(err.message);
+                    });
             },
             recalcTimeOffset: function (serverTime) {
                 const browserTime = (new Date()).getTime();
