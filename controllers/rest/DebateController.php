@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\controllers\rest;
 
 use app\components\{DebateTools, Tools};
-use app\models\api\{SpeechQueue as SpeechQueueApi};
+use app\models\api\speech\SpeechQueueAdmin;
 use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateStartRequest, DebateState};
 use app\models\db\{ConsultationAgendaItem, DebateItem, User};
 use app\models\exceptions\NotFound;
@@ -136,6 +136,6 @@ class DebateController extends RestBase
 
         $queue = DebateTools::getOrCreateSpeechQueue($debate);
 
-        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
+        return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
     }
 }

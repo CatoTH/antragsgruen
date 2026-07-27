@@ -201,7 +201,7 @@
 </template>
 
 <script>
-import { getJson, postForm } from "/js/modules/shared/ApiClient.js";
+import { getJson, postJson } from "/js/modules/shared/ApiClient.js";
 
 export default {
   props: ['initQueue', 'csrf', 'componentAdminLink', 'pollUrl', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
@@ -329,7 +329,7 @@ export default {
           .replace(/QUEUEID/, widget.queue.id)
           .replace(/ITEMID/, itemId)
           .replace(/OPERATION/, op);
-      postForm(url, postData).then(function (data) {
+      postJson(url, postData).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
         alert(err.message);
@@ -369,7 +369,7 @@ export default {
       this._performOperation(itemId, "delete");
     },
     moveItemToSubqueue: function (itemId, newSubqueueId, position) {
-      this._performOperation(itemId, "move", {newSubqueueId, position});
+      this._performOperation(itemId, "move", {new_subqueue_id: newSubqueueId, position});
       this.itemDragEnd();
     },
     itemDragStart: function (itemId) {
@@ -396,7 +396,7 @@ export default {
       const widget = this;
       bootbox.confirm(resetConfirmation, function(result) {
         if (result) {
-          postForm(widget.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
+          postJson(widget.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
             widget.queue = data;
           }).catch(function (err) {
             alert(err.message);
@@ -406,14 +406,14 @@ export default {
     },
     settingsChanged: function () {
       const widget = this;
-      postForm(this.setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
+      postJson(this.setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
         is_active: (this.queue.is_active ? 1 : 0),
         is_open: (this.queue.settings.is_open ? 1 : 0),
         is_open_poo: (this.queue.settings.is_open_poo ? 1 : 0),
         prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
         allow_custom_names: (this.queue.settings.allow_custom_names ? 1 : 0),
         show_names: (this.queue.settings.show_names ? 1 : 0),
-        speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : ''),
+        speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : null),
       }).then(function (data) {
         widget.queue = data['queue'];
 
@@ -432,7 +432,7 @@ export default {
       $event.preventDefault();
       $event.stopPropagation();
       const widget = this;
-      postForm(this.randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
+      postJson(this.randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
         alert(err.message);
@@ -440,7 +440,7 @@ export default {
     },
     addItemToSubqueue: function (subqueue, itemName) {
       const widget = this;
-      postForm(this.createItemUrl.replace(/QUEUEID/, widget.queue.id), {
+      postJson(this.createItemUrl.replace(/QUEUEID/, widget.queue.id), {
         subqueue: subqueue.id,
         name: itemName,
       }).then(function (data) {

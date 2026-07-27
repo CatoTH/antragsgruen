@@ -1,7 +1,7 @@
 <?php
 
-use app\components\UrlHelper;
-use app\models\api\SpeechQueue as SpeechQueueApi;
+use app\components\{Tools, UrlHelper};
+use app\models\api\speech\SpeechQueueAdmin;
 use app\models\db\SpeechQueue;
 use yii\helpers\Html;
 
@@ -36,7 +36,7 @@ if ($htmls[1] !== '') {
     $layout->menusHtmlSmall[] = $htmls[1];
 }
 
-$initData = SpeechQueueApi::fromEntity($queue)->getAdminApiObject();
+$initData = Tools::getSerializer()->serialize(SpeechQueueAdmin::fromEntity($queue), 'json');
 
 if ($queue->motion) {
     $this->title = str_replace('%TITLE%', $queue->motion->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to'));
@@ -65,7 +65,7 @@ $pollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'queu
              data-reset-queue-url="<?= Html::encode($resetQueueUrl) ?>"
              data-create-item-url="<?= Html::encode($createItemUrl) ?>"
              data-set-status-url="<?= Html::encode($setStatusUrl) ?>"
-             data-queue="<?= Html::encode(json_encode($initData)) ?>">
+             data-queue="<?= Html::encode($initData) ?>">
         <div class="speechAdmin"></div>
     </section>
 </div>

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace app\models\api;
 
-use app\components\CookieUser;
-use app\models\db\User;
 use app\models\settings\SpeechQueue as SpeechQueueSettings;
 use Symfony\Component\Serializer\Attribute\Ignore;
 
@@ -93,43 +91,4 @@ class SpeechQueue
         return $subqueues;
     }
 
-    public function toUserApi(?User $user, ?CookieUser $cookieUser): array
-    {
-        $subqueues = array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toUserApi($this->settings->showNames, $user, $cookieUser), $this->subqueues);
-
-        $haveApplied = false;
-        foreach ($subqueues as $subqueue) {
-            if ($subqueue['have_applied']) {
-                $haveApplied = true;
-            }
-        }
-
-        return [
-            'id' => $this->id,
-            'is_active' => $this->isActive,
-            'is_open' => $this->settings->isOpen,
-            'have_applied' => $haveApplied,
-            'allow_custom_names' => $this->settings->allowCustomNames,
-            'is_open_poo' => $this->settings->isOpenPoo,
-            'subqueues' => $subqueues,
-            'slots' => array_map(fn(SpeechQueueActiveSlot $slot) => $slot->toApi(), $this->slots),
-            'requires_login' => $this->requiresLogin,
-            'current_time' => $this->currentTime,
-            'speaking_time' => $this->settings->speakingTime,
-        ];
-    }
-
-    #[Ignore]
-    public function getAdminApiObject(): array
-    {
-        return [
-            'id'                => $this->id,
-            'is_active'         => $this->isActive,
-            'settings'          => $this->settings->getAdminApiObject(),
-            'subqueues'         => array_map(fn(SpeechSubqueue $subqueue) => $subqueue->toAdminApi(), $this->subqueues),
-            'slots'             => array_map(fn(SpeechQueueActiveSlot $slot) => $slot->toApi(), $this->slots),
-            'other_active_name' => $this->otherActiveName,
-            'current_time' => $this->currentTime,
-        ];
-    }
 }
