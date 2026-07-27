@@ -1,7 +1,7 @@
 // @ts-check
 
 import translate from "/js/vue/Translate.vue.js";
-import { getJson, postForm } from "/js/modules/shared/ApiClient.js";
+import { getJson, postJson } from "/js/modules/shared/ApiClient.js";
 
 class SpeechPoller {
     timeOffset = 0;
@@ -197,10 +197,10 @@ export function getSpeechCommonMixins() {
                 $event.preventDefault();
 
                 const widget = this;
-                postForm(TEMPLATE_REGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
+                postJson(TEMPLATE_REGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     username: this.registerName,
-                    pointOfOrder: (pointOfOrder ? '1' : '0'),
+                    point_of_order: !!pointOfOrder,
                 }).then(function (data) {
                     widget.queue = data;
                     widget.showApplicationForm = widget.defaultApplicationForm;
@@ -229,7 +229,7 @@ export function getSpeechCommonMixins() {
                 $event.preventDefault();
 
                 const widget = this;
-                postForm(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {})
+                postJson(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {})
                     .then(function (data) {
                         widget.queue = data;
                     }).catch(function (err) {

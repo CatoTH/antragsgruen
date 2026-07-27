@@ -115,25 +115,6 @@ export function getJson(url) {
 }
 
 /**
- * POSTs the given data as application/x-www-form-urlencoded to the backend (authenticated via JWT)
- * and resolves to the parsed JSON response. Used for endpoints that read individual form fields
- * via Yii's request->post().
- *
- * @param {string} url
- * @param {Object<string, any>} data
- * @returns {Promise<any>}
- */
-export function postForm(url, data) {
-    return authorizedFetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(data).toString(),
-    }).then(parseJsonResponse);
-}
-
-/**
  * Sends the given object as application/json to the backend (authenticated via JWT)
  * and resolves to the parsed JSON response.
  *
@@ -149,12 +130,7 @@ export function sendJson(method, url, body) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error('HTTP status ' + response.status);
-        }
-        return response.json();
-    });
+    }).then(parseJsonResponse);
 }
 
 /**
@@ -185,10 +161,5 @@ export function putJson(url, body) {
 export function deleteJson(url) {
     return authorizedFetch(url, {
         method: 'DELETE',
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error('HTTP status ' + response.status);
-        }
-        return response.json();
-    });
+    }).then(parseJsonResponse);
 }

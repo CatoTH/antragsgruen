@@ -37,19 +37,4 @@ class SpeechQueueActiveSlot
         return $dto;
     }
 
-    public function toApi(): array
-    {
-        return [
-            'id' => $this->id,
-            'subqueue' => [
-                'id' => $this->subqueueId,
-                'name' => $this->subqueueName,
-            ],
-            'name' => $this->name,
-            'position' => $this->position,
-            'date_started' => $this->dateStarted?->format('c'),
-            'date_stopped' => $this->dateStopped?->format('c'),
-            'date_applied' => $this->dateApplied?->format('c'),
-        ];
-    }
 }
