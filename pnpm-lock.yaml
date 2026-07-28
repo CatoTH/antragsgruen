@@ -86,7 +86,7 @@ importers:
         version: 0.11.32
       autoprefixer:
         specifier: ^10.5.2
-        version: 10.5.2(postcss@8.5.16)
+        version: 10.5.2(postcss@8.5.18)
       confusing-browser-globals:
         specifier: ^1.0.11
         version: 1.0.11
@@ -107,7 +107,7 @@ importers:
         version: 2.6.1
       gulp-postcss:
         specifier: ^10.0.0
-        version: 10.0.0(postcss@8.5.16)
+        version: 10.0.0(postcss@8.5.18)
       gulp-sass:
         specifier: ^6.0.1
         version: 6.0.1
@@ -125,7 +125,7 @@ importers:
         version: 9.1.1
       postcss:
         specifier: ^8.5.15
-        version: 8.5.16
+        version: 8.5.18
       sass:
         specifier: ^1.101.0
         version: 1.101.0
@@ -1583,8 +1583,8 @@ packages:
     resolution: {integrity: sha512-32GSKM3Wyc8dg/p39lWPKYu8zci9mJFzV1Np9Of0ZEpe6Fhssn/FbI7ywAMd40uX+p3ZKh3T5EeCFv81qS3HmQ==}
     engines: {node: '>= 10.13.0'}
 
-  nanoid@3.3.15:
-    resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
+  nanoid@3.3.16:
+    resolution: {integrity: sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -1739,8 +1739,8 @@ packages:
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  postcss@8.5.16:
-    resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
+  postcss@8.5.18:
+    resolution: {integrity: sha512-xdB1oSLHbz1vRWgCDalrCqEFTWzFlhqFC5tIHLMOSUIjhm3XXQ1qrFy8S/ESr1JYRRXqM3c1QFiMZUJdUTqyMQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -2242,7 +2242,7 @@ snapshots:
     dependencies:
       acorn: 6.4.2
       normalize-path: 3.0.0
-      postcss: 8.5.16
+      postcss: 8.5.18
       source-map: 0.6.1
       through2: 3.0.2
 
@@ -2548,7 +2548,7 @@ snapshots:
       '@vue/shared': 3.5.39
       estree-walker: 2.0.2
       magic-string: 0.30.21
-      postcss: 8.5.16
+      postcss: 8.5.18
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.5.39':
@@ -2642,13 +2642,13 @@ snapshots:
 
   atob@2.1.2: {}
 
-  autoprefixer@10.5.2(postcss@8.5.16):
+  autoprefixer@10.5.2(postcss@8.5.18):
     dependencies:
       browserslist: 4.28.4
       caniuse-lite: 1.0.30001800
       fraction.js: 5.3.4
       picocolors: 1.1.1
-      postcss: 8.5.16
+      postcss: 8.5.18
       postcss-value-parser: 4.2.0
 
   axe-core@4.11.4: {}
@@ -3286,12 +3286,12 @@ snapshots:
       through2: 2.0.5
       vinyl: 2.2.1
 
-  gulp-postcss@10.0.0(postcss@8.5.16):
+  gulp-postcss@10.0.0(postcss@8.5.18):
     dependencies:
       fancy-log: 2.0.0
       plugin-error: 2.0.1
-      postcss: 8.5.16
-      postcss-load-config: 5.1.0(postcss@8.5.16)
+      postcss: 8.5.18
+      postcss-load-config: 5.1.0(postcss@8.5.18)
       vinyl-sourcemaps-apply: 0.2.1
     transitivePeerDependencies:
       - jiti
@@ -3597,7 +3597,7 @@ snapshots:
 
   mute-stdout@2.0.0: {}
 
-  nanoid@3.3.15: {}
+  nanoid@3.3.16: {}
 
   natural-compare@1.4.0: {}
 
@@ -3754,18 +3754,18 @@ snapshots:
     dependencies:
       ansi-colors: 1.1.0
 
-  postcss-load-config@5.1.0(postcss@8.5.16):
+  postcss-load-config@5.1.0(postcss@8.5.18):
     dependencies:
       lilconfig: 3.1.3
       yaml: 2.9.0
     optionalDependencies:
-      postcss: 8.5.16
+      postcss: 8.5.18
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.5.16:
+  postcss@8.5.18:
     dependencies:
-      nanoid: 3.3.15
+      nanoid: 3.3.16
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
