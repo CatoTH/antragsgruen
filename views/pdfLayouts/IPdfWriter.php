@@ -30,6 +30,17 @@ class IPdfWriter extends \TCPDF
         $eng->pagecontexthook = $this->ambientPageContent(...);
         $this->eng = $eng;
         $this->kratio = $eng->toPoints(1.0);
+
+        $css = <<<CSS
+            blockquote {
+                margin-left: 9.5mm;
+                padding-left: 4mm;
+                border-left: 1mm dotted #cccccc;
+                color: #444444;
+            }
+        CSS;
+
+        $this->eng->addGlobalCSS($css);
     }
 
     /**
