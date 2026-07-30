@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Prevent direct pushes to the 'main' branch to enforce PRs against upstream.
+
+# Run TDD tests via Docker (Codeception) before pushing any branch
+echo "Running PHPStan analysis..."
+docker compose exec -T php vendor/bin/phpstan analyse
+if [ $? -ne 0 ]; then
+    echo "🚨 PHPStan failed! Please fix errors before pushing."
+    exit 1
+fi
+
+exit 0
