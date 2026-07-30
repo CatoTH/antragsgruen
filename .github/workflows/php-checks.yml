@@ -67,9 +67,13 @@ jobs:
       - name: Install dependencies
         if: "${{ matrix.experimental == false }}"
         run: composer install --no-interaction --prefer-dist --no-progress --no-suggest
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Install experimental dependencies, ignore php requirements
         if: "${{ matrix.experimental == true }}"
         run: composer install --no-interaction --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   unittest-codecept:
     needs: [ set-environment, check-composer ]
@@ -113,9 +117,13 @@ jobs:
       - name: Install dependencies
         if: "${{ matrix.experimental == false }}"
         run: composer install --no-interaction --prefer-dist --no-progress --no-suggest
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Install experimental dependencies, ignore php requirements
         if: "${{ matrix.experimental == true }}"
         run: composer install --no-interaction --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Copy test config.
         run: cp config/config_tests.template.json config/config_tests.json

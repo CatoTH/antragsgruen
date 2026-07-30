@@ -263,7 +263,7 @@ class PDF extends ISectionType
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $page = $pdf->importPdfPage($sourceId, $pageNo);
 
-            $dim  = $pdf->getImportedPageSize($page);
+            $dim = $pdf->getImportedPageSize($page);
             if ($params->pdfExportConcat) {
                 $pdf->AddPage($dim['orientation'], [$dim['width'], $dim['height']], false);
                 $pdf->useImportedPage($page);

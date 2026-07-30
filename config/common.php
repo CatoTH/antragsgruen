@@ -22,8 +22,6 @@ if (ini_get('date.timezone') == '') {
 ini_set('tidy.clean_output', false);
 ini_set('default_charset', 'UTF-8');
 
-
-
 if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
     $domp         = trim($params->domainPlain, '/');
     $urls         = [
