@@ -11,7 +11,7 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . 'defines.php');
 
 if (!defined('K_PATH_FONTS')) {
     // Needs to be set before the TCPDF classes are loaded, as its autoconfig would resolve a non-existing path
-    define('K_PATH_FONTS', dirname(__DIR__) . '/vendor/tecnickcom/tc-lib-pdf-font/target/fonts/');
+    define('K_PATH_FONTS', dirname(__DIR__) . '/assets/tc-lib-pdf-fonts/');
 }
 
 if (ini_get('date.timezone') == '') {

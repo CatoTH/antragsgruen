@@ -116,12 +116,6 @@
     }
   },
   "scripts": {
-    "tc-lib-pdf-fonts": [
-      "[ -d vendor/tecnickcom/tc-lib-pdf-font ] && make -C vendor/tecnickcom/tc-lib-pdf-font deps fonts || true"
-    ],
-    "post-install-cmd": [
-      "@tc-lib-pdf-fonts"
-    ]
   },
   "repositories": [
     {

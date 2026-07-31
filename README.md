@@ -517,6 +517,13 @@ gulp
 * `gulp dist-install`
 * Copy relevant files, redo changes in `viewer.html` and `viewer.css` (look for "Antragsgrün" in the comments)
 
+### Updating tc-lib-pdf fonts
+
+```shell
+make -C vendor/tecnickcom/tc-lib-pdf-font deps fonts
+cp -a vendor/tecnickcom/tc-lib-pdf-font/target/fonts assets/tc-lib-pdf-fonts
+```
+
 ### Accessibility
 
 The goal is to comply with both WCAG 2.0 AA and BITV2.0.
