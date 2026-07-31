@@ -10,8 +10,7 @@ $layout = $controller->layoutParams;
 
 $layout->addJsTranslation('speech');
 
-$loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
-
+$loginUrl      = UrlHelper::createUrl(['/user/login', 'backUrl' => Yii::$app->request->url]);
 $pollUrl       = UrlHelper::createUrl(['/rest/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
 $registerUrl   = UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']);
 $unregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']);

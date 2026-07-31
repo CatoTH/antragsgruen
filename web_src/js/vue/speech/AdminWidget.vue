@@ -407,12 +407,12 @@ export default {
     settingsChanged: function () {
       const widget = this;
       postJson(this.setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
-        is_active: (this.queue.is_active ? 1 : 0),
-        is_open: (this.queue.settings.is_open ? 1 : 0),
-        is_open_poo: (this.queue.settings.is_open_poo ? 1 : 0),
-        prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
-        allow_custom_names: (this.queue.settings.allow_custom_names ? 1 : 0),
-        show_names: (this.queue.settings.show_names ? 1 : 0),
+        is_active: this.queue.is_active,
+        is_open: this.queue.settings.is_open,
+        is_open_poo: this.queue.settings.is_open_poo,
+        prefer_nonspeaker: this.queue.settings.prefer_nonspeaker,
+        allow_custom_names: this.queue.settings.allow_custom_names,
+        show_names: this.queue.settings.show_names,
         speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : null),
       }).then(function (data) {
         widget.queue = data['queue'];
@@ -420,7 +420,8 @@ export default {
         widget.changedSettings.speakingTime = null;
         widget.changedSettings.hasSpeakingTime = null;
 
-        if (data['sidebar'] && data['sidebar'][0] !== '') {
+        const isManagePage = document.querySelector("body").classList.contains("manageSpeechPage");
+        if (isManagePage && data['sidebar'] && data['sidebar'][0] !== '') {
           document.getElementById('sidebar').childNodes.item(0).innerHTML = data['sidebar'][0];
           // @TODO Secondary sidebar
         }
