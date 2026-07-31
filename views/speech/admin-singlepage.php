@@ -14,6 +14,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
+$layout->bodyCssClasses[] = 'manageSpeechPage';
 if ($queue->motion) {
     $layout->addBreadcrumb($queue->motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($queue->motion));
 } elseif ($queue->agendaItem) {
@@ -46,13 +47,13 @@ if ($queue->motion) {
     $this->title = Yii::t('speech', 'admin_title_plain');
 }
 
-$componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpeechLists';
-$setStatusUrl      = UrlHelper::createUrl(['/rest/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
-$itemPerformOpUrl  = UrlHelper::createUrl(['/rest/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
-$createItemUrl     = UrlHelper::createUrl(['/rest/speech/admin-create-item', 'queueId' => 'QUEUEID']);
-$resetQueueUrl     = UrlHelper::createUrl(['/rest/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
-$randomizeQueueUrl = UrlHelper::createUrl(['/rest/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
-$pollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
+$componentAdminLink = UrlHelper::createUrl('/admin/index/appearance') . '#hasSpeechLists';
+$setStatusUrl       = UrlHelper::createUrl(['/rest/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
+$itemPerformOpUrl   = UrlHelper::createUrl(['/rest/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
+$createItemUrl      = UrlHelper::createUrl(['/rest/speech/admin-create-item', 'queueId' => 'QUEUEID']);
+$resetQueueUrl      = UrlHelper::createUrl(['/rest/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
+$randomizeQueueUrl  = UrlHelper::createUrl(['/rest/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
+$pollUrl            = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
