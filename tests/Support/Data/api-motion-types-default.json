@@ -13,7 +13,9 @@
         "has_proposed_procedure": true,
         "has_responsibilities": false,
         "allow_amendments_to_amendments": false,
-        "merging_deadlines": []
+        "merging_deadlines": [],
+        "screening_amendments": false,
+        "screening_motions": false
       },
       "policies": {
         "motions": {

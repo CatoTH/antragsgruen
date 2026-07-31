@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\controllers\{MotionController, PagesController, SpeechController, UserController, VotingController};
+use app\controllers\{MotionController, PagesController, SpeechController, rest\RestBase, UserController, VotingController};
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
 use Endroid\QrCode\Label\Font\FontInterface;
@@ -329,6 +329,10 @@ class SecondFactorAuthentication
     {
         if (isset(self::IMPLICITLY_CALLED_URLS[$controller]) && in_array($actionId, self::IMPLICITLY_CALLED_URLS[$controller])) {
             // Could be an implicit load of custom CSS or a logo
+            return;
+        }
+        if (is_subclass_of($controller, RestBase::class)) {
+            // Prevent session generation
             return;
         }
         if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_FORCE_2FA_REGISTRATION) {

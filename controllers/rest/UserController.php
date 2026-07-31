@@ -37,7 +37,7 @@ class UserController extends RestBase
             return new RestApiExceptionResponse(400, 'Invalid JSON body: ' . $e->getMessage());
         }
 
-        $form = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
+        $form = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator(), skipSessions: true);
         $form->username = $dto->username;
         $form->password = $dto->password;
 

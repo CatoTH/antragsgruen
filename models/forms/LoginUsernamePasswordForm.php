@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\forms;
 
 use app\components\{Captcha, ExternalPasswordAuthenticatorInterface, UrlHelper};
-use app\controllers\{PagesController, UserController};
+use app\controllers\{PagesController, rest\RestBase, UserController};
 use app\models\db\{EMailLog, FailedLoginAttempt, Site, User};
 use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUser, MailNotSent};
 use app\models\settings\{AntragsgruenApp, Site as SiteSettings};
@@ -34,7 +34,8 @@ class LoginUsernamePasswordForm extends Model
 
     public function __construct(
         private readonly Session $session,
-        private readonly ?ExternalPasswordAuthenticatorInterface $externalAuthenticator
+        private readonly ?ExternalPasswordAuthenticatorInterface $externalAuthenticator,
+        private readonly bool $skipSessions = false,
     ) {
         parent::__construct();
     }
@@ -167,7 +168,7 @@ class LoginUsernamePasswordForm extends Model
         }
 
         if ($user->save()) {
-            FailedLoginAttempt::logAttempt($this->username);
+            FailedLoginAttempt::logAttempt($this->username, $this->skipSessions);
 
             if ($params->confirmEmailAddresses) {
                 $user->refresh();
@@ -251,7 +252,7 @@ class LoginUsernamePasswordForm extends Model
 
         if (count($candidates) === 0) {
             password_verify((string)$this->password, self::DUMMY_PASSWORD_HASH);
-            FailedLoginAttempt::logAttempt($this->username);
+            FailedLoginAttempt::logAttempt($this->username, $this->skipSessions);
             $this->error = \Yii::t('user', 'login_err_username');
             throw new LoginInvalidUser($this->error);
         }
@@ -261,7 +262,7 @@ class LoginUsernamePasswordForm extends Model
             }
         }
 
-        FailedLoginAttempt::logAttempt($this->username);
+        FailedLoginAttempt::logAttempt($this->username, $this->skipSessions);
         $this->error = \Yii::t('user', 'login_err_password');
         throw new LoginInvalidPassword($this->error);
     }
@@ -271,8 +272,12 @@ class LoginUsernamePasswordForm extends Model
      */
     public function getOrCreateUser(?Site $site): User
     {
-        if (Captcha::needsCaptcha($this->username) && !Captcha::checkEnteredCaptcha($this->captcha)) {
-            throw new Login($this->captcha ? \Yii::t('user', 'login_err_captcha') : \Yii::t('user', 'login_err_nocaptcha'));
+        if (Captcha::needsCaptcha($this->username, $this->skipSessions)) {
+            if ($this->skipSessions) {
+                throw new Login('CAPTCHA required but not supported through API');
+            } elseif (!Captcha::checkEnteredCaptcha($this->captcha)) {
+                throw new Login($this->captcha ? \Yii::t('user', 'login_err_captcha') : \Yii::t('user', 'login_err_nocaptcha'));
+            }
         }
 
         if ($this->createAccount) {
@@ -284,6 +289,9 @@ class LoginUsernamePasswordForm extends Model
 
     public function setLoggedInAwaitingEmailConfirmation(User $user): void
     {
+        if ($this->skipSessions) {
+            throw new Internal('Sessions not supported in this mode');
+        }
         $this->session->set(self::SESSION_KEY_EMAIL_CONFIRMATION, [
             'time' => time(),
             'user_id' => $user->id,
@@ -292,6 +300,9 @@ class LoginUsernamePasswordForm extends Model
 
     public function hasOngoingEmailConfirmationSession(User $user): bool
     {
+        if ($this->skipSessions) {
+            throw new Internal('Sessions not supported in this mode');
+        }
         $data = $this->session->get(self::SESSION_KEY_EMAIL_CONFIRMATION);
         if (!$data) {
             return false;
@@ -301,6 +312,9 @@ class LoginUsernamePasswordForm extends Model
 
     public function getOngoingEmailConfirmationSessionUser(): ?User
     {
+        if ($this->skipSessions) {
+            throw new Internal('Sessions not supported in this mode');
+        }
         $data = $this->session->get(self::SESSION_KEY_EMAIL_CONFIRMATION);
         if (!$data) {
             return null;
@@ -310,6 +324,9 @@ class LoginUsernamePasswordForm extends Model
 
     public function setLoggedInAwaitingPasswordChange(User $user): void
     {
+        if ($this->skipSessions) {
+            throw new Internal('Sessions not supported in this mode');
+        }
         $this->session->set(self::SESSION_KEY_PWD_CHANGE, [
             'time' => time(),
             'user_id' => $user->id,
@@ -329,6 +346,10 @@ class LoginUsernamePasswordForm extends Model
     {
         if ($controller === PagesController::class && in_array($actionId, [PagesController::VIEW_ID_FILES, PagesController::VIEW_ID_CSS])) {
             // Could be an implicit load of custom CSS or a logo
+            return;
+        }
+        if ($this->skipSessions) {
+            // Prevent session generation
             return;
         }
         if ($controller !== UserController::class || $actionId !== UserController::VIEW_ID_LOGIN_FORCE_PWD_CHANGE) {

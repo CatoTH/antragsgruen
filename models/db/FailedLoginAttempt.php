@@ -40,7 +40,7 @@ class FailedLoginAttempt extends ActiveRecord
         return trim(mb_strtolower($username));
     }
 
-    public static function logAttempt(string $username): void
+    public static function logAttempt(string $username, bool $skipSession = false): void
     {
         $normalizedUsername = self::normalizeUsername($username);
         $attempt = new FailedLoginAttempt();
@@ -49,7 +49,9 @@ class FailedLoginAttempt extends ActiveRecord
         $attempt->dateAttempt = new Expression('NOW()');
         $attempt->save();
 
-        RequestContext::getSession()->set('loginLastFailedAttemptUsername', $normalizedUsername);
+        if (!$skipSession) {
+            RequestContext::getSession()->set('loginLastFailedAttemptUsername', $normalizedUsername);
+        }
     }
 
     private static function needsLoginThrottlingByIp(): bool
@@ -87,14 +89,16 @@ class FailedLoginAttempt extends ActiveRecord
      * - Problem: when changing the username, one could run into a situation where the login form doesn't know that the
      *   username is actually blocked. With the current implementation, this leads to a failed attempt due to incorrect captcha
      */
-    public static function needsLoginThrottling(?string $username): bool
+    public static function needsLoginThrottling(?string $username, bool $skipSession): bool
     {
-        if ($username === null) {
-            // Coming from the login form, not the actual login
-            $username = RequestContext::getSession()->get('loginLastFailedAttemptUsername');
-        } else {
-            // Edge case: someone logs in successfully (which leads to the session being reset), logs out and tries to login again
-            RequestContext::getSession()->set('loginLastFailedAttemptUsername', $username);
+        if (!$skipSession) {
+            if ($username === null) {
+                // Coming from the login form, not the actual login
+                $username = RequestContext::getSession()->get('loginLastFailedAttemptUsername');
+            } else {
+                // Edge case: someone logs in successfully (which leads to the session being reset), logs out and tries to login again
+                RequestContext::getSession()->set('loginLastFailedAttemptUsername', $username);
+            }
         }
         if (self::needsLoginThrottlingByIp()) {
             return true;

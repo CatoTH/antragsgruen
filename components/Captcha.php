@@ -10,12 +10,12 @@ use SimpleCaptcha\Builder as CaptchaBuilder;
 
 class Captcha
 {
-    public static function needsCaptcha(?string $username): bool
+    public static function needsCaptcha(?string $username, bool $skipSession = false): bool
     {
         return match (AntragsgruenApp::getInstance()->captcha['mode']) {
             AntragsgruenApp::CAPTCHA_MODE_ALWAYS => true,
             AntragsgruenApp::CAPTCHA_MODE_NEVER => false,
-            default => FailedLoginAttempt::needsLoginThrottling($username),
+            default => FailedLoginAttempt::needsLoginThrottling($username, $skipSession),
         };
     }
 
