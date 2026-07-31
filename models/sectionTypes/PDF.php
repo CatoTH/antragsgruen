@@ -253,12 +253,22 @@ class PDF extends ISectionType
         }
 
         $lastprint = null;
-        $pdim      = $pdf->getPageDimensions();
-        $printArea = [
-            'w' => $pdim['wk'] - ($pdim['lm'] + $pdim['rm']),
-            'h' => $pdim['hk'] - ($pdim['tm'] + $pdim['bm']),
-        ];
-        $pdf->setX($pdim['lm']);
+
+        $pdim      = null;
+        $printArea = null;
+
+        if (!$params->pdfExportConcat) {
+            if ($pdf->getPage() === 0) {
+                $pdf->AddPage();
+            }
+
+            $pdim      = $pdf->getPageDimensions();
+            $printArea = [
+                'w' => $pdim['wk'] - ($pdim['lm'] + $pdim['rm']),
+                'h' => $pdim['hk'] - ($pdim['tm'] + $pdim['bm']),
+            ];
+            $pdf->setX($pdim['lm']);
+        }
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $page = $pdf->importPdfPage($sourceId, $pageNo);
