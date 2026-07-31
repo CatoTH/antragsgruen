@@ -8,8 +8,7 @@ use app\models\db\{Consultation, ConsultationSettingsMotionSection, MotionSectio
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
-use setasign\Fpdi\PdfParser\StreamReader;
+use Com\Tecnick\Pdf\Import\ImportException;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 
@@ -241,8 +240,9 @@ class PDF extends ISectionType
         $data = $this->section->getData();
 
         try {
-            $pageCount = $pdf->setSourceFile(StreamReader::createByString($data));
-        } catch (CrossReferenceException $e) {
+            $sourceId  = $pdf->importPdfSource($data);
+            $pageCount = $pdf->getImportedPageCount($sourceId);
+        } catch (ImportException $e) {
             $pdf->AddPage();
             $pdf->writeHTML('<p style="font-size: 12px; color: red;"><br>The embedded PDF can not be rendered:</p>');
             /** @noinspection CssNoGenericFontName */
@@ -253,21 +253,30 @@ class PDF extends ISectionType
         }
 
         $lastprint = null;
-        $pdim      = $pdf->getPageDimensions();
-        $printArea = [
-            'w' => $pdim['wk'] - ($pdim['lm'] + $pdim['rm']),
-            'h' => $pdim['hk'] - ($pdim['tm'] + $pdim['bm']),
-        ];
-        $pdf->setX($pdim['lm']);
+
+        $pdim      = null;
+        $printArea = null;
+
+        if (!$params->pdfExportConcat) {
+            if ($pdf->getPage() === 0) {
+                $pdf->AddPage();
+            }
+
+            $pdim      = $pdf->getPageDimensions();
+            $printArea = [
+                'w' => $pdim['wk'] - ($pdim['lm'] + $pdim['rm']),
+                'h' => $pdim['hk'] - ($pdim['tm'] + $pdim['bm']),
+            ];
+            $pdf->setX($pdim['lm']);
+        }
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-            $page = $pdf->ImportPage($pageNo);
+            $page = $pdf->importPdfPage($sourceId, $pageNo);
 
-            /** @var array{width: float, height: float, orientation: string} $dim */
-            $dim  = $pdf->getTemplatesize($page);
+            $dim = $pdf->getImportedPageSize($page);
             if ($params->pdfExportConcat) {
-                $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
-                $pdf->useTemplate($page);
+                $pdf->AddPage($dim['orientation'], [$dim['width'], $dim['height']], false);
+                $pdf->useImportedPage($page);
             } else {
                 $scale = min([
                     1,
@@ -293,7 +302,7 @@ class PDF extends ISectionType
                     $pdf->AddPage();
                     $print['y'] = $pdim['tm'];
                 }
-                $pdf->useTemplate($page, $print['x'], $print['y'], $print['w'], $print['h']);
+                $pdf->useImportedPage($page, $print['x'], $print['y'], $print['w'], $print['h']);
 
                 if (is_numeric($params->pdfExportIntegFrame)) {
                     $border = ['all' => ['width' => $params->pdfExportIntegFrame, 'color' => [0, 0, 0], 'dash' => 0]];

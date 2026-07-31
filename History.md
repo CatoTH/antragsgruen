@@ -9,6 +9,7 @@
    - Supporting motions and amendments and withdrawing support.
    - Screening motions and amendments as admin.
 - Motion screening can now be configured on a per-motion-type basis.
+- More uploaded PDFs can be handled without having to install additional software or libraries.
 
 ### Version 4.17.2 [not released yet]
 

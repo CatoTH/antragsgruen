@@ -16,7 +16,7 @@ use app\models\sectionTypes\{ISectionType, TextSimple};
 use app\models\settings\{AntragsgruenApp, Consultation, PrivilegeQueryContext, Privileges, VotingData};
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\{IHtmlToPdfLayout, IPDFLayout, IPdfWriter};
-use setasign\Fpdi\PdfParser\PdfParserException;
+use Com\Tecnick\Pdf\Import\ImportException;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -851,7 +851,7 @@ class LayoutHelper
                     Tools::appendPdfToPdf($pdf, $pdfData);
                     try {
                         Tools::appendPdfToPdf($pdf, $section->getData());
-                    } catch (PdfParserException $e) {
+                    } catch (ImportException $e) {
                         $pdf->AddPage();
                         $pdf->writeHTML('<font color="red">' . \Yii::t('export', 'pdf_err_parsing') . '</font>');
                     }

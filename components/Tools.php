@@ -8,8 +8,7 @@ use app\models\db\Consultation;
 use app\models\settings\Consultation as ConsultationSettings;
 use app\models\exceptions\Internal;
 use app\views\pdfLayouts\IPdfWriter;
-use setasign\Fpdi\FpdiException;
-use setasign\Fpdi\PdfParser\StreamReader;
+use Com\Tecnick\Pdf\Import\ImportException;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
@@ -487,27 +486,24 @@ class Tools
     }
 
     /**
-     * @throws FpdiException
+     * @throws ImportException
      */
     public static function appendPdfToPdf(IPdfWriter $pdf, string $toAppendData, ?string $bookmarkId = null, ?string $bookmarkName = null): void
     {
-        $pageCount = $pdf->setSourceFile(StreamReader::createByString($toAppendData));
+        $sourceId  = $pdf->importPdfSource($toAppendData);
+        $pageCount = $pdf->getImportedPageCount($sourceId);
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-            $page = $pdf->ImportPage($pageNo);
-            $dim  = $pdf->getTemplatesize($page);
-            if (is_array($dim)) {
-                $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
-            } else {
-                $pdf->AddPage();
-            }
+            $page = $pdf->importPdfPage($sourceId, $pageNo);
+            $dim  = $pdf->getImportedPageSize($page);
+            $pdf->AddPage($dim['orientation'], [$dim['width'], $dim['height']], false);
 
             if ($pageNo === 1 && $bookmarkId !== null) {
                 $pdf->setDestination($bookmarkId, 0, '');
                 $pdf->Bookmark($bookmarkName, 0, 0, '', '', [128,0,0], -1, '#' . $bookmarkId);
             }
 
-            $pdf->useTemplate($page);
+            $pdf->useImportedPage($page);
         }
     }
 }

@@ -3,7 +3,6 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\{Amendment, Motion};
-use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class BDK extends IPDFLayout
