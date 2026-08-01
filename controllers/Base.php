@@ -44,7 +44,7 @@ class Base extends Controller
         $this->layoutParams = new Layout();
     }
 
-    protected function beforeActionAuthorizationHandling($action): void
+    protected function beforeActionAuthorizationHandling(\yii\base\Action $action): void
     {
         $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
         $usernamePasswordForm->onPageView(get_class($this), $action->id);

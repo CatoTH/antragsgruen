@@ -14,7 +14,7 @@ class RestBase extends Base
 {
     public $enableCsrfValidation = false;
 
-    protected function beforeActionAuthorizationHandling($action): void
+    protected function beforeActionAuthorizationHandling(\yii\base\Action $action): void
     {
         $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator(), skipSessions: true);
         $usernamePasswordForm->onPageView(get_class($this), $action->id);
