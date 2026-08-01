@@ -25,7 +25,7 @@ class AmendmentController extends AdminBase
 
     public function actionOdslist(bool $textCombined = false, bool $inactive = false, bool $replaced = false): BinaryFileResponse
     {
-        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), true);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
@@ -39,7 +39,7 @@ class AmendmentController extends AdminBase
 
     public function actionXlsxList(bool $textCombined = false, bool $inactive = false, bool $replaced = false): BinaryFileResponse
     {
-        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), true);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
@@ -53,7 +53,7 @@ class AmendmentController extends AdminBase
 
     public function actionOdslistShort(bool $textCombined = false, bool $inactive = false, bool $replaced = false, int $maxLen = 2000): BinaryFileResponse
     {
-        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), true);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
@@ -67,7 +67,7 @@ class AmendmentController extends AdminBase
 
     public function actionPdflist(bool $inactive = false, bool $replaced = false): HtmlResponse
     {
-        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), true);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
@@ -78,7 +78,7 @@ class AmendmentController extends AdminBase
 
     public function actionPdfziplist(bool $inactive = false, bool $replaced = false): ResponseInterface
     {
-        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), true);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 
@@ -109,7 +109,7 @@ class AmendmentController extends AdminBase
 
     public function actionOdtziplist(bool $inactive = false, bool $replaced = false): ResponseInterface
     {
-        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'));
+        $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), true);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
 

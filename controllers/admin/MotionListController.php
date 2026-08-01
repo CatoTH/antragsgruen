@@ -207,7 +207,8 @@ class MotionListController extends AdminBase
         return AdminMotionFilterForm::getForConsultationFromRequest(
             $this->consultation,
             $motions,
-            $this->getRequestValue('Search')
+            $this->getRequestValue('Search'),
+            true,
         );
     }
 

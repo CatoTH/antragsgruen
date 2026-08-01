@@ -57,17 +57,23 @@ class AdminMotionFilterForm
     /**
      * @param Motion[] $motions
      */
-    public static function getForConsultationFromRequest(Consultation $consultation, array $motions, ?array $searchParams): AdminMotionFilterForm
+    public static function getForConsultationFromRequest(Consultation $consultation, array $motions, ?array $searchParams, bool $useSession): AdminMotionFilterForm
     {
         $motionListClass = AdminMotionFilterForm::getClassToUse();
         $privilegeScreening = User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::anyRestriction());
 
         $search = new $motionListClass($consultation, $motions, $privilegeScreening);
-        if ($searchParams) {
-            RequestContext::getSession()->set('motionListSearch' . $consultation->id, $searchParams);
-            $search->setAttributes($searchParams);
-        } elseif (RequestContext::getSession()->get('motionListSearch' . $consultation->id)) {
-            $search->setAttributes(RequestContext::getSession()->get('motionListSearch' . $consultation->id));
+        if ($useSession) {
+            if ($searchParams) {
+                RequestContext::getSession()->set('motionListSearch' . $consultation->id, $searchParams);
+                $search->setAttributes($searchParams);
+            } elseif (RequestContext::getSession()->get('motionListSearch' . $consultation->id)) {
+                $search->setAttributes(RequestContext::getSession()->get('motionListSearch' . $consultation->id));
+            }
+        } else {
+            if ($searchParams) {
+                $search->setAttributes($searchParams);
+            }
         }
 
         return $search;
