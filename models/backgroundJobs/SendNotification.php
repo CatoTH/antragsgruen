@@ -6,6 +6,7 @@ namespace app\models\backgroundJobs;
 
 use app\components\mail\Base;
 use app\components\RequestContext;
+use app\controllers\rest\RestBase;
 use app\models\db\{Consultation, EMailLog};
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
@@ -106,7 +107,7 @@ class SendNotification extends IBackgroundJob
             throw new MailNotSent($isCritical, $exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        if (YII_ENV === 'test') {
+        if (YII_ENV === 'test' && !is_subclass_of(\Yii::$app->controller, RestBase::class)) {
             $pre = RequestContext::getSession()->getFlash('email', '');
             RequestContext::getSession()->setFlash('email', $pre . 'E-Mail sent to: ' . $this->toEmail . " (Type $this->mailType)\n");
         }

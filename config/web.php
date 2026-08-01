@@ -111,13 +111,9 @@ $config = yii\helpers\ArrayHelper::merge(
     ]
 );
 if ($params->cookieDomain) {
-    $config['components']['session'] = [
-        'cookieParams' => array_merge($cookieSettings, ['domain' => $params->cookieDomain]),
-    ];
+    $config['components']['session']['cookieParams'] = array_merge($cookieSettings, ['domain' => $params->cookieDomain]);
 } elseif ($params->domainPlain) {
-    $config['components']['session'] = [
-        'cookieParams' => array_merge($cookieSettings, ['domain' => '.' . parse_url($params->domainPlain, PHP_URL_HOST)]),
-    ];
+    $config['components']['session']['cookieParams'] = array_merge($cookieSettings, ['domain' => '.' . parse_url($params->domainPlain, PHP_URL_HOST)]);
 }
 
 if (YII_ENV_DEV && !str_contains($_SERVER['HTTP_USER_AGENT'], 'pa11y')) {

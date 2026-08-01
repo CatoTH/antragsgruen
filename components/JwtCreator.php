@@ -42,11 +42,11 @@ class JwtCreator
             $privateKey = self::retrieveKey($params->jwtPrivateKey);
             $algorithm = 'RS256';
         } else {
+            $algorithm = 'HS256';
             if ($signingUser) {
                 $privateKey = $signingUser->getJwtSigningKey();
-                $algorithm = 'HS256';
             } else {
-                throw new ConfigurationError('Cannot sign JWT for unauthenticated user');
+                $privateKey = self::USER_PREFIX_ANONYMOUS . AntragsgruenApp::getInstance()->randomSeed;
             }
         }
 

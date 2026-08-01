@@ -44,6 +44,15 @@ class Base extends Controller
         $this->layoutParams = new Layout();
     }
 
+    protected function beforeActionAuthorizationHandling(\yii\base\Action $action): void
+    {
+        $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
+        $usernamePasswordForm->onPageView(get_class($this), $action->id);
+
+        $tfa = new SecondFactorAuthentication(RequestContext::getSession());
+        $tfa->onPageView(get_class($this), $action->id);
+    }
+
     /**
      * @throws Internal
      * @throws \Exception
@@ -58,11 +67,7 @@ class Base extends Controller
         $response->headers->add('X-Content-Type-Options', 'nosniff');
         $response->headers->add('X-Frame-Options', 'sameorigin');
 
-        $usernamePasswordForm = new LoginUsernamePasswordForm(RequestContext::getSession(), User::getExternalAuthenticator());
-        $usernamePasswordForm->onPageView(get_class($this), $action->id);
-
-        $tfa = new SecondFactorAuthentication(RequestContext::getSession());
-        $tfa->onPageView(get_class($this), $action->id);
+        $this->beforeActionAuthorizationHandling($action);
 
         if (!parent::beforeAction($action)) {
             return false;
