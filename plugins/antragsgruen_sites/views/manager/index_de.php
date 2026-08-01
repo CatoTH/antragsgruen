@@ -105,7 +105,7 @@ $controller->layoutParams->addInlineCss('
         </ul>
 
         <p>
-            <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>" style="font-weight: bold;">
+            <a href="<?= Html::encode(UrlHelper::createUrl('/antragsgruen_sites/manager/help')) ?>" style="font-weight: bold;">
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 Zur ausführlichen Funktionsbeschreibung und Hilfe
             </a><br><br>
@@ -242,13 +242,13 @@ $controller->layoutParams->addInlineCss('
 <div class="content infoSite">';
 
     if (User::getCurrentUser()) {
-        $url = Html::encode(UrlHelper::createUrl('manager/createsite'));
+        $url = Html::encode(UrlHelper::createUrl('/antragsgruen_sites/manager/createsite'));
         echo '<form method="GET" action="' . $url . '" class="siteCreateForm">
         <button type="submit" class="btn btn-success">
         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Seite anlegen</button></form>';
     } else {
         echo Html::beginForm(
-            \app\plugins\gruene_de_saml\SamlLogin::createGruenesNetzLoginUrl('/manager/createsite'),
+            \app\plugins\gruene_de_saml\SamlLogin::createGruenesNetzLoginUrl('/antragsgruen_sites/manager/createsite'),
             'post',
             [
                 'class' => 'form-inline login_saml',
