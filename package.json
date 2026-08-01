@@ -40,7 +40,7 @@
         "gulp-terser": "^2.1.0",
         "gulp-uglify": "^3.0.2",
         "pa11y": "^9.1.1",
-        "postcss": "^8.5.23",
+        "postcss": "^8.5.24",
         "sass": "^1.102.0"
     },
     "directories": {
