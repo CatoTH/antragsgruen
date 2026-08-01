@@ -173,7 +173,8 @@ trait MotionExportTraits
         $search = AdminMotionFilterForm::getForConsultationFromRequest(
             $this->consultation,
             $this->consultation->motions,
-            $this->getRequestValue('Search')
+            $this->getRequestValue('Search'),
+            false,
         );
 
         $imotions = $search->getMotionsForExport($this->consultation, $motionTypeId, $inactive);
