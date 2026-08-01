@@ -42,7 +42,7 @@ class LiveTools
             'routing_key' => $routingKey,
             'payload' => $data,
             'payload_encoding' => 'string',
-        ], JSON_FORCE_OBJECT);
+        ], JSON_FORCE_OBJECT | JSON_THROW_ON_ERROR);
 
         try {
             $response = $client->request('POST', '/api/exchanges/%2f/' . urlencode($params['rabbitMqExchangeName']) . '/publish', [
