@@ -494,7 +494,11 @@ class AdminMotionFilterForm
             return true;
         }
 
-        return ($amendment->getMyMotion()->agendaItemId === $this->agendaItem);
+        if ($amendment->agendaItemId) {
+            return $amendment->agendaItemId === $this->agendaItem;
+        } else {
+            return ($amendment->getMyMotion()->agendaItemId === $this->agendaItem);
+        }
     }
 
     private function amendmentMatchesVersion(Amendment $amendment): bool
