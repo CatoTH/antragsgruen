@@ -212,7 +212,7 @@ export default {
       };
   },
   beforeMount() {
-      this.startPolling(false);
+      //this.startPolling(false);
   },
   beforeUnmount() {
       this.stopPolling();
