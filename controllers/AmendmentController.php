@@ -578,6 +578,7 @@ class AmendmentController extends Base
             $amendment->flushCacheItems(['procedure']);
 
             $this->consultation->refresh();
+            $amendment->refresh();
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
                 'proposal'  => $proposal,
