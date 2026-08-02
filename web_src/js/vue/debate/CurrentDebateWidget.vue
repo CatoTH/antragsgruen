@@ -14,6 +14,20 @@
                         <template v-t="['debate', 'fulltext']"></template>
                     </a>
                 </div>
+
+                <div v-if="current.target_type === 'amendment'" class="alert alert-info"
+                     v-t="['debate', 'admin_speech_no_amendment']"></div>
+                <template v-else>
+                  <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
+                  <div v-if="speechLoading && !speechQueue" class="speechLoading"
+                       v-t="['debate', 'admin_speech_loading']"></div>
+                  <speech-user-inline-widget v-if="speechQueue" :key="speechQueue.id"
+                                             :init-queue="speechQueue"
+                                             :csrf="csrf"
+                                             :user="speechUser"
+                                             :title="'title'"
+                  ></speech-user-inline-widget>
+                </template>
             </div>
         </div>
         <footer class="content secondaryMotionRow">
@@ -37,7 +51,7 @@
 </template>
 
 <script>
-import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
+import {authorizedFetch, getJson, postJson} from "/js/modules/shared/ApiClient.js";
 import Translate from "/js/vue/Translate.vue.js";
 
 const POLLING_INTERVAL = 3000;
@@ -47,6 +61,10 @@ export default {
     props: {
         initState: {
             type: Object,
+            required: true,
+        },
+        csrf: {
+            type: String,
             required: true,
         },
         pollUrl: {
@@ -61,6 +79,14 @@ export default {
             type: String,
             required: true,
         },
+        speechPollUrl: {
+            type: String,
+            required: true,
+        },
+        speechUser: {
+            type: Object,
+            required: true,
+        },
         currentUser: {
             type: Object,
             default: null,
@@ -73,11 +99,17 @@ export default {
             motionTypes: null,
             raiseFormMotionType: null,
             raiseFormHolder: null,
+            speechQueue: null,
+            speechLoading: false,
+            speechError: null,
         };
     },
     computed: {
         current() {
             return this.state ? this.state.current : null;
+        },
+        currentDebateId() {
+          return this.current ? this.current.id : null;
         },
         creatableMotionTypes() {
             return (this.motionTypes || []).filter(
@@ -85,7 +117,43 @@ export default {
             );
         },
     },
+    watch: {
+        currentDebateId() {
+            // A different item is being debated now: drop the old queue so the tab reloads the right one.
+            this.speechQueue = null;
+            this.speechError = null;
+            this.maybeLoadSpeechQueue();
+        },
+    },
     methods: {
+        maybeLoadSpeechQueue() {
+            if (!this.current || this.current.target_type === 'amendment' || !this.current.speech_queue_id) {
+                return;
+            }
+            if (this.speechQueue || this.speechLoading) {
+                return;
+            }
+            this.loadSpeechQueue();
+        },
+        loadSpeechQueue() {
+            this.speechLoading = true;
+            this.speechError = null;
+            getJson(this.speechPollUrl.replace(/QUEUEIDS/, this.current.speech_queue_id))
+                .then(queues => {
+                    queues.forEach(queue => {
+                      if (queue.id === this.current.speech_queue_id) {
+                        this.speechQueue = queue;
+                      }
+                    })
+                })
+                .catch(err => {
+                    console.error('Could not load the speech queue for the debate', err);
+                    this.speechError = Translate.getTranslation('debate', 'admin_speech_err');
+                })
+                .finally(() => {
+                    this.speechLoading = false;
+                });
+        },
         reloadData() {
             fetch(this.pollUrl)
                 .then(response => {
@@ -159,6 +227,7 @@ export default {
     mounted() {
         this.pollingId = window.setInterval(() => this.reloadData(), POLLING_INTERVAL);
         this.loadMotionTypes();
+        this.maybeLoadSpeechQueue();
     },
     beforeUnmount() {
         window.clearInterval(this.pollingId);
