@@ -1,15 +1,14 @@
 <?php
 
-use app\models\AdminTodoItem;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{Amendment, Motion, User};
+use app\models\db\{Amendment, IMotion, Motion, User};
 use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Amendment $entry
- * @var Motion $lastMotion
+ * @var IMotion $lastMainMotion
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
  * @var boolean $colType
@@ -23,6 +22,15 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+$motionType = $entry->getMyMotionType();
+
+$showSubentryIndicator = false;
+if ($lastMainMotion instanceof Motion && $entry->motionId === $lastMainMotion->id) {
+    $showSubentryIndicator = true;
+}
+if ($lastMainMotion instanceof Amendment && $entry->amendingAmendmentId === $lastMainMotion->id) {
+    $showSubentryIndicator = true;
+}
 
 $amendmentStatuses = $consultation->getStatuses()->getStatusNames();
 if (User::haveOneOfPrivileges($consultation, \app\controllers\admin\AmendmentController::REQUIRED_PRIVILEGES, PrivilegeQueryContext::amendment($entry))) {
@@ -37,17 +45,27 @@ if ($colMark) {
     echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
 if ($colType) {
-    echo '<td class="typeCol">' . Yii::t('admin', 'list_amend_short') . '</td>';
+    echo '<td class="typeCol">';
+    if ($motionType->amendmentsOnly && $entry->amendingAmendmentId) {
+        if ($entry->getMyMotionType()->motionPrefix) {
+            echo Html::encode(trim($entry->getMyMotionType()->motionPrefix, ":-. \t\n\r\0\x0B/"));
+        } else {
+            echo Yii::t('admin', 'list_motion_short');
+        }
+    } else {
+        echo Yii::t('admin', 'list_amend_short');
+    }
+    echo '</td>';
 }
 echo '<td class="prefixCol">';
 echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
 echo '<a href="' . Html::encode($viewUrl) . '"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> ';
-if ($lastMotion && $entry->motionId === $lastMotion->id) {
+if ($showSubentryIndicator) {
     echo "&#8627;";
 }
 echo Html::encode($entry->getFormattedTitlePrefix() ?: '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
-if ($lastMotion && $entry->motionId === $lastMotion->id) {
+if ($showSubentryIndicator) {
     echo "&#8627;";
 }
 $title = (trim($entry->getMyMotion()->title) !== '' ? $entry->getMyMotion()->title : '-');
@@ -107,7 +125,7 @@ if ($colTags) {
     echo '<td class="tagsCol">' . implode(', ', $tags) . '</td>';
 }
 echo '<td class="exportCol">';
-if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {
+if ($motionType->texTemplateId || $motionType->pdfLayout !== -1) {
     echo HtmlTools::createExternalLink('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
 }
 echo Html::a('ODT', UrlHelper::createAmendmentUrl($entry, 'odt'), ['class' => 'odt']);

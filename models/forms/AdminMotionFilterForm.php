@@ -389,12 +389,16 @@ class AdminMotionFilterForm
     /**
      * @return Motion[]
      */
-    public function getFilteredMotions(): array
+    private function getFilteredMotions(): array
     {
         /** @var Motion[] $out */
         $out = [];
         foreach ($this->allMotions as $motion) {
             $matches = true;
+
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                $matches = false;
+            }
 
             if ($this->motionTypes !== null && !in_array($motion->motionTypeId, $this->motionTypes)) {
                 $matches = false;
@@ -494,7 +498,11 @@ class AdminMotionFilterForm
             return true;
         }
 
-        return ($amendment->getMyMotion()->agendaItemId === $this->agendaItem);
+        if ($amendment->agendaItemId) {
+            return $amendment->agendaItemId === $this->agendaItem;
+        } else {
+            return ($amendment->getMyMotion()->agendaItemId === $this->agendaItem);
+        }
     }
 
     private function amendmentMatchesVersion(Amendment $amendment): bool
@@ -558,12 +566,17 @@ class AdminMotionFilterForm
         foreach ($this->allAmendments as $amend) {
             $matches = true;
 
-            if (!$this->isFilterSet() && !in_array($amend->motionId, $motionIds)) {
-                // For the unfiltered list, amendments are considered dependent on their motions. If the motion is not visible anymore,
-                // because it's replaced or set to draft status, the amendments are not to be shown.
-                // If it is specifically filtered for a specific attribute, then the visibility of an amendment should not depend on its parent
-                // motion anymore.
-                $matches = false;
+            if (!$this->isFilterSet()) {
+                if (!$amend->getMyMotionType()->amendmentsOnly) {
+                    // Regular case (not statute amendments)
+                    if (!in_array($amend->motionId, $motionIds)) {
+                        // For the unfiltered list, amendments are considered dependent on their motions. If the motion is not visible anymore,
+                        // because it's replaced or set to draft status, the amendments are not to be shown.
+                        // If it is specifically filtered for a specific attribute, then the visibility of an amendment should not depend on its parent
+                        // motion anymore.
+                        $matches = false;
+                    }
+                }
             }
 
             if ($this->motionTypes !== null && !in_array($amend->getMyMotion()->motionTypeId, $this->motionTypes)) {
