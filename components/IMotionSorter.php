@@ -237,12 +237,16 @@ class IMotionSorter
      */
     private static function moveAmendmentsToMotions(array $entries): array
     {
-        $foundMotions = [];
+        $foundMainIMotions = [];
         foreach ($entries as $entry) {
             if (is_a($entry, Motion::class)) {
-                $foundMotions[] = $entry->id;
+                $foundMainIMotions[] = 'motion' . $entry->id;
+            }
+            if (is_a($entry, Amendment::class) && $entry->getMyMotionType()->amendmentsOnly && $entry->amendingAmendmentId === null) {
+                $foundMainIMotions[] = 'amendment' . $entry->id;
             }
         }
+
         /** @var IMotion[] $newArr1 */
         $newArr1 = [];
         /** @var Amendment[] $movingAmendments */
@@ -250,7 +254,7 @@ class IMotionSorter
         foreach ($entries as $entry) {
             if (is_a($entry, Amendment::class)) {
                 /** @var Amendment $entry */
-                if (in_array($entry->motionId, $foundMotions)) {
+                if (in_array('motion' . $entry->motionId, $foundMainIMotions) || in_array('amendment' . $entry->amendingAmendmentId, $foundMainIMotions)) {
                     $movingAmendments[] = $entry;
                 } else {
                     $newArr1[] = $entry;
@@ -259,6 +263,7 @@ class IMotionSorter
                 $newArr1[] = $entry;
             }
         }
+
         /** @var IMotion[] $result */
         $result = [];
         foreach ($newArr1 as $entry) {
@@ -266,6 +271,13 @@ class IMotionSorter
             if (is_a($entry, Motion::class)) {
                 foreach ($movingAmendments as $amendment) {
                     if ($amendment->motionId === $entry->id) {
+                        $result[] = $amendment;
+                    }
+                }
+            }
+            if (is_a($entry, Amendment::class)) {
+                foreach ($movingAmendments as $amendment) {
+                    if ($amendment->amendingAmendmentId === $entry->id) {
                         $result[] = $amendment;
                     }
                 }

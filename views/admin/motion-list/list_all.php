@@ -179,12 +179,12 @@ echo '</tr></thead>';
 
 $motionStatuses    = $consultation->getStatuses()->getStatusNames();
 $amendmentStatuses = $consultation->getStatuses()->getStatusNames();
-/** @var null|Motion $lastMotion */
-$lastMotion = null;
+/** @var null|IMotion $lastMainMotion */
+$lastMainMotion = null;
 
 foreach ($entries as $entry) {
     if (is_a($entry, Motion::class)) {
-        $lastMotion = $entry;
+        $lastMainMotion = $entry;
         echo $this->render('_list_all_item_motion', [
             'entry'          => $entry,
             'search'         => $search,
@@ -198,10 +198,13 @@ foreach ($entries as $entry) {
         ]);
     }
     if (is_a($entry, Amendment::class)) {
+        if ($entry->getMyMotionType()->amendmentsOnly && $entry->amendingAmendmentId === null) {
+            $lastMainMotion = $entry;
+        }
         echo $this->render('_list_all_item_amendment', [
             'entry'          => $entry,
             'search'         => $search,
-            'lastMotion'     => $lastMotion,
+            'lastMainMotion' => $lastMainMotion,
             'colMark'        => $colMark,
             'colType'        => $colType,
             'colTags'        => $colTags,
