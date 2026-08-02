@@ -531,6 +531,7 @@ trait MotionActionsTrait
             }
 
             $this->consultation->refresh();
+            $motion->refresh();
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,
                 'proposal' => $proposal,

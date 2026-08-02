@@ -57,6 +57,7 @@ export class ChangeProposedProcedure {
      */
     constructor(element) {
         this.$widget = $(element);
+        this.$widget.data("initialized", true);
         this.initElements();
         this.initOpener();
         this.initStatusSetter();
@@ -167,15 +168,12 @@ export class ChangeProposedProcedure {
                     window.location.href = ret['redirectToUrl'];
                 } else if (ret['success']) {
                     const $content = $(ret['html']);
-                    this.$widget.children().remove();
-                    this.$widget.append($content.children());
-                    this.$widget.data('proposal-id', $content.data('proposal-id'));
-                    this.reinitAfterReload();
-                    this.$widget.addClass('showSaved').removeClass('isChanged');
+                    this.$widget.replaceWith($content);
+                    $content.addClass('showSaved').removeClass('isChanged');
                     if (ret['proposalStr']) {
                         this.setGlobalProposedStr(ret['proposalStr']);
                     }
-                    window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
+                    window.setTimeout(() => $content.removeClass('showSaved'), 2000);
                 } else if (ret['message']) {
                     alert(ret['message']);
                 } else {
