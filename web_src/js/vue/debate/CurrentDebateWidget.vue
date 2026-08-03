@@ -228,6 +228,19 @@ export default {
         this.pollingId = window.setInterval(() => this.reloadData(), POLLING_INTERVAL);
         this.loadMotionTypes();
         this.maybeLoadSpeechQueue();
+
+        if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
+          // @TODO Proper integration
+          window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'debate', (connectionEvent, debateEvent) => {
+            if (connectionEvent !== null) {
+              //widget.liveConnected = connectionEvent;
+            }
+            console.log(debateEvent);
+            if (debateEvent !== null) {
+              //this.setData([speechEvent]);
+            }
+          });
+        }
     },
     beforeUnmount() {
         window.clearInterval(this.pollingId);
