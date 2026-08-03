@@ -21,6 +21,8 @@ $layout->addJsTranslation('speech');
 $layout->provideJwt = true;
 $layout->loadCKEditor();
 
+$layout->addLiveEventSubscription('user', 'debate');
+
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 

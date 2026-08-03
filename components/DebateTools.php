@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, DebateItem, Motion, SpeechQueue};
+use app\models\api\debate\DebateState;
+use app\models\api\SpeechQueue as SpeechQueueApi;
 
 /**
  * Domain logic of the "Currently debated" module. All changes to the debate state go through this class,
@@ -45,6 +47,8 @@ class DebateTools
             throw $e;
         }
 
+        LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
+
         return $debate;
     }
 
@@ -63,6 +67,8 @@ class DebateTools
                 throw new \RuntimeException('Could not end the debate: ' . print_r($openDebate->getErrors(), true));
             }
         }
+
+        LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
     }
 
     /**
@@ -94,6 +100,8 @@ class DebateTools
             throw new \RuntimeException('Could not attach the speech queue to the debated item: ' . print_r($queue->getErrors(), true));
         }
         $consultation->refresh();
+
+        LiveTools::sendSpeechQueue($consultation, SpeechQueueApi::fromEntity($queue));
 
         return $queue;
     }
