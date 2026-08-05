@@ -122,16 +122,16 @@ services:
     profiles:
       - live
 
-  gulp-watch:
+  vite-watch:
     build:
       context: ./
       dockerfile: docker/pnpm/Dockerfile
     volumes:
       - "./:/var/www/antragsgruen"
     working_dir: /var/www/antragsgruen
-    command: "pnpm dlx gulp watch"
+    command: "pnpm run watch"
     profiles:
-      - gulp-watch
+      - vite-watch
 
   pnpm-helper:
     build:
