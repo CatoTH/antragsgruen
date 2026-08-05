@@ -12,6 +12,7 @@ class Privileges
     public const PRIVILEGE_SPEECH_QUEUES = 8;
     public const PRIVILEGE_VOTINGS = 9;
     public const PRIVILEGE_AGENDA = 15;
+    public const PRIVILEGE_DEBATE_MODERATION = 16;  // Moderating the "Currently debated" widget: selecting the debated item, attached speaking lists / votings
     public const PRIVILEGE_SITE_ADMIN = 6;  // SPECIAL CASE: gives all permissions to all consultations of the site
     public const PRIVILEGE_GLOBAL_USER_ADMIN = 10; // Editing user data, not only groups
 
@@ -83,6 +84,12 @@ class Privileges
             self::PRIVILEGE_VOTINGS => new Privilege(
                 self::PRIVILEGE_VOTINGS,
                 \Yii::t('structure', 'privilege_voting'),
+                false,
+                null
+            ),
+            self::PRIVILEGE_DEBATE_MODERATION => new Privilege(
+                self::PRIVILEGE_DEBATE_MODERATION,
+                \Yii::t('structure', 'privilege_debate'),
                 false,
                 null
             ),

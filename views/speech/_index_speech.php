@@ -26,7 +26,10 @@ $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache()
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('user', 'speech');
 
-$initData = \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
+$initData = \app\components\Tools::getSerializer()->serialize(
+    \app\models\api\speech\SpeechQueueUser::fromEntity($queue, $user, $cookieUser),
+    'json'
+);
 $userData = new SpeechUser($user, $cookieUser);
 
 if ($queue->motionId || $queue->agendaItemId) {
@@ -40,7 +43,7 @@ echo $this->render('@app/views/speech/user-inline-widget.vue.php');
 ?>
 <section class="currentSpeechInline currentSpeechPageWidth"
          aria-label="<?= Html::encode($title) ?>"
-         data-queue="<?= Html::encode(json_encode($initData)) ?>"
+         data-queue="<?= Html::encode($initData) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"
 >

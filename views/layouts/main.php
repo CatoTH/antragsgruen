@@ -102,7 +102,7 @@ if ($layout->provideJwt && $consultation) {
     echo '<meta name="user-jwt-config" content="' . Html::encode(json_encode($jwtConfig)) . '">' . "\n";
 }
 if (count($layout->connectLiveEvents) > 0 && $params->live && $consultation) {
-    $liveConfig = \app\components\LiveTools::getJsConfig($consultation, $layout->connectLiveEvents);
+    $liveConfig = \app\components\LiveTools::getJsConfig($consultation, array_values($layout->connectLiveEvents));
     echo '<meta name="live-config" content="' . Html::encode(json_encode($liveConfig)) . '">' . "\n";
     echo '<script src="' . Html::encode($params->live['stompJsUri']) . '"></script>';
 }

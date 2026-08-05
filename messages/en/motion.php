@@ -201,9 +201,15 @@ return [
     'withdraw_yes'              => 'Yes, withdraw',
     'withdrawn_adminnoti_title' => 'A motion has meen withdrawn',
     'withdrawn_adminnoti_body'  => "The following motion has been withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
-    'field_optional'            => 'optional',
+    'field_optional'            => [
+        'text' => 'optional',
+        'js' => true,
+    ],
     'field_encouraged'          => 'encouraged',
-    'field_required'            => 'required',
+    'field_required'            => [
+        'text' => 'required',
+        'js' => true,
+    ],
     'field_unpublic'            => 'The data entered here is only visible for you and admins of this site, not for regular visitors.',
     'field_encouraged_title'    => 'Missing input',
     'field_encouraged_msg'      => 'The field %FIELD% is not strictly necessary, but encouraged to provide. You can choose to either provide it after all or submit anyway.',
@@ -217,8 +223,14 @@ return [
     'editorial_author'          => 'Author',
     'editorial_update_date'     => 'Set date to now',
     'image_current'             => 'Current image',
-    'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
-    'max_len_alert'             => 'The text is too long!',
+    'max_len_hint'              => [
+        'text' => 'Max. %LEN% characters (currently: %COUNT%)',
+        'js' => true,
+    ],
+    'max_len_alert'             => [
+        'text' => 'The text is too long!',
+        'js' => true,
+    ],
     'create_explanation'        => '<div style="font-weight: bold; text-decoration: underline;">Motion or amendment?</div>
                                    Here you can create a motion with no reference to another motion.
                                    If you want to amend an existing motion instead, please open that motion first and choose "Create amendment" on the sidebar to the right',

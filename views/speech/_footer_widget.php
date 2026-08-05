@@ -25,7 +25,10 @@ $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache()
 $layout->provideJwt = true;
 $layout->addLiveEventSubscription('user', 'speech');
 
-$initData = \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
+$initData = \app\components\Tools::getSerializer()->serialize(
+    \app\models\api\speech\SpeechQueueUser::fromEntity($queue, $user, $cookieUser),
+    'json'
+);
 $userData = new SpeechUser($user, $cookieUser);
 
 if ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
@@ -38,7 +41,7 @@ echo $this->render('@app/views/speech/user-footer-widget.vue.php');
 ?>
 <section class="currentSpeechFooter"
          aria-labelledby="speechListUserTitle"
-         data-queue="<?= Html::encode(json_encode($initData)) ?>"
+         data-queue="<?= Html::encode($initData) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitleShort()) ?>"
          data-admin-url="<?= Html::encode($adminUrl) ?>"

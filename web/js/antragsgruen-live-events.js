@@ -8,7 +8,8 @@ if (!document.head.querySelector("meta[name=user-jwt-config]") || !document.head
     class AntragsgruenLiveEvents {
         listeners = {
             user: {
-                speech: []
+                speech: [],
+                debate: []
             },
             admin: {
                 speech: []
@@ -16,7 +17,8 @@ if (!document.head.querySelector("meta[name=user-jwt-config]") || !document.head
         };
         connected = {
             user: {
-                speech: false
+                speech: false,
+                debate: false
             },
             admin: {
                 speech: false

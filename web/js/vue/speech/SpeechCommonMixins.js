@@ -1,6 +1,7 @@
 // @ts-check
 
 import translate from "/js/vue/Translate.vue.js";
+import { getJson, postJson } from "/js/modules/shared/ApiClient.js";
 
 class SpeechPoller {
     timeOffset = 0;
@@ -18,7 +19,6 @@ class SpeechPoller {
     };
 
     registerListener(queueId, widget, highFrequency) {
-        console.log("register");
         this.listeners.push({
             queueId,
             widget,
@@ -27,7 +27,6 @@ class SpeechPoller {
     };
 
     unregisterListener(widget) {
-        console.log("unregister");
         this.listeners = this.listeners.filter(listener => listener.widget !== widget);
     };
 
@@ -49,12 +48,11 @@ class SpeechPoller {
             return;
         }
 
-        $.get(
-            TEMPLATE_POLL_URL.replace(/QUEUEIDS/, queues.join(",")),
-            this.setData.bind(this)
-        ).catch(function (err) {
-            console.error("Could not load speech queue data from backend", err);
-        });
+        getJson(TEMPLATE_POLL_URL.replace(/QUEUEIDS/, queues.join(",")))
+            .then(this.setData.bind(this))
+            .catch(function (err) {
+                console.error("Could not load speech queue data from backend", err);
+            });
     };
 
     pollReloadData() {
@@ -197,16 +195,15 @@ export function getSpeechCommonMixins() {
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(TEMPLATE_REGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
+                postJson(TEMPLATE_REGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
                     subqueue: subqueue.id,
                     username: this.registerName,
-                    pointOfOrder: (pointOfOrder ? '1' : '0'),
-                    _csrf: this.csrf,
-                }, function (data) {
+                    point_of_order: !!pointOfOrder,
+                }).then(function (data) {
                     widget.queue = data;
                     widget.showApplicationForm = widget.defaultApplicationForm;
                 }).catch(function (err) {
-                    alert(err.responseText);
+                    alert(err.message);
                 });
             },
             onShowApplicationForm: function ($event, subqueue, pointOfOrder) {
@@ -230,13 +227,12 @@ export function getSpeechCommonMixins() {
                 $event.preventDefault();
 
                 const widget = this;
-                $.post(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {
-                    _csrf: this.csrf,
-                }, function (data) {
-                    widget.queue = data;
-                }).catch(function (err) {
-                    alert(err.responseText);
-                });
+                postJson(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {})
+                    .then(function (data) {
+                        widget.queue = data;
+                    }).catch(function (err) {
+                        alert(err.message);
+                    });
             },
             recalcTimeOffset: function (serverTime) {
                 const browserTime = (new Date()).getTime();

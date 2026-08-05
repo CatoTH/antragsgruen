@@ -39,8 +39,12 @@ echo $controller->showErrors();
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
-if ($myself) {
-    echo $this->render('_index_my_motions', ['consultation' => $consultation, 'myself' => $myself]);
+if ($consultation->getSettings()->hasCurrentlyDebated) {
+    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
+        echo $this->render('_index_debate_admin', ['consultation' => $consultation]);
+    }
+    // @TODO Don't show regular user widget for admins
+    echo $this->render('_index_debate', ['consultation' => $consultation]);
 }
 
 if ($consultation->getSettings()->hasSpeechLists) {
@@ -54,6 +58,9 @@ if ($consultation->getSettings()->hasSpeechLists) {
 
 echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
 
+if ($myself) {
+    echo $this->render('_index_my_motions', ['consultation' => $consultation, 'myself' => $myself]);
+}
 
 if ($contentAdmin && in_array($consultation->getSettings()->startLayoutType, [ConsultationSettings::START_LAYOUT_AGENDA_LONG, ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND, ConsultationSettings::START_LAYOUT_AGENDA])) {
     $cache->setSkipCache(true);
