@@ -15,6 +15,7 @@ $I->fillField('#newTitle', 'Test3');
 $I->fillField('#newShort', 'test3');
 $I->fillField('#newPath', 'test3');
 $I->submitForm('.consultationCreateForm', [], 'createConsultation');
+
 $I->logout();
 
 $I->wantTo('See both consultations as user');
