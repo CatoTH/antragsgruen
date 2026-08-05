@@ -112,8 +112,6 @@ class DebateController extends RestBase
      */
     public function actionSpeechQueue(): RestApiResponse
     {
-        // Always enabled: the debate moderation widget is used from the homepage,
-        // independently of whether general API access is enabled for the site
         $this->handleRestHeaders(['POST'], true);
 
         if (!$this->consultation || !$this->consultation->getSettings()->hasCurrentlyDebated) {

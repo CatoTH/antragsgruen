@@ -22,6 +22,7 @@ $layout->provideJwt = true;
 $layout->loadCKEditor();
 
 $layout->addLiveEventSubscription('user', 'debate');
+$layout->addLiveEventSubscription('user', 'speech');
 
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());

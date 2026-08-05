@@ -16,6 +16,7 @@ $layout = $controller->layoutParams;
 $layout->addJsTranslation('debate');
 $layout->addJsTranslation('speech');
 $layout->addLiveEventSubscription('admin', 'speech');
+$layout->addLiveEventSubscription('user', 'speech');
 $layout->provideJwt = true;
 
 $initState = Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json');
