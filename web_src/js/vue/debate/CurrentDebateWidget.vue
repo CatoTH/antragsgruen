@@ -111,6 +111,9 @@ export default {
         currentDebateId() {
           return this.current ? this.current.id : null;
         },
+        currentSpeechQueueId() {
+          return this.current ? this.current.speech_queue_id : null;
+        },
         creatableMotionTypes() {
             return (this.motionTypes || []).filter(
                 motionType => motionType.policies.motions.current_user_permitted && !motionType.settings.amendments_only
@@ -118,7 +121,7 @@ export default {
         },
     },
     watch: {
-        currentDebateId() {
+        currentSpeechQueueId() {
             // A different item is being debated now: drop the old queue so the tab reloads the right one.
             this.speechQueue = null;
             this.speechError = null;
@@ -154,7 +157,13 @@ export default {
                     this.speechLoading = false;
                 });
         },
+        setDebateState(state) {
+          this.state = state;
+        },
         reloadData() {
+            if (this.liveConnected) {
+              return;
+            }
             fetch(this.pollUrl)
                 .then(response => {
                     if (!response.ok) {
@@ -163,7 +172,7 @@ export default {
                     return response.json();
                 })
                 .then(state => {
-                    this.state = state;
+                    this.setDebateState(state);
                 })
                 .catch(err => {
                     console.error('Could not load the debate state from the backend', err);
@@ -230,14 +239,12 @@ export default {
         this.maybeLoadSpeechQueue();
 
         if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
-          // @TODO Proper integration
           window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'debate', (connectionEvent, debateEvent) => {
             if (connectionEvent !== null) {
-              //widget.liveConnected = connectionEvent;
+              this.liveConnected = connectionEvent;
             }
-            console.log(debateEvent);
             if (debateEvent !== null) {
-              //this.setData([speechEvent]);
+              this.setDebateState(debateEvent);
             }
           });
         }

@@ -42,7 +42,7 @@ class Layout
     public array $alternateLanuages = [];
     public array $feeds = [];
 
-    /** @var array<array{role: string, channel: string}> */
+    /** @var array<string, array{role: string, channel: string}> */
     public array $connectLiveEvents = [];
 
     protected ?Consultation $consultation = null;
@@ -242,7 +242,7 @@ class Layout
 
     public function addLiveEventSubscription(string $role, string $channel): void
     {
-        $this->connectLiveEvents[] = ['role' => $role, 'channel' => $channel];
+        $this->connectLiveEvents[$role . $channel] = ['role' => $role, 'channel' => $channel];
     }
 
     public function getHTMLLanguageCode(): string

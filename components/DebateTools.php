@@ -29,7 +29,7 @@ class DebateTools
 
         $transaction = DebateItem::getDb()->beginTransaction();
         try {
-            self::endDebate($consultation);
+            self::endDebate($consultation, skipLiveUpdate: true);
 
             $debate = new DebateItem();
             $debate->consultationId = $consultation->id;
@@ -55,7 +55,7 @@ class DebateTools
     /**
      * Ends the ongoing debate, if there is one.
      */
-    public static function endDebate(Consultation $consultation): void
+    public static function endDebate(Consultation $consultation, bool $skipLiveUpdate = false): void
     {
         /** @var DebateItem[] $openDebates */
         $openDebates = DebateItem::find()
@@ -68,7 +68,9 @@ class DebateTools
             }
         }
 
-        LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
+        if (!$skipLiveUpdate) {
+            LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
+        }
     }
 
     /**
@@ -101,6 +103,7 @@ class DebateTools
         }
         $consultation->refresh();
 
+        LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
         LiveTools::sendSpeechQueue($consultation, SpeechQueueApi::fromEntity($queue));
 
         return $queue;
