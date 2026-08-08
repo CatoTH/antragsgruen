@@ -3,7 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use app\components\{HashedStaticCache, HTMLTools, LineSplitter, UrlHelper};
+use app\components\{HashedStaticCache, HTMLTools, LanguageTools, LineSplitter, UrlHelper};
 use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, Motion, MotionSection};
@@ -222,9 +222,11 @@ abstract class TextSimpleCommon extends Text {
         $firstLine  = $section->getFirstLineNumber();
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
+        // The rendered output embeds translated strings (diff line summaries, "motion_text" title
+        // fallback), so the reader's language must be part of the cache key.
         $cacheDeps = [
             $firstLine, $lineLength, $section->getOriginalMotionSection()->getData(), $section->data,
-            $section->getAmendment()->globalAlternative
+            $section->getAmendment()->globalAlternative, LanguageTools::getCurrentLanguage(),
         ];
         $cache = HashedStaticCache::getInstance('printAmendmentTeX', $cacheDeps);
         $tex = $cache->getCached(function () use ($section, $firstLine, $lineLength) {

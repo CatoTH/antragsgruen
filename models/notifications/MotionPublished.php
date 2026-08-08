@@ -7,6 +7,7 @@ use app\models\layoutHooks\Layout;
 use app\models\db\{Consultation, EMailLog, ISupporter, Motion};
 use app\components\{mail\Tools as MailTools, HTMLTools, RequestContext, UrlHelper};
 use app\models\exceptions\MailNotSent;
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 class MotionPublished
@@ -51,7 +52,8 @@ class MotionPublished
 
             $title      = $this->motion->getMyMotionType()->titleSingular . ': ' . $this->motion->title;
             $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
-            $sections   = $this->motion->getSortedSections(true);
+            // All languages: published by an admin action, not necessarily by the recipient.
+            $sections   = $this->motion->getSortedSections(true, false, SectionLanguageMode::AllLanguages);
             foreach ($sections as $section) {
                 $motionHtml   .= '<div>';
                 $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';

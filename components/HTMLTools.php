@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use app\models\db\Amendment;
+use app\models\db\{Amendment, IMotionSection};
 use app\models\SectionedParagraph;
 use app\models\exceptions\{FormError, Internal};
 use yii\helpers\Html;
@@ -835,6 +835,24 @@ class HTMLTools
         }
 
         return trim($text);
+    }
+
+    /**
+     * D12/D4: if a section is shown in a language other than the reader's (because no translated
+     * version exists), returns a disclaimer to render alongside it. Empty string if no disclaimer
+     * is needed - most sections have a language-neutral or matching-language section.
+     */
+    public static function getSectionLanguageHint(IMotionSection $section): string
+    {
+        $language = $section->getDisplayLanguage();
+        if ($language === null || !$section->needsLanguageLabel()) {
+            return '';
+        }
+
+        $languageName = LanguageTools::getLanguageName($language);
+        $hint = str_replace('%LANGUAGE%', Html::encode($languageName), \Yii::t('structure', 'section_lang_fallback_hint'));
+
+        return '<div class="alert alert-info alertLanguageFallback" lang="' . Html::encode($language) . '">' . $hint . '</div>';
     }
 
     public static function getTooltipIcon(string $tooltip, string $placement = 'top', bool $html = false): string

@@ -174,6 +174,23 @@ class LanguageTools
     }
 
     /**
+     * Rendered output that varies by reader language (view/PDF caches, ...) may have a cached copy
+     * under any of these languages, all of which need flushing together. On a single-language site
+     * there is only ever one variant, in which case this returns the consultation's primary
+     * language - not the ambient getCurrentLanguage(), since a flush can be triggered by anyone
+     * (an admin action, a console command, a background job) editing content that belongs to a
+     * consultation/site other than whichever one the current request happens to be about.
+     *
+     * @return string[]
+     */
+    public static function getLanguagesToFlush(?Consultation $consultation): array
+    {
+        $supported = self::getSupportedLanguages($consultation?->site);
+
+        return (count($supported) >= 2) ? $supported : [self::getPrimaryLanguage($consultation)];
+    }
+
+    /**
      * Console commands and unit tests have no session to read the language from.
      */
     private static function hasSession(): bool

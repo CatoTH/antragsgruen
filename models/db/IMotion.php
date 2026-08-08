@@ -4,12 +4,12 @@ namespace app\models\db;
 
 use app\models\exceptions\NotFound;
 use app\models\layoutHooks\Layout;
-use app\components\{HTMLTools, Tools};
+use app\components\{HTMLTools, LanguageTools, MotionSectionLanguageFilter, Tools};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
 use app\models\quorumType\IQuorumType;
-use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\{ISectionType, SectionLanguageMode};
 use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp, Permissions, Privileges};
 use app\models\supportTypes\SupportBase;
 use app\models\votings\VotingItemGroup;
@@ -401,22 +401,78 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
      */
     abstract public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array;
 
-    public function getTitleSection(): ?IMotionSection
+    /**
+     * @param string|null $language null = canonical: the primary-language title section, else the
+     *                    first non-empty one, else the first title section found. With a specific
+     *                    language, prefers an exact match (falling back to a language-neutral title
+     *                    section, then to the canonical resolution) - motion types normally only
+     *                    have a single title section, in which case this always returns it.
+     */
+    public function getTitleSection(?string $language = null): ?IMotionSection
     {
+        $titleSections = [];
         foreach ($this->sections as $section) {
             if ($section->getSettings() && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
+                $titleSections[] = $section;
+            }
+        }
+        if (count($titleSections) <= 1) {
+            return $titleSections[0] ?? null;
+        }
+
+        if ($language !== null) {
+            foreach ($titleSections as $section) {
+                if ($section->getSettings()?->getLanguage() === $language) {
+                    return $section;
+                }
+            }
+            foreach ($titleSections as $section) {
+                if ($section->getSettings()?->getLanguage() === null) {
+                    return $section;
+                }
+            }
+        }
+
+        $primaryLanguage = LanguageTools::getPrimaryLanguage($this->getMyConsultation());
+        foreach ($titleSections as $section) {
+            if ($section->getSettings()?->getLanguage() === $primaryLanguage) {
+                return $section;
+            }
+        }
+        foreach ($titleSections as $section) {
+            if (!$section->getSectionType()->isEmpty()) {
                 return $section;
             }
         }
 
-        return null;
+        return $titleSections[0];
+    }
+
+    /**
+     * The title section actually behind getTitleForDisplay(): an exact match for the given (or
+     * reader's current) language if it has content, otherwise the canonical section (the one
+     * $this->title is derived from). Exposed so views can check needsLanguageLabel() on exactly the
+     * section whose text is being shown, rather than re-deriving the same fallback separately.
+     */
+    public function getTitleSectionForDisplay(?string $language = null): ?IMotionSection
+    {
+        $language ??= LanguageTools::getCurrentLanguage();
+        $section = $this->getTitleSection($language);
+        if ($section && $section->getSettings()?->getLanguage() === $language && !$section->getSectionType()->isEmpty()) {
+            return $section;
+        }
+
+        return $this->getTitleSection();
     }
 
     /**
      * @return IMotionSection[]
      */
-    public function getSortedSections(bool $withoutTitle = false, bool $includeNonPublicIfPossible = false): array
-    {
+    public function getSortedSections(
+        bool $withoutTitle = false,
+        bool $includeNonPublicIfPossible = false,
+        SectionLanguageMode $languageMode = SectionLanguageMode::ReaderLanguage,
+    ): array {
         if ($includeNonPublicIfPossible &&
             ($this->iAmInitiator() ||User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CONTENT_EDIT, null))) {
             $includeNonPublic = true;
@@ -425,12 +481,20 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
 
         $sectionsIn = [];
-        $title      = $this->getTitleSection();
         foreach ($this->getActiveSections(null, $includeNonPublic) as $section) {
-            if (!$withoutTitle || $section !== $title) {
+            if (!$withoutTitle || $section->getSettings()?->type !== ISectionType::TYPE_TITLE) {
                 $sectionsIn[$section->sectionId] = $section;
             }
         }
+
+        if ($languageMode === SectionLanguageMode::ReaderLanguage) {
+            $filtered = MotionSectionLanguageFilter::filter(array_values($sectionsIn), LanguageTools::getCurrentLanguage());
+            $sectionsIn = [];
+            foreach ($filtered as $section) {
+                $sectionsIn[$section->sectionId] = $section;
+            }
+        }
+
         /** @var MotionSection[] $sectionsOut */
         $sectionsOut = [];
         foreach ($this->getTypeSections() as $section) {

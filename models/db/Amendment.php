@@ -5,13 +5,13 @@ namespace app\models\db;
 use app\models\exceptions\{Access, Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
-use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, LanguageTools, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
     AmendmentCreated as AmendmentCreatedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
-use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
+use app\models\sectionTypes\{Image, ISectionType, PDF, SectionLanguageMode, TextSimple};
 use app\models\supportTypes\SupportBase;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
@@ -1061,12 +1061,14 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        \Yii::$app->cache->delete($this->getPdfCacheKey());
+        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+            \Yii::$app->cache->delete($this->getPdfCacheKey($language));
+        }
     }
 
-    public function getPdfCacheKey(): string
+    public function getPdfCacheKey(?string $language = null): string
     {
-        return 'amendment-pdf-' . $this->id;
+        return 'amendment-pdf-' . $this->id . '-' . ($language ?? LanguageTools::getCurrentLanguage());
     }
 
     public function getFilenameBase(bool $noUmlaut): string
@@ -1185,7 +1187,9 @@ class Amendment extends IMotion implements IRSSItem
             }
         }
 
-        $mySections  = $this->getSortedSections(false);
+        // All languages: every section must be remapped, or sections in a language other than the
+        // reader's would be silently orphaned.
+        $mySections  = $this->getSortedSections(false, false, SectionLanguageMode::AllLanguages);
         for ($i = 0; $i < count($mySections); $i++) {
             $mySections[$i]->sectionId = $sectionMapping[$mySections[$i]->sectionId];
             if (!$mySections[$i]->save()) {
@@ -1352,7 +1356,9 @@ class Amendment extends IMotion implements IRSSItem
             ];
         }
 
-        foreach ($this->getSortedSections(false) as $section) {
+        // All languages: this is a complete personal-data export, nothing should be silently
+        // dropped because it's in a language other than whoever triggered the export is browsing in.
+        foreach ($this->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             $type = $section->getSettings()->type;
             if ($type === ISectionType::TYPE_IMAGE) {
                 /** @var Image $type */

@@ -13,6 +13,7 @@ use app\components\{MotionSorter, UrlHelper};
 use app\models\exceptions\Inconsistency;
 use app\models\mergeAmendments\{Draft, Merge, Init};
 use app\models\MotionSectionChanges;
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\web\{Request, Response, Session};
 
 /**
@@ -156,7 +157,8 @@ trait MotionMergingTrait
             // Init::fromInitForm is computational heavy, therefore only call it if something new comes in
             $form = Init::fromInitForm($motion, [], []);
 
-            foreach ($motion->getSortedSections(false) as $section) {
+            // All languages, same reason as Draft.php: an amendment isn't scoped to one language.
+            foreach ($motion->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
                 /** @var MotionSection $section */
                 $type = $section->getSettings();
                 $newAmendmentsParagraphs[$type->id] = [];

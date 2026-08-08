@@ -57,9 +57,9 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
 }
 
 if ($motion->isResolution()) {
-    $this->title = $motion->getTitleWithIntro() . ' (' . $motion->getMyConsultation()->title . ')';
+    $this->title = $motion->getTitleWithIntroForDisplay() . ' (' . $motion->getMyConsultation()->title . ')';
 } else {
-    $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
+    $this->title = $motion->getTitleWithPrefixForDisplay() . ' (' . $motion->getMyConsultation()->title . ')';
 }
 
 foreach ($motion->getActiveSections(ISectionType::TYPE_IMAGE) as $image) {
@@ -85,11 +85,19 @@ if (User::getCurrentUser()) {
     $fullscreenButton = '';
 }
 
+$readerLanguage = \app\components\LanguageTools::getCurrentLanguage();
+$titleSection = $motion->getTitleSectionForDisplay($readerLanguage);
+$titleNeedsLabel = ($titleSection && $titleSection->needsLanguageLabel($readerLanguage));
+$titleLangAttr = $titleNeedsLabel ? ' lang="' . Html::encode((string) $titleSection->getDisplayLanguage()) . '"' : '';
+
 echo '<div class="primaryHeader">';
 if ($motion->isResolution()) {
-    echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
+    echo '<h1' . $titleLangAttr . '>' . Html::encode($motion->getTitleWithIntroForDisplay($readerLanguage)) . '</h1>';
 } else {
-    echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+    echo '<h1' . $titleLangAttr . '>' . $motion->getEncodedTitleWithPrefixForDisplay($readerLanguage) . '</h1>';
+}
+if ($titleNeedsLabel) {
+    echo \app\components\HTMLTools::getSectionLanguageHint($titleSection);
 }
 echo $fullscreenButton;
 echo '</div>';

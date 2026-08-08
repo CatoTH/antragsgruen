@@ -17,6 +17,7 @@ return [
     'amend_number_perline'   => 'A01-070 (Zählung nach betroffener Zeile)',
 
     'type_unavailable_language'  => 'Dies ist in dieser Sprache nicht verfügbar. Verfügbare Sprachen: %LANGUAGES%.',
+    'section_lang_fallback_hint' => 'Dieser Inhalt wurde noch nicht in deine Sprache übersetzt. Es wird stattdessen die %LANGUAGE%-Version angezeigt.',
     'policy_deadline_over'       => 'Der Antragsschluss ist vorbei.',
     'policy_deadline_over_comm'  => 'Zum aktuellen Zeitpunkt sind keine Kommentare möglich.<br>Das Kommentieren ist möglich:',
     'policy_deadline_over_merge' => 'Zum aktuellen Zeitpunkt ist das Einpflegen nicht möglich.<br>Das Einpflegen ist möglich:',

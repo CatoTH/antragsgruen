@@ -1,4 +1,5 @@
 <?php
+use app\components\HTMLTools;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -40,8 +41,10 @@ if ($motion->getMyMotionType()->getSettingsObj()->showProposalsInExports) {
 
 $sections = $motion->getSortedSections(true);
 foreach ($sections as $section) {
-    echo '<section>';
+    $langAttr = $section->needsLanguageLabel() ? ' lang="' . Html::encode((string) $section->getDisplayLanguage()) . '"' : '';
+    echo '<section' . $langAttr . '>';
     echo '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
+    echo HTMLTools::getSectionLanguageHint($section);
     echo $section->getSectionType()->getMotionPlainHtml();
     echo '</section>';
 }

@@ -4,6 +4,7 @@ use app\components\MotionNumbering;
 use app\components\UrlHelper;
 use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 /**
@@ -43,7 +44,8 @@ $amendmentStaticData = array_map(function (Amendment $amendment) {
 
 /** @var MotionSection[] $newSections */
 $newSections = [];
-foreach ($motion->getSortedSections(false) as $section) {
+// All languages: merging amendments into the motion must handle every language section.
+foreach ($motion->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
     $newSections[$section->sectionId] = $section;
 }
 
@@ -150,7 +152,7 @@ $resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c')
     <section class="newMotion">
         <h2 class="green"><?= Yii::t('amend', 'merge_new_text') ?></h2>
         <?php
-        foreach ($motion->getSortedSections(false) as $section) {
+        foreach ($motion->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             $type = $section->getSettings();
             if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
                 echo $this->render('_merging_section_title', ['form' => $form, 'section' => $section, 'twoCols' => $twoCols]);

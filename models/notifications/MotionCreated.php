@@ -5,6 +5,7 @@ namespace app\models\notifications;
 use app\components\{HTMLTools, UrlHelper, mail\Tools};
 use app\models\db\{EMailLog, ISupporter, Motion};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 class MotionCreated extends Base implements IEmailAdmin
@@ -76,7 +77,9 @@ class MotionCreated extends Base implements IEmailAdmin
         $motionHtml .= Html::encode($this->motion->title);
         $motionHtml .= '</h1>';
 
-        $sections = $this->motion->getSortedSections(true);
+        // All languages: this notification may be triggered by someone other than the recipient
+        // (e.g. an admin), so there's no reliably "correct" single language to pick.
+        $sections = $this->motion->getSortedSections(true, false, SectionLanguageMode::AllLanguages);
         foreach ($sections as $section) {
             $motionHtml   .= '<div>';
             $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';

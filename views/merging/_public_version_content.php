@@ -3,6 +3,7 @@
 use app\models\db\Motion;
 use app\models\mergeAmendments\Draft;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\SectionLanguageMode;
 use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
@@ -12,7 +13,8 @@ use yii\helpers\Html;
  */
 
 $changesets = [];
-foreach ($motion->getSortedSections(false) as $section) {
+// All languages: merging amendments into the motion must handle every language section.
+foreach ($motion->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
     $type = $section->getSettings();
     if ($type->type === ISectionType::TYPE_TITLE) {
         $content = ($draft->sections[$section->sectionId] ?? '');

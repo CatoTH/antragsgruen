@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\LanguageTools;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\{Choice, Image, ISectionType, TabularData, TextEditorial, TextHTML, TextSimple, Title, PDF, VideoEmbed};
 use app\models\settings\AntragsgruenApp;
@@ -58,4 +59,41 @@ abstract class IMotionSection extends ActiveRecord
     abstract public function getData(): string;
 
     abstract public function setData(string $data): void;
+
+    /**
+     * The language this section is specific to, or null if it applies regardless of language.
+     */
+    public function getDisplayLanguage(): ?string
+    {
+        return $this->getSettings()?->getLanguage();
+    }
+
+    /**
+     * Whether this section's language differs from the reader's (D12): only then does a view need
+     * to show a language label / "not available in your language" disclaimer. A section without a
+     * language (valid for every language) never needs one.
+     */
+    public function needsLanguageLabel(?string $readerLanguage = null): bool
+    {
+        $language = $this->getDisplayLanguage();
+        if ($language === null) {
+            return false;
+        }
+
+        $readerLanguage ??= LanguageTools::getCurrentLanguage();
+
+        return $language !== $readerLanguage;
+    }
+
+    /**
+     * Whether this section has anything meaningful to show, for MotionSectionLanguageFilter's
+     * D4 fallback decision (prefer a language with content over an empty one in the reader's own
+     * language). Plain "not empty" for a motion section. AmendmentSection overrides this: an
+     * amendment section is always pre-filled with the motion's original text, even where the
+     * amendment doesn't touch it, so "not empty" alone would treat every language as having content.
+     */
+    public function hasContentForFiltering(): bool
+    {
+        return !$this->getSectionType()->isEmpty();
+    }
 }

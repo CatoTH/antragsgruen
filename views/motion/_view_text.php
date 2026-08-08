@@ -40,8 +40,6 @@ $cache->setIsSynchronized(true);
 $cache->setSkipCache(!$useCache);
 
 echo $cache->getCached(function () use ($motion, $sections, $commentForm, $proposal, $openedComments) {
-    $titleSection = $motion->getTitleSection();
-
     // Hint: Once a PDF or a Video comes in, we don't use two-column mode anymore, as that would look strange
     // Hence, once that happens, everything goes into the "bottom" variable
     $main = $right = '';
@@ -71,7 +69,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $propo
         }
 
         // Show title only as a separate section if there are amendments, or if explicitly requested
-        if ($titleSection && $titleSection->sectionId === $section->sectionId) {
+        if ($section->getSettings()->type === ISectionType::TYPE_TITLE) {
             if (count($section->getUserVisibleAmendingSections()) === 0 && !$section->getSettings()->getSettingsObj()->showInHtml) {
                 continue;
             }
@@ -94,9 +92,12 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $propo
             $nonPublicHint = '';
         }
 
+        $langAttr = $section->needsLanguageLabel() ? ' lang="' . Html::encode((string) $section->getDisplayLanguage()) . '"' : '';
+
         if ($section->isLayoutRight() && $bottom === '') {
-            $right .= '<section class="sectionType' . $sectionType . '" aria-label="' . Html::encode($section->getSectionTitle()) . '">';
+            $right .= '<section class="sectionType' . $sectionType . '" aria-label="' . Html::encode($section->getSectionTitle()) . '"' . $langAttr . '>';
             $right .= $nonPublicHint;
+            $right .= \app\components\HTMLTools::getSectionLanguageHint($section);
             $right .= $section->getSectionType()->getSimple(true);
             $right .= '</section>';
         } else {
@@ -104,7 +105,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $propo
             if ($motion->getMyConsultation()->getSettings()->lineLength > 80) {
                 $sectionText .= ' smallFont';
             }
-            $sectionText .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '" aria-labelledby="section_' . $section->sectionId . '_title">';
+            $sectionText .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '" aria-labelledby="section_' . $section->sectionId . '_title"' . $langAttr . '>';
 
             $shownPp = false;
             if (LayoutHelper::showProposedProceduresInline($motion)) {
@@ -125,6 +126,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $propo
                     $sectionText .= '<h2 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h2>';
                 }
                 $sectionText .= $nonPublicHint;
+                $sectionText .= \app\components\HTMLTools::getSectionLanguageHint($section);
 
                 $commOp = $openedComments[$section->sectionId] ?? [];
 

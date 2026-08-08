@@ -7,6 +7,7 @@ namespace app\models\api\imotion;
 use app\components\UrlHelper;
 use app\models\api\proposedprocedure\MotionProposedProcedure;
 use app\models\db\{Amendment, ISupporter, Motion, MotionSection as MotionSectionEntity, MotionSupporter};
+use app\models\sectionTypes\SectionLanguageMode;
 use app\views\motion\LayoutHelper;
 
 class MotionDetails
@@ -54,8 +55,9 @@ class MotionDetails
 
     public static function fromEntity(Motion $motion, bool $lineNumbers): self
     {
+        // D9: the REST API returns every language version; clients pick what to show.
         /** @var MotionSectionEntity[] $sortedSections */
-        $sortedSections = $motion->getSortedSections(true);
+        $sortedSections = $motion->getSortedSections(true, false, SectionLanguageMode::AllLanguages);
 
         return new self(
             type: 'motion',

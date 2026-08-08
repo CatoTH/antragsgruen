@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\models\SectionedParagraph;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\amendmentMerger\SectionMerger, HashedStaticCache, HTMLTools, LineSplitter};
-use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\{ISectionType, SectionLanguageMode};
 use app\models\exceptions\Internal;
 use yii\db\ActiveQuery;
 
@@ -456,7 +456,9 @@ class MotionSection extends IMotionSection
     {
         $motion   = $this->getConsultation()->getMotion($this->motionId);
         $lineNo   = $motion->getFirstLineNumber();
-        $sections = $motion->getSortedSections(false, true);
+        // All languages: this is a pure line-count lookup that must find $this regardless of the
+        // reader's browsing language, and line numbers must stay stable no matter who's reading.
+        $sections = $motion->getSortedSections(false, true, SectionLanguageMode::AllLanguages);
         foreach ($sections as $section) {
             /** @var MotionSection $section */
             if ($section->sectionId === $this->sectionId) {

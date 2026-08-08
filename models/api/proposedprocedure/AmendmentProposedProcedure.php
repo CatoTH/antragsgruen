@@ -7,6 +7,7 @@ namespace app\models\api\proposedprocedure;
 use app\models\api\imotion\AmendmentSection;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection as AmendmentSectionEntity;
+use app\models\sectionTypes\SectionLanguageMode;
 
 class AmendmentProposedProcedure
 {
@@ -34,8 +35,9 @@ class AmendmentProposedProcedure
                 /** @var Amendment $modification */
                 $modification = $reference['modification'];
 
+                // D9: the REST API returns every language version; clients pick what to show.
                 /** @var AmendmentSectionEntity[] $modificationSections */
-                $modificationSections = $modification->getSortedSections(false);
+                $modificationSections = $modification->getSortedSections(false, false, SectionLanguageMode::AllLanguages);
                 foreach ($modificationSections as $section) {
                     if ($section->getSectionType()->isEmpty()) {
                         continue;
