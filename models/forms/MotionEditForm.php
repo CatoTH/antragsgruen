@@ -2,7 +2,7 @@
 
 namespace app\models\forms;
 
-use app\components\HTMLTools;
+use app\components\{HTMLTools, LanguageTools};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
@@ -46,10 +46,13 @@ class MotionEditForm
     private bool $allowSetTags;
     private bool $adminMode = false;
 
+    public readonly string $formLanguage;
+
     private function __construct(
         public readonly ConsultationMotionType $motionType,
         public ?ConsultationAgendaItem $agendaItem
     ) {
+        $this->formLanguage = LanguageTools::getCurrentLanguage();
     }
 
     public static function createForCreating(Consultation $consultation, ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem): self
@@ -117,6 +120,14 @@ class MotionEditForm
             throw new Internal('Could not resolve motion type');
         }
 
+        if (!$motionType->isAvailableInLanguage(LanguageTools::getCurrentLanguage())) {
+            $languages = array_map(
+                fn (string $language): string => LanguageTools::getLanguageName($language),
+                $motionType->getDefinedSectionLanguages()
+            );
+            throw new Internal(str_replace('%LANGUAGES%', implode(', ', $languages), \Yii::t('structure', 'type_unavailable_language')));
+        }
+
         return [$motionType, $agendaItem];
     }
 
@@ -150,6 +161,24 @@ class MotionEditForm
     public function getAllowEditinginitiators(): bool
     {
         return $this->allowEditingInitiators;
+    }
+
+    /**
+     * The sections to be shown in the edit form: all of them in admin mode, otherwise only those
+     * relevant to the language the form is being filled in (the reader's language, plus
+     * language-neutral sections). Sections not rendered are simply left untouched on save.
+     *
+     * @return MotionSection[]
+     */
+    public function getSectionsToRender(): array
+    {
+        if ($this->adminMode) {
+            return $this->sections;
+        }
+        return array_values(array_filter(
+            $this->sections,
+            fn (MotionSection $section): bool => !$section->getSettings() || $section->getSettings()->matchesLanguage($this->formLanguage)
+        ));
     }
 
     public function cloneSupporters(Motion $motion): void
@@ -248,7 +277,9 @@ class MotionEditForm
         $newHtmls = [];
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             if (!isset($unsanitizedHtml[$section->sectionId])) {
-                throw new FormError('No content found for section ' . $section->sectionId);
+                // Not part of the submitted request - e.g. a section in a language the submitter
+                // doesn't edit. Leave it untouched.
+                continue;
             }
             $forbiddenFormattings = $section->getSettings()->getForbiddenMotionFormattings();
             $newHtmls[$section->sectionId] = HTMLTools::cleanSimpleHtml($unsanitizedHtml[$section->sectionId], $forbiddenFormattings);
@@ -256,6 +287,9 @@ class MotionEditForm
 
         foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                if (!isset($newHtmls[$section->sectionId])) {
+                    continue;
+                }
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $sectionOverrides = $overrides[$amendment->id][$section->sectionId];
                 } else {
@@ -269,6 +303,9 @@ class MotionEditForm
 
         foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                if (!isset($newHtmls[$section->sectionId])) {
+                    continue;
+                }
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $sectionOverrides = $overrides[$amendment->id][$section->sectionId];
                 } else {
@@ -280,6 +317,9 @@ class MotionEditForm
         }
 
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            if (!isset($newHtmls[$section->sectionId])) {
+                continue;
+            }
             $section->setData($newHtmls[$section->sectionId]);
             $section->save();
         }

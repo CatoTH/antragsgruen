@@ -7,7 +7,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\MotionDeepCopy;
 use app\models\policies\Nobody;
 use CatoTH\HTML2OpenDocument\Text;
-use app\components\{DateTools, Tools, UrlHelper};
+use app\components\{DateTools, LanguageTools, Tools, UrlHelper};
 use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
@@ -656,6 +656,9 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
 
     public function mayCreateIMotion(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
+        if (!$this->isAvailableInLanguage(LanguageTools::getCurrentLanguage())) {
+            return false;
+        }
         if ($this->amendmentsOnly) {
             return $this->getAmendmentPolicy()->checkCurrUserAmendment($allowAdmins, $assumeLoggedIn);
         } else {

@@ -1,7 +1,7 @@
 <?php
 
 use app\models\policies\Nobody;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{HTMLTools, LanguageTools, Tools, UrlHelper};
 use app\models\db\{Amendment, ConsultationMotionType, Motion, VotingBlock};
 use yii\helpers\Html;
 
@@ -43,7 +43,9 @@ foreach ($consultation->motionTypes as $type) {
         $hasPDF = true;
     }
 
-    if ($type->amendmentsOnly) {
+    if (!$type->isAvailableInLanguage(LanguageTools::getCurrentLanguage())) {
+        $creatable = false;
+    } elseif ($type->amendmentsOnly) {
         $creatable = (count($type->getAmendableOnlyMotions(false, true)) > 0);
     } else {
         $creatable = $type->getMotionPolicy()->checkCurrUserMotion(false, true);

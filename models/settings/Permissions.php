@@ -2,6 +2,7 @@
 
 namespace app\models\settings;
 
+use app\components\LanguageTools;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, User};
 use app\models\exceptions\{Internal, NotAmendable};
 use app\models\policies\{All, IPolicy};
@@ -184,6 +185,18 @@ class Permissions
         $iAmAdmin = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::motion($motion));
 
         if (!($allowAdmins && $iAmAdmin)) {
+            if (!$motion->getMyMotionType()->isAvailableInLanguage(LanguageTools::getCurrentLanguage())) {
+                if ($exceptions) {
+                    $languages = array_map(
+                        fn (string $language): string => LanguageTools::getLanguageName($language),
+                        $motion->getMyMotionType()->getDefinedSectionLanguages()
+                    );
+                    $msg = str_replace('%LANGUAGES%', implode(', ', $languages), \Yii::t('structure', 'type_unavailable_language'));
+                    throw new NotAmendable($msg, true);
+                } else {
+                    return false;
+                }
+            }
             if ($motion->nonAmendable) {
                 if ($exceptions) {
                     throw new NotAmendable('Not amendable in the current state', false);

@@ -140,7 +140,7 @@ if ($consultation->getSettings()->editorialAmendments) { ?>
     <?php
 }
 
-foreach ($form->sections as $section) {
+foreach ($form->getSectionsToRender() as $section) {
     echo $section->getSectionType()->getAmendmentFormField();
 }
 

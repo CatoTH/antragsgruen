@@ -38,6 +38,14 @@ class ConsultationMotionTypeLanguageTest extends DBTestBase
         $section->status = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->required = ConsultationSettingsMotionSection::REQUIRED_NO;
 
+        $section->position      = 0;
+        $section->maxLen        = 0;
+        $section->fixedWidth    = 0;
+        $section->lineNumbers   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+        $section->hasAmendments = 0;
+        $section->positionRight = 0;
+
         $settings                   = $section->getSettingsObj();
         $settings->language         = $language;
         $settings->languageGrouping = $languageGrouping;

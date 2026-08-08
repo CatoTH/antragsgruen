@@ -16,6 +16,7 @@ return [
     'amend_number_english'   => 'M1 A1 (Numbering per motion)',
     'amend_number_perline'   => 'M01-070 (Numbering per affected line)',
 
+    'type_unavailable_language'  => 'This is not available in this language. Available languages: %LANGUAGES%.',
     'policy_deadline_over'       => 'The deadline is over',
     'policy_deadline_over_comm'  => 'No comments are possible at this point of time.',
     'policy_deadline_over_merge' => 'Merging is not possible at this point of time.',
