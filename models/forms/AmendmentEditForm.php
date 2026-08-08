@@ -2,7 +2,7 @@
 
 namespace app\models\forms;
 
-use app\components\HTMLTools;
+use app\components\{HTMLTools, LanguageTools};
 use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest, AmendmentUpdateSection};
 use app\models\db\{Amendment, AmendmentSection, AmendmentSupporter, ConsultationAgendaItem, ConsultationSettingsTag, Motion, User};
 use app\models\exceptions\FormError;
@@ -30,6 +30,8 @@ class AmendmentEditForm
     private bool $allowSetTags;
     private bool $adminMode = false;
 
+    public readonly string $formLanguage;
+
     private function __construct(
         public Motion $motion,
         public ?ConsultationAgendaItem $agendaItem,
@@ -38,6 +40,8 @@ class AmendmentEditForm
         public ?int $initParagraphNo
     )
     {
+        $this->formLanguage = LanguageTools::getCurrentLanguage();
+
         /** @var AmendmentSection[] $amendmentSections */
         $amendmentSections = [];
         $motionSections    = [];
@@ -127,6 +131,25 @@ class AmendmentEditForm
     public function getAllowEditinginitiators(): bool
     {
         return $this->allowEditingInitiators;
+    }
+
+    /**
+     * The sections to be shown in the edit form: all of them in admin mode, otherwise only those
+     * relevant to the language the form is being filled in (the reader's language, plus
+     * language-neutral sections). Sections not rendered are pre-filled with the motion's current
+     * text and saved unchanged, so hiding them means "no change to that language".
+     *
+     * @return AmendmentSection[]
+     */
+    public function getSectionsToRender(): array
+    {
+        if ($this->adminMode) {
+            return $this->sections;
+        }
+        return array_values(array_filter(
+            $this->sections,
+            fn (AmendmentSection $section): bool => !$section->getSettings() || $section->getSettings()->matchesLanguage($this->formLanguage)
+        ));
     }
 
     public function cloneSupporters(Amendment $amendment): void

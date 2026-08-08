@@ -2,6 +2,7 @@
 
 use app\components\HTMLTools;
 use app\models\db\{Amendment, ConsultationMotionType, ConsultationSettingsTag, IMotion, Motion, User};
+use app\models\sectionTypes\SectionLanguageMode;
 use app\models\settings\Privileges;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 
@@ -171,7 +172,8 @@ foreach ($imotionByType as $byType) {
 
         if ($textCombined) {
             $text = '';
-            foreach ($imotion->getSortedSections(true) as $section) {
+            // All languages: admin export.
+            foreach ($imotion->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
                 $text .= $section->getSettings()->title . "\n\n";
                 if (is_a($imotion, Motion::class)) {
                     $text .= $section->getSectionType()->getMotionODS();

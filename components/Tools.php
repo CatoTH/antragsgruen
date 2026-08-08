@@ -72,8 +72,9 @@ class Tools
     public static function getCurrentDateLocale(): string
     {
         $consultation = Consultation::getCurrent();
-        if ($consultation && $consultation->wordingBase) {
-            return explode('-', $consultation->wordingBase)[0];
+        if ($consultation) {
+            // Dates are to be formatted in the language the user is reading the site in
+            return LanguageTools::getCurrentLanguage();
         }
         return explode('-', RequestContext::getWebApplication()->language)[0];
     }

@@ -7,6 +7,7 @@ namespace app\models\api\imotion;
 use app\components\UrlHelper;
 use app\models\api\proposedprocedure\AmendmentProposedProcedure;
 use app\models\db\{Amendment, AmendmentSection as AmendmentSectionEntity, AmendmentSupporter, ISupporter};
+use app\models\sectionTypes\SectionLanguageMode;
 
 class AmendmentDetails
 {
@@ -36,8 +37,9 @@ class AmendmentDetails
 
     public static function fromEntity(Amendment $amendment): self
     {
+        // D9: the REST API returns every language version; clients pick what to show.
         /** @var AmendmentSectionEntity[] $sortedSections */
-        $sortedSections = $amendment->getSortedSections(true);
+        $sortedSections = $amendment->getSortedSections(true, false, SectionLanguageMode::AllLanguages);
 
         return new self(
             type: 'amendment',

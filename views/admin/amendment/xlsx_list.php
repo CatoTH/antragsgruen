@@ -2,7 +2,7 @@
 
 use app\components\HTMLTools;
 use app\models\db\{Amendment, AmendmentSection, Motion};
-use app\models\sectionTypes\{ISectionType, TextSimpleCommon};
+use app\models\sectionTypes\{ISectionType, SectionLanguageMode, TextSimpleCommon};
 use app\models\supportTypes\SupportBase;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -223,7 +223,8 @@ foreach ($amendments as $amendmentGroup) {
             $change .= '<h4>' . Yii::t('amend', 'editorial_hint') . '</h4><br>';
             $change .= $amendment->changeEditorial;
         }
-        foreach ($amendment->getSortedSections(false) as $section) {
+        // All languages: admin export.
+        foreach ($amendment->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             if ($section->getSettings()->type === ISectionType::TYPE_TITLE) {
                 continue;
             }
@@ -239,8 +240,9 @@ foreach ($amendments as $amendmentGroup) {
         $proposal = $amendment->getLatestProposal()->getFormattedProposalStatus();
         if ($amendment->getLatestProposal()->hasAlternativeProposaltext()) {
             $reference = $amendment->getLatestProposal()->getMyProposalReference();
+            // All languages: admin export.
             /** @var AmendmentSection[] $sections */
-            $sections = $reference->getSortedSections(false);
+            $sections = $reference->getSortedSections(false, false, SectionLanguageMode::AllLanguages);
             foreach ($sections as $section) {
                 $firstLine    = $section->getFirstLineNumber();
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;

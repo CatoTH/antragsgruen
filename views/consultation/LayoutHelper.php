@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\consultation;
 
-use app\components\{HashedStaticCache, HTMLTools, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
+use app\components\{HashedStaticCache, HTMLTools, IMotionStatusFilter, LanguageTools, MotionSorter, Tools, UrlHelper};
 use app\models\IMotionList;
 use app\models\settings\{AntragsgruenApp, Consultation as ConsultationSettings, Privileges};
 use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationAgendaItem, ConsultationSettingsTag, IComment, IMotion, Motion, MotionComment, User};
@@ -12,12 +12,13 @@ use yii\helpers\Html;
 
 class LayoutHelper
 {
-    private static function getHomePageCacheForType(Consultation $consultation, string $type): HashedStaticCache
+    private static function getHomePageCacheForType(Consultation $consultation, string $type, ?string $language = null): HashedStaticCache
     {
         $cache = HashedStaticCache::getInstance('getHomePage', [
             $consultation->id,
             $type,
             $consultation->getSettings()->startLayoutResolutions,
+            $language ?? LanguageTools::getCurrentLanguage(),
         ]);
         if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $cache->setIsSynchronized(true);
@@ -40,13 +41,13 @@ class LayoutHelper
     /**
      * @return HashedStaticCache[]
      */
-    public static function getAllHomePageCaches(Consultation $consultation): array
+    public static function getAllHomePageCaches(Consultation $consultation, ?string $language = null): array
     {
         $settings = $consultation->getSettings();
         $views = array_map(fn(int $type) => $settings->getStartLayoutViewFromId($type), array_keys($settings::getStartLayouts()));
         $views = array_unique($views);
 
-        return array_values(array_filter(array_map(fn(string $view) => self::getHomePageCacheForType($consultation, $view), $views)));
+        return array_values(array_filter(array_map(fn(string $view) => self::getHomePageCacheForType($consultation, $view, $language), $views)));
     }
 
     public static function getHomePageCache(Consultation $consultation): HashedStaticCache
@@ -54,12 +55,13 @@ class LayoutHelper
         return self::getHomePageCacheForType($consultation, $consultation->getSettings()->getStartLayoutView());
     }
 
-    public static function getTagMotionListCache(Consultation $consultation, ConsultationSettingsTag $tag, bool $isResolutionList): HashedStaticCache
+    public static function getTagMotionListCache(Consultation $consultation, ConsultationSettingsTag $tag, bool $isResolutionList, ?string $language = null): HashedStaticCache
     {
         $cache = HashedStaticCache::getInstance('tagMotionListCache', [
             $consultation->id,
             $tag->id,
             $isResolutionList,
+            $language ?? LanguageTools::getCurrentLanguage(),
         ]);
         if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $cache->setIsSynchronized(true);
@@ -71,9 +73,9 @@ class LayoutHelper
         return $cache;
     }
 
-    public static function getSidebarPdfCache(Consultation $consultation): HashedStaticCache
+    public static function getSidebarPdfCache(Consultation $consultation, ?string $language = null): HashedStaticCache
     {
-        $cache = HashedStaticCache::getInstance('sidebarPdf', [$consultation->id]);
+        $cache = HashedStaticCache::getInstance('sidebarPdf', [$consultation->id, $language ?? LanguageTools::getCurrentLanguage()]);
         if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
             $cache->setIsSynchronized(true);
         } else {
@@ -85,13 +87,18 @@ class LayoutHelper
 
     public static function flushViewCaches(Consultation $consultation): void
     {
-        foreach (self::getAllHomePageCaches($consultation) as $homePageCache) {
-            $homePageCache->flushCache();
-        }
-        self::getSidebarPdfCache($consultation)->flushCache();
-        foreach ($consultation->tags as $tag) {
-            self::getTagMotionListCache($consultation, $tag, true)->flushCache();
-            self::getTagMotionListCache($consultation, $tag, false)->flushCache();
+        // These caches are keyed by the reader's language (see getHomePageCacheForType() etc.), so
+        // every supported language's copy needs flushing, not just whichever language this request
+        // happens to be in.
+        foreach (LanguageTools::getLanguagesToFlush($consultation) as $language) {
+            foreach (self::getAllHomePageCaches($consultation, $language) as $homePageCache) {
+                $homePageCache->flushCache();
+            }
+            self::getSidebarPdfCache($consultation, $language)->flushCache();
+            foreach ($consultation->tags as $tag) {
+                self::getTagMotionListCache($consultation, $tag, true, $language)->flushCache();
+                self::getTagMotionListCache($consultation, $tag, false, $language)->flushCache();
+            }
         }
     }
 

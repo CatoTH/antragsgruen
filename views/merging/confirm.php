@@ -3,6 +3,7 @@
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\Draft;
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 /**
@@ -64,7 +65,8 @@ if ($newMotion->canCreateResolution()) {
     echo $this->render('_confirm_resolution_voting', ['motion' => $newMotion, 'oldMotion' => $oldMotion]);
 }
 
-foreach ($newMotion->getSortedSections(true) as $section) {
+// All languages: confirming the outcome of a merge that touched every language section.
+foreach ($newMotion->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }

@@ -6,7 +6,7 @@ use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
 use app\models\SectionedParagraph;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use CatoTH\HTML2OpenDocument\Text as ODTText;
-use app\components\{HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LineSplitter, RequestContext};
+use app\components\{HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LanguageTools, LineSplitter, RequestContext};
 use app\models\db\{AmendmentSection, Consultation, ConsultationMotionType, MotionSection};
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
@@ -400,7 +400,9 @@ class TextSimple extends TextSimpleCommon
         } elseif ($skipTitle) {
             return $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);
         } else {
-            $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $this->getTitle()];
+            // The rendered output embeds translated line-summary strings (e.g. "after line 23"),
+            // so the reader's language must be part of the cache key.
+            $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $this->getTitle(), LanguageTools::getCurrentLanguage()];
             $cache = HashedStaticCache::getInstance('getAmendmentPlainHtml', $cacheDeps);
             return $cache->getCached(function () use ($section, $firstLine, $lineLength) {
                 $text = $this->getAmendmentPlainHtmlCalcText($section, $firstLine, $lineLength);

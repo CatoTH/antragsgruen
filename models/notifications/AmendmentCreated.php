@@ -10,6 +10,7 @@ use app\models\db\EMailLog;
 use app\models\db\ISupporter;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 class AmendmentCreated extends Base implements IEmailAdmin
@@ -77,7 +78,9 @@ class AmendmentCreated extends Base implements IEmailAdmin
         $plain         = $emailText;
         $amendmentHtml = '<h1>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h1>';
 
-        $sections = $this->amendment->getSortedSections(true);
+        // All languages: this notification may be triggered by someone other than the recipient
+        // (e.g. an admin), so there's no reliably "correct" single language to pick.
+        $sections = $this->amendment->getSortedSections(true, false, SectionLanguageMode::AllLanguages);
         foreach ($sections as $section) {
             $amendmentHtml .= '<div>';
             $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();

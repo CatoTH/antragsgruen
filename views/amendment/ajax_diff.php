@@ -1,4 +1,5 @@
 <?php
+use app\components\HTMLTools;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use yii\helpers\Html;
@@ -29,7 +30,11 @@ if ($amendment->changeEditorial) {
 /** @var AmendmentSection[] $sections */
 $sections = $amendment->getSortedSections(true);
 foreach ($sections as $section) {
+    $langAttr = $section->needsLanguageLabel() ? ' lang="' . Html::encode((string) $section->getDisplayLanguage()) . '"' : '';
+    echo '<div' . $langAttr . '>';
+    echo HTMLTools::getSectionLanguageHint($section);
     echo $section->getSectionType()->getAmendmentPlainHtml();
+    echo '</div>';
 }
 
 echo '</article>';

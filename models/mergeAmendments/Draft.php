@@ -4,6 +4,7 @@ namespace app\models\mergeAmendments;
 
 use app\models\settings\JsonConfigTrait;
 use app\models\db\{Amendment, IAdminComment, IMotion, Motion, MotionSection};
+use app\models\sectionTypes\SectionLanguageMode;
 use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
@@ -147,7 +148,9 @@ class Draft implements \JsonSerializable
         }
 
         $draft->paragraphs = [];
-        foreach ($form->motion->getSortedSections(false) as $section) {
+        // All languages: merging amendments into the motion must handle every language section, an
+        // amendment isn't scoped to any one language.
+        foreach ($form->motion->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             /** @var MotionSection $section */
             if ($section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;

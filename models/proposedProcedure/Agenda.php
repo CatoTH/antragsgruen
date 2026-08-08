@@ -3,7 +3,7 @@
 namespace app\models\proposedProcedure;
 
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, IMotion, IProposal, VotingBlock};
-use app\components\HashedStaticCache;
+use app\components\{HashedStaticCache, LanguageTools};
 use app\models\exceptions\Internal;
 use app\models\IMotionList;
 use app\models\sectionTypes\TextSimpleCommon;
@@ -37,7 +37,11 @@ class Agenda
 
     public static function getProposedAmendmentProcedureCache(IMotion $imotion, IProposal $proposal): HashedStaticCache
     {
-        return HashedStaticCache::getInstance('formatProposedAmendmentProcedure', [$imotion->id, $proposal->id]);
+        return HashedStaticCache::getInstance('formatProposedAmendmentProcedure', [
+            $imotion->id,
+            $proposal->id,
+            LanguageTools::getCurrentLanguage(),
+        ]);
     }
 
     public static function formatProposedAmendmentProcedure(IMotion $imotion, IProposal $proposal, int $format): string

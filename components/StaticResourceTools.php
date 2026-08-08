@@ -169,7 +169,12 @@ class StaticResourceTools
         $messagesource = $i18n->getMessageSource($category);
 
         if ($consultation) {
-            $language = $consultation->wordingBase;
+            $currentLanguage = LanguageTools::getCurrentLanguage();
+            if ($currentLanguage === LanguageTools::getPrimaryLanguage($consultation)) {
+                $language = $consultation->wordingBase;
+            } else {
+                $language = $currentLanguage;
+            }
         } else {
             $language = AntragsgruenApp::getInstance()->baseLanguage;
         }

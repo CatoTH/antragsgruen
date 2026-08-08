@@ -127,7 +127,7 @@ if (!$isAmendmentsOnly) {
     ]);
 }
 
-foreach ($form->sections as $section) {
+foreach ($form->getSectionsToRender() as $section) {
     echo $section->getSectionType()->getMotionFormField();
 }
 

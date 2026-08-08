@@ -81,6 +81,7 @@ return [
     'aria_footer'       => 'Legal links and software information',
     'aria_antragsgruen' => 'About the software Antragsgrün',
     'aria_version_hint' => 'Antragsgrün version: %VERSION% - Change log',
+    'aria_language_switch' => 'Show this site in %LANGUAGE%',
     'aria_tooltip'      => 'Hint',
     'aria_error'        => 'Error',
     'aria_info'         => 'Info',
