@@ -470,6 +470,8 @@ Com que no hi ha <strong>entrega de correus electrònics configurada</strong>, �
         '<strong>Consell:</strong> Els canvis aquí només afecten aquesta única consulta.',
     'translating_none'            => 'Cap cadena per traduir',
     'translating_base'            => 'Idioma base',
+    'translating_supported'       => 'Idiomes seleccionables',
+    'translating_supported_h'     => 'Si aquí se selecciona més d\'un idioma, els usuaris poden triar l\'idioma en què volen veure aquest lloc. Els tipus de moció poden oferir seccions separades per idioma.',
     'translation_motion_types'    => 'Textos de tipus de resolució',
     'translating_motion_types'    => 'Textos específics del tipus de resolució',
     'translating_motion_type'     => 'Textos del tipus de resolució',

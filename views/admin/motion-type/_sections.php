@@ -1,5 +1,6 @@
 <?php
 
+use app\components\LanguageTools;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\settings\MotionSection;
 use app\models\sectionTypes\{ISectionType, TabularDataType};
@@ -16,6 +17,8 @@ if ($sectionId === 0) {
     $sectionId = '#NEW#';
 }
 $sName = 'sections[' . $sectionId . ']';
+
+$supportedLanguages = LanguageTools::getSupportedLanguages();
 
 ?>
 <li data-id="<?= $sectionId ?>" class="section<?= $sectionId ?>">
@@ -45,6 +48,28 @@ $sName = 'sections[' . $sectionId . ']';
                 <input type="text" name="<?= $sName ?>[title]" value="<?= Html::encode($section->title ?: '') ?>"
                        required placeholder="<?= Yii::t('admin', 'motion_section_name_p') ?>" class="form-control">
             </label>
+
+            <?php if (count($supportedLanguages) > 1) { ?>
+                <label for="sectionLanguage<?= $sectionId ?>" class="sr-only"><?= Yii::t('admin', 'motion_section_language') ?></label>
+                <?php
+                $languageOptions = ['' => Yii::t('admin', 'motion_section_language_all')];
+                foreach ($supportedLanguages as $languageId) {
+                    $languageOptions[$languageId] = LanguageTools::getLanguageName($languageId);
+                }
+                echo Html::dropDownList(
+                    $sName . '[language]',
+                    $section->getLanguage() ?? '',
+                    $languageOptions,
+                    ['class' => 'form-control sectionLanguage', 'id' => 'sectionLanguage' . $sectionId]
+                );
+                ?>
+                <label class="sectionLanguageGrouping">
+                    <span class="sr-only"><?= Yii::t('admin', 'motion_section_language_group') ?></span>
+                    <input type="text" name="<?= $sName ?>[languageGrouping]" value="<?= Html::encode($section->getLanguageGrouping() ?? '') ?>"
+                           placeholder="<?= Yii::t('admin', 'motion_section_language_group_p') ?>" class="form-control">
+                </label>
+                <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_section_language_group_h')) ?>
+            <?php } ?>
 
         </div>
         <div class="bottomrow">

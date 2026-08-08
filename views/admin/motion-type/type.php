@@ -8,6 +8,7 @@ use yii\helpers\Html;
  * @var Yii\web\View $this
  * @var ConsultationMotionType $motionType
  * @var string $supportCollPolicyWarning
+ * @var string[] $languageSetupWarnings
  */
 
 /** @var \app\controllers\Base $controller */
@@ -83,6 +84,16 @@ echo $this->render('_pdf', ['motionType' => $motionType]);
 
     <h1 class="green"><?= Yii::t('admin', 'motion_section_title') ?></h1>
     <div class="content">
+
+        <?php if (count($languageSetupWarnings) > 0) { ?>
+            <div class="alert alert-warning languageSetupWarnings">
+                <ul>
+                    <?php foreach ($languageSetupWarnings as $warning) { ?>
+                        <li><?= Html::encode($warning) ?></li>
+                    <?php } ?>
+                </ul>
+            </div>
+        <?php } ?>
 
         <ul id="sectionsList">
             <?php

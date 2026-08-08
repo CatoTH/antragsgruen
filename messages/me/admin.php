@@ -482,6 +482,8 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'translating_hint' => 'Ovdje možete promijeniti sve tekstove korisničkog sučelja Antragsgrüna. Ako želite u potpunosti prevesti Antragsgrün na drugi jezik, <a href="https://github.com/CatoTH">kontaktirajte nas</a> kako bismo mogli usvojiti prijevod u službeni projekt. <br>', // Original: Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.<br>
     'translating_none' => 'Nema obaveza za prevođenje', // Original: No strings to translate
     'translating_base' => 'Osnovni jezik', // Original: Base language
+    'translating_supported' => 'Jezici koji se mogu izabrati', // Original: Selectable languages
+    'translating_supported_h' => 'Ako je ovdje izabrano više od jednog jezika, korisnici mogu izabrati jezik na kojem žele pregledati ovaj sajt. Tipovi predloga tada mogu ponuditi zasebne sekcije po jeziku.', // Original: If more than one language is selected here, users can choose the language they want to browse this site in. Motion types can then provide separate sections per language.
     'translation_motion_types' => 'Tekstovi vrsta predloga', // Original: Texts of motion types
     'translating_motion_types' => 'Tekstovi specifični za vrstu predloga', // Original: Motion type specific texts
     'translating_motion_type' => 'Tekstovi tipa predloga', // Original: Texts of the motion type

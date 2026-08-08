@@ -34,4 +34,5 @@ return [
     'menu_logout'           => 'Déconnexion',
     'menu_motion_list'      => 'Motions',
     'menu_todo'             => 'A faire',
+    'aria_language_switch'  => 'Afficher ce site en %LANGUAGE%',
 ];

@@ -470,6 +470,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
                                      '<strong>Hint:</strong> Changes here only affect this one consultation.',
     'translating_none'            => 'No strings to translate',
     'translating_base'            => 'Base language',
+    'translating_supported'       => 'Selecteerbare talen',
+    'translating_supported_h'     => 'Als hier meer dan één taal is geselecteerd, kunnen gebruikers kiezen in welke taal ze deze site bekijken. Moties kunnen dan aparte secties per taal aanbieden.',
     'translation_motion_types'    => 'Texts of motion types',
     'translating_motion_types'    => 'Motion type specific texts',
     'translating_motion_type'     => 'Texts of the motion type',

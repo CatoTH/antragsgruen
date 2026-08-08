@@ -162,7 +162,8 @@ class MotionTypeController extends AdminBase
 
         return new HtmlResponse($this->render('type', [
             'motionType'               => $motionType,
-            'supportCollPolicyWarning' => $supportCollPolicyWarning
+            'supportCollPolicyWarning' => $supportCollPolicyWarning,
+            'languageSetupWarnings'    => $motionType->getLanguageSetupWarnings(),
         ]));
     }
 

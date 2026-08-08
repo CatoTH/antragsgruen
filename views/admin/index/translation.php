@@ -7,7 +7,8 @@
  */
 
 use app\components\{HTMLTools, yii\MessageSource, UrlHelper};
-use app\models\db\Consultation;
+use app\models\db\{Consultation, User};
+use app\models\settings\Privileges;
 use yii\helpers\Html;
 use yii\i18n\I18N;
 
@@ -44,6 +45,25 @@ echo Html::dropDownList(
     ['class' => 'form-control', 'id' => 'wordingBase']
 );
 echo '</div></div>';
+
+if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
+    $supportedLanguages = $consultation->site->getSettings()->supportedLanguages;
+
+    echo '<fieldset class="stdTwoCols supportedLanguages">';
+    echo '<legend class="halfColumn">' . Yii::t('admin', 'translating_supported') . ':';
+    echo HTMLTools::getTooltipIcon(Yii::t('admin', 'translating_supported_h')) . '</legend>';
+    echo '<div class="halfColumn">';
+    foreach (MessageSource::getBaseLanguages() as $languageId => $languageName) {
+        echo '<label class="supportedLanguage">';
+        echo Html::checkbox('supportedLanguages[]', in_array($languageId, $supportedLanguages, true), [
+            'value' => $languageId,
+            'id'    => 'supportedLanguage' . $languageId,
+        ]);
+        echo ' ' . Html::encode($languageName);
+        echo '</label>';
+    }
+    echo '</div></fieldset>';
+}
 
 echo '<div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary">' . Yii::t('base', 'save') . '</button>

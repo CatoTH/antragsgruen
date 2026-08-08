@@ -148,6 +148,91 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     /**
+     * The distinct, non-null languages used by this motion type's sections.
+     *
+     * @return string[]
+     */
+    public function getDefinedSectionLanguages(): array
+    {
+        $languages = [];
+        foreach ($this->motionSections as $section) {
+            $language = $section->getLanguage();
+            if ($language !== null && !in_array($language, $languages, true)) {
+                $languages[] = $language;
+            }
+        }
+        return $languages;
+    }
+
+    /**
+     * A motion type that defines no language-specific sections at all is available in every
+     * language. Otherwise, it is only available in the languages it actually defines sections for.
+     */
+    public function isAvailableInLanguage(string $language): bool
+    {
+        $definedLanguages = $this->getDefinedSectionLanguages();
+
+        return (count($definedLanguages) === 0 || in_array($language, $definedLanguages, true));
+    }
+
+    /**
+     * The sections that are relevant for the given language: those without a language, plus those
+     * matching it.
+     *
+     * @return ConsultationSettingsMotionSection[]
+     */
+    public function getMotionSectionsForLanguage(string $language): array
+    {
+        return array_values(array_filter(
+            $this->motionSections,
+            fn (ConsultationSettingsMotionSection $section): bool => $section->matchesLanguage($language)
+        ));
+    }
+
+    /**
+     * Non-blocking hints about likely mistakes in the language setup of this motion type's sections:
+     * a language set without a language group, two sections of the same language sharing a group, or
+     * a group mixing different section types.
+     *
+     * @return string[]
+     */
+    public function getLanguageSetupWarnings(): array
+    {
+        $warnings = [];
+
+        /** @var array<string, ConsultationSettingsMotionSection[]> $byGrouping */
+        $byGrouping = [];
+        foreach ($this->motionSections as $section) {
+            $grouping = $section->getLanguageGrouping();
+            if ($grouping !== null) {
+                $byGrouping[$grouping][] = $section;
+            } elseif ($section->getLanguage() !== null) {
+                $warnings[] = str_replace('%SECTION%', $section->title, \Yii::t('admin', 'motion_section_language_warn_no_group'));
+            }
+        }
+
+        foreach ($byGrouping as $grouping => $sections) {
+            $languagesSeen = [];
+            $types         = [];
+            foreach ($sections as $section) {
+                $language = $section->getLanguage();
+                if ($language !== null && in_array($language, $languagesSeen, true)) {
+                    $warnings[] = str_replace('%GROUP%', $grouping, \Yii::t('admin', 'motion_section_language_warn_duplicate'));
+                }
+                if ($language !== null) {
+                    $languagesSeen[] = $language;
+                }
+                $types[] = $section->type;
+            }
+            if (count(array_unique($types)) > 1) {
+                $warnings[] = str_replace('%GROUP%', $grouping, \Yii::t('admin', 'motion_section_language_warn_mixed_types'));
+            }
+        }
+
+        return $warnings;
+    }
+
+    /**
      * @return ActiveQuery<ConsultationAgendaItem>
      */
     public function getAgendaItems(): ActiveQuery
