@@ -290,6 +290,7 @@ class AmendmentSection extends IMotionSection
 
     public function setData(string $data): void
     {
+        $this->clearAutofillMarker();
         $this->data = $data;
     }
 }

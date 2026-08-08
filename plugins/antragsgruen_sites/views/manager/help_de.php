@@ -30,6 +30,7 @@ $controller->layoutParams->addBreadcrumb('Hilfe');
                 <li><a href="/help/amendments">Änderungsanträge einreichen</a></li>
                 <li><a href="/help/progress-reports">Sachstandsberichte</a></li>
                 <li><a href="/help/roberts-rules">Versammlungen nach Robert’s Rules of Order</a></li>
+                <li><a href="/help/multi-language">Anträge in mehreren Sprachen</a></li>
             </ul>
         </li>
         <li>

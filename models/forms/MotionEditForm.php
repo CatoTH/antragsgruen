@@ -2,7 +2,7 @@
 
 namespace app\models\forms;
 
-use app\components\{HTMLTools, LanguageTools};
+use app\components\{HTMLTools, LanguageTools, SectionAutofill};
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
@@ -429,6 +429,8 @@ class MotionEditForm
         $motion->slug = $motion->createSlug();
         $motion->save();
 
+        SectionAutofill::fillEmptyMotionSections($motion);
+
         if (!$asDraft) {
             $motion->trigger(Motion::EVENT_CREATED, new MotionEvent($motion));
 
@@ -504,5 +506,13 @@ class MotionEditForm
         if ($this->allowTextEdit) {
             $this->updateTextRewritingAmendments($motion, $dto->sections, $amendmentOverrides);
         }
+
+        // Refresh first: overwriteSections()/updateTextRewritingAmendments() above may have added a
+        // section not yet reflected in $motion's already-cached sections relation (e.g. a section
+        // definition added since this motion was created), and text sections in particular are only
+        // written by updateTextRewritingAmendments(), not overwriteSections() - autofilling before
+        // that would look at their pre-edit content.
+        $motion->refresh();
+        SectionAutofill::fillEmptyMotionSections($motion);
     }
 }

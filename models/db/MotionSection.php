@@ -251,6 +251,8 @@ class MotionSection extends IMotionSection
 
     public function setData(string $data): void
     {
+        $this->clearAutofillMarker();
+
         if ($this->hasExternallySavedData()) {
             $this->data            = '';
             $this->toSaveDataSpool = $data;

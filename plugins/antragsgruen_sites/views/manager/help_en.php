@@ -36,6 +36,7 @@ $controller->layoutParams->addBreadcrumb('Help');
                 <li><a href="/help/roberts-rules">Running a meeting under Robert’s Rules of Order</a></li>
                 <li>Tutorial coming soon: Proposed procedures</li>
                 <li>Tutorial coming soon: Votings</li>
+                <li><a href="/help/multi-language">Motions in multiple languages</a></li>
             </ul>
         </li>
         <li>
