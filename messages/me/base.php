@@ -63,6 +63,7 @@ return [
     'aria_antragsgruen' => 'O softveru Antragsgrün', // Original: About the software Antragsgrün
     'aria_version_hint' => 'Antragsgrün verzija: %VERSION% - Dnevnik promjena', // Original: Antragsgrün version: %VERSION% - Change log
     'aria_language_switch' => 'Prikaži ovaj sajt na jeziku %LANGUAGE%', // Original: Show this site in %LANGUAGE%
+    'language_icon'         => '🇲🇪',
     'aria_tooltip' => 'Nagovještaj', // Original: Hint
     'aria_error' => 'Greška', // Original: Error
     'aria_info' => 'Informacije', // Original: Info

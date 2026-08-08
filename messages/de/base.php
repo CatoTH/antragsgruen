@@ -68,6 +68,7 @@ return [
     'aria_antragsgruen' => 'Vorstellung der Software Antragsgrün',
     'aria_version_hint' => 'Antragsgrün Version: %VERSION% - Änderungen dieser Version',
     'aria_language_switch' => 'Diese Seite auf %LANGUAGE% anzeigen',
+    'language_icon'         => '🇩🇪',
     'aria_tooltip'      => 'Erklärung',
     'aria_error'        => 'Fehler',
     'aria_info'         => 'Hinweis',

@@ -107,4 +107,15 @@ class LanguageToolsTest extends TestBase
         $this->assertSame('English', LanguageTools::getLanguageName('en'));
         $this->assertSame('klingon', LanguageTools::getLanguageName('klingon'));
     }
+
+    public function testLanguageIconsAreResolvedFromTheTargetLanguagesOwnMessages(): void
+    {
+        // Each language's icon comes from that language's own messages/<language>/base.php, not the
+        // one this test (or the current app) happens to be running in.
+        $this->assertSame('🇩🇪', LanguageTools::getLanguageIcon('de'));
+        $this->assertSame('🇬🇧', LanguageTools::getLanguageIcon('en'));
+        $this->assertSame('🇫🇷', LanguageTools::getLanguageIcon('fr'));
+        $this->assertSame('🇳🇱', LanguageTools::getLanguageIcon('nl'));
+        $this->assertSame('🇲🇪', LanguageTools::getLanguageIcon('me'));
+    }
 }

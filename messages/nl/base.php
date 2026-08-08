@@ -66,6 +66,7 @@ return [
     'aria_antragsgruen' => 'Over de Motion Tools software',
     'aria_version_hint' => 'Motion Tools versie: %VERSION% - Change log',
     'aria_language_switch' => 'Deze site in het %LANGUAGE% tonen',
+    'language_icon'         => '🇳🇱',
     'aria_tooltip'      => 'Hint',
     'aria_error'        => 'Fout',
     'aria_info'         => 'Informatie',

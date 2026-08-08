@@ -314,11 +314,12 @@ class StdHooks extends Hooks
                 continue;
             }
             $languageName = LanguageTools::getLanguageName($language);
+            $languageIcon = LanguageTools::getLanguageIcon($language);
             $url          = UrlHelper::createUrl(['/user/setlanguage', 'language' => $language, 'backUrl' => $backUrl]);
             $ariaLabel    = str_replace('%LANGUAGE%', $languageName, \Yii::t('base', 'aria_language_switch'));
 
             $out .= '<li class="languagePicker languagePicker' . Html::encode($language) . '">' .
-                    Html::a(Html::encode($languageName), $url, [
+                    Html::a(Html::encode($languageIcon), $url, [
                         'lang'       => $language,
                         'hreflang'   => $language,
                         'rel'        => 'nofollow',

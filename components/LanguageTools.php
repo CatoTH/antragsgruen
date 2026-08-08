@@ -174,6 +174,20 @@ class LanguageTools
     }
 
     /**
+     * An icon (flag emoji) representing the language, e.g. for the navbar language picker. Not a
+     * hard-coded map: each language provides its own icon via the "language_icon" message in its own
+     * messages/<language>/base.php, resolved here rather than in the current viewer's language - the
+     * icon is the same symbol no matter who is looking at it, but sourcing it from the target
+     * language's own translation file (instead of a static PHP array) keeps it next to that
+     * language's other self-descriptive strings (aria_language_switch, ...) and lets plugins
+     * providing a language override it like any other message.
+     */
+    public static function getLanguageIcon(string $language): string
+    {
+        return \Yii::t('base', 'language_icon', [], $language);
+    }
+
+    /**
      * Rendered output that varies by reader language (view/PDF caches, ...) may have a cached copy
      * under any of these languages, all of which need flushing together. On a single-language site
      * there is only ever one variant, in which case this returns the consultation's primary

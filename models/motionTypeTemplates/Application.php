@@ -52,109 +52,111 @@ class Application
 
     public static function doCreateApplicationSections(ConsultationMotionType $motionType): void
     {
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TITLE;
-        $section->position      = 0;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_app_name');
-        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
+        $builder = new SectionTemplateBuilder($motionType);
 
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_IMAGE;
-        $section->position      = 1;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_app_photo');
-        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 1;
-        $section->settings      = null;
-        $section->save();
+        $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
+            $section                = new ConsultationSettingsMotionSection();
+            $section->type          = ISectionType::TYPE_TITLE;
+            $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+            $section->title         = \Yii::t('structure', 'preset_app_name', [], $language);
+            $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
+            $section->maxLen        = 0;
+            $section->fixedWidth    = 0;
+            $section->lineNumbers   = 0;
+            $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+            $section->hasAmendments = 0;
+            $section->positionRight = 0;
+            $section->settings      = null;
+            return $section;
+        }, true, 'name');
 
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TABULAR;
-        $section->position      = 2;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_app_data');
-        $section->required      = ConsultationSettingsMotionSection::REQUIRED_NO;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 1;
-        $section->settings      = null;
-        $section->data          = json_encode(
-            [
-                'maxRowId' => 2,
-                'rows'     => [
-                    '1' => new TabularDataType(
-                        [
-                            'rowId' => '1',
-                            'title' => \Yii::t('structure', 'preset_app_age'),
-                            'type'  => TabularDataType::TYPE_INTEGER,
-                        ]
-                    ),
-                    '4' => new TabularDataType(
-                        [
-                            'rowId' => '3',
-                            'title' => \Yii::t('structure', 'preset_app_birthcity'),
-                            'type'  => TabularDataType::TYPE_STRING,
-                        ]
-                    ),
+        $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
+            $section                = new ConsultationSettingsMotionSection();
+            $section->type          = ISectionType::TYPE_IMAGE;
+            $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+            $section->title         = \Yii::t('structure', 'preset_app_photo', [], $language);
+            $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
+            $section->maxLen        = 0;
+            $section->fixedWidth    = 0;
+            $section->lineNumbers   = 0;
+            $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+            $section->hasAmendments = 0;
+            $section->positionRight = 1;
+            $section->settings      = null;
+            return $section;
+        }, false);
+
+        $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
+            $section                = new ConsultationSettingsMotionSection();
+            $section->type          = ISectionType::TYPE_TABULAR;
+            $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+            $section->title         = \Yii::t('structure', 'preset_app_data', [], $language);
+            $section->required      = ConsultationSettingsMotionSection::REQUIRED_NO;
+            $section->maxLen        = 0;
+            $section->fixedWidth    = 0;
+            $section->lineNumbers   = 0;
+            $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+            $section->hasAmendments = 0;
+            $section->positionRight = 1;
+            $section->settings      = null;
+            $section->data          = json_encode(
+                [
+                    'maxRowId' => 2,
+                    'rows'     => [
+                        '1' => new TabularDataType(
+                            [
+                                'rowId' => '1',
+                                'title' => \Yii::t('structure', 'preset_app_age'),
+                                'type'  => TabularDataType::TYPE_INTEGER,
+                            ]
+                        ),
+                        '4' => new TabularDataType(
+                            [
+                                'rowId' => '3',
+                                'title' => \Yii::t('structure', 'preset_app_birthcity'),
+                                'type'  => TabularDataType::TYPE_STRING,
+                            ]
+                        ),
+                    ],
                 ],
-            ],
-            JSON_THROW_ON_ERROR
-        );
-        $section->save();
+                JSON_THROW_ON_ERROR
+            );
+            return $section;
+        }, false);
 
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position      = 3;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_app_intro');
-        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
+        $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
+            $section                = new ConsultationSettingsMotionSection();
+            $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
+            $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+            $section->title         = \Yii::t('structure', 'preset_app_intro', [], $language);
+            $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
+            $section->maxLen        = 0;
+            $section->fixedWidth    = 0;
+            $section->lineNumbers   = 0;
+            $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+            $section->hasAmendments = 0;
+            $section->positionRight = 0;
+            $section->settings      = null;
+            return $section;
+        }, true, 'intro');
 
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_IMAGE;
-        $section->position      = 4;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_app_signature');
-        $section->required      = ConsultationSettingsMotionSection::REQUIRED_NO;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 0;
-        $settings = $section->getSettingsObj();
-        $settings->imgMaxWidth  = 5;
-        $settings->imgMaxHeight = 3;
-        $section->setSettingsObj($settings);
-        $section->save();
+        $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
+            $section                = new ConsultationSettingsMotionSection();
+            $section->type          = ISectionType::TYPE_IMAGE;
+            $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+            $section->title         = \Yii::t('structure', 'preset_app_signature', [], $language);
+            $section->required      = ConsultationSettingsMotionSection::REQUIRED_NO;
+            $section->maxLen        = 0;
+            $section->fixedWidth    = 0;
+            $section->lineNumbers   = 0;
+            $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+            $section->hasAmendments = 0;
+            $section->positionRight = 0;
+            $settings                = $section->getSettingsObj();
+            $settings->imgMaxWidth   = 5;
+            $settings->imgMaxHeight  = 3;
+            $section->setSettingsObj($settings);
+            return $section;
+        }, false);
     }
 }
