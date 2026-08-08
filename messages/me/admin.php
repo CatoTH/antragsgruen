@@ -316,6 +316,10 @@ return [
     'con_title_comments' => 'Komentari', // Original: Comments
     'con_comment_screening' => '<strong>Pregled</strong> komentara', // Original: <strong>Reviewing</strong> of comments
     'con_comment_email' => 'Enforced unošenje <strong>adrese e-pošte</strong>', // Original: Enforce entering the <strong>e-mail address</strong>
+    'con_title_multilang' => 'Podrška za više jezika', // Original: Multi-language support
+    'con_multilang_activate' => 'Aktiviraj podršku za više jezika (napredna funkcija)', // Original: Activate Multi-Language Support (advanced feature)
+    'con_multilang_activate_h' => 'Omogućava korisnicima da izaberu jezik na kojem pregledaju ovaj sajt, i omogućava predlozima/amandmanima da imaju sadržaj na više jezika istovremeno.', // Original: Lets users choose the language they browse this site in, and lets motions/amendments provide content in several languages in parallel.
+    'con_multilang_languages' => 'Dostupni jezici', // Original: Available languages
     'con_title_email' => 'E-pošta', // Original: E-mails
     'con_email_admins' => 'Administratori', // Original: Admins
     'con_send_motion_email' => 'Pošaljite potvrdni e-mail Predlagaču predloga kada je objavljen', // Original: Send a confirmation e-mail to the proposer of a motion when it is published
@@ -482,8 +486,6 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'translating_hint' => 'Ovdje možete promijeniti sve tekstove korisničkog sučelja Antragsgrüna. Ako želite u potpunosti prevesti Antragsgrün na drugi jezik, <a href="https://github.com/CatoTH">kontaktirajte nas</a> kako bismo mogli usvojiti prijevod u službeni projekt. <br>', // Original: Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.<br>
     'translating_none' => 'Nema obaveza za prevođenje', // Original: No strings to translate
     'translating_base' => 'Osnovni jezik', // Original: Base language
-    'translating_supported' => 'Jezici koji se mogu izabrati', // Original: Selectable languages
-    'translating_supported_h' => 'Ako je ovdje izabrano više od jednog jezika, korisnici mogu izabrati jezik na kojem žele pregledati ovaj sajt. Tipovi predloga tada mogu ponuditi zasebne sekcije po jeziku.', // Original: If more than one language is selected here, users can choose the language they want to browse this site in. Motion types can then provide separate sections per language.
     'translation_motion_types' => 'Tekstovi vrsta predloga', // Original: Texts of motion types
     'translating_motion_types' => 'Tekstovi specifični za vrstu predloga', // Original: Motion type specific texts
     'translating_motion_type' => 'Tekstovi tipa predloga', // Original: Texts of the motion type

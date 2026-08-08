@@ -6,7 +6,7 @@ use app\components\updater\UpdateChecker;
 use app\models\api\{SpeechQueue as SpeechQueueApi};
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
-use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper, yii\MessageSource};
+use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
@@ -289,20 +289,6 @@ class IndexController extends AdminBase
         if ($this->isPostSet('save') && $this->isPostSet('wordingBase')) {
             $consultation->wordingBase = $this->getHttpRequest()->post('wordingBase');
             $consultation->save();
-
-            if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) {
-                $knownLanguages = MessageSource::getBaseLanguages();
-                $siteSettings   = $consultation->site->getSettings();
-
-                $siteSettings->supportedLanguages = array_values(array_filter(
-                    (array)$this->getHttpRequest()->post('supportedLanguages', []),
-                    fn ($language): bool => is_string($language) && isset($knownLanguages[$language])
-                ));
-
-                $consultation->site->setSettings($siteSettings);
-                $consultation->site->save();
-            }
-
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
