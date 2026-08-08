@@ -285,12 +285,18 @@ class AmendmentSection extends IMotionSection
 
     public function getData(): string
     {
-        return $this->data;
+        /** @phpstan-ignore-next-line */
+        return ($this->data === null ? '' : $this->data); // null = not yet populated, e.g. a freshly constructed section
     }
 
     public function setData(string $data): void
     {
-        $this->clearAutofillMarker();
+        // setAmendmentData() is called for every submitted section on every save, whether or not its
+        // content actually changed - only clear the marker on a genuine edit, so re-saving an
+        // amendment without touching an auto-filled section keeps it marked as such.
+        if ($data !== $this->getData()) {
+            $this->clearAutofillMarker();
+        }
         $this->data = $data;
     }
 }

@@ -5,6 +5,8 @@ if (defined('YII_ENV')) {
     die('Recursive call?');
 }
 
+ini_set('max_execution_time', 300);
+
 if (in_array(@$_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) && file_exists(__DIR__ . '/../config/TEST_DOMAIN')) {
     if ($_SERVER['HTTP_HOST'] === trim(file_get_contents(__DIR__ . '/../config/TEST_DOMAIN'))) {
         defined('YII_DEBUG') or define('YII_DEBUG', false);

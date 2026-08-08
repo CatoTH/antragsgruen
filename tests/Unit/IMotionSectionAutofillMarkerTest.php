@@ -58,4 +58,17 @@ class IMotionSectionAutofillMarkerTest extends DBTestBase
 
         $this->assertNull($section->getAutofillPluginId());
     }
+
+    public function testSettingTheSameDataPreservesTheAutofillMarker(): void
+    {
+        $section = new AmendmentSection();
+        $section->setData('Generated text');
+        $section->markAsAutofilled('translation_claude');
+
+        // Admin forms resubmit every section's current value on every save, whether or not the admin
+        // actually touched it - re-setting the identical value must not be mistaken for an edit.
+        $section->setData('Generated text');
+
+        $this->assertSame('translation_claude', $section->getAutofillPluginId());
+    }
 }

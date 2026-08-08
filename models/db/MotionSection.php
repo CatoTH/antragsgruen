@@ -251,7 +251,12 @@ class MotionSection extends IMotionSection
 
     public function setData(string $data): void
     {
-        $this->clearAutofillMarker();
+        // setMotionData() is called for every submitted section on every save, whether or not its
+        // content actually changed - only clear the marker on a genuine edit, so re-saving a motion
+        // without touching an auto-filled section keeps it marked as such.
+        if ($data !== $this->getData()) {
+            $this->clearAutofillMarker();
+        }
 
         if ($this->hasExternallySavedData()) {
             $this->data            = '';

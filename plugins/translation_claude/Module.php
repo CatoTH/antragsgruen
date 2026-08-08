@@ -23,7 +23,7 @@ class Module extends ModuleBase
 {
     public static function fillEmptyMotionSectionContent(Motion $motion, MotionSection $section): ?string
     {
-        $credentials = Credentials::load();
+        $credentials = static::loadCredentials();
         if ($credentials === null) {
             return null;
         }
@@ -33,11 +33,22 @@ class Module extends ModuleBase
 
     public static function fillEmptyAmendmentSectionContent(Amendment $amendment, AmendmentSection $section): ?string
     {
-        $credentials = Credentials::load();
+        $credentials = static::loadCredentials();
         if ($credentials === null) {
             return null;
         }
 
         return (new SectionTranslator($credentials))->translateAmendmentSection($amendment, $section);
+    }
+
+    /**
+     * Indirection (rather than calling Credentials::load() directly above) purely so tests can
+     * override this in a subclass to force the "no credentials" branch deterministically - depending
+     * on whether plugins/translation_claude/credentials.json happens to exist locally would make
+     * those tests pass or fail depending on the developer's own configuration.
+     */
+    protected static function loadCredentials(): ?Credentials
+    {
+        return Credentials::load();
     }
 }

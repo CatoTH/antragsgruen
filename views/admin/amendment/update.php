@@ -1,7 +1,7 @@
 <?php
 
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{MotionSorter, Tools, UrlHelper};
+use app\components\{HTMLTools, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, ConsultationSettingsTag, Motion, User};
 use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
@@ -388,6 +388,7 @@ if (!$amendment->textFixed && User::havePrivilege($consultation, Privileges::PRI
             /** @var \app\models\sectionTypes\TextSimple $sectionType */
             $sectionType->forceMultipleParagraphMode(true);
         }
+        echo HTMLTools::getSectionAutofillHint($section);
         echo $sectionType->getAmendmentFormField();
     }
 

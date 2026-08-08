@@ -1,7 +1,7 @@
 <?php
 
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{MotionSorter, Tools, UrlHelper};
+use app\components\{HTMLTools, MotionSorter, Tools, UrlHelper};
 use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
@@ -425,6 +425,7 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, P
             if ($motion->getTitleSection() && $section->sectionId === $motion->getTitleSection()->sectionId) {
                 continue;
             }
+            echo HTMLTools::getSectionAutofillHint($section);
             echo $section->getSectionType()->getMotionFormField();
         }
 

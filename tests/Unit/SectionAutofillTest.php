@@ -153,6 +153,26 @@ class SectionAutofillTest extends DBTestBase
         $this->assertNull($section->getAutofillPluginId());
     }
 
+    public function testResavingAnAutofilledMotionSectionUnchangedPreservesTheMarker(): void
+    {
+        self::activatePlugin('test_stub_autofill');
+
+        $motionType = self::createMotionType(2306, 'Text');
+        $motion     = self::createMotion($motionType, 2306, '');
+
+        SectionAutofill::fillEmptyMotionSections($motion);
+        $motion->refresh();
+        $section = $motion->getActiveSections()[0];
+        $this->assertSame('test_stub_autofill', $section->getAutofillPluginId());
+
+        // Admin forms (views/admin/motion/update.php) resubmit every section's current value on
+        // every save, whether or not the admin actually edited it - MotionEditForm::
+        // setAndVerifySectionContent() calls setMotionData()/setData() unconditionally either way.
+        // Saving without a real change must not clear the marker.
+        $section->setData($section->getData());
+        $this->assertSame('test_stub_autofill', $section->getAutofillPluginId());
+    }
+
     private static function createAmendment(Motion $motion): \app\models\db\Amendment
     {
         $amendment                        = new \app\models\db\Amendment();

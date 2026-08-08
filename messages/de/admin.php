@@ -65,6 +65,7 @@ return [
     'motion_screened'             => 'Der Antrag wurde freigeschaltet.',
     'motion_edit_text'            => 'Text bearbeiten',
     'motion_edit_text_warn'       => '<strong>Vorsicht:</strong> Wenn es bereits Änderungsanträge und Kommentare zu einem Antrag gibt, ist es gefährlich, den Text zu ändern, da sich die Absatzzuordnung ändern und sich zusätzliche Änderungen einschleichen könnten.',
+    'section_autofill_hint'       => 'Dieser Text wurde automatisch erzeugt (z.B. übersetzt) und wurde noch nicht von einem Menschen überprüft.',
     'motion_edit_btn'             => 'Bearbeiten',
     'motion_edit_supporters'      => 'Unterstützer*innen',
     'motion_edit_supporters_add'  => 'Unterstützer*in hinzufügen',

@@ -68,6 +68,7 @@ return [
     'motion_screened'             => 'The motion has been published.',
     'motion_edit_text'            => 'Edit text',
     'motion_edit_text_warn'       => '<strong>Warning:</strong> It\'s dangerous to edit the text once there are comments or amendments to the motion! Please don\'t do this unless you really know what you are doing.',
+    'section_autofill_hint'       => 'This text was generated automatically (e.g. translated) and has not yet been reviewed by a human.',
     'motion_edit_btn'             => 'Edit',
     'motion_edit_supporters'      => 'Supporters',
     'motion_edit_supporters_add'  => 'Add supporter',
