@@ -13,32 +13,41 @@ use app\plugins\ModuleBase;
  * supported languages and the submitter only filled in their own (D10 in
  * multilanguage-implementation.md), this plugin translates it from whichever other language of the
  * same motion/amendment does have content - see SectionTranslator for how the source is chosen and
- * Prompts for what is actually sent to Claude.
+ * Prompts for what is actually sent to Claude. All of a motion's/amendment's empty sections are
+ * translated in a single batched API call, not one call per section - see SectionTranslator.
  *
- * Inactive (returns null, so SectionAutofill leaves the section empty) whenever
+ * Inactive (returns an empty array, so SectionAutofill leaves every section empty) whenever
  * plugins/translation_claude/credentials.json is missing or incomplete - see
  * credentials.example.json.
  */
 class Module extends ModuleBase
 {
-    public static function fillEmptyMotionSectionContent(Motion $motion, MotionSection $section): ?string
+    /**
+     * @param MotionSection[] $sections
+     * @return array<int, string>
+     */
+    public static function fillEmptyMotionSectionsContent(Motion $motion, array $sections): array
     {
         $credentials = static::loadCredentials();
         if ($credentials === null) {
-            return null;
+            return [];
         }
 
-        return (new SectionTranslator($credentials))->translateMotionSection($motion, $section);
+        return (new SectionTranslator($credentials))->translateMotionSections($motion, $sections);
     }
 
-    public static function fillEmptyAmendmentSectionContent(Amendment $amendment, AmendmentSection $section): ?string
+    /**
+     * @param AmendmentSection[] $sections
+     * @return array<int, string>
+     */
+    public static function fillEmptyAmendmentSectionsContent(Amendment $amendment, array $sections): array
     {
         $credentials = static::loadCredentials();
         if ($credentials === null) {
-            return null;
+            return [];
         }
 
-        return (new SectionTranslator($credentials))->translateAmendmentSection($amendment, $section);
+        return (new SectionTranslator($credentials))->translateAmendmentSections($amendment, $sections);
     }
 
     /**

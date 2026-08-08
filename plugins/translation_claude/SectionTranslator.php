@@ -8,9 +8,10 @@ use app\components\LanguageTools;
 use app\models\db\{Amendment, AmendmentSection, Consultation, IMotionSection, Motion, MotionSection};
 
 /**
- * Finds a suitable source section to translate from and calls Claude for it. Split out from the
- * static Module hooks (ModuleBase requires those to be static) purely so it can be unit-tested with
- * an injected ClaudeClient instead of making real API calls.
+ * Builds one batched translation request per motion/amendment - covering every section
+ * SectionAutofill found empty, not one request per section - and calls Claude for it. Split out from
+ * the static Module hooks (ModuleBase requires those to be static) purely so it can be unit-tested
+ * with an injected ClaudeClient instead of making real API calls.
  */
 class SectionTranslator
 {
@@ -21,70 +22,126 @@ class SectionTranslator
         $this->client = $client ?? new ClaudeClient($credentials);
     }
 
-    public function translateMotionSection(Motion $motion, MotionSection $section): ?string
+    /**
+     * @param MotionSection[] $sections the sections to (try to) translate - already known to be empty
+     * @return array<int, string> sectionId => translated content, only for sections a source could be
+     *         found for; omitted sections simply couldn't be translated (no grouping, no source
+     *         section with content, ...)
+     */
+    public function translateMotionSections(Motion $motion, array $sections): array
     {
-        $targetLanguage = $section->getSettings()?->getLanguage();
-        $grouping = $section->getSettings()?->getLanguageGrouping();
-        if ($targetLanguage === null || $grouping === null) {
-            return null;
+        $consultation = $motion->getMyConsultation();
+        $allSections = $motion->getActiveSections();
+
+        $tasks = [];
+        foreach ($sections as $section) {
+            $targetLanguage = $section->getSettings()?->getLanguage();
+            $grouping = $section->getSettings()?->getLanguageGrouping();
+            if ($targetLanguage === null || $grouping === null) {
+                continue;
+            }
+
+            $source = self::findTranslationSource($allSections, $section, $grouping, $consultation);
+            $sourceLanguage = $source?->getSettings()?->getLanguage();
+            if ($source === null || $sourceLanguage === null) {
+                continue;
+            }
+
+            $tasks[$section->sectionId] = [
+                'sourceLanguage' => LanguageTools::getLanguageName($sourceLanguage),
+                'targetLanguage' => LanguageTools::getLanguageName($targetLanguage),
+                'sourceHtml' => $source->getData(),
+            ];
         }
 
-        /** @var MotionSection|null $source */
-        $source = self::findTranslationSource($motion->getActiveSections(), $section, $grouping, $motion->getMyConsultation());
-        if ($source === null) {
-            return null;
-        }
-        $sourceLanguage = $source->getSettings()?->getLanguage();
-        if ($sourceLanguage === null) {
-            return null;
+        if (count($tasks) === 0) {
+            return [];
         }
 
-        $systemPrompt = Prompts::motionSectionSystemPrompt(
-            LanguageTools::getLanguageName($sourceLanguage),
-            LanguageTools::getLanguageName($targetLanguage)
+        $result = $this->client->sendStructuredMessage(
+            Prompts::motionSectionsBatchSystemPrompt(),
+            Prompts::motionSectionsBatchUserMessage($tasks),
+            Prompts::translationsToolSchema()
         );
 
-        return $this->client->sendMessage($systemPrompt, $source->getData());
+        return self::parseBatchResult($result);
     }
 
-    public function translateAmendmentSection(Amendment $amendment, AmendmentSection $section): ?string
+    /**
+     * @param AmendmentSection[] $sections
+     * @return array<int, string>
+     */
+    public function translateAmendmentSections(Amendment $amendment, array $sections): array
     {
-        $targetLanguage = $section->getSettings()?->getLanguage();
-        $grouping = $section->getSettings()?->getLanguageGrouping();
-        if ($targetLanguage === null || $grouping === null) {
-            return null;
+        $consultation = $amendment->getMyConsultation();
+        $allSections = $amendment->getActiveSections();
+
+        $tasks = [];
+        foreach ($sections as $section) {
+            $targetLanguage = $section->getSettings()?->getLanguage();
+            $grouping = $section->getSettings()?->getLanguageGrouping();
+            if ($targetLanguage === null || $grouping === null) {
+                continue;
+            }
+
+            $targetMotionOriginal = $section->getOriginalMotionSection();
+            if ($targetMotionOriginal === null) {
+                continue;
+            }
+
+            $sourceSection = self::findTranslationSource($allSections, $section, $grouping, $consultation);
+            $sourceLanguage = $sourceSection?->getSettings()?->getLanguage();
+            if ($sourceSection === null || $sourceLanguage === null) {
+                continue;
+            }
+            /** @var AmendmentSection $sourceSection */
+            $sourceMotionOriginal = $sourceSection->getOriginalMotionSection();
+            if ($sourceMotionOriginal === null) {
+                continue;
+            }
+
+            $tasks[$section->sectionId] = [
+                'sourceLanguage' => LanguageTools::getLanguageName($sourceLanguage),
+                'targetLanguage' => LanguageTools::getLanguageName($targetLanguage),
+                'originalMotionHtml' => $sourceMotionOriginal->getData(),
+                'amendedHtml' => $sourceSection->getData(),
+                'existingMotionTranslationHtml' => $targetMotionOriginal->getData(),
+            ];
         }
 
-        $targetMotionOriginal = $section->getOriginalMotionSection();
-        if ($targetMotionOriginal === null) {
-            return null;
+        if (count($tasks) === 0) {
+            return [];
         }
 
-        /** @var AmendmentSection|null $sourceSection */
-        $sourceSection = self::findTranslationSource($amendment->getActiveSections(), $section, $grouping, $amendment->getMyConsultation());
-        if ($sourceSection === null) {
-            return null;
-        }
-        $sourceLanguage = $sourceSection->getSettings()?->getLanguage();
-        if ($sourceLanguage === null) {
-            return null;
-        }
-        $sourceMotionOriginal = $sourceSection->getOriginalMotionSection();
-        if ($sourceMotionOriginal === null) {
-            return null;
-        }
-
-        $sourceLanguageName = LanguageTools::getLanguageName($sourceLanguage);
-        $targetLanguageName = LanguageTools::getLanguageName($targetLanguage);
-
-        $systemPrompt = Prompts::amendmentSectionSystemPrompt($sourceLanguageName, $targetLanguageName);
-        $userMessage = Prompts::amendmentSectionUserMessage(
-            $sourceMotionOriginal->getData(),
-            $sourceSection->getData(),
-            $targetMotionOriginal->getData()
+        $result = $this->client->sendStructuredMessage(
+            Prompts::amendmentSectionsBatchSystemPrompt(),
+            Prompts::amendmentSectionsBatchUserMessage($tasks),
+            Prompts::translationsToolSchema()
         );
 
-        return $this->client->sendMessage($systemPrompt, $userMessage);
+        return self::parseBatchResult($result);
+    }
+
+    /**
+     * @param array<string, mixed>|null $toolResult the already-decoded tool_use "input", or null on
+     *        any request failure (see ClaudeClient::sendStructuredMessage())
+     * @return array<int, string>
+     */
+    private static function parseBatchResult(?array $toolResult): array
+    {
+        $result = [];
+        foreach (($toolResult['translations'] ?? []) as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+            $sectionId = $entry['sectionId'] ?? null;
+            $translatedHtml = $entry['translatedHtml'] ?? null;
+            if (is_int($sectionId) && is_string($translatedHtml) && trim($translatedHtml) !== '') {
+                $result[$sectionId] = $translatedHtml;
+            }
+        }
+
+        return $result;
     }
 
     /**

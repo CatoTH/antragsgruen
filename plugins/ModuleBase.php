@@ -406,28 +406,38 @@ class ModuleBase extends Module
 
     /**
      * Lets a plugin - e.g. one integrating a translation or text-generation API - offer content for
-     * a motion section that is currently empty. Called by components\SectionAutofill, never with a
-     * section that already has content. Return null if this plugin has nothing to contribute; the
-     * first active plugin to return a non-null string wins.
+     * some or all of $motion's currently empty sections, in a single batch. Called once per motion
+     * (not once per section) by components\SectionAutofill, so a plugin that talks to an external API
+     * can combine what would otherwise be one request per section into one request for the whole
+     * motion. $sections is exactly the subset of $motion's sections that are currently empty
+     * (IMotionSection::hasContentForFiltering() === false) - never a section that already has content.
      *
-     * $motion is passed alongside $section (rather than the plugin calling $section->getMotion()
+     * Return a sectionId => content map. Sections omitted from the returned array (or present in an
+     * empty array) are left untouched and, if a later-configured plugin exists, offered to it next.
+     * $motion is passed alongside $sections (rather than the plugin calling $section->getMotion()
      * itself) purely as a convenience - it's already known to the caller and virtually every
      * implementation will need it to look at sibling sections.
+     *
+     * @param MotionSection[] $sections
+     * @return array<int, string>
      */
-    public static function fillEmptyMotionSectionContent(Motion $motion, MotionSection $section): ?string
+    public static function fillEmptyMotionSectionsContent(Motion $motion, array $sections): array
     {
-        return null;
+        return [];
     }
 
     /**
-     * The amendment-section equivalent of fillEmptyMotionSectionContent(). Note that an amendment
+     * The amendment-section equivalent of fillEmptyMotionSectionsContent(). Note that an amendment
      * section is always pre-filled with the motion's original text, even where the amendment doesn't
      * touch it - components\SectionAutofill treats a section as "empty" here based on
      * IMotionSection::hasContentForFiltering() (does it actually differ from the original?), not raw
      * string emptiness.
+     *
+     * @param AmendmentSection[] $sections
+     * @return array<int, string>
      */
-    public static function fillEmptyAmendmentSectionContent(Amendment $amendment, AmendmentSection $section): ?string
+    public static function fillEmptyAmendmentSectionsContent(Amendment $amendment, array $sections): array
     {
-        return null;
+        return [];
     }
 }

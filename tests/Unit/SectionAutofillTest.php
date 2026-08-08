@@ -13,32 +13,34 @@ use app\models\db\{AmendmentSection, Consultation, ConsultationMotionType, Consu
 use Tests\Support\Helper\DBTestBase;
 
 /**
- * Covers components/SectionAutofill.php end to end, using the test-fixture plugin
- * plugins/test_stub_autofill/Module.php as the only active
- * ModuleBase::fillEmptyMotionSectionContent()/fillEmptyAmendmentSectionContent() implementation -
- * this file is about SectionAutofill's own dispatch logic (empty-check, metadata marking), not about
- * any particular translation backend; plugins/translation_claude has its own dedicated tests. DB-backed
- * for the same reason as MotionSectionLanguageFilterTest - ConsultationSettingsMotionSection/
- * MotionSection are ActiveRecord classes, so even reading a property requires a DB schema lookup.
+ * Covers components/SectionAutofill.php end to end, using the test-fixture plugins
+ * plugins/test_stub_autofill/Module.php and plugins/test_stub_autofill_even_only/Module.php as the
+ * active ModuleBase::fillEmptyMotionSectionsContent()/fillEmptyAmendmentSectionsContent()
+ * implementations - this file is about SectionAutofill's own dispatch logic (empty-check, batch
+ * dispatch, multi-plugin fallback, metadata marking), not about any particular translation backend;
+ * plugins/translation_claude has its own dedicated tests. DB-backed for the same reason as
+ * MotionSectionLanguageFilterTest - ConsultationSettingsMotionSection/MotionSection are ActiveRecord
+ * classes, so even reading a property requires a DB schema lookup.
  */
 #[Group('database')]
 class SectionAutofillTest extends DBTestBase
 {
     /**
      * No plugin is in the test config's active plugin list by default (activating one there would
-     * affect every other test creating a motion/amendment). Activating one only for the duration of
-     * a single test via reflection keeps the blast radius to this file.
+     * affect every other test creating a motion/amendment). Activating some only for the duration of
+     * a single test via reflection keeps the blast radius to this file. Order matters, matching
+     * AntragsgruenApp::getActivePlugins() - the first plugin gets first refusal on each section.
      */
-    private static function activatePlugin(?string $pluginId): void
+    private static function activatePlugin(string ...$pluginIds): void
     {
         $ref = new \ReflectionProperty(AntragsgruenApp::class, 'plugins');
         $ref->setAccessible(true);
-        $ref->setValue(AntragsgruenApp::getInstance(), ($pluginId === null ? [] : [$pluginId]));
+        $ref->setValue(AntragsgruenApp::getInstance(), $pluginIds);
     }
 
     protected function tearDown(): void
     {
-        self::activatePlugin(null);
+        self::activatePlugin();
         parent::tearDown();
     }
 
@@ -124,7 +126,7 @@ class SectionAutofillTest extends DBTestBase
 
     public function testNothingIsFilledWithoutAnActivePlugin(): void
     {
-        self::activatePlugin(null);
+        self::activatePlugin();
 
         $motionType = self::createMotionType(2302, 'Text');
         $motion     = self::createMotion($motionType, 2302, '');
@@ -249,5 +251,50 @@ class SectionAutofillTest extends DBTestBase
         $unchanged = $amendment->getActiveSections()[0];
         $this->assertSame('Geänderter Text', $unchanged->getData());
         $this->assertNull($unchanged->getAutofillPluginId());
+    }
+
+    public function testASectionLeftEmptyByOnePluginIsOfferedToTheNextOne(): void
+    {
+        // test_stub_autofill_even_only only fills sections with an even sectionId; test_stub_autofill
+        // (second in line) fills everything - proving SectionAutofill offers a plugin's leftovers to
+        // the next plugin rather than giving up on the whole motion after the first one.
+        self::activatePlugin('test_stub_autofill_even_only', 'test_stub_autofill');
+
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+        $motionType   = MotionTemplate::doCreateMotionType($consultation);
+        $motionType->link('motionSections', self::createSectionType(2310, 'Even'));
+        $motionType->link('motionSections', self::createSectionType(2311, 'Odd'));
+
+        $motion                          = new Motion();
+        $motion->motionTypeId            = $motionType->id;
+        $motion->consultationId          = $motionType->consultationId;
+        $motion->title                   = '';
+        $motion->titlePrefix             = '';
+        $motion->version                 = Motion::VERSION_DEFAULT;
+        $motion->status                  = Motion::STATUS_DRAFT;
+        $motion->dateCreation            = date('Y-m-d H:i:s');
+        $motion->dateContentModification = date('Y-m-d H:i:s');
+        $motion->cache                   = '';
+        $motion->save();
+
+        foreach ([2310, 2311] as $sectionId) {
+            $section = MotionSection::createEmpty($sectionId, MotionSectionSettings::PUBLIC_YES, $motion->id);
+            $section->setData('');
+            $section->save();
+        }
+
+        SectionAutofill::fillEmptyMotionSections($motion);
+
+        $motion->refresh();
+        $sections = [];
+        foreach ($motion->getActiveSections() as $section) {
+            $sections[$section->sectionId] = $section;
+        }
+
+        $this->assertSame('dummy-even', $sections[2310]->getData());
+        $this->assertSame('test_stub_autofill_even_only', $sections[2310]->getAutofillPluginId());
+        $this->assertSame('dummy', $sections[2311]->getData());
+        $this->assertSame('test_stub_autofill', $sections[2311]->getAutofillPluginId());
     }
 }
