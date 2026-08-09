@@ -7,7 +7,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\MotionDeepCopy;
 use app\models\policies\Nobody;
 use CatoTH\HTML2OpenDocument\Text;
-use app\components\{DateTools, Tools, UrlHelper};
+use app\components\{DateTools, LanguageTools, Tools, UrlHelper};
 use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
@@ -145,6 +145,91 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
             }
         }
         return null;
+    }
+
+    /**
+     * The distinct, non-null languages used by this motion type's sections.
+     *
+     * @return string[]
+     */
+    public function getDefinedSectionLanguages(): array
+    {
+        $languages = [];
+        foreach ($this->motionSections as $section) {
+            $language = $section->getLanguage();
+            if ($language !== null && !in_array($language, $languages, true)) {
+                $languages[] = $language;
+            }
+        }
+        return $languages;
+    }
+
+    /**
+     * A motion type that defines no language-specific sections at all is available in every
+     * language. Otherwise, it is only available in the languages it actually defines sections for.
+     */
+    public function isAvailableInLanguage(string $language): bool
+    {
+        $definedLanguages = $this->getDefinedSectionLanguages();
+
+        return (count($definedLanguages) === 0 || in_array($language, $definedLanguages, true));
+    }
+
+    /**
+     * The sections that are relevant for the given language: those without a language, plus those
+     * matching it.
+     *
+     * @return ConsultationSettingsMotionSection[]
+     */
+    public function getMotionSectionsForLanguage(string $language): array
+    {
+        return array_values(array_filter(
+            $this->motionSections,
+            fn (ConsultationSettingsMotionSection $section): bool => $section->matchesLanguage($language)
+        ));
+    }
+
+    /**
+     * Non-blocking hints about likely mistakes in the language setup of this motion type's sections:
+     * a language set without a language group, two sections of the same language sharing a group, or
+     * a group mixing different section types.
+     *
+     * @return string[]
+     */
+    public function getLanguageSetupWarnings(): array
+    {
+        $warnings = [];
+
+        /** @var array<string, ConsultationSettingsMotionSection[]> $byGrouping */
+        $byGrouping = [];
+        foreach ($this->motionSections as $section) {
+            $grouping = $section->getLanguageGrouping();
+            if ($grouping !== null) {
+                $byGrouping[$grouping][] = $section;
+            } elseif ($section->getLanguage() !== null) {
+                $warnings[] = str_replace('%SECTION%', $section->title, \Yii::t('admin', 'motion_section_language_warn_no_group'));
+            }
+        }
+
+        foreach ($byGrouping as $grouping => $sections) {
+            $languagesSeen = [];
+            $types         = [];
+            foreach ($sections as $section) {
+                $language = $section->getLanguage();
+                if ($language !== null && in_array($language, $languagesSeen, true)) {
+                    $warnings[] = str_replace('%GROUP%', $grouping, \Yii::t('admin', 'motion_section_language_warn_duplicate'));
+                }
+                if ($language !== null) {
+                    $languagesSeen[] = $language;
+                }
+                $types[] = $section->type;
+            }
+            if (count(array_unique($types)) > 1) {
+                $warnings[] = str_replace('%GROUP%', $grouping, \Yii::t('admin', 'motion_section_language_warn_mixed_types'));
+            }
+        }
+
+        return $warnings;
     }
 
     /**
@@ -533,6 +618,59 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     /**
+     * $titleSingular/$titlePlural/$createTitle in the given (or, by default, the reader's current)
+     * language - see MotionType::$labelTranslations. On a single-language site, or for the
+     * consultation's primary language, or if no override is defined, these are always the DB column
+     * value itself.
+     */
+    public function getTitleSingularForDisplay(?string $language = null): string
+    {
+        return $this->getLabelForDisplay('titleSingular', $this->titleSingular, $language);
+    }
+
+    public function getTitlePluralForDisplay(?string $language = null): string
+    {
+        return $this->getLabelForDisplay('titlePlural', $this->titlePlural, $language);
+    }
+
+    public function getCreateTitleForDisplay(?string $language = null): string
+    {
+        return $this->getLabelForDisplay('createTitle', $this->createTitle, $language);
+    }
+
+    private function getLabelForDisplay(string $field, string $mainLanguageValue, ?string $language): string
+    {
+        $language ??= LanguageTools::getCurrentLanguage();
+        if ($language === LanguageTools::getPrimaryLanguage($this->getConsultation())) {
+            return $mainLanguageValue;
+        }
+
+        $translation = $this->getSettingsObj()->labelTranslations[$language][$field] ?? '';
+
+        return ($translation !== '' ? $translation : $mainLanguageValue);
+    }
+
+    /**
+     * For prefilling the admin translation form - the raw override, without falling back to the
+     * main-language value, so an empty field in the form means "no override" rather than repeating
+     * the default.
+     */
+    public function getLabelTranslation(string $language, string $field): string
+    {
+        return $this->getSettingsObj()->labelTranslations[$language][$field] ?? '';
+    }
+
+    /**
+     * @param array<string, array{titleSingular?: string, titlePlural?: string, createTitle?: string}> $translations
+     */
+    public function setLabelTranslations(array $translations): void
+    {
+        $settings = $this->getSettingsObj();
+        $settings->labelTranslations = $translations;
+        $this->setSettingsObj($settings);
+    }
+
+    /**
      * @return Motion[]
      */
     public function getVisibleMotions(bool $withdrawnAreVisible = true): array
@@ -571,6 +709,9 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
 
     public function mayCreateIMotion(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
+        if (!$this->isAvailableInLanguage(LanguageTools::getCurrentLanguage())) {
+            return false;
+        }
         if ($this->amendmentsOnly) {
             return $this->getAmendmentPolicy()->checkCurrUserAmendment($allowAdmins, $assumeLoggedIn);
         } else {

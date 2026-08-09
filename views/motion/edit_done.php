@@ -20,7 +20,7 @@ $layout->robotsNoindex = true;
 if ($motion->getFormattedTitlePrefix()) {
     $layout->addBreadcrumb($motion->getFormattedTitlePrefix(), UrlHelper::createMotionUrl($motion));
 } else {
-    $layout->addBreadcrumb($motionType->titleSingular, UrlHelper::createMotionUrl($motion));
+    $layout->addBreadcrumb($motionType->getTitleSingularForDisplay(), UrlHelper::createMotionUrl($motion));
 }
 $layout->addBreadcrumb(Yii::t('motion', 'edit_bread'));
 

@@ -126,7 +126,7 @@ if (!$canInitiateAsPerson && $canInitiateAsOrganization) {
     if ($settings->initiatorCanBePerson && is_a($policy, \app\models\policies\UserGroups::class)) {
         // If submitting as person (delegate) is restricted by group, let's show an information for others.
         $allowedGroups = array_map(fn(\app\models\db\ConsultationUserGroup $group) => $group->getNormalizedTitle(), $policy->getAllowedUserGroups());
-        $typeName = ($isAmendment ? Yii::t('amend', 'amendments') : $motionType->titlePlural);
+        $typeName = ($isAmendment ? Yii::t('amend', 'amendments') : $motionType->getTitlePluralForDisplay());
         echo '<div class="alert alert-info noPersonInitiatorPossible"><p>';
         echo str_replace(["%GROUPS%", "%TYPE%"], [implode(", ", $allowedGroups), $typeName], Yii::t('motion', 'err_not_as_person_info'));
         echo '</p></div>';

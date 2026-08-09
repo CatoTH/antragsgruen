@@ -21,6 +21,14 @@ class Site implements \JsonSerializable
     public array $stylesheetSettings = [];
     public array $apiCorsOrigins = [];
 
+    /**
+     * The languages this site can be browsed in, e.g. ['de', 'en'].
+     * Less than two entries means that no language switching is offered at all.
+     *
+     * @var string[]
+     */
+    public array $supportedLanguages = [];
+
     public const LOGIN_STD = 0;
     public const LOGIN_GRUENES_NETZ = 1;
     public const LOGIN_EXTERNAL = 3;

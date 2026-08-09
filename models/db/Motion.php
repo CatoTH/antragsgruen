@@ -12,12 +12,12 @@ use app\models\notifications\{MotionPublished,
     MotionCreated as MotionCreatedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
-use app\components\{HashedStaticCache, IMotionStatusFilter, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{HashedStaticCache, IMotionStatusFilter, LanguageTools, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{Access, FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
 use app\models\events\MotionEvent;
-use app\models\sectionTypes\{Image, ISectionType, PDF};
+use app\models\sectionTypes\{Image, ISectionType, PDF, SectionLanguageMode};
 use app\models\supportTypes\SupportBase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use yii\db\ActiveQuery;
@@ -378,10 +378,7 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return string ("Application: John <Doe>")
-     */
-    public function getTitleWithIntro(): string
+    private function buildTitleWithIntro(string $title): string
     {
         try {
             $intro = $this->getMyMotionType()->getSettingsObj()->motionTitleIntro;
@@ -392,7 +389,34 @@ class Motion extends IMotion implements IRSSItem
             $intro .= ' ';
         }
 
-        return $intro . $this->title;
+        return $intro . $title;
+    }
+
+    /**
+     * @return string ("Application: John <Doe>")
+     */
+    public function getTitleWithIntro(): string
+    {
+        return $this->buildTitleWithIntro($this->title);
+    }
+
+    /**
+     * The title in the given (or, by default, the reader's current) language, falling back to the
+     * canonical $this->title (set by refreshTitle()) if no title section matches or it is empty.
+     * Lives here rather than on IMotion, since Amendment has no $this->title to fall back to.
+     */
+    public function getTitleForDisplay(?string $language = null): string
+    {
+        return $this->getTitleSectionForDisplay($language)?->getData() ?? $this->title;
+    }
+
+    /**
+     * Like getTitleWithIntro(), but using the title in the given (or, by default, the reader's
+     * current) language - see getTitleForDisplay() for the fallback rules.
+     */
+    public function getTitleWithIntroForDisplay(?string $language = null): string
+    {
+        return $this->buildTitleWithIntro($this->getTitleForDisplay($language));
     }
 
     public function showTitlePrefix(): bool
@@ -404,19 +428,33 @@ class Motion extends IMotion implements IRSSItem
         );
     }
 
-    public function getTitleWithPrefix(): string
+    private function buildTitleWithPrefix(string $titleWithIntro): string
     {
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $this->getTitleWithIntro();
+            return $titleWithIntro;
         }
 
         $name = $this->getFormattedTitlePrefix();
         if (grapheme_strlen($name) > 1 && !in_array(grapheme_substr($name, grapheme_strlen($name) - 1, 1), [':', '.'])) {
             $name .= ':';
         }
-        $name .= ' ' . $this->getTitleWithIntro();
+        $name .= ' ' . $titleWithIntro;
 
         return $name; // unencoded string, e.g. "A1: Application: John <Doe>"
+    }
+
+    public function getTitleWithPrefix(): string
+    {
+        return $this->buildTitleWithPrefix($this->getTitleWithIntro());
+    }
+
+    /**
+     * Like getTitleWithPrefix(), but using the title in the given (or, by default, the reader's
+     * current) language - see getTitleForDisplay() for the fallback rules.
+     */
+    public function getTitleWithPrefixForDisplay(?string $language = null): string
+    {
+        return $this->buildTitleWithPrefix($this->getTitleWithIntroForDisplay($language));
     }
 
     public function getEncodedTitleWithPrefix(): string
@@ -427,6 +465,20 @@ class Motion extends IMotion implements IRSSItem
         $title = str_replace("\n", "<br>", $title);
 
         return $title; // encoded string, e.g. "A1: Application: John &lt;Doe&gt;"
+    }
+
+    /**
+     * Like getEncodedTitleWithPrefix(), but using the title in the given (or, by default, the
+     * reader's current) language - see getTitleForDisplay() for the fallback rules.
+     */
+    public function getEncodedTitleWithPrefixForDisplay(?string $language = null): string
+    {
+        $title = $this->getTitleWithPrefixForDisplay($language);
+        $title = Html::encode($title);
+        $title = str_replace(" - \n", "<br>", $title);
+        $title = str_replace("\n", "<br>", $title);
+
+        return $title;
     }
 
     public function getFormattedVersion(): string
@@ -646,7 +698,8 @@ class Motion extends IMotion implements IRSSItem
         }
 
         $num = 0;
-        foreach ($this->getSortedSections() as $section) {
+        // All languages: line counts must be stable regardless of the reader's browsing language.
+        foreach ($this->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             /** @var MotionSection $section */
             $num += $section->getNumberOfCountableLines();
         }
@@ -1011,7 +1064,9 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
+        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+            HashedStaticCache::getInstance($this->getPdfCacheKey($language), null)->setIsBulky(true)->flushCache();
+        }
         foreach ($this->amendments as $amend) {
             $amend->flushCacheWithChildren($items);
         }
@@ -1020,16 +1075,18 @@ class Motion extends IMotion implements IRSSItem
 
     public function flushViewCache(): void
     {
-        HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this), null)->setIsBulky(true)->flushCache();
-        HashedStaticCache::getInstance($this->getPdfCacheKey(), null)->setIsBulky(true)->flushCache();
+        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+            HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this, $language), null)->setIsBulky(true)->flushCache();
+            HashedStaticCache::getInstance($this->getPdfCacheKey($language), null)->setIsBulky(true)->flushCache();
+        }
         MotionRepository::flushCaches();
         LayoutHelper::flushViewCaches($this->getMyConsultation());
         AdminTodoItem::flushConsultationTodoCount($this->getMyConsultation());
     }
 
-    public function getPdfCacheKey(): string
+    public function getPdfCacheKey(?string $language = null): string
     {
-        return 'motion-pdf-' . $this->id;
+        return 'motion-pdf-' . $this->id . '-' . ($language ?? LanguageTools::getCurrentLanguage());
     }
 
     public function getFilenameBase(bool $noUmlaut): string
@@ -1072,7 +1129,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->getFormattedTitlePrefix() && !$this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->getFormattedTitlePrefix();
         } else {
-            return $this->getMyMotionType()->titleSingular;
+            return $this->getMyMotionType()->getTitleSingularForDisplay();
         }
     }
 
@@ -1178,8 +1235,10 @@ class Motion extends IMotion implements IRSSItem
             $amendment->setMotionType($motionType, $sectionMapping);
         }
 
+        // All languages: every section must be remapped to the new type, or sections in a language
+        // other than the reader's would be silently orphaned.
         /** @var MotionSection[] $mySections */
-        $mySections = $this->getSortedSections(false);
+        $mySections = $this->getSortedSections(false, false, SectionLanguageMode::AllLanguages);
         for ($i = 0; $i < count($mySections); $i++) {
             /** @var ConsultationSettingsMotionSection $newSection */
             $newSection = $motionType->getSectionById($sectionMapping[$mySections[$i]->sectionId]);
@@ -1380,7 +1439,9 @@ class Motion extends IMotion implements IRSSItem
             ];
         }
 
-        foreach ($this->getSortedSections(false) as $section) {
+        // All languages: this is a complete personal-data export, nothing should be silently
+        // dropped because it's in a language other than whoever triggered the export is browsing in.
+        foreach ($this->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             $type = $section->getSettings()->type;
             if ($type === ISectionType::TYPE_IMAGE) {
                 /** @var Image $type */

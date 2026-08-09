@@ -25,8 +25,8 @@ if ($motion->isResolution()) {
     $prevLabel = Yii::t('motion', 'prevnext_links_prev_res');
     $nextLabel = Yii::t('motion', 'prevnext_links_next_res');
 } else {
-    $prevLabel = str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, Yii::t('motion', 'prevnext_links_prev'));
-    $nextLabel = str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, Yii::t('motion', 'prevnext_links_next'));
+    $prevLabel = str_replace('%TYPE%', $motion->getMyMotionType()->getTitleSingularForDisplay(), Yii::t('motion', 'prevnext_links_prev'));
+    $nextLabel = str_replace('%TYPE%', $motion->getMyMotionType()->getTitleSingularForDisplay(), Yii::t('motion', 'prevnext_links_next'));
 }
 
 ?>

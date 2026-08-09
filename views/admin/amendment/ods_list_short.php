@@ -2,6 +2,7 @@
 
 use app\components\HTMLTools;
 use app\models\db\{Amendment, Motion};
+use app\models\sectionTypes\SectionLanguageMode;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
@@ -105,7 +106,8 @@ foreach ($amendments as $amendmentGroup) {
             $change .= '<h4>' . Yii::t('amend', 'editorial_hint') . '</h4>';
             $change .= $amendment->changeEditorial;
         }
-        foreach ($amendment->getSortedSections(false) as $section) {
+        // All languages: admin export.
+        foreach ($amendment->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             $change .= $section->getSectionType()->getAmendmentODS();
         }
         if ($textCombined && !$isNonRelevantReason($amendment->changeExplanation)) {

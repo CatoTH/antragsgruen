@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\models\SectionedParagraph;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\amendmentMerger\SectionMerger, HashedStaticCache, HTMLTools, LineSplitter};
-use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\{ISectionType, SectionLanguageMode};
 use app\models\exceptions\Internal;
 use yii\db\ActiveQuery;
 
@@ -241,7 +241,7 @@ class MotionSection extends IMotionSection
                 ISectionType::TYPE_PDF_ATTACHMENT,
                 ISectionType::TYPE_IMAGE
             ])) {
-                return base64_decode($this->data);
+                return base64_decode($this->data ?? '');
             } else {
                 /** @phpstan-ignore-next-line */
                 return ($this->data === null ? '' : $this->data); // null = created on-the-fly, e.g. when responding to petitions
@@ -251,6 +251,13 @@ class MotionSection extends IMotionSection
 
     public function setData(string $data): void
     {
+        // setMotionData() is called for every submitted section on every save, whether or not its
+        // content actually changed - only clear the marker on a genuine edit, so re-saving a motion
+        // without touching an auto-filled section keeps it marked as such.
+        if ($data !== $this->getData()) {
+            $this->clearAutofillMarker();
+        }
+
         if ($this->hasExternallySavedData()) {
             $this->data            = '';
             $this->toSaveDataSpool = $data;
@@ -456,7 +463,9 @@ class MotionSection extends IMotionSection
     {
         $motion   = $this->getConsultation()->getMotion($this->motionId);
         $lineNo   = $motion->getFirstLineNumber();
-        $sections = $motion->getSortedSections(false, true);
+        // All languages: this is a pure line-count lookup that must find $this regardless of the
+        // reader's browsing language, and line numbers must stay stable no matter who's reading.
+        $sections = $motion->getSortedSections(false, true, SectionLanguageMode::AllLanguages);
         foreach ($sections as $section) {
             /** @var MotionSection $section */
             if ($section->sectionId === $this->sectionId) {

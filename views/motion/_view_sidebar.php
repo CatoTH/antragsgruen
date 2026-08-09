@@ -78,7 +78,7 @@ if ($motion->canMergeAmendments()) {
 if ($motion->canEditText()) {
     $editLi = '<li class="edit">';
     $title  = '<span class="icon glyphicon glyphicon-edit" aria-hidden="true"></span>' .
-        str_replace('%TYPE%', Html::encode($motion->motionType->titleSingular), Yii::t('motion', 'motion_edit'));
+        str_replace('%TYPE%', Html::encode($motion->motionType->getTitleSingularForDisplay()), Yii::t('motion', 'motion_edit'));
     $editLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'edit')) . '</li>';
     $html .= $editLi;
     $menusHtmlSmall[] = $editLi;
@@ -88,7 +88,7 @@ if ($motion->canEditText()) {
 if ($motion->canWithdraw()) {
     $withdrawLi = '<li class="withdraw">';
     $title      = '<span class="icon glyphicon glyphicon-remove" aria-hidden="true"></span>' .
-        str_replace('%TYPE%', Html::encode($motion->motionType->titleSingular), Yii::t('motion', 'motion_withdraw'));
+        str_replace('%TYPE%', Html::encode($motion->motionType->getTitleSingularForDisplay()), Yii::t('motion', 'motion_withdraw'));
     $withdrawLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'withdraw')) . '</li>';
     $html .= $withdrawLi;
     $menusHtmlSmall[] = $withdrawLi;

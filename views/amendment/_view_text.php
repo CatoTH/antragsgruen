@@ -6,8 +6,10 @@
  * @var AmendmentProposal $proposal
  */
 
+use app\components\HTMLTools;
 use app\models\db\{Amendment, AmendmentProposal, AmendmentSection};
 use app\views\amendment\LayoutHelper;
+use yii\helpers\Html;
 
 $consultation = $amendment->getMyConsultation();
 $isAmendingOtherAmendment = ($amendment->getMyMotionType()->amendmentsOnly && $amendment->amendedAmendment);
@@ -38,7 +40,16 @@ if ($isAmendingOtherAmendment) {
 foreach ($sections as $section) {
     $sectionType = $section->getSectionType();
     $sectionType->setTitlePrefix($prefix);
-    echo $sectionType->getAmendmentFormatted();
+
+    $languageHint = HTMLTools::getSectionLanguageHint($section);
+    if ($languageHint !== '') {
+        echo '<div lang="' . Html::encode((string) $section->getDisplayLanguage()) . '">';
+        echo $languageHint;
+        echo $sectionType->getAmendmentFormatted();
+        echo '</div>';
+    } else {
+        echo $sectionType->getAmendmentFormatted();
+    }
 
     if ($isAmendingOtherAmendment) {
         /** @var Amendment $amendedAmendment */

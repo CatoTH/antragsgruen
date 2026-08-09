@@ -14,6 +14,7 @@ export class ConsultationSettings {
         this.initSingleMotionMode();
         this.initConPwd();
         this.initManagedAccounts();
+        this.initMultiLanguage();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -133,6 +134,23 @@ export class ConsultationSettings {
                 this.element.querySelector('.allowRequestingAccess').classList.remove("hidden");
             } else {
                 this.element.querySelector('.allowRequestingAccess').classList.add("hidden");
+            }
+        };
+        checkbox.addEventListener('change', onCheckboxChange);
+        onCheckboxChange();
+    }
+
+    initMultiLanguage() {
+        const checkbox = this.element.querySelector('#multiLanguageActivate');
+        if (!checkbox) {
+            return;
+        }
+        const settings = this.element.querySelector('.multiLanguageSettings');
+        const onCheckboxChange = () => {
+            if (checkbox.checked) {
+                settings.classList.remove("hidden");
+            } else {
+                settings.classList.add("hidden");
             }
         };
         checkbox.addEventListener('change', onCheckboxChange);

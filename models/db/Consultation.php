@@ -688,7 +688,7 @@ class Consultation extends ActiveRecord
             if ($found) {
                 $result            = new SearchResult();
                 $result->id        = 'motion' . $motion->id;
-                $result->typeTitle = $motion->motionType->titleSingular;
+                $result->typeTitle = $motion->motionType->getTitleSingularForDisplay();
                 $result->type      = SearchResult::TYPE_MOTION;
                 $result->title     = $motion->getTitleWithPrefix();
                 $result->link      = UrlHelper::createMotionUrl($motion, 'view', $backParams);

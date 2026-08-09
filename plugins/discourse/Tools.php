@@ -6,6 +6,7 @@ namespace app\plugins\discourse;
 
 use app\models\db\{Amendment, Consultation, IMotion, Motion};
 use app\components\HTMLTools;
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 class Tools
@@ -78,7 +79,9 @@ class Tools
 
         $body = Html::encode($motion->getMyMotionType()->titleSingular . ' von: ' . $motion->getInitiatorsStr()) . "<br>\n"
                 . Html::encode('Link: ' . $motion->getLink(true)) . "<br>\n<br>\n";
-        foreach ($motion->getSortedSections(true) as $section) {
+        // All languages: this is posted once, publicly, to an external forum - nothing should be
+        // silently dropped depending on who happened to trigger it.
+        foreach ($motion->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
             $body .= '<div>';
             $body .= $section->getSectionType()->getMotionPlainHtml();
             $body .= '</div>';
@@ -116,7 +119,8 @@ class Tools
 
         $body = Html::encode('Änderungsantrag von: ' . $amendment->getInitiatorsStr()) . "<br>\n"
                 . Html::encode('Link: ' . $amendment->getLink(true)) . "<br>\n<br>\n";
-        foreach ($amendment->getSortedSections(true) as $section) {
+        // All languages, for the same reason as createMotionTopic() above.
+        foreach ($amendment->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
             $body .= '<div>';
             $body .= $section->getSectionType()->getAmendmentPlainHtml();
             $body .= '</div>';

@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\Motion;
+use app\models\sectionTypes\SectionLanguageMode;
 
 /**
  * @var \yii\web\View $this
@@ -19,7 +20,8 @@ foreach ($motions as $motion) {
     $motionData[] = $motion->title;
     $text         = '';
     $reason       = '';
-    foreach ($motion->getSortedSections(true) as $section) {
+    // All languages: admin export.
+    foreach ($motion->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
         $html = $section->getSectionType()->getMotionPlainHtml();
         if ($section->getSettings()->title == Yii::t('export', 'motion_reason')) {
             $reason .= $html;

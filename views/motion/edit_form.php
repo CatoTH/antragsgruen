@@ -20,11 +20,11 @@ $layout     = $controller->layoutParams;
 $isAmendmentsOnly = !!$form->motionType->amendmentsOnly;
 
 if ($isAmendmentsOnly) {
-    $this->title = $form->motionType->titleSingular . ': ' . Yii::t('motion', 'statutes_base_head');
+    $this->title = $form->motionType->getTitleSingularForDisplay() . ': ' . Yii::t('motion', 'statutes_base_head');
 } elseif ($mode === 'create') {
-    $this->title = $form->motionType->createTitle;
+    $this->title = $form->motionType->getCreateTitleForDisplay();
 } else {
-    $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, Yii::t('motion', 'motion_edit'));
+    $this->title = str_replace('%TYPE%', $form->motionType->getTitleSingularForDisplay(), Yii::t('motion', 'motion_edit'));
 }
 $layout->robotsNoindex = true;
 
@@ -127,7 +127,7 @@ if (!$isAmendmentsOnly) {
     ]);
 }
 
-foreach ($form->sections as $section) {
+foreach ($form->getSectionsToRender() as $section) {
     echo $section->getSectionType()->getMotionFormField();
 }
 

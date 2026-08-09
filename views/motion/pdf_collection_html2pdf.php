@@ -13,7 +13,7 @@ use app\views\motion\{LayoutHelper as MotionLayoutHelper};
 $motionType = $imotions[0]->getMyMotionType();
 
 $pdf = new IPdfWriter();
-$title = str_replace('%TITLE%', $motionType->titlePlural, Yii::t('export', 'all_motions_title'));
+$title = str_replace('%TITLE%', $motionType->getTitlePluralForDisplay(), Yii::t('export', 'all_motions_title'));
 $pdf->SetCreator(Yii::t('export', 'default_creator'));
 $pdf->SetAuthor(Yii::t('export', 'default_creator'));
 $pdf->SetTitle($title);
@@ -36,4 +36,4 @@ foreach ($imotions as $imotion) {
 }
 
 
-$pdf->Output(Tools::sanitizeFilename($motionType->titlePlural, true) . '.pdf', 'I');
+$pdf->Output(Tools::sanitizeFilename($motionType->getTitlePluralForDisplay(), true) . '.pdf', 'I');

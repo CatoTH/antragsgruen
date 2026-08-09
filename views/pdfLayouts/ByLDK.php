@@ -64,7 +64,7 @@ class ByLDK extends IPDFLayout
             );
         }
 
-        $str = $motion->motionType->titleSingular;
+        $str = $motion->motionType->getTitleSingularForDisplay();
         $pdf->SetFont('helvetica', 'B', 25);
         $width = (float)$pdf->GetStringWidth($str);
 
@@ -184,7 +184,7 @@ class ByLDK extends IPDFLayout
             );
         }
 
-        $str = $amendment->getMyMotion()->motionType->titleSingular;
+        $str = $amendment->getMyMotion()->motionType->getTitleSingularForDisplay();
         $pdf->SetFont('helvetica', 'B', 25);
         $width = (float)$pdf->GetStringWidth($str);
 

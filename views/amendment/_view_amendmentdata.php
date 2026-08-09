@@ -34,7 +34,7 @@ if ($amendment->amendingAmendmentId && $amendment->amendedAmendment) {
 if (!$motionType->amendmentsOnly) {
     $amendmentData[] = [
         'rowClass' => 'motionRow',
-        'title' => $motionType->titleSingular,
+        'title' => $motionType->getTitleSingularForDisplay(),
         'content' => Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)),
     ];
 }

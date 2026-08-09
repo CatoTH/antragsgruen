@@ -2,7 +2,7 @@
 
 namespace app\models\settings;
 
-use app\components\{RequestContext, StaticResourceTools, yii\MessageSource, UrlHelper};
+use app\components\{LanguageTools, RequestContext, StaticResourceTools, yii\MessageSource, UrlHelper};
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\models\exceptions\Internal;
@@ -153,15 +153,32 @@ class Layout
         $this->consultation = $consultation;
         if (count($this->breadcrumbs) === 0) {
             if ($consultation->getForcedMotion()) {
-                $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->getForcedMotion()->motionType->titleSingular;
+                $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->getForcedMotion()->motionType->getTitleSingularForDisplay();
             } else {
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->titleShort;
             }
         }
+        \Yii::$app->language = self::getLanguageForConsultation($consultation);
+    }
+
+    /**
+     * The language the UI is to be rendered in. On single-language sites, this is the language of the
+     * consultation's wording base, as it always was. If the user chose a different language, the plain
+     * base language is used - wording variants only exist for the primary language.
+     */
+    private static function getLanguageForConsultation(Consultation $consultation): string
+    {
+        $currentLanguage = LanguageTools::getCurrentLanguage();
+        if ($currentLanguage !== LanguageTools::getPrimaryLanguage($consultation)) {
+            return $currentLanguage;
+        }
+
         $language = substr($consultation->wordingBase, 0, 2);
         if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
-            \Yii::$app->language = $language;
+            return $language;
         }
+
+        return \Yii::$app->language;
     }
 
     public function addCSS(string $file): self
@@ -238,13 +255,8 @@ class Layout
                 return 'en';
             }
         }
-        $langs = explode(',', $this->consultation->wordingBase);
-        $lang  = explode('-', $langs[0]);
-        if (isset(MessageSource::getBaseLanguages()[$lang[0]])) {
-            return $lang[0];
-        } else {
-            return 'en';
-        }
+
+        return LanguageTools::getCurrentLanguage();
     }
 
     /**

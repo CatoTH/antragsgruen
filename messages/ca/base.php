@@ -37,6 +37,8 @@ return [
 	'aria_footer' => 'Condicions legals i informació del Software',
 	'aria_antragsgruen' => 'Sobre el software Antragsgrün',
 	'aria_version_hint' => 'Versió d\'Antragsgrün: %VERSION% - Canviar log',
+	'aria_language_switch' => 'Mostra aquest lloc en %LANGUAGE%',
+	'language_icon'         => '🏳️',
 	'aria_tooltip' => 'Pista',
 	'aria_error' => 'Error',
 	'aria_info' => 'Informació',

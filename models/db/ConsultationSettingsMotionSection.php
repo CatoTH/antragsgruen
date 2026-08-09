@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\HTMLTools;
+use app\components\{HTMLTools, LanguageTools};
 use app\models\sectionTypes\{ISectionType, TabularData};
 use app\models\settings\{AntragsgruenApp, MotionSection as MotionSectionSettings};
 use yii\db\{ActiveQuery, ActiveRecord};
@@ -90,6 +90,24 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         $this->settings = json_encode($settings, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
 
+    public function getLanguage(): ?string
+    {
+        return $this->getSettingsObj()->language;
+    }
+
+    public function getLanguageGrouping(): ?string
+    {
+        return $this->getSettingsObj()->languageGrouping;
+    }
+
+    /**
+     * A section without a language applies to every language.
+     */
+    public function matchesLanguage(string $language): bool
+    {
+        return ($this->getLanguage() === null || $this->getLanguage() === $language);
+    }
+
     public function setAdminAttributes(array $data): void
     {
         $this->setAttributes($data);
@@ -141,6 +159,20 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         }
         $settings->showInHtml = (isset($data['showInHtml']) || !in_array($this->type, [ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_TITLE]));
         $settings->isRtl = isset($data['isRtl']);
+
+        if (isset($data['language']) && is_string($data['language']) && trim($data['language']) !== '') {
+            $language = trim($data['language']);
+            $supportedLanguages = LanguageTools::getSupportedLanguages($this->motionType->getConsultation()->site);
+            $settings->language = (in_array($language, $supportedLanguages, true) ? $language : null);
+        } else {
+            $settings->language = null;
+        }
+        if (isset($data['languageGrouping']) && is_string($data['languageGrouping']) && trim($data['languageGrouping']) !== '') {
+            $settings->languageGrouping = mb_strtolower(trim($data['languageGrouping']));
+        } else {
+            $settings->languageGrouping = null;
+        }
+
         $this->setSettingsObj($settings);
     }
 

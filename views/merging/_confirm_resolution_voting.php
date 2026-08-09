@@ -61,7 +61,7 @@ foreach (\app\models\settings\AntragsgruenApp::getActivePlugins() as $plugin) {
         if (count($compatibleTypes) > 1) {
             $options = [];
             foreach ($compatibleTypes as $motionType) {
-                $options[$motionType->id] = $motionType->titleSingular;
+                $options[$motionType->id] = $motionType->getTitleSingularForDisplay();
             }
             $attrs = ['id' => 'motionType', 'class' => 'stdDropdown fullsize'];
             echo '<label for="newMotionType">' . Yii::t('amend', 'merge_new_motion_type') . '</label>';

@@ -238,6 +238,15 @@ class ManagerController extends Base
         }
     }
 
+    public function actionMultiLanguage(): HtmlResponse
+    {
+        if (\Yii::$app->language === 'de') {
+            return new HtmlResponse($this->render('help_multilanguage_de'));
+        } else {
+            return new HtmlResponse($this->render('help_multilanguage_en'));
+        }
+    }
+
     /**
      * @return Site[]
      */

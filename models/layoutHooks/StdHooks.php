@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\layoutHooks;
 
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
-use app\components\{HTMLTools, RequestContext, StaticResourceTools, Tools, UrlHelper};
+use app\components\{HTMLTools, LanguageTools, RequestContext, StaticResourceTools, Tools, UrlHelper};
 use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
@@ -296,6 +296,41 @@ class StdHooks extends Hooks
         return '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
     }
 
+    /**
+     * Offers the languages this site can be browsed in, except for the one currently in use.
+     * Returns an empty string on single-language sites.
+     */
+    public static function getLanguagePickerNavbarEntries(string $backUrl): string
+    {
+        if (!LanguageTools::isMultiLanguageSite()) {
+            return '';
+        }
+
+        $currentLanguage = LanguageTools::getCurrentLanguage();
+
+        $out = '';
+        foreach (LanguageTools::getSupportedLanguages() as $language) {
+            if ($language === $currentLanguage) {
+                continue;
+            }
+            $languageName = LanguageTools::getLanguageName($language);
+            $languageIcon = LanguageTools::getLanguageIcon($language);
+            $url          = UrlHelper::createUrl(['/user/setlanguage', 'language' => $language, 'backUrl' => $backUrl]);
+            $ariaLabel    = str_replace('%LANGUAGE%', $languageName, \Yii::t('base', 'aria_language_switch'));
+
+            $out .= '<li class="languagePicker languagePicker' . Html::encode($language) . '">' .
+                    Html::a(Html::encode($languageIcon), $url, [
+                        'lang'       => $language,
+                        'hreflang'   => $language,
+                        'rel'        => 'nofollow',
+                        'aria-label' => $ariaLabel,
+                        'title'      => $ariaLabel,
+                    ]) . '</li>';
+        }
+
+        return $out;
+    }
+
     public function getStdNavbarHeader(string $before): string
     {
         $out = '<ul class="nav navbar-nav">';
@@ -392,6 +427,8 @@ class StdHooks extends Hooks
                 $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow', 'aria-label' => $loginTitle]) .
                                '</li>';
             }
+
+            $out .= self::getLanguagePickerNavbarEntries(RequestContext::getWebRequest()->url);
         }
         $out .= '</ul>';
 
@@ -465,7 +502,7 @@ class StdHooks extends Hooks
 
         foreach ($motionTypes as $motionType) {
             $link        = $motionType->getCreateLink(false, true);
-            $description = $motionType->createTitle;
+            $description = $motionType->getCreateTitleForDisplay();
 
             $html      .= '<a class="createMotion createMotion' . $motionType->id . '" ' .
                           'href="' . Html::encode($link) . '" title="' . Html::encode($description) . '" rel="nofollow">' .
@@ -515,7 +552,7 @@ class StdHooks extends Hooks
                 if (!isset($deadlines[$deadline])) {
                     $deadlines[$deadline] = ['date' => $deadline, 'titles' => []];
                 }
-                $deadlines[$deadline]['titles'][] = $motionType->titlePlural;
+                $deadlines[$deadline]['titles'][] = $motionType->getTitlePluralForDisplay();
             }
 
             $deadline = $motionType->getUpcomingDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);

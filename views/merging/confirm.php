@@ -3,6 +3,7 @@
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\Draft;
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 /**
@@ -22,7 +23,7 @@ $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotion
 $layout->addBreadcrumb(Yii::t('amend', 'merge_confirm_title'));
 $layout->loadDatepicker();
 
-$title       = str_replace('%TITLE%', $newMotion->getMyMotionType()->titleSingular, Yii::t('amend', 'merge_title'));
+$title       = str_replace('%TITLE%', $newMotion->getMyMotionType()->getTitleSingularForDisplay(), Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 ?>
@@ -64,7 +65,8 @@ if ($newMotion->canCreateResolution()) {
     echo $this->render('_confirm_resolution_voting', ['motion' => $newMotion, 'oldMotion' => $oldMotion]);
 }
 
-foreach ($newMotion->getSortedSections(true) as $section) {
+// All languages: confirming the outcome of a merge that touched every language section.
+foreach ($newMotion->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }

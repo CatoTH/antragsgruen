@@ -286,7 +286,31 @@ class EnvironmentConfigLoaderTest extends TestBase
 
         $this->assertArrayHasKey('backgroundJobs', $config);
         $this->assertTrue($config['backgroundJobs']['notifications']);
+        $this->assertArrayNotHasKey('sectionAutofill', $config['backgroundJobs']);
         $this->assertEquals('test-health-key', $config['healthCheckKey']);
+    }
+
+    public function testGetApplicationConfigWithSectionAutofillBackgroundJob(): void
+    {
+        $_ENV['BACKGROUND_JOBS_SECTION_AUTOFILL'] = 'true';
+
+        $config = EnvironmentConfigLoader::getApplicationConfig();
+
+        $this->assertArrayHasKey('backgroundJobs', $config);
+        $this->assertTrue($config['backgroundJobs']['sectionAutofill']);
+        $this->assertArrayNotHasKey('notifications', $config['backgroundJobs']);
+    }
+
+    public function testGetApplicationConfigWithBothBackgroundJobFlagsIndependently(): void
+    {
+        $_ENV['BACKGROUND_JOBS_NOTIFICATIONS'] = 'true';
+        $_ENV['BACKGROUND_JOBS_SECTION_AUTOFILL'] = 'false';
+
+        $config = EnvironmentConfigLoader::getApplicationConfig();
+
+        // Both flags must survive together, neither overwriting the other's branch.
+        $this->assertTrue($config['backgroundJobs']['notifications']);
+        $this->assertFalse($config['backgroundJobs']['sectionAutofill']);
     }
 
     public function testBooleanValueParsing(): void

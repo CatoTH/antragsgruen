@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
-use app\components\{Captcha, ConsultationAccessPassword, JwtCreator, RequestContext, SecondFactorAuthentication, Tools, UrlHelper};
+use app\components\{Captcha, ConsultationAccessPassword, JwtCreator, LanguageTools, RequestContext, SecondFactorAuthentication, Tools, UrlHelper};
 use app\models\db\{AmendmentSupporter, EMailBlocklist, FailedLoginAttempt, MotionSupporter, User, UserConsultationScreening, UserNotification};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
@@ -349,6 +349,21 @@ class UserController extends Base
 
         RequestContext::getYiiUser()->logout();
         return new RedirectResponse($backUrl, RedirectResponse::REDIRECT_TEMPORARY);
+    }
+
+    /**
+     * Sets the language the user browses this site in and returns to the page they came from.
+     * Invalid or unsupported languages are silently ignored.
+     */
+    public function actionSetlanguage(string $language = '', string $backUrl = ''): ResponseInterface
+    {
+        LanguageTools::setCurrentLanguage($language);
+
+        if ($backUrl === '') {
+            $backUrl = UrlHelper::homeUrl() ?? '/';
+        }
+
+        return new RedirectResponse($backUrl, RedirectResponse::REDIRECT_FOUND);
     }
 
     public function actionRecovery(string $email = '', string $code = ''): ResponseInterface

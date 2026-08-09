@@ -277,7 +277,7 @@ trait MotionExportTraits
             BinaryFileResponse::TYPE_PDF,
             $pdfData,
             false,
-            Tools::sanitizeFilename($motionType->titlePlural, false),
+            Tools::sanitizeFilename($motionType->getTitlePluralForDisplay(), false),
             $this->layoutParams->isRobotsIndex($this->action)
         );
     }

@@ -6,7 +6,7 @@ use app\models\SectionedParagraph;
 use app\models\settings\AntragsgruenApp;
 use app\components\{diff\AmendmentRewriter, diff\ArrayMatcher, diff\Diff, diff\DiffRenderer, HTMLTools, LineSplitter};
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\{ISectionType, SectionLanguageMode};
 
 /**
  * @property int|null $amendmentId
@@ -98,6 +98,23 @@ class AmendmentSection extends IMotionSection
         return $this->originalMotionSection;
     }
 
+    /**
+     * An amendment section is pre-filled with the motion's original text even where the amendment
+     * proposes no change there, so "not empty" would treat every language as having content. What
+     * matters here is whether the amendment actually changes anything - i.e. whether it differs
+     * from the original - matching how e.g. Title::getAmendmentFormatted()/
+     * TextSimpleCommon::getAmendmentFormatted() already decide whether there's anything to display.
+     */
+    public function hasContentForFiltering(): bool
+    {
+        $original = $this->getOriginalMotionSection();
+        if ($original) {
+            return $this->getData() !== $original->getData();
+        }
+
+        return !$this->getSectionType()->isEmpty();
+    }
+
     public function setOriginalMotionSection(MotionSection $motionSection): void
     {
         $this->originalMotionSection = $motionSection;
@@ -106,7 +123,9 @@ class AmendmentSection extends IMotionSection
     public function getFirstLineNumber(): int
     {
         $first = $this->getMotion()->getFirstLineNumber();
-        foreach ($this->getAmendment()->getSortedSections() as $section) {
+        // All languages, for the same reason as MotionSection::getFirstLineNumber(): must find
+        // $this and produce a stable line count regardless of the reader's browsing language.
+        foreach ($this->getAmendment()->getSortedSections(false, false, SectionLanguageMode::AllLanguages) as $section) {
             /** @var AmendmentSection $section */
             if ($section->sectionId === $this->sectionId) {
                 return $first;
@@ -266,11 +285,18 @@ class AmendmentSection extends IMotionSection
 
     public function getData(): string
     {
-        return $this->data;
+        /** @phpstan-ignore-next-line */
+        return ($this->data === null ? '' : $this->data); // null = not yet populated, e.g. a freshly constructed section
     }
 
     public function setData(string $data): void
     {
+        // setAmendmentData() is called for every submitted section on every save, whether or not its
+        // content actually changed - only clear the marker on a genuine edit, so re-saving an
+        // amendment without touching an auto-filled section keeps it marked as such.
+        if ($data !== $this->getData()) {
+            $this->clearAutofillMarker();
+        }
         $this->data = $data;
     }
 }

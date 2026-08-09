@@ -184,14 +184,18 @@ if (count($comments) > 0) {
                 echo Tools::formatMysqlDate($imotion->dateCreation);
                 echo '</p>';
                 $abstract = null;
+                $abstractSection = null;
                 foreach ($imotion->getSortedSections(true) as $section) {
                     if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE &&
                         $section->getSettings()->maxLen !== 0) {
                         $abstract = \app\components\HTMLTools::toPlainText($section->getData(), true);
+                        $abstractSection = $section;
                     }
                 }
                 if ($abstract) {
-                    echo '<blockquote class="abstract">' . Html::encode($abstract) . '</blockquote>';
+                    $langAttr = ($abstractSection && $abstractSection->needsLanguageLabel())
+                        ? ' lang="' . Html::encode((string) $abstractSection->getDisplayLanguage()) . '"' : '';
+                    echo '<blockquote class="abstract"' . $langAttr . '>' . Html::encode($abstract) . '</blockquote>';
                 }
                 echo '</li>';
             }

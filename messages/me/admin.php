@@ -316,6 +316,10 @@ return [
     'con_title_comments' => 'Komentari', // Original: Comments
     'con_comment_screening' => '<strong>Pregled</strong> komentara', // Original: <strong>Reviewing</strong> of comments
     'con_comment_email' => 'Enforced unošenje <strong>adrese e-pošte</strong>', // Original: Enforce entering the <strong>e-mail address</strong>
+    'con_title_multilang' => 'Podrška za više jezika', // Original: Multi-language support
+    'con_multilang_activate' => 'Aktiviraj podršku za više jezika (napredna funkcija)', // Original: Activate Multi-Language Support (advanced feature)
+    'con_multilang_activate_h' => 'Omogućava korisnicima da izaberu jezik na kojem pregledaju ovaj sajt, i omogućava predlozima/amandmanima da imaju sadržaj na više jezika istovremeno.', // Original: Lets users choose the language they browse this site in, and lets motions/amendments provide content in several languages in parallel.
+    'con_multilang_languages' => 'Dostupni jezici', // Original: Available languages
     'con_title_email' => 'E-pošta', // Original: E-mails
     'con_email_admins' => 'Administratori', // Original: Admins
     'con_send_motion_email' => 'Pošaljite potvrdni e-mail Predlagaču predloga kada je objavljen', // Original: Send a confirmation e-mail to the proposer of a motion when it is published

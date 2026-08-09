@@ -52,39 +52,41 @@ class PDFApplication
 
     public static function doCreateApplicationSections(ConsultationMotionType $motionType): void
     {
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TITLE;
-        $section->position      = 0;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_app_name');
-        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 0;
-        $section->settings      = null;
-        $section->save();
+        $builder = new SectionTemplateBuilder($motionType);
 
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_PDF_ALTERNATIVE;
-        $section->position      = 1;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = \Yii::t('structure', 'preset_app_pdf');
-        $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
-        $section->hasAmendments = 0;
-        $section->positionRight = 0;
+        $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
+            $section                = new ConsultationSettingsMotionSection();
+            $section->type          = ISectionType::TYPE_TITLE;
+            $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+            $section->title         = \Yii::t('structure', 'preset_app_name', [], $language);
+            $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
+            $section->maxLen        = 0;
+            $section->fixedWidth    = 0;
+            $section->lineNumbers   = 0;
+            $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+            $section->hasAmendments = 0;
+            $section->positionRight = 0;
+            $section->settings      = null;
+            return $section;
+        }, true, 'name');
 
-        $settings = new MotionSection(null);
-        $settings->showInHtml = true;
-        $section->setSettingsObj($settings);
-        $section->save();
+        $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
+            $section                = new ConsultationSettingsMotionSection();
+            $section->type          = ISectionType::TYPE_PDF_ALTERNATIVE;
+            $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+            $section->title         = \Yii::t('structure', 'preset_app_pdf', [], $language);
+            $section->required      = ConsultationSettingsMotionSection::REQUIRED_YES;
+            $section->maxLen        = 0;
+            $section->fixedWidth    = 0;
+            $section->lineNumbers   = 0;
+            $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
+            $section->hasAmendments = 0;
+            $section->positionRight = 0;
+
+            $settings              = new MotionSection(null);
+            $settings->showInHtml  = true;
+            $section->setSettingsObj($settings);
+            return $section;
+        }, false);
     }
 }

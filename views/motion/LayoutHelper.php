@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\motion;
 
-use app\components\{HashedStaticCache, IMotionStatusFilter, Tools, UrlHelper};
+use app\components\{HashedStaticCache, IMotionStatusFilter, LanguageTools, Tools, UrlHelper};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
 use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionProposal, User};
@@ -243,8 +243,8 @@ class LayoutHelper
         }
     }
 
-    public static function getViewCacheKey(Motion $motion): string {
-        return 'motion_view_' . $motion->id;
+    public static function getViewCacheKey(Motion $motion, ?string $language = null): string {
+        return 'motion_view_' . $motion->id . '_' . ($language ?? LanguageTools::getCurrentLanguage());
     }
 
     /**
@@ -282,7 +282,7 @@ class LayoutHelper
         $initiatorsStr            = implode(', ', $initiators);
         $content->author          = $initiatorsStr;
         $content->publicationDate = Tools::formatMysqlDate($motion->datePublication);
-        $content->typeName        = $motion->getMyMotionType()->titleSingular;
+        $content->typeName        = $motion->getMyMotionType()->getTitleSingularForDisplay();
 
         if ($motion->agendaItem) {
             $content->agendaItemName = $motion->agendaItem->title;
@@ -770,7 +770,7 @@ class LayoutHelper
         $initiatorsStr            = implode(', ', $initiators);
         $content->author          = $initiatorsStr;
         $content->publicationDate = Tools::formatMysqlDate($motion->datePublication);
-        $content->typeName        = $motion->getMyMotionType()->titleSingular;
+        $content->typeName        = $motion->getMyMotionType()->getTitleSingularForDisplay();
 
         if ($motion->agendaItem) {
             $content->agendaItemName = $motion->agendaItem->title;

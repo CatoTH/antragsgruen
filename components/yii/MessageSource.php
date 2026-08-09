@@ -2,7 +2,7 @@
 
 namespace app\components\yii;
 
-use app\components\UrlHelper;
+use app\components\{LanguageTools, UrlHelper};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 
@@ -299,6 +299,16 @@ class MessageSource extends \yii\i18n\MessageSource
                 $transMessages = $this->loadMessagesFromFile($baseFile);
                 return $this->mergeWithStructure($origMessages, $transMessages);
             }
+        }
+
+        if (explode('-', $language)[0] !== LanguageTools::getPrimaryLanguage($consultation)) {
+            // The user is browsing the site in a language other than the one this consultation is held in.
+            // Wording variants and consultation-specific wording only exist for the primary language,
+            // so applying them here would mix the primary language into the translated UI.
+            $transFile     = $this->getMessageFilePath($categoryFilename, explode('-', $language)[0]);
+            $transMessages = $this->loadMessagesFromFile($transFile);
+
+            return $this->mergeWithStructure($origMessages, $transMessages ?? []);
         }
 
         $languages    = explode(',', $consultation->wordingBase);

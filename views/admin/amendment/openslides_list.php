@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\Amendment;
+use app\models\sectionTypes\SectionLanguageMode;
 
 /**
  * @var \yii\web\View $this
@@ -18,7 +19,8 @@ foreach ($amendments as $amendment) {
     $motionData[] = $amendment->getFormattedTitlePrefix() . Yii::t('amend', 'amend_for') . $amendment->getMyMotion()->getFormattedTitlePrefix();
     $motionData[] = $amendment->getMyMotion()->title;
     $text         = '';
-    foreach ($amendment->getSortedSections(true) as $section) {
+    // All languages: admin export.
+    foreach ($amendment->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
         $text .= $section->getSectionType()->getAmendmentPlainHtml();
     }
     $motionData[] = str_replace("\r", "", $text);

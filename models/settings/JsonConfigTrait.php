@@ -110,6 +110,9 @@ trait JsonConfigTrait
                 $this->$key = (isset($formdata[$key]) && (bool)$formdata[$key]);
             } elseif (is_int($val)) {
                 $this->$key = ($formdata[$key] === null ? null : (int)$formdata[$key]);
+            } elseif (is_array($val)) {
+                // If nothing is selected at all, the field is not submitted by the browser at all
+                $this->$key = (isset($formdata[$key]) && is_array($formdata[$key]) ? array_values($formdata[$key]) : []);
             } else {
                 $this->$key = $formdata[$key];
             }

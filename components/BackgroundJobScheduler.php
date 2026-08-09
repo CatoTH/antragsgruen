@@ -13,7 +13,8 @@ class BackgroundJobScheduler
 
     public static function executeOrScheduleJob(IBackgroundJob $job): void
     {
-        if (isset(AntragsgruenApp::getInstance()->backgroundJobs['notifications']) && AntragsgruenApp::getInstance()->backgroundJobs['notifications']) {
+        $flagName = $job->getConfigFlagName();
+        if (isset(AntragsgruenApp::getInstance()->backgroundJobs[$flagName]) && AntragsgruenApp::getInstance()->backgroundJobs[$flagName]) {
             \Yii::$app->getDb()->createCommand(
                 'INSERT INTO `backgroundJob` (`siteId`, `consultationId`, `type`, `dateCreation`, `payload`) VALUES (:siteId, :consultationId, :type, NOW(), :payload)',
                 [
@@ -33,7 +34,10 @@ class BackgroundJobScheduler
      */
     public static function getDiagnostics(): array
     {
-        if (!isset(AntragsgruenApp::getInstance()->backgroundJobs['notifications']) || !AntragsgruenApp::getInstance()->backgroundJobs['notifications']) {
+        // The queries below count backgroundJob rows regardless of type, so this diagnostic is
+        // meaningful as soon as any job type is configured to be queued rather than run inline - not
+        // just when notifications specifically are.
+        if (count(array_filter(AntragsgruenApp::getInstance()->backgroundJobs ?? [])) === 0) {
             return [
                 'healthy' => null,
                 'data' => [],

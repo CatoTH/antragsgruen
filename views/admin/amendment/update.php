@@ -1,8 +1,9 @@
 <?php
 
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{MotionSorter, Tools, UrlHelper};
+use app\components\{HTMLTools, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, ConsultationSettingsTag, Motion, User};
+use app\models\sectionTypes\SectionLanguageMode;
 use yii\helpers\Html;
 
 /**
@@ -340,8 +341,9 @@ echo '</div>';
 
 echo $this->render('_update_voting', ['amendment' => $amendment]);
 
+// All languages: admin view showing the diff for every section.
 /** @var AmendmentSection[] $sections */
-$sections = $amendment->getSortedSections(false);
+$sections = $amendment->getSortedSections(false, false, SectionLanguageMode::AllLanguages);
 foreach ($sections as $section) {
     echo $section->getSectionType()->getAmendmentFormatted();
 }
@@ -386,6 +388,7 @@ if (!$amendment->textFixed && User::havePrivilege($consultation, Privileges::PRI
             /** @var \app\models\sectionTypes\TextSimple $sectionType */
             $sectionType->forceMultipleParagraphMode(true);
         }
+        echo HTMLTools::getSectionAutofillHint($section);
         echo $sectionType->getAmendmentFormField();
     }
 

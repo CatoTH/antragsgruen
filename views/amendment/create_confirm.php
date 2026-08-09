@@ -27,7 +27,7 @@ if (!$motion->getMyMotionType()->amendmentsOnly) {
     }
     $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 } else {
-    $layout->addBreadcrumb($motion->getMyMotionType()->titleSingular, UrlHelper::createAmendmentUrl($amendment, 'edit'));
+    $layout->addBreadcrumb($motion->getMyMotionType()->getTitleSingularForDisplay(), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 }
 $layout->addBreadcrumb(Yii::t('amend', 'confirm'));
 

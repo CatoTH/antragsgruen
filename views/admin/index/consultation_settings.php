@@ -7,7 +7,7 @@
  */
 
 use app\models\settings\{AntragsgruenApp, Privileges, Site as SiteSettings, Consultation as ConsultationSettings};
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{HTMLTools, UrlHelper, yii\MessageSource};
 use app\models\db\{Consultation, Motion, User};
 use yii\helpers\Html;
 
@@ -40,9 +40,10 @@ echo Html::beginForm('', 'post', [
 
 echo $controller->showErrors();
 
-$settings        = $consultation->getSettings();
-$siteSettings    = $consultation->site->getSettings();
-$handledSettings = [];
+$settings            = $consultation->getSettings();
+$siteSettings        = $consultation->site->getSettings();
+$handledSettings     = [];
+$handledSiteSettings = [];
 
 foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
     echo $plugin::getConsultationExtraSettingsForm($consultation);
@@ -367,6 +368,39 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
     require __DIR__ . '/_consultation_tags.php';
     ?>
 
+    <?php if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
+        $handledSiteSettings[] = 'supportedLanguages';
+        $supportedLanguages    = $siteSettings->supportedLanguages;
+        ?>
+        <h2 class="green" id="conMultiLanguageTitle"><?= Yii::t('admin', 'con_title_multilang') ?></h2>
+        <section class="content" aria-labelledby="conMultiLanguageTitle">
+            <div>
+                <label>
+                    <input type="checkbox" id="multiLanguageActivate"<?= (count($supportedLanguages) > 0 ? ' checked' : '') ?>>
+                    <?= Yii::t('admin', 'con_multilang_activate') ?>
+                    <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_multilang_activate_h')) ?>
+                </label>
+            </div>
+
+            <div class="multiLanguageSettings">
+                <fieldset class="supportedLanguages">
+                    <legend><?= Yii::t('admin', 'con_multilang_languages') ?>:</legend>
+                    <?php foreach (MessageSource::getBaseLanguages() as $languageId => $languageName) { ?>
+                        <div class="<?= Html::encode($languageId) ?>">
+                            <label>
+                                <?= Html::checkbox('siteSettings[supportedLanguages][]', in_array($languageId, $supportedLanguages, true), [
+                                    'value' => $languageId,
+                                    'id'    => 'supportedLanguage' . $languageId,
+                                ]) ?>
+                                <?= Html::encode($languageName) ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                </fieldset>
+            </div>
+        </section>
+    <?php } ?>
+
     <h2 class="green" id="conEmailTitle"><?= Yii::t('admin', 'con_title_email') ?></h2>
     <div class="content" aria-labelledby="conEmailTitle">
         <div class="stdTwoCols">
@@ -428,5 +462,8 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
 <?php
 foreach ($handledSettings as $setting) {
     echo '<input type="hidden" name="settingsFields[]" value="' . Html::encode($setting) . '">';
+}
+foreach ($handledSiteSettings as $setting) {
+    echo '<input type="hidden" name="siteSettingsFields[]" value="' . Html::encode($setting) . '">';
 }
 echo Html::endForm();

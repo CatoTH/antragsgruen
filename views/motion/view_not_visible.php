@@ -16,7 +16,7 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
 }
 if (!$motion->getMyConsultation()->getForcedMotion()) {
-    $layout->addBreadcrumb($motion->motionType->titleSingular);
+    $layout->addBreadcrumb($motion->motionType->getTitleSingularForDisplay());
 }
 
 $this->title = Yii::t('motion', 'err_not_visible_title') . ' (' . $motion->getMyConsultation()->title . ')';

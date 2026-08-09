@@ -2,7 +2,7 @@
 
 use app\models\db\{AmendmentSection, Consultation, IAdminComment};
 use app\models\proposedProcedure\Agenda;
-use app\models\sectionTypes\TextSimpleCommon;
+use app\models\sectionTypes\{SectionLanguageMode, TextSimpleCommon};
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
@@ -139,8 +139,9 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
         $latestProposal = $amendment->getLatestProposal();
         if ($latestProposal->hasAlternativeProposaltext()) {
             $reference = $latestProposal->getMyProposalReference();
+            // All languages: admin export.
             /** @var AmendmentSection[] $sections */
-            $sections = $reference->getSortedSections(false);
+            $sections = $reference->getSortedSections(false, false, SectionLanguageMode::AllLanguages);
             foreach ($sections as $section) {
                 $firstLine    = $section->getFirstLineNumber();
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
