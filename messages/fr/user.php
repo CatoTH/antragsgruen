@@ -51,7 +51,7 @@ return [
         "Si tu ne souhaites plus recevoir d'emails, tu peux te désinscrire ici :\n",
     'noti_new_motion_title'     => '[Antragsgrün] Nouvelle motion:',
     'noti_new_motion_body'      => "Une nouvelle motion a été déposée :\nConsultation : %CONSULTATION%\n" .
-        "Nom : %TITLE%\nLien : %LINK%",
+        "Nom : %TITLE%\nAuteur : %INITIATOR%\nLien : %LINK%",
     'noti_new_amend_title'      => '[Antragsgrün] Nouvel amendement à %TITLE%',
     'noti_new_amend_body'       => "Un nouvel amendement a été déposé :\nConsultation : %CONSULTATION%\n" .
         "Motion : %TITLE%\nLien : %LINK%",
@@ -141,4 +141,86 @@ return [
         'text' => 'The passwords do not match.',
         'js' => true,
     ],
+
+    'organisation_primary' => 'Organisation principale',
+    'name_given'            => 'Prénom',
+    'name_family'           => 'Nom de famille',
+    'organization'         => 'Organisation',
+    'user_group'            => 'Groupe d\'utilisateurs',
+    'user_groups'           => 'Groupes d\'utilisateurs',
+    'user_groups_con'       => 'Ce site',
+    'user_groups_system'    => 'Général',
+
+    '2fa_title'                 => 'Authentification à deux facteurs',
+    '2fa_off'                   => 'Inactif',
+    '2fa_activate_opener'       => 'Activer',
+    '2fa_activated'             => 'Configuré',
+    '2fa_remove_open'           => 'Désactiver l\'authentification à deux facteurs',
+    '2fa_remove_code'           => 'Entre le code actuel pour désactiver',
+    '2fa_add_explanation'       => 'Tu peux sécuriser ton compte en ajoutant un second facteur en plus de ton mot de passe.',
+    '2fa_add_step1'             => '1. Scanne le QR-code avec l\'application',
+    '2fa_add_step2'             => '2. Entre le code généré',
+    '2fa_img_alt'               => 'QR-code pour TOTP ; merci de scanner ce code avec une application d\'authentification à deux facteurs de ton choix',
+    '2fa_enter_code'            => 'Entre le code',
+    '2fa_register_title'        => 'Configurer l\'authentification à deux facteurs',
+    '2fa_register_explanation'  => 'Il est nécessaire de sécuriser ton compte avec un second facteur pour pouvoir l\'utiliser.',
+    '2fa_general_explanation'   => 'Utilise une application comme <a href="https://authy.com/download/">Authy</a>, <a href="https://freeotp.github.io">FreeOTP</a> (OpenSource), <a href="https://www.microsoft.com/de-de/security/mobile-authenticator-app">Microsoft Authenticator</a> ou Google Authenticator.<br><br>Scanne le QR-code ci-dessous, enregistre-le sur ton téléphone, puis entre le code numérique généré ici, plus bas sur cette page.',
+    '2fa_login_intro'           => 'Tu as sécurisé ton compte avec un second facteur. Merci d\'ouvrir l\'application que tu as utilisée pour le configurer et d\'entrer le code qu\'elle affiche :',
+
+    'force_pwd_title'       => 'Changer le mot de passe',
+    'force_pwd_explanation' => 'Merci de définir un nouveau mot de passe pour utiliser Antragsgrün.',
+
+    'username_deleted' => 'Supprimé',
+
+    'err_pwd_fixed'          => 'Le mot de passe de ce compte ne peut pas être modifié et ne peut donc pas être réinitialisé. Merci de contacter l\'administrateur système pour obtenir de l\'aide.',
+    'err_email_acc_confirmed' => 'Ce compte est déjà confirmé.',
+    'err_2fa_nosession_user' => 'Aucune inscription TOTP en cours trouvée pour cet utilisateur',
+    'err_2fa_nosession'      => 'Aucune session de connexion en cours',
+    'err_2fa_timeout'        => 'Merci de confirmer le second facteur dans un délai de %minutes% minutes.',
+    'err_2fa_empty'          => 'Code vide',
+    'err_2fa_incorrect'      => 'Code incorrect',
+    'err_2fa_nocode'         => 'Aucun second facteur enregistré',
+
+    'email_pp_replyto' => 'Reply-To lors de l\'envoi des procédures proposées (défini par l\'admin)',
+
+    'noti_amend_mymotion' => "Un nouvel amendement a été publié pour ta motion :\nConsultation : %CONSULTATION%\nMotion : %TITLE%\nAuteur : %INITIATOR%\nLien : %LINK%\n%MERGE_HINT%",
+    'noti_amend_mymotion_merge' => "\nSi tu es d'accord avec cet amendement, tu peux intégrer les modifications (« Intégrer dans la motion » dans la sidebar)",
+
+    'login_con_pwd_title' => 'Connexion avec le mot de passe de la consultation',
+    'login_con_pwd'       => 'Mot de passe de la consultation',
+    'login_captcha'       => 'Merci d\'entrer le code affiché',
+    'login_managed_hint'  => '<strong>Remarque :</strong> les nouveaux comptes doivent être validés par un admin avant de pouvoir accéder à ce site.',
+
+    'managed_account_ask_btn' => 'Demander l\'autorisation',
+    'managed_account_asked'   => 'Autorisation demandée.',
+
+    'acc_request_noti_subject' => 'Demande : accès au site',
+    'acc_request_noti_body'    => 'L\'utilisateur %USERNAME% (%EMAIL%) demande l\'accès au site « %CONSULTATION% ». Sur la page suivante, tu peux valider cette demande : %ACTIONLINK%',
+
+    'login_confirm_registration' => 'Confirmer l\'inscription',
+    'login_err_captcha'          => 'Le code entré ne correspond pas à l\'image',
+    'login_err_nocaptcha'        => 'Merci d\'entrer le code affiché sur l\'image.',
+
+    'access_granted_email' => "Salut,\n\nTu viens d'obtenir l'accès à : %LINK%\n\nBien à toi,\n\tL'équipe Antragsgrün",
+
+    'confirm_resend'          => 'Renvoyer l\'email de confirmation',
+    'confirmed_screening_msg' => 'Ton compte est maintenant validé. L\'admin a été prévenu pour t\'accorder l\'accès à ce site.',
+
+    'notification_title' => 'Notifications email',
+    'notification_intro' => 'Tu peux choisir, pour chaque consultation individuellement, de quoi tu souhaites être notifié :',
+
+    'export_title' => 'Export des données',
+    'export_intro' => 'Tu peux télécharger ici toutes les données personnelles enregistrées à ton sujet dans Antragsgrün, dans un format JSON lisible par une machine.',
+    'export_btn'   => 'Télécharger',
+
+    'group_template_siteadmin'            => 'Admin du site',
+    'group_template_siteadmin_h'          => 'Tous les privilèges sur toutes les consultations de ce site / sous-domaine.',
+    'group_template_consultationadmin'    => 'Admin de la consultation',
+    'group_template_consultationadmin_h'  => 'Tous les privilèges sur cette consultation.',
+    'group_template_proposed'             => 'Procédure proposée',
+    'group_template_proposed_h'           => 'Peut modifier la procédure proposée, mais pas les motions et amendements eux-mêmes.',
+    'group_template_progress'             => 'Rapports d\'avancement',
+    'group_template_progress_h'           => 'Peut modifier les rapports d\'avancement des résolutions, mais pas les résolutions elles-mêmes.',
+    'group_template_participant'          => 'Participant',
+    'group_template_participant_h'        => 'Aucun privilège particulier. Seulement pertinent si l\'accès à ce site est restreint.',
 ];

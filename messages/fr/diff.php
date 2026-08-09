@@ -15,4 +15,10 @@ return [
     'newline'        => 'Nouvelle ligne',
     'plain_text_del' => 'Supprimer',
     'plain_text_ins' => 'Insérer',
+
+    'aria_ins'    => 'Insérer : « %INS% »',
+    'aria_del'    => 'Supprimer : « %DEL% »',
+    'modu_prefix' => 'Mod.',
+    'change_from' => 'De',
+    'change_to'   => 'À',
 ];

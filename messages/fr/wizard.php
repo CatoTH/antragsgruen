@@ -122,4 +122,34 @@ return [
 
     'cons_err_fields_missing' => 'Certains champs sont manquants.',
     'cons_err_path_taken'     => 'Cette adresse est déjà prise par une autre consultation sur ce site.',
+
+    'functionality_title'              => 'Quelles fonctionnalités le site doit-il proposer ?',
+    'functionality_desc'               => 'Tu peux sélectionner plusieurs options.<br>Tout peut aussi être (dés)activé après la création du site.',
+    'functionality_motions'            => 'Motions',
+    'functionality_manifesto_desc'     => '&nbsp;',
+    'functionality_manifesto'          => 'Programme',
+    'functionality_applications'       => 'Candidatures',
+    'functionality_agenda'             => 'Un ordre du jour',
+    'functionality_speech'             => 'Listes des intervenants',
+    'functionality_statute_amendments' => 'Modifications<br>des statuts',
+    'functionality_votings'            => 'Votes',
+    'functionality_documents_desc'     => '(Document)',
+    'functionality_documents'          => 'Téléchargements',
+
+    'applicationtype_title'     => 'Type de candidatures',
+    'applicationtype_desc'      => 'Sous quelle forme les candidatures sont-elles déposées ?',
+    'applicationtype_text'      => 'Formulaire',
+    'applicationtype_text_desc' => 'Texte, photo, données personnelles',
+    'applicationtype_pdf'       => 'PDF',
+    'applicationtype_pdf_desc'  => 'Un PDF déjà mis en page peut être téléversé',
+
+    'speech_quotas_title' => 'Listes des intervenants avec quota ?',
+    'speech_quotas_desc'  => 'Deux listes alternées pour les femmes et les hommes',
+    'speech_quotas_no'    => 'Non',
+    'speech_quotas_yes'   => 'Oui',
+
+    'speech_login_title' => 'Connexion pour les listes des intervenants',
+    'speech_login_desc'  => 'Faut-il s\'inscrire pour se mettre sur la liste des intervenants ?',
+    'speech_login_no'    => 'Non',
+    'speech_login_yes'   => 'Oui',
 ];
