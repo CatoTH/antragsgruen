@@ -6,7 +6,7 @@ namespace app\models\motionTypeTemplates;
 
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
-use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
+use app\models\settings\{InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
@@ -15,13 +15,8 @@ class Motion
 {
     public static function doCreateMotionType(Consultation $consultation): ConsultationMotionType
     {
-        $config = AntragsgruenApp::getInstance();
-
         $type                               = new ConsultationMotionType();
         $type->consultationId               = $consultation->id;
-        $type->titleSingular                = \Yii::t('structure', 'preset_motion_singular');
-        $type->titlePlural                  = \Yii::t('structure', 'preset_motion_plural');
-        $type->createTitle                  = \Yii::t('structure', 'preset_motion_call');
         $type->position                     = 0;
         $type->amendmentsOnly               = 0;
         $type->policyMotions                = (string)IPolicy::POLICY_ALL;
@@ -48,6 +43,8 @@ class Motion
 
         $type->setSettingsObj(new MotionType(null));
 
+        (new MotionTypeTranslationHelper($type))->setLabels('preset_motion_singular', 'preset_motion_plural', 'preset_motion_call');
+
         $type->save();
 
         return $type;
@@ -55,7 +52,7 @@ class Motion
 
     public static function doCreateMotionSections(ConsultationMotionType $motionType): void
     {
-        $builder = new SectionTemplateBuilder($motionType);
+        $builder = new MotionTypeTranslationHelper($motionType);
 
         $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
             $section                = new ConsultationSettingsMotionSection();

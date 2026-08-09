@@ -16,19 +16,15 @@ use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection};
  * single, language-neutral section - their content is an upload/structured value, not prose, so
  * duplicating them would just force redundant uploads per language.
  */
-class SectionTemplateBuilder
+class MotionTypeTranslationHelper
 {
-    private ConsultationMotionType $motionType;
-
     /** @var string[] primary language first, if it is among the supported ones */
     private array $languages;
 
     private int $position = 0;
 
-    public function __construct(ConsultationMotionType $motionType)
+    public function __construct(private readonly ConsultationMotionType $motionType)
     {
-        $this->motionType = $motionType;
-
         $consultation    = $motionType->getConsultation();
         $languages       = LanguageTools::getSupportedLanguages($consultation->site);
         $primaryLanguage = LanguageTools::getPrimaryLanguage($consultation);
@@ -36,6 +32,26 @@ class SectionTemplateBuilder
             $languages = array_merge([$primaryLanguage], array_values(array_diff($languages, [$primaryLanguage])));
         }
         $this->languages = $languages;
+    }
+
+    public function setLabels(string $keySingular, string $keyPlural, string $keyCall): void
+    {
+        $this->motionType->titleSingular = \Yii::t('structure', $keySingular);
+        $this->motionType->titlePlural = \Yii::t('structure', $keyPlural);
+        $this->motionType->createTitle = \Yii::t('structure', $keyCall);
+
+        $translations = [];
+        foreach ($this->languages as $language) {
+            if ($language === LanguageTools::getPrimaryLanguage($this->motionType->getConsultation())) {
+                continue;
+            }
+            $translations[$language] = [
+                'titleSingular' => \Yii::t('structure', $keySingular, [], $language),
+                'titlePlural' => \Yii::t('structure', $keyPlural, [], $language),
+                'createTitle' => \Yii::t('structure', $keyCall, [], $language),
+            ];
+        }
+        $this->motionType->setLabelTranslations($translations);
     }
 
     /**
