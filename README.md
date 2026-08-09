@@ -24,7 +24,7 @@ Using the hosted version / testing it
 
 - German: [https://antragsgruen.de](https://antragsgruen.de/)
 - English: [https://motion.tools](https://motion.tools/), [https://discuss.green](https://discuss.green/)
-- French, Dutch, Catalan: [https://discuss.green](https://discuss.green/)
+- French, Dutch, Catalan, Spanish and Swedish: [https://discuss.green](https://discuss.green/)
 
 Installation
 ------------------------------------------
