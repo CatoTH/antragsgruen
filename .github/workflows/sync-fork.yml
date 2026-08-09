@@ -1,0 +1,178 @@
+name: Sync Fork with Upstream
+
+# Pull-based fork sync with Dependabot-style handoff.
+#
+# Uses `actions/create-github-app-token@v2` to mint a short-lived installation
+# token per workflow run. The App is scoped to ONLY the repos where it's
+# installed. Tokens expire within the hour and cannot be reused if exfiltrated.
+#
+# Flow (Dependabot-style):
+#   1. App token opens a sync PR (as the App's identity)
+#   2. Workflow posts a comment on the PR asking for human review
+#   3. You (the repo owner) click Approve + Merge
+#
+# Why no self-approval:
+#   GitHub blocks any identity from approving its own PR (HTTP 422 "Review
+#   Can not approve your own pull request"). bypass_actors doesn't bypass this
+#   rule — it only bypasses the ruleset's "require N approvals" requirement
+#   for actors that ARE allowed to approve.
+#
+# Prerequisites:
+#   - GitHub App 'fork-sync-approver' installed on this repo (App ID 4510581)
+#   - Repo secret APPID4510581 = .pem private key of the App
+#   - Repo secret APP_ID = 4510581 (just the number)
+#
+# Pattern sources (verified Aug 2026):
+#   - agent-of-empires #1420 (pull-based)
+#   - ConductionNL #61 (PAT-approver pattern; we use Dependabot-style handoff instead)
+#   - bluesky-social/social-app PR #11010 (App-based workflow approval)
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-fork-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork (so we can copy sync-fork.yml onto the sync branch)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Mint short-lived GitHub App installation token
+        id: app_token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APPID4510581 }}
+          owner: niStee
+          repositories: antragsgruen,claw-code,oh-my-openagent,opencode,topgrade
+
+      - name: Resolve upstream and check if sync is needed
+        id: upstream
+        env:
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+        run: |
+          PARENT=$(gh api "repos/${{ github.repository }}" --jq '.parent.full_name // empty')
+          if [ -z "$PARENT" ]; then
+            echo "::notice::Not a fork — nothing to sync."
+            echo "sync_needed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          UPSTREAM_DEFAULT=$(gh api "repos/$PARENT" --jq '.default_branch')
+          UPSTREAM_HEAD=$(gh api "repos/$PARENT/branches/$UPSTREAM_DEFAULT" --jq '.commit.sha')
+          UPSTREAM_ORG="${PARENT%/*}"  # e.g. "topgrade-rs/topgrade" → "topgrade-rs"
+          echo "parent=$PARENT" >> $GITHUB_OUTPUT
+          echo "upstream_default=$UPSTREAM_DEFAULT" >> $GITHUB_OUTPUT
+          echo "upstream_head=$UPSTREAM_HEAD" >> $GITHUB_OUTPUT
+          echo "upstream_org=$UPSTREAM_ORG" >> $GITHUB_OUTPUT
+          # Use the compare API to determine if a sync PR is actually needed.
+          # Status values:
+          #   "identical" — fork HEAD == upstream HEAD                  → skip
+          #   "ahead"     — fork has commits upstream doesn't have       → skip (no sync needed)
+          #   "behind"    — upstream has commits fork doesn't have      → sync (if commits > 0)
+          #   "diverged"  — both have unique commits                    → manual intervention required
+          # The "behind" + 0 commits edge case happens when upstream history was rewritten
+          # but the SHA differs — treat as no-op (matches old behavior).
+          # The compare path uses ORG:BRANCH (not ORG/REPO:BRANCH) — the latter returns 404.
+          COMPARE=$(gh api "repos/${{ github.repository }}/compare/${DEFAULT_BRANCH}...${UPSTREAM_ORG}:${UPSTREAM_DEFAULT}")
+          COMPARE_EXIT=$?
+          STATUS=$(echo "$COMPARE" | jq -r '.status' 2>/dev/null || echo "error")
+          BEHIND=$(echo "$COMPARE" | jq -r '.behind_by' 2>/dev/null || echo "?")
+          COMMIT_COUNT=$(echo "$COMPARE" | jq -r '.total_commits' 2>/dev/null || echo "?")
+          if [ "$COMPARE_EXIT" -ne 0 ]; then
+            echo "::warning::Compare API call failed (exit $COMPARE_EXIT): $COMPARE"
+            echo "sync_needed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "compare_status=$STATUS" >> $GITHUB_OUTPUT
+          echo "behind_by=$BEHIND" >> $GITHUB_OUTPUT
+          echo "compare_commits=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          if [ "$STATUS" = "behind" ] && [ "$COMMIT_COUNT" -gt 0 ]; then
+            echo "::notice::Fork is behind upstream by $BEHIND commits — opening sync PR."
+            echo "sync_needed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::No sync needed (compare status: $STATUS, behind_by: $BEHIND)."
+            echo "sync_needed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create sync branch and open PR
+        if: steps.upstream.outputs.sync_needed == 'true'
+        id: pr
+        env:
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+        run: |
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          SYNC_BRANCH="sync/upstream-$(date -u +%Y%m%d-%H%M%S)"
+          # Create the sync branch on the fork, pointing at upstream's HEAD
+          gh api -X POST "repos/${{ github.repository }}/git/refs" \
+            -f ref="refs/heads/$SYNC_BRANCH" \
+            -f sha="${{ steps.upstream.outputs.upstream_head }}" \
+            --silent
+
+          # Re-apply sync-fork.yml so the workflow survives this sync.
+          # Without this, the sync PR replaces the workflow file with
+          # upstream's contents (which has no sync-fork.yml), so the
+          # next sync cannot run.
+          git config user.name "fork-sync-approver[bot]"
+          git config user.email "314014498+fork-sync-approver[bot]@users.noreply.github.com"
+          git fetch origin "$SYNC_BRANCH" --depth=1
+          git checkout "$SYNC_BRANCH"
+          mkdir -p .github/workflows
+          cp "$GITHUB_WORKSPACE/.github/workflows/sync-fork.yml" \
+             .github/workflows/sync-fork.yml
+          if ! git diff --quiet -- .github/workflows/sync-fork.yml; then
+            git add .github/workflows/sync-fork.yml
+            git commit -m "ci: preserve sync-fork workflow across upstream sync"
+            git push origin "$SYNC_BRANCH"
+            echo "::notice::Preserved sync-fork.yml on $SYNC_BRANCH"
+          else
+            echo "::notice::sync-fork.yml already up-to-date on $SYNC_BRANCH"
+          fi
+
+          PARENT="${{ steps.upstream.outputs.parent }}"
+          UPSTREAM_DEFAULT="${{ steps.upstream.outputs.upstream_default }}"
+          PR_URL=$(gh pr create \
+            --repo "${{ github.repository }}" \
+            --base "$DEFAULT_BRANCH" \
+            --head "$SYNC_BRANCH" \
+            --title "Sync fork with $PARENT:$UPSTREAM_DEFAULT" \
+            --body "Automated pull-based sync from [$PARENT](https://github.com/$PARENT).
+
+          **Handoff to human:** GitHub blocks any identity from approving its own PR, so the workflow cannot auto-approve. Please click **Approve** then **Merge** when you're ready.
+
+          *(This is the Dependabot-style pattern: the workflow opens the PR, you approve and merge. No credentials required.)*)
+          Automated sync uses GitHub App installation token for PR creation only.")
+          PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "url=$PR_URL" >> $GITHUB_OUTPUT
+          echo "branch=$SYNC_BRANCH" >> $GITHUB_OUTPUT
+          echo "::notice::Opened sync PR #$PR_NUMBER: $PR_URL"
+
+      - name: Post handoff comment requesting review
+        if: steps.upstream.outputs.sync_needed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.number }}"
+          # Post a comment tagging the repo owner so they get a notification
+          gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "👋 **Sync ready for review** @niStee — this PR syncs upstream changes into this fork.
+
+          **To merge:**
+          1. Wait for CI checks to pass (if any)
+          2. Click **Approve**
+          3. Click **Merge**
+
+          _Why manual approval? GitHub blocks any identity from approving its own PR (HTTP 422). The workflow can't auto-approve itself, so this is the standard Dependabot-style handoff pattern: workflow opens, you merge._"
+          echo "::notice::Posted review request comment on PR #$PR_NUMBER"
