@@ -613,6 +613,20 @@ trait MotionActionsTrait
             ];
         }
 
+        if ($this->getHttpRequest()->post('deleteProposal')) {
+            if ($proposal->isNewRecord) {
+                return new RestApiExceptionResponse(400, 'This proposal version has not been saved yet');
+            }
+            if (!$proposal->canEditProposedProcedure()) {
+                return new RestApiExceptionResponse(403, 'Not permitted to delete this proposal version');
+            }
+
+            $proposal->softDelete();
+
+            $response['success'] = true;
+            $response['redirectToUrl'] = UrlHelper::createMotionUrl($motion, 'view');
+        }
+
         return new JsonResponse($response);
     }
 

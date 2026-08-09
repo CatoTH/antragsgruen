@@ -371,6 +371,8 @@ return [
     'proposal_versions'          => 'Versions',
     'proposal_version_edit'      => 'Edit current version',
     'proposal_version_new'       => 'Create new version',
+    'proposal_delete'            => 'Delete this version',
+    'proposal_delete_conf'       => 'Do you really want to delete this proposal version? This cannot be undone.',
     'proposal_reset'             => 'Reset',
     'proposal_status_na'         => 'not set',
     'proposal_user_accepted'     => 'Agrees to the proposed procedure',

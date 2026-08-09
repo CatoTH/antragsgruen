@@ -104,7 +104,7 @@ $layout->addJsTranslation("motion");
 
             <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $amendment, 'proposal' => $proposal]) ?>
         </div>
-        <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment]) ?>
+        <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $amendment, 'proposal' => $proposal]) ?>
     </div>
 
     <?= $this->render('../shared/_proposed_procedure_tags', ['imotion' => $amendment]) ?>
