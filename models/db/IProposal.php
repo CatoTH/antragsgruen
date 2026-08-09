@@ -13,6 +13,7 @@ use yii\helpers\Html;
 /**
  * @property int|null $id
  * @property int $version
+ * @property int $status
  * @property int|null $proposalStatus
  * @property int|null $proposalReferenceId
  * @property string|null $comment
@@ -27,7 +28,16 @@ abstract class IProposal extends ActiveRecord
 {
     use CacheTrait;
 
+    public const STATUS_ACTIVE = 0;
+    public const STATUS_DELETED = -1;
+
     abstract function getMyIMotion(): IMotion;
+
+    public function softDelete(): void
+    {
+        $this->status = self::STATUS_DELETED;
+        $this->save();
+    }
 
     public function getMyConsultation(): Consultation
     {

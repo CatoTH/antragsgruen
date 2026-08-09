@@ -386,6 +386,8 @@ return [
     'proposal_versions'                 => 'Versions',
     'proposal_version_edit'             => 'Modifier la version actuelle',
     'proposal_version_new'              => 'Créer une nouvelle version',
+    'proposal_delete'                   => 'Supprimer cette version',
+    'proposal_delete_conf'              => 'Voulez-vous vraiment supprimer cette version de la procédure proposée ? Cette action est irréversible.',
     'proposal_reset'                    => 'Réinitialiser',
     'proposal_status_na'                => 'non défini',
     'proposal_user_accepted'            => 'Accepte la procédure proposée',

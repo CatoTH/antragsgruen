@@ -332,6 +332,8 @@ return [
     'proposal_versions' => 'Versioner',
     'proposal_version_edit' => 'Redigera aktuell version',
     'proposal_version_new' => 'Skapa ny version',
+    'proposal_delete' => 'Ta bort denna version',
+    'proposal_delete_conf' => 'Vill du verkligen ta bort denna version av det föreslagna förfarandet? Detta kan inte ångras.',
     'proposal_reset' => 'Återställ',
     'proposal_status_na' => 'ej angiven',
     'proposal_user_accepted' => 'Godkänner det föreslagna förfarandet',

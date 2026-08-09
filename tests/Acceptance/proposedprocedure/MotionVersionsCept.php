@@ -75,3 +75,16 @@ $I->gotoMotion(true, 'Testing_proposed_changes-630');
 $I->see('Under review', '.agreeToProposal');
 $I->seeElement('.agreeToProposal .agreement .disagreed');
 $I->seeElement('.agreeToProposal .updateDecision');
+
+$I->wantTo('delete the newest proposal version as admin');
+$I->logout();
+$I->loginAsProposalAdmin();
+$I->gotoMotion(true, 'Testing_proposed_changes-630');
+$I->seeElement('#proposedChanges .proposalHistory');
+$I->seeInField('#proposedChanges input[name=proposalStatus]', (string)IMotion::STATUS_ACCEPTED);
+$I->clickJS('#proposedChanges .btnDeleteProposal');
+$I->seeBootboxDialog('wirklich gelöscht werden');
+$I->acceptBootboxConfirm();
+$I->wait(1);
+$I->dontSeeElement('#proposedChanges .proposalHistory');
+$I->seeInField('#proposedChanges input[name=proposalStatus]', (string)IMotion::STATUS_CUSTOM_STRING);

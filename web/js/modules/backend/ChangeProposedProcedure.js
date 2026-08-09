@@ -66,6 +66,7 @@ export class ChangeProposedProcedure {
         this.initExplanation();
         this.initTags();
         this.initNewVersionSetter();
+        this.initDeleteProposal();
         this.$widget.on("submit", ev => ev.preventDefault());
         this.setVotingBlockSettings();
     }
@@ -478,6 +479,19 @@ export class ChangeProposedProcedure {
             } else {
                 alert("Error: " + ret['error']);
             }
+        });
+    }
+
+    initDeleteProposal() {
+        this.$widget.on('click', '.btnDeleteProposal', (ev) => {
+            const confirmMsg = $(ev.currentTarget).data('msg');
+            bootbox.confirm(confirmMsg, (result) => {
+                if (result) {
+                    this.performCallWithReload({
+                        'deleteProposal': true,
+                    });
+                }
+            });
         });
     }
 

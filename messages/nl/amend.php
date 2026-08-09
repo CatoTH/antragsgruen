@@ -322,6 +322,8 @@ return [
     'proposal_status_title'      => 'Voorgestelde status',
     'proposal_close'             => 'Afsluiten',
     'proposal_open'              => 'Wijzig voorgestelde procedure',
+    'proposal_delete'            => 'Verwijder deze versie',
+    'proposal_delete_conf'       => 'Wil je deze versie van de voorgestelde procedure echt verwijderen? Dit kan niet ongedaan worden gemaakt.',
     'proposal_reset'             => 'Reset',
     'proposal_status_na'         => 'not set',
     'proposal_user_accepted'     => 'Stemt in met de voorgestelde procedure',

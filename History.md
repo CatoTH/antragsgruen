@@ -12,6 +12,7 @@
 - Spanish and Swedish are now supported rudimentarily.
 - Motion screening can now be configured on a per-motion-type basis.
 - More uploaded PDFs can be handled without having to install additional software or libraries.
+- Proposed procedure versions can now be retrospectively deleted.
 
 ### Version 4.17.2 [not released yet]
 

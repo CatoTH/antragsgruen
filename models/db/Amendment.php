@@ -239,7 +239,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getProposals(): ActiveQuery
     {
-        return $this->hasMany(AmendmentProposal::class, ['amendmentId' => 'id']);
+        return $this->hasMany(AmendmentProposal::class, ['amendmentId' => 'id'])->andWhere(['status' => IProposal::STATUS_ACTIVE]);
     }
 
     /**
@@ -945,6 +945,13 @@ class Amendment extends IMotion implements IRSSItem
         $this->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($this));
     }
 
+    public function getNextProposalVersion(): int
+    {
+        $max = AmendmentProposal::find()->where(['amendmentId' => $this->id])->max('version');
+
+        return intval($max) + 1;
+    }
+
     public function getLatestProposal(bool $skipVisibilityCheck = false): AmendmentProposal
     {
         if (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($this))) {
@@ -962,7 +969,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         if ($max === null) {
-            $max = AmendmentProposal::createNew($this, 1);
+            $max = AmendmentProposal::createNew($this, $this->getNextProposalVersion());
         }
 
         return $max;
@@ -975,7 +982,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($latest->isNewRecord) {
                 return $latest;
             } else {
-                return AmendmentProposal::createNew($this, $latest->version + 1);
+                return AmendmentProposal::createNew($this, $this->getNextProposalVersion());
             }
         } else {
             foreach ($this->proposals as $proposal) {
