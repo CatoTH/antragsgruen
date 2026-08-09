@@ -4,4 +4,4 @@ allowBuilds:
   puppeteer: false
 minimumReleaseAge: 4320 # 3 Days - a bit more conservative than the default
 overrides:
-  postcss: ^8.5.15
+  postcss: ^8.5.26
