@@ -362,6 +362,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_versions'          => 'Versionen',
     'proposal_version_edit'      => 'Aktuelle Version bearbeiten',
     'proposal_version_new'       => 'Neue Version anlegen',
+    'proposal_delete'            => 'Diese Version löschen',
+    'proposal_delete_conf'       => 'Soll diese Version des Verfahrensvorschlags wirklich gelöscht werden? Dies kann nicht rückgängig gemacht werden.',
     'proposal_status_na'         => 'nicht festgelegt',
     'proposal_user_accepted'     => 'Stimmt dem Verfahrensvorschlag zu',
     'proposal_user_rejected'     => 'Stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',

@@ -3,10 +3,11 @@
 /**
  * @var Yii\web\View $this
  * @var IMotion $imotion
+ * @var IProposal $proposal
  */
 
 use app\components\{HTMLTools, Tools, UrlHelper};
-use app\models\db\{IAdminComment, IMotion, User};
+use app\models\db\{IAdminComment, IMotion, IProposal, User};
 use yii\helpers\Html;
 
 $activities = \app\models\proposedProcedure\IActivity::getListFromIMotion($imotion);
@@ -76,5 +77,16 @@ $activities = \app\models\proposedProcedure\IActivity::getListFromIMotion($imoti
               title="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
               class="form-control" rows="1"></textarea>
     <button class="btn btn-default btn-xs btnSubmit"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
+    <?php
+    if (!$proposal->isNewRecord && $proposal->canEditProposedProcedure()) {
+        ?>
+        <button type="button" class="btn-link btnDeleteProposal"
+                data-msg="<?= Html::encode(Yii::t('amend', 'proposal_delete_conf')) ?>">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            <?= Html::encode(Yii::t('amend', 'proposal_delete')) ?>
+        </button>
+        <?php
+    }
+    ?>
 </section>
 <?php

@@ -210,6 +210,17 @@
       margin-top: -1px;
       width: 100%;
     }
+    .btnDeleteProposal {
+      float: right;
+      clear: both;
+      margin-top: 15px;
+      padding: 0;
+      font-size: 11px;
+      color: $colorDelLink;
+      .glyphicon {
+        margin-right: 3px;
+      }
+    }
   }
   .statusDetails, .collisions, .publicExplanation, .notifyProposerSection {
     border-top: solid 1px #eee;

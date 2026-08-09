@@ -120,7 +120,7 @@ $layout->addJsTranslation("motion");
 
         <?= $this->render('../shared/_proposed_procedure_feedback_status', ['imotion' => $motion, 'proposal' => $proposal]) ?>
     </div>
-    <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $motion]) ?>
+    <?= $this->render('../shared/_proposed_procedure_log', ['imotion' => $motion, 'proposal' => $proposal]) ?>
 </div>
 
 <?= $this->render('../shared/_proposed_procedure_tags', ['imotion' => $motion]) ?>

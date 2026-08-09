@@ -311,6 +311,8 @@ return [
     'proposal_status_title' => 'Predloženi status', // Original: Proposed status
     'proposal_close' => 'Zatvori', // Original: Close
     'proposal_open' => 'Uredi predlog postupka', // Original: Edit proposed procedure
+    'proposal_delete' => 'Izbriši ovu verziju', // Original: Delete this version
+    'proposal_delete_conf' => 'Da li zaista želite izbrisati ovu verziju predloženog postupka? Ovo se ne može poništiti.', // Original: Do you really want to delete this proposal version? This cannot be undone.
     'proposal_reset' => 'Resetovanje', // Original: Reset
     'proposal_status_na' => 'nije postavljeno', // Original: not set
     'proposal_user_accepted' => 'Slaže se s predloženim postupkom', // Original: Agrees to the proposed procedure

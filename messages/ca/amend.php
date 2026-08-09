@@ -318,6 +318,8 @@ return [
     'proposal_status_title'      => 'Estat proposat',
     'proposal_close'             => 'Tanca',
     'proposal_open'              => 'Edita el procediment proposat',
+    'proposal_delete'            => 'Esborra aquesta versió',
+    'proposal_delete_conf'       => 'Segur que vols esborrar aquesta versió del procediment proposat? Això no es pot desfer.',
     'proposal_reset'             => 'Reinicia',
     'proposal_status_na'         => 'no establert',
     'proposal_user_accepted'     => 'Està d\'acord amb el procediment proposat',

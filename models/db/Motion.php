@@ -263,7 +263,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getProposals(): ActiveQuery
     {
-        return $this->hasMany(MotionProposal::class, ['motionId' => 'id']);
+        return $this->hasMany(MotionProposal::class, ['motionId' => 'id'])->andWhere(['status' => IProposal::STATUS_ACTIVE]);
     }
 
     /**
@@ -930,6 +930,13 @@ class Motion extends IMotion implements IRSSItem
         $this->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($this));
     }
 
+    public function getNextProposalVersion(): int
+    {
+        $max = MotionProposal::find()->where(['motionId' => $this->id])->max('version');
+
+        return intval($max) + 1;
+    }
+
     public function getLatestProposal(bool $skipVisibilityCheck = false): MotionProposal
     {
         if (User::havePrivilege($this->getMyConsultation(), Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::motion($this))) {
@@ -947,7 +954,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($max === null) {
-            $max = MotionProposal::createNew($this, 1);
+            $max = MotionProposal::createNew($this, $this->getNextProposalVersion());
         }
 
         return $max;
@@ -960,7 +967,7 @@ class Motion extends IMotion implements IRSSItem
             if ($latest->isNewRecord) {
                 return $latest;
             } else {
-                return MotionProposal::createNew($this, $latest->version + 1);
+                return MotionProposal::createNew($this, $this->getNextProposalVersion());
             }
         } else {
             foreach ($this->proposals as $proposal) {
