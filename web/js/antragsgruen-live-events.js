@@ -29,9 +29,7 @@ if (!document.head.querySelector("meta[name=user-jwt-config]") || !document.head
 
         registerListener(role, channel, listener) {
             this.listeners[role][channel].push(listener);
-            if (this.listeners[role][channel]) {
-                listener(true, null);
-            }
+            listener(this.connected[role][channel], null);
         }
 
         publishEvent(role, channel, event) {

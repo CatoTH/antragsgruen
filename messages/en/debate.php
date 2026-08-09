@@ -112,4 +112,8 @@ return [
         'text' => 'Speaking lists cannot be attached to amendments yet.',
         'js' => true,
     ],
+    'voting_err'              => [
+        'text' => 'Could not load the voting.',
+        'js' => true,
+    ],
 ];

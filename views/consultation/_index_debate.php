@@ -4,6 +4,7 @@ use app\components\{Tools, UrlHelper};
 use app\models\api\debate\DebateState;
 use app\models\api\SpeechUser;
 use app\models\db\User;
+use app\models\settings\Privileges;
 use yii\helpers\Html;
 
 /**
@@ -36,6 +37,22 @@ $speechRegisterUrl   = UrlHelper::createUrl(['/rest/speech/register', 'queueId' 
 $speechUnregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']);
 $speechUser          = new SpeechUser($user, $cookieUser);
 
+// Voting: the embedded widget reuses the existing session-based /voting endpoints, which require a
+// logged-in user. Anonymous visitors therefore get empty URLs and no voting is embedded (same as the
+// standalone homepage voting widget). The block shown is the one referenced by the debate's votingBlockId.
+$votingConstants = include(__DIR__ . '/../voting/_constants.php');
+if ($user) {
+    $votingPollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
+    $votingVoteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
+    $votingAdminLink = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)
+        ? UrlHelper::createUrl(['/consultation/admin-votings'])
+        : '';
+} else {
+    $votingPollUrl   = '';
+    $votingVoteUrl   = '';
+    $votingAdminLink = '';
+}
+
 // The initiator of a raised secondary motion is always the current user; the form has no initiator fields
 $currentUser = User::getCurrentUser();
 $currentUserJson = json_encode($currentUser ? [
@@ -55,6 +72,9 @@ $currentUserJson = json_encode($currentUser ? [
          data-speech-register-url="<?= Html::encode($speechRegisterUrl) ?>"
          data-speech-unregister-url="<?= Html::encode($speechUnregisterUrl) ?>"
          data-speech-user="<?= Html::encode(json_encode($speechUser)) ?>"
+         data-voting-poll-url="<?= Html::encode($votingPollUrl) ?>"
+         data-voting-vote-url="<?= Html::encode($votingVoteUrl) ?>"
+         data-voting-admin-link="<?= Html::encode($votingAdminLink) ?>"
 >
     <h2 class="green" id="currentDebateWidgetTitle"><?= Yii::t('debate', 'currently_debated') ?></h2>
     <div class="currentDebateWidget"></div>
@@ -67,6 +87,9 @@ $currentUserJson = json_encode($currentUser ? [
     import raiseSecondaryMotionForm from "/js/vue/debate/RaiseSecondaryMotionForm.js";
     import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import userInlineWidget from "/js/vue/speech/UserInlineWidget.js";
+    import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
+    import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
+    import voteList from "/js/vue/voting/VotingList.js";
 
     const $element = $('.currentDebateInline');
 
@@ -75,7 +98,10 @@ $currentUserJson = json_encode($currentUser ? [
         <?= json_encode($speechRegisterUrl) ?>,
         <?= json_encode($speechUnregisterUrl) ?>
     );
+    // The speech and voting mixins share method names (startPolling, recalcRemainingTime, …), so they
+    // are applied per-component instead of globally to keep them from colliding in this shared app.
     const SPEECH_MIXINS = getSpeechCommonMixins();
+    const VOTING_MIXINS = getVotingCommonMixins(<?= json_encode($votingConstants) ?>);
 
     /** @type {import('vue').App} */
     const widget = createApp({
@@ -88,6 +114,9 @@ $currentUserJson = json_encode($currentUser ? [
                 createMotionUrl: this.createMotionUrl,
                 speechPollUrl: this.speechPollUrl,
                 speechUser: this.speechUser,
+                votingPollUrl: this.votingPollUrl,
+                votingVoteUrl: this.votingVoteUrl,
+                votingAdminLink: this.votingAdminLink,
                 currentUser: this.currentUser,
             });
         },
@@ -100,15 +129,19 @@ $currentUserJson = json_encode($currentUser ? [
                 createMotionUrl: $element.data('create-motion-url'),
                 speechPollUrl: $element.data('speech-poll-url'),
                 speechUser: $element.data('speech-user'),
+                votingPollUrl: $element.data('voting-poll-url'),
+                votingVoteUrl: $element.data('voting-vote-url'),
+                votingAdminLink: $element.data('voting-admin-link'),
                 currentUser: $element.data('current-user'),
             };
         }
     });
 
-    widget.mixin(SPEECH_MIXINS);
     widget.component('current-debate-widget', currentDebateWidget);
     widget.component('raise-secondary-motion-form', raiseSecondaryMotionForm);
-    widget.component('speech-user-inline-widget', userInlineWidget);
+    widget.component('speech-user-inline-widget', { ...userInlineWidget, mixins: [SPEECH_MIXINS] });
+    widget.component('voting-block-widget', { ...votingBlockWidget, mixins: [VOTING_MIXINS] });
+    widget.component('vote-list', { ...voteList, mixins: [VOTING_MIXINS] });
     widget.directive('t', translateDirective);
 
     widget.mount('.currentDebateInline .currentDebateWidget');

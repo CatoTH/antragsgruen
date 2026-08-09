@@ -112,4 +112,8 @@ return [
         'text' => 'Redelisten können noch nicht an Änderungsanträge angehängt werden.',
         'js' => true,
     ],
+    'voting_err'              => [
+        'text' => 'Die Abstimmung konnte nicht geladen werden.',
+        'js' => true,
+    ],
 ];
