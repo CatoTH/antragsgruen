@@ -434,18 +434,28 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         }
 
         $primaryLanguage = LanguageTools::getPrimaryLanguage($this->getMyConsultation());
+        $primarySection  = null;
         foreach ($titleSections as $section) {
             if ($section->getSettings()?->getLanguage() === $primaryLanguage) {
-                return $section;
+                $primarySection = $section;
+                break;
             }
         }
+        if ($primarySection && !$primarySection->getSectionType()->isEmpty()) {
+            return $primarySection;
+        }
+
+        // The primary language's title is missing/empty (e.g. a submitter only filled in their own,
+        // different language) - fall back to any other language that does have content, rather than
+        // returning an empty canonical title. Mirrors the fallback D4 already applies to regular
+        // (non-title) sections.
         foreach ($titleSections as $section) {
             if (!$section->getSectionType()->isEmpty()) {
                 return $section;
             }
         }
 
-        return $titleSections[0];
+        return $primarySection ?? $titleSections[0];
     }
 
     /**

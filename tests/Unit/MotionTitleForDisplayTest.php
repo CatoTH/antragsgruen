@@ -135,4 +135,26 @@ class MotionTitleForDisplayTest extends DBTestBase
         $this->assertSame('en', $usedSection->getDisplayLanguage());
         $this->assertFalse($usedSection->needsLanguageLabel('en'));
     }
+
+    /**
+     * Found via the multi-language acceptance test (MultiLanguageCept): a submitter filling in only
+     * a non-primary language (e.g. English, on a site whose primary language is German) left the
+     * canonical title blank - IMotion::getTitleSection()'s canonical resolution returned the primary
+     * language's (empty) section unconditionally, never reaching the "first non-empty section"
+     * fallback a few lines below it, since that section did technically exist (just with no content).
+     */
+    public function testCanonicalTitleFallsBackToAnotherLanguageWhenThePrimaryOneIsEmpty(): void
+    {
+        $motionType = self::createMotionType();
+        // German (primary) title never filled in.
+        $motion     = self::createMotion($motionType, '', 'Climate protection now');
+
+        $this->assertSame('Climate protection now', $motion->title);
+        $this->assertSame('Climate protection now', $motion->getTitleSection()->getData());
+        $this->assertSame('Climate protection now', $motion->getTitleForDisplay('de'));
+
+        $usedSection = $motion->getTitleSectionForDisplay('de');
+        $this->assertSame('en', $usedSection->getDisplayLanguage());
+        $this->assertTrue($usedSection->needsLanguageLabel('de'));
+    }
 }
