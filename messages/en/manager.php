@@ -12,7 +12,10 @@ return [
     'email_settings'          => 'E-mail settings',
     'email_from_address'      => 'E-mail from - Address',
     'email_from_name'         => 'E-mail from - Name',
-    'email_transport'         => 'Transport',
+    'email_transport'         => [
+        'text' => 'Transport',
+        'description' => 'Label for how outgoing e-mails are dispatched (Sendmail/SMTP/Mandrill/...), i.e. the delivery mechanism — not physical "transport". Other translations have just kept the literal, ambiguous word.',
+    ],
     'email_sendmail'          => 'Sendmail (local)',
     'email_none'              => 'Deactivate e-mail',
     'email_smtp'              => 'SMTP (external server)',

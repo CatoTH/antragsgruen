@@ -11,12 +11,18 @@ return [
     'sidebar_results' => 'Results',
     'sidebar_admin' => 'Administration',
 
-    'title_user_single' => 'Voting',
+    'title_user_single' => [
+        'text' => 'Voting',
+        'description' => 'Page-title label for a single voting/ballot record within this app\'s voting-block feature (e.g. "Voting: Budget 2024"), not the general gerund "the act of voting".',
+    ],
 
     'vote_yes' => 'Yes',
     'vote_no' => 'No',
     'vote_abstention' => 'Abstention',
-    'vote_present' => 'Present',
+    'vote_present' => [
+        'text' => 'Present',
+        'description' => 'Vote-answer button label for roll-call-style votings, meaning "marked as present/attending" (an attendance status), not the verb "to present" or the adjective "current".',
+    ],
     'vote_undo' => 'Undo vote',
     'vote_abstain' => [
         'text' => 'General Abstention',
@@ -40,7 +46,10 @@ return [
         'js' => true,
     ],
 
-    'activity_title' => 'Protocol',
+    'activity_title' => [
+        'text' => 'Protocol',
+        'description' => 'Heading for the voting\'s activity/action log (a record of who did what and when), not "protocol" as in formal procedural rules or a network/communication protocol.',
+    ],
     'activity_show_all' => [
         'text' => 'Show complete protocol',
         'js' => true,
@@ -223,6 +232,7 @@ return [
     'settings_answers_present' => [
         'text' => 'Present',
         'js' => true,
+        'description' => 'Name of a preset answer-set for roll-call-style votings (asking who is present/attending), not the verb "to present" or a gift/current-time sense.',
     ],
     'settings_answers_presenth' => [
         'text' => 'For "votings"”" meant to ask which members are present, like roll calls.',

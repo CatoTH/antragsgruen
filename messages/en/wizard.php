@@ -19,7 +19,10 @@ return [
     'functionality_motions'        => 'Motions',
     'functionality_manifesto_desc' => '&nbsp;',
     'functionality_manifesto'      => 'Manifesto',
-    'functionality_applications'   => 'Candidatures',
+    'functionality_applications'   => [
+        'text' => 'Candidatures',
+        'description' => 'Site-setup wizard option enabling the "candidatures" feature (users formally applying to run for / be elected to a position), a British/formal term for candidacy applications, not general software "applications".',
+    ],
     'functionality_agenda'         => 'An agenda',
     'functionality_speech'         => 'Speaking lists',
     'functionality_statute_amendments' => 'Statutes<br>amendments',
@@ -84,7 +87,10 @@ return [
 
     'applicationtype_title' => 'Type of applications',
     'applicationtype_desc' => 'In which format are applications / candidatures submitted?',
-    'applicationtype_text' => 'Form',
+    'applicationtype_text' => [
+        'text' => 'Form',
+        'description' => 'Radio option for submitting candidatures via an online web form (filling in text/photo/personal data fields), as opposed to uploading a PDF - not "form" as in shape or a document genre.',
+    ],
     'applicationtype_text_desc' => 'Text, photo, personal data',
     'applicationtype_pdf' => 'PDF',
     'applicationtype_pdf_desc' => 'A ready-layouted PDF can be uploaded',

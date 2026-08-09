@@ -39,7 +39,10 @@ return [
         'text' => 'Open selection',
         'js' => true,
     ],
-    'privacy_statement'     => 'Privacy',
+    'privacy_statement'     => [
+        'text' => 'Privacy',
+        'description' => 'Footer link label to the site\'s privacy policy page, short for "Privacy Policy" (noun), not the adjective "private".',
+    ],
     'imprint'               => 'Imprint',
     'err_email_not_sent'    => 'An e-mail could not be sent',
     'err_no_email_given'    => 'No e-mail-address entered',
@@ -72,7 +75,10 @@ return [
 
     'debug_deadline_head' => 'Simulate time',
     'debug_deadline_hint' => 'Only for this browser',
-    'debug_deadline_set'  => 'Set',
+    'debug_deadline_set'  => [
+        'text' => 'Set',
+        'description' => 'Imperative verb: button to apply a developer-only debug deadline override (shown only when debug tools are active). "Set" as in "apply this value", not a noun/adjective.',
+    ],
     'debug_deadline_quit' => 'Quit simulation',
 
     'aria_breadcrumb'   => 'Breadcrumb menu',

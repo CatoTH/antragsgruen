@@ -78,7 +78,10 @@ return [
     'dislike'                       => 'Dislikes',
     'dislikes'                      => 'Dislikes',
     'dislikes_total'                => '%NUM% dislikes in total.',
-    'like_withdraw'                 => 'Withdraw',
+    'like_withdraw'                 => [
+        'text' => 'Withdraw',
+        'description' => 'Button to retract your own like/dislike or support for this motion; distinct from the separate "withdraw" action elsewhere in this file that withdraws the whole motion.',
+    ],
     'button_submit_create'          => 'Create',
     'button_submit_submit'          => 'Submit',
     'button_submit_publish'         => 'Publish',
@@ -91,8 +94,14 @@ return [
     'created_bread_submit'          => 'Submitted',
     'created_bread_publish'         => 'Published',
     'button_correct'                => 'Go back',
-    'Prefix'                        => 'Signature',
-    'ResolutionPrefix'              => 'Signature',
+    'Prefix'                        => [
+        'text' => 'Signature',
+        'description' => 'Table column header for a motion\'s identifying code/number (e.g. "A1"), not a person\'s autograph — analogous to "ResolutionPrefix" for resolutions.',
+    ],
+    'ResolutionPrefix'              => [
+        'text' => 'Signature',
+        'description' => 'Table column header for a resolution\'s identifying code/number (e.g. "B2"), not a person\'s autograph — analogous to "Prefix" for motions.',
+    ],
     'Title'                         => 'Title',
     'replaces_motion'               => 'Replaces',
     'resolution_of'                 => 'Based on',
@@ -142,11 +151,17 @@ return [
     'tag_add'                       => 'Add',
     'tag_select'                    => 'Select Tag',
     'tag_new'                       => 'New',
-    'tag_del'                       => 'del',
+    'tag_del'                       => [
+        'text' => 'del',
+        'description' => 'Compact delete button next to a tag in an admin tag-management row; an abbreviation for "delete", not a literal fixed token — translate it as a short word for "delete".',
+    ],
     'tags_head'                     => 'Tags',
     'moved_to'                      => 'Moved to',
     'moved_from'                    => 'Moved from',
-    'merging_draft_th'              => 'Revision',
+    'merging_draft_th'              => [
+        'text' => 'Revision',
+        'description' => 'Row label shown when a motion has an active work-in-progress amendment-merge draft pending (paired with "The motion is being revised"), signalling an in-progress revision, not a version/revision number.',
+    ],
     'merging_draft_td'              => 'The motion is being revised.<br><a href="%URL%"><span class="glyphicon glyphicon-chevron-right"></span> Show work-in-progress draft</a>',
     'merging_draft_warning'         => 'This is not an actual motion, but a work-in-progress draft!',
     'amends_none'                   => 'none',
@@ -264,12 +279,18 @@ return [
     'support_finish_btn'                 => 'Officially submit the motion',
     'support_finish_err'                 => 'This is not (yet) possible.',
     'support_finish_done'                => 'The motion is now officially submitted',
-    'prefix_new_code'                    => 'new',
+    'prefix_new_code'                    => [
+        'text' => 'new',
+        'description' => 'Placeholder marker inserted into a motion\'s prefix before an official number is assigned (e.g. shown as "new 2"); matched programmatically via case-insensitive regex, so keep translations short and distinct rather than full phrases.',
+    ],
     'comment_for'                        => 'Comment for',
 
     'protocol_open'    => 'Write protocol',
     'protocol_close'   => 'Close',
-    'protocol'         => 'Protocol',
+    'protocol'         => [
+        'text' => 'Protocol',
+        'description' => 'Section heading for admins\' free-text internal notes attached to a motion ("Write protocol"/"Public protocol"), i.e. meeting-minutes-style notes, not a technical or network protocol.',
+    ],
     'protocol_public'  => 'Public protocol',
     'protocol_private' => 'Non-public protocol',
     'protocol_show'    => 'Show protocol',
@@ -305,7 +326,10 @@ return [
     'goto_line_err' => 'Line not found',
 
     'statutes_base_head' => 'Base text',
-    'last_update' => 'Update',
+    'last_update' => [
+        'text' => 'Update',
+        'description' => 'Table column header showing the date a motion was last updated, short for "last update [date]" (noun), not an imperative "update now" button.',
+    ],
 
     'add_tag' => [
         'text' => 'Create',

@@ -2,7 +2,10 @@
 
 return [
     'amendment'              => 'Amendment',
-    'amendment_prefix'       => 'AM',
+    'amendment_prefix'       => [
+        'text' => 'AM',
+        'description' => 'Text prefix prepended to a revision number to build an amendment\'s short reference code (e.g. "AM3"), analogous to a motion\'s numbering prefix - not the time-of-day abbreviation "a.m.".',
+    ],
     'amendments'             => 'Amendments',
     'motion'                 => 'Motion',
     'initiator'              => 'Proposer',
@@ -13,7 +16,10 @@ return [
     'supporters'             => 'Supporters',
     'supporters_title'       => 'Supporters',
     'sidebar_title_aria'     => 'Functionality and links regarding this amendments',
-    'amend_for_motion'       => 'for',
+    'amend_for_motion'       => [
+        'text' => 'for',
+        'description' => 'Preposition joining an amendment\'s title to the motion it belongs to, as in "Amendment X for Motion Y" (used in breadcrumbs/sorting labels) - expresses "belonging to", not purpose or duration.',
+    ],
     'supporter_you'          => 'You!',
     'supporter_none'         => 'None',
     'table_caption'          => 'Metadata of the amendment',
@@ -40,7 +46,10 @@ return [
     'comment_screen_queue_1' => '1 comment waiting for reviewing',
     'comment_screen_queue_x' => '%NUM% comments waiting for reviewing',
     'comment_login_hint'     => 'Please log in to comment.',
-    'prefix'                 => 'Signature',
+    'prefix'                 => [
+        'text' => 'Signature',
+        'description' => 'Field label for the amendment\'s short reference code (e.g. "AM3"), not a person\'s handwritten signature - several existing translations mistakenly used the literal-signature word here.',
+    ],
     'none_yet'               => 'No amendment yet',
     'amendment_for'          => 'Amendment for',
     'amendment_for_prefix'   => 'Amendment for %PREFIX%',
@@ -52,7 +61,10 @@ return [
     'confirmed_screening'    => 'You submitted the amendment. It will now be reviewed.',
 
     'screened_hint'                => 'Published',
-    'amend_for'                    => ' to ',
+    'amend_for'                    => [
+        'text' => ' to ',
+        'description' => 'Preposition joining an amendment\'s title/prefix to the motion it amends, as in "AM3 to Motion Y" - expresses "belonging to", not direction or intention.',
+    ],
     'create_select_statutes'       => 'There is more than one section to amend. Please choose which one you want to change.',
     'create_explanation'           => 'Please amend the motion as you like. Explain in the  &quot;Reason&quot; section below.<br>' . "\n" .
                                       'Please note, you can give an &quot;Editorial hint&quot;.',
@@ -115,6 +127,7 @@ return [
     'merge_amend_modu'             => [
         'text' => 'Mod.',
         'js' => true,
+        'description' => 'Abbreviation for "modified adoption" - a short tag shown on an amendment that was merged into the motion with edits, as opposed to as originally proposed; unrelated to "moderator" or "module".',
     ],
     'merge_bread'                  => 'Revise',
     'merge_title'                  => 'Revise %TITLE%',
@@ -268,7 +281,10 @@ return [
     'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> As there are multiple amendments to this motion which refer to the same text passage - <strong>colliding amendments</strong> - it is necessary to insert the changes of those conflicting amendments manually. After doing so, please delete the paragraphs of the conflicts.',
     'merge_amend_by'                    => '%TITLE%, by %INITIATOR%',
     'merge_amend_editorials'            => 'Editorial amendment',
-    'support'                           => 'Support',
+    'support'                           => [
+        'text' => 'Support',
+        'description' => 'Verb button/label meaning "support (endorse) this amendment", parallel to the amendment\'s supporter-collection flow (see supporter/supporters) - not the noun "(customer) support".',
+    ],
     'support_question'                  => 'Do you really want to support this amendment?',
     'support_orga'                      => 'Organization',
     'support_name'                      => 'Name',
@@ -341,7 +357,10 @@ return [
     'proposal_tags'              => 'Internal tags',
     'proposal_edit_tags'         => 'Edit tags',
     'proposal_obsoleted_by'      => 'Handled by',
-    'proposal_modified_accepted' => 'Modification',
+    'proposal_modified_accepted' => [
+        'text' => 'Modification',
+        'description' => 'Section heading for the option to accept the amendment/motion with edits (i.e. "accepted in modified form"), not a generic label for any change or revision.',
+    ],
     'proposal_activities_title'  => 'History &amp; Comments',
     'proposal_comment_overview'  => 'Overview',
     'proposal_comment_placeh'    => 'New comment...',

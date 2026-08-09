@@ -9,11 +9,20 @@ return [
     'list_this_con'   => 'Only this consultation',
 
     'content_privacy_title' => 'Privacy statement',
-    'content_privacy_bread' => 'Privacy',
+    'content_privacy_bread' => [
+        'text' => 'Privacy',
+        'description' => 'Breadcrumb label for the privacy policy page, short for "Privacy Policy/Statement" (noun), not the adjective "private".',
+    ],
     'content_welcome'       => 'Welcome',
     'content_welcome_text'  => '<p>Welcome to Antragsgrün</p>',
-    'content_imprint_title' => 'Imprint',
-    'content_imprint_bread' => 'Imprint',
+    'content_imprint_title' => [
+        'text' => 'Imprint',
+        'description' => 'Page title for the legally required site-owner disclosure page (German "Impressum"), not "imprint" as in a publisher\'s brand or a mark left by pressure.',
+    ],
+    'content_imprint_bread' => [
+        'text' => 'Imprint',
+        'description' => 'Breadcrumb label for the legally required site-owner disclosure page (German "Impressum"), not "imprint" as in a publisher\'s brand or a mark left by pressure.',
+    ],
     'content_help_title'    => 'Help',
     'content_help_bread'    => 'Help',
     'content_help_place'    => '<p>Help...</p>',
