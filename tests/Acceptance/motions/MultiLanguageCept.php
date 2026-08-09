@@ -181,3 +181,79 @@ $I->see('Justification en français');
 $switchLanguage('en');
 $I->see('English motion text');
 $I->see('English reason');
+
+
+$amendmentId = AcceptanceTester::FIRST_FREE_AMENDMENT_ID;
+
+$I->wantTo('create an amendment in English');
+// Already browsing in English (and logged out) from the check just above.
+$I->click('.sidebarActions .amendmentCreate a');
+
+$I->seeElement('#sections_' . $sTitleEn);
+$I->dontSeeElement('#sections_' . $sTitleDe);
+$I->dontSeeElement('#sections_' . $sTitleFr);
+$I->seeElement('#sections_' . $sTextEn . '_wysiwyg');
+$I->dontSeeElement('#sections_' . $sTextDe . '_wysiwyg');
+$I->dontSeeElement('#sections_' . $sTextFr . '_wysiwyg');
+
+// The amendment text field is pre-filled with the original motion text, ICE-tracked for diffing -
+// a wholesale setData() of unrelated content would show as "everything deleted, everything inserted"
+// but still render fine; a targeted word replacement (matching how existing amendment Cepts, e.g.
+// CreateCept, edit amendment text) keeps the diff - and therefore the assertions below - readable.
+$I->fillField('#sections_' . $sTitleEn, 'My English Amendment Title');
+$I->executeJS(
+    'var t = CKEDITOR.instances.sections_' . $sTextEn . '_wysiwyg.getData();' .
+    'CKEDITOR.instances.sections_' . $sTextEn . '_wysiwyg.setData(t.replace("motion", "amended"));'
+);
+$I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>English amendment reason</p>");');
+$I->fillField('#initiatorPrimaryName', 'English Amendment Submitter');
+$I->fillField('#initiatorEmail', 'mlamendment@example.org');
+$I->submitForm('#amendmentEditForm', [], 'save');
+$I->submitForm('#amendmentConfirmForm', [], 'confirm');
+
+
+$I->wantTo('view the just-created amendment in German and see the not-yet-translated hint');
+$I->gotoMotion(true, (string) $motionId);
+$switchLanguage('de');
+$I->click('section.amendments ul.amendments a.amendment' . $amendmentId);
+
+$I->see('My English Amendment Title');
+$I->see('amended', '#section_' . $sTextEn . ' ins');
+$I->seeNumberOfElements('.alertLanguageFallback', 2);
+$I->see('Dieser Inhalt wurde noch nicht in deine Sprache übersetzt.', '.alertLanguageFallback');
+
+
+$I->wantTo('as an admin, translate the amendment title and text into German and French');
+$I->loginAndGotoMotionList()->gotoAmendmentEdit($amendmentId);
+$I->clickJS('#amendmentTextEditCaller button');
+$I->fillField('#sections_' . $sTitleDe, 'Mein deutscher Änderungsantragstitel');
+$I->fillField('#sections_' . $sTitleFr, 'Mon titre d\'amendement français');
+$I->executeJS(
+    'var t = CKEDITOR.instances.sections_' . $sTextDe . '_wysiwyg.getData();' .
+    'CKEDITOR.instances.sections_' . $sTextDe . '_wysiwyg.setData(t.replace("Antragstext", "Änderungsantragstext"));'
+);
+$I->executeJS(
+    'var t = CKEDITOR.instances.sections_' . $sTextFr . '_wysiwyg.getData();' .
+    'CKEDITOR.instances.sections_' . $sTextFr . '_wysiwyg.setData(t.replace("motion", "amendement"));'
+);
+$I->submitForm('#amendmentUpdateForm', [], 'save');
+
+$I->logout();
+
+
+$I->wantTo('go to the regular amendment view and see the translated sections in every language');
+$I->gotoMotion(true, (string) $motionId);
+$switchLanguage('de');
+$I->click('section.amendments ul.amendments a.amendment' . $amendmentId);
+
+$I->see('Mein deutscher Änderungsantragstitel');
+$I->see('Änderungsantragstext', '#section_' . $sTextDe . ' ins');
+$I->dontSee('Dieser Inhalt wurde noch nicht in deine Sprache übersetzt.');
+
+$switchLanguage('fr');
+$I->see('Mon titre d\'amendement français');
+$I->see('amendement', '#section_' . $sTextFr . ' ins');
+
+$switchLanguage('en');
+$I->see('My English Amendment Title');
+$I->see('amended', '#section_' . $sTextEn . ' ins');

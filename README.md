@@ -550,6 +550,7 @@ Antragsgrün can hold the actual content of motions and amendments - titles, tex
 - Submitters only see and fill in the fields for their own, currently selected language; administrators see and can edit every language at once.
 - Readers get a small language picker (flag icons) in the navigation bar. If a section has no content yet in the reader's language, another available language is shown instead, together with a clearly visible notice.
 - The Plugin-Architecture supports automatic translations of motions and amendments. For a reference implementation using automatic translation using Anthropic's Claude API, see the [`plugins/translation_claude`](plugins/translation_claude).
+- More Details are under [docs/multilanguage.md](docs/multilanguage.md)
 
 ## Plugins
 

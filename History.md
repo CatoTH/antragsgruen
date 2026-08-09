@@ -8,6 +8,7 @@
    - Creating motions.
    - Supporting motions and amendments and withdrawing support.
    - Screening motions and amendments as admin.
+- Antragsgrün supports now multilingual consultations, where documents are submitted in multiple languages in parallel and users can choose the language to view the page and motions in. Provisions for automatic tranlations of motions and amendments are there including one demo-plugin.
 - Motion screening can now be configured on a per-motion-type basis.
 - More uploaded PDFs can be handled without having to install additional software or libraries.
 
