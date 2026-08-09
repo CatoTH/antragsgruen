@@ -32,6 +32,7 @@ return [
     'remaining_time_over' => [
         'text' => 'over',
         'js' => true,
+        'description' => 'Label shown once the speaking/voting countdown has run out, meaning "time\'s up / elapsed" — not the preposition "over" (above/across). Other translations have mistaken it for the spatial sense.',
     ],
     'next_speaker'       => [
         'text' => 'Next speaker',
@@ -80,6 +81,7 @@ return [
     'apply'              => [
         'text' => 'Apply',
         'js' => true,
+        'description' => 'Button that opens the form to sign up for the speaking list ("apply to speak"), not a generic "apply settings/changes" action. Some translations have wrongly used the settings-confirmation sense.',
     ],
     'apply_name'         => [
         'text' => 'Name',
@@ -88,6 +90,7 @@ return [
     'apply_do'           => [
         'text' => 'Apply',
         'js' => true,
+        'description' => 'Submit button inside the speaking-list sign-up form ("apply to speak"), same sense as the `apply` key — not the generic "apply settings" action; some translations have gotten this wrong.',
     ],
     'apply_poo_do'       => [
         'text' => 'Point of Order',
@@ -100,6 +103,7 @@ return [
     'applied'            => [
         'text' => 'Applied',
         'js' => true,
+        'description' => 'Badge shown next to a person\'s name once they\'ve signed up to speak ("you applied to speak"), not a "changes applied" confirmation. Some translations mistakenly used the settings-applied sense.',
     ],
     'applied_aria'       => [
         'text' => 'You applied to speak',

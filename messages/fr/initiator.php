@@ -29,4 +29,10 @@ return [
     'email_not_confirmed' => 'Adresse non confirmée',
     'ww_profile'          => 'Profil Grünes Netz',
     'contact_show'        => 'Informations de Contact',
+
+    'gender'               => 'Genre',
+    'removeInitiator'      => 'Retirer l\'auteur',
+    'copy_to_clipboard'    => 'Copier',
+    'copy_to_clipboard_h'  => 'Copier la liste des soutiens ci-dessus dans le presse-papier, dans un format adapté pour être collé dans le champ de texte complet.',
+    'removeSupporter'      => 'Retirer le soutien',
 ];

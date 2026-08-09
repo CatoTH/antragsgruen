@@ -75,4 +75,11 @@ return [
                 Après l\'avoir fait, recharge cette page.',
     'done_nextstep' => 'Super ! Tu peux maintenant régler plus de détails.
                 Antragsgrün est maintenant disponible à l\'adresse suivante : %LINK%',
+
+    'err_php_version' => 'Antragsgrün nécessite au moins la version %MIN_VERSION% de PHP. Actuellement, la version %CURR_VERSION% est installée. Merci de contacter votre administrateur ou administratrice système pour savoir comment mettre à jour vers une version récente de PHP.',
+    'email_mailjet'    => 'Mailjet',
+    'mailjet_api_key'  => 'Mailjet\'s API-Key',
+    'mailjet_secret'   => 'Mailjet\'s Secret Key',
+    'smtp_tls'         => 'TLS',
+    'done_goto_site'   => 'Aller sur le site',
 ];
