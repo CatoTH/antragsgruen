@@ -2,7 +2,8 @@
 
 namespace app\models\forms;
 
-use app\components\{HTMLTools, LanguageTools, SectionAutofill};
+use app\components\{BackgroundJobScheduler, HTMLTools, LanguageTools};
+use app\models\backgroundJobs\FillEmptyAmendmentSections;
 use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest, AmendmentUpdateSection};
 use app\models\db\{Amendment, AmendmentSection, AmendmentSupporter, ConsultationAgendaItem, ConsultationSettingsTag, Motion, User};
 use app\models\exceptions\FormError;
@@ -323,8 +324,7 @@ class AmendmentEditForm
 
         $amendment->save();
 
-        $amendment->refresh();
-        SectionAutofill::fillEmptyAmendmentSections($amendment);
+        BackgroundJobScheduler::executeOrScheduleJob(new FillEmptyAmendmentSections($amendment->getMyConsultation(), $amendment->id));
 
         return $amendment;
     }
@@ -405,10 +405,10 @@ class AmendmentEditForm
             $amendment->dateContentModification = date('Y-m-d H:i:s');
             $amendment->save();
 
-            // Sections may have just been deleted and re-created above (not merely updated), so the
-            // amendment's already-cached sections relation can't be trusted without a refresh first.
-            $amendment->refresh();
-            SectionAutofill::fillEmptyAmendmentSections($amendment);
+            // No $amendment->refresh() needed here (unlike a direct SectionAutofill call would have
+            // required, since sections were just deleted and re-created above): the queued/inline job
+            // below re-fetches the amendment fresh from the DB by id regardless.
+            BackgroundJobScheduler::executeOrScheduleJob(new FillEmptyAmendmentSections($amendment->getMyConsultation(), $amendment->id));
         } else {
             throw new FormError(\Yii::t('base', 'err_unknown'));
         }

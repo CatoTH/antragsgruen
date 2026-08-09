@@ -502,7 +502,7 @@ class StdHooks extends Hooks
 
         foreach ($motionTypes as $motionType) {
             $link        = $motionType->getCreateLink(false, true);
-            $description = $motionType->createTitle;
+            $description = $motionType->getCreateTitleForDisplay();
 
             $html      .= '<a class="createMotion createMotion' . $motionType->id . '" ' .
                           'href="' . Html::encode($link) . '" title="' . Html::encode($description) . '" rel="nofollow">' .
@@ -552,7 +552,7 @@ class StdHooks extends Hooks
                 if (!isset($deadlines[$deadline])) {
                     $deadlines[$deadline] = ['date' => $deadline, 'titles' => []];
                 }
-                $deadlines[$deadline]['titles'][] = $motionType->titlePlural;
+                $deadlines[$deadline]['titles'][] = $motionType->getTitlePluralForDisplay();
             }
 
             $deadline = $motionType->getUpcomingDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);

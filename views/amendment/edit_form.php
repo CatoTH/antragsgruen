@@ -32,7 +32,7 @@ if ($form->motion->titlePrefix !== '') {
 
 $layout->robotsNoindex = true;
 $layout->loadCKEditor();
-$layout->addBreadcrumb($motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
+$layout->addBreadcrumb($motionType->getTitleSingularForDisplay(), UrlHelper::createMotionUrl($form->motion));
 if ($form->toAnotherAmendment) {
     $amendingAmendment = $consultation->getAmendment($form->toAnotherAmendment);
     $layout->addBreadcrumb($amendingAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendingAmendment));

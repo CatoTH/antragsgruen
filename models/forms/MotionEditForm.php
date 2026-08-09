@@ -2,7 +2,8 @@
 
 namespace app\models\forms;
 
-use app\components\{HTMLTools, LanguageTools, SectionAutofill};
+use app\components\{BackgroundJobScheduler, HTMLTools, LanguageTools};
+use app\models\backgroundJobs\FillEmptyMotionSections;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
@@ -429,7 +430,7 @@ class MotionEditForm
         $motion->slug = $motion->createSlug();
         $motion->save();
 
-        SectionAutofill::fillEmptyMotionSections($motion);
+        BackgroundJobScheduler::executeOrScheduleJob(new FillEmptyMotionSections($motion->getMyConsultation(), $motion->id));
 
         if (!$asDraft) {
             $motion->trigger(Motion::EVENT_CREATED, new MotionEvent($motion));
@@ -507,12 +508,10 @@ class MotionEditForm
             $this->updateTextRewritingAmendments($motion, $dto->sections, $amendmentOverrides);
         }
 
-        // Refresh first: overwriteSections()/updateTextRewritingAmendments() above may have added a
-        // section not yet reflected in $motion's already-cached sections relation (e.g. a section
-        // definition added since this motion was created), and text sections in particular are only
-        // written by updateTextRewritingAmendments(), not overwriteSections() - autofilling before
-        // that would look at their pre-edit content.
-        $motion->refresh();
-        SectionAutofill::fillEmptyMotionSections($motion);
+        // No $motion->refresh() needed here (unlike a direct SectionAutofill call would have required,
+        // since overwriteSections()/updateTextRewritingAmendments() above may have left $motion's
+        // sections relation stale): the queued/inline job below re-fetches the motion fresh from the
+        // DB by id regardless.
+        BackgroundJobScheduler::executeOrScheduleJob(new FillEmptyMotionSections($motion->getMyConsultation(), $motion->id));
     }
 }

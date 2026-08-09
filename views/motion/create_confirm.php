@@ -15,7 +15,7 @@ use yii\helpers\Html;
 
 $controller = $this->context;
 
-$typeName = $motion->getMyMotionType()->titleSingular;
+$typeName = $motion->getMyMotionType()->getTitleSingularForDisplay();
 if ($mode === 'create') {
     $this->title = $typeName;
 } else {

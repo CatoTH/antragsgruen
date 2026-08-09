@@ -83,7 +83,7 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var array{installationId: string, wsUri: string, stompJsUri: string, rabbitMqUri: string, rabbitMqExchangeName: string, rabbitMqUsername: string, rabbitMqPassword: string}|null */
     public ?array $live = null;
 
-    /** @var array{notifications?: bool}|null */
+    /** @var array{notifications?: bool, sectionAutofill?: bool}|null */
     public ?array $backgroundJobs = null;
 
     /** @var string[] */

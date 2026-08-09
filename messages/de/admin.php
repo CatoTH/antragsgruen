@@ -546,6 +546,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
 
     'motion_type_edit'            => 'Antragstyp bearbeiten',
     'motion_type_names'           => 'Bezeichnung',
+    'motion_type_label_transl'    => 'Mehrsprachige Bezeichnungen',
+    'motion_type_label_transl_hi' => 'Auf mehrsprachigen Websites können diese Bezeichnungen für jede weitere Sprache übersetzt werden. Leer gelassene Felder verwenden die obige, in der Hauptsprache der Veranstaltung hinterlegte Bezeichnung.',
     'motion_type_amendonly_title' => 'Satzungsänderungsanträge: Basistexte',
     'motion_type_amendonly_hint'  => 'Hier kann die Satzung (oder ähnliche Dokumente) hinterlegt werden, damit Mitglieder anschließend Änderungsanträge darauf stellen können. Die Satzung ist nicht als regulärer Antrag / Text sichtbar.',
     'motion_type_amendonly_noyet' => 'Noch keine Satzung hinterlegt. Nutzer*innen können daher noch keine Änderungsanträge stellen.',

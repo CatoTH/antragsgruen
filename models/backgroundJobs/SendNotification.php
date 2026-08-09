@@ -38,6 +38,11 @@ class SendNotification extends IBackgroundJob
         return self::TYPE_ID;
     }
 
+    public function getConfigFlagName(): string
+    {
+        return 'notifications';
+    }
+
     public function execute(): void
     {
         $params = AntragsgruenApp::getInstance();

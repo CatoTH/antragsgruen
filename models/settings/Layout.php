@@ -153,7 +153,7 @@ class Layout
         $this->consultation = $consultation;
         if (count($this->breadcrumbs) === 0) {
             if ($consultation->getForcedMotion()) {
-                $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->getForcedMotion()->motionType->titleSingular;
+                $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->getForcedMotion()->motionType->getTitleSingularForDisplay();
             } else {
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->titleShort;
             }

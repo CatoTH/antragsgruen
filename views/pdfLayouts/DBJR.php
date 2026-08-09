@@ -34,7 +34,7 @@ class DBJR extends IPDFLayout
         $pdf->SetFont('helvetica', 'B', $fontsize);
         $pdf->SetTextColor(40, 40, 40, 40);
         //$pdf->SetXY($left, $wraptop);
-        $pdf->Write(0, mb_strtoupper($motion->motionType->titleSingular, 'UTF-8') . "\n");
+        $pdf->Write(0, mb_strtoupper($motion->motionType->getTitleSingularForDisplay(), 'UTF-8') . "\n");
 
         $pdf->SetTextColor(100, 100, 100, 100);
         $wraptop = $pdf->getY() + $abs;

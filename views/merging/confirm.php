@@ -23,7 +23,7 @@ $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotion
 $layout->addBreadcrumb(Yii::t('amend', 'merge_confirm_title'));
 $layout->loadDatepicker();
 
-$title       = str_replace('%TITLE%', $newMotion->getMyMotionType()->titleSingular, Yii::t('amend', 'merge_title'));
+$title       = str_replace('%TITLE%', $newMotion->getMyMotionType()->getTitleSingularForDisplay(), Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 ?>

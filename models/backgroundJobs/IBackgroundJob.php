@@ -16,6 +16,14 @@ abstract class IBackgroundJob
 
     abstract public function getTypeId(): string;
 
+    /**
+     * The key into AntragsgruenApp::$backgroundJobs that decides whether this job type is queued
+     * (background-processed) or run inline - see BackgroundJobScheduler::executeOrScheduleJob(). Each
+     * job type gets its own flag rather than sharing one, so e.g. notifications and section-autofill
+     * jobs can be enabled independently of each other.
+     */
+    abstract public function getConfigFlagName(): string;
+
     abstract public function execute(): void;
 
     /**
@@ -25,6 +33,8 @@ abstract class IBackgroundJob
     {
         return [
             SendNotification::TYPE_ID => SendNotification::class,
+            FillEmptyMotionSections::TYPE_ID => FillEmptyMotionSections::class,
+            FillEmptyAmendmentSections::TYPE_ID => FillEmptyAmendmentSections::class,
         ];
     }
 

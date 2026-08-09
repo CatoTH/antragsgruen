@@ -1129,7 +1129,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->getFormattedTitlePrefix() && !$this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->getFormattedTitlePrefix();
         } else {
-            return $this->getMyMotionType()->titleSingular;
+            return $this->getMyMotionType()->getTitleSingularForDisplay();
         }
     }
 

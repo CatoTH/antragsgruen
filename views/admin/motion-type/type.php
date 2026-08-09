@@ -66,6 +66,7 @@ if ($motionType->amendmentsOnly) {
     echo $this->render('_amendments_only_motions', ['motionType' => $motionType]);
 }
 echo $this->render('_names', ['motionType' => $motionType]);
+echo $this->render('_labelTranslations', ['motionType' => $motionType]);
 echo $this->render('_policy', ['motionType' => $motionType]);
 echo $this->render('_deadlines', ['motionType' => $motionType, 'locale' => $locale]);
 echo $this->render('_initiator', ['motionType' => $motionType]);

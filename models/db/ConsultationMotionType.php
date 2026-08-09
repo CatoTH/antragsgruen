@@ -618,6 +618,59 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     /**
+     * $titleSingular/$titlePlural/$createTitle in the given (or, by default, the reader's current)
+     * language - see MotionType::$labelTranslations. On a single-language site, or for the
+     * consultation's primary language, or if no override is defined, these are always the DB column
+     * value itself.
+     */
+    public function getTitleSingularForDisplay(?string $language = null): string
+    {
+        return $this->getLabelForDisplay('titleSingular', $this->titleSingular, $language);
+    }
+
+    public function getTitlePluralForDisplay(?string $language = null): string
+    {
+        return $this->getLabelForDisplay('titlePlural', $this->titlePlural, $language);
+    }
+
+    public function getCreateTitleForDisplay(?string $language = null): string
+    {
+        return $this->getLabelForDisplay('createTitle', $this->createTitle, $language);
+    }
+
+    private function getLabelForDisplay(string $field, string $mainLanguageValue, ?string $language): string
+    {
+        $language ??= LanguageTools::getCurrentLanguage();
+        if ($language === LanguageTools::getPrimaryLanguage($this->getConsultation())) {
+            return $mainLanguageValue;
+        }
+
+        $translation = $this->getSettingsObj()->labelTranslations[$language][$field] ?? '';
+
+        return ($translation !== '' ? $translation : $mainLanguageValue);
+    }
+
+    /**
+     * For prefilling the admin translation form - the raw override, without falling back to the
+     * main-language value, so an empty field in the form means "no override" rather than repeating
+     * the default.
+     */
+    public function getLabelTranslation(string $language, string $field): string
+    {
+        return $this->getSettingsObj()->labelTranslations[$language][$field] ?? '';
+    }
+
+    /**
+     * @param array<string, array{titleSingular?: string, titlePlural?: string, createTitle?: string}> $translations
+     */
+    public function setLabelTranslations(array $translations): void
+    {
+        $settings = $this->getSettingsObj();
+        $settings->labelTranslations = $translations;
+        $this->setSettingsObj($settings);
+    }
+
+    /**
      * @return Motion[]
      */
     public function getVisibleMotions(bool $withdrawnAreVisible = true): array

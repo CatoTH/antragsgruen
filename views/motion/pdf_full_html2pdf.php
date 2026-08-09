@@ -13,8 +13,8 @@ use app\views\pdfLayouts\IPdfWriter;
 $pdf = new IPdfWriter();
 $pdf->SetCreator(Yii::t('export', 'default_creator'));
 $pdf->SetAuthor(Yii::t('export', 'default_creator'));
-$pdf->SetTitle($imotions[0]->getMyMotionType()->titlePlural);
-$pdf->SetSubject($imotions[0]->getMyMotionType()->titlePlural);
+$pdf->SetTitle($imotions[0]->getMyMotionType()->getTitlePluralForDisplay());
+$pdf->SetSubject($imotions[0]->getMyMotionType()->getTitlePluralForDisplay());
 $pdf->setPrintHeader(false);
 $pdf->setPrintFooter(false);
 
@@ -38,4 +38,4 @@ foreach ($imotions as $imotion) {
     }
 }
 
-$pdf->Output(Tools::sanitizeFilename($imotions[0]->getMyMotionType()->titlePlural, true) . '.pdf', 'I');
+$pdf->Output(Tools::sanitizeFilename($imotions[0]->getMyMotionType()->getTitlePluralForDisplay(), true) . '.pdf', 'I');

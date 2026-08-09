@@ -21,7 +21,7 @@ $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl
 $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 $layout->loadBootstrapToggle();
 
-$title       = str_replace('%TITLE%', $motion->getMyMotionType()->titleSingular, Yii::t('amend', 'merge_title'));
+$title       = str_replace('%TITLE%', $motion->getMyMotionType()->getTitleSingularForDisplay(), Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 ?>
@@ -38,7 +38,7 @@ if ($consultation->getSettings()->hasSpeechLists) {
                 <td><?= Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')) ?></td>
             </tr>
             <tr>
-                <th><?= Html::encode($motion->getMyMotionType()->titleSingular) ?>:</th>
+                <th><?= Html::encode($motion->getMyMotionType()->getTitleSingularForDisplay()) ?>:</th>
                 <td><?= Html::a(Html::encode($motion->getTitleWithPrefix()), UrlHelper::createMotionUrl($motion)) ?></td>
             </tr>
             <tr>

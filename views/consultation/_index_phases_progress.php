@@ -51,7 +51,7 @@ foreach ($consultation->motionTypes as $motionType) {
     foreach (ConsultationMotionType::DEADLINE_TYPES as $deadlineType) {
         switch ($deadlineType) {
             case ConsultationMotionType::DEADLINE_MOTIONS:
-                $deadlineName = $motionType->createTitle;
+                $deadlineName = $motionType->getCreateTitleForDisplay();
                 break;
             case ConsultationMotionType::DEADLINE_AMENDMENTS:
                 $deadlineName = Yii::t('admin', 'motion_type_perm_amend');

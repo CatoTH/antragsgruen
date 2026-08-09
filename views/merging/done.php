@@ -17,7 +17,7 @@ $layout->robotsNoindex = true;
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 $layout->addBreadcrumb(Yii::t('amend', 'merge_submitted'));
 
-$title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, Yii::t('amend', 'merge_submitted_title'));
+$title       = str_replace('%TITLE%', $newMotion->motionType->getTitleSingularForDisplay(), Yii::t('amend', 'merge_submitted_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 echo '<h1>' . Html::encode($this->title) . '</h1>

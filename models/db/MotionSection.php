@@ -241,7 +241,7 @@ class MotionSection extends IMotionSection
                 ISectionType::TYPE_PDF_ATTACHMENT,
                 ISectionType::TYPE_IMAGE
             ])) {
-                return base64_decode($this->data);
+                return base64_decode($this->data ?? '');
             } else {
                 /** @phpstan-ignore-next-line */
                 return ($this->data === null ? '' : $this->data); // null = created on-the-fly, e.g. when responding to petitions

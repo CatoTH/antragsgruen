@@ -15,7 +15,7 @@ $layout->assetRoot  = yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIR
 $layout->pluginRoot = yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
 $layout->template   = $texTemplate->texLayout;
 $layout->author     = Yii::t('export', 'default_creator');
-$layout->title      = $imotions[0]->getMyMotionType()->titlePlural;
+$layout->title      = $imotions[0]->getMyMotionType()->getTitlePluralForDisplay();
 
 try {
     $exporter = new Exporter($layout, AntragsgruenApp::getInstance());

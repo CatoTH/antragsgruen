@@ -50,7 +50,7 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, P
 
         <button type="button" class="btn btn-sm btn-link editCaller">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-            <?= str_replace('%TYPE%', $motion->getMyMotionType()->titleSingular, Yii::t('motion', 'editorial_edit')) ?>
+            <?= str_replace('%TYPE%', $motion->getMyMotionType()->getTitleSingularForDisplay(), Yii::t('motion', 'editorial_edit')) ?>
         </button>
     </div>
     <?php

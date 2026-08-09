@@ -80,11 +80,11 @@ if ($showCreate || count($pinkButtonCreates) > 0) {
 
             $html .= '<li class="createMotion' . $creatableType->id . '">';
             $html .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
-            $html .= Html::encode($creatableType->titleSingular) . '</a></li>';
+            $html .= Html::encode($creatableType->getTitleSingularForDisplay()) . '</a></li>';
 
             $htmlSmall .= '<li class="createMotion' . $creatableType->id . '">';
             $htmlSmall .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
-            $htmlSmall .= Html::encode($creatableType->titleSingular) . '</a></li>';
+            $htmlSmall .= Html::encode($creatableType->getTitleSingularForDisplay()) . '</a></li>';
         }
         $html                     .= '</ul></section>';
         $htmlSmall                .= '</ul></section>';
@@ -267,10 +267,10 @@ if ($hasPDF) {
                 $pdfLink = UrlHelper::createUrl([
                     '/motion/pdfcollection',
                     'motionTypeId' => $motionType->id,
-                    'filename'     => $motionType->titlePlural . '.pdf',
+                    'filename'     => $motionType->getTitlePluralForDisplay() . '.pdf',
                 ]);
                 $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all_short');
-                $name    .= ': ' . Html::encode($motionType->titlePlural);
+                $name    .= ': ' . Html::encode($motionType->getTitlePluralForDisplay());
                 $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
                 $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
@@ -280,7 +280,7 @@ if ($hasPDF) {
             $pdfLink = UrlHelper::createUrl([
                 '/motion/pdfcollection',
                 'motionTypeId' => $consultation->motionTypes[0]->id,
-                'filename'     => $consultation->motionTypes[0]->titlePlural . '.pdf',
+                'filename'     => $consultation->motionTypes[0]->getTitlePluralForDisplay() . '.pdf',
             ]);
             $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all');
             $html    .= '<li>' . HtmlTools::createExternalLink($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';

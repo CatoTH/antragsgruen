@@ -3,7 +3,7 @@
 namespace app\controllers\admin;
 
 use app\models\api\motionType\MotionTypeUpdateRequest;
-use app\components\{DateTools, UrlHelper};
+use app\components\{DateTools, LanguageTools, UrlHelper};
 use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection, TexTemplate, User};
 use app\models\exceptions\{ExceptionBase, FormError};
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
@@ -57,6 +57,32 @@ class MotionTypeController extends AdminBase
         }
     }
 
+    /**
+     * @param array<string, array<string, string>> $post labelTranslations[language][field] => value,
+     *        as posted by views/admin/motion-type/_labelTranslations.php
+     */
+    private function labelTranslationsSave(ConsultationMotionType $motionType, array $post): void
+    {
+        $primaryLanguage = LanguageTools::getPrimaryLanguage($this->consultation);
+        $translations = [];
+        foreach (LanguageTools::getSupportedLanguages($this->consultation->site) as $language) {
+            if ($language === $primaryLanguage || !isset($post[$language])) {
+                continue;
+            }
+            $entry = [];
+            foreach (['titleSingular', 'titlePlural', 'createTitle'] as $field) {
+                $val = trim((string) ($post[$language][$field] ?? ''));
+                if ($val !== '') {
+                    $entry[$field] = $val;
+                }
+            }
+            if (count($entry) > 0) {
+                $translations[$language] = $entry;
+            }
+        }
+        $motionType->setLabelTranslations($translations);
+    }
+
     private function sectionsDelete(ConsultationMotionType $motionType): void
     {
         if (!$this->isPostSet('sectionsTodelete')) {
@@ -98,6 +124,7 @@ class MotionTypeController extends AdminBase
             try {
                 $dto = MotionTypeUpdateRequest::fromWebRequest($this->getPostValues());
                 $motionType->applySettingsUpdate($dto);
+                $this->labelTranslationsSave($motionType, $this->getHttpRequest()->post('labelTranslations', []));
                 $motionType->save();
 
                 $this->sectionsSave($motionType);

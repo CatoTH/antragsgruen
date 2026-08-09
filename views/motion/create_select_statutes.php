@@ -15,12 +15,12 @@ $controller = $this->context;
 $layout = $controller->layoutParams;
 
 if ($agendaItem) {
-    $this->title = $agendaItem->title . ': ' . $motionType->titleSingular;
+    $this->title = $agendaItem->title . ': ' . $motionType->getTitleSingularForDisplay();
 } else {
-    $this->title = $motionType->titleSingular;
+    $this->title = $motionType->getTitleSingularForDisplay();
 }
 $layout->robotsNoindex = true;
-$layout->addBreadcrumb($motionType->titleSingular);
+$layout->addBreadcrumb($motionType->getTitleSingularForDisplay());
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>

@@ -322,10 +322,15 @@ class EnvironmentConfigLoader
         }
 
         // Background jobs
+        $backgroundJobs = [];
         if (self::hasEnv('BACKGROUND_JOBS_NOTIFICATIONS')) {
-            $config['backgroundJobs'] = [
-                'notifications' => self::getBoolEnv('BACKGROUND_JOBS_NOTIFICATIONS', false)
-            ];
+            $backgroundJobs['notifications'] = self::getBoolEnv('BACKGROUND_JOBS_NOTIFICATIONS', false);
+        }
+        if (self::hasEnv('BACKGROUND_JOBS_SECTION_AUTOFILL')) {
+            $backgroundJobs['sectionAutofill'] = self::getBoolEnv('BACKGROUND_JOBS_SECTION_AUTOFILL', false);
+        }
+        if (count($backgroundJobs) > 0) {
+            $config['backgroundJobs'] = $backgroundJobs;
         }
         if ($key = self::getEnv('HEALTH_CHECK_KEY')) {
             $config['healthCheckKey'] = $key;

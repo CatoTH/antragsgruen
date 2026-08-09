@@ -385,9 +385,9 @@ class LayoutHelper
         if ($motionType && $motionType->mayCreateIMotion(false, true) && $agendaItem->getIMotionCreateLink(false, true)) {
             $createLink = $agendaItem->getIMotionCreateLink(false, true);
             echo '<a href="' . Html::encode($createLink) . '" class="motionCreateLink btn btn-default btn-xs"';
-            echo ' title="' . Html::encode($agendaItem->title . ': ' . $motionType->createTitle) . '"';
+            echo ' title="' . Html::encode($agendaItem->title . ': ' . $motionType->getCreateTitleForDisplay()) . '"';
             echo ' rel="nofollow"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ';
-            echo nl2br(Html::encode($motionType->createTitle)) . '</a>';
+            echo nl2br(Html::encode($motionType->getCreateTitleForDisplay())) . '</a>';
         }
 
         echo '</h3>';

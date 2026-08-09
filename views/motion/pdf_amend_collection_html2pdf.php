@@ -31,4 +31,4 @@ foreach ($amendments as $amendment) {
     Tools::appendPdfToPdf($pdf, $pdfData, $bookmarkId, $amendment->getTitleWithPrefix());
 }
 
-$pdf->Output(Tools::sanitizeFilename($motion->getMyMotionType()->titlePlural, true) . '.pdf', 'I');
+$pdf->Output(Tools::sanitizeFilename($motion->getMyMotionType()->getTitlePluralForDisplay(), true) . '.pdf', 'I');

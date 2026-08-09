@@ -13,6 +13,7 @@ Core functions:
 - Draft resolutions
 - Votings
 - Speaking lists
+- Multi-language motions and amendments
 - Diverse export options
 - Great flexibility - it adapts to a lot of different use cases
 - Technically mature, data privacy-friendly
@@ -372,15 +373,16 @@ The following example on how to run the background job processor uses [Superviso
 ```json
 {
     "backgroundJobs": {
-        "notifications": true
+        "notifications": true,
+        "sectionAutofill": true
     },
     "healthCheckKey": "$2y$12$...."
 }
 ```
 
-If configuring Antragsgrün [using environment variables](./docs/environment-variables.md) instead, use the variables `BACKGROUND_JOBS_NOTIFICATIONS` and `HEALTH_CHECK_KEY`.
+If configuring Antragsgrün [using environment variables](./docs/environment-variables.md) instead, use the variables `BACKGROUND_JOBS_NOTIFICATIONS`, `BACKGROUND_JOBS_SECTION_AUTOFILL`, and `HEALTH_CHECK_KEY`.
 
-Currently, this only affects the sending of e-mails.
+Each of these can be enabled independently. Currently, this affects the sending of e-mails (`notifications`) and auto-filling empty motion/amendment sections, e.g. via translation (`sectionAutofill`, see [Multi-language Support](#multi-language-support)).
 
 ### File-based View Caching (very large consultations)
 
@@ -538,6 +540,16 @@ Known limitations:
 
 - Reordering objects (like agenda items) does not work yet using the keyboard
 - When developer mode is activated, the debug bar produces several accessibility issues
+
+## Multi-language Support
+
+Antragsgrün can hold the actual content of motions and amendments - titles, texts, reasons, ... - in several languages at once, so a single consultation can be run for a multi-lingual audience. This is different from the [custom language variants](#custom-language-variants-as-plugin) below, which only translate Antragsgrün's own user interface (menus, buttons, e-mails), not the content that submitters write.
+
+- Enable it and choose the available languages under **Settings → Multi-language support**. This is a site-wide setting, not a per-consultation one. With fewer than two languages selected (the default), Antragsgrün behaves exactly as before - no picker, no extra fields.
+- Once enabled, each section of a motion type (title, text, ...) can be assigned a language; sections meant to be translations of each other share a free-text "grouping" identifier. Motion types created from the built-in templates automatically get one section per language, correctly grouped.
+- Submitters only see and fill in the fields for their own, currently selected language; administrators see and can edit every language at once.
+- Readers get a small language picker (flag icons) in the navigation bar. If a section has no content yet in the reader's language, another available language is shown instead, together with a clearly visible notice.
+- The Plugin-Architecture supports automatic translations of motions and amendments. For a reference implementation using automatic translation using Anthropic's Claude API, see the [`plugins/translation_claude`](plugins/translation_claude).
 
 ## Plugins
 

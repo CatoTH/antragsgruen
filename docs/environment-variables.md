@@ -80,6 +80,7 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `MAIL_FROM_NAME` | Antragsgrün | Default from name |
 | `TRUSTED_PROXIES` | - | Comma-separated trusted proxy IPs or CIDR ranges (e.g., `10.0.0.0/8,172.16.0.0/12`). Added to the default trusted hosts. |
 | `BACKGROUND_JOBS_NOTIFICATIONS` | false | Enable asynchronous background jobs for notifications |
+| `BACKGROUND_JOBS_SECTION_AUTOFILL` | false | Enable asynchronous background jobs for auto-filling empty motion/amendment sections (e.g. translation, see [Multi-language Support](../README.md#multi-language-support)) |
 | `HEALTH_CHECK_KEY` | - | API key hash for background job health checks |
 | `JS_ERROR_TRACKING` | - | Target for JS Error Tracking (e.g. file:///tmp/js_errors.log or otel://) |
 | `JWT_PUBLIC_KEY` | - | Either link to public key (file:///secret/public.pem), or content of public key |

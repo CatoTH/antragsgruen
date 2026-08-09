@@ -253,7 +253,7 @@ class LayoutHelper
         $initiatorsStr            = implode(', ', $initiators);
         $content->author          = $initiatorsStr;
         $content->publicationDate = Tools::formatMysqlDate($amendment->datePublication);
-        $content->typeName        = $amendment->getMyMotionType()->titleSingular;
+        $content->typeName        = $amendment->getMyMotionType()->getTitleSingularForDisplay();
 
         if ($amendment->agendaItem) {
             $content->agendaItemName = $amendment->agendaItem->title;

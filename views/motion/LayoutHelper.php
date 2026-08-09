@@ -282,7 +282,7 @@ class LayoutHelper
         $initiatorsStr            = implode(', ', $initiators);
         $content->author          = $initiatorsStr;
         $content->publicationDate = Tools::formatMysqlDate($motion->datePublication);
-        $content->typeName        = $motion->getMyMotionType()->titleSingular;
+        $content->typeName        = $motion->getMyMotionType()->getTitleSingularForDisplay();
 
         if ($motion->agendaItem) {
             $content->agendaItemName = $motion->agendaItem->title;
@@ -770,7 +770,7 @@ class LayoutHelper
         $initiatorsStr            = implode(', ', $initiators);
         $content->author          = $initiatorsStr;
         $content->publicationDate = Tools::formatMysqlDate($motion->datePublication);
-        $content->typeName        = $motion->getMyMotionType()->titleSingular;
+        $content->typeName        = $motion->getMyMotionType()->getTitleSingularForDisplay();
 
         if ($motion->agendaItem) {
             $content->agendaItemName = $motion->agendaItem->title;

@@ -717,6 +717,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'no_access'                   => 'No access to this consultation',
     'amend_pdf_list'              => 'Amendment PDFs',
     'motion_type_names'           => 'Names',
+    'motion_type_label_transl'    => 'Multi-language labels',
+    'motion_type_label_transl_hi' => 'On multi-language sites, these labels can be translated for every additional language. Fields left empty use the label entered above, in the consultation\'s main language.',
     'motion_type_amendonly_title' => 'Statutes amendments: base texts',
     'motion_type_amendonly_hint'  => 'You can enter the statutes or similar documents, for users to create amendments for them. They will not be shown as regular motions or texts by themselves.',
     'motion_type_amendonly_noyet' => 'No statutes entered yet. Therefore, users can not create amendment statutes yet.',
