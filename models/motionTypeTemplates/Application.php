@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models\motionTypeTemplates;
 
 use app\views\pdfLayouts\IPDFLayout;
@@ -15,9 +17,6 @@ class Application
     {
         $type                               = new ConsultationMotionType();
         $type->consultationId               = $consultation->id;
-        $type->titleSingular                = \Yii::t('structure', 'preset_app_singular');
-        $type->titlePlural                  = \Yii::t('structure', 'preset_app_plural');
-        $type->createTitle                  = \Yii::t('structure', 'preset_app_call');
         $type->position                     = 0;
         $type->amendmentsOnly               = 0;
         $type->policyMotions                = (string)IPolicy::POLICY_ALL;
@@ -45,6 +44,8 @@ class Application
         $settings->motionTitleIntro = '';
         $type->setSettingsObj($settings);
 
+        (new MotionTypeTranslationHelper($type))->setLabels('preset_app_singular', 'preset_app_plural', 'preset_app_call');
+
         $type->save();
 
         return $type;
@@ -52,7 +53,7 @@ class Application
 
     public static function doCreateApplicationSections(ConsultationMotionType $motionType): void
     {
-        $builder = new SectionTemplateBuilder($motionType);
+        $builder = new MotionTypeTranslationHelper($motionType);
 
         $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
             $section                = new ConsultationSettingsMotionSection();

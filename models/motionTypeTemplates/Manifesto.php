@@ -19,9 +19,6 @@ class Manifesto
 
         $type                               = new ConsultationMotionType();
         $type->consultationId               = $consultation->id;
-        $type->titleSingular                = \Yii::t('structure', 'preset_manifesto_singular');
-        $type->titlePlural                  = \Yii::t('structure', 'preset_manifesto_plural');
-        $type->createTitle                  = \Yii::t('structure', 'preset_manifesto_call');
         $type->position                     = 0;
         $type->amendmentsOnly               = 0;
         $type->policyMotions                = (string)IPolicy::POLICY_ADMINS;
@@ -48,6 +45,8 @@ class Manifesto
 
         $type->setSettingsObj(new MotionType(null));
 
+        (new MotionTypeTranslationHelper($type))->setLabels('preset_manifesto_singular', 'preset_manifesto_plural', 'preset_manifesto_call');
+
         $type->save();
 
         return $type;
@@ -55,7 +54,7 @@ class Manifesto
 
     public static function doCreateManifestoSections(ConsultationMotionType $motionType): void
     {
-        $builder = new SectionTemplateBuilder($motionType);
+        $builder = new MotionTypeTranslationHelper($motionType);
 
         $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
             $section                = new ConsultationSettingsMotionSection();

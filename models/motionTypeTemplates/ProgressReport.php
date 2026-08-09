@@ -6,7 +6,7 @@ namespace app\models\motionTypeTemplates;
 
 use app\views\pdfLayouts\IPDFLayout;
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
-use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
+use app\models\settings\{InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
@@ -17,9 +17,6 @@ class ProgressReport
     {
         $type                               = new ConsultationMotionType();
         $type->consultationId               = $consultation->id;
-        $type->titleSingular                = \Yii::t('structure', 'preset_progress_singular');
-        $type->titlePlural                  = \Yii::t('structure', 'preset_progress_plural');
-        $type->createTitle                  = \Yii::t('structure', 'preset_progress_call');
         $type->position                     = 0;
         $type->amendmentsOnly               = 0;
         $type->policyMotions                = (string)IPolicy::POLICY_ADMINS;
@@ -46,6 +43,8 @@ class ProgressReport
 
         $type->setSettingsObj(new MotionType(null));
 
+        (new MotionTypeTranslationHelper($type))->setLabels('preset_progress_singular', 'preset_progress_plural', 'preset_progress_call');
+
         $type->save();
 
         return $type;
@@ -53,7 +52,7 @@ class ProgressReport
 
     public static function doCreateProgressSections(ConsultationMotionType $motionType): void
     {
-        $builder = new SectionTemplateBuilder($motionType);
+        $builder = new MotionTypeTranslationHelper($motionType);
 
         $builder->addSection(function (?string $language): ConsultationSettingsMotionSection {
             $section                = new ConsultationSettingsMotionSection();
