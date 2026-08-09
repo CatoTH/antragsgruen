@@ -130,6 +130,16 @@ class MessageSource extends \yii\i18n\MessageSource
                 'me' => 'Montenegrin',
             ], $localMessages);
         }
+        if ($language === 'es') {
+            return array_merge([
+                'es' => 'Español',
+            ], $localMessages);
+        }
+        if ($language === 'sv') {
+            return array_merge([
+                'sv' => 'Svenska',
+            ], $localMessages);
+        }
         return [];
     }
 
@@ -142,6 +152,8 @@ class MessageSource extends \yii\i18n\MessageSource
             'nl' => 'Nederlands',
             'ca' => 'Català',
             'me' => 'Montenegrin',
+            'es' => 'Español',
+            'sv' => 'Svenska',
         ];
     }
 
