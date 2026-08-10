@@ -23,6 +23,7 @@ return [
     'admin_select_motion'      => 'Motion',
     'admin_select_amendment'   => 'Amendement',
     'admin_select_agenda_item' => 'Point à l\'ordre du jour',
+    'admin_select_free_text'   => 'Texte libre',
     'admin_select_do'          => 'Sélectionner',
     'admin_selectables_err'    => 'Impossible de charger la liste des éléments sélectionnables.',
     'admin_start_err'          => 'Impossible de lancer le débat.',

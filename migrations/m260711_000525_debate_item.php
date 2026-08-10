@@ -17,6 +17,7 @@ class m260711_000525_debate_item extends Migration
             'motionId' => 'INTEGER DEFAULT NULL',
             'amendmentId' => 'INTEGER DEFAULT NULL',
             'agendaItemId' => 'INTEGER DEFAULT NULL',
+            'freeText' => 'TEXT NULL DEFAULT NULL',
             'votingBlockId' => 'INTEGER DEFAULT NULL',
             'dateStarted' => 'TIMESTAMP NOT NULL',
             'dateStopped' => 'TIMESTAMP NULL DEFAULT NULL',

@@ -56,6 +56,38 @@ class DebateTools
     }
 
     /**
+     * Makes the given free text the consultation's currently debated item, ending any ongoing debate.
+     * Free-text debates are not tied to any motion, amendment, or agenda item.
+     */
+    public static function startFreeTextDebate(Consultation $consultation, string $text): DebateItem
+    {
+        $transaction = DebateItem::getDb()->beginTransaction();
+        try {
+            self::endDebate($consultation, skipLiveUpdate: true);
+
+            $debate = new DebateItem();
+            $debate->consultationId = $consultation->id;
+            $debate->motionId = null;
+            $debate->amendmentId = null;
+            $debate->agendaItemId = null;
+            $debate->freeText = $text;
+            $debate->dateStarted = date('Y-m-d H:i:s');
+            if (!$debate->save()) {
+                throw new \RuntimeException('Could not save the debate item: ' . print_r($debate->getErrors(), true));
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+        LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
+
+        return $debate;
+    }
+
+    /**
      * Ends the ongoing debate, if there is one.
      */
     public static function endDebate(Consultation $consultation, bool $skipLiveUpdate = false): void
@@ -77,29 +109,39 @@ class DebateTools
     }
 
     /**
-     * Finds the speech queue attached to the debated motion or agenda item, creating a fresh, inactive one
-     * (with the consultation's configured subqueues) if none exists yet. The admin activates it afterwards
-     * through the regular speech-admin endpoints. Amendments cannot carry a speech queue yet.
+     * Finds the speech queue for the debated item, creating a fresh, inactive one (with the consultation's
+     * configured subqueues) if none exists yet. Motions, amendments, and agenda items get their own queue;
+     * free-text debates share the generic fallback queue (not assigned to any item). The admin activates it
+     * afterwards through the regular speech-admin endpoints.
      */
     public static function getOrCreateSpeechQueue(DebateItem $debate): SpeechQueue
     {
         $consultation = $debate->getMyConsultation();
 
-        if ($debate->motionId === null && $debate->agendaItemId === null) {
-            throw new \RuntimeException('A speech queue can only be attached to a debated motion or agenda item');
+        $isFreeText = ($debate->motionId === null && $debate->amendmentId === null && $debate->agendaItemId === null && $debate->freeText !== null);
+
+        if ($debate->motionId === null && $debate->amendmentId === null && $debate->agendaItemId === null && !$isFreeText) {
+            throw new \RuntimeException('A speech queue can only be attached to a debated motion, amendment, agenda item, or free text');
         }
 
         foreach ($consultation->speechQueues as $queue) {
             if ($debate->motionId !== null && $queue->motionId === $debate->motionId) {
                 return $queue;
             }
+            if ($debate->amendmentId !== null && $queue->amendmentId === $debate->amendmentId) {
+                return $queue;
+            }
             if ($debate->agendaItemId !== null && $queue->agendaItemId === $debate->agendaItemId) {
+                return $queue;
+            }
+            if ($isFreeText && $queue->motionId === null && $queue->amendmentId === null && $queue->agendaItemId === null) {
                 return $queue;
             }
         }
 
         $queue = SpeechQueue::createWithSubqueues($consultation, false);
         $queue->motionId = $debate->motionId;
+        $queue->amendmentId = $debate->amendmentId;
         $queue->agendaItemId = $debate->agendaItemId;
         if (!$queue->save()) {
             throw new \RuntimeException('Could not attach the speech queue to the debated item: ' . print_r($queue->getErrors(), true));
@@ -164,14 +206,15 @@ class DebateTools
 
     /**
      * Creates a fresh voting block (in preparing state) and assigns it to the debated item. For a debated
-     * motion/amendment the item itself becomes the single voting item; for an agenda item, the given question
-     * is used as the voting title and question. The admin opens it afterwards through the regular voting admin.
+     * motion/amendment the item itself becomes the single voting item; for an agenda item or free-text debate,
+     * the given question is used as the voting title and question. The admin opens it afterwards through the
+     * regular voting admin.
      */
     public static function createVotingForDebate(DebateItem $debate, ?string $question): VotingBlock
     {
         $consultation = $debate->getMyConsultation();
         $target = $debate->getDebateTarget();
-        if ($target === null) {
+        if ($target === null && $debate->freeText === null) {
             throw new \RuntimeException('Cannot create a voting for a debate without a target');
         }
 

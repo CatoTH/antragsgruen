@@ -52,10 +52,25 @@ class DebateController extends RestBase
             return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
         }
 
+        if ($request->targetType === DebateItemTargetType::FREE_TEXT) {
+            $text = trim((string)$request->text);
+            if ($text === '') {
+                return new RestApiExceptionResponse(400, 'A free-text debate needs a non-empty text');
+            }
+            DebateTools::startFreeTextDebate($this->consultation, $text);
+
+            return $this->createResponse(200, DebateState::fromConsultation($this->consultation));
+        }
+
+        if ($request->targetId === null) {
+            return new RestApiExceptionResponse(400, 'target_id is required for this target type');
+        }
+
+        // Free text is already handled above; the remaining types are motion, amendment, and agenda item.
         $target = match ($request->targetType) {
             DebateItemTargetType::MOTION => $this->consultation->getMotion($request->targetId),
             DebateItemTargetType::AMENDMENT => $this->consultation->getAmendment($request->targetId),
-            DebateItemTargetType::AGENDA_ITEM => $this->consultation->getAgendaItem($request->targetId),
+            default => $this->consultation->getAgendaItem($request->targetId),
         };
         if ($target === null || (!is_a($target, ConsultationAgendaItem::class) && (!$target->isVisible() || $target->isDeleted()))) {
             return $this->returnRestResponseFromException(new NotFound('The item to be debated was not found', 404));
@@ -130,8 +145,8 @@ class DebateController extends RestBase
         if ($debate === null) {
             return $this->returnRestResponseFromException(new NotFound('No debate is going on right now', 404));
         }
-        if ($debate->motionId === null && $debate->agendaItemId === null) {
-            return new RestApiExceptionResponse(400, 'A speech queue can only be attached to a debated motion or agenda item');
+        if ($debate->motionId === null && $debate->amendmentId === null && $debate->agendaItemId === null && $debate->freeText === null) {
+            return new RestApiExceptionResponse(400, 'A speech queue can only be attached to a debated motion, amendment, agenda item, or free text');
         }
 
         $queue = DebateTools::getOrCreateSpeechQueue($debate);

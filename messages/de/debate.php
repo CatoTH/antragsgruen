@@ -80,6 +80,10 @@ return [
         'text' => 'Tagesordnungspunkt',
         'js' => true,
     ],
+    'admin_select_free_text'  => [
+        'text' => 'Freier Text',
+        'js' => true,
+    ],
     'admin_select_do'         => [
         'text' => 'Auswählen',
         'js' => true,

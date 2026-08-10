@@ -17,6 +17,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property int|null $motionId
  * @property int|null $amendmentId
  * @property int|null $agendaItemId
+ * @property string|null $freeText
  * @property int|null $votingBlockId
  * @property string $dateStarted
  * @property string|null $dateStopped
@@ -89,6 +90,7 @@ class DebateItem extends ActiveRecord
         return [
             [['consultationId', 'dateStarted'], 'required'],
             [['id', 'consultationId', 'motionId', 'amendmentId', 'agendaItemId', 'votingBlockId'], 'number'],
+            [['freeText'], 'string'],
         ];
     }
 

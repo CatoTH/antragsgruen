@@ -15,19 +15,15 @@
                     </a>
                 </div>
 
-                <div v-if="current.target_type === 'amendment'" class="alert alert-info"
-                     v-t="['debate', 'admin_speech_no_amendment']"></div>
-                <template v-else>
-                  <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
-                  <div v-if="speechLoading && !speechQueue" class="speechLoading"
-                       v-t="['debate', 'admin_speech_loading']"></div>
-                  <speech-user-inline-widget v-if="speechQueue" :key="speechQueue.id"
-                                             :init-queue="speechQueue"
-                                             :csrf="csrf"
-                                             :user="speechUser"
-                                             :title="'title'"
-                  ></speech-user-inline-widget>
-                </template>
+                <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
+                <div v-if="speechLoading && !speechQueue" class="speechLoading"
+                     v-t="['debate', 'admin_speech_loading']"></div>
+                <speech-user-inline-widget v-if="speechQueue" :key="speechQueue.id"
+                                           :init-queue="speechQueue"
+                                           :csrf="csrf"
+                                           :user="speechUser"
+                                           :title="'title'"
+                ></speech-user-inline-widget>
 
                 <div v-if="votingError" class="alert alert-danger">{{ votingError }}</div>
                 <div v-if="votingBlock" class="votingCommon currentDebateVoting">
@@ -167,7 +163,7 @@ export default {
     },
     methods: {
         maybeLoadSpeechQueue() {
-            if (!this.current || this.current.target_type === 'amendment' || !this.current.speech_queue_id) {
+            if (!this.current || !this.current.speech_queue_id) {
                 return;
             }
             if (this.speechQueue || this.speechLoading) {

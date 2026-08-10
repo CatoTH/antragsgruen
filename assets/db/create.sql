@@ -400,6 +400,7 @@ CREATE TABLE `###TABLE_PREFIX###debateItem` (
   `motionId` INT(11) DEFAULT NULL,
   `amendmentId` INT(11) DEFAULT NULL,
   `agendaItemId` INT(11) DEFAULT NULL,
+  `freeText` TEXT NULL DEFAULT NULL,
   `votingBlockId` INT(11) DEFAULT NULL,
   `dateStarted` TIMESTAMP NOT NULL,
   `dateStopped` TIMESTAMP NULL DEFAULT NULL,
@@ -696,6 +697,7 @@ CREATE TABLE `###TABLE_PREFIX###speechQueue` (
   `consultationId` int(11) NOT NULL,
   `agendaItemId` int(11) DEFAULT NULL,
   `motionId` int(11) DEFAULT NULL,
+  `amendmentId` int(11) DEFAULT NULL,
   `isActive` tinyint(4) NOT NULL DEFAULT 0,
   `settings` TEXT NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -1183,6 +1185,7 @@ ALTER TABLE `###TABLE_PREFIX###speechQueue`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_speech_consultation` (`consultationId`),
   ADD KEY `fk_speech_motion` (`motionId`),
+  ADD KEY `fk_speech_amendment` (`amendmentId`),
   ADD KEY `fk_speech_agenda` (`agendaItemId`);
 
 --
@@ -1734,6 +1737,7 @@ ALTER TABLE `###TABLE_PREFIX###site`
 ALTER TABLE `###TABLE_PREFIX###speechQueue`
   ADD CONSTRAINT `fk_speech_agenda` FOREIGN KEY (`agendaItemId`) REFERENCES `###TABLE_PREFIX###consultationAgendaItem` (`id`),
   ADD CONSTRAINT `fk_speech_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
+  ADD CONSTRAINT `fk_speech_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
   ADD CONSTRAINT `fk_speech_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
 
 --

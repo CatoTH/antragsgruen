@@ -23,6 +23,7 @@ return [
     'admin_select_motion'      => 'Motie',
     'admin_select_amendment'   => 'Amendement',
     'admin_select_agenda_item' => 'Agendapunt',
+    'admin_select_free_text'   => 'Vrije tekst',
     'admin_select_do'          => 'Selecteren',
     'admin_selectables_err'    => 'Kon de lijst met selecteerbare items niet laden.',
     'admin_start_err'          => 'Kon het debat niet starten.',

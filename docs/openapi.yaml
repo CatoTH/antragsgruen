@@ -1521,21 +1521,29 @@ components:
         - motion
         - amendment
         - agenda_item
+        - free_text
 
     DebateStartRequest:
       x-php-namespace: debate
       type: object
-      description: Names the motion, amendment, or agenda item to be debated from now on
+      description: >
+        Names what should be debated from now on: a motion, amendment, or agenda item (via target_id),
+        or free text (via text, with target_type "free_text").
       required:
         - target_type
-        - target_id
       properties:
         target_type:
           $ref: '#/components/schemas/DebateItemTargetType'
         target_id:
           type: integer
-          description: The ID of the motion, amendment, or agenda item to be debated
+          nullable: true
+          description: The ID of the motion, amendment, or agenda item to be debated. Null for free_text.
           example: 2
+        text:
+          type: string
+          nullable: true
+          description: The free text to be shown as debated. Used (and required) only for target_type "free_text".
+          example: "General debate on the budget"
 
     DebateItem:
       x-php-namespace: debate
@@ -1545,7 +1553,6 @@ components:
       required:
         - id
         - target_type
-        - target_id
         - title
         - date_started
       properties:
@@ -1556,7 +1563,8 @@ components:
           $ref: '#/components/schemas/DebateItemTargetType'
         target_id:
           type: integer
-          description: The ID of the debated motion, amendment, or agenda item (depending on target_type)
+          nullable: true
+          description: The ID of the debated motion, amendment, or agenda item (depending on target_type). Null for free_text.
           example: 2
         title:
           type: string

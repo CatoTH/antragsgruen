@@ -80,6 +80,10 @@ return [
         'text' => 'Agenda Item',
         'js' => true,
     ],
+    'admin_select_free_text'  => [
+        'text' => 'Free Text',
+        'js' => true,
+    ],
     'admin_select_do'         => [
         'text' => 'Select',
         'js' => true,

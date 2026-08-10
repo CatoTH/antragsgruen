@@ -97,7 +97,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m250916_234203_maxLen_not_nullable', '1758066393'),
   ('m260717_120000_screening_per_motion_type', '1784381301'),
   ('m260711_000525_debate_item', '1783728325'),
-  ('m260809_172443_proposal_status', '1786312066')
+  ('m260809_172443_proposal_status', '1786312066'),
+  ('m260810_120000_speech_queue_amendment', '1786665600')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

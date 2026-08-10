@@ -12,7 +12,8 @@ class DebateStartRequest
 {
     public function __construct(
         public DebateItemTargetType $targetType,
-        public int $targetId,
+        public ?int $targetId = null,
+        public ?string $text = null,
     ) {
     }
 }

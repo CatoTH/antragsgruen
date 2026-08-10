@@ -23,6 +23,7 @@ return [
     'admin_select_motion'      => 'Motion',
     'admin_select_amendment'   => 'Ändringsförslag',
     'admin_select_agenda_item' => 'Dagordningspunkt',
+    'admin_select_free_text'   => 'Fri text',
     'admin_select_do'          => 'Välj',
     'admin_selectables_err'    => 'Kunde inte ladda listan med valbara objekt.',
     'admin_start_err'          => 'Kunde inte starta debatten.',

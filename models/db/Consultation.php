@@ -439,7 +439,7 @@ class Consultation extends ActiveRecord
                 if ($firstActive === null) {
                     $firstActive = $speechQueue;
                 }
-                if ($firstActiveWithNoAssignment === null && $speechQueue->motionId === null && $speechQueue->agendaItemId === null) {
+                if ($firstActiveWithNoAssignment === null && $speechQueue->motionId === null && $speechQueue->amendmentId === null && $speechQueue->agendaItemId === null) {
                     $firstActiveWithNoAssignment = $speechQueue;
                 }
             }

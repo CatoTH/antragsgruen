@@ -23,6 +23,7 @@ return [
     'admin_select_motion'      => 'Predlog', // Original: Motion
     'admin_select_amendment'   => 'Amandman', // Original: Amendment
     'admin_select_agenda_item' => 'Tačka dnevnog reda', // Original: Agenda Item
+    'admin_select_free_text'   => 'Slobodan tekst', // Original: Free Text
     'admin_select_do'          => 'Izaberi', // Original: Select
     'admin_selectables_err'    => 'Nije moguće učitati listu dostupnih stavki.', // Original: Could not load the list of selectable items.
     'admin_start_err'          => 'Nije moguće započeti raspravu.', // Original: Could not start the debate.

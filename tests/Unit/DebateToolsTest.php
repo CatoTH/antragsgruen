@@ -83,6 +83,48 @@ class DebateToolsTest extends DBTestBase
         $this->assertNull($started->dateStopped);
     }
 
+    public function testStartFreeTextDebate(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
+        // The fixture has an open debate on motion 2, which should be ended
+        $previous = DebateItem::getCurrentForConsultation($consultation);
+        $this->assertSame(2, $previous->motionId);
+
+        $started = DebateTools::startFreeTextDebate($consultation, 'General debate on the budget');
+
+        $this->assertNull($started->motionId);
+        $this->assertNull($started->amendmentId);
+        $this->assertNull($started->agendaItemId);
+        $this->assertSame('General debate on the budget', $started->freeText);
+        $this->assertNull($started->dateStopped);
+
+        $previous->refresh();
+        $this->assertNotNull($previous->dateStopped);
+
+        $current = DebateItem::getCurrentForConsultation($consultation);
+        $this->assertSame((int)$started->id, $current->id);
+    }
+
+    public function testFreeTextDebateUsesGenericSpeechQueue(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
+        $debate = DebateTools::startFreeTextDebate($consultation, 'General debate');
+
+        $queue = DebateTools::getOrCreateSpeechQueue($debate);
+        // Free-text debates share the generic fallback queue, not assigned to any item
+        $this->assertNull($queue->motionId);
+        $this->assertNull($queue->amendmentId);
+        $this->assertNull($queue->agendaItemId);
+
+        // A second lookup resolves to the same generic queue rather than creating another one
+        $again = DebateTools::getOrCreateSpeechQueue(DebateItem::getCurrentForConsultation($consultation));
+        $this->assertSame($queue->id, $again->id);
+    }
+
     public function testEndDebate(): void
     {
         /** @var Consultation $consultation */

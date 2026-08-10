@@ -23,6 +23,7 @@ return [
     'admin_select_motion'      => 'Moció',
     'admin_select_amendment'   => 'Esmena',
     'admin_select_agenda_item' => 'Punt de l\'ordre del dia',
+    'admin_select_free_text'   => 'Text lliure',
     'admin_select_do'          => 'Selecciona',
     'admin_selectables_err'    => 'No s\'ha pogut carregar la llista d\'elements seleccionables.',
     'admin_start_err'          => 'No s\'ha pogut iniciar el debat.',

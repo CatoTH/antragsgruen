@@ -12,9 +12,9 @@ class DebateItem
     public function __construct(
         public int $id,
         public DebateItemTargetType $targetType,
-        public int $targetId,
         public string $title,
         public string $dateStarted,
+        public ?int $targetId = null,
         public ?string $titleWithPrefix = null,
         public ?string $initiatorsHtml = null,
         public ?string $urlJson = null,
@@ -27,8 +27,17 @@ class DebateItem
     public static function fromEntity(DebateItemEntity $entity): self
     {
         $target = $entity->getDebateTarget();
+        $targetId = $target?->id;
 
-        if (is_a($target, Motion::class)) {
+        if ($entity->freeText !== null) {
+            $targetType = DebateItemTargetType::FREE_TEXT;
+            $title = $entity->freeText;
+            $titleWithPrefix = null;
+            $initiatorsHtml = null;
+            $urlJson = null;
+            $urlHtml = null;
+            $targetId = null;
+        } elseif (is_a($target, Motion::class)) {
             $targetType = DebateItemTargetType::MOTION;
             $title = $target->title;
             $titleWithPrefix = $target->getTitleWithPrefix();
@@ -57,7 +66,7 @@ class DebateItem
         return new self(
             id: $entity->id,
             targetType: $targetType,
-            targetId: $target->id,
+            targetId: $targetId,
             title: $title,
             dateStarted: (new \DateTime($entity->dateStarted))->format('c'),
             titleWithPrefix: $titleWithPrefix,
@@ -86,12 +95,22 @@ class DebateItem
 
     private static function getSpeechQueueId(DebateItemEntity $entity): ?int
     {
-        // Speech queues cannot be attached to amendments yet
-        if ($entity->motionId === null && $entity->agendaItemId === null) {
+        if ($entity->motionId === null && $entity->amendmentId === null && $entity->agendaItemId === null) {
+            if ($entity->freeText !== null) {
+                // Free-text debates use the generic fallback speaking list (not assigned to any item)
+                foreach ($entity->getMyConsultation()->speechQueues as $queue) {
+                    if ($queue->motionId === null && $queue->amendmentId === null && $queue->agendaItemId === null) {
+                        return $queue->id;
+                    }
+                }
+            }
             return null;
         }
         foreach ($entity->getMyConsultation()->speechQueues as $queue) {
             if ($entity->motionId !== null && $queue->motionId === $entity->motionId) {
+                return $queue->id;
+            }
+            if ($entity->amendmentId !== null && $queue->amendmentId === $entity->amendmentId) {
                 return $queue->id;
             }
             if ($entity->agendaItemId !== null && $queue->agendaItemId === $entity->agendaItemId) {

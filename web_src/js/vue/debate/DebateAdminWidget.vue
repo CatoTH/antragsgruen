@@ -46,6 +46,17 @@
                                 @click="startDebate(group.id)" v-t="['debate', 'admin_select_do']"></button>
                     </div>
                 </div>
+                <div class="selectRow selectRow-free_text">
+                    <label class="rowLabel" for="debateAdminFreeText"
+                           v-t="['debate', 'admin_select_free_text', false, {}, ':']"></label>
+                    <div class="rowSelect">
+                        <input type="text" id="debateAdminFreeText" class="form-control" v-model="freeText">
+                    </div>
+                    <div class="rowButton">
+                        <button type="button" class="btn btn-default" :disabled="!freeText || starting || stopping"
+                                @click="startFreeTextDebate()" v-t="['debate', 'admin_select_do']"></button>
+                    </div>
+                </div>
             </template>
         </section>
 
@@ -66,24 +77,20 @@
                     </div>
                 </div>
 
-                <div v-if="current.target_type === 'amendment'" class="alert alert-info"
-                     v-t="['debate', 'admin_speech_no_amendment']"></div>
-                <template v-else>
-                    <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
-                    <div v-if="speechLoading && !speechQueue" class="speechLoading"
-                         v-t="['debate', 'admin_speech_loading']"></div>
-                    <speech-admin-widget v-if="speechQueue" :key="speechQueue.id"
-                        :init-queue="speechQueue"
-                        :csrf="csrf"
-                        :component-admin-link="speechComponentAdminLink"
-                        :poll-url="speechPollUrl"
-                        :item-perform-operation-url="speechItemPerformOperationUrl"
-                        :randomize-queue-url="speechRandomizeQueueUrl"
-                        :reset-queue-url="speechResetQueueUrl"
-                        :create-item-url="speechCreateItemUrl"
-                        :set-status-url="speechSetStatusUrl"
-                    ></speech-admin-widget>
-                </template>
+                <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
+                <div v-if="speechLoading && !speechQueue" class="speechLoading"
+                     v-t="['debate', 'admin_speech_loading']"></div>
+                <speech-admin-widget v-if="speechQueue" :key="speechQueue.id"
+                    :init-queue="speechQueue"
+                    :csrf="csrf"
+                    :component-admin-link="speechComponentAdminLink"
+                    :poll-url="speechPollUrl"
+                    :item-perform-operation-url="speechItemPerformOperationUrl"
+                    :randomize-queue-url="speechRandomizeQueueUrl"
+                    :reset-queue-url="speechResetQueueUrl"
+                    :create-item-url="speechCreateItemUrl"
+                    :set-status-url="speechSetStatusUrl"
+                ></speech-admin-widget>
             </template>
         </section>
 
@@ -247,6 +254,7 @@ export default {
                 amendment: null,
                 agenda_item: null,
             },
+            freeText: '',
             starting: false,
             stopping: false,
             loadError: null,
@@ -304,7 +312,7 @@ export default {
     },
     methods: {
         maybeLoadSpeechQueue() {
-            if (this.activeTab !== 'speech' || !this.current || this.current.target_type === 'amendment') {
+            if (this.activeTab !== 'speech' || !this.current) {
                 return;
             }
             if (this.speechQueue || this.speechLoading) {
@@ -452,6 +460,29 @@ export default {
                 })
                 .catch(err => {
                     console.error('Could not start the debate', err);
+                    this.startError = Translate.getTranslation('debate', 'admin_start_err');
+                })
+                .finally(() => {
+                    this.starting = false;
+                });
+        },
+        startFreeTextDebate() {
+            const text = (this.freeText || '').trim();
+            if (text === '' || this.starting) {
+                return;
+            }
+            this.starting = true;
+            putJson(this.debateUrl, {
+                target_type: 'free_text',
+                text,
+            })
+                .then(state => {
+                    this.state = state;
+                    this.startError = null;
+                    this.freeText = '';
+                })
+                .catch(err => {
+                    console.error('Could not start the free-text debate', err);
                     this.startError = Translate.getTranslation('debate', 'admin_start_err');
                 })
                 .finally(() => {
