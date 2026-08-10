@@ -84,7 +84,8 @@ $currentUserJson = json_encode($currentUser ? [
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
     import translateDirective from "/js/vue/Translate.vue.js";
     import currentDebateWidget from "/js/vue/debate/CurrentDebateWidget.js";
-    import raiseSecondaryMotionForm from "/js/vue/debate/RaiseSecondaryMotionForm.js";
+    // Adding & seconding secondary motions is disabled for now:
+    // import raiseSecondaryMotionForm from "/js/vue/debate/RaiseSecondaryMotionForm.js";
     import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import userInlineWidget from "/js/vue/speech/UserInlineWidget.js";
     import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
@@ -138,7 +139,8 @@ $currentUserJson = json_encode($currentUser ? [
     });
 
     widget.component('current-debate-widget', currentDebateWidget);
-    widget.component('raise-secondary-motion-form', raiseSecondaryMotionForm);
+    // Adding & seconding secondary motions is disabled for now:
+    // widget.component('raise-secondary-motion-form', raiseSecondaryMotionForm);
     widget.component('speech-user-inline-widget', { ...userInlineWidget, mixins: [SPEECH_MIXINS] });
     widget.component('voting-block-widget', { ...votingBlockWidget, mixins: [VOTING_MIXINS] });
     widget.component('vote-list', { ...voteList, mixins: [VOTING_MIXINS] });

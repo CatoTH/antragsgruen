@@ -37,8 +37,8 @@
                 </div>
             </div>
         </div>
+        <!-- Adding & seconding secondary motions is disabled for now.
         <footer class="content secondaryMotionRow">
-            <!-- Placeholder: secondary motions raised from the audience will be listed and managed here -->
             <div class="raisedSecondaryMotions">
                 <strong v-t="['debate', 'secondary_raised', false, {}, ':']"></strong><br>
                 <span class="noSecondaryMotion" v-t="['debate', 'secondary_none']"></span>
@@ -54,6 +54,7 @@
             <raise-secondary-motion-form ref="raiseForm" :motion-type="raiseFormMotionType"
                                          :create-url="createMotionUrl" :current-user="currentUser"></raise-secondary-motion-form>
         </teleport>
+        -->
     </div>
 </template>
 
@@ -116,9 +117,10 @@ export default {
         return {
             state: this.initState,
             pollingId: null,
-            motionTypes: null,
-            raiseFormMotionType: null,
-            raiseFormHolder: null,
+            // Adding & seconding secondary motions is disabled for now:
+            // motionTypes: null,
+            // raiseFormMotionType: null,
+            // raiseFormHolder: null,
             speechQueue: null,
             speechLoading: false,
             speechError: null,
@@ -141,11 +143,13 @@ export default {
         currentVotingBlockId() {
           return this.current ? this.current.voting_block_id : null;
         },
+        /* Adding & seconding secondary motions is disabled for now:
         creatableMotionTypes() {
             return (this.motionTypes || []).filter(
                 motionType => motionType.policies.motions.current_user_permitted && !motionType.settings.amendments_only
             );
         },
+        */
     },
     watch: {
         currentSpeechQueueId() {
@@ -279,6 +283,7 @@ export default {
                     console.error('Could not load the debate state from the backend', err);
                 });
         },
+        /* Adding & seconding secondary motions is disabled for now:
         loadMotionTypes() {
             authorizedFetch(this.motionTypesUrl)
                 .then(response => {
@@ -333,10 +338,12 @@ export default {
             this.raiseFormHolder = holder;
             this.raiseFormMotionType = motionType;
         },
+        */
     },
     mounted() {
         this.pollingId = window.setInterval(() => this.reloadData(), POLLING_INTERVAL);
-        this.loadMotionTypes();
+        // Adding & seconding secondary motions is disabled for now:
+        // this.loadMotionTypes();
         this.maybeLoadSpeechQueue();
 
         // Votings are not pushed via Live yet, so the widget keeps its own polling cycle.
