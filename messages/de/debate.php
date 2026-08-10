@@ -116,4 +116,64 @@ return [
         'text' => 'Die Abstimmung konnte nicht geladen werden.',
         'js' => true,
     ],
+    'admin_voting_loading'    => [
+        'text' => 'Die Abstimmung wird geladen…',
+        'js' => true,
+    ],
+    'admin_voting_err'        => [
+        'text' => 'Die Abstimmung konnte nicht geladen oder geändert werden.',
+        'js' => true,
+    ],
+    'admin_voting_votes'      => [
+        'text' => '%TOTAL% Stimmen von %USERS% Teilnehmenden.',
+        'js' => true,
+    ],
+    'admin_voting_manage'     => [
+        'text' => 'Abstimmung verwalten',
+        'js' => true,
+    ],
+    'admin_voting_unassign'   => [
+        'text' => 'Zuordnung aufheben',
+        'js' => true,
+    ],
+    'admin_voting_assign'     => [
+        'text' => 'Zuordnen',
+        'js' => true,
+    ],
+    'admin_voting_select_existing' => [
+        'text' => 'Oder eine bestehende Abstimmung zuordnen',
+        'js' => true,
+    ],
+    'admin_voting_select_other' => [
+        'text' => 'Eine andere Abstimmung zuordnen',
+        'js' => true,
+    ],
+    'admin_voting_select_placeholder' => [
+        'text' => '- bitte wählen -',
+        'js' => true,
+    ],
+    'admin_voting_question'   => [
+        'text' => 'Frage',
+        'js' => true,
+    ],
+    'admin_voting_create'     => [
+        'text' => 'Abstimmung anlegen',
+        'js' => true,
+    ],
+    'admin_voting_status_offline' => [
+        'text' => 'Offline',
+        'js' => true,
+    ],
+    'admin_voting_status_preparing' => [
+        'text' => 'In Vorbereitung',
+        'js' => true,
+    ],
+    'admin_voting_status_open' => [
+        'text' => 'Geöffnet',
+        'js' => true,
+    ],
+    'admin_voting_status_closed' => [
+        'text' => 'Geschlossen',
+        'js' => true,
+    ],
 ];

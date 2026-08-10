@@ -101,6 +101,7 @@ $urlRules = [
     $restBaseCon . '/debate'                                                         => '/rest/debate/index',
     $restBaseCon . '/debate/selectable'                                              => '/rest/debate/selectable',
     $restBaseCon . '/debate/speech-queue'                                            => '/rest/debate/speech-queue',
+    $restBaseCon . '/debate/voting'                                                  => '/rest/debate/voting',
     $restBaseCon . '/speech/<queueIds:[^\/]+>'                                       => '/rest/speech/get-queue',
     $restBaseCon . '/speech/<queueId:[^\/]+>/item'                                   => '/rest/speech/register',
     $restBaseCon . '/speech/<queueId:[^\/]+>/unregister'                             => '/rest/speech/unregister',

@@ -116,4 +116,64 @@ return [
         'text' => 'Could not load the voting.',
         'js' => true,
     ],
+    'admin_voting_loading'    => [
+        'text' => 'Loading the voting…',
+        'js' => true,
+    ],
+    'admin_voting_err'        => [
+        'text' => 'The voting could not be loaded or changed.',
+        'js' => true,
+    ],
+    'admin_voting_votes'      => [
+        'text' => '%TOTAL% votes cast by %USERS% participants.',
+        'js' => true,
+    ],
+    'admin_voting_manage'     => [
+        'text' => 'Manage voting',
+        'js' => true,
+    ],
+    'admin_voting_unassign'   => [
+        'text' => 'Unassign',
+        'js' => true,
+    ],
+    'admin_voting_assign'     => [
+        'text' => 'Assign',
+        'js' => true,
+    ],
+    'admin_voting_select_existing' => [
+        'text' => 'Or assign an existing voting',
+        'js' => true,
+    ],
+    'admin_voting_select_other' => [
+        'text' => 'Assign a different voting',
+        'js' => true,
+    ],
+    'admin_voting_select_placeholder' => [
+        'text' => '- please select -',
+        'js' => true,
+    ],
+    'admin_voting_question'   => [
+        'text' => 'Question',
+        'js' => true,
+    ],
+    'admin_voting_create'     => [
+        'text' => 'Create voting',
+        'js' => true,
+    ],
+    'admin_voting_status_offline' => [
+        'text' => 'Offline',
+        'js' => true,
+    ],
+    'admin_voting_status_preparing' => [
+        'text' => 'Preparing',
+        'js' => true,
+    ],
+    'admin_voting_status_open' => [
+        'text' => 'Open',
+        'js' => true,
+    ],
+    'admin_voting_status_closed' => [
+        'text' => 'Closed',
+        'js' => true,
+    ],
 ];

@@ -32,7 +32,7 @@ class LiveTools
         ];
     }
 
-    private static function sendToRabbitMq(string $routingKey, string $data): void
+    public static function sendToRabbitMq(string $routingKey, string $data): void
     {
         $params = AntragsgruenApp::getInstance()->live;
         $client = new Client(['base_uri' => $params['rabbitMqUri']]);

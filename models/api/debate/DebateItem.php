@@ -65,8 +65,23 @@ class DebateItem
             urlJson: $urlJson,
             urlHtml: $urlHtml,
             speechQueueId: self::getSpeechQueueId($entity),
-            votingBlockId: $entity->votingBlockId,
+            votingBlockId: self::getVotingBlockId($entity),
         );
+    }
+
+    private static function getVotingBlockId(DebateItemEntity $entity): ?int
+    {
+        // Explicit assignment wins; otherwise, for a debated motion/amendment that is a voting item,
+        // fall back to the block it belongs to. Agenda items only ever have an explicit assignment.
+        if ($entity->votingBlockId !== null) {
+            return $entity->votingBlockId;
+        }
+        $target = $entity->getDebateTarget();
+        if (($target instanceof Motion || $target instanceof Amendment) && $target->votingBlockId !== null) {
+            return $target->votingBlockId;
+        }
+
+        return null;
     }
 
     private static function getSpeechQueueId(DebateItemEntity $entity): ?int

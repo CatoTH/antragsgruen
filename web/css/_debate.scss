@@ -114,6 +114,60 @@
     }
   }
 
+  .votingTab {
+    .votingCard {
+      border: solid 1px #ddd;
+      border-radius: 4px;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+
+      .votingCardHead {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+
+        .votingCardTitle {
+          font-weight: bold;
+        }
+      }
+
+      .votingCardCounts {
+        color: #777;
+        margin-top: 4px;
+      }
+
+      .votingCardActions {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+    }
+
+    .votingAssignRow {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+
+      .rowLabel {
+        font-weight: normal;
+        margin-bottom: 0;
+      }
+
+      select {
+        max-width: 100%;
+      }
+    }
+
+    .votingCreate > .input-group {
+      max-width: 480px;
+    }
+  }
+
   .underConstruction {
     text-align: center;
     font-style: italic;

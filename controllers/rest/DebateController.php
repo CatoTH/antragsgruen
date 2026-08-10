@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace app\controllers\rest;
 
-use app\components\{DebateTools, Tools};
+use app\components\{DebateTools, Tools, UrlHelper};
 use app\models\api\speech\SpeechQueueAdmin;
-use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateStartRequest, DebateState};
-use app\models\db\{ConsultationAgendaItem, DebateItem, User};
+use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateStartRequest, DebateState,
+    DebateVotingAssignRequest, DebateVotingBlock, DebateVotingBlockOption, DebateVotingCreateRequest,
+    DebateVotingState, DebateVotingStateCreateMode};
+use app\models\db\{Amendment, ConsultationAgendaItem, DebateItem, Motion, User, VotingBlock};
 use app\models\exceptions\NotFound;
 use app\models\http\{RestApiExceptionResponse, RestApiResponse};
 use app\models\settings\Privileges;
@@ -135,5 +137,100 @@ class DebateController extends RestBase
         $queue = DebateTools::getOrCreateSpeechQueue($debate);
 
         return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
+    }
+
+    /**
+     * Get / assign / create / unassign the voting attached to the currently debated item.
+     * GET returns the voting state, PUT assigns an existing block, POST creates a new one, DELETE unassigns.
+     */
+    public function actionVoting(): RestApiResponse
+    {
+        $this->handleRestHeaders(['GET', 'PUT', 'DELETE', 'POST'], true);
+
+        if (!$this->consultation || !$this->consultation->getSettings()->hasCurrentlyDebated) {
+            return $this->returnRestResponseFromException(
+                new NotFound('The "Currently debated" feature is not enabled for this consultation', 404)
+            );
+        }
+
+        if ($error = $this->getModerationPermissionError()) {
+            return $error;
+        }
+
+        $debate = DebateItem::getCurrentForConsultation($this->consultation);
+        $method = $this->getHttpMethod();
+
+        if ($method === 'PUT') {
+            if ($debate === null) {
+                return $this->returnRestResponseFromException(new NotFound('No debate is going on right now', 404));
+            }
+            try {
+                /** @var DebateVotingAssignRequest $request */
+                $request = Tools::getSerializer()->deserialize($this->getPostBody(), DebateVotingAssignRequest::class, 'json');
+            } catch (SerializerException $e) {
+                return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
+            }
+            $votingBlock = $this->consultation->getVotingBlock($request->votingBlockId);
+            if ($votingBlock === null) {
+                return $this->returnRestResponseFromException(new NotFound('The voting block was not found', 404));
+            }
+            DebateTools::assignVotingBlock($debate, $votingBlock);
+        } elseif ($method === 'DELETE') {
+            if ($debate === null) {
+                return $this->returnRestResponseFromException(new NotFound('No debate is going on right now', 404));
+            }
+            DebateTools::unassignVotingBlock($debate);
+        } elseif ($method === 'POST') {
+            if ($debate === null) {
+                return $this->returnRestResponseFromException(new NotFound('No debate is going on right now', 404));
+            }
+            try {
+                /** @var DebateVotingCreateRequest $request */
+                $request = Tools::getSerializer()->deserialize($this->getPostBody(), DebateVotingCreateRequest::class, 'json');
+            } catch (SerializerException $e) {
+                return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
+            }
+            DebateTools::createVotingForDebate($debate, $request->question);
+        }
+
+        // A mutation may have changed the assignment; reload so the returned state is current.
+        $debate = DebateItem::getCurrentForConsultation($this->consultation);
+
+        return $this->createResponse(200, $this->buildVotingState($debate));
+    }
+
+    private function buildVotingState(?DebateItem $debate): DebateVotingState
+    {
+        $adminLink = UrlHelper::createUrl(['/consultation/admin-votings']);
+
+        $selectable = array_map(
+            fn (VotingBlock $block) => DebateVotingBlockOption::fromEntity($block),
+            $this->consultation->votingBlocks
+        );
+
+        if ($debate === null) {
+            return new DebateVotingState(
+                createMode: DebateVotingStateCreateMode::NONE,
+                selectableVotingBlocks: $selectable,
+                assignedVotingBlockId: null,
+                resolvedVotingBlock: null,
+            );
+        }
+
+        $target = $debate->getDebateTarget();
+        $createMode = match (true) {
+            $target instanceof Motion => DebateVotingStateCreateMode::MOTION,
+            $target instanceof Amendment => DebateVotingStateCreateMode::AMENDMENT,
+            default => DebateVotingStateCreateMode::QUESTION,
+        };
+
+        $resolved = DebateTools::getVotingBlockForDebate($debate);
+
+        return new DebateVotingState(
+            createMode: $createMode,
+            selectableVotingBlocks: $selectable,
+            assignedVotingBlockId: $debate->votingBlockId,
+            resolvedVotingBlock: ($resolved ? DebateVotingBlock::fromEntity($resolved, $adminLink) : null),
+        );
     }
 }

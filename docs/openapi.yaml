@@ -793,6 +793,167 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
 
+  /rest/{consultationPath}/debate/voting:
+    get:
+      operationId: getDebateVoting
+      summary: The voting state of the currently debated item (moderation)
+      description: >
+        Returns the voting attached to the currently debated item, plus the data the moderation widget
+        needs to create or assign one. The resolved voting is the block explicitly assigned to the debate,
+        or - for a debated motion/amendment that is a voting item - the block it belongs to. Requires the
+        privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The voting state for the current debate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    put:
+      operationId: assignDebateVoting
+      summary: Assign an existing voting block to the current debate
+      description: >
+        Sets the given voting block as the voting for the currently debated item. Requires the privilege
+        to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateVotingAssignRequest'
+      responses:
+        '200':
+          description: The voting block was assigned; the new voting state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '400':
+          description: The request body could not be parsed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation, the debate, or the voting block was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    post:
+      operationId: createDebateVoting
+      summary: Create a voting for the currently debated item
+      description: >
+        Creates a new voting block in preparing state and assigns it to the currently debated item. For a
+        debated motion/amendment, the item itself becomes the single voting item; for an agenda item, the
+        given question is used as the voting title and question. Requires the privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateVotingCreateRequest'
+      responses:
+        '200':
+          description: The voting was created and assigned; the new voting state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '400':
+          description: The request body could not be parsed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, no debate is going on, or the feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    delete:
+      operationId: unassignDebateVoting
+      summary: Unassign the voting from the current debate
+      description: >
+        Clears the voting explicitly assigned to the currently debated item (does not delete the voting
+        block itself). Requires the privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The voting was unassigned; the new voting state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, no debate is going on, or the feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
   /rest/{consultationPath}/speech/{queueIds}:
     get:
       operationId: getSpeechQueues
@@ -1429,8 +1590,120 @@ components:
         voting_block_id:
           type: integer
           nullable: true
-          description: ID of the voting block attached to this debate
+          description: >
+            ID of the voting block for the debated item: the one explicitly assigned to the debate,
+            or - for a debated motion/amendment that is a voting item - the block it belongs to.
+            Usable with the voting endpoints.
           example: 42
+
+    DebateVotingState:
+      x-php-namespace: debate
+      type: object
+      description: The voting attached to the current debate plus the data needed to create or assign one.
+      required:
+        - create_mode
+        - selectable_voting_blocks
+      properties:
+        assigned_voting_block_id:
+          type: integer
+          nullable: true
+          description: The voting block explicitly assigned to the debate (debateItem.votingBlockId). Null if none is assigned.
+          example: 42
+        resolved_voting_block:
+          $ref: '#/components/schemas/DebateVotingBlock'
+        create_mode:
+          type: string
+          description: >
+            Which creation UI the moderator should see when no voting is resolved yet: "motion"/"amendment"
+            offer a one-click "create voting" for the debated item, "question" offers a free-text question
+            form, "none" when nothing is being debated.
+          enum:
+            - motion
+            - amendment
+            - question
+            - none
+        selectable_voting_blocks:
+          type: array
+          description: All voting blocks of the consultation, offered for manual assignment.
+          items:
+            $ref: '#/components/schemas/DebateVotingBlockOption'
+
+    DebateVotingBlock:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: Compact representation of the voting attached to the debate, shown as a card in the moderation widget.
+      required:
+        - id
+        - title
+        - status
+        - votes_total
+        - votes_users
+        - admin_link
+      properties:
+        id:
+          type: integer
+          example: 42
+        title:
+          type: string
+          example: "A2: O’zapft is!"
+        status:
+          type: integer
+          description: Voting block status (0 = offline, 1 = preparing, 2 = open, 3 = closed/published, 4 = closed/unpublished)
+          example: 1
+        votes_total:
+          type: integer
+          example: 0
+        votes_users:
+          type: integer
+          example: 0
+        admin_link:
+          type: string
+          description: URL of the full voting administration page for managing, opening, or closing this voting.
+          example: https://test.antragsgruen.de/std-parteitag/consultation/admin-votings
+
+    DebateVotingBlockOption:
+      x-php-namespace: debate
+      type: object
+      description: A voting block offered in the "assign existing voting" dropdown.
+      required:
+        - id
+        - title
+        - status
+      properties:
+        id:
+          type: integer
+          example: 42
+        title:
+          type: string
+          example: "A2: O’zapft is!"
+        status:
+          type: integer
+          example: 1
+
+    DebateVotingAssignRequest:
+      x-php-namespace: debate
+      type: object
+      description: Assigns an existing voting block to the current debate.
+      required:
+        - voting_block_id
+      properties:
+        voting_block_id:
+          type: integer
+          example: 42
+
+    DebateVotingCreateRequest:
+      x-php-namespace: debate
+      type: object
+      description: >
+        Creates a voting for the current debate. For a debated motion/amendment the item itself becomes the
+        voting item and "question" is ignored; for a debated agenda item, "question" is the voting title and question.
+      properties:
+        question:
+          type: string
+          nullable: true
+          description: The question and title of the voting, used when an agenda item is debated.
+          example: "Should we adjourn the meeting?"
 
     MotionLinkWithAmendmentLinks:
       x-php-namespace: imotion

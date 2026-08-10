@@ -23,6 +23,7 @@ $initState = Tools::getSerializer()->serialize(DebateState::fromConsultation($co
 $debateUrl = UrlHelper::createUrl(['/rest/debate/index']);
 $selectableUrl = UrlHelper::createUrl(['/rest/debate/selectable']);
 $speechQueueUrl = UrlHelper::createUrl(['/rest/debate/speech-queue']);
+$votingUrl = UrlHelper::createUrl(['/rest/debate/voting']);
 
 // Endpoints of the embedded speech-admin widget (JWT REST API, shared with the standalone speech admin page).
 // The "QUEUEID" placeholder is substituted with the concrete queue id inside the Vue widget.
@@ -40,6 +41,7 @@ $speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin',
          data-debate-url="<?= Html::encode($debateUrl) ?>"
          data-selectable-url="<?= Html::encode($selectableUrl) ?>"
          data-speech-queue-url="<?= Html::encode($speechQueueUrl) ?>"
+         data-voting-url="<?= Html::encode($votingUrl) ?>"
          data-speech-component-admin-link="<?= Html::encode($speechComponentAdminLink) ?>"
          data-speech-poll-url="<?= Html::encode($speechPollUrl) ?>"
          data-speech-item-perform-operation-url="<?= Html::encode($speechItemPerformOpUrl) ?>"
@@ -69,6 +71,7 @@ $speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin',
                 debateUrl: this.debateUrl,
                 selectableUrl: this.selectableUrl,
                 speechQueueUrl: this.speechQueueUrl,
+                votingUrl: this.votingUrl,
                 csrf: this.csrf,
                 speechComponentAdminLink: this.speechComponentAdminLink,
                 speechPollUrl: this.speechPollUrl,
@@ -85,6 +88,7 @@ $speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin',
                 debateUrl: $element.data('debate-url'),
                 selectableUrl: $element.data('selectable-url'),
                 speechQueueUrl: $element.data('speech-queue-url'),
+                votingUrl: $element.data('voting-url'),
                 csrf: document.querySelector("meta[name='csrf-token']").getAttribute("content"),
                 speechComponentAdminLink: $element.data('speech-component-admin-link'),
                 speechPollUrl: $element.data('speech-poll-url'),
