@@ -246,7 +246,8 @@ export default {
     data() {
         return {
             activeTab: 'debated',
-            tabs: ['debated', 'speech', 'voting', 'protocol'],
+            // 'protocol' is intentionally omitted for now - it is not part of the MVP
+            tabs: ['debated', 'speech', 'voting'],
             state: this.initState,
             selectables: null,
             selected: {

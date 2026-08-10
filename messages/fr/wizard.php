@@ -131,6 +131,7 @@ return [
     'functionality_applications'       => 'Candidatures',
     'functionality_agenda'             => 'Un ordre du jour',
     'functionality_speech'             => 'Listes des intervenants',
+    'functionality_debate'             => 'Débat en temps réel sur place',
     'functionality_statute_amendments' => 'Modifications<br>des statuts',
     'functionality_votings'            => 'Votes',
     'functionality_documents_desc'     => '(Document)',
