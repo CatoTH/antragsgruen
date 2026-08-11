@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{StaticResourceTools, UrlHelper};
+use app\components\{DebateTools, StaticResourceTools, UrlHelper};
 use yii\helpers\Html;
 
 /**
@@ -14,11 +14,18 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 $layout = $controller->layoutParams;
 
+// When the "Currently debated" feature is enabled, the projector offers it as a dropdown option
+// (site-wide, next to motions and speaking lists) and renders the read-only user widget for it.
+$debateInitData = $consultation->getSettings()->hasCurrentlyDebated
+    ? DebateTools::getUserWidgetInitData($consultation)
+    : null;
+
 $fullscreenInitData = json_encode([
     'consultation_url' => UrlHelper::createUrl(['/consultation/rest']),
     'pagination' => $consultation->getSettings()->motionPrevNextLinks,
     'init_page' => $init_page,
     'init_content_url' => $init_content_url,
+    'debate' => $debateInitData,
 ]);
 
 $layout->addJsTranslation("amend");
@@ -29,6 +36,13 @@ $layout->addJsTranslation("speech");
 
 // The fullscreen projector may poll the speech REST endpoints, which authenticate via JWT.
 $layout->provideJwt = true;
+
+if ($debateInitData !== null) {
+    $layout->addJsTranslation("debate");
+    $layout->addJsTranslation("voting");
+    $layout->addLiveEventSubscription('user', 'debate');
+    $layout->addLiveEventSubscription('user', 'speech');
+}
 
 ?>
 <button type="button" title="<?= Yii::t('motion', 'fullscreen') ?>" class="btn btn-link btnFullscreen"

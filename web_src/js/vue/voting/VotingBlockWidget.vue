@@ -46,7 +46,7 @@
                         </button>
                     </div>
 
-                    <template v-if="isOpen">
+                    <template v-if="isOpen && !projector">
                         <div class="votingOptions" v-if="groupedVoting[0].can_vote && !abstained">
                             <button v-for="option in votingOptionButtons"
                                 type="button" :class="['btn', 'btn-sm', option.btnClass]" @click="vote(groupedVoting, option)">
@@ -118,7 +118,7 @@
                     'answer_template_general_abstention',
                     (isClosed ? 'showResults' : ''),
                     (isClosed && resultsPublic ? 'showDetailedResults' : 'noDetailedResults')
-                ]" v-if="hasGeneralAbstention && canAbstain">
+                ]" v-if="hasGeneralAbstention && canAbstain && !projector">
                     <div class="titleLink"></div>
 
                     <template v-if="isOpen">
@@ -168,7 +168,7 @@
                     <span class="votingWeight">{{ voting.vote_weight }}</span>
                 </div>
             </footer>
-            <div class="votingExplanation" v-if="isOpen">
+            <div class="votingExplanation" v-if="isOpen && !projector">
                 <div>
                     <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     <strong v-t="['voting', 'voting_visibility']"></strong>
@@ -183,7 +183,7 @@
 
 <script>
 export default {
-   props: ['voting', 'adminLink'],
+   props: ['voting', 'adminLink', 'projector'],
    data() {
        return {
            shownVoteLists: []

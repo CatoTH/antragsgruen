@@ -6,6 +6,12 @@ import fullscreenProjectorComponent from "/js/vue/fullscreen/FullscreenProjector
 import fullscreenIMotionComponent from "/js/vue/fullscreen/FullscreenIMotion.js";
 import fullscreenPanelComponent from "/js/vue/fullscreen/FullscreenPanel.js";
 import fullscreenSpeechComponent from "/js/vue/speech/FullscreenSpeech.js";
+import currentDebateWidgetComponent from "/js/vue/debate/CurrentDebateWidget.js";
+import { getSpeechCommonMixins } from "/js/vue/speech/SpeechCommonMixins.js";
+import userInlineWidgetComponent from "/js/vue/speech/UserInlineWidget.js";
+import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
+import votingBlockWidgetComponent from "/js/vue/voting/VotingBlockWidget.js";
+import voteListComponent from "/js/vue/voting/VotingList.js";
 
 export class FullscreenToggle {
     /** @type {HTMLElement} */ element;
@@ -146,6 +152,19 @@ export class FullscreenToggle {
         this.vueWidget.component('fullscreen-panel', fullscreenPanelComponent);
         this.vueWidget.component('fullscreen-imotion', fullscreenIMotionComponent);
         this.vueWidget.component('fullscreen-speech', fullscreenSpeechComponent);
+
+        // The "Currently debated" widget is offered as a projector option when the feature is enabled.
+        // It renders the read-only user widget, reusing the same speech/voting child components as the
+        // inline homepage widget. The speech and voting common mixins share method names, so they are
+        // applied per-component instead of globally to keep them from colliding in this shared app.
+        if (initdata.debate) {
+            const speechMixins = getSpeechCommonMixins();
+            const votingMixins = getVotingCommonMixins(initdata.debate.voting_constants);
+            this.vueWidget.component('current-debate-widget', currentDebateWidgetComponent);
+            this.vueWidget.component('speech-user-inline-widget', { ...userInlineWidgetComponent, mixins: [speechMixins] });
+            this.vueWidget.component('voting-block-widget', { ...votingBlockWidgetComponent, mixins: [votingMixins] });
+            this.vueWidget.component('vote-list', { ...voteListComponent, mixins: [votingMixins] });
+        }
 
         this.vueWidget.mount(this.holderElement.firstChild);
     }

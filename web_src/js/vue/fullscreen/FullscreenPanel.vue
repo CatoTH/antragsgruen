@@ -3,6 +3,7 @@
     <header>
       <div class="imotionSelector">
         <select v-if="imotions || pages" v-model="dropdownSelection" @change="onChangeSelectedContent()" class="stdDropdown">
+          <option :value="'debate'" v-if="hasDebate" v-t="['debate', 'currently_debated']"></option>
           <option :value="'speech'" v-if="hasOneSpeakingList" v-t="['speech', 'fullscreen_title_s']"></option>
           <!-- @TODO Multiple speaking lists -->
           <template v-for="imotion in imotions">
@@ -20,6 +21,20 @@
     <fullscreen-imotion v-if="imotion" :imotion="imotion" @paginationChange="onPaginationChange($event)"></fullscreen-imotion>
 
     <fullscreen-speech v-if="dropdownSelection === 'speech'" :initQueue="selectedSpeakingList" :user="null" :csrf="null" :title="'Speaking List'"></fullscreen-speech>
+
+    <current-debate-widget v-if="dropdownSelection === 'debate' && debate" projector
+                           :init-state="debateInitState"
+                           :csrf="csrf"
+                           :poll-url="debate.poll_url"
+                           :motion-types-url="debate.motion_types_url"
+                           :create-motion-url="debate.create_motion_url"
+                           :speech-poll-url="debate.speech_poll_url"
+                           :speech-user="debate.speech_user"
+                           :voting-poll-url="debate.voting_poll_url"
+                           :voting-vote-url="debate.voting_vote_url"
+                           :voting-admin-link="debate.voting_admin_link"
+                           :current-user="debate.current_user"
+    ></current-debate-widget>
 
     <main class="contentPage" v-if="page">
       <div class="content" v-html="page.html"></div>
@@ -51,6 +66,21 @@ export default {
     },
     selectedSpeakingList: function () {
       return this.dropdownSelection === 'speech' && this.speakingLists ? this.speakingLists[0] : null;
+    },
+    debate: function () {
+      // Present (as an object with all widget props) only when the "Currently debated" feature is enabled.
+      return this.initdata.debate || null;
+    },
+    hasDebate: function () {
+      return !!this.debate;
+    },
+    debateInitState: function () {
+      // The init state is passed as a serialized JSON string in the projector initdata.
+      return this.debate ? JSON.parse(this.debate.init_state) : null;
+    },
+    csrf: function () {
+      const meta = document.querySelector("meta[name='csrf-token']");
+      return meta ? meta.getAttribute("content") : '';
     }
   },
   methods: {
@@ -110,6 +140,9 @@ export default {
       if (documentType === 'speech') {
         this.dropdownSelection = 'speech';
       }
+      if (documentType === 'debate') {
+        this.dropdownSelection = 'debate';
+      }
     },
     onChangeSelectedContent: function () {
       const documentType = this.dropdownSelection ? this.dropdownSelection.split("-")[0] : '';
@@ -119,7 +152,7 @@ export default {
       if (documentType === 'page') {
         this.onChangeSelectedPage();
       }
-      if (documentType === 'speech') {
+      if (documentType === 'speech' || documentType === 'debate') {
         this.imotion = null;
         this.page = null;
       }

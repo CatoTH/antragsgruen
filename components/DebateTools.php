@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, DebateItem, Motion, SpeechQueue, VotingBlock, VotingQuestion};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, DebateItem, Motion, SpeechQueue, User, VotingBlock, VotingQuestion};
 use app\models\api\debate\DebateState;
 use app\models\api\SpeechQueue as SpeechQueueApi;
+use app\models\api\SpeechUser;
 use app\models\majorityType\IMajorityType;
 use app\models\quorumType\IQuorumType;
+use app\models\settings\Privileges;
 use app\models\votings\AnswerTemplates;
 
 /**
@@ -266,6 +268,53 @@ class DebateTools
         LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
 
         return $block;
+    }
+
+    /**
+     * All data the user-facing "Currently debated" widget (CurrentDebateWidget.vue) needs to bootstrap.
+     * Shared by the inline homepage widget (_index_debate.php) and the fullscreen projector
+     * (_fullscreen_toggle.php), so both stay in sync.
+     *
+     * @return array<string, mixed>
+     */
+    public static function getUserWidgetInitData(Consultation $consultation): array
+    {
+        $user = User::getCurrentUser();
+        $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
+
+        // Voting: the embedded widget reuses the existing session-based /voting endpoints, which require a
+        // logged-in user. Anonymous visitors therefore get empty URLs and no voting is embedded.
+        if ($user) {
+            $votingPollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
+            $votingVoteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
+            $votingAdminLink = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)
+                ? UrlHelper::createUrl(['/consultation/admin-votings'])
+                : '';
+        } else {
+            $votingPollUrl   = '';
+            $votingVoteUrl   = '';
+            $votingAdminLink = '';
+        }
+
+        return [
+            'init_state'          => Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json'),
+            'poll_url'            => UrlHelper::createUrl(['/rest/debate/index']),
+            'motion_types_url'    => UrlHelper::createUrl(['/rest/motion-type/index']),
+            'create_motion_url'   => UrlHelper::createUrl(['/rest/motion/create']),
+            'speech_poll_url'     => UrlHelper::createUrl(['/rest/speech/get-queue', 'queueIds' => 'QUEUEIDS']),
+            'speech_register_url' => UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']),
+            'speech_unregister_url' => UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']),
+            'speech_user'         => new SpeechUser($user, $cookieUser),
+            'voting_poll_url'     => $votingPollUrl,
+            'voting_vote_url'     => $votingVoteUrl,
+            'voting_admin_link'   => $votingAdminLink,
+            'voting_constants'    => include(\Yii::getAlias('@app/views/voting/_constants.php')),
+            'current_user'        => $user ? [
+                'name'         => $user->name,
+                'organization' => $user->organization,
+                'email'        => $user->email,
+            ] : null,
+        ];
     }
 
     private static function isDebateOver(DebateItem $debate, Motion|Amendment|ConsultationAgendaItem $target): bool

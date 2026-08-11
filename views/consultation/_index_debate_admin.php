@@ -50,7 +50,10 @@ $speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin',
          data-speech-create-item-url="<?= Html::encode($speechCreateItemUrl) ?>"
          data-speech-set-status-url="<?= Html::encode($speechSetStatusUrl) ?>"
 >
-    <h2 class="green" id="currentDebateAdminTitle"><?= Yii::t('debate', 'admin_title') ?></h2>
+    <h2 class="green" id="currentDebateAdminTitle">
+        <?= Yii::t('debate', 'admin_title') ?>
+        <?= $this->render('@app/views/shared/_fullscreen_toggle.php', ['init_page' => 'debate', 'init_content_url' => null]) ?>
+    </h2>
     <div class="currentDebateAdminWidget"></div>
 </section>
 

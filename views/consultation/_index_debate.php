@@ -1,10 +1,6 @@
 <?php
 
-use app\components\{Tools, UrlHelper};
-use app\models\api\debate\DebateState;
-use app\models\api\SpeechUser;
-use app\models\db\User;
-use app\models\settings\Privileges;
+use app\components\DebateTools;
 use yii\helpers\Html;
 
 /**
@@ -25,41 +21,23 @@ $layout->loadCKEditor();
 $layout->addLiveEventSubscription('user', 'debate');
 $layout->addLiveEventSubscription('user', 'speech');
 
-$user = User::getCurrentUser();
-$cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
+// Shared with the fullscreen projector (see _fullscreen_toggle.php) so both stay in sync.
+$init = DebateTools::getUserWidgetInitData($consultation);
 
-$initState = Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json');
-$pollUrl            = UrlHelper::createUrl(['/rest/debate/index']);
-$motionTypesUrl      = UrlHelper::createUrl(['/rest/motion-type/index']);
-$createMotionUrl     = UrlHelper::createUrl(['/rest/motion/create']);
-$speechPollUrl       = UrlHelper::createUrl(['/rest/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
-$speechRegisterUrl   = UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']);
-$speechUnregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']);
-$speechUser          = new SpeechUser($user, $cookieUser);
-
-// Voting: the embedded widget reuses the existing session-based /voting endpoints, which require a
-// logged-in user. Anonymous visitors therefore get empty URLs and no voting is embedded (same as the
-// standalone homepage voting widget). The block shown is the one referenced by the debate's votingBlockId.
-$votingConstants = include(__DIR__ . '/../voting/_constants.php');
-if ($user) {
-    $votingPollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
-    $votingVoteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
-    $votingAdminLink = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)
-        ? UrlHelper::createUrl(['/consultation/admin-votings'])
-        : '';
-} else {
-    $votingPollUrl   = '';
-    $votingVoteUrl   = '';
-    $votingAdminLink = '';
-}
-
+$initState           = $init['init_state'];
+$pollUrl             = $init['poll_url'];
+$motionTypesUrl      = $init['motion_types_url'];
+$createMotionUrl     = $init['create_motion_url'];
+$speechPollUrl       = $init['speech_poll_url'];
+$speechRegisterUrl   = $init['speech_register_url'];
+$speechUnregisterUrl = $init['speech_unregister_url'];
+$speechUser          = $init['speech_user'];
+$votingConstants     = $init['voting_constants'];
+$votingPollUrl       = $init['voting_poll_url'];
+$votingVoteUrl       = $init['voting_vote_url'];
+$votingAdminLink     = $init['voting_admin_link'];
 // The initiator of a raised secondary motion is always the current user; the form has no initiator fields
-$currentUser = User::getCurrentUser();
-$currentUserJson = json_encode($currentUser ? [
-    'name' => $currentUser->name,
-    'organization' => $currentUser->organization,
-    'email' => $currentUser->email,
-] : null, JSON_THROW_ON_ERROR);
+$currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
 
 ?>
 <section class="currentDebateInline currentSpeechPageWidth" aria-labelledby="currentDebateWidgetTitle"
@@ -76,7 +54,10 @@ $currentUserJson = json_encode($currentUser ? [
          data-voting-vote-url="<?= Html::encode($votingVoteUrl) ?>"
          data-voting-admin-link="<?= Html::encode($votingAdminLink) ?>"
 >
-    <h2 class="green" id="currentDebateWidgetTitle"><?= Yii::t('debate', 'currently_debated') ?></h2>
+    <h2 class="green" id="currentDebateWidgetTitle">
+        <?= Yii::t('debate', 'currently_debated') ?>
+        <?= $this->render('@app/views/shared/_fullscreen_toggle.php', ['init_page' => 'debate', 'init_content_url' => null]) ?>
+    </h2>
     <div class="currentDebateWidget"></div>
 </section>
 

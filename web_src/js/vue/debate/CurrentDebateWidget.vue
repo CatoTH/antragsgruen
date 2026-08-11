@@ -18,7 +18,15 @@
                 <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
                 <div v-if="speechLoading && !speechQueue" class="speechLoading"
                      v-t="['debate', 'admin_speech_loading']"></div>
-                <speech-user-inline-widget v-if="speechQueue" :key="speechQueue.id"
+                <!-- On the projector the read-only fullscreen speech display is used; on the regular
+                     homepage the interactive inline widget (apply / withdraw) is shown instead. -->
+                <fullscreen-speech v-if="speechQueue && projector" :key="'fs-' + speechQueue.id"
+                                   :init-queue="speechQueue"
+                                   :csrf="null"
+                                   :user="null"
+                                   :title="'title'"
+                ></fullscreen-speech>
+                <speech-user-inline-widget v-if="speechQueue && !projector" :key="speechQueue.id"
                                            :init-queue="speechQueue"
                                            :csrf="csrf"
                                            :user="speechUser"
@@ -28,7 +36,7 @@
                 <div v-if="votingError" class="alert alert-danger">{{ votingError }}</div>
                 <div v-if="votingBlock" class="votingCommon currentDebateVoting">
                     <voting-block-widget :key="votingBlock.id" :voting="votingBlock"
-                                         :admin-link="votingAdminLink"
+                                         :admin-link="votingAdminLink" :projector="projector"
                                          @vote="vote" @abstain="abstain"></voting-block-widget>
                 </div>
             </div>
@@ -107,6 +115,12 @@ export default {
         currentUser: {
             type: Object,
             default: null,
+        },
+        projector: {
+            // Read-only projector mode: renders the read-only fullscreen speech display and hides the
+            // interactive voting controls (used by the fullscreen projector, see FullscreenPanel.vue).
+            type: Boolean,
+            default: false,
         },
     },
     data() {

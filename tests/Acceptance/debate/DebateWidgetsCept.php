@@ -18,7 +18,7 @@ $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->gotoConsultationHome();
 $I->waitForElement('.currentDebateAdmin .debatedItem', 5);
-$I->see('O’zapft is!', '.currentDebateAdmin .debatedItem .title');
+$I->waitForText('O’zapft is!', 5, '.currentDebateAdmin .debatedItem .title');
 
 
 $I->wantTo('open the speaking list of the debated motion');
@@ -72,7 +72,7 @@ $I->waitForElement('#debateAdminFreeText', 5);
 $I->fillField('#debateAdminFreeText', 'Allgemeine Aussprache zum Haushalt');
 $I->click('.currentDebateAdmin .selectRow-free_text .rowButton button');
 $I->waitForElement('.currentDebateAdmin .debatedItem', 5);
-$I->see('Allgemeine Aussprache zum Haushalt', '.currentDebateAdmin .debatedItem .title');
+$I->waitForText('Allgemeine Aussprache zum Haushalt', 5, '.currentDebateAdmin .debatedItem .title');
 
 $I->click($tabSpeech);
 $I->waitForElement('.currentDebateAdmin .speechTab .speechAdmin', 8);
@@ -84,14 +84,23 @@ $I->waitForElement('#debateAdminSelect-motion', 5);
 $I->selectOption('#debateAdminSelect-motion', ['value' => '2']); // A2: O’zapft is!
 $I->click('.currentDebateAdmin .selectRow-motion .rowButton button');
 $I->waitForElement('.currentDebateAdmin .debatedItem', 5);
-$I->see('O’zapft is!', '.currentDebateAdmin .debatedItem .title');
+$I->waitForText('O’zapft is!', 5, '.currentDebateAdmin .debatedItem .title');
 
 $I->logout();
 $I->loginAsStdUser();
 $I->gotoConsultationHome();
 $I->dontSeeElement('.currentDebateAdmin'); // regular users do not get the moderation widget
 $I->waitForElement('.currentDebateInline .debatedItem', 5);
-$I->see('O’zapft is!', '.currentDebateInline .debatedItem .title');
+$I->waitForText('O’zapft is!', 5, '.currentDebateInline .debatedItem .title');
+
+
+$I->wantTo('open the debate in the fullscreen projector, showing the read-only user view');
+$I->click('.currentDebateInline .btnFullscreen');
+$I->waitForElement('.fullscreenMainHolder .currentDebateContent .debatedItem', 8);
+$I->waitForText('O’zapft is!', 5, '.fullscreenMainHolder .currentDebateContent .debatedItem .title');
+$I->dontSeeElement('.fullscreenMainHolder .speechUser'); // read-only projection: the interactive apply UI is not rendered
+$I->click('.fullscreenMainHolder .closeBtn');
+$I->waitForElementNotVisible('.fullscreenMainHolder', 5);
 
 
 $I->wantTo('debate an agenda item on a consultation that has an agenda');
@@ -108,7 +117,7 @@ $I->waitForElement('#debateAdminSelect-agenda_item', 8);
 $I->selectOption('#debateAdminSelect-agenda_item', ['value' => '7']); // "Sonstiges"
 $I->click('.currentDebateAdmin .selectRow-agenda_item .rowButton button');
 $I->waitForElement('.currentDebateAdmin .debatedItem', 5);
-$I->see('Sonstiges', '.currentDebateAdmin .debatedItem .title');
+$I->waitForText('Sonstiges', 5, '.currentDebateAdmin .debatedItem .title');
 
 $I->wantTo('open the speaking list for the debated agenda item');
 $I->click($tabSpeech);
@@ -129,4 +138,4 @@ $I->loginAsStdUser();
 $I->gotoConsultationHome(true, 'parteitag', 'parteitag');
 $I->dontSeeElement('.currentDebateAdmin');
 $I->waitForElement('.currentDebateInline .debatedItem', 5);
-$I->see('Sonstiges', '.currentDebateInline .debatedItem .title');
+$I->waitForText('Sonstiges', 5, '.currentDebateInline .debatedItem .title');
