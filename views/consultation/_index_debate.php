@@ -56,7 +56,10 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
 >
     <h2 class="green" id="currentDebateWidgetTitle">
         <?= Yii::t('debate', 'currently_debated') ?>
-        <?= $this->render('@app/views/shared/_fullscreen_toggle.php', ['init_page' => 'debate', 'init_content_url' => null]) ?>
+        <?php // The projector reuses the REST API, which anonymous visitors cannot access when public API is off. ?>
+        <?php if (\app\models\db\User::getCurrentUser()): ?>
+            <?= $this->render('@app/views/shared/_fullscreen_toggle.php', ['init_page' => 'debate', 'init_content_url' => null]) ?>
+        <?php endif; ?>
     </h2>
     <div class="currentDebateWidget"></div>
 </section>

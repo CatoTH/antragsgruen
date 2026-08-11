@@ -98,6 +98,7 @@ $I->wantTo('open the debate in the fullscreen projector, showing the read-only u
 $I->click('.currentDebateInline .btnFullscreen');
 $I->waitForElement('.fullscreenMainHolder .currentDebateContent .debatedItem', 8);
 $I->waitForText('O’zapft is!', 5, '.fullscreenMainHolder .currentDebateContent .debatedItem .title');
+$I->waitForText('Aktuell debattiert', 5, '.fullscreenMainHolder .imotionSelector'); // dropdown option is translated, not "UNKNOWN TRANSLATION"
 $I->dontSeeElement('.fullscreenMainHolder .speechUser'); // read-only projection: the interactive apply UI is not rendered
 $I->click('.fullscreenMainHolder .closeBtn');
 $I->waitForElementNotVisible('.fullscreenMainHolder', 5);

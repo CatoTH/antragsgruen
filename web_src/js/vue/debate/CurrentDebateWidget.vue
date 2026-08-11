@@ -9,7 +9,7 @@
                         <template v-t="['debate', 'submitted_by', false, {}, ': ']"></template>
                         <span v-html="current.initiators_html"></span>
                     </span>
-                    <a v-if="current.url_html" :href="current.url_html" class="fulltextLink">
+                    <a v-if="current.url_html && !projector" :href="current.url_html" class="fulltextLink">
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         <template v-t="['debate', 'fulltext']"></template>
                     </a>

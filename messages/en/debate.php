@@ -1,7 +1,10 @@
 <?php
 
 return [
-    'currently_debated' => 'Currently debated',
+    'currently_debated' => [
+        'text' => 'Currently debated',
+        'js' => true,
+    ],
     'nothing_debated'   => [
         'text' => 'No debate is going on right now.',
         'js' => true,
