@@ -50,7 +50,8 @@
                     <label class="rowLabel" for="debateAdminFreeText"
                            v-t="['debate', 'admin_select_free_text', false, {}, ':']"></label>
                     <div class="rowSelect">
-                        <input type="text" id="debateAdminFreeText" class="form-control" v-model="freeText">
+                        <input type="text" id="debateAdminFreeText" class="form-control" v-model="freeText"
+                               @keyup.enter="startFreeTextDebate()">
                     </div>
                     <div class="rowButton">
                         <button type="button" class="btn btn-default" :disabled="!freeText || starting || stopping"
