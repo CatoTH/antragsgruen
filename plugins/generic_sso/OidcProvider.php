@@ -63,32 +63,11 @@ class OidcProvider
     }
 
     /**
-     * Access PKCE code property via reflection (internal helper)
-     */
-    private function accessPkceProperty(string $operation, ?string $value = null): ?string
-    {
-        try {
-            $reflection = new \ReflectionClass($this->provider);
-            $property = $reflection->getProperty('pkceCode');
-            $property->setAccessible(true);
-
-            if ($operation === 'get') {
-                return $property->getValue($this->provider);
-            } elseif ($operation === 'set' && $value !== null) {
-                $property->setValue($this->provider, $value);
-            }
-        } catch (\Exception $e) {
-            \Yii::error("Failed to {$operation} PKCE code: " . $e->getMessage());
-        }
-        return null;
-    }
-
-    /**
      * Get the PKCE code verifier (if PKCE is enabled)
      */
     public function getPkceCode(): ?string
     {
-        return $this->accessPkceProperty('get');
+        return $this->provider->getPkceCode();
     }
 
     /**
@@ -97,7 +76,7 @@ class OidcProvider
     public function setPkceCode(?string $pkceCode): void
     {
         if ($pkceCode) {
-            $this->accessPkceProperty('set', $pkceCode);
+            $this->provider->setPkceCode($pkceCode);
         }
     }
 
@@ -219,7 +198,8 @@ class OidcProvider
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
-        curl_close($ch);
+        // No curl_close(): it is a no-op since PHP 8.0 and deprecated in 8.5, where
+        // Yii's error handler turns the deprecation into an exception.
 
         if ($httpCode !== 200 || !$response || !is_string($response)) {
             $errorMsg = 'Failed to discover OIDC configuration';
@@ -241,6 +221,7 @@ class OidcProvider
             'urlAccessToken' => $config['token_endpoint'] ?? '',
             'urlUserInfo' => $config['userinfo_endpoint'] ?? '',
             'urlResourceOwnerDetails' => $config['userinfo_endpoint'] ?? '',
+            'urlLogout' => $config['end_session_endpoint'] ?? '',
             'jwks_uri' => $config['jwks_uri'] ?? '',
             'scopes_supported' => $config['scopes_supported'] ?? ['openid', 'profile', 'email'],
         ];
