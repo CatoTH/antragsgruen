@@ -49,6 +49,10 @@ php -d memory_limit=1G vendor/bin/phpstan.phar analyse --configuration=phpstan.n
 php -d memory_limit=1G vendor/bin/phpstan.phar analyse --configuration=phpstan.use-baseline.neon
 ```
 
+### Coding Styles
+
+Use named arguments for function and method calls whenever boolean values are passed.
+
 ### Testing
 ```bash
 vendor/bin/codecept run Unit                          # All unit tests
@@ -178,3 +182,7 @@ Create an empty file `config/DEBUG` to enable Yii2 debug mode.
 
 ## Configuration
 `config/config.json` is the main config file (gitignored, created by installer). Template: `config/config.template.json`. For tests: `config/config_tests.json` (from `config/config_tests.template.json`). All supported settings can alternatively be passed as environment variables (see `docs/environment-variables.md`).
+
+### Technical Implementation Details
+
+Topic-specific implementation details are stored under [docs/technical](docs/technical).

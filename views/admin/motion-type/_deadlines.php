@@ -119,6 +119,24 @@ $type = ConsultationMotionType::DEADLINE_MERGING;
 </div>
 
 <?php
+$type = ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS;
+?>
+<div class="deadlineTypeComplex deadlineHolder amendmentsToAmendmentsDeadlines" data-type="<?= $type ?>">
+    <h3 class="h4"><?= Yii::t('admin', 'motion_cdeadline_amend2amend') ?>:</h3>
+    <div class="deadlineList">
+        <?php
+        foreach ($motionType->getDeadlinesByType($type) as $deadline) {
+            echo $this->render('_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
+        }
+        ?>
+    </div>
+    <button type="button" class="btn btn-link btn-xs deadlineAdder">
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+        <?= Yii::t('admin', 'motion_cdeadline_add') ?>
+    </button>
+</div>
+
+<?php
 $type = ConsultationMotionType::DEADLINE_COMMENTS;
 ?>
 <div class="deadlineTypeComplex deadlineHolder commentDeadlines" data-type="<?= $type ?>">

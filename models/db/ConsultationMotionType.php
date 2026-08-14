@@ -57,11 +57,12 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     public const INITIATORS_MERGE_NO_COLLISION   = 1;
     public const INITIATORS_MERGE_WITH_COLLISION = 2;
 
-    public const DEADLINE_MOTIONS    = 'motions';
-    public const DEADLINE_AMENDMENTS = 'amendments';
-    public const DEADLINE_COMMENTS   = 'comments';
-    public const DEADLINE_MERGING    = 'merging';
-    public const DEADLINE_TYPES = ['motions', 'amendments', 'comments', 'merging'];
+    public const DEADLINE_MOTIONS                 = 'motions';
+    public const DEADLINE_AMENDMENTS              = 'amendments';
+    public const DEADLINE_COMMENTS                = 'comments';
+    public const DEADLINE_MERGING                 = 'merging';
+    public const DEADLINE_AMENDMENTS_TO_AMENDMENTS = 'amendmentsToAmendments';
+    public const DEADLINE_TYPES = ['motions', 'amendments', 'comments', 'merging', 'amendmentsToAmendments'];
 
     // Keep in sync with AmendmentEdit.ts
     public const AMEND_PARAGRAPHS_MULTIPLE = 1;
@@ -429,10 +430,11 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
 
         if ($dto->deadlines !== null) {
             $this->setAllDeadlines([
-                static::DEADLINE_MOTIONS    => array_map(fn($e) => $e->toArray(), $dto->deadlines->motions),
-                static::DEADLINE_AMENDMENTS => array_map(fn($e) => $e->toArray(), $dto->deadlines->amendments),
-                static::DEADLINE_MERGING    => array_map(fn($e) => $e->toArray(), $dto->deadlines->merging),
-                static::DEADLINE_COMMENTS   => array_map(fn($e) => $e->toArray(), $dto->deadlines->comments),
+                static::DEADLINE_MOTIONS                 => array_map(fn($e) => $e->toArray(), $dto->deadlines->motions),
+                static::DEADLINE_AMENDMENTS               => array_map(fn($e) => $e->toArray(), $dto->deadlines->amendments),
+                static::DEADLINE_MERGING                  => array_map(fn($e) => $e->toArray(), $dto->deadlines->merging),
+                static::DEADLINE_COMMENTS                 => array_map(fn($e) => $e->toArray(), $dto->deadlines->comments),
+                static::DEADLINE_AMENDMENTS_TO_AMENDMENTS => array_map(fn($e) => $e->toArray(), $dto->deadlines->amendmentsToAmendments),
             ]);
         }
 
@@ -552,6 +554,20 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
             }
         }
         return false;
+    }
+
+    /**
+     * Amendments amending another amendment (rather than the base motion) are, by default, still
+     * governed by DEADLINE_AMENDMENTS. Only once DEADLINE_AMENDMENTS_TO_AMENDMENTS is explicitly
+     * configured does it take over for this case, so existing consultations keep their current
+     * behavior until an admin opts into a separate deadline.
+     */
+    public function isInAmendmentDeadline(bool $isAmendmentToAmendment): bool
+    {
+        if ($isAmendmentToAmendment && count($this->getDeadlinesByType(self::DEADLINE_AMENDMENTS_TO_AMENDMENTS)) > 0) {
+            return $this->isInDeadline(self::DEADLINE_AMENDMENTS_TO_AMENDMENTS);
+        }
+        return $this->isInDeadline(self::DEADLINE_AMENDMENTS);
     }
 
     public function getAllCurrentDeadlines(bool $onlyNamed = false): array

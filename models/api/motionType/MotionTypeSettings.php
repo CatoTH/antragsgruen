@@ -18,6 +18,8 @@ class MotionTypeSettings
         public bool $allowAmendmentsToAmendments,
         /** @var MotionTypeDeadlineEntry[] */
         public array $mergingDeadlines,
+        /** @var MotionTypeDeadlineEntry[] */
+        public array $amendmentsToAmendmentsDeadlines,
     ) {
     }
 
@@ -34,6 +36,7 @@ class MotionTypeSettings
             hasResponsibilities: $settings->hasResponsibilities,
             allowAmendmentsToAmendments: $settings->allowAmendmentsToAmendments,
             mergingDeadlines: MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_MERGING),
+            amendmentsToAmendmentsDeadlines: MotionTypeDeadlineEntry::fromDeadlineType($motionType, ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS),
         );
     }
 }

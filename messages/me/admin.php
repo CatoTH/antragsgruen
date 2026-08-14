@@ -698,6 +698,7 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'motion_cdeadline_amend' => 'Vrijeme za amandmane', // Original: Times for amendments
     'motion_cdeadline_com' => 'Vrijeme za komentare', // Original: Times for comments
     'motion_cdeadline_merge' => 'Vrijeme spajanja promjena', // Original: Times for merging changes
+    'motion_cdeadline_amend2amend' => 'Vrijeme za amandmane na amandmane', // Original: Times for amendments to amendments (falls back to the amendments deadline if left empty)
     'motion_cdeadline_add' => 'Dodavanje vremenskog raspona', // Original: Add time range
     'motion_deadline_debug' => 'Aktivirajte način otklanjanja pogrešaka za administratore <br><small>(za simulaciju vremenskih tački u budućnosti)</small>', // Original: Activate debug-mode for admins<br><small>(to simulate points of time in the future)</small>
     'users_head' => 'registrovani korisnici', // Original: Registered users

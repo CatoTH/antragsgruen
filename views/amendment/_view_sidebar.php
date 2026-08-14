@@ -52,7 +52,7 @@ if ($amendment->canWithdraw()) {
 
 if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
     try {
-        $amendment->getMyMotion()->isCurrentlyAmendable(true, true, true);
+        $amendment->getMyMotion()->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: true, throwExceptions: true, amendingAmendment: $amendment);
 
         $createLi = '<li class="amendmentCreate">';
         $amendCreateUrl = UrlHelper::createUrl([
@@ -62,7 +62,7 @@ if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments
         ]);
         $title          = '<span class="icon glyphicon glyphicon-flash" aria-hidden="true"></span>';
         $title .= Yii::t('motion', 'amendment_create_based_on_amend');
-        if (!$amendment->getMyMotion()->isCurrentlyAmendable(false, true)) {
+        if (!$amendment->getMyMotion()->isCurrentlyAmendable(allowAdmins: false, assumeLoggedIn: true, throwExceptions: false, amendingAmendment: $amendment)) {
             $title .= ' <span class="onlyAdmins">(' . Yii::t('motion', 'amendment_create_admin') . ')</span>';
         }
         $createLi .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';

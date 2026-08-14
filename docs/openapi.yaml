@@ -2017,6 +2017,7 @@ components:
         - screening_motions
         - screening_amendments
         - merging_deadlines
+        - amendments_to_amendments_deadlines
       properties:
         amendments_only:
           type: boolean
@@ -2047,6 +2048,14 @@ components:
         merging_deadlines:
           type: array
           description: Deadline windows for the amendment merging phase (not tied to a submission policy)
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+        amendments_to_amendments_deadlines:
+          type: array
+          description: >
+            Deadline windows for submitting/editing amendments that amend another amendment rather than the
+            base motion (only relevant when allow_amendments_to_amendments is true). If empty, the amendments
+            deadline applies instead.
           items:
             $ref: '#/components/schemas/MotionTypeDeadlineEntry'
 
@@ -2423,6 +2432,7 @@ components:
         - amendments
         - merging
         - comments
+        - amendments_to_amendments
       properties:
         motions:
           type: array
@@ -2437,6 +2447,10 @@ components:
           items:
             $ref: '#/components/schemas/MotionTypeDeadlineEntry'
         comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionTypeDeadlineEntry'
+        amendments_to_amendments:
           type: array
           items:
             $ref: '#/components/schemas/MotionTypeDeadlineEntry'

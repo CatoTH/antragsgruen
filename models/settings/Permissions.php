@@ -70,7 +70,7 @@ class Permissions
         }
 
         if ($amendment->getMyConsultation()->getSettings()->iniatorsMayEdit && $amendment->iAmInitiator()) {
-            return $amendment->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
+            return $amendment->getMyMotionType()->isInAmendmentDeadline(isAmendmentToAmendment: $amendment->amendingAmendmentId !== null);
         }
 
         return false;
@@ -177,10 +177,14 @@ class Permissions
     }
 
     /**
+     * @param Amendment|null $amendingAmendment If set, the amendment being created/checked amends this
+     *        amendment rather than the base motion directly (statute-amendments-to-amendments); the
+     *        deadline check is then based on DEADLINE_AMENDMENTS_TO_AMENDMENTS (see
+     *        ConsultationMotionType::isInAmendmentDeadline()).
      * @throws NotAmendable
      * @throws Internal
      */
-    public function isCurrentlyAmendable(Motion $motion, bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $exceptions = false): bool
+    public function isCurrentlyAmendable(Motion $motion, bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $exceptions = false, ?Amendment $amendingAmendment = null): bool
     {
         $iAmAdmin = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::motion($motion));
 
@@ -225,7 +229,7 @@ class Permissions
                     return false;
                 }
             }
-            if (!$motion->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
+            if (!$motion->motionType->isInAmendmentDeadline(isAmendmentToAmendment: $amendingAmendment !== null)) {
                 if ($exceptions) {
                     throw new NotAmendable(\Yii::t('structure', 'policy_deadline_over'), true);
                 } else {

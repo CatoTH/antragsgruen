@@ -18,6 +18,8 @@ class MotionTypeDeadlinesUpdateRequest
         public array $merging,
         /** @var MotionTypeDeadlineEntry[] */
         public array $comments,
+        /** @var MotionTypeDeadlineEntry[] */
+        public array $amendmentsToAmendments,
     ) {
     }
 
@@ -37,6 +39,7 @@ class MotionTypeDeadlinesUpdateRequest
             amendments: $toEntries($arr[ConsultationMotionType::DEADLINE_AMENDMENTS]),
             merging: $toEntries($arr[ConsultationMotionType::DEADLINE_MERGING]),
             comments: $toEntries($arr[ConsultationMotionType::DEADLINE_COMMENTS]),
+            amendmentsToAmendments: $toEntries($arr[ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS]),
         );
     }
 }

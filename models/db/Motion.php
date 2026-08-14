@@ -592,11 +592,11 @@ class Motion extends IMotion implements IRSSItem
      * @throws NotAmendable
      * @throws Internal
      */
-    public function isCurrentlyAmendable(bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $throwExceptions = false): bool
+    public function isCurrentlyAmendable(bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $throwExceptions = false, ?Amendment $amendingAmendment = null): bool
     {
         $permissions = $this->getPermissionsObject();
 
-        return $permissions->isCurrentlyAmendable($this, $allowAdmins, $assumeLoggedIn, $throwExceptions);
+        return $permissions->isCurrentlyAmendable($this, $allowAdmins, $assumeLoggedIn, $throwExceptions, $amendingAmendment);
     }
 
     public function isSupportingPossibleAtThisStatus(): bool
