@@ -682,6 +682,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_cdeadline_amend'  => 'Times for amendments',
     'motion_cdeadline_com'    => 'Times for comments',
     'motion_cdeadline_merge'  => 'Times for merging changes',
+    'motion_cdeadline_amend2amend' => 'Times for amendments to amendments',
     'motion_cdeadline_add'    => 'Add time range',
     'motion_deadline_debug'   => 'Activate debug-mode for admins<br><small>(to simulate points of time in the future)</small>',
 

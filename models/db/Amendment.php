@@ -1213,7 +1213,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function isDeadlineOver(): bool
     {
-        return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
+        return !$this->getMyMotionType()->isInAmendmentDeadline(isAmendmentToAmendment: $this->amendingAmendmentId !== null);
     }
 
     /*

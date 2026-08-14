@@ -347,8 +347,16 @@ class AmendmentController extends Base
             return new RedirectResponse(UrlHelper::homeUrl());
         }
 
-        if (!$motion->isCurrentlyAmendable()) {
-            if ($motion->isCurrentlyAmendable(true, true)) {
+        $amendingAmendment = null;
+        if ($createFromAmendment > 0 && $motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
+            $adoptAmend = $this->consultation->getAmendment($createFromAmendment);
+            if ($adoptAmend && $adoptAmend->motionId === $motion->id) {
+                $amendingAmendment = $adoptAmend;
+            }
+        }
+
+        if (!$motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendingAmendment)) {
+            if ($motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: true, throwExceptions: false, amendingAmendment: $amendingAmendment)) {
                 $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
                 return new RedirectResponse($loginUrl);
             } else {
@@ -403,12 +411,9 @@ class AmendmentController extends Base
             $adoptAmend = $this->consultation->getAmendment($cloneFrom);
             $form->cloneSupporters($adoptAmend);
             $form->cloneAmendmentText($adoptAmend, true);
-        } elseif ($createFromAmendment > 0 && $motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
-            $adoptAmend = $this->consultation->getAmendment($createFromAmendment);
-            if ($adoptAmend->motionId === $motion->id) {
-                $form->cloneAmendmentText($adoptAmend, false);
-                $form->toAnotherAmendment = $adoptAmend->id;
-            }
+        } elseif ($amendingAmendment !== null) {
+            $form->cloneAmendmentText($amendingAmendment, false);
+            $form->toAnotherAmendment = $amendingAmendment->id;
         }
 
         if (count($form->supporters) == 0) {

@@ -257,7 +257,8 @@ class AmendmentEditForm
     {
         $consultation = $this->motion->getMyConsultation();
 
-        if (!$this->motion->isCurrentlyAmendable()) {
+        $amendingAmendment = $dto->amendingAmendmentId ? $consultation->getAmendment($dto->amendingAmendmentId) : null;
+        if (!$this->motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendingAmendment)) {
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
 

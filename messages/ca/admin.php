@@ -682,6 +682,7 @@ Com que no hi ha <strong>entrega de correus electrònics configurada</strong>, �
     'motion_cdeadline_amend'  => 'Temps per a esmenes',
     'motion_cdeadline_com'    => 'Temps per a comentaris',
     'motion_cdeadline_merge'  => 'Temps per a fusionar canvis',
+    'motion_cdeadline_amend2amend' => 'Temps per a esmenes a esmenes',
     'motion_cdeadline_add'    => 'Afegir rang de temps',
     'motion_deadline_debug'   => 'Activar mode de depuració per a administradors<br><small>(per simular punts de temps en el futur)</small>',
 

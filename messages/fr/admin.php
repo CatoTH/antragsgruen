@@ -755,6 +755,7 @@ Comme <strong>aucun envoi d\'email n\'est configuré</strong>, tu dois saisir to
     'motion_cdeadline_amend' => 'Périodes pour les amendements',
     'motion_cdeadline_com' => 'Périodes pour les commentaires',
     'motion_cdeadline_merge' => 'Périodes pour intégrer les changements',
+    'motion_cdeadline_amend2amend' => 'Périodes pour les amendements aux amendements',
     'motion_cdeadline_add' => 'Ajouter une période',
     'motion_deadline_debug' => 'Activer le mode débogage pour les admins<br><small>(pour simuler des moments dans le futur/le passé)</small>',
     'users_organization' => 'Organisation',

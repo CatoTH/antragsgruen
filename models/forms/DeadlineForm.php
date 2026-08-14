@@ -12,14 +12,16 @@ class DeadlineForm
     public array $deadlinesAmendments;
     public array $deadlinesComments;
     public array $deadlinesMerging;
+    public array $deadlinesAmendmentsToAmendments;
 
     public static function createFromMotionType(ConsultationMotionType $motionType): DeadlineForm
     {
-        $form                      = new DeadlineForm();
-        $form->deadlinesMotions    = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_MOTIONS);
-        $form->deadlinesAmendments = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_AMENDMENTS);
-        $form->deadlinesComments   = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_COMMENTS);
-        $form->deadlinesMerging    = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_MERGING);
+        $form                                   = new DeadlineForm();
+        $form->deadlinesMotions                 = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_MOTIONS);
+        $form->deadlinesAmendments               = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_AMENDMENTS);
+        $form->deadlinesComments                 = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_COMMENTS);
+        $form->deadlinesMerging                  = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_MERGING);
+        $form->deadlinesAmendmentsToAmendments   = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS);
         return $form;
     }
 
@@ -45,10 +47,11 @@ class DeadlineForm
             $amendmentsEnd = null;
         }
 
-        $this->deadlinesComments   = [];
-        $this->deadlinesMerging    = [];
-        $this->deadlinesMotions    = [['start' => null, 'end' => $motionsEnd, 'title' => null]];
-        $this->deadlinesAmendments = [['start' => null, 'end' => $amendmentsEnd, 'title' => null]];
+        $this->deadlinesComments               = [];
+        $this->deadlinesMerging                = [];
+        $this->deadlinesAmendmentsToAmendments = [];
+        $this->deadlinesMotions                = [['start' => null, 'end' => $motionsEnd, 'title' => null]];
+        $this->deadlinesAmendments             = [['start' => null, 'end' => $amendmentsEnd, 'title' => null]];
     }
 
     private function parseComplexRows(array $rows): array
@@ -75,10 +78,11 @@ class DeadlineForm
 
     public function createFromInputComplex(array $input): void
     {
-        $this->deadlinesMotions    = [];
-        $this->deadlinesAmendments = [];
-        $this->deadlinesMerging    = [];
-        $this->deadlinesComments   = [];
+        $this->deadlinesMotions               = [];
+        $this->deadlinesAmendments             = [];
+        $this->deadlinesMerging                = [];
+        $this->deadlinesComments               = [];
+        $this->deadlinesAmendmentsToAmendments = [];
 
         if (isset($input[ConsultationMotionType::DEADLINE_MOTIONS])) {
             $this->deadlinesMotions = $this->parseComplexRows($input[ConsultationMotionType::DEADLINE_MOTIONS]);
@@ -92,11 +96,14 @@ class DeadlineForm
         if (isset($input[ConsultationMotionType::DEADLINE_COMMENTS])) {
             $this->deadlinesComments = $this->parseComplexRows($input[ConsultationMotionType::DEADLINE_COMMENTS]);
         }
+        if (isset($input[ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS])) {
+            $this->deadlinesAmendmentsToAmendments = $this->parseComplexRows($input[ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS]);
+        }
     }
 
     public function isSimpleConfiguration(): bool
     {
-        if (count($this->deadlinesComments) > 0 || count($this->deadlinesMerging) > 0) {
+        if (count($this->deadlinesComments) > 0 || count($this->deadlinesMerging) > 0 || count($this->deadlinesAmendmentsToAmendments) > 0) {
             return false;
         }
         $simpleMotion    = (
@@ -131,10 +138,11 @@ class DeadlineForm
     public function generateDeadlineArray(): array
     {
         return [
-            ConsultationMotionType::DEADLINE_MOTIONS    => $this->deadlinesMotions,
-            ConsultationMotionType::DEADLINE_AMENDMENTS => $this->deadlinesAmendments,
-            ConsultationMotionType::DEADLINE_MERGING    => $this->deadlinesMerging,
-            ConsultationMotionType::DEADLINE_COMMENTS   => $this->deadlinesComments,
+            ConsultationMotionType::DEADLINE_MOTIONS                 => $this->deadlinesMotions,
+            ConsultationMotionType::DEADLINE_AMENDMENTS               => $this->deadlinesAmendments,
+            ConsultationMotionType::DEADLINE_MERGING                  => $this->deadlinesMerging,
+            ConsultationMotionType::DEADLINE_COMMENTS                 => $this->deadlinesComments,
+            ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS => $this->deadlinesAmendmentsToAmendments,
         ];
     }
 }
