@@ -312,6 +312,12 @@ class SsoLogin implements LoginProviderInterface
             throw new \Exception('Could not create/update user: ' . $errors);
         }
 
+        // user.authKey is BINARY(100), so the database returns it NUL-padded. For a user
+        // created in this request the in-memory value is still unpadded, which is what
+        // would end up in the identity cookie; the next request compares that against the
+        // padded value from the database, fails, and logs the user straight out again.
+        $user->refresh();
+
         // Sync user groups if configured
         if (isset($userData['groups']) && is_array($userData['groups'])) {
             $this->syncUserGroups($user, $userData['groups']);
