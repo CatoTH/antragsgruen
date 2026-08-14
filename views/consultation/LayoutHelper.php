@@ -115,7 +115,8 @@ class LayoutHelper
             $return .= '<span class="motionPrefix">' . Html::encode($motion->getFormattedTitlePrefix()) . '</span>';
         }
 
-        $title  = (trim($motion->title) === '' ? '-' : $motion->title);
+        $title = $motion->getTitleForDisplay();
+        $title  = ($title === '' ? '-' : $title);
         $return .= ' <span class="motionTitle">' . Html::encode($title) . '</span>';
 
         $return .= '</a>';
