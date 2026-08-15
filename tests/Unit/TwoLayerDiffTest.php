@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\DataTypes\AffectedLineBlock;
 use app\components\diff\DiffRenderer;
 use app\components\diff\TwoLayerDiff;
 use Tests\Support\Helper\TestBase;
@@ -51,9 +50,63 @@ class TwoLayerDiffTest extends TestBase
         );
 
         $this->assertCount(1, $rendered);
-        $this->assertStringNotContainsString('<ins>', $rendered[0]);
-        $this->assertStringNotContainsString('<del>', $rendered[0]);
-        $this->assertStringContainsString('class="outer"', $rendered[0]);
+        $this->assertSame(
+            '<p>Test <del class="outer">123</del><ins class="outer">1234567</ins>' .
+            ' aber das hier<del class="outer"> nicht</del></p>',
+            $rendered[0]
+        );
+    }
+
+    public function testComplexScenario(): void
+    {
+        $rendered = $this->combineAndRender(
+            ['<p>(3) Amtsträger*innen des Verbands im Regionalrat und in der Bezirksversammlung sowie Inhaber*innen von Leitungsfunktionen auf Verbandsebene leisten neben ihren satzungsgemäßen Mitgliedsbeiträgen (Abschnitt 4 Absatz 2) Funktionsträger*innenbeiträge an den Hauptverband. Die Höhe der Funktionsträger*innenbeiträge wird von der Mitgliederversammlung bestimmt.</p>'],
+            ['<p>(3) Amtsträger*innen des Verbands im Regionalrat und in der Bezirksversammlung sowie Inhaber*innen von Leitungsfunktionen auf Verbandsebene (einschließlich Referatsleitungen sowie hauptamtliche und ehrenamtliche Beauftragte) und Mitglieder des Beirats leisten neben ihren satzungsgemäßen Mitgliedsbeiträgen (Abschnitt 4 Absatz 2) Zusatzbeiträge.<br>
+Die Zusatzbeiträge sind für den Zeitraum der Ausübung des Amtes oder der Funktion abzuführen.<br>
+Die Zusatzbeiträge werden auf alle Bezüge, also Aufwandsentschädigungen, Sitzungsgelder und Vergütungen aus Amt oder Funktion erhoben. Die Höhe der Zusatzbeiträge muss mindestens 15% und darf höchstens 25% der entsprechenden Gesamteinnahmen aus Amt und/oder Funktion betragen. Eine unterschiedliche Belastung aufgrund der jeweiligen Funktionen und Ämter ist möglich.<br>
+Die Einzelheiten, wie die Höhe des Beitrags und das Erhebungsverfahren, werden durch den Finanzausschuss in einer Zusatzbeitragsordnung konkretisiert, die veröffentlicht wird und durch Beschluss der Hauptversammlung geändert werden kann.<br>
+Der an der jeweiligen Anspruchshöhe gemessene individuelle Erfüllungsgrad sowie der Name der Amts- und Funktionsträger*innen wird verbandsöffentlich zugänglich gemacht.</p>'],
+            ['<p>(3) Amtsträger*innen des Verbands im Regionalrat und in der Bezirksversammlung sowie Inhaber*innen von Leitungsfunktionen auf Verbandsebene (einschließlich Referatsleitungen sowie hauptamtliche Beauftragte) und Mitglieder des Beirats leisten neben ihren satzungsgemäßen Mitgliedsbeiträgen (Abschnitt 4 Absatz 2) Zusatzbeiträge. Die Zusatzbeiträge sind für den Zeitraum der Ausübung des Amtes oder der Funktion abzuführen.<br>
+Die Zusatzbeiträge werden auf Aufwandsentschädigungen und Vergütungen aus Amt oder Funktion erhoben. Die Höhe des Zusatzbeitrags beschließt die Hauptversammlung. Eine unterschiedliche Belastung aufgrund der jeweiligen Funktionen und Ämter ist möglich.<br>
+Für Eltern und Härtefälle werden Sonderregelungen zur Reduzierung des festgelegten Zusatzbeitrags erlassen. Die Einzelheiten dazu und das Erhebungsverfahren werden durch den Finanzausschuss in einer Zusatzbeitragsordnung konkretisiert, die veröffentlicht wird und durch Beschluss der Hauptversammlung geändert werden kann.<br>
+Der Finanzausschuss beteiligt Vertreter*innen der Mitglieder aller betroffenen Ebenen an seinen Beratungen zur Zusatzbeitragsordnung. Der an der jeweiligen Anspruchshöhe gemessene individuelle Erfüllungsgrad sowie der Name der Amts- und Funktionsträger*innen wird verbandsöffentlich zugänglich gemacht. Ebenso wird verbandsöffentlich zugänglich gemacht, inwiefern die Zusatzbeiträge für Kampagnen der jeweiligen Ebene verwendet werden.</p>']
+        );
+        // The paragraph is rewritten so heavily that the regular diff would not show a fine-grained diff
+        // against the original anymore. The two-layered diff follows suit: one block for what the statute says,
+        // one block for what the amended amendment proposes - and the changes of this amendment shown *within*
+        // that block. Without that, single words that happen to occur in both texts ("den", "der", "wird")
+        // would be reported as unchanged and tear the two blocks apart.
+        $this->assertCount(1, $rendered);
+        $this->assertSame(
+            '<p>(3) Amtsträger*innen des Verbands im Regionalrat und in der Bezirksversammlung sowie ' .
+            'Inhaber*innen von Leitungsfunktionen auf Verbandsebene ' .
+            '<del class="outer">leisten neben ihren satzungsgemäßen Mitgliedsbeiträgen (Abschnitt 4 Absatz 2) ' .
+            'Funktionsträger*innenbeiträge an den Hauptverband. Die Höhe der Funktionsträger*innenbeiträge wird ' .
+            'von der Mitgliederversammlung bestimmt.</del>' .
+            '<ins class="outer">(einschließlich Referatsleitungen sowie hauptamtliche ' .
+            '<del>und ehrenamtliche </del>Beauftragte) und Mitglieder des Beirats leisten neben ihren ' .
+            'satzungsgemäßen Mitgliedsbeiträgen (Abschnitt 4 Absatz 2) Zusatzbeiträge.<del><br></del><ins> </ins>' .
+            'Die Zusatzbeiträge sind für den Zeitraum der Ausübung des Amtes oder der Funktion abzuführen.<br>' .
+            'Die Zusatzbeiträge werden auf <del>alle Bezüge, also Aufwandsentschädigungen, Sitzungsgelder</del>' .
+            '<ins>Aufwandsentschädigungen</ins> und Vergütungen aus Amt oder Funktion erhoben. Die Höhe ' .
+            '<del>der Zusatzbeiträge muss mindestens 15% und darf höchstens 25% der entsprechenden ' .
+            'Gesamteinnahmen aus Amt und/oder Funktion betragen</del>' .
+            '<ins>des Zusatzbeitrags beschließt die Hauptversammlung</ins>. Eine unterschiedliche ' .
+            'Belastung aufgrund der jeweiligen Funktionen und Ämter ist möglich.<br>' .
+            '<del>Die Einzelheiten, wie die Höhe</del>' .
+            '<ins>Für Eltern und Härtefälle werden Sonderregelungen zur Reduzierung</ins> des ' .
+            '<del>Beitrags</del><ins>festgelegten Zusatzbeitrags erlassen. Die Einzelheiten dazu</ins>' .
+            ' und das Erhebungsverfahren<del>,</del> werden durch den Finanzausschuss in einer ' .
+            'Zusatzbeitragsordnung konkretisiert, die veröffentlicht wird und durch Beschluss der ' .
+            'Hauptversammlung geändert werden kann.<br>' .
+            '<ins>Der Finanzausschuss beteiligt Vertreter*innen der Mitglieder aller betroffenen Ebenen an ' .
+            'seinen Beratungen zur Zusatzbeitragsordnung. </ins>' .
+            'Der an der jeweiligen Anspruchshöhe gemessene individuelle Erfüllungsgrad sowie der Name der Amts- ' .
+            'und Funktionsträger*innen wird verbandsöffentlich zugänglich gemacht' .
+            '<ins>. Ebenso wird verbandsöffentlich zugänglich gemacht, inwiefern die Zusatzbeiträge für ' .
+            'Kampagnen der jeweiligen Ebene verwendet werden</ins>.</ins></p>',
+            $rendered[0]
+        );
     }
 
     public function testChangedInsertionAndUndeletion(): void
@@ -102,8 +155,10 @@ class TwoLayerDiffTest extends TestBase
             ['<p>Lorem ipsum dolor sit amet</p>']
         );
 
-        $this->assertStringContainsString('<ins class="outer"><del>', $rendered[0]);
-        $this->assertStringContainsString('consetetur', $rendered[0]);
+        $this->assertSame(
+            '<p>Lorem ipsum dolor sit amet<ins class="outer"><del> consetetur</del></ins></p>',
+            $rendered[0]
+        );
     }
 
     public function testChildAddsOwnInsertion(): void
@@ -115,9 +170,12 @@ class TwoLayerDiffTest extends TestBase
             ['<p>Lorem sed ipsum dolor sit amet consetetur</p>']
         );
 
-        $this->assertStringContainsString('<ins>sed </ins>', $rendered[0]);
-        // The insertion of the parent is untouched by the child and stays purely on the outer layer
-        $this->assertStringContainsString('<ins class="outer"> consetetur</ins>', $rendered[0]);
+        // "sed " is added by the child alone; the insertion of the parent is untouched by the child
+        // and therefore stays purely on the outer layer
+        $this->assertSame(
+            '<p>Lorem <ins>sed </ins>ipsum dolor sit amet<ins class="outer"> consetetur</ins></p>',
+            $rendered[0]
+        );
     }
 
     public function testChildDeletesTextParentKept(): void
@@ -129,8 +187,10 @@ class TwoLayerDiffTest extends TestBase
             ['<p>Lorem ipsum sit amet consetetur</p>']
         );
 
-        $this->assertStringContainsString('<del>dolor </del>', $rendered[0]);
-        $this->assertStringContainsString('<ins class="outer"> consetetur</ins>', $rendered[0]);
+        $this->assertSame(
+            '<p>Lorem ipsum <del>dolor </del>sit amet<ins class="outer"> consetetur</ins></p>',
+            $rendered[0]
+        );
     }
 
     public function testLineNumbersArePreserved(): void
@@ -142,7 +202,12 @@ class TwoLayerDiffTest extends TestBase
             ['<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy</p>']
         );
 
-        $this->assertSame(2, substr_count($rendered[0], '###LINENUMBER###'));
+        // Both line number markers of the original survive, and in their original positions
+        $this->assertSame(
+            '<p>###LINENUMBER###Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr' .
+            '<ins class="outer">, sed diam<ins> nonumy</ins></ins></p>',
+            $rendered[0]
+        );
     }
 
     public function testWholeParagraphInsertedByParentAndChangedByChild(): void
@@ -154,9 +219,12 @@ class TwoLayerDiffTest extends TestBase
         );
 
         // The added paragraph belongs to the outer layer, the word the child replaced within it to the inner one
-        $this->assertStringContainsString('class="insertedOuter"', $rendered[0]);
-        $this->assertStringContainsString('<del>elitr</del>', $rendered[0]);
-        $this->assertStringContainsString('<ins>tempor</ins>', $rendered[0]);
+        $this->assertCount(1, $rendered);
+        $this->assertSame(
+            '<p>Lorem ipsum dolor sit amet</p>' .
+            '<p class="insertedOuter">Consetetur sadipscing <del>elitr</del><ins>tempor</ins></p>',
+            $rendered[0]
+        );
     }
 
     /**
@@ -184,10 +252,15 @@ class TwoLayerDiffTest extends TestBase
         $groups = $formatter->getTwoLayerDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, 0);
         $this->assertNotNull($groups);
 
-        $text = implode("\n", array_map(fn (AffectedLineBlock $block) => $block->text, $groups));
-        $this->assertStringContainsString('incididunt', $text);
-        // The change of the amended amendment is in a paragraph this amendment does not touch at all
-        $this->assertStringNotContainsString('consetetur', $text);
+        // Only the third paragraph shows up: the first one is changed by the amended amendment alone,
+        // which is context rather than a change of this amendment
+        $this->assertCount(1, $groups);
+        $this->assertSame(3, $groups[0]->lineFrom);
+        $this->assertSame(3, $groups[0]->lineTo);
+        $this->assertSame(
+            '<p>###LINENUMBER###Sed diam nonumy eirmod <del>tempor</del><ins>incididunt</ins></p>',
+            $groups[0]->text
+        );
     }
 
     public function testWholeParagraphDeletedByParentAndRestoredByChild(): void
@@ -199,9 +272,8 @@ class TwoLayerDiffTest extends TestBase
         );
 
         // Deleted by the parent, un-deleted by the child
-        $this->assertSame(
-            '<p class="deletedOuter inserted">Consetetur sadipscing elitr</p>',
-            $rendered[1]
-        );
+        $this->assertCount(2, $rendered);
+        $this->assertSame('<p>Lorem ipsum dolor sit amet</p>', $rendered[0]);
+        $this->assertSame('<p class="deletedOuter inserted">Consetetur sadipscing elitr</p>', $rendered[1]);
     }
 }

@@ -61,17 +61,33 @@ ins.outer, del.outer {
 }
 
 ins.outer, .insertedOuter {
+  color: #0809;
   background-color: rgba(0, 136, 0, 0.1);
-  box-shadow: inset 0 -2px 0 rgba(0, 136, 0, 0.4);
+  box-shadow: inset 0 -2px 0 rgba(0, 136, 0, 0.3);
 }
 
 del.outer, .deletedOuter {
+  color: #8009;
   background-color: rgba(136, 0, 0, 0.1);
-  box-shadow: inset 0 -2px 0 rgba(136, 0, 0, 0.4);
+  box-shadow: inset 0 -2px 0 rgba(136, 0, 0, 0.3);
 }
 
-.amendmentComparisonModeSelector {
-  margin-bottom: 15px;
+.amendmentComparisonLegend {
+  ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px 25px;
+    margin: 8px 0;
+    padding: 0;
+  }
+  li {
+    white-space: nowrap;
+  }
+  .legendNesting {
+    margin-bottom: 0;
+    font-size: 0.9em;
+  }
 }
 
 del.space, ins.space, del.formatting, ins.formatting {

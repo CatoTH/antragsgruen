@@ -209,6 +209,27 @@ abstract class ISectionType
         return $this->getSimple(false);
     }
 
+    /**
+     * The two halves of the "compare with" toggle offered for an amendment amending another amendment:
+     * the regular diff against the original motion text, and the consolidated two-layered diff.
+     */
+    public const AMENDMENT_COMPARISON_TO_ORIGINAL = 'original';
+    public const AMENDMENT_COMPARISON_TO_PARENT   = 'parent';
+
+    protected ?string $amendmentComparisonMode = null;
+    protected ?string $amendmentComparisonParentName = null;
+
+    /**
+     * Marks this section as one half of that toggle, which adds the corresponding entries to the section's
+     * view mode dropdown. $parentName is the title prefix of the amendment being amended, as shown in the menu.
+     * Passing null for the mode renders the section without the toggle (the regular case).
+     */
+    public function setAmendmentComparison(?string $mode, ?string $parentName = null): void
+    {
+        $this->amendmentComparisonMode = $mode;
+        $this->amendmentComparisonParentName = $parentName;
+    }
+
     abstract public function getAmendmentFormatted(string $htmlIdPrefix = ''): string;
 
     /**

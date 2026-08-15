@@ -55,10 +55,6 @@ class TwoLayerDiff
     {
         $this->diff = new Diff();
         $this->diff->setIgnoreStr('###LINENUMBER###');
-
-        // Collapsing a heavily changed paragraph into one big deletion + insertion is bad enough with one layer;
-        // with two of them nested into each other, the result would not be readable at all anymore.
-        $this->diff->setSuppressChangeRatioLimits(true);
     }
 
     /**

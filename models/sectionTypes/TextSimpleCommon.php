@@ -194,6 +194,76 @@ abstract class TextSimpleCommon extends Text {
     }
 
     /**
+     * Explains the four markings of the consolidated view. The samples are marked up with the very styles they
+     * describe, so the legend stays correct whatever the current layout renders them like.
+     */
+    private function getComparisonLegend(): string
+    {
+        $parentName = Html::encode((string) $this->amendmentComparisonParentName);
+        $sample     = Html::encode(\Yii::t('amend', 'statute_legend_sample'));
+
+        $item = function (string $markup, string $messageKey) use ($parentName, $sample): string {
+            $label = str_replace('%PREFIX%', $parentName, \Yii::t('amend', $messageKey));
+            return '<li>' . str_replace('%SAMPLE%', $sample, $markup) . ' – ' . $label . '</li>';
+        };
+
+        return '<div class="alert alert-info amendmentComparisonLegend">' .
+               '<p>' . str_replace('%PREFIX%', $parentName, \Yii::t('amend', 'statute_legend_intro')) . '</p>' .
+               '<ul>' .
+               $item('<ins class="outer">%SAMPLE%</ins>', 'statute_legend_parent_ins') .
+               $item('<del class="outer">%SAMPLE%</del>', 'statute_legend_parent_del') .
+               $item('<ins>%SAMPLE%</ins>', 'statute_legend_own_ins') .
+               $item('<del>%SAMPLE%</del>', 'statute_legend_own_del') .
+               '</ul>' .
+               '<p class="legendNesting">' . str_replace('%PREFIX%', $parentName, \Yii::t('amend', 'statute_legend_nested')) . '</p>' .
+               '</div>';
+    }
+
+    private function getComparisonToParentLabel(): string
+    {
+        return str_replace(
+            '%PREFIX%',
+            Html::encode((string) $this->amendmentComparisonParentName),
+            \Yii::t('amend', 'statute_textmode_vs_parent')
+        );
+    }
+
+    /**
+     * The cog dropdown in the section header. Depending on how this section is shown, it offers:
+     * - a regular amendment: "only changed paragraphs" / "full text"
+     * - an amendment amending another one, shown as a diff against the original text: the same two,
+     *   plus a third entry switching over to the consolidated two-layered diff
+     * - the same amendment shown as the consolidated diff: only the two entries switching between the
+     *   two comparisons, as that view has no "only changed paragraphs" mode
+     */
+    private function getViewModeDropdown(bool $viewFullMode): string
+    {
+        $items = '';
+        if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_PARENT) {
+            $items .= '<li><a href="#" class="showComparisonToOriginal">' .
+                      \Yii::t('amend', 'statute_textmode_vs_original') . '</a></li>';
+            $items .= '<li class="selected"><a href="#" class="showComparisonToParent">' .
+                      $this->getComparisonToParentLabel() . '</a></li>';
+        } else {
+            $items .= '<li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' .
+                      \Yii::t('amend', 'textmode_only_changed') . '</a></li>';
+            $items .= '<li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' .
+                      \Yii::t('amend', 'textmode_full_text') . '</a></li>';
+            if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_ORIGINAL) {
+                $items .= '<li><a href="#" class="showComparisonToParent">' .
+                          $this->getComparisonToParentLabel() . '</a></li>';
+            }
+        }
+
+        return '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
+          <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
+            <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">' . $items . '</ul></div>';
+    }
+
+    /**
      * @param array{groups: AffectedLineBlock[], sections: string[]} $diffGroupsAndSections
      */
     private function formatAmendmentDiff(array $diffGroupsAndSections, string $htmlIdPrefix): string
@@ -203,20 +273,21 @@ abstract class TextSimpleCommon extends Text {
         $amendment = $section->getAmendment();
         $firstLine = $section->getFirstLineNumber();
 
-        $viewFullMode = ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true || !$this->defaultOnlyDiff);
+        // The consolidated diff always shows the full text: "only changed paragraphs" would hide the proposal
+        // of the amended amendment, which is the very context this view exists to provide.
+        $isComparisonToParent = ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_PARENT);
+        $viewFullMode = $isComparisonToParent ||
+                        $amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true ||
+                        !$this->defaultOnlyDiff;
+
         $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<div class="greenHeader"><h2>' . Html::encode($title) . '</h2>';
-        $str .= '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
-          <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
-            <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-right">
-          <li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' . \Yii::t('amend', 'textmode_only_changed') . '</a></li>
-          <li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' . \Yii::t('amend', 'textmode_full_text') . '</a></li>
-          </ul></div>';
+        $str .= $this->getViewModeDropdown($viewFullMode);
         $str .= '</div>';
+        if ($isComparisonToParent) {
+            $str .= $this->getComparisonLegend();
+        }
         $str       .= '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
         if ($section->getSettings()->fixedWidth) {
@@ -232,9 +303,11 @@ abstract class TextSimpleCommon extends Text {
         } else {
             $linkMotion = null;
         }
-        $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
-        $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, $linkMotion);
-        $str .= '</div>';
+        if (!$isComparisonToParent) {
+            $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
+            $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, $linkMotion);
+            $str .= '</div>';
+        }
 
         $str .= '<div class="fullMotionText text motionTextFormattings textOrig ';
         if ($section->getSettings()->fixedWidth) {

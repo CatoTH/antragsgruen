@@ -53,19 +53,14 @@ export class IMotionShow {
     /**
      * Amendments amending another amendment can be shown either as a diff against the original text
      * (side by side with the amendment they amend), or as one consolidated, two-layered diff.
+     * Both variants are rendered; the section's view mode dropdown switches between them.
      */
     initAmendmentComparisonMode() {
-        document.querySelectorAll('.amendmentComparisonModeSelector button').forEach((el) => {
-            el.addEventListener('click', (ev) => {
-                ev.preventDefault();
-                const mode = el.getAttribute('data-comparison-mode');
-
-                el.parentElement.querySelectorAll('button').forEach((button) => {
-                    button.classList.toggle('active', button === el);
-                });
-                document.querySelectorAll('.amendmentComparison').forEach((comparison) => {
-                    comparison.classList.toggle('hidden', comparison.getAttribute('data-comparison-mode') !== mode);
-                });
+        $('.amendmentComparisonSection').on('click', 'a.showComparisonToOriginal, a.showComparisonToParent', (ev) => {
+            ev.preventDefault();
+            const mode = ($(ev.currentTarget).hasClass('showComparisonToParent') ? 'parent' : 'original');
+            $(ev.currentTarget).closest('.amendmentComparisonSection').children('.amendmentComparison').each((_, comparison) => {
+                comparison.classList.toggle('hidden', comparison.getAttribute('data-comparison-mode') !== mode);
             });
         });
     }
