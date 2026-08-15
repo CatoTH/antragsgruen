@@ -8,6 +8,7 @@ use app\components\yii\MessageSource;
 use app\models\db\{Consultation, Site, User};
 use app\models\forms\SiteCreateForm;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Site as SiteSettings;
 use yii\console\{Controller, ExitCode};
 
 /**
@@ -36,6 +37,13 @@ class SiteController extends Controller
      */
     public string $functionality = '1';
 
+    /**
+     * Comma-separated list of Site::LOGIN_* codes.
+     * 0=standard, 1=gruenes_netz, 3=external (SSO), 4=openslides.
+     * Defaults to the site's built-in login methods when not given.
+     */
+    public ?string $loginMethods = null;
+
     public bool $openNow = true;
     public bool $superuser = true;
     public bool $forcePasswordChange = true;
@@ -47,7 +55,7 @@ class SiteController extends Controller
             'create' => [
                 'subdomain', 'title', 'contact', 'organization', 'language',
                 'password', 'givenName', 'familyName', 'functionality',
-                'openNow', 'superuser', 'forcePasswordChange', 'force',
+                'loginMethods', 'openNow', 'superuser', 'forcePasswordChange', 'force',
             ],
             default => [],
         };
@@ -197,6 +205,15 @@ class SiteController extends Controller
             return ExitCode::SOFTWARE;
         }
         $site = $form->site;
+
+        if ($this->loginMethods !== null) {
+            $loginMethods = self::parseLoginMethods($this->loginMethods);
+            if ($loginMethods === null) {
+                $this->stderr('Invalid --loginMethods: ' . $this->loginMethods . "\n");
+                return ExitCode::USAGE;
+            }
+            self::applyLoginMethods($site, $loginMethods);
+        }
 
         $superuserPersisted = false;
         if ($this->superuser && $configFile !== null) {
@@ -421,5 +438,70 @@ class SiteController extends Controller
             $this->stdout("The user will be required to change it on first login.\n");
         }
         $this->stdout("---------------------------------------------\n");
+    }
+
+    /**
+     * Sets the login methods of an existing site.
+     *
+     * Login methods are stored inside the site's serialized settings, so without this
+     * there is no scriptable way to enable SSO logins on an already-created site.
+     *
+     * @param string $subdomain Subdomain of the site to change
+     * @param string $loginMethods Comma-separated list of Site::LOGIN_* codes,
+     *                             e.g. "0,3" for standard plus external (SSO)
+     */
+    public function actionSetLoginMethods(string $subdomain, string $loginMethods): int
+    {
+        $site = Site::findOne(['subdomain' => $subdomain]);
+        if (!$site) {
+            $this->stderr('No site found with subdomain: ' . $subdomain . "\n");
+            return ExitCode::DATAERR;
+        }
+
+        $parsed = self::parseLoginMethods($loginMethods);
+        if ($parsed === null) {
+            $this->stderr('Invalid login methods: ' . $loginMethods . "\n");
+            return ExitCode::USAGE;
+        }
+
+        self::applyLoginMethods($site, $parsed);
+        $this->stdout('Login methods of "' . $subdomain . '" set to: ' . implode(', ', $parsed) . "\n");
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * @return int[]|null Parsed login method codes, or null if the input is invalid
+     */
+    private static function parseLoginMethods(string $loginMethods): ?array
+    {
+        $valid = [
+            SiteSettings::LOGIN_STD,
+            SiteSettings::LOGIN_GRUENES_NETZ,
+            SiteSettings::LOGIN_EXTERNAL,
+            SiteSettings::LOGIN_OPENSLIDES,
+        ];
+
+        $parsed = [];
+        foreach (explode(',', $loginMethods) as $method) {
+            $method = trim($method);
+            if ($method === '' || !ctype_digit($method) || !in_array((int)$method, $valid, true)) {
+                return null;
+            }
+            $parsed[] = (int)$method;
+        }
+
+        return array_values(array_unique($parsed));
+    }
+
+    /**
+     * @param int[] $loginMethods
+     */
+    private static function applyLoginMethods(Site $site, array $loginMethods): void
+    {
+        $settings = $site->getSettings();
+        $settings->loginMethods = $loginMethods;
+        $site->setSettings($settings);
+        $site->save();
     }
 }
