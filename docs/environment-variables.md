@@ -85,6 +85,65 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `JS_ERROR_TRACKING` | - | Target for JS Error Tracking (e.g. file:///tmp/js_errors.log or otel://) |
 | `JWT_PUBLIC_KEY` | - | Either link to public key (file:///secret/public.pem), or content of public key |
 | `JWT_PRIVATE_KEY` | - | Either link to private key (file:///secret/private.pem), or content of private key |
+| `PLUGINS` | - | Comma-separated list of plugins to enable (e.g. `generic_sso`) |
+| `ADMIN_USER_IDS` | - | Comma-separated list of user IDs with superuser permissions |
+
+## Single Sign-On (generic_sso plugin)
+
+Requires `PLUGINS` to include `generic_sso`. These variables are the equivalent of
+`config/generic_sso.json`; where both exist, the file takes precedence.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SSO_ENABLED` | false | Enables SSO. If unset, the plugin is configured from `config/generic_sso.json` only |
+| `SSO_PROTOCOL` | oidc | `oidc` or `saml` |
+| `SSO_PROVIDER_ID` | generic-sso | Identifier of the login provider |
+| `SSO_SINGLE_LOGOUT` | false | Also log out at the identity provider |
+| `SSO_SYNC_GROUPS` | false | Synchronize user groups from the identity provider |
+| `SSO_LINK_BY_EMAIL` | false | Link an existing local account on first SSO login, unless the provider reports `email_verified: false`. Only enable this if the provider verifies e-mail addresses |
+
+### OIDC
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SSO_OIDC_ISSUER` | - | Issuer URL, used for discovery and to validate the `iss` claim |
+| `SSO_OIDC_CLIENT_ID` | - | OAuth2 client ID |
+| `SSO_OIDC_CLIENT_SECRET` | - | OAuth2 client secret |
+| `SSO_OIDC_DISCOVERY` | true | Fetch endpoints from `$SSO_OIDC_ISSUER/.well-known/openid-configuration`. Explicitly set endpoints are never overwritten. The result is cached for 24 hours |
+| `SSO_OIDC_REDIRECT_URI` | auto | Defaults to the `/sso-callback` route |
+| `SSO_OIDC_URL_AUTHORIZE` | discovered | Authorization endpoint |
+| `SSO_OIDC_URL_ACCESS_TOKEN` | discovered | Token endpoint |
+| `SSO_OIDC_URL_USER_INFO` | discovered | Userinfo endpoint |
+| `SSO_OIDC_URL_LOGOUT` | discovered | End session endpoint, used by `SSO_SINGLE_LOGOUT` |
+| `SSO_OIDC_SCOPES` | openid,profile,email | Comma-separated scopes |
+| `SSO_OIDC_PKCE` | false | Use PKCE (S256) |
+| `SSO_OIDC_AUTHORIZATION_PARAMS` | - | JSON object of extra authorization request parameters, e.g. `{"prompt":"consent"}` |
+
+### SAML
+
+Only OIDC is configurable through the environment. With `SSO_PROTOCOL=saml` the
+protocol-specific settings are still read from `config/generic_sso.json`, since
+SimpleSAMLphp has to be installed and configured outside the application anyway.
+
+### Attribute mapping
+
+Defaults depend on the protocol; only set what differs from your provider.
+
+| Variable | OIDC default | SAML default |
+|----------|--------------|--------------|
+| `SSO_ATTR_EMAIL` | email | mail |
+| `SSO_ATTR_USERNAME` | preferred_username | uid |
+| `SSO_ATTR_GIVEN_NAME` | given_name | givenName |
+| `SSO_ATTR_FAMILY_NAME` | family_name | sn |
+| `SSO_ATTR_ORGANIZATION` | organization | o |
+| `SSO_ATTR_GROUPS` | groups | memberOf |
+| `SSO_GROUP_MAPPING` | - | JSON object mapping provider group names to Antragsgrün group names, e.g. `{"admins":"Admins"}` |
+
+Enabling SSO on a site additionally requires the site to allow external logins:
+
+```bash
+./yii site/set-login-methods std 0,3
+```
 
 ## Optional Tool Paths
 
