@@ -40,7 +40,8 @@ return [
     'statute_legend_parent_del' => 'obrisano od strane %PREFIX%', // Original: deleted by %PREFIX%
     'statute_legend_own_ins' => 'umetnuto ovim amandmanom', // Original: inserted by this amendment
     'statute_legend_own_del' => 'obrisano ovim amandmanom', // Original: deleted by this amendment
-    'statute_legend_nested' => 'Ugniježđene oznake pokazuju gdje ovaj amandman mijenja ono što predlaže %PREFIX% – na primjer tekst koji %PREFIX% želi obrisati, a koji je ovdje vraćen.', // Original: Nested markings show where this amendment changes what %PREFIX% proposes – for example text that %PREFIX% wants to delete and that is being restored here.
+    'statute_legend_parent_del_own_ins' => 'obrisano od strane %PREFIX%, vraćeno ovim amandmanom', // Original: deleted by %PREFIX%, restored by this amendment
+    'statute_legend_parent_ins_own_del' => 'umetnuto od strane %PREFIX%, ponovo obrisano ovim amandmanom', // Original: inserted by %PREFIX%, deleted again by this amendment
     'original_title' => 'Izvorni amandman', // Original: Original amendmenty
     'comments_title' => 'Komentari', // Original: Comments
     'comment_screen_queue_1' => '1 komentar čeka na recenziju', // Original: 1 comment waiting for reviewing

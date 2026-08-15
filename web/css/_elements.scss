@@ -73,20 +73,21 @@ del.outer, .deletedOuter {
 }
 
 .amendmentComparisonLegend {
+  p {
+    margin-bottom: 0;
+  }
   ul {
     list-style: none;
     display: flex;
     flex-wrap: wrap;
     gap: 3px 25px;
-    margin: 8px 0;
+    margin: 8px 0 0 0;
     padding: 0;
   }
   li {
-    white-space: nowrap;
-  }
-  .legendNesting {
-    margin-bottom: 0;
-    font-size: 0.9em;
+    // No nowrap: the entries explaining a nested marking are long enough to overflow on small screens.
+    // Flex items only break where they do not fit anyway.
+    max-width: 100%;
   }
 }
 

@@ -194,8 +194,12 @@ abstract class TextSimpleCommon extends Text {
     }
 
     /**
-     * Explains the four markings of the consolidated view. The samples are marked up with the very styles they
+     * Explains the markings of the consolidated view. The samples are marked up with the very styles they
      * describe, so the legend stays correct whatever the current layout renders them like.
+     *
+     * The last two entries are the ones readers cannot guess: a marking of the inner layer nested into one of the
+     * outer layer, i.e. this amendment changing what the amended amendment proposes rather than changing the
+     * original text - undoing one of its deletions, or dropping one of its insertions.
      */
     private function getComparisonLegend(): string
     {
@@ -214,8 +218,9 @@ abstract class TextSimpleCommon extends Text {
                $item('<del class="outer">%SAMPLE%</del>', 'statute_legend_parent_del') .
                $item('<ins>%SAMPLE%</ins>', 'statute_legend_own_ins') .
                $item('<del>%SAMPLE%</del>', 'statute_legend_own_del') .
+               $item('<del class="outer"><ins>%SAMPLE%</ins></del>', 'statute_legend_parent_del_own_ins') .
+               $item('<ins class="outer"><del>%SAMPLE%</del></ins>', 'statute_legend_parent_ins_own_del') .
                '</ul>' .
-               '<p class="legendNesting">' . str_replace('%PREFIX%', $parentName, \Yii::t('amend', 'statute_legend_nested')) . '</p>' .
                '</div>';
     }
 
