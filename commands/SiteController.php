@@ -52,7 +52,7 @@ class SiteController extends Controller
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create' => [
+            'create', 'init' => [
                 'subdomain', 'title', 'contact', 'organization', 'language',
                 'password', 'givenName', 'familyName', 'functionality',
                 'loginMethods', 'openNow', 'superuser', 'forcePasswordChange', 'force',
@@ -71,6 +71,26 @@ class SiteController extends Controller
             'l' => 'language',
             'p' => 'password',
         ];
+    }
+
+    /**
+     * Creates the site unless it already exists.
+     *
+     * Takes the same options as site/create, but is safe to run repeatedly: an existing
+     * site is left untouched and reported as success instead of an error. This is the
+     * site-level counterpart of database/init, so that a container can bootstrap itself
+     * on every start without the caller having to interpret exit codes.
+     */
+    public function actionInit(string $email): int
+    {
+        $subdomain = $this->defaultSubdomain(AntragsgruenApp::getInstance());
+
+        if ($subdomain !== null && Site::findOne(['subdomain' => $subdomain]) !== null) {
+            $this->stdout('Site "' . $subdomain . '" already exists, nothing to do.' . "\n");
+            return ExitCode::OK;
+        }
+
+        return $this->actionCreate($email);
     }
 
     /**
@@ -249,20 +269,32 @@ class SiteController extends Controller
      * Returns the validated single-label subdomain, or null on error
      * (in which case a message has already been written to stderr).
      */
+    /**
+     * The subdomain this command would act on, before any validation.
+     *
+     * In single-site mode the wizard defaults to siteSubdomain (or "std"), so mirror
+     * that here and operators rarely have to think about this label. Returns null in
+     * multisite mode, where there is no sensible default.
+     */
+    private function defaultSubdomain(AntragsgruenApp $params): ?string
+    {
+        if ($this->subdomain !== null && $this->subdomain !== '') {
+            return $this->subdomain;
+        }
+
+        return $params->multisiteMode ? null : ($params->siteSubdomain ?: 'std');
+    }
+
     private function resolveSubdomain(AntragsgruenApp $params): ?string
     {
-        $subdomain = $this->subdomain;
+        $subdomain = $this->defaultSubdomain($params);
 
-        if ($subdomain === null || $subdomain === '') {
-            // In single-site mode, the wizard defaults to siteSubdomain (or "std").
-            // Mirror that here so operators rarely have to think about this label.
-            if (!$params->multisiteMode) {
-                $subdomain = $params->siteSubdomain ?: 'std';
-                $this->stdout('Using subdomain "' . $subdomain . '" (from siteSubdomain in config.json)' . "\n");
-            } else {
-                $this->stderr("Missing required --subdomain (multisiteMode is on, no default available)\n");
-                return null;
-            }
+        if ($subdomain === null) {
+            $this->stderr("Missing required --subdomain (multisiteMode is on, no default available)\n");
+            return null;
+        }
+        if ($subdomain !== $this->subdomain) {
+            $this->stdout('Using subdomain "' . $subdomain . '" (from the siteSubdomain setting)' . "\n");
         }
 
         if (!preg_match('/^[A-Za-z0-9]([A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/siu', $subdomain)) {
