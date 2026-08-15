@@ -416,7 +416,7 @@ class EnvironmentConfigLoader
      * @param mixed $default Default value if not set
      * @return string|null
      */
-    private static function getEnv(string $key, $default = null): ?string
+    public static function getEnv(string $key, $default = null): ?string
     {
         // Try $_ENV first (more reliable in some configurations)
         if (isset($_ENV[$key])) {
@@ -438,7 +438,7 @@ class EnvironmentConfigLoader
      * @param string $key Environment variable name
      * @return bool
      */
-    private static function hasEnv(string $key): bool
+    public static function hasEnv(string $key): bool
     {
         return isset($_ENV[$key]) || getenv($key) !== false;
     }
@@ -452,7 +452,7 @@ class EnvironmentConfigLoader
      * @param bool $default Default value
      * @return bool
      */
-    private static function getBoolEnv(string $key, bool $default): bool
+    public static function getBoolEnv(string $key, bool $default): bool
     {
         $value = self::getEnv($key);
 
