@@ -16,7 +16,7 @@
 - More uploaded PDFs can be handled without having to install additional software or libraries.
 - Proposed procedure versions can now be retrospectively deleted.
 - It is now possible to set deadlines for amendments that amend other amendments.
-- Amendments to amendments have now a new view, ""
+- Amendments to amendments have now a new view that shows the two layers of changes nested into each other (making it clearer which changes are new, and which ones from the original amendment).
 
 ### Version 4.17.2 [not released yet]
 
