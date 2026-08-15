@@ -85,6 +85,92 @@ abstract class TextSimpleCommon extends Text {
         return $str;
     }
 
+    /**
+     * The diff of this amendment against the original motion text, with the changes of the amendment it amends
+     * shown as an additional, outer layer. See TwoLayerDiff.
+     *
+     * @return array{groups: AffectedLineBlock[], sections: string[]}|null
+     */
+    private function getMaybeCachedTwoLayerDiffGroups(AmendmentSection $section, AmendmentSection $parentSection, int $lineLength, int $firstLine): ?array
+    {
+        $originalText = $section->getOriginalMotionSection()?->getData() ?? '';
+        $cacheDeps = [$originalText, $parentSection->data, $section->data, $firstLine, $lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA];
+        $cache = HashedStaticCache::getInstance('getMaybeCachedTwoLayerDiffGroups', $cacheDeps);
+
+        // Only use cache for long motions
+        if (strlen($originalText) < 10000) {
+            $cache->setSkipCache(true);
+        }
+
+        return $cache->getCached(function () use ($section, $parentSection, $lineLength, $firstLine, $originalText) {
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($originalText);
+            $formatter->setTextParent($parentSection->data);
+            $formatter->setTextNew($section->data);
+            $formatter->setFirstLineNo($firstLine);
+
+            $diffGroups = $formatter->getTwoLayerDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
+            $diffSections = $formatter->getTwoLayerDiffSectionsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
+            if ($diffGroups === null || $diffSections === null) {
+                return null;
+            }
+
+            return [
+                'groups' => $diffGroups,
+                'sections' => $diffSections,
+            ];
+        });
+    }
+
+    /**
+     * Renders this amendment as a diff against the original motion text, with the changes of the amendment
+     * it amends ($parentSection) shown as an additional, outer layer.
+     *
+     * Returns null if no consistent two-layered diff could be built. The caller is then expected to fall back
+     * to showing this amendment and the one it amends separately.
+     */
+    public function getAmendmentFormattedAgainstParentAmendment(AmendmentSection $parentSection, string $htmlIdPrefix = ''): ?string
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $amendment = $section->getAmendment();
+
+        if ($amendment->globalAlternative) {
+            return null;
+        }
+
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+        $firstLine  = $section->getFirstLineNumber();
+
+        $diffGroupsAndSections = $this->getMaybeCachedTwoLayerDiffGroups($section, $parentSection, $lineLength, $firstLine);
+        if ($diffGroupsAndSections === null) {
+            return null;
+        }
+
+        // Neither this amendment nor the one it amends changes anything in this section
+        // => nothing to show, just like getAmendmentFormatted() returns an empty string in that case
+        if (count($diffGroupsAndSections['groups']) === 0 && !self::containsOuterLayerChange($diffGroupsAndSections['sections'])) {
+            return null;
+        }
+
+        return $this->formatAmendmentDiff($diffGroupsAndSections, $htmlIdPrefix);
+    }
+
+    /**
+     * @param string[] $diffSections
+     */
+    private static function containsOuterLayerChange(array $diffSections): bool
+    {
+        foreach ($diffSections as $diffSection) {
+            foreach ([DiffRenderer::CSS_CLASS_OUTER, DiffRenderer::CSS_CLASS_INSERTED_OUTER, DiffRenderer::CSS_CLASS_DELETED_OUTER] as $cssClass) {
+                if (preg_match('/<[^>]+[ "\']' . $cssClass . '[ "\'][^>]*>/siu', $diffSection)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public function getAmendmentFormatted(string $htmlIdPrefix = ''): string
     {
         /** @var AmendmentSection $section */
@@ -103,6 +189,19 @@ abstract class TextSimpleCommon extends Text {
         if (count($diffGroupsAndSections['groups']) === 0) {
             return '';
         }
+
+        return $this->formatAmendmentDiff($diffGroupsAndSections, $htmlIdPrefix);
+    }
+
+    /**
+     * @param array{groups: AffectedLineBlock[], sections: string[]} $diffGroupsAndSections
+     */
+    private function formatAmendmentDiff(array $diffGroupsAndSections, string $htmlIdPrefix): string
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $amendment = $section->getAmendment();
+        $firstLine = $section->getFirstLineNumber();
 
         $viewFullMode = ($amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true || !$this->defaultOnlyDiff);
         $title = $this->getTitle();

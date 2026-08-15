@@ -40,6 +40,40 @@ ins, ul.inserted, ol.inserted, li.inserted, blockquote.inserted, pre.inserted, d
   }
 }
 
+/**
+ * The outer layer of a two-layered diff (an amendment amending another amendment): the changes of the amendment
+ * being amended. They are the context the actual changes are shown in, so they are marked by a subtle background
+ * tint instead of the regular colors - which are reserved for the inner layer, i.e. the changes of the amendment
+ * currently shown, and which may be nested into an element of the outer layer.
+ */
+ins.outer, del.outer, .insertedOuter, .deletedOuter {
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+ins.outer, del.outer {
+  // The <ins>/<del> element itself already conveys what happened; leave the colors to the inner layer.
+  // Not resetting the text-decoration here would make it inherit down into the nested elements, where it
+  // cannot be removed again.
+  color: inherit;
+  text-decoration: none;
+  font-weight: inherit;
+}
+
+ins.outer, .insertedOuter {
+  background-color: rgba(0, 136, 0, 0.1);
+  box-shadow: inset 0 -2px 0 rgba(0, 136, 0, 0.4);
+}
+
+del.outer, .deletedOuter {
+  background-color: rgba(136, 0, 0, 0.1);
+  box-shadow: inset 0 -2px 0 rgba(136, 0, 0, 0.4);
+}
+
+.amendmentComparisonModeSelector {
+  margin-bottom: 15px;
+}
+
 del.space, ins.space, del.formatting, ins.formatting {
   font-style: italic;
   font-size: 0.8em;

@@ -50,6 +50,26 @@ export class IMotionShow {
         });
     }
 
+    /**
+     * Amendments amending another amendment can be shown either as a diff against the original text
+     * (side by side with the amendment they amend), or as one consolidated, two-layered diff.
+     */
+    initAmendmentComparisonMode() {
+        document.querySelectorAll('.amendmentComparisonModeSelector button').forEach((el) => {
+            el.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                const mode = el.getAttribute('data-comparison-mode');
+
+                el.parentElement.querySelectorAll('button').forEach((button) => {
+                    button.classList.toggle('active', button === el);
+                });
+                document.querySelectorAll('.amendmentComparison').forEach((comparison) => {
+                    comparison.classList.toggle('hidden', comparison.getAttribute('data-comparison-mode') !== mode);
+                });
+            });
+        });
+    }
+
     initDelSubmit() {
         $("form.delLink").on("submit", (ev) => {
             ev.preventDefault();

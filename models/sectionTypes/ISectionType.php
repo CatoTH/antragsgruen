@@ -5,7 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\latex\Content as LatexContent;
 use app\components\html2pdf\Content as HtmlToPdfContent;
 use app\models\settings\MotionSection;
-use app\models\db\{Consultation, ConsultationSettingsMotionSection, IMotionSection, Motion};
+use app\models\db\{AmendmentSection, Consultation, ConsultationSettingsMotionSection, IMotionSection, Motion};
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -210,6 +210,20 @@ abstract class ISectionType
     }
 
     abstract public function getAmendmentFormatted(string $htmlIdPrefix = ''): string;
+
+    /**
+     * Renders this section of an amendment amending another amendment as one consolidated diff: the changes of
+     * the amendment being amended ($parentSection) form the outer layer, the changes this amendment makes to them
+     * the inner one. See TwoLayerDiff.
+     *
+     * Only section types that are diffed paragraph by paragraph can do this; all others return null, as does
+     * a text section for which no consistent two-layered diff could be built. Callers are expected to fall back
+     * to rendering this amendment and the one it amends separately.
+     */
+    public function getAmendmentFormattedAgainstParentAmendment(AmendmentSection $parentSection, string $htmlIdPrefix = ''): ?string
+    {
+        return null;
+    }
 
     abstract public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;
 

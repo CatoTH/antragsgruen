@@ -24,6 +24,13 @@ class Diff
 
     private Engine $engine;
 
+    /*
+     * If set, a paragraph that changes a lot will not be collapsed into one deletion + one insertion anymore,
+     * but keep the fine-grained diff. Used by TwoLayerDiff, where collapsing both layers would render
+     * the result unreadable.
+     */
+    private bool $suppressChangeRatioLimits = false;
+
     public function __construct()
     {
         $this->engine = new Engine();
@@ -32,6 +39,11 @@ class Diff
     public function setIgnoreStr(string $str): void
     {
         $this->engine->setIgnoreStr($str);
+    }
+
+    public function setSuppressChangeRatioLimits(bool $suppress): void
+    {
+        $this->suppressChangeRatioLimits = $suppress;
     }
 
     public static function wrapWithInsert(string $str): string
@@ -349,6 +361,10 @@ class Diff
         $combined = static::untokenizeLine($computedStrs);
         $combined = str_replace(DiffRenderer::DEL_END . DiffRenderer::DEL_START, '', $combined);
         $combined = str_replace(DiffRenderer::INS_END . DiffRenderer::INS_START, '', $combined);
+
+        if ($this->suppressChangeRatioLimits) {
+            return $combined;
+        }
 
         // If too much of the whole paragraph changes, then we don't display an inline diff anymore
         if (str_contains($combined, DiffRenderer::DEL_START)   &&
