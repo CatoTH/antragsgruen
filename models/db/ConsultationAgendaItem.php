@@ -147,7 +147,7 @@ class ConsultationAgendaItem extends ActiveRecord
                 $imotions[] = $motion;
             }
             foreach ($motion->amendments as $amendment) {
-                if ($amendment->agendaItemId === $this->id) {
+                if ($amendment->agendaItemId === $this->id && $amendment->isShownAtAgendaItemDirectly()) {
                     $imotions[] = $amendment;
                 }
             }
@@ -178,7 +178,7 @@ class ConsultationAgendaItem extends ActiveRecord
                 $return[] = $motion;
             }
             foreach ($motion->getVisibleAmendmentsSorted() as $amendment) {
-                if ($amendment->agendaItemId === $this->id) {
+                if ($amendment->agendaItemId === $this->id && $amendment->isShownAtAgendaItemDirectly()) {
                     $return[] = $amendment;
                 }
             }
