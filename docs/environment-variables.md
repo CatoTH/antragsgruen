@@ -88,6 +88,47 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `PLUGINS` | - | Comma-separated list of plugins to enable (e.g. `generic_sso`) |
 | `ADMIN_USER_IDS` | - | Comma-separated list of user IDs with superuser permissions |
 
+## Automatic Initialization
+
+With `AUTO_INIT` enabled, the container entrypoint brings the installation up to what the
+environment describes before starting the web server: it creates the database schema if the
+database is empty, and the first site if `SITE_ADMIN_EMAIL` is set. Both steps are skipped
+when they are already done, so this is safe on every restart.
+
+Only *missing* things are created. An existing schema is never migrated or altered, so
+upgrades remain an explicit step.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `AUTO_INIT` | false | Create the schema and the first site on startup |
+| `SITE_ADMIN_EMAIL` | - | E-mail of the first administrator. Without it, only the schema is created |
+| `SITE_TITLE` | - | **Required** with `SITE_ADMIN_EMAIL`. Name of the site |
+| `SITE_CONTACT` | - | **Required** with `SITE_ADMIN_EMAIL`. Imprint / contact details |
+| `SITE_ADMIN_PASSWORD` | - | If unset, a password is generated and written to the container log |
+| `SITE_ADMIN_GIVEN_NAME` | - | Given name of the administrator |
+| `SITE_ADMIN_FAMILY_NAME` | - | Family name of the administrator |
+| `SITE_FORCE_PASSWORD_CHANGE` | true, unless `SITE_ADMIN_PASSWORD` is set | Require a password change on first login |
+| `SITE_ORGANIZATION` | - | Organization the site belongs to |
+| `SITE_LANGUAGE` | `BASE_LANGUAGE` | Language of the site's wording |
+| `SITE_FUNCTIONALITY` | 1 | Comma-separated feature codes: 1=motions, 2=manifesto, 3=applications, 4=agenda, 5=speech lists, 6=statute amendments, 7=votings, 8=documents |
+| `SITE_LOGIN_METHODS` | site default | Comma-separated login methods: 0=standard, 1=Grünes Netz, 3=external (SSO), 4=OpenSlides |
+
+The subdomain of the site comes from `SITE_SUBDOMAIN` (defaulting to `std`). In multisite
+mode there is no default, and sites are created with `./yii site/create` instead.
+
+The administrator created here manages its own site through the regular user group.
+Superuser permissions across all sites are granted with `ADMIN_USER_IDS`, since they are
+stored in `config.json`, which this setup is designed not to need.
+
+The same steps are available as commands, if you would rather run them yourself:
+
+```bash
+./yii database/init                    # create the schema if the database is empty
+./yii site/init admin@example.org \    # create the site if it does not exist
+    --title="My Organization" \
+    --contact="My Org, Foo Street 1, foo@example.org"
+```
+
 ## Single Sign-On (generic_sso plugin)
 
 Requires `PLUGINS` to include `generic_sso`. These variables are the equivalent of
@@ -221,6 +262,12 @@ services:
       # Multisite (optional)
       MULTISITE_MODE: "true"
       SITE_SUBDOMAIN: std
+      # Bootstrap an empty database into a running site on first start
+      AUTO_INIT: "true"
+      SITE_ADMIN_EMAIL: admin@example.com
+      SITE_ADMIN_PASSWORD: change-me
+      SITE_TITLE: "Motion Tools"
+      SITE_CONTACT: "Example Org, Foo Street 1, foo@example.com"
     ports:
       - "8080:80"
     depends_on:
@@ -244,6 +291,7 @@ When no `config.json` is present, the application will:
 1. Read all configuration from environment variables
 2. Skip the installation wizard if required variables (`DB_HOST`, `DB_NAME`, `DB_USER`, `RANDOM_SEED`) are set
 3. Auto-configure mail delivery from `MAILER_DSN` or individual `SMTP_*` variables
+4. Create the schema and the first site on startup, if `AUTO_INIT` is enabled
 
 ## Backwards Compatibility
 
