@@ -81,6 +81,8 @@ return [
     'motion_amrew_btn2' => 'Provjera sukoba', // Original: Check for conflicts
     'motion_supp_name' => 'Ime', // Original: Name
     'motion_supp_orga' => 'Organizacija', // Original: Organization
+    'motion_supp_person_natural' => 'Osoba', // Original: Person
+    'motion_supp_person_orga' => 'Organizacija', // Original: Organization
     'motion_supp_auth_email' => 'E-pošta', // Original: E-mail
     'motion_supp_auth_ww' => 'Zelena mreža', // Original: Grünes Netz
     'motion_supp_auth_init' => 'Podneseno', // Original: Submitted

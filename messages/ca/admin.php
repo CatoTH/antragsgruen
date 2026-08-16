@@ -80,6 +80,8 @@ return [
     'motion_amrew_btn2'           => 'Comprovar conflictes',
     'motion_supp_name'            => 'Nom',
     'motion_supp_orga'            => 'Organització',
+    'motion_supp_person_natural'  => 'Persona',
+    'motion_supp_person_orga'     => 'Organització',
     'motion_supp_auth_email'      => 'Correu electrònic',
     'motion_supp_auth_ww'         => 'Xarxa Verda',
     'motion_supp_auth_init'       => 'Enviat',

@@ -83,6 +83,8 @@ return [
     'motion_amrew_btn2' => 'Comprobar conflictos',
     'motion_supp_name' => 'Nombre',
     'motion_supp_orga' => 'Organización',
+    'motion_supp_person_natural' => 'Persona',
+    'motion_supp_person_orga' => 'Organización',
     'motion_supp_auth_email' => 'Correo electrónico',
     'motion_supp_auth_ww' => 'Grünes Netz',
     'motion_supp_auth_init' => 'Presentado',

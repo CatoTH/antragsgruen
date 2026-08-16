@@ -80,6 +80,8 @@ return [
     'motion_amrew_btn2'           => 'Check for conflicts',
     'motion_supp_name'            => 'Name',
     'motion_supp_orga'            => 'Organization',
+    'motion_supp_person_natural'  => 'Persoon',
+    'motion_supp_person_orga'     => 'Organisatie',
     'motion_supp_auth_email'      => 'E-mail',
     'motion_supp_auth_ww'         => 'Grünes Netz',
     'motion_supp_auth_init'       => 'Submitted',

@@ -8,8 +8,15 @@ export class MotionSupporterEdit {
             Sortable.create($sortable[0], {draggable: 'li'});
         }
 
+        // Every field of a row is indexed by the same key; newly added rows need a key of their own
+        let newRowCounter = 0;
+        const getNewRowHtml = () => {
+            newRowCounter++;
+            return $(".supporterRowAdder").data("content").replace(/__IDX__/g, "new" + newRowCounter);
+        };
+
         $(".supporterRowAdder").on("click", function (ev) {
-            $sortable.append($(this).data("content"));
+            $sortable.append(getNewRowHtml());
             ev.preventDefault();
         });
         $sortable.on("click", ".delSupporter", function (ev) {
@@ -20,7 +27,6 @@ export class MotionSupporterEdit {
         let $fullTextHolder = $("#supporterFullTextHolder");
         $supporterHolder.find(".fullTextAdd").on("click", () => {
             let lines = ($fullTextHolder.find('textarea').val()).split(";"),
-                template = $(".supporterRowAdder").data("content"),
                 getNewElement = function () {
                     let $rows = $sortable.find("> li");
                     for (let i = 0; i < $rows.length; i++) {
@@ -28,7 +34,7 @@ export class MotionSupporterEdit {
                         if ($row.find(".supporterName").val() == '' && $row.find(".supporterOrga").val() == '') return $row;
                     }
                     // No empty row found
-                    let $newEl = $(template);
+                    let $newEl = $(getNewRowHtml());
                     $sortable.append($newEl);
                     return $newEl;
                 };

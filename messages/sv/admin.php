@@ -83,6 +83,8 @@ return [
     'motion_amrew_btn2' => 'Kontrollera konflikter',
     'motion_supp_name' => 'Namn',
     'motion_supp_orga' => 'Organisation',
+    'motion_supp_person_natural' => 'Person',
+    'motion_supp_person_orga' => 'Organisation',
     'motion_supp_auth_email' => 'E-post',
     'motion_supp_auth_ww' => 'Grünes Netz',
     'motion_supp_auth_init' => 'Inlämnad',

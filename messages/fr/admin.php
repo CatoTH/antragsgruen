@@ -62,6 +62,8 @@ return [
     'motion_amrew_btn2'           => 'Vérifier les conflits',
     'motion_supp_name'            => 'Nom',
     'motion_supp_orga'            => 'Organisation',
+    'motion_supp_person_natural'  => 'Personne',
+    'motion_supp_person_orga'     => 'Organisation',
     'motion_supp_auth_email'      => 'Email',
     'motion_supp_auth_ww'         => 'Racine',
     'motion_supp_auth_init'       => 'Déposé',

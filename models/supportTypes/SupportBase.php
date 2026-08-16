@@ -212,16 +212,17 @@ abstract class SupportBase
     {
         $return = [];
         foreach ($supporterDtos as $i => $supporterDto) {
-            if (!$this->isValidName($supporterDto->name)) {
+            $isOrganization = ($supporterDto->personType === SupporterType::ORGANIZATION);
+            // Organizations are identified by their organization name; the person's name is the optional contact person
+            $identifyingName = ($isOrganization ? ($supporterDto->organization ?? '') : $supporterDto->name);
+            if (!$this->isValidName($identifyingName)) {
                 continue;
             }
             $sup = new $supporterClass();
             $sup->name = trim($supporterDto->name);
             $sup->role = ISupporter::ROLE_SUPPORTER;
             $sup->userId = null;
-            $sup->personType = ($supporterDto->personType === SupporterType::ORGANIZATION
-                ? ISupporter::PERSON_ORGANIZATION
-                : ISupporter::PERSON_NATURAL);
+            $sup->personType = ($isOrganization ? ISupporter::PERSON_ORGANIZATION : ISupporter::PERSON_NATURAL);
             $sup->position = $i;
             $sup->dateCreation = date('Y-m-d H:i:s');
             if ($supporterDto->id) {

@@ -1628,12 +1628,13 @@ label.legend {
     padding: 0;
 
     > li {
-      padding: 5px 0 5px 40px;
+      padding: 5px 0 5px 5px;
     }
 
     .supporterRow {
       display: flex;
       flex-direction: row;
+      position: relative;
 
       > * {
         flex: 1;
@@ -1647,25 +1648,52 @@ label.legend {
           padding-right: 0;
         }
       }
-    }
-
-    .nameCol {
-      position: relative;
 
       .moveHandle {
         position: absolute;
-        left: -15px;
-        top: 5px;
+        left: -40px;
+        top: 10px;
+        width: 20px;
+        overflow: hidden;
         font-size: 1.5em;
         color: lightgrey;
         cursor: move;
       }
     }
 
+    .personTypeCol {
+      flex: 0 0 auto;
+      padding-left: 0;
+
+      .labeledRadio {
+        display: block;
+        font-weight: normal;
+        margin: 0;
+        white-space: nowrap;
+
+        input {
+          margin-right: 4px;
+        }
+      }
+    }
+
+    .userCol {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+
+      .userName {
+        // Long e-mail addresses should wrap within the column instead of next to the delete button
+        min-width: 0;
+        overflow-wrap: break-word;
+      }
+    }
+
     .delSupporter {
-      float: right;
       color: #f77;
       margin-top: 5px;
+      margin-left: auto;
+      flex: 0 0 auto;
     }
 
     @media (hover: hover) {

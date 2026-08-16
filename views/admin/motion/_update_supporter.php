@@ -12,24 +12,39 @@ use yii\helpers\Html;
  */
 
 
-$getSupporterRow = function (ISupporter $supporter) use ($settings): string {
+// Every field of a row is indexed by the same key, so that the radio buttons of a row form their own group,
+// and so that the fields still belong together after rows have been sorted, added or removed.
+$getSupporterRow = function (ISupporter $supporter, string $index) use ($settings): string {
+    $personType = intval($supporter->personType ?: ISupporter::PERSON_NATURAL);
+
     $str = '<li><div class="supporterRow">';
-    $str .= '<input type="hidden" name="supporters[id][]" value="' . Html::encode($supporter->id ?: '') . '">';
-    $str .= '<input type="hidden" name="supporters[personType][]" value="' .
-            intval($supporter->personType ?: ISupporter::PERSON_NATURAL) . '">';
+    $str .= '<input type="hidden" name="supporters[id][' . $index . ']" value="' . Html::encode($supporter->id ?: '') . '">';
+    $str .= '<span class="glyphicon glyphicon-resize-vertical moveHandle"></span>';
+
+    $personTypes = [
+        ISupporter::PERSON_NATURAL      => Yii::t('admin', 'motion_supp_person_natural'),
+        ISupporter::PERSON_ORGANIZATION => Yii::t('admin', 'motion_supp_person_orga'),
+    ];
+    $str .= '<div class="personTypeCol">';
+    foreach ($personTypes as $personTypeVal => $personTypeLabel) {
+        $str .= '<label class="labeledRadio">';
+        $str .= '<input type="radio" name="supporters[personType][' . $index . ']" value="' . $personTypeVal . '"' .
+                ($personType === $personTypeVal ? ' checked' : '') . '>';
+        $str .= '<span>' . Html::encode($personTypeLabel) . '</span>';
+        $str .= '</label>';
+    }
+    $str .= '</div>';
 
     $title = Html::encode(Yii::t('admin', 'motion_supp_name'));
     $str   .= '<div class="nameCol">';
 
-    $str .= '<span class="glyphicon glyphicon-resize-vertical moveHandle"></span> ';
-
-    $str .= '<input type="text" name="supporters[name][]" value="' . Html::encode($supporter->name ?: '') . '" ';
+    $str .= '<input type="text" name="supporters[name][' . $index . ']" value="' . Html::encode($supporter->name ?: '') . '" ';
     $str .= ' class="form-control supporterName" placeholder="' . $title . '" title="' . $title . '">';
     $str .= '</div>';
 
     $title = Html::encode(Yii::t('admin', 'motion_supp_orga'));
     $str   .= '<div>';
-    $str   .= '<input type="text" name="supporters[organization][]" value="' . Html::encode($supporter->organization ?: '') . '" ';
+    $str   .= '<input type="text" name="supporters[organization][' . $index . ']" value="' . Html::encode($supporter->organization ?: '') . '" ';
     $str   .= ' class="form-control supporterOrga" placeholder="' . $title . '" title="' . $title . '">';
     $str   .= '</div>';
 
@@ -40,7 +55,7 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
         );
         $str .= '<div class="colGender">';
         $str .= Html::dropDownList(
-            'supporters[gender][]',
+            'supporters[gender][' . $index . ']',
             $supporter->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER),
             $genderChoices,
             ['class' => 'stdDropdown']
@@ -48,12 +63,12 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
         $str .= '</div>';
     }
 
-    $str .= '<div>';
+    $str .= '<div class="userCol">';
+    if ($supporter->user) {
+        $str .= '<span class="userName">' . Html::encode($supporter->user->getAuthName()) . '</span>';
+    }
     $str .= '<button type="button" class="btn btn-link delSupporter" aria-label="' . Yii::t('base', 'aria_remove') . '">' .
             '<span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button>';
-    if ($supporter->user) {
-        $str .= Html::encode($supporter->user->getAuthName());
-    }
     $str .= '</div>';
 
 
@@ -66,8 +81,8 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
 <div class="content" id="motionSupporterHolder">
     <ul class="supporterList">
         <?php
-        foreach ($supporters as $supporter) {
-            echo $getSupporterRow($supporter);
+        foreach ($supporters as $index => $supporter) {
+            echo $getSupporterRow($supporter, (string)$index);
         }
         ?>
     </ul>
@@ -78,7 +93,8 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
         </button>
     </div>
 
-    <button type="button" class="btn btn-link supporterRowAdder" data-content="<?= Html::encode($getSupporterRow($newTemplate)) ?>">
+    <button type="button" class="btn btn-link supporterRowAdder"
+            data-content="<?= Html::encode($getSupporterRow($newTemplate, '__IDX__')) ?>">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         <?= Yii::t('admin', 'motion_edit_supporters_add') ?>
     </button>

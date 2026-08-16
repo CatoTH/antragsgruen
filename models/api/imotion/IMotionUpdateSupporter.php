@@ -29,14 +29,17 @@ class IMotionUpdateSupporter
         }
         foreach ($post['supporters']['name'] as $i => $name) {
             $name = trim((string)$name);
-            if ($name === '') {
-                continue;
-            }
             $organization = isset($post['supporters']['organization'][$i])
                 ? trim((string)$post['supporters']['organization'][$i])
                 : null;
             $personType = (intval($post['supporters']['personType'][$i] ?? ISupporter::PERSON_NATURAL) === ISupporter::PERSON_ORGANIZATION ?
                 SupporterType::ORGANIZATION : SupporterType::PERSON);
+
+            // Organizations are identified by their organization name, natural persons by their name.
+            // Rows without the respective name are considered empty and are skipped.
+            if ($personType === SupporterType::ORGANIZATION ? ($organization ?? '') === '' : $name === '') {
+                continue;
+            }
             $supporters[] = new self(
                 id: isset($post['supporters']['id']) && $post['supporters']['id'][$i] > 0 ? intval($post['supporters']['id'][$i]) : null,
                 name: $name,
