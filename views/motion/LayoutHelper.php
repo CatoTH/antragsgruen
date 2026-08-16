@@ -102,6 +102,35 @@ class LayoutHelper
     }
 
     /**
+     * The number of supporters, listing organizations separately from natural persons,
+     * e.g. "3", "3 + 1 organization" or "1 organization".
+     */
+    public static function formatSupporterCount(IMotion $imotion): string
+    {
+        $persons = 0;
+        $organizations = 0;
+        foreach ($imotion->getSupporters(true) as $supporter) {
+            if ($supporter->personType === ISupporter::PERSON_ORGANIZATION) {
+                $organizations++;
+            } else {
+                $persons++;
+            }
+        }
+
+        if ($organizations === 0) {
+            return (string)$persons;
+        }
+
+        $orgaKey = ($organizations === 1 ? 'list_supp_orga_1' : 'list_supp_orga_x');
+        $orgaStr = str_replace('%NUM%', (string)$organizations, \Yii::t('admin', $orgaKey));
+        if ($persons === 0) {
+            return $orgaStr;
+        }
+
+        return $persons . ' + ' . $orgaStr;
+    }
+
+    /**
      * @return array<array{title: string, section: ISectionType}>
      */
     public static function getVisibleProposedProcedureSections(Motion $motion, ?MotionProposal $proposal): array

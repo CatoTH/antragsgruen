@@ -1,6 +1,7 @@
 <?php
 
 use app\components\RequestContext;
+use app\models\db\ISupporter;
 use app\models\db\User;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
@@ -14,10 +15,25 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$fixedReadOnly = ($user && ($user->fixedData & User::FIXED_NAME) ? 'readonly' : '');
+$nameReadOnly  = ($user && ($user->fixedData & User::FIXED_NAME) ? 'readonly' : '');
+$orgaReadOnly  = ($user && ($user->fixedData & User::FIXED_ORGA) ? 'readonly' : '');
 $name          = ($user ? $user->name : '');
 $disableSubmit = '';
 $settings      = $supportType->getSettingsObj();
+
+$canSupportAsPerson = $settings->supporterCanBePerson;
+$canSupportAsOrga   = $settings->supporterCanBeOrganization;
+if (!$canSupportAsPerson && !$canSupportAsOrga) {
+    // Misconfiguration; supporting as a natural person is the historical default
+    $canSupportAsPerson = true;
+}
+$hasPersonTypeChoice = ($canSupportAsPerson && $canSupportAsOrga);
+$defaultPersonType   = ($canSupportAsPerson ? ISupporter::PERSON_NATURAL : ISupporter::PERSON_ORGANIZATION);
+
+// As a natural person, the organization is the (optional or mandatory) affiliation;
+// as an organization, it is the supporter itself.
+$showOrga = ($canSupportAsOrga || $settings->hasOrganizations);
+$orgaRequiredInEveryMode = ($settings->hasOrganizations || !$canSupportAsPerson);
 
 echo Html::beginForm('', 'post', [
     'class'                    => 'motionSupportForm',
@@ -32,20 +48,43 @@ $layout->addJsTranslation("motion");
     </script>
     <label class="supportQuestion"><?= Yii::t('motion', 'support_question') ?></label>
 <?php
-if ($settings->hasOrganizations && $user && $user->organization === '' && $user->fixedData) {
+if ($orgaRequiredInEveryMode && $user && $user->organization === '' && $user->fixedData) {
     echo '<div class="alert alert-danger">';
     echo Yii::t('motion', 'supporting_no_orga_error');
     echo '</div>';
     $disableSubmit = 'disabled';
 }
 
+if ($hasPersonTypeChoice) {
+    ?>
+    <fieldset class="supportPersonTypeSelection">
+        <legend class="sr-only"><?= Html::encode(Yii::t('motion', 'support_as_question')) ?></legend>
+        <label class="supportAsPerson">
+            <?= Html::radio('motionSupportPersonType', true, ['value' => ISupporter::PERSON_NATURAL]) ?>
+            <?= Yii::t('motion', 'support_as_person') ?>
+        </label>
+        <label class="supportAsOrga">
+            <?= Html::radio('motionSupportPersonType', false, ['value' => ISupporter::PERSON_ORGANIZATION]) ?>
+            <?= Yii::t('motion', 'support_as_orga') ?>
+        </label>
+    </fieldset>
+    <?php
+} else {
+    echo Html::hiddenInput('motionSupportPersonType', (string)$defaultPersonType);
+}
 ?>
     <div class="supportBlock">
         <div class="colName">
-            <input type="text" name="motionSupportName" class="form-control" required <?= $fixedReadOnly ?>
+            <?php
+            $namePlaceholder = ($defaultPersonType === ISupporter::PERSON_ORGANIZATION ?
+                Yii::t('motion', 'support_contact_name') : Yii::t('motion', 'support_name'));
+            ?>
+            <input type="text" name="motionSupportName" class="form-control" required <?= $nameReadOnly ?>
                    value="<?= Html::encode($name) ?>"
-                   title="<?= Html::encode(Yii::t('motion', 'support_name')) ?>"
-                   placeholder="<?= Html::encode(Yii::t('motion', 'support_name')) ?>">
+                   data-label-person="<?= Html::encode(Yii::t('motion', 'support_name')) ?>"
+                   data-label-orga="<?= Html::encode(Yii::t('motion', 'support_contact_name')) ?>"
+                   title="<?= Html::encode($namePlaceholder) ?>"
+                   placeholder="<?= Html::encode($namePlaceholder) ?>">
             <?php
             if ($settings->offerNonPublicSupports) {
                 ?>
@@ -61,13 +100,15 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
             ?>
         </div>
         <?php
-        if ($settings->hasOrganizations) {
+        if ($showOrga) {
             $orga = ($user ? $user->organization : '');
+            $orgaRequired = ($orgaRequiredInEveryMode || $defaultPersonType === ISupporter::PERSON_ORGANIZATION);
             echo '<div class="colOrga">';
             echo '<input type="text" name="motionSupportOrga" class="form-control"
                            value="' . Html::encode($orga) . '"
                            placeholder="' . Html::encode(Yii::t('motion', 'support_orga')) . '"
-                           required ' . $fixedReadOnly . '>';
+                           title="' . Html::encode(Yii::t('motion', 'support_orga')) . '"
+                           ' . ($orgaRequired ? 'required' : '') . ' ' . $orgaReadOnly . '>';
             echo '</div>';
         }
         if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
@@ -77,7 +118,7 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
             );
 
             $genderPreselected = RequestContext::getSession()->get('user_gender');
-            echo '<div class="colGender">';
+            echo '<div class="colGender' . ($defaultPersonType === ISupporter::PERSON_ORGANIZATION ? ' hidden' : '') . '">';
             echo Html::dropDownList(
                 'motionSupportGender',
                 $genderPreselected,

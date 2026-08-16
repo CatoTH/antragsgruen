@@ -193,6 +193,10 @@ return [
     'support_already'        => 'Je ondersteunt dit voorstel al',
     'support_orga'           => 'Organisatie',
     'support_name'           => 'Naam',
+    'support_contact_name'   => 'Contactpersoon',
+    'support_as_question'    => 'Als wie wil je ondersteunen?',
+    'support_as_person'      => 'Als persoon',
+    'support_as_orga'        => 'Als organisatie',
 
     'confirmed_support_phase'            => "Je hebt %TITLE% aangemaakt.<br>\nOm het officieel in te dienen, heeft het ten minste <strong>%MIN% ondersteuners</strong> nodig %ADD_REQUIREMENT%.<br>\nStuur de volgende link om steun te zoeken voor je voorstel:",
     'confirmed_support_phase_addfemale'  => ', waarvan %MIN% vrouwen',

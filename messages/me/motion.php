@@ -215,6 +215,10 @@ return [
     'support_already' => 'Već podržavate ovaj predlog', // Original: You already support this motion
     'support_orga' => 'Organizacija', // Original: Organization
     'support_name' => 'Ime', // Original: Name
+    'support_contact_name' => 'Kontakt osoba', // Original: Contact person
+    'support_as_question' => 'U čije ime želite podržati?', // Original: As whom do you want to support?
+    'support_as_person' => 'Kao osoba', // Original: As a person
+    'support_as_orga' => 'Kao organizacija', // Original: As an organization
     'confirmed_support_phase' => "Kreirali ste %TITLE%. <br>\nDa bi ga zvanično podnijeli, potrebno je najmanje <strong>%MIN% podržavaoca</strong>%ADD_REQUIREMENT%. <br>\nProslijedite sledeći link da biste dobili podršku za vaš predlog:",
     'confirmed_support_phase_addfemale' => ', uključujući % MIN% žena', // Original: , including %MIN% women
     'confirmed_support_phase_ww' => '', // Original: 

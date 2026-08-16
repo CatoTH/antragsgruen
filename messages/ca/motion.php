@@ -194,6 +194,10 @@ return [
 	'support_already' => 'Ja dones suport a aquesta resolució',
 	'support_orga' => 'Organització',
 	'support_name' => 'Nom',
+	'support_contact_name' => 'Persona de contacte',
+	'support_as_question' => 'Com qui vols donar suport?',
+	'support_as_person' => 'Com a persona',
+	'support_as_orga' => 'Com a organització',
 
 	'confirmed_support_phase' => 'Has creat la %TITLE%.<br> \n Per presentar-la oficialment, necessita almenys <strong>%MIN% suporters</strong>%ADD_REQUIREMENT%.<br> \n Envia l\'enllaç següent per obtenir suport per a la teva resolució:',
 	'confirmed_support_phase_addfemale' => ', incloent %MIN% dones',

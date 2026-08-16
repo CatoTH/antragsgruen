@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\{IMotion, Motion};
 use app\models\forms\AdminMotionFilterForm;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -133,7 +134,7 @@ foreach ($motionsInvisible as $motion) {
 
     echo ' <small>' . Html::encode($motionStatuses[$motion->status]);
     if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-        echo ' (' . count($motion->getSupporters(true)) . ')';
+        echo ' (' . Html::encode(LayoutHelper::formatSupporterCount($motion)) . ')';
     }
     echo '</small><br>';
 }

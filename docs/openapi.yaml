@@ -1348,14 +1348,17 @@ components:
         id:
           type: integer
           description: ID of the support. Recommended to set when updating supporters
+        person_type:
+          $ref: '#/components/schemas/SupporterType'
+          description: Whether this support is given by a natural person or by an organization. Defaults to person.
         name:
           type: string
-          description: Full name of the supporter.
+          description: For person_type=person, the full name of the supporter. For person_type=organization, the name of the contact person within the organization.
           example: Ava
         organization:
           type: string
           nullable: true
-          description: Optional organizational affiliation of the supporter.
+          description: For person_type=person, the optional organizational affiliation of the supporter. For person_type=organization, the name of the supporting organization.
           example: E Corp
         gender:
           type: string
@@ -1369,14 +1372,17 @@ components:
       required:
         - name
       properties:
+        person_type:
+          $ref: '#/components/schemas/SupporterType'
+          description: Whether the support is given as a natural person or on behalf of an organization. Defaults to person. The motion type's support settings determine which of the two is permitted.
         name:
           type: string
-          description: Full name of the supporter. Ignored and replaced by the account name if the current user's profile has a fixed name.
+          description: For person_type=person, the full name of the supporter. For person_type=organization, the name of the contact person within the organization. Ignored and replaced by the account name if the current user's profile has a fixed name.
           example: Ava
         organization:
           type: string
           nullable: true
-          description: Optional organizational affiliation of the supporter. Required if the motion type's support settings require organizations.
+          description: For person_type=person, the optional organizational affiliation of the supporter; required if the motion type's support settings require organizations. For person_type=organization, the name of the supporting organization; always required.
           example: E Corp
         gender:
           type: string
@@ -2467,6 +2473,8 @@ components:
         - organization_policy
         - min_supporters
         - min_supporters_female
+        - supporter_can_be_person
+        - supporter_can_be_organization
         - allow_more_supporters
         - allow_supporting_after_publication
         - offer_non_public_supports
@@ -2507,6 +2515,14 @@ components:
           type: integer
           nullable: true
           example: null
+        supporter_can_be_person:
+          type: boolean
+          description: If supporters can support as a natural person.
+          example: true
+        supporter_can_be_organization:
+          type: boolean
+          description: If supporters can support on behalf of an organization.
+          example: false
         allow_more_supporters:
           type: boolean
           example: true

@@ -98,7 +98,7 @@ class MotionSupporter extends ISupporter
         return '';
     }
 
-    public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false): void
+    public static function createSupport(Motion $motion, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false, int $personType = ISupporter::PERSON_NATURAL): void
     {
         $hadEnoughSupportersBefore = $motion->hasEnoughSupporters($motion->getMyMotionType()->getMotionSupportTypeClass());
 
@@ -129,7 +129,12 @@ class MotionSupporter extends ISupporter
         $support->organization = $orga;
         $support->position     = $maxPos + 1;
         $support->role         = $role;
+        $support->personType   = $personType;
         $support->dateCreation = date('Y-m-d H:i:s');
+        if ($personType === ISupporter::PERSON_ORGANIZATION) {
+            // The organization is the supporter, the name refers to the person acting on its behalf
+            $support->contactName = $name;
+        }
         $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
         $support->setExtraDataEntry(static::EXTRA_DATA_FIELD_NON_PUBLIC, $nonPublic);
         $support->save();
@@ -174,7 +179,7 @@ class MotionSupporter extends ISupporter
         $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
         $request->validate($supportType);
 
-        static::createSupport($motion, $user, $request->name, $request->organization ?? '', static::ROLE_SUPPORTER, $request->gender ?? '', (bool)$request->nonPublic);
+        static::createSupport($motion, $user, $request->name, $request->organization ?? '', static::ROLE_SUPPORTER, $request->gender ?? '', nonPublic: (bool)$request->nonPublic, personType: $request->getPersonTypeDb());
 
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 

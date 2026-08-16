@@ -88,6 +88,8 @@ export class MotionTypeEdit {
         const $initiatorCanBePerson = $form.find(".contactDetails .initiatorCanBePerson input");
         const $initiatorCanBeOrga = $form.find(".contactDetails .initiatorCanBeOrganization input");
         const $initiatorSetPermissions = $form.find(".contactDetails .initiatorSetPermissions input");
+        const $supporterCanBePerson = $form.find(".supporterPersonTypes .supporterCanBePerson input");
+        const $supporterCanBeOrga = $form.find(".supporterPersonTypes .supporterCanBeOrganization input");
 
         let currentType = parseInt($supportType.find('input').val(), 10);
 
@@ -151,6 +153,17 @@ export class MotionTypeEdit {
             }
             recalcVisibilities();
         });
+        $supporterCanBePerson.on("change", () => {
+            if (!$supporterCanBePerson.prop("checked") && !$supporterCanBeOrga.prop("checked")) {
+                $supporterCanBeOrga.prop("checked", true);
+            }
+        });
+        $supporterCanBeOrga.on("change", () => {
+            if (!$supporterCanBeOrga.prop("checked") && !$supporterCanBePerson.prop("checked")) {
+                $supporterCanBePerson.prop("checked", true);
+            }
+        });
+
         $initiatorSetPermissions.on("change", recalcVisibilities).trigger("change");
         $initiatorGender.on("change", recalcVisibilities).trigger("change");
     }

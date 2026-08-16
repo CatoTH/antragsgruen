@@ -500,6 +500,12 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
         $settings->setInitiatorOrganizationPolicyObject($dto->organizationPolicy->toPolicy($consultation, $motionType));
         $settings->minSupporters                    = $dto->minSupporters;
         $settings->minSupportersFemale              = $dto->minSupportersFemale;
+        $settings->supporterCanBePerson             = $dto->supporterCanBePerson;
+        $settings->supporterCanBeOrganization       = $dto->supporterCanBeOrganization;
+        if (!$settings->supporterCanBePerson && !$settings->supporterCanBeOrganization) {
+            // Probably a mistake; falling back to the default of only allowing natural persons
+            $settings->supporterCanBePerson = true;
+        }
         $settings->allowMoreSupporters              = $dto->allowMoreSupporters;
         $settings->allowSupportingAfterPublication  = $dto->allowSupportingAfterPublication;
         $settings->offerNonPublicSupports           = $dto->offerNonPublicSupports;

@@ -224,6 +224,10 @@ Enlace: %LINK%',
     'support_already' => 'Ya apoyas esta moción',
     'support_orga' => 'Organización',
     'support_name' => 'Nombre',
+    'support_contact_name' => 'Persona de contacto',
+    'support_as_question' => '¿Como quién quieres apoyar?',
+    'support_as_person' => 'Como persona',
+    'support_as_orga' => 'Como organización',
     'confirmed_support_phase' => 'Has creado %TITLE%.<br>
 Para presentarla oficialmente, necesita al menos <strong>%MIN% apoyos</strong>%ADD_REQUIREMENT%.<br>
 Envía el siguiente enlace para conseguir apoyos para tu moción:',

@@ -81,6 +81,8 @@ return [
     'motion_amrew_btn2' => 'Provjera sukoba', // Original: Check for conflicts
     'motion_supp_name' => 'Ime', // Original: Name
     'motion_supp_orga' => 'Organizacija', // Original: Organization
+    'motion_supp_person_natural' => 'Osoba', // Original: Person
+    'motion_supp_person_orga' => 'Organizacija', // Original: Organization
     'motion_supp_auth_email' => 'E-pošta', // Original: E-mail
     'motion_supp_auth_ww' => 'Zelena mreža', // Original: Grünes Netz
     'motion_supp_auth_init' => 'Podneseno', // Original: Submitted
@@ -141,6 +143,8 @@ return [
     'list_head_title' => 'Liste: predlozi, amandmani', // Original: List: motions, amendments
     'list_visibles' => 'Vidljivi predlogi', // Original: Visible motions
     'list_invisibles' => 'Predlozi koji nisu (još) vidljivi', // Original: Motions not (yet) visible
+    'list_supp_orga_1' => '%NUM% organizacija', // Original: %NUM% Organization
+    'list_supp_orga_x' => '%NUM% organizacije', // Original: %NUM% Organizations
     'list_show_all' => 'Potpuna lista', // Original: Complete list
     'list_action' => 'Akcija', // Original: Action
     'list_export' => 'Eksport', // Original: Export
@@ -575,6 +579,7 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'motion_type_amend_deadline' => 'Amandmani', // Original: Amendments
     'motion_type_deadline_mot' => 'Predlozi', // Original: Motions
     'motion_type_supp_min' => 'Podržavaoci', // Original: Supporters
+    'motion_type_supp_person_type' => 'Dopuštena podrška', // Original: Allowed to support
     'motion_type_supp_female_min' => 'Min. podržavaoci (žene)', // Original: Min. supporters (female)
     'motion_type_supp_female_h' => 'Ovdje se računaju i Predlagači i pristaše. Ako ovdje unesete ograničenje, trebali biste postaviti i opciju "Dopusti više podržavaoca nego što je potrebno" kako biste izbjegli komplikacije.', // Original: Both proposers and supporters count here. If you enter a limit here, you should also set the option "Allow more supporters than required" to avoid complications.
     'motion_type_supp_max_pdf' => 'Maksimalni broj pristaša', // Original: Max. supporters

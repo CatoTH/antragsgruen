@@ -224,6 +224,10 @@ Länk: %LINK%',
     'support_already' => 'Du stödjer redan denna motion',
     'support_orga' => 'Organisation',
     'support_name' => 'Namn',
+    'support_contact_name' => 'Kontaktperson',
+    'support_as_question' => 'Som vem vill du stödja?',
+    'support_as_person' => 'Som person',
+    'support_as_orga' => 'Som organisation',
     'confirmed_support_phase' => 'Du skapade %TITLE%.<br>
 För att officiellt skicka in den krävs minst <strong>%MIN% stödjare</strong>%ADD_REQUIREMENT%.<br>
 Skicka följande länk för att samla stöd för din motion:',
