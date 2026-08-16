@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\api\imotion;
 
+use app\models\db\ISupporter;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\settings\InitiatorForm;
@@ -13,6 +14,7 @@ class SupportRequest
 {
     public function __construct(
         public string $name,
+        public ?SupporterType $personType = null,
         public ?string $organization = null,
         public ?string $gender = null,
         public ?bool $nonPublic = null,
@@ -36,13 +38,21 @@ class SupportRequest
         }
         $gender = (string)($post['motionSupportGender'] ?? '');
         $nonPublic = ($supportType->getSettingsObj()->offerNonPublicSupports && !array_key_exists('motionSupportPublic', $post));
+        $personType = (intval($post['motionSupportPersonType'] ?? ISupporter::PERSON_NATURAL) === ISupporter::PERSON_ORGANIZATION ?
+            SupporterType::ORGANIZATION : SupporterType::PERSON);
 
         return new self(
             name: $name,
+            personType: $personType,
             organization: $orga,
             gender: ($gender !== '' ? $gender : null),
             nonPublic: $nonPublic,
         );
+    }
+
+    public function getPersonTypeDb(): int
+    {
+        return ($this->personType === SupporterType::ORGANIZATION ? ISupporter::PERSON_ORGANIZATION : ISupporter::PERSON_NATURAL);
     }
 
     /**
@@ -53,11 +63,27 @@ class SupportRequest
     {
         $settings = $supportType->getSettingsObj();
 
-        if ($settings->hasOrganizations && trim($this->organization ?? '') === '') {
+        $asOrganization = ($this->personType === SupporterType::ORGANIZATION);
+        if ($asOrganization && !$settings->supporterCanBeOrganization) {
+            throw new FormError('Supporting as an organization is not possible');
+        }
+        // If neither is allowed, this is a misconfiguration and supporting as a natural person is assumed
+        if (!$asOrganization && !$settings->supporterCanBePerson && $settings->supporterCanBeOrganization) {
+            throw new FormError('Supporting as a natural person is not possible');
+        }
+
+        // As an organization, the organization is the supporter itself, hence it is always required
+        if (($asOrganization || $settings->hasOrganizations) && trim($this->organization ?? '') === '') {
             throw new FormError('No organization entered');
         }
         if (trim($this->name) === '') {
             throw new FormError('You need to enter a name');
+        }
+
+        // The gender only refers to natural persons
+        if ($asOrganization) {
+            $this->gender = null;
+            return;
         }
 
         $validGenderKeys = array_keys(SupportBase::getGenderSelection());

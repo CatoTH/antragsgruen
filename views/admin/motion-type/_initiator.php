@@ -231,6 +231,28 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
+    <div class="stdTwoCols formGroupSupporterPersonType" id="typeSupporterPersonTypeRow" data-visibility="hasSupporters">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_supp_person_type') ?>:
+        </div>
+        <div class="rightColumn contactDetails supporterPersonTypes">
+            <div class="form-control">
+                <label class="supporterCanBePerson">
+                    <?php
+                    echo Html::checkbox('motionInitiatorSettings[supporterCanBePerson]', $motionSettings->supporterCanBePerson, ['id' => 'typeSupporterCanBePerson']);
+                    echo Yii::t('admin', 'motion_type_person_natural');
+                    ?>
+                </label>
+                <label class="supporterCanBeOrganization">
+                    <?php
+                    echo Html::checkbox('motionInitiatorSettings[supporterCanBeOrganization]', $motionSettings->supporterCanBeOrganization, ['id' => 'typeSupporterCanBeOrga']);
+                    echo Yii::t('admin', 'motion_type_person_orga');
+                    ?>
+                </label>
+            </div>
+        </div>
+    </div>
+
     <div class="stdTwoCols formGroupMinFemale" id="typeMinSupportersFemaleRow" data-visibility="allowFemaleQuota">
         <label class="leftColumn control-label" for="typeMinSupportersFemale">
             <?= Yii::t('admin', 'motion_type_supp_female_min') ?>:
@@ -529,6 +551,28 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupporters">
             <input type="number" name="amendmentInitiatorSettings[minSupporters]" class="form-control" id="typeMinSupportersAmendment"
                    value="<?= Html::encode($amendmentSettings->minSupporters) ?>">
+        </div>
+    </div>
+
+    <div class="stdTwoCols formGroupSupporterPersonType" id="typeSupporterPersonTypeRowAmendment" data-visibility="hasSupporters">
+        <div class="leftColumn">
+            <?= Yii::t('admin', 'motion_type_supp_person_type') ?>:
+        </div>
+        <div class="rightColumn contactDetails supporterPersonTypes">
+            <div class="form-control">
+                <label class="supporterCanBePerson">
+                    <?php
+                    echo Html::checkbox('amendmentInitiatorSettings[supporterCanBePerson]', $amendmentSettings->supporterCanBePerson, ['id' => 'typeSupporterCanBePersonAmendment']);
+                    echo Yii::t('admin', 'motion_type_person_natural');
+                    ?>
+                </label>
+                <label class="supporterCanBeOrganization">
+                    <?php
+                    echo Html::checkbox('amendmentInitiatorSettings[supporterCanBeOrganization]', $amendmentSettings->supporterCanBeOrganization, ['id' => 'typeSupporterCanBeOrgaAmendment']);
+                    echo Yii::t('admin', 'motion_type_person_orga');
+                    ?>
+                </label>
+            </div>
         </div>
     </div>
 

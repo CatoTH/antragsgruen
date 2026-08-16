@@ -2,6 +2,7 @@
 
 use app\models\AdminTodoItem;
 use \app\models\db\IMotion;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -16,7 +17,7 @@ $motionStatuses = $consultation->getStatuses()->getStatusNames();
 
 echo Html::encode($motionStatuses[$entry->status]);
 if ($entry->status === IMotion::STATUS_COLLECTING_SUPPORTERS) {
-    echo ' (' . count($entry->getSupporters(true)) . ')';
+    echo ' (' . Html::encode(LayoutHelper::formatSupporterCount($entry)) . ')';
 }
 if ($entry->status === IMotion::STATUS_OBSOLETED_BY_MOTION && $entry->statusString > 0) {
     $motion = $consultation->getMotion((int) $entry->statusString);

@@ -122,6 +122,10 @@ return [
     'support_already'        => 'Tu soutiens déjà cette motion',
     'support_orga'           => 'Organisation',
     'support_name'           => 'Nom',
+    'support_contact_name'   => 'Personne de contact',
+    'support_as_question'    => 'En tant que qui veux-tu soutenir ?',
+    'support_as_person'      => 'En tant que personne',
+    'support_as_orga'        => 'En tant qu\'organisation',
 
     'confirmed_support_phase'            => "Tu as créé %TITLE%.<br>\nPour la déposer officiellement, il faut au moins <strong>%MIN% soutiens</strong>%ADD_REQUIREMENT%.<br>\nEnvoie le lien suivant pour collecter des soutiens pour ta motion :",
     'submitted_screening_email'          => "Salut,\n\nTu viens de déposer une motion. Elle va maintenant être examinée puis publiée. Tu seras notifié quand elle l'aura été.\n\nTu peux voir la motion ici : %LINK%",

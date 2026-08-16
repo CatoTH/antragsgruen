@@ -11,6 +11,7 @@
 - Antragsgrün supports now multilingual consultations, where documents are submitted in multiple languages in parallel and users can choose the language to view the page and motions in. Provisions for automatic tranlations of motions and amendments are there including one demo-plugin.
 - Spanish and Swedish are now supported rudimentarily.
 - Motion screening can now be configured on a per-motion-type basis.
+- It is now possible to allow supporting motions and amendments as organizations, not only as single person / delegate.
 - More uploaded PDFs can be handled without having to install additional software or libraries.
 - Proposed procedure versions can now be retrospectively deleted.
 - It is now possible to set deadlines for amendments that amend other amendments.

@@ -15,6 +15,8 @@ use yii\helpers\Html;
 $getSupporterRow = function (ISupporter $supporter) use ($settings): string {
     $str = '<li><div class="supporterRow">';
     $str .= '<input type="hidden" name="supporters[id][]" value="' . Html::encode($supporter->id ?: '') . '">';
+    $str .= '<input type="hidden" name="supporters[personType][]" value="' .
+            intval($supporter->personType ?: ISupporter::PERSON_NATURAL) . '">';
 
     $title = Html::encode(Yii::t('admin', 'motion_supp_name'));
     $str   .= '<div class="nameCol">';

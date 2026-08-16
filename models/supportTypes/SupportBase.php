@@ -219,7 +219,9 @@ abstract class SupportBase
             $sup->name = trim($supporterDto->name);
             $sup->role = ISupporter::ROLE_SUPPORTER;
             $sup->userId = null;
-            $sup->personType = ISupporter::PERSON_NATURAL;
+            $sup->personType = ($supporterDto->personType === SupporterType::ORGANIZATION
+                ? ISupporter::PERSON_ORGANIZATION
+                : ISupporter::PERSON_NATURAL);
             $sup->position = $i;
             $sup->dateCreation = date('Y-m-d H:i:s');
             if ($supporterDto->id) {

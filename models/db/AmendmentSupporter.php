@@ -97,7 +97,7 @@ class AmendmentSupporter extends ISupporter
         return '';
     }
 
-    public static function createSupport(Amendment $amendment, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false): void
+    public static function createSupport(Amendment $amendment, ?User $user, string $name, string $orga, string $role, string $gender = '', bool $nonPublic = false, int $personType = ISupporter::PERSON_NATURAL): void
     {
         $hadEnoughSupportersBefore = $amendment->hasEnoughSupporters($amendment->getMyMotionType()->getAmendmentSupportTypeClass());
 
@@ -128,7 +128,12 @@ class AmendmentSupporter extends ISupporter
         $support->organization = $orga;
         $support->position     = $maxPos + 1;
         $support->role         = $role;
+        $support->personType   = $personType;
         $support->dateCreation = date('Y-m-d H:i:s');
+        if ($personType === ISupporter::PERSON_ORGANIZATION) {
+            // The organization is the supporter, the name refers to the person acting on its behalf
+            $support->contactName = $name;
+        }
         $support->setExtraDataEntry(self::EXTRA_DATA_FIELD_GENDER, ($gender !== '' ? $gender : null));
         $support->setExtraDataEntry(self::EXTRA_DATA_FIELD_NON_PUBLIC, $nonPublic);
         $support->save();
@@ -174,7 +179,7 @@ class AmendmentSupporter extends ISupporter
         $supportType = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
         $request->validate($supportType);
 
-        self::createSupport($amendment, $user, $request->name, $request->organization ?? '', self::ROLE_SUPPORTER, $request->gender ?? '', (bool)$request->nonPublic);
+        self::createSupport($amendment, $user, $request->name, $request->organization ?? '', self::ROLE_SUPPORTER, $request->gender ?? '', nonPublic: (bool)$request->nonPublic, personType: $request->getPersonTypeDb());
 
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_SUPPORT, $amendment->id);
 

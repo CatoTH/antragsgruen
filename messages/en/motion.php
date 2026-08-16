@@ -250,6 +250,10 @@ return [
     'support_already'        => 'You already support this motion',
     'support_orga'           => 'Organization',
     'support_name'           => 'Name',
+    'support_contact_name'   => 'Contact person',
+    'support_as_question'    => 'As whom do you want to support?',
+    'support_as_person'      => 'As a person',
+    'support_as_orga'        => 'As an organization',
 
     'confirmed_support_phase'            => "You created the %TITLE%.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>%ADD_REQUIREMENT%.<br>\nSend the following link to gain support for your motion:",
     'confirmed_support_phase_addfemale'  => ', including %MIN% women',

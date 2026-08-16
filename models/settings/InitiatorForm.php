@@ -22,6 +22,8 @@ class InitiatorForm implements \JsonSerializable, IHasPolicies
 
     public int $minSupporters = 1;
     public ?int $minSupportersFemale = null;
+    public bool $supporterCanBePerson = true;
+    public bool $supporterCanBeOrganization = false;
     public ?int $maxPdfSupporters = null;
     public bool $hasOrganizations = true;
     public bool $allowMoreSupporters = true;
