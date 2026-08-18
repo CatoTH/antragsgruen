@@ -25,14 +25,15 @@ class DebateStateTest extends DBTestBase
         $this->assertStringContainsString('A2', $state->current->titleWithPrefix);
         $this->assertNotNull($state->current->initiatorsHtml);
         $this->assertStringStartsWith('2015-03-30T10:00:00', $state->current->dateStarted);
-        $this->assertNull($state->current->votingBlockId);
+        $this->assertNull($state->current->votingBlock);
 
         $data = json_decode(Tools::getSerializer()->serialize($state, 'json'), true);
         $this->assertSame('motion', $data['current']['target_type']);
         $this->assertSame(2, $data['current']['target_id']);
         $this->assertSame('O’zapft is!', $data['current']['title']);
         $this->assertArrayHasKey('url_html', $data['current']);
-        $this->assertArrayHasKey('speech_queue_id', $data['current']);
+        $this->assertArrayHasKey('speech_queue', $data['current']);
+        $this->assertArrayHasKey('voting_block', $data['current']);
     }
 
     public function testNoCurrentDebate(): void

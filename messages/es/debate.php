@@ -31,6 +31,8 @@ return [
     'admin_stop_err'           => 'No se ha podido finalizar el debate.',
     'admin_speech_loading'     => 'Cargando la lista de oradores…',
     'admin_speech_err'         => 'No se ha podido cargar la lista de oradores.',
+    'admin_speech_manage'      => 'Gestionar lista de oradores',
+    'admin_speech_activate'    => 'Activar lista de oradores',
     'admin_speech_no_amendment' => 'Todavía no se pueden asociar listas de oradores a las enmiendas.',
 
     'voting_err'               => 'No se ha podido cargar la votación.',

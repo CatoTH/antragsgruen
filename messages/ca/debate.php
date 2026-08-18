@@ -31,6 +31,8 @@ return [
     'admin_stop_err'           => 'No s\'ha pogut finalitzar el debat.',
     'admin_speech_loading'     => 'S\'està carregant la llista d\'oradors…',
     'admin_speech_err'         => 'No s\'ha pogut carregar la llista d\'oradors.',
+    'admin_speech_manage'      => 'Gestionar la llista de parlaments',
+    'admin_speech_activate'    => 'Activar la llista de parlaments',
     'admin_speech_no_amendment' => 'Encara no es poden associar llistes d\'oradors a les esmenes.',
 
     'voting_err'               => 'No s\'ha pogut carregar la votació.',

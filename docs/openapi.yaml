@@ -1590,19 +1590,55 @@ components:
           nullable: true
           description: URL of the HTML page of the debated motion or amendment. Null for agenda items.
           example: https://test.antragsgruen.de/consultation/2-ozapft-is
-        speech_queue_id:
+        speech_queue:
+          $ref: '#/components/schemas/DebateItemSpeechQueue'
+        voting_block:
+          $ref: '#/components/schemas/DebateItemVotingBlock'
+
+    DebateItemSpeechQueue:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: The speaking list attached to the debated item. Null if none is attached.
+      required:
+        - id
+        - is_active
+        - title
+      properties:
+        id:
           type: integer
-          nullable: true
-          description: ID of the speaking list attached to the debated item, usable with the speech endpoints
+          description: ID of the speaking list, usable with the speech endpoints
           example: 23
-        voting_block_id:
+        is_active:
+          type: boolean
+          description: Whether the speaking list is currently active
+        title:
+          type: string
+          description: Title of the speaking list
+
+    DebateItemVotingBlock:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: >
+        The voting block for the debated item: the one explicitly assigned to the debate, or - for a
+        debated motion/amendment that is a voting item - the block it belongs to. Null if none.
+      required:
+        - id
+        - status
+        - title
+      properties:
+        id:
           type: integer
-          nullable: true
-          description: >
-            ID of the voting block for the debated item: the one explicitly assigned to the debate,
-            or - for a debated motion/amendment that is a voting item - the block it belongs to.
-            Usable with the voting endpoints.
+          description: ID of the voting block, usable with the voting endpoints
           example: 42
+        status:
+          type: integer
+          description: Status of the voting block (see VotingBlock statuses)
+          example: 1
+        title:
+          type: string
+          description: Title of the voting block
 
     DebateVotingState:
       x-php-namespace: debate

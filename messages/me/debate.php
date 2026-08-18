@@ -31,6 +31,8 @@ return [
     'admin_stop_err'           => 'Nije moguće završiti raspravu.', // Original: Could not end the debate.
     'admin_speech_loading'     => 'Učitavanje liste govornika…', // Original: Loading the speaking list…
     'admin_speech_err'         => 'Nije moguće učitati listu govornika.', // Original: Could not load the speaking list.
+    'admin_speech_manage'      => 'Upravljaj listom govornika', // Original: Manage speaking list
+    'admin_speech_activate'    => 'Aktiviraj listu govornika', // Original: Activate speaking list
     'admin_speech_no_amendment' => 'Liste govornika još nije moguće povezati sa amandmanima.', // Original: Speaking lists cannot be attached to amendments yet.
 
     'voting_err'               => 'Nije moguće učitati glasanje.', // Original: Could not load the voting.

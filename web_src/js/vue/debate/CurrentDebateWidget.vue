@@ -154,10 +154,10 @@ export default {
           return this.current ? this.current.id : null;
         },
         currentSpeechQueueId() {
-          return this.current ? this.current.speech_queue_id : null;
+          return this.current && this.current.speech_queue ? this.current.speech_queue.id : null;
         },
         currentVotingBlockId() {
-          return this.current ? this.current.voting_block_id : null;
+          return this.current && this.current.voting_block ? this.current.voting_block.id : null;
         },
         /* Adding & seconding secondary motions is disabled for now:
         creatableMotionTypes() {
@@ -183,7 +183,7 @@ export default {
     },
     methods: {
         maybeLoadSpeechQueue() {
-            if (!this.current || !this.current.speech_queue_id) {
+            if (!this.current || !this.current.speech_queue) {
                 return;
             }
             if (this.speechQueue || this.speechLoading) {
@@ -194,10 +194,11 @@ export default {
         loadSpeechQueue() {
             this.speechLoading = true;
             this.speechError = null;
-            getJson(this.speechPollUrl.replace(/QUEUEIDS/, this.current.speech_queue_id))
+            const speechQueueId = this.current.speech_queue.id;
+            getJson(this.speechPollUrl.replace(/QUEUEIDS/, speechQueueId))
                 .then(queues => {
                     queues.forEach(queue => {
-                      if (queue.id === this.current.speech_queue_id) {
+                      if (queue.id === speechQueueId) {
                         this.speechQueue = queue;
                       }
                     })
@@ -216,7 +217,7 @@ export default {
             if (!this.votingPollUrl) {
                 return;
             }
-            const votingBlockId = this.current ? this.current.voting_block_id : null;
+            const votingBlockId = this.current && this.current.voting_block ? this.current.voting_block.id : null;
             if (!votingBlockId) {
                 this.votingBlock = null;
                 return;

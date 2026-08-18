@@ -97,8 +97,12 @@
     border-top: solid 1px #aaa;
   }
 
-  .debatedItem .stopDebateBtn {
-    margin-top: 5px;
+  .debatedItemActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
   }
 
   .startDebateTitle {

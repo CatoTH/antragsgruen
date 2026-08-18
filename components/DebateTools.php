@@ -157,6 +157,42 @@ class DebateTools
     }
 
     /**
+     * Gets (or creates) the speaking list for the debated item and marks it active, enabling the speech
+     * feature for the consultation and deactivating other non-agenda lists (mirrors the speech admin's
+     * activation behaviour, where only one non-agenda list is active at a time).
+     */
+    public static function activateSpeechQueue(DebateItem $debate): SpeechQueue
+    {
+        $queue = self::getOrCreateSpeechQueue($debate);
+        $consultation = $debate->getMyConsultation();
+
+        $queue->isActive = 1;
+        $queue->save();
+
+        $settings = $consultation->getSettings();
+        if (!$settings->hasSpeechLists) {
+            $settings->hasSpeechLists = true;
+            $consultation->setSettings($settings);
+            $consultation->save();
+        }
+
+        if ($queue->agendaItemId === null) {
+            foreach ($consultation->speechQueues as $otherQueue) {
+                if ($otherQueue->id !== $queue->id && $otherQueue->agendaItemId === null && $otherQueue->isActive) {
+                    $otherQueue->isActive = 0;
+                    $otherQueue->save();
+                }
+            }
+        }
+
+        $consultation->refresh();
+        LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
+        LiveTools::sendSpeechQueue($consultation, SpeechQueueApi::fromEntity($queue));
+
+        return $queue;
+    }
+
+    /**
      * Resolves the voting block for a debated item: the one explicitly assigned to the debate, or - for a
      * debated motion/amendment that is itself a voting item - the block it belongs to. Agenda items only
      * ever have an explicitly assigned voting.

@@ -20,11 +20,23 @@
                         <template v-t="['debate', 'fulltext']"></template>
                     </a>
                 </div>
-                <button type="button" class="btn btn-default btn-xs stopDebateBtn" :disabled="starting || stopping"
-                        @click="stopDebate()">
-                    <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
-                    <template v-t="['debate', 'admin_stop_do']"></template>
-                </button>
+                <div class="debatedItemActions">
+                    <button type="button" class="btn btn-default btn-xs stopDebateBtn" :disabled="starting || stopping"
+                            @click="stopDebate()">
+                        <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                        <template v-t="['debate', 'admin_stop_do']"></template>
+                    </button>
+                    <button type="button" class="btn btn-default btn-xs manageSpeechBtn"
+                            :disabled="starting || stopping || speechActivating" @click="onSpeechButton()">
+                        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                        <template v-t="['debate', current.speech_queue && current.speech_queue.is_active ? 'admin_speech_manage' : 'admin_speech_activate']"></template>
+                    </button>
+                    <button type="button" class="btn btn-default btn-xs manageVotingBtn"
+                            :disabled="starting || stopping || votingBusy" @click="onVotingButton()">
+                        <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                        <template v-t="['debate', current.voting_block ? 'admin_voting_manage' : 'admin_voting_create']"></template>
+                    </button>
+                </div>
             </div>
 
             <div v-if="loadError" class="alert alert-danger">{{ loadError }}</div>
@@ -264,6 +276,7 @@ export default {
             speechQueue: null,
             speechLoading: false,
             speechError: null,
+            speechActivating: false,
             votingState: null,
             votingLoading: false,
             votingError: null,
@@ -396,10 +409,10 @@ export default {
         },
         createVoting() {
             if (this.votingBusy) {
-                return;
+                return Promise.resolve();
             }
             this.votingBusy = true;
-            postJson(this.votingUrl, { question: this.votingQuestion || null })
+            return postJson(this.votingUrl, { question: this.votingQuestion || null })
                 .then(state => this.applyVotingState(state))
                 .catch(err => {
                     console.error('Could not create the voting', err);
@@ -408,6 +421,66 @@ export default {
                 .finally(() => {
                     this.votingBusy = false;
                 });
+        },
+        reloadDebateState() {
+            return authorizedFetch(this.debateUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP status ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(state => {
+                    this.state = state;
+                });
+        },
+        onSpeechButton() {
+            if (this.current && this.current.speech_queue && this.current.speech_queue.is_active) {
+                this.activeTab = 'speech';
+            } else {
+                this.activateSpeechList();
+            }
+        },
+        activateSpeechList() {
+            if (this.speechActivating) {
+                return;
+            }
+            this.speechActivating = true;
+            // Activate (creating the list if needed), then reload the state so the button label and the
+            // user-facing widget reflect the now-active list, and switch to the speech tab.
+            postJson(this.speechQueueUrl, { activate: true })
+                .then(() => this.reloadDebateState())
+                .then(() => {
+                    this.speechError = null;
+                    this.activeTab = 'speech';
+                })
+                .catch(err => {
+                    console.error('Could not activate the speaking list', err);
+                    this.speechError = Translate.getTranslation('debate', 'admin_speech_err');
+                })
+                .finally(() => {
+                    this.speechActivating = false;
+                });
+        },
+        onVotingButton() {
+            if (this.current && this.current.voting_block) {
+                this.activeTab = 'voting';
+                return;
+            }
+            // No voting yet: a motion/amendment becomes the voting item in one click; an agenda item or
+            // free-text debate needs a typed question, so the tab is opened for the admin to enter it.
+            const targetType = this.current ? this.current.target_type : null;
+            if (targetType === 'motion' || targetType === 'amendment') {
+                // Reload the debate state after creating so current.voting_block (and thus this button's
+                // label) reflects the new voting, then open the tab.
+                this.createVoting()
+                    .then(() => this.reloadDebateState())
+                    .then(() => {
+                        this.activeTab = 'voting';
+                    });
+            } else {
+                this.activeTab = 'voting';
+            }
         },
         applyVotingState(state) {
             this.votingState = state;

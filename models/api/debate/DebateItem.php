@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\models\api\debate;
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment, ConsultationAgendaItem, DebateItem as DebateItemEntity, Motion};
+use app\models\db\{Amendment, ConsultationAgendaItem, DebateItem as DebateItemEntity, Motion, SpeechQueue, VotingBlock};
 
 class DebateItem
 {
@@ -19,8 +19,8 @@ class DebateItem
         public ?string $initiatorsHtml = null,
         public ?string $urlJson = null,
         public ?string $urlHtml = null,
-        public ?int $speechQueueId = null,
-        public ?int $votingBlockId = null,
+        public ?DebateItemSpeechQueue $speechQueue = null,
+        public ?DebateItemVotingBlock $votingBlock = null,
     ) {
     }
 
@@ -73,34 +73,63 @@ class DebateItem
             initiatorsHtml: $initiatorsHtml,
             urlJson: $urlJson,
             urlHtml: $urlHtml,
-            speechQueueId: self::getSpeechQueueId($entity),
-            votingBlockId: self::getVotingBlockId($entity),
+            speechQueue: self::buildSpeechQueue($entity),
+            votingBlock: self::buildVotingBlock($entity),
         );
     }
 
-    private static function getVotingBlockId(DebateItemEntity $entity): ?int
+    private static function buildVotingBlock(DebateItemEntity $entity): ?DebateItemVotingBlock
+    {
+        $block = self::resolveVotingBlock($entity);
+        if ($block === null) {
+            return null;
+        }
+
+        return new DebateItemVotingBlock(
+            id: $block->id,
+            status: $block->votingStatus,
+            title: $block->title,
+        );
+    }
+
+    private static function resolveVotingBlock(DebateItemEntity $entity): ?VotingBlock
     {
         // Explicit assignment wins; otherwise, for a debated motion/amendment that is a voting item,
         // fall back to the block it belongs to. Agenda items only ever have an explicit assignment.
+        $consultation = $entity->getMyConsultation();
         if ($entity->votingBlockId !== null) {
-            return $entity->votingBlockId;
+            return $consultation->getVotingBlock($entity->votingBlockId);
         }
         $target = $entity->getDebateTarget();
         if (($target instanceof Motion || $target instanceof Amendment) && $target->votingBlockId !== null) {
-            return $target->votingBlockId;
+            return $consultation->getVotingBlock($target->votingBlockId);
         }
 
         return null;
     }
 
-    private static function getSpeechQueueId(DebateItemEntity $entity): ?int
+    private static function buildSpeechQueue(DebateItemEntity $entity): ?DebateItemSpeechQueue
+    {
+        $queue = self::resolveSpeechQueue($entity);
+        if ($queue === null) {
+            return null;
+        }
+
+        return new DebateItemSpeechQueue(
+            id: $queue->id,
+            isActive: (bool)$queue->isActive,
+            title: $queue->getTitle(),
+        );
+    }
+
+    private static function resolveSpeechQueue(DebateItemEntity $entity): ?SpeechQueue
     {
         if ($entity->motionId === null && $entity->amendmentId === null && $entity->agendaItemId === null) {
             if ($entity->freeText !== null) {
                 // Free-text debates use the generic fallback speaking list (not assigned to any item)
                 foreach ($entity->getMyConsultation()->speechQueues as $queue) {
                     if ($queue->motionId === null && $queue->amendmentId === null && $queue->agendaItemId === null) {
-                        return $queue->id;
+                        return $queue;
                     }
                 }
             }
@@ -108,13 +137,13 @@ class DebateItem
         }
         foreach ($entity->getMyConsultation()->speechQueues as $queue) {
             if ($entity->motionId !== null && $queue->motionId === $entity->motionId) {
-                return $queue->id;
+                return $queue;
             }
             if ($entity->amendmentId !== null && $queue->amendmentId === $entity->amendmentId) {
-                return $queue->id;
+                return $queue;
             }
             if ($entity->agendaItemId !== null && $queue->agendaItemId === $entity->agendaItemId) {
-                return $queue->id;
+                return $queue;
             }
         }
 

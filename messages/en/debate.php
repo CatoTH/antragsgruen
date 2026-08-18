@@ -115,6 +115,14 @@ return [
         'text' => 'Could not load the speaking list.',
         'js' => true,
     ],
+    'admin_speech_manage'     => [
+        'text' => 'Manage speaking list',
+        'js' => true,
+    ],
+    'admin_speech_activate'   => [
+        'text' => 'Activate speaking list',
+        'js' => true,
+    ],
     'admin_speech_no_amendment' => [
         'text' => 'Speaking lists cannot be attached to amendments yet.',
         'js' => true,

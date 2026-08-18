@@ -112,6 +112,14 @@ return [
         'text' => 'Die Redeliste konnte nicht geladen werden.',
         'js' => true,
     ],
+    'admin_speech_manage'     => [
+        'text' => 'Redeliste verwalten',
+        'js' => true,
+    ],
+    'admin_speech_activate'   => [
+        'text' => 'Redeliste aktivieren',
+        'js' => true,
+    ],
     'admin_speech_no_amendment' => [
         'text' => 'Redelisten können noch nicht an Änderungsanträge angehängt werden.',
         'js' => true,

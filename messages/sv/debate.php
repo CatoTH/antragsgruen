@@ -31,6 +31,8 @@ return [
     'admin_stop_err'           => 'Kunde inte avsluta debatten.',
     'admin_speech_loading'     => 'Laddar talarlistan…',
     'admin_speech_err'         => 'Kunde inte ladda talarlistan.',
+    'admin_speech_manage'      => 'Hantera talarlista',
+    'admin_speech_activate'    => 'Aktivera talarlista',
     'admin_speech_no_amendment' => 'Talarlistor kan ännu inte kopplas till ändringsförslag.',
 
     'voting_err'               => 'Kunde inte ladda röstningen.',

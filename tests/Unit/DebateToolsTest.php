@@ -141,7 +141,26 @@ class DebateToolsTest extends DBTestBase
         $consultation->refresh();
         $state = \app\models\api\debate\DebateState::fromConsultation($consultation);
         $this->assertNotNull($state->current);
-        $this->assertSame($queue->id, $state->current->speechQueueId);
+        $this->assertNotNull($state->current->speechQueue);
+        $this->assertSame($queue->id, $state->current->speechQueue->id);
+        $this->assertSame($queue->getTitle(), $state->current->speechQueue->title);
+    }
+
+    public function testActivateSpeechQueueMarksItActive(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
+        $amendment = $consultation->getAmendment(1);
+        $debate = DebateTools::startDebate($consultation, $amendment);
+
+        $queue = DebateTools::activateSpeechQueue($debate);
+        $this->assertSame(1, (int)$queue->isActive);
+
+        $consultation->refresh();
+        $state = \app\models\api\debate\DebateState::fromConsultation($consultation);
+        $this->assertNotNull($state->current->speechQueue);
+        $this->assertTrue($state->current->speechQueue->isActive);
     }
 
     public function testEndDebate(): void

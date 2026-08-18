@@ -149,7 +149,13 @@ class DebateController extends RestBase
             return new RestApiExceptionResponse(400, 'A speech queue can only be attached to a debated motion, amendment, agenda item, or free text');
         }
 
-        $queue = DebateTools::getOrCreateSpeechQueue($debate);
+        // An optional {"activate": true} body activates the speaking list (used by the debated tab's
+        // "Activate speaking list" button); otherwise the list is only get-or-created (as before).
+        $body = json_decode((string)$this->getPostBody() ?: '{}', true);
+        $activate = is_array($body) && !empty($body['activate']);
+        $queue = $activate
+            ? DebateTools::activateSpeechQueue($debate)
+            : DebateTools::getOrCreateSpeechQueue($debate);
 
         return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
     }

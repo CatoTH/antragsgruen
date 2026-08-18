@@ -31,6 +31,8 @@ return [
     'admin_stop_err'           => 'Impossible de terminer le débat.',
     'admin_speech_loading'     => 'Chargement de la liste des orateur·rices…',
     'admin_speech_err'         => 'Impossible de charger la liste des orateur·rices.',
+    'admin_speech_manage'      => 'Gérer la liste des intervenant·es',
+    'admin_speech_activate'    => 'Activer la liste des intervenant·es',
     'admin_speech_no_amendment' => 'Les listes d\'orateur·rices ne peuvent pas encore être associées aux amendements.',
 
     'voting_err'               => 'Impossible de charger le vote.',

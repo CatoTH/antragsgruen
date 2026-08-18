@@ -31,6 +31,8 @@ return [
     'admin_stop_err'           => 'Kon het debat niet beëindigen.',
     'admin_speech_loading'     => 'Sprekerslijst laden…',
     'admin_speech_err'         => 'Kon de sprekerslijst niet laden.',
+    'admin_speech_manage'      => 'Sprekerslijst beheren',
+    'admin_speech_activate'    => 'Sprekerslijst activeren',
     'admin_speech_no_amendment' => 'Sprekerslijsten kunnen nog niet aan amendementen worden gekoppeld.',
 
     'voting_err'               => 'Kon de stemming niet laden.',
