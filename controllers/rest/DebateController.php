@@ -231,6 +231,7 @@ class DebateController extends RestBase
 
         if ($debate === null) {
             return new DebateVotingState(
+                canUnassign: false,
                 createMode: DebateVotingStateCreateMode::NONE,
                 selectableVotingBlocks: $selectable,
                 assignedVotingBlockId: null,
@@ -247,7 +248,14 @@ class DebateController extends RestBase
 
         $resolved = DebateTools::getVotingBlockForDebate($debate);
 
+        // Unassigning only removes the voting from the debate if there is no fallback: a debated
+        // motion/amendment that is itself a voting item keeps resolving to its own block after the
+        // explicit assignment is cleared, so the "unassign" button would be a no-op and is hidden.
+        $hasFallback = ($target instanceof Motion || $target instanceof Amendment) && $target->votingBlockId !== null;
+        $canUnassign = ($debate->votingBlockId !== null) && !$hasFallback;
+
         return new DebateVotingState(
+            canUnassign: $canUnassign,
             createMode: $createMode,
             selectableVotingBlocks: $selectable,
             assignedVotingBlockId: $debate->votingBlockId,

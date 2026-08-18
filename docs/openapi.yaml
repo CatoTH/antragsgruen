@@ -1647,12 +1647,20 @@ components:
       required:
         - create_mode
         - selectable_voting_blocks
+        - can_unassign
       properties:
         assigned_voting_block_id:
           type: integer
           nullable: true
           description: The voting block explicitly assigned to the debate (debateItem.votingBlockId). Null if none is assigned.
           example: 42
+        can_unassign:
+          type: boolean
+          description: >
+            Whether unassigning the explicitly assigned voting block would actually remove the voting from
+            the debate. False when the debated motion/amendment is itself a voting item of a block, so a
+            fallback voting would remain; the moderation widget then hides the "unassign" button (which
+            would otherwise appear to do nothing).
         resolved_voting_block:
           $ref: '#/components/schemas/DebateVotingBlock'
         create_mode:

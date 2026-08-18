@@ -29,12 +29,12 @@
                     <button type="button" class="btn btn-default btn-xs manageSpeechBtn"
                             :disabled="starting || stopping || speechActivating" @click="onSpeechButton()">
                         <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
-                        <template v-t="['debate', current.speech_queue && current.speech_queue.is_active ? 'admin_speech_manage' : 'admin_speech_activate']"></template>
+                        {{ speechButtonLabel }}
                     </button>
                     <button type="button" class="btn btn-default btn-xs manageVotingBtn"
                             :disabled="starting || stopping || votingBusy" @click="onVotingButton()">
                         <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
-                        <template v-t="['debate', current.voting_block ? 'admin_voting_manage' : 'admin_voting_create']"></template>
+                        {{ votingButtonLabel }}
                     </button>
                 </div>
             </div>
@@ -142,7 +142,7 @@
                         <div class="votingCardActions">
                             <a :href="votingState.resolved_voting_block.admin_link" target="_blank" rel="noopener"
                                class="btn btn-default btn-xs" v-t="['debate', 'admin_voting_manage']"></a>
-                            <button v-if="votingState.assigned_voting_block_id" type="button" class="btn btn-link btn-xs"
+                            <button v-if="votingState.can_unassign" type="button" class="btn btn-link btn-xs"
                                     :disabled="votingBusy" @click="unassignVoting()"
                                     v-t="['debate', 'admin_voting_unassign']"></button>
                         </div>
@@ -298,6 +298,17 @@ export default {
                 { id: 'amendment', items: this.selectables.amendments },
                 { id: 'agenda_item', items: this.selectables.agenda_items },
             ].filter(group => group.items.length > 0);
+        },
+        speechButtonLabel() {
+            // Computed (not v-t) so the label re-renders when the debated item changes, not only when the
+            // section is re-created: the v-t directive replaces its <template> with a static text node and
+            // does not re-translate on later updates.
+            const active = this.current && this.current.speech_queue && this.current.speech_queue.is_active;
+            return Translate.getTranslation('debate', active ? 'admin_speech_manage' : 'admin_speech_activate');
+        },
+        votingButtonLabel() {
+            const hasVoting = this.current && this.current.voting_block;
+            return Translate.getTranslation('debate', hasVoting ? 'admin_voting_manage' : 'admin_voting_create');
         },
         assignableOptions() {
             if (!this.votingState) {
@@ -471,13 +482,11 @@ export default {
             // free-text debate needs a typed question, so the tab is opened for the admin to enter it.
             const targetType = this.current ? this.current.target_type : null;
             if (targetType === 'motion' || targetType === 'amendment') {
-                // Reload the debate state after creating so current.voting_block (and thus this button's
-                // label) reflects the new voting, then open the tab.
-                this.createVoting()
-                    .then(() => this.reloadDebateState())
-                    .then(() => {
-                        this.activeTab = 'voting';
-                    });
+                // createVoting refreshes the debate state (via applyVotingState) so current.voting_block -
+                // and thus this button's label - reflects the new voting; then open the tab.
+                this.createVoting().then(() => {
+                    this.activeTab = 'voting';
+                });
             } else {
                 this.activeTab = 'voting';
             }
@@ -487,6 +496,10 @@ export default {
             this.votingError = null;
             this.selectedVotingBlockId = null;
             this.votingQuestion = '';
+            // A voting mutation (create/assign/unassign) also changes what the debate resolves to, so
+            // refresh the debate state to keep current.voting_block - and thus the debated tab's button
+            // label - in sync. Failure is non-fatal; the voting change itself already succeeded.
+            return this.reloadDebateState().catch(() => {});
         },
         votingStatusLabel(status) {
             const keys = {
