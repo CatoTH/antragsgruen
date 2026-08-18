@@ -111,7 +111,7 @@ upgrades remain an explicit step.
 | `SITE_ORGANIZATION` | - | Organization the site belongs to |
 | `SITE_LANGUAGE` | `BASE_LANGUAGE` | Language of the site's wording |
 | `SITE_FUNCTIONALITY` | 1 | Comma-separated feature codes: 1=motions, 2=manifesto, 3=applications, 4=agenda, 5=speech lists, 6=statute amendments, 7=votings, 8=documents |
-| `SITE_LOGIN_METHODS` | site default | Comma-separated login methods: 0=standard, 1=Grünes Netz, 3=external (SSO), 4=OpenSlides |
+| `SITE_LOGIN_METHODS` | site default | Comma-separated login methods: 0=standard, 1=Grünes Netz, 3=external (SSO) |
 
 The subdomain of the site comes from `SITE_SUBDOMAIN` (defaulting to `std`). In multisite
 mode there is no default, and sites are created with `./yii site/create` instead.
