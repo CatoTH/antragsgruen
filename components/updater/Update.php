@@ -97,7 +97,6 @@ class Update
         curl_setopt($curlc, CURLOPT_RETURNTRANSFER, true);
         $resp = curl_exec($curlc);
         $info = curl_getinfo($curlc);
-        curl_close($curlc);
 
         if ($info['http_code'] !== 200 || !is_string($resp)) {
             throw new \Exception('The update could not be loaded');

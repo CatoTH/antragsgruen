@@ -31,7 +31,6 @@ class UpdateChecker
         curl_setopt($curlc, CURLOPT_RETURNTRANSFER, true);
         $resp = curl_exec($curlc);
         $info = curl_getinfo($curlc);
-        curl_close($curlc);
 
         if (!in_array($info['http_code'], [200, 404])) {
             throw new Network("The updates could not be loaded");
