@@ -7,6 +7,7 @@ namespace app\commands;
 use app\models\db\{ISupporter, Motion, MotionSupporter, User};
 use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
+use yii\console\ExitCode;
 
 /**
  * @extends Controller<\yii\console\Application>
@@ -36,6 +37,47 @@ class DatabaseController extends Controller
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
         }
+    }
+
+    /**
+     * Initializes an empty database with the current schema.
+     *
+     * Unlike database/create this is available outside debug mode, so that containerized
+     * deployments can bootstrap a fresh database without the interactive web installer.
+     * It refuses to touch a database that already has tables, which makes it safe to run
+     * unconditionally on every container start.
+     *
+     * @throws \yii\db\Exception
+     */
+    public function actionInit(): int
+    {
+        $tablePrefix = AntragsgruenApp::getInstance()->tablePrefix;
+
+        if (in_array($tablePrefix . 'site', \Yii::$app->db->schema->getTableNames(), true)) {
+            $this->stdout('Database is already initialized, nothing to do.' . "\n");
+            return ExitCode::OK;
+        }
+
+        foreach (['create.sql', 'data.sql'] as $file) {
+            $sql = (string)file_get_contents(__DIR__ . '/../assets/db/' . $file);
+            $sql = str_replace('###TABLE_PREFIX###', $tablePrefix, $sql);
+            \Yii::$app->db->createCommand($sql)->execute();
+        }
+
+        // The web application caches table schemas for an hour, including the fact that a
+        // table does not exist yet. A container that served any request before this ran -
+        // a health check is enough - would otherwise keep reporting that the database is
+        // not set up long after it is. Schema caching is only enabled for the web
+        // application, so Schema::refresh() here would not clear it; drop the whole cache
+        // instead, which is harmless on a database that was just created.
+        $cache = \Yii::$app->has('cache') ? \Yii::$app->get('cache') : null;
+        if ($cache instanceof \yii\caching\CacheInterface) {
+            $cache->flush();
+        }
+
+        $this->stdout('Database initialized.' . "\n");
+
+        return ExitCode::OK;
     }
 
     /**

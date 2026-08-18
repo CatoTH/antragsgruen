@@ -8,6 +8,7 @@ use app\components\yii\MessageSource;
 use app\models\db\{Consultation, Site, User};
 use app\models\forms\SiteCreateForm;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Site as SiteSettings;
 use yii\console\{Controller, ExitCode};
 
 /**
@@ -36,6 +37,13 @@ class SiteController extends Controller
      */
     public string $functionality = '1';
 
+    /**
+     * Comma-separated list of Site::LOGIN_* codes.
+     * 0=standard, 1=gruenes_netz, 3=external (SSO), 4=openslides.
+     * Defaults to the site's built-in login methods when not given.
+     */
+    public ?string $loginMethods = null;
+
     public bool $openNow = true;
     public bool $superuser = true;
     public bool $forcePasswordChange = true;
@@ -44,10 +52,10 @@ class SiteController extends Controller
     public function options($actionID): array
     {
         return match ($actionID) {
-            'create' => [
+            'create', 'init' => [
                 'subdomain', 'title', 'contact', 'organization', 'language',
                 'password', 'givenName', 'familyName', 'functionality',
-                'openNow', 'superuser', 'forcePasswordChange', 'force',
+                'loginMethods', 'openNow', 'superuser', 'forcePasswordChange', 'force',
             ],
             default => [],
         };
@@ -63,6 +71,26 @@ class SiteController extends Controller
             'l' => 'language',
             'p' => 'password',
         ];
+    }
+
+    /**
+     * Creates the site unless it already exists.
+     *
+     * Takes the same options as site/create, but is safe to run repeatedly: an existing
+     * site is left untouched and reported as success instead of an error. This is the
+     * site-level counterpart of database/init, so that a container can bootstrap itself
+     * on every start without the caller having to interpret exit codes.
+     */
+    public function actionInit(string $email): int
+    {
+        $subdomain = $this->defaultSubdomain(AntragsgruenApp::getInstance());
+
+        if ($subdomain !== null && Site::findOne(['subdomain' => $subdomain]) !== null) {
+            $this->stdout('Site "' . $subdomain . '" already exists, nothing to do.' . "\n");
+            return ExitCode::OK;
+        }
+
+        return $this->actionCreate($email);
     }
 
     /**
@@ -198,6 +226,15 @@ class SiteController extends Controller
         }
         $site = $form->site;
 
+        if ($this->loginMethods !== null) {
+            $loginMethods = self::parseLoginMethods($this->loginMethods);
+            if ($loginMethods === null) {
+                $this->stderr('Invalid --loginMethods: ' . $this->loginMethods . "\n");
+                return ExitCode::USAGE;
+            }
+            self::applyLoginMethods($site, $loginMethods);
+        }
+
         $superuserPersisted = false;
         if ($this->superuser && $configFile !== null) {
             try {
@@ -232,20 +269,32 @@ class SiteController extends Controller
      * Returns the validated single-label subdomain, or null on error
      * (in which case a message has already been written to stderr).
      */
+    /**
+     * The subdomain this command would act on, before any validation.
+     *
+     * In single-site mode the wizard defaults to siteSubdomain (or "std"), so mirror
+     * that here and operators rarely have to think about this label. Returns null in
+     * multisite mode, where there is no sensible default.
+     */
+    private function defaultSubdomain(AntragsgruenApp $params): ?string
+    {
+        if ($this->subdomain !== null && $this->subdomain !== '') {
+            return $this->subdomain;
+        }
+
+        return $params->multisiteMode ? null : ($params->siteSubdomain ?: 'std');
+    }
+
     private function resolveSubdomain(AntragsgruenApp $params): ?string
     {
-        $subdomain = $this->subdomain;
+        $subdomain = $this->defaultSubdomain($params);
 
-        if ($subdomain === null || $subdomain === '') {
-            // In single-site mode, the wizard defaults to siteSubdomain (or "std").
-            // Mirror that here so operators rarely have to think about this label.
-            if (!$params->multisiteMode) {
-                $subdomain = $params->siteSubdomain ?: 'std';
-                $this->stdout('Using subdomain "' . $subdomain . '" (from siteSubdomain in config.json)' . "\n");
-            } else {
-                $this->stderr("Missing required --subdomain (multisiteMode is on, no default available)\n");
-                return null;
-            }
+        if ($subdomain === null) {
+            $this->stderr("Missing required --subdomain (multisiteMode is on, no default available)\n");
+            return null;
+        }
+        if ($subdomain !== $this->subdomain) {
+            $this->stdout('Using subdomain "' . $subdomain . '" (from the siteSubdomain setting)' . "\n");
         }
 
         if (!preg_match('/^[A-Za-z0-9]([A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/siu', $subdomain)) {
@@ -421,5 +470,70 @@ class SiteController extends Controller
             $this->stdout("The user will be required to change it on first login.\n");
         }
         $this->stdout("---------------------------------------------\n");
+    }
+
+    /**
+     * Sets the login methods of an existing site.
+     *
+     * Login methods are stored inside the site's serialized settings, so without this
+     * there is no scriptable way to enable SSO logins on an already-created site.
+     *
+     * @param string $subdomain Subdomain of the site to change
+     * @param string $loginMethods Comma-separated list of Site::LOGIN_* codes,
+     *                             e.g. "0,3" for standard plus external (SSO)
+     */
+    public function actionSetLoginMethods(string $subdomain, string $loginMethods): int
+    {
+        $site = Site::findOne(['subdomain' => $subdomain]);
+        if (!$site) {
+            $this->stderr('No site found with subdomain: ' . $subdomain . "\n");
+            return ExitCode::DATAERR;
+        }
+
+        $parsed = self::parseLoginMethods($loginMethods);
+        if ($parsed === null) {
+            $this->stderr('Invalid login methods: ' . $loginMethods . "\n");
+            return ExitCode::USAGE;
+        }
+
+        self::applyLoginMethods($site, $parsed);
+        $this->stdout('Login methods of "' . $subdomain . '" set to: ' . implode(', ', $parsed) . "\n");
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * @return int[]|null Parsed login method codes, or null if the input is invalid
+     */
+    private static function parseLoginMethods(string $loginMethods): ?array
+    {
+        $valid = [
+            SiteSettings::LOGIN_STD,
+            SiteSettings::LOGIN_GRUENES_NETZ,
+            SiteSettings::LOGIN_EXTERNAL,
+            SiteSettings::LOGIN_OPENSLIDES,
+        ];
+
+        $parsed = [];
+        foreach (explode(',', $loginMethods) as $method) {
+            $method = trim($method);
+            if ($method === '' || !ctype_digit($method) || !in_array((int)$method, $valid, true)) {
+                return null;
+            }
+            $parsed[] = (int)$method;
+        }
+
+        return array_values(array_unique($parsed));
+    }
+
+    /**
+     * @param int[] $loginMethods
+     */
+    private static function applyLoginMethods(Site $site, array $loginMethods): void
+    {
+        $settings = $site->getSettings();
+        $settings->loginMethods = $loginMethods;
+        $site->setSettings($settings);
+        $site->save();
     }
 }

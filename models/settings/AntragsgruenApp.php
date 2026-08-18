@@ -175,6 +175,23 @@ class AntragsgruenApp implements \JsonSerializable
             }
         }
 
+        // Enabled plugins
+        if ($this->plugins === []) {
+            $plugins = EnvironmentConfigLoader::getPluginsConfig();
+            if ($plugins !== null) {
+                /** @var array<class-string<ModuleBase>> $plugins */
+                $this->plugins = $plugins;
+            }
+        }
+
+        // Superuser accounts
+        if ($this->adminUserIds === []) {
+            $adminUserIds = EnvironmentConfigLoader::getAdminUserIdsConfig();
+            if ($adminUserIds !== null) {
+                $this->adminUserIds = $adminUserIds;
+            }
+        }
+
         // Application-level configuration
         $appConfig = EnvironmentConfigLoader::getApplicationConfig();
         foreach ($appConfig as $key => $value) {

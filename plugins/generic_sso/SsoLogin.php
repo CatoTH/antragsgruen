@@ -33,23 +33,32 @@ class SsoLogin implements LoginProviderInterface
     }
 
     /**
-     * Load configuration from config file
+     * Load configuration from config file and/or environment variables.
+     *
+     * Where both are present the file wins, matching the config.json > environment
+     * precedence documented in docs/environment-variables.md.
      */
     private function loadConfiguration(): array
     {
         $configFile = __DIR__ . '/../../config/generic_sso.json';
+        $envConfig = EnvironmentConfig::load();
 
         if (!file_exists($configFile)) {
-            return self::DEFAULT_CONFIG;
+            return $envConfig !== [] ? $envConfig : self::DEFAULT_CONFIG;
         }
 
         try {
-            $config = json_decode((string)file_get_contents($configFile), true, 512, JSON_THROW_ON_ERROR);
-            return $config;
+            $fileConfig = json_decode((string)file_get_contents($configFile), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             \Yii::error('Generic SSO: Invalid configuration file: ' . $e->getMessage());
-            return self::DEFAULT_CONFIG;
+            return $envConfig !== [] ? $envConfig : self::DEFAULT_CONFIG;
         }
+
+        if (!is_array($fileConfig)) {
+            return $envConfig !== [] ? $envConfig : self::DEFAULT_CONFIG;
+        }
+
+        return $envConfig !== [] ? EnvironmentConfig::mergeWithFileConfig($envConfig, $fileConfig) : $fileConfig;
     }
 
     public function getId(): string
@@ -311,6 +320,12 @@ class SsoLogin implements LoginProviderInterface
             $errors = json_encode($user->getErrors());
             throw new \Exception('Could not create/update user: ' . $errors);
         }
+
+        // user.authKey is BINARY(100), so the database returns it NUL-padded. For a user
+        // created in this request the in-memory value is still unpadded, which is what
+        // would end up in the identity cookie; the next request compares that against the
+        // padded value from the database, fails, and logs the user straight out again.
+        $user->refresh();
 
         // Sync user groups if configured
         if (isset($userData['groups']) && is_array($userData['groups'])) {

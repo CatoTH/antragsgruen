@@ -45,7 +45,6 @@ class Download extends Module
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         $data = curl_exec($handle);
         $info = curl_getinfo($handle);
-        curl_close($handle);
         if ($info['http_code'] !== 200) {
             throw new RuntimeException('File not found: '.$info['http_code'].' / '.$url);
         }

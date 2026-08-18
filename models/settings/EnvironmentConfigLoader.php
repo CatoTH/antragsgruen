@@ -354,6 +354,60 @@ class EnvironmentConfigLoader
     }
 
     /**
+     * Get the list of enabled plugins from environment variables
+     *
+     * PLUGINS: comma-separated plugin directory names, e.g. "generic_sso,antragsgruen_sites"
+     *
+     * @return string[]|null Plugin names, or null if PLUGINS is not set
+     */
+    public static function getPluginsConfig(): ?array
+    {
+        if (!self::hasEnv('PLUGINS')) {
+            return null;
+        }
+
+        $plugins = [];
+        foreach (explode(',', (string)self::getEnv('PLUGINS', '')) as $plugin) {
+            $plugin = trim($plugin);
+            if ($plugin === '') {
+                continue;
+            }
+            // Plugin names become part of a class name (app\plugins\<name>\Module)
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $plugin)) {
+                continue;
+            }
+            $plugins[] = $plugin;
+        }
+
+        return $plugins === [] ? null : array_values(array_unique($plugins));
+    }
+
+    /**
+     * Get the superuser account IDs from environment variables
+     *
+     * ADMIN_USER_IDS: comma-separated user IDs, e.g. "1,2"
+     *
+     * @return int[]|null User IDs, or null if ADMIN_USER_IDS is not set
+     */
+    public static function getAdminUserIdsConfig(): ?array
+    {
+        if (!self::hasEnv('ADMIN_USER_IDS')) {
+            return null;
+        }
+
+        $userIds = [];
+        foreach (explode(',', (string)self::getEnv('ADMIN_USER_IDS', '')) as $userId) {
+            $userId = trim($userId);
+            if ($userId === '' || !ctype_digit($userId)) {
+                continue;
+            }
+            $userIds[] = (int)$userId;
+        }
+
+        return $userIds === [] ? null : array_values(array_unique($userIds));
+    }
+
+    /**
      * Get environment variable value
      *
      * Checks both $_ENV and getenv() for maximum compatibility
@@ -362,7 +416,7 @@ class EnvironmentConfigLoader
      * @param mixed $default Default value if not set
      * @return string|null
      */
-    private static function getEnv(string $key, $default = null): ?string
+    public static function getEnv(string $key, $default = null): ?string
     {
         // Try $_ENV first (more reliable in some configurations)
         if (isset($_ENV[$key])) {
@@ -384,7 +438,7 @@ class EnvironmentConfigLoader
      * @param string $key Environment variable name
      * @return bool
      */
-    private static function hasEnv(string $key): bool
+    public static function hasEnv(string $key): bool
     {
         return isset($_ENV[$key]) || getenv($key) !== false;
     }
@@ -398,7 +452,7 @@ class EnvironmentConfigLoader
      * @param bool $default Default value
      * @return bool
      */
-    private static function getBoolEnv(string $key, bool $default): bool
+    public static function getBoolEnv(string $key, bool $default): bool
     {
         $value = self::getEnv($key);
 

@@ -21,8 +21,11 @@ RUN mkdir -p /var/www/html \
     && tar -xjf /tmp/app.tar.bz2 --strip-components=1 -C /var/www/html \
     && rm /tmp/app.tar.bz2 \
     && rm -f /var/www/html/config/INSTALLING \
-    && mv /var/www/html/config/ /var/www/html/config-defaults/ \
-    && mkdir /var/www/html/config/
+    # config/ is shipped ready to use, so nothing has to be written at startup and the
+    # application directory can stay read-only. config-defaults/ is the same content,
+    # kept for deployments that mount config/ as a volume: there the image's files are
+    # hidden, and the entrypoint restores them from here.
+    && cp -a /var/www/html/config /var/www/html/config-defaults
 
 # Allow Static View Caches
 RUN mkdir /tmp/viewcache && chown www-data:www-data /tmp/viewcache

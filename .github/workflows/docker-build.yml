@@ -129,7 +129,12 @@ jobs:
           mkdir -p plugins runtime
           chmod 775 runtime web/assets
           
-          cp ../../plugins/*php plugins/
+          # Bundled plugins, including generic_sso, whose league/oauth2-client dependency
+          # is installed unconditionally. Copying only *.php here would ship ModuleBase.php
+          # without any of the plugin directories that extend it. Which plugins are active
+          # is decided at runtime by the "plugins" setting, not by what is packaged.
+          cp -R ../../plugins/. plugins/
+          rm -rf plugins/test_stub_*
           mv web/index-production.php web/index.php 2>/dev/null || true
           # touch config/INSTALLING # Not in Docker build
           cp config/.htaccess runtime/
