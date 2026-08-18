@@ -43,21 +43,6 @@
   }
 }
 
-// Read-only projection of the debate: give it room and legible sizing on a projector screen.
-.projectorWidget .currentDebateContent {
-  padding: 20px;
-
-  .debatedItem {
-    .title {
-      font-size: 34px;
-    }
-
-    .proposer {
-      font-size: 16px;
-    }
-  }
-}
-
 .currentDebateInline {
   .secondaryMotionRow {
     border-top: solid 1px #ccc;

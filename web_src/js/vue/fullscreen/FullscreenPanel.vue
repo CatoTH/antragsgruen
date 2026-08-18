@@ -75,8 +75,10 @@ export default {
       return !!this.debate;
     },
     debateInitState: function () {
-      // The init state is passed as a serialized JSON string in the projector initdata.
-      return this.debate ? JSON.parse(this.debate.init_state) : null;
+      // The projector intentionally ships no debate state (it would be stale by the time the projector
+      // is opened); the widget loads the current state from the backend itself. Kept tolerant of a
+      // serialized state just in case a caller does provide one.
+      return this.debate && this.debate.init_state ? JSON.parse(this.debate.init_state) : null;
     },
     csrf: function () {
       const meta = document.querySelector("meta[name='csrf-token']");

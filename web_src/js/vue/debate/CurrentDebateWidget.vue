@@ -1,7 +1,7 @@
 <template>
     <div class="currentDebateContent">
         <div class="content">
-            <div v-if="!current" class="nothingDebated" v-t="['debate', 'nothing_debated']"></div>
+            <div v-if="loaded && !current" class="nothingDebated" v-t="['debate', 'nothing_debated']"></div>
             <div v-if="current" class="debatedItem">
                 <div class="title">{{ current.title }}</div>
                 <div class="proposer">
@@ -72,8 +72,10 @@ export default {
     name: 'CurrentDebateWidget',
     props: {
         initState: {
+            // Optional: the fullscreen projector passes no state (it would be stale by the time it is
+            // opened) and the widget loads the current state from the backend on mount instead.
             type: Object,
-            required: true,
+            default: null,
         },
         csrf: {
             type: String,
@@ -125,7 +127,11 @@ export default {
     },
     data() {
         return {
-            state: this.initState,
+            state: this.initState || null,
+            // Whether a debate state has been obtained yet (from initState, or the first backend load).
+            // The projector starts without one, so nothing is shown until the load completes rather than
+            // briefly flashing "nothing debated".
+            loaded: !!this.initState,
             pollingId: null,
             // Adding & seconding secondary motions is disabled for now:
             // motionTypes: null,
@@ -274,9 +280,14 @@ export default {
         },
         setDebateState(state) {
           this.state = state;
+          this.loaded = true;
         },
-        reloadData() {
-            if (this.liveConnected) {
+        reloadData(force) {
+            // The initState may be stale by the time the widget mounts - most visibly on the projector,
+            // which is opened long after the page (and thus its initState snapshot) was rendered. The
+            // first load is therefore forced regardless of the Live connection: Live only pushes future
+            // changes, never the current state, so relying on it here would keep showing the old snapshot.
+            if (this.liveConnected && !force) {
               return;
             }
             fetch(this.pollUrl)
@@ -351,6 +362,9 @@ export default {
         */
     },
     mounted() {
+        // Fetch the current state immediately so a freshly opened projector (or a page restored from
+        // cache) never lingers on the page-load snapshot until the first poll fires.
+        this.reloadData(true);
         this.pollingId = window.setInterval(() => this.reloadData(), POLLING_INTERVAL);
         // Adding & seconding secondary motions is disabled for now:
         // this.loadMotionTypes();

@@ -16,8 +16,11 @@ $layout = $controller->layoutParams;
 
 // When the "Currently debated" feature is enabled, the projector offers it as a dropdown option
 // (site-wide, next to motions and speaking lists) and renders the read-only user widget for it.
+// The state is deliberately omitted (includeState: false): the projector may be opened long after the
+// page was rendered, so it loads the current debate state from the backend on open rather than showing
+// a stale page-load snapshot.
 $debateInitData = $consultation->getSettings()->hasCurrentlyDebated
-    ? DebateTools::getUserWidgetInitData($consultation)
+    ? DebateTools::getUserWidgetInitData($consultation, false)
     : null;
 
 $fullscreenInitData = json_encode([

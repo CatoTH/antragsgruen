@@ -275,9 +275,13 @@ class DebateTools
      * Shared by the inline homepage widget (_index_debate.php) and the fullscreen projector
      * (_fullscreen_toggle.php), so both stay in sync.
      *
+     * The debate state itself is only included when $includeState is true. The fullscreen projector
+     * passes false: by the time it is opened the page-load snapshot would be out of date anyway, so the
+     * widget loads the current state from the backend on open instead (see CurrentDebateWidget.vue).
+     *
      * @return array<string, mixed>
      */
-    public static function getUserWidgetInitData(Consultation $consultation): array
+    public static function getUserWidgetInitData(Consultation $consultation, bool $includeState = true): array
     {
         $user = User::getCurrentUser();
         $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
@@ -297,7 +301,9 @@ class DebateTools
         }
 
         return [
-            'init_state'          => Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json'),
+            'init_state'          => $includeState
+                ? Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json')
+                : null,
             'poll_url'            => UrlHelper::createUrl(['/rest/debate/index']),
             'motion_types_url'    => UrlHelper::createUrl(['/rest/motion-type/index']),
             'create_motion_url'   => UrlHelper::createUrl(['/rest/motion/create']),

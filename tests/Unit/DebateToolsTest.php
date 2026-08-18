@@ -125,6 +125,25 @@ class DebateToolsTest extends DBTestBase
         $this->assertSame($queue->id, $again->id);
     }
 
+    public function testUserStateExposesAmendmentSpeechQueue(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
+        $amendment = $consultation->getAmendment(1);
+        $debate = DebateTools::startDebate($consultation, $amendment);
+
+        // Assign a speaking list to the debated amendment, as the admin widget's speech tab does
+        $queue = DebateTools::getOrCreateSpeechQueue($debate);
+        $this->assertSame(1, $queue->amendmentId);
+
+        // The user-facing DebateState must expose that queue so the inline widget can load it
+        $consultation->refresh();
+        $state = \app\models\api\debate\DebateState::fromConsultation($consultation);
+        $this->assertNotNull($state->current);
+        $this->assertSame($queue->id, $state->current->speechQueueId);
+    }
+
     public function testEndDebate(): void
     {
         /** @var Consultation $consultation */
