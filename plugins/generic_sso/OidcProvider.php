@@ -198,8 +198,6 @@ class OidcProvider
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
-        // No curl_close(): it is a no-op since PHP 8.0 and deprecated in 8.5, where
-        // Yii's error handler turns the deprecation into an exception.
 
         if ($httpCode !== 200 || !$response || !is_string($response)) {
             $errorMsg = 'Failed to discover OIDC configuration';
