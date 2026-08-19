@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{Tools, UrlHelper};
+use app\components\{LiveDataChannels, Tools, UrlHelper};
 use app\models\api\debate\DebateState;
 use yii\helpers\Html;
 
@@ -15,8 +15,8 @@ $layout = $controller->layoutParams;
 
 $layout->addJsTranslation('debate');
 $layout->addJsTranslation('speech');
-$layout->addLiveEventSubscription('admin', 'speech');
-$layout->addLiveEventSubscription('user', 'speech');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_ADMIN, LiveDataChannels::CHANNEL_SPEECH);
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_SPEECH);
 $layout->provideJwt = true;
 
 $initState = Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json');
@@ -33,7 +33,6 @@ $speechItemPerformOpUrl  = UrlHelper::createUrl(['/rest/speech/post-item-operati
 $speechCreateItemUrl     = UrlHelper::createUrl(['/rest/speech/admin-create-item', 'queueId' => 'QUEUEID']);
 $speechResetQueueUrl     = UrlHelper::createUrl(['/rest/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
 $speechRandomizeQueueUrl = UrlHelper::createUrl(['/rest/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
-$speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 
 ?>
 <section class="currentDebateAdmin currentSpeechPageWidth" aria-labelledby="currentDebateAdminTitle"
@@ -43,7 +42,6 @@ $speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin',
          data-speech-queue-url="<?= Html::encode($speechQueueUrl) ?>"
          data-voting-url="<?= Html::encode($votingUrl) ?>"
          data-speech-component-admin-link="<?= Html::encode($speechComponentAdminLink) ?>"
-         data-speech-poll-url="<?= Html::encode($speechPollUrl) ?>"
          data-speech-item-perform-operation-url="<?= Html::encode($speechItemPerformOpUrl) ?>"
          data-speech-randomize-queue-url="<?= Html::encode($speechRandomizeQueueUrl) ?>"
          data-speech-reset-queue-url="<?= Html::encode($speechResetQueueUrl) ?>"
@@ -77,7 +75,6 @@ $speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin',
                 votingUrl: this.votingUrl,
                 csrf: this.csrf,
                 speechComponentAdminLink: this.speechComponentAdminLink,
-                speechPollUrl: this.speechPollUrl,
                 speechItemPerformOperationUrl: this.speechItemPerformOperationUrl,
                 speechRandomizeQueueUrl: this.speechRandomizeQueueUrl,
                 speechResetQueueUrl: this.speechResetQueueUrl,
@@ -94,7 +91,6 @@ $speechPollUrl           = UrlHelper::createUrl(['/rest/speech/get-queue-admin',
                 votingUrl: $element.data('voting-url'),
                 csrf: document.querySelector("meta[name='csrf-token']").getAttribute("content"),
                 speechComponentAdminLink: $element.data('speech-component-admin-link'),
-                speechPollUrl: $element.data('speech-poll-url'),
                 speechItemPerformOperationUrl: $element.data('speech-item-perform-operation-url'),
                 speechRandomizeQueueUrl: $element.data('speech-randomize-queue-url'),
                 speechResetQueueUrl: $element.data('speech-reset-queue-url'),

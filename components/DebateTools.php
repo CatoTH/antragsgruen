@@ -340,10 +340,8 @@ class DebateTools
             'init_state'          => $includeState
                 ? Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json')
                 : null,
-            'poll_url'            => UrlHelper::createUrl(['/rest/debate/index']),
             'motion_types_url'    => UrlHelper::createUrl(['/rest/motion-type/index']),
             'create_motion_url'   => UrlHelper::createUrl(['/rest/motion/create']),
-            'speech_poll_url'     => UrlHelper::createUrl(['/rest/speech/get-queue', 'queueIds' => 'QUEUEIDS']),
             'speech_register_url' => UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']),
             'speech_unregister_url' => UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']),
             'speech_user'         => new SpeechUser($user, $cookieUser),

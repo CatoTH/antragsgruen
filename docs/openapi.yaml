@@ -1054,27 +1054,36 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /rest/{consultationPath}/speech/{queueId}/admin:
+  /rest/{consultationPath}/speech/{queueIds}/admin:
     get:
-      operationId: getSpeechQueueAdmin
-      summary: The moderator-facing state of a speaking list
+      operationId: getSpeechQueuesAdmin
+      summary: The moderator-facing state of one or more speaking lists
       description: >
-        Returns the full moderation view of a speaking list, including applicant names and metadata.
-        Requires the privilege to manage speaking lists.
+        Returns the full moderation view of the given speaking lists, including applicant names and
+        metadata. This is the endpoint the moderation widgets poll. Requires the privilege to manage
+        speaking lists.
       tags:
         - Speech
       security:
         - bearerAuth: [ ]
       parameters:
         - $ref: '#/components/parameters/consultationPath'
-        - $ref: '#/components/parameters/speechQueueId'
+        - name: queueIds
+          in: path
+          required: true
+          description: A single speaking-list ID or a comma-separated list of IDs.
+          example: "3,4"
+          schema:
+            type: string
       responses:
         '200':
-          description: The moderation view of the speaking list.
+          description: The moderation views of the speaking lists, in the order of the requested IDs.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SpeechQueueAdmin'
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpeechQueueAdmin'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':

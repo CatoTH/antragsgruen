@@ -76,8 +76,14 @@ const MIXINS = getSpeechCommonMixins();
 export default {
   props: ['initQueue', 'csrf', 'user', 'title'],
   mixins: [MIXINS],
+  data() {
+    return {
+      // The projector shows the speaking list as the main content, so it is updated more frequently
+      // than the widgets embedded into a regular page.
+      pollIntervalMs: 1000,
+    };
+  },
   beforeMount() {
-    this.setHighFrequency(true);
     this.startPolling();
   },
   beforeUnmount() {

@@ -42,8 +42,13 @@ class Layout
     public array $alternateLanuages = [];
     public array $feeds = [];
 
-    /** @var array<string, array{role: string, channel: string}> */
-    public array $connectLiveEvents = [];
+    /**
+     * Data channels (see \app\components\LiveDataChannels) the widgets of this page need to be kept
+     * up to date with, either by polling or by live events.
+     *
+     * @var array<string, array{role: string, channel: string}>
+     */
+    public array $liveDataChannels = [];
 
     protected ?Consultation $consultation = null;
 
@@ -240,9 +245,9 @@ class Layout
         return $this;
     }
 
-    public function addLiveEventSubscription(string $role, string $channel): void
+    public function addLiveDataChannel(string $role, string $channel): void
     {
-        $this->connectLiveEvents[$role . $channel] = ['role' => $role, 'channel' => $channel];
+        $this->liveDataChannels[$role . $channel] = ['role' => $role, 'channel' => $channel];
     }
 
     public function getHTMLLanguageCode(): string

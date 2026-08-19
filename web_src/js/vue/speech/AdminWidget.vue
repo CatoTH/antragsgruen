@@ -201,16 +201,16 @@
 </template>
 
 <script>
-import { getJson, postJson } from "/js/modules/shared/ApiClient.js";
+import { postJson } from "/js/modules/shared/ApiClient.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
 
 export default {
-  props: ['initQueue', 'csrf', 'componentAdminLink', 'pollUrl', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
+  props: ['initQueue', 'csrf', 'componentAdminLink', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
   data() {
     return {
       queue: null,
       showPreviousList: false,
-      pollingId: null,
-      liveConnected: false,
+      liveDataHandle: null,
       timerId: null,
       dragging: false,
       changedSettings: {
@@ -471,18 +471,6 @@ export default {
       this.recalcTimeOffset(new Date(data['current_time']));
       this.recalcRemainingTime();
     },
-    reloadData: function () {
-      const widget = this;
-      if (widget.liveConnected) {
-        return;
-      }
-
-      getJson(this.pollUrl.replace(/QUEUEID/, widget.queue.id))
-          .then(this.setData.bind(this))
-          .catch(function(err) {
-            console.error("Could not load speech queue data from backend", err);
-          });
-    },
     formatUsernameHtml: function (item) {
       let name = item.name;
       name = name.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
@@ -494,28 +482,22 @@ export default {
       this.recalcTimeOffset(new Date());
 
       const widget = this;
-      this.pollingId = window.setInterval(function () {
-        widget.reloadData();
-      }, 1000);
+      this.liveDataHandle = registerListener('admin', 'speech', {
+        key: this.queue.id,
+        onData: (queue) => this.setData(queue),
+      });
 
+      // The remaining speaking time is counted down locally, independently of the updates
       this.timerId = window.setInterval(function () {
         widget.recalcRemainingTime();
       }, 100);
-
-      if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
-        window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('admin', 'speech', (connectionEvent, speechEvent) => {
-          if (connectionEvent !== null) {
-            widget.liveConnected = connectionEvent;
-          }
-          if (speechEvent !== null) {
-            this.setData(speechEvent);
-          }
-        });
-      }
     }
   },
   beforeUnmount() {
-    window.clearInterval(this.pollingId);
+    if (this.liveDataHandle) {
+      this.liveDataHandle.unregister();
+      this.liveDataHandle = null;
+    }
     window.clearInterval(this.timerId);
   },
   created() {

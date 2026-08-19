@@ -167,16 +167,21 @@ class SpeechController extends RestBase
         return $queue;
     }
 
-    public function actionGetQueueAdmin(string $queueId): RestApiResponse
+    public function actionGetQueueAdmin(string $queueIds): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
+
+        $response = [];
         try {
-            $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
+            foreach (explode(',', $queueIds) as $queueId) {
+                $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
+                $response[] = SpeechQueueAdmin::fromEntity($queue);
+            }
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
         }
 
-        return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
+        return new RestApiResponse(200, null, Tools::getSerializer()->serialize($response, 'json'));
     }
 
     public function actionPostQueueSettings(string $queueId): RestApiResponse

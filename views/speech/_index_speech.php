@@ -1,5 +1,6 @@
 <?php
 
+use app\components\LiveDataChannels;
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\User;
@@ -24,7 +25,7 @@ $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
 $layout->provideJwt = true;
-$layout->addLiveEventSubscription('user', 'speech');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_SPEECH);
 
 $initData = \app\components\Tools::getSerializer()->serialize(
     \app\models\api\speech\SpeechQueueUser::fromEntity($queue, $user, $cookieUser),

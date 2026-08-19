@@ -212,7 +212,9 @@ export default {
       };
   },
   beforeMount() {
-      //this.startPolling(false);
+      // No-op if no speaking list is set yet (as within the debate widget); the mixin starts polling
+      // as soon as one is passed in.
+      this.startPolling();
   },
   beforeUnmount() {
       this.stopPolling();

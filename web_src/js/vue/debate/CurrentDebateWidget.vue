@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import {authorizedFetch, getJson, postJson} from "/js/modules/shared/ApiClient.js";
 import Translate from "/js/vue/Translate.vue.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
 
 const POLLING_INTERVAL = 3000;
 
@@ -81,19 +81,11 @@ export default {
             type: String,
             required: true,
         },
-        pollUrl: {
-            type: String,
-            required: true,
-        },
         motionTypesUrl: {
             type: String,
             required: true,
         },
         createMotionUrl: {
-            type: String,
-            required: true,
-        },
-        speechPollUrl: {
             type: String,
             required: true,
         },
@@ -132,7 +124,8 @@ export default {
             // The projector starts without one, so nothing is shown until the load completes rather than
             // briefly flashing "nothing debated".
             loaded: !!this.initState,
-            pollingId: null,
+            debateHandle: null,
+            speechHandle: null,
             // Adding & seconding secondary motions is disabled for now:
             // motionTypes: null,
             // raiseFormMotionType: null,
@@ -168,11 +161,14 @@ export default {
         */
     },
     watch: {
-        currentSpeechQueueId() {
+        currentSpeechQueueId(newVal) {
             // A different item is being debated now: drop the old queue so the tab reloads the right one.
             this.speechQueue = null;
             this.speechError = null;
-            this.maybeLoadSpeechQueue();
+            this.speechLoading = (newVal !== null);
+            if (this.speechHandle) {
+                this.speechHandle.setKey(newVal);
+            }
         },
         currentVotingBlockId() {
             // The debated item (or its assigned voting) changed: reload the matching voting block.
@@ -182,34 +178,10 @@ export default {
         },
     },
     methods: {
-        maybeLoadSpeechQueue() {
-            if (!this.current || !this.current.speech_queue) {
-                return;
-            }
-            if (this.speechQueue || this.speechLoading) {
-                return;
-            }
-            this.loadSpeechQueue();
-        },
-        loadSpeechQueue() {
-            this.speechLoading = true;
+        setSpeechQueue(queue) {
+            this.speechQueue = queue;
+            this.speechLoading = false;
             this.speechError = null;
-            const speechQueueId = this.current.speech_queue.id;
-            getJson(this.speechPollUrl.replace(/QUEUEIDS/, speechQueueId))
-                .then(queues => {
-                    queues.forEach(queue => {
-                      if (queue.id === speechQueueId) {
-                        this.speechQueue = queue;
-                      }
-                    })
-                })
-                .catch(err => {
-                    console.error('Could not load the speech queue for the debate', err);
-                    this.speechError = Translate.getTranslation('debate', 'admin_speech_err');
-                })
-                .finally(() => {
-                    this.speechLoading = false;
-                });
         },
         refreshVoting(initial) {
             // The voting widget keeps using the session-based /voting endpoints (they require a
@@ -283,28 +255,6 @@ export default {
           this.state = state;
           this.loaded = true;
         },
-        reloadData(force) {
-            // The initState may be stale by the time the widget mounts - most visibly on the projector,
-            // which is opened long after the page (and thus its initState snapshot) was rendered. The
-            // first load is therefore forced regardless of the Live connection: Live only pushes future
-            // changes, never the current state, so relying on it here would keep showing the old snapshot.
-            if (this.liveConnected && !force) {
-              return;
-            }
-            fetch(this.pollUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('HTTP status ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(state => {
-                    this.setDebateState(state);
-                })
-                .catch(err => {
-                    console.error('Could not load the debate state from the backend', err);
-                });
-        },
         /* Adding & seconding secondary motions is disabled for now:
         loadMotionTypes() {
             authorizedFetch(this.motionTypesUrl)
@@ -342,7 +292,7 @@ export default {
                                     if (created) {
                                         dialog.modal('hide');
                                         bootbox.alert(Translate.getTranslation('debate', 'secondary_form_created'));
-                                        this.reloadData();
+                                        this.debateHandle.refreshNow();
                                     }
                                 });
                             }
@@ -363,31 +313,42 @@ export default {
         */
     },
     mounted() {
-        // Fetch the current state immediately so a freshly opened projector (or a page restored from
-        // cache) never lingers on the page-load snapshot until the first poll fires.
-        this.reloadData(true);
-        this.pollingId = window.setInterval(() => this.reloadData(), POLLING_INTERVAL);
+        this.debateHandle = registerListener('user', 'debate', {
+            // Without an initial state - as on the projector - nothing can be shown until the state
+            // was loaded from the backend.
+            initialFetch: !this.initState,
+            onData: (state) => this.setDebateState(state),
+        });
+
+        // The speaking list of the debated item is loaded from the backend in any case: neither the
+        // initial state nor the live events of the debate channel contain it.
+        this.speechLoading = (this.currentSpeechQueueId !== null);
+        this.speechHandle = registerListener('user', 'speech', {
+            key: this.currentSpeechQueueId,
+            initialFetch: true,
+            onData: (queue) => this.setSpeechQueue(queue),
+            onError: () => {
+                this.speechLoading = false;
+                this.speechError = Translate.getTranslation('debate', 'admin_speech_err');
+            },
+        });
+
         // Adding & seconding secondary motions is disabled for now:
         // this.loadMotionTypes();
-        this.maybeLoadSpeechQueue();
 
         // Votings are not pushed via Live yet, so the widget keeps its own polling cycle.
         this.refreshVoting(true);
         this.votingPollingId = window.setInterval(() => this.refreshVoting(false), POLLING_INTERVAL);
-
-        if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
-          window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'debate', (connectionEvent, debateEvent) => {
-            if (connectionEvent !== null) {
-              this.liveConnected = connectionEvent;
-            }
-            if (debateEvent !== null) {
-              this.setDebateState(debateEvent);
-            }
-          });
-        }
     },
     beforeUnmount() {
-        window.clearInterval(this.pollingId);
+        if (this.debateHandle) {
+            this.debateHandle.unregister();
+            this.debateHandle = null;
+        }
+        if (this.speechHandle) {
+            this.speechHandle.unregister();
+            this.speechHandle = null;
+        }
         window.clearInterval(this.votingPollingId);
     },
 };

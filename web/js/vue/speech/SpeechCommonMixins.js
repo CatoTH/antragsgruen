@@ -1,132 +1,31 @@
 // @ts-check
 
 import translate from "/js/vue/Translate.vue.js";
-import { getJson, postJson } from "/js/modules/shared/ApiClient.js";
+import { postJson } from "/js/modules/shared/ApiClient.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
 
-class SpeechPoller {
-    timeOffset = 0;
-    liveConnected = null;
-
-    listeners = [];
-
-    constructor() {
-        this.startPolling();
-    }
-
-    recalcTimeOffset(serverTime) {
-        const browserTime = (new Date()).getTime();
-        this.timeOffset = browserTime - serverTime.getTime();
-    };
-
-    registerListener(queueId, widget, highFrequency) {
-        this.listeners.push({
-            queueId,
-            widget,
-            highFrequency
-        });
-    };
-
-    unregisterListener(widget) {
-        this.listeners = this.listeners.filter(listener => listener.widget !== widget);
-    };
-
-    reloadData() {
-        const widget = this;
-        if (widget.liveConnected) {
-            return;
-        }
-
-        const queues = [];
-        this.listeners.forEach(listener => {
-            if (queues.indexOf(listener.queueId) === -1) {
-                queues.push(listener.queueId);
-            }
-        });
-
-        if (queues.length === 0) {
-            console.log("No listeners registered");
-            return;
-        }
-
-        getJson(TEMPLATE_POLL_URL.replace(/QUEUEIDS/, queues.join(",")))
-            .then(this.setData.bind(this))
-            .catch(function (err) {
-                console.error("Could not load speech queue data from backend", err);
-            });
-    };
-
-    pollReloadData() {
-        let reloadTimer = 3000;
-        if (this.listeners.find(listener => listener.highFrequency)) {
-            reloadTimer = 1000;
-        }
-
-        const widget = this;
-
-        window.setTimeout(function () {
-            widget.reloadData();
-            widget.pollReloadData();
-        }, reloadTimer);
-    }
-
-    startPolling() {
-        this.recalcTimeOffset(new Date());
-
-        this.pollReloadData();
-
-        const widget = this;
-        this.timerId = window.setInterval(function () {
-            widget.recalcRemainingTime();
-        }, 100);
-
-        if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
-            window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('user', 'speech', (connectionEvent, speechEvent) => {
-                if (connectionEvent !== null) {
-                    widget.liveConnected = connectionEvent;
-                }
-                if (speechEvent !== null) {
-                    this.setData([speechEvent]);
-                }
-            });
-        }
-    };
-
-    setData(data) {
-        data.forEach(queue => {
-            this.listeners.forEach(listener => {
-                if (listener.queueId === queue.id) {
-                    listener.widget.setData(queue);
-                }
-            });
-        });
-    };
-
-    recalcRemainingTime() {
-        this.listeners.forEach(listener => {
-            listener.widget.recalcRemainingTime();
-        });
-    };
-}
-
-let SPEECH_POLLER = null;
-let TEMPLATE_POLL_URL = null;
 let TEMPLATE_REGISTER_URL = null;
 let TEMPLATE_UNREGISTER_URL = null;
 
-export function setSpeechUrls(pollUrl, registerUrl, unregisterUrl) {
-    TEMPLATE_POLL_URL = pollUrl;
+// The URL to poll the speaking lists is provided centrally by LiveData; only the URLs of the actions
+// a user can perform on a speaking list need to be set by the view.
+export function setSpeechActionUrls(registerUrl, unregisterUrl) {
     TEMPLATE_REGISTER_URL = registerUrl;
     TEMPLATE_UNREGISTER_URL = unregisterUrl;
 }
 
 export function getSpeechCommonMixins() {
-    if (SPEECH_POLLER === null) {
-        SPEECH_POLLER = new SpeechPoller()
-    }
     return {
         data() {
             return {
-                highFrequency: false,
+                // Both are meant to be overwritten by the data() of the component using this mixin
+                // (polling starts as soon as a speaking list is set, which happens before any hook):
+                // a more frequent update rate than the default one, and loading the data from the
+                // backend for components that are rendered without a speaking list to begin with.
+                pollIntervalMs: null,
+                initialFetch: false,
+
+                liveDataHandle: null,
                 queue: null,
                 timerId: null,
                 timeOffset: 0, // milliseconds the browser is ahead of the server time
@@ -202,6 +101,7 @@ export function getSpeechCommonMixins() {
                 }).then(function (data) {
                     widget.queue = data;
                     widget.showApplicationForm = widget.defaultApplicationForm;
+                    widget.refreshOtherWidgets();
                 }).catch(function (err) {
                     alert(err.message);
                 });
@@ -230,9 +130,18 @@ export function getSpeechCommonMixins() {
                 postJson(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {})
                     .then(function (data) {
                         widget.queue = data;
+                        widget.refreshOtherWidgets();
                     }).catch(function (err) {
                         alert(err.message);
                     });
+            },
+            refreshOtherWidgets: function () {
+                // This widget already got the new state as the response of its request, but other
+                // widgets showing the same speaking list did not - and might not, if this consultation
+                // has no live events.
+                if (this.liveDataHandle) {
+                    this.liveDataHandle.refreshNow();
+                }
             },
             recalcTimeOffset: function (serverTime) {
                 const browserTime = (new Date()).getTime();
@@ -255,18 +164,35 @@ export function getSpeechCommonMixins() {
                 this.recalcTimeOffset(new Date(data['current_time']));
                 this.recalcRemainingTime();
             },
-            setHighFrequency: function (highFrequency) {
-                this.highFrequency = highFrequency;
-            },
             startPolling: function () {
                 if (!this.queue) {
                     console.log("No queue set");
                     return;
                 }
-                SPEECH_POLLER.registerListener(this.queue.id, this, this.highFrequency);
+                if (this.liveDataHandle) {
+                    this.liveDataHandle.setKey(this.queue.id);
+                    return;
+                }
+
+                this.liveDataHandle = registerListener('user', 'speech', {
+                    key: this.queue.id,
+                    intervalMs: this.pollIntervalMs,
+                    initialFetch: this.initialFetch,
+                    onData: (queue) => this.setData(queue),
+                });
+
+                // The remaining speaking time is counted down locally, independently of the updates
+                this.timerId = window.setInterval(() => this.recalcRemainingTime(), 100);
             },
             stopPolling: function () {
-                SPEECH_POLLER.unregisterListener(this);
+                if (this.liveDataHandle) {
+                    this.liveDataHandle.unregister();
+                    this.liveDataHandle = null;
+                }
+                if (this.timerId) {
+                    window.clearInterval(this.timerId);
+                    this.timerId = null;
+                }
             }
         }
     }

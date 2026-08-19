@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{DebateTools, StaticResourceTools, UrlHelper};
+use app\components\{DebateTools, LiveDataChannels, StaticResourceTools, UrlHelper};
 use yii\helpers\Html;
 
 /**
@@ -40,11 +40,14 @@ $layout->addJsTranslation("speech");
 // The fullscreen projector may poll the speech REST endpoints, which authenticate via JWT.
 $layout->provideJwt = true;
 
+// The projector can show speaking lists on any page it is available on, not only when the debate
+// widget is present - so the speech channel is always needed.
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_SPEECH);
+
 if ($debateInitData !== null) {
     $layout->addJsTranslation("debate");
     $layout->addJsTranslation("voting");
-    $layout->addLiveEventSubscription('user', 'debate');
-    $layout->addLiveEventSubscription('user', 'speech');
+    $layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_DEBATE);
 }
 
 ?>
@@ -54,11 +57,10 @@ if ($debateInitData !== null) {
         <span class="sr-only"><?= Yii::t('motion', 'fullscreen') ?></span>
     </button>
     <script type="module" crossorigin="anonymous">
-    import { setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
-    setSpeechUrls(
-        <?= json_encode(UrlHelper::createUrl(['/rest/speech/get-queue', 'queueIds' => 'QUEUEIDS'])) ?>,
-        <?= json_encode(UrlHelper::createUrl(['/rest/speech/register', 'queueIds' => 'QUEUEIDS'])) ?>,
-        <?= json_encode(UrlHelper::createUrl(['/rest/speech/unregister', 'queueIds' => 'QUEUEIDS'])) ?>
+    import { setSpeechActionUrls } from "/js/vue/speech/SpeechCommonMixins.js";
+    setSpeechActionUrls(
+        <?= json_encode(UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID'])) ?>,
+        <?= json_encode(UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID'])) ?>
     );
     import { FullscreenToggle } from "/js/modules/frontend/FullscreenToggle.js";
     new FullscreenToggle(document.querySelector(".btnFullscreen"));

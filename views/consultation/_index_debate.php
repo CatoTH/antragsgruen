@@ -1,6 +1,6 @@
 <?php
 
-use app\components\DebateTools;
+use app\components\{DebateTools, LiveDataChannels};
 use yii\helpers\Html;
 
 /**
@@ -18,17 +18,15 @@ $layout->addJsTranslation('speech');
 $layout->provideJwt = true;
 $layout->loadCKEditor();
 
-$layout->addLiveEventSubscription('user', 'debate');
-$layout->addLiveEventSubscription('user', 'speech');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_DEBATE);
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_SPEECH);
 
 // Shared with the fullscreen projector (see _fullscreen_toggle.php) so both stay in sync.
 $init = DebateTools::getUserWidgetInitData($consultation);
 
 $initState           = $init['init_state'];
-$pollUrl             = $init['poll_url'];
 $motionTypesUrl      = $init['motion_types_url'];
 $createMotionUrl     = $init['create_motion_url'];
-$speechPollUrl       = $init['speech_poll_url'];
 $speechRegisterUrl   = $init['speech_register_url'];
 $speechUnregisterUrl = $init['speech_unregister_url'];
 $speechUser          = $init['speech_user'];
@@ -42,11 +40,9 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
 ?>
 <section class="currentDebateInline currentSpeechPageWidth" aria-labelledby="currentDebateWidgetTitle"
          data-init-state="<?= Html::encode($initState) ?>"
-         data-poll-url="<?= Html::encode($pollUrl) ?>"
          data-motion-types-url="<?= Html::encode($motionTypesUrl) ?>"
          data-create-motion-url="<?= Html::encode($createMotionUrl) ?>"
          data-current-user="<?= Html::encode($currentUserJson) ?>"
-         data-speech-poll-url="<?= Html::encode($speechPollUrl) ?>"
          data-speech-register-url="<?= Html::encode($speechRegisterUrl) ?>"
          data-speech-unregister-url="<?= Html::encode($speechUnregisterUrl) ?>"
          data-speech-user="<?= Html::encode(json_encode($speechUser)) ?>"
@@ -70,7 +66,7 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
     import currentDebateWidget from "/js/vue/debate/CurrentDebateWidget.js";
     // Adding & seconding secondary motions is disabled for now:
     // import raiseSecondaryMotionForm from "/js/vue/debate/RaiseSecondaryMotionForm.js";
-    import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
+    import { getSpeechCommonMixins, setSpeechActionUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import userInlineWidget from "/js/vue/speech/UserInlineWidget.js";
     import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
     import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
@@ -78,8 +74,7 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
 
     const $element = $('.currentDebateInline');
 
-    setSpeechUrls(
-        <?= json_encode($speechPollUrl) ?>,
+    setSpeechActionUrls(
         <?= json_encode($speechRegisterUrl) ?>,
         <?= json_encode($speechUnregisterUrl) ?>
     );
@@ -94,10 +89,8 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
             return h(resolveComponent('current-debate-widget'), {
                 initState: this.initState,
                 csrf: this.csrf,
-                pollUrl: this.pollUrl,
                 motionTypesUrl: this.motionTypesUrl,
                 createMotionUrl: this.createMotionUrl,
-                speechPollUrl: this.speechPollUrl,
                 speechUser: this.speechUser,
                 votingPollUrl: this.votingPollUrl,
                 votingVoteUrl: this.votingVoteUrl,
@@ -109,10 +102,8 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
             return {
                 initState: $element.data('init-state'),
                 csrf: document.querySelector("meta[name='csrf-token']").getAttribute("content"),
-                pollUrl: $element.data('poll-url'),
                 motionTypesUrl: $element.data('motion-types-url'),
                 createMotionUrl: $element.data('create-motion-url'),
-                speechPollUrl: $element.data('speech-poll-url'),
                 speechUser: $element.data('speech-user'),
                 votingPollUrl: $element.data('voting-poll-url'),
                 votingVoteUrl: $element.data('voting-vote-url'),

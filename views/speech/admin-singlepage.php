@@ -1,6 +1,6 @@
 <?php
 
-use app\components\{Tools, UrlHelper};
+use app\components\{LiveDataChannels, Tools, UrlHelper};
 use app\models\api\speech\SpeechQueueAdmin;
 use app\models\db\SpeechQueue;
 use yii\helpers\Html;
@@ -25,7 +25,7 @@ if ($queue->motion) {
 $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 
 $layout->provideJwt = true;
-$layout->addLiveEventSubscription('admin', 'speech');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_ADMIN, LiveDataChannels::CHANNEL_SPEECH);
 
 $layout->addJsTranslation('speech');
 
@@ -53,14 +53,12 @@ $itemPerformOpUrl   = UrlHelper::createUrl(['/rest/speech/post-item-operation', 
 $createItemUrl      = UrlHelper::createUrl(['/rest/speech/admin-create-item', 'queueId' => 'QUEUEID']);
 $resetQueueUrl      = UrlHelper::createUrl(['/rest/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
 $randomizeQueueUrl  = UrlHelper::createUrl(['/rest/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
-$pollUrl            = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="manageSpeechQueue">
     <section class="manageSpeechQueueWidget"
              data-component-admin-link="<?= Html::encode($componentAdminLink) ?>"
-             data-poll-url="<?= Html::encode($pollUrl) ?>"
              data-item-perform-operation-url="<?= Html::encode($itemPerformOpUrl) ?>"
              data-randomize-queue-url="<?= Html::encode($randomizeQueueUrl) ?>"
              data-reset-queue-url="<?= Html::encode($resetQueueUrl) ?>"
@@ -86,7 +84,6 @@ $pollUrl            = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'que
                 initQueue: this.queue,
                 csrf: this.csrf,
                 componentAdminLink: this.componentAdminLink,
-                pollUrl: this.pollUrl,
                 itemPerformOperationUrl: this.itemPerformOperationUrl,
                 randomizeQueueUrl: this.randomizeQueueUrl,
                 resetQueueUrl: this.resetQueueUrl,
@@ -98,7 +95,6 @@ $pollUrl            = UrlHelper::createUrl(['/rest/speech/get-queue-admin', 'que
             queue: JSON.parse(element.getAttribute("data-queue")),
             csrf: document.querySelector("meta[name='csrf-token']").getAttribute("content"),
             componentAdminLink: element.getAttribute("data-component-admin-link"),
-            pollUrl: element.getAttribute("data-poll-url"),
             itemPerformOperationUrl: element.getAttribute("data-item-perform-operation-url"),
             randomizeQueueUrl: element.getAttribute("data-randomize-queue-url"),
             resetQueueUrl: element.getAttribute("data-reset-queue-url"),

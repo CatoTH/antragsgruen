@@ -25,10 +25,8 @@
     <current-debate-widget v-if="dropdownSelection === 'debate' && debate" projector
                            :init-state="debateInitState"
                            :csrf="csrf"
-                           :poll-url="debate.poll_url"
                            :motion-types-url="debate.motion_types_url"
                            :create-motion-url="debate.create_motion_url"
-                           :speech-poll-url="debate.speech_poll_url"
                            :speech-user="debate.speech_user"
                            :voting-poll-url="debate.voting_poll_url"
                            :voting-vote-url="debate.voting_vote_url"

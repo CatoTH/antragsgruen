@@ -97,7 +97,6 @@
                     :init-queue="speechQueue"
                     :csrf="csrf"
                     :component-admin-link="speechComponentAdminLink"
-                    :poll-url="speechPollUrl"
                     :item-perform-operation-url="speechItemPerformOperationUrl"
                     :randomize-queue-url="speechRandomizeQueueUrl"
                     :reset-queue-url="speechResetQueueUrl"
@@ -224,10 +223,6 @@ export default {
             required: true,
         },
         speechComponentAdminLink: {
-            type: String,
-            required: true,
-        },
-        speechPollUrl: {
             type: String,
             required: true,
         },
