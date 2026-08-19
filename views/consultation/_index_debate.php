@@ -68,6 +68,7 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
     // import raiseSecondaryMotionForm from "/js/vue/debate/RaiseSecondaryMotionForm.js";
     import { getSpeechCommonMixins, setSpeechActionUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import userInlineWidget from "/js/vue/speech/UserInlineWidget.js";
+    import fullscreenSpeech from "/js/vue/speech/FullscreenSpeech.js";
     import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
     import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
     import voteList from "/js/vue/voting/VotingList.js";
@@ -117,6 +118,9 @@ $currentUserJson     = json_encode($init['current_user'], JSON_THROW_ON_ERROR);
     // Adding & seconding secondary motions is disabled for now:
     // widget.component('raise-secondary-motion-form', raiseSecondaryMotionForm);
     widget.component('speech-user-inline-widget', { ...userInlineWidget, mixins: [SPEECH_MIXINS] });
+    // Only rendered in projector mode, but the debate widget resolves all components of its template
+    // on every render - so it has to be known here as well.
+    widget.component('fullscreen-speech', fullscreenSpeech);
     widget.component('voting-block-widget', { ...votingBlockWidget, mixins: [VOTING_MIXINS] });
     widget.component('vote-list', { ...voteList, mixins: [VOTING_MIXINS] });
     widget.directive('t', translateDirective);

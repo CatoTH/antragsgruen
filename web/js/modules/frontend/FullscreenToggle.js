@@ -157,11 +157,12 @@ export class FullscreenToggle {
         // It renders the read-only user widget, reusing the same speech/voting child components as the
         // inline homepage widget. The speech and voting common mixins share method names, so they are
         // applied per-component instead of globally to keep them from colliding in this shared app.
+        // The debate widget itself is registered in any case: the projector panel resolves all
+        // components of its template on every render, even the ones it does not show.
+        this.vueWidget.component('current-debate-widget', currentDebateWidgetComponent);
+        this.vueWidget.component('speech-user-inline-widget', { ...userInlineWidgetComponent, mixins: [getSpeechCommonMixins()] });
         if (initdata.debate) {
-            const speechMixins = getSpeechCommonMixins();
             const votingMixins = getVotingCommonMixins(initdata.debate.voting_constants);
-            this.vueWidget.component('current-debate-widget', currentDebateWidgetComponent);
-            this.vueWidget.component('speech-user-inline-widget', { ...userInlineWidgetComponent, mixins: [speechMixins] });
             this.vueWidget.component('voting-block-widget', { ...votingBlockWidgetComponent, mixins: [votingMixins] });
             this.vueWidget.component('vote-list', { ...voteListComponent, mixins: [votingMixins] });
         }

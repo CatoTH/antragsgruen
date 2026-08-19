@@ -45,18 +45,18 @@ if ($consultation->getSettings()->hasCurrentlyDebated) {
     } else {
         echo $this->render('_index_debate', ['consultation' => $consultation]);
     }
-}
+} else {
+    if ($consultation->getSettings()->hasSpeechLists) {
+        $queue = $consultation->getActiveSpeechQueue();
+        echo $this->render('@app/views/speech/_index_speech', [
+            'queue' => $queue,
+            'showHeader' => true,
+            'headingLevel' => 2,
+        ]);
+    }
 
-if ($consultation->getSettings()->hasSpeechLists) {
-    $queue = $consultation->getActiveSpeechQueue();
-    echo $this->render('@app/views/speech/_index_speech', [
-        'queue' => $queue,
-        'showHeader' => true,
-        'headingLevel' => 2,
-    ]);
+    echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
 }
-
-echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
 
 if ($myself) {
     echo $this->render('_index_my_motions', ['consultation' => $consultation, 'myself' => $myself]);

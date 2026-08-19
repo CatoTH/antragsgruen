@@ -32,14 +32,15 @@
                                            :user="speechUser"
                                            :title="'title'"
                 ></speech-user-inline-widget>
-
-                <div v-if="votingError" class="alert alert-danger">{{ votingError }}</div>
-                <div v-if="votingBlock" class="votingCommon currentDebateVoting">
-                    <voting-block-widget :key="votingBlock.id" :voting="votingBlock"
-                                         :admin-link="votingAdminLink" :projector="projector"
-                                         @vote="vote" @abstain="abstain"></voting-block-widget>
-                </div>
             </div>
+        </div>
+        <div v-if="current">
+          <div v-if="votingError" class="alert alert-danger">{{ votingError }}</div>
+          <div v-if="votingBlock" class="votingCommon currentDebateVoting">
+            <voting-block-widget :key="votingBlock.id" :voting="votingBlock"
+                                 :admin-link="votingAdminLink" :projector="projector"
+                                 @vote="vote" @abstain="abstain"></voting-block-widget>
+          </div>
         </div>
         <!-- Adding & seconding secondary motions is disabled for now.
         <footer class="content secondaryMotionRow">
@@ -208,7 +209,7 @@ export default {
                 .then(votings => {
                     // get-open-voting-blocks only returns open blocks, so the widget disappears once
                     // the vote is closed - identical to the standalone homepage voting widget.
-                    this.votingBlock = votings.find(voting => voting.id === votingBlockId) || null;
+                    this.votingBlock = votings.find(voting => parseInt(voting.id) === parseInt(votingBlockId)) || null;
                 })
                 .catch(err => {
                     console.error('Could not load the voting for the debate', err);
