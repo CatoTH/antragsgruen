@@ -1,0 +1,90 @@
+---
+name: Accessibility (A11y) Checks
+
+"on":
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pa11y-scan:
+    name: Pa11y WCAG 2.1 AA Scans
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: yii
+          MYSQL_PASSWORD: yii
+          MYSQL_USER: yii
+          MYSQL_DATABASE: yii
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: >-
+            curl, dom, fileinfo, iconv, intl,
+            mbstring, mysql, pdo, zip
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+          cache: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install JS dependencies
+        run: pnpm install
+
+      - name: Build frontend assets
+        run: pnpm run build
+
+      - name: Install PHP dependencies
+        run: >-
+          composer install --no-interaction
+          --prefer-dist --no-progress
+
+      - name: Prepare test configuration and database
+        run: |
+          cp config/config_tests.template.json config/config.json
+          sed -i 's/32768/3306/g' config/config.json
+          sed -i 's|http://localhost:8080/index-test.php|http://127.0.0.1:8080/|g' config/config.json
+          touch config/DEBUG
+          php yii database/init
+          php yii database/insert-test-data std
+        env:
+          APP_DOMAIN: 127.0.0.1:8080
+
+      - name: Start PHP built-in web server
+        run: |
+          php -S 127.0.0.1:8080 -t web/ &
+          sleep 3
+        env:
+          APP_DOMAIN: 127.0.0.1:8080
+
+      - name: Run automated A11y tests
+        run: node bin/test-a11y.mjs --url=http://127.0.0.1:8080/ --threshold=50
