@@ -290,7 +290,7 @@ class ManagerController extends Base
         if (!$user) {
             return false;
         }
-        return $user->isGruenesNetzUser();
+        return $user->isGruenesNetzUser() || User::currentUserIsSuperuser();
     }
 
     public function actionAllsites(): ResponseInterface
