@@ -43,8 +43,9 @@ class AntragsgruenApp implements \JsonSerializable
     public array $adminUserIds = [];
     /** @var string[] */
     public array $authClientCollection = [];
+    public const DEFAULT_BLOCKED_SUBDOMAINS = ['www', 'rest', 'ftp', 'smtp', 'imap', 'admin', 'api', 'auth', 'login', 'std', 'system', 'mail'];
     /** @var string[] */
-    public array $blockedSubdomains = ['www', 'rest', 'ftp', 'smtp', 'imap'];
+    public array $blockedSubdomains = self::DEFAULT_BLOCKED_SUBDOMAINS;
     public int $autoLoginDuration = 31536000; // 1 Year
     public ?string $xelatexPath = null; // @TODO OBSOLETE
     public ?string $xdvipdfmx = null; // @TODO OBSOLETE
@@ -228,6 +229,7 @@ class AntragsgruenApp implements \JsonSerializable
             'allowRegistration' => true,
             'confirmEmailAddresses' => true,
             'multisiteMode' => false,
+            'blockedSubdomains' => self::DEFAULT_BLOCKED_SUBDOMAINS,
         ];
 
         // Check against known defaults
