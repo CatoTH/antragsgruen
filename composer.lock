@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fc6764b3ce708a1d124370cc3e691e8e",
+    "content-hash": "828bf3e6cb2f5ba07d5e134e0b42645f",
     "packages": [
         {
             "name": "async-aws/core",
@@ -7452,135 +7452,6 @@
             "time": "2025-12-23T21:16:13+00:00"
         },
         {
-            "name": "codeception/module-phpbrowser",
-            "version": "4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Codeception/module-phpbrowser.git",
-                "reference": "56903df98e29dedb51dd9f8d2dc00b05063c2135"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-phpbrowser/zipball/56903df98e29dedb51dd9f8d2dc00b05063c2135",
-                "reference": "56903df98e29dedb51dd9f8d2dc00b05063c2135",
-                "shasum": ""
-            },
-            "require": {
-                "codeception/codeception": "*@dev",
-                "codeception/lib-innerbrowser": "*@dev",
-                "ext-json": "*",
-                "guzzlehttp/guzzle": "^7.8.2 | ^8.0",
-                "guzzlehttp/psr7": "^2.6.3 | ^3.0",
-                "php": "^8.2",
-                "symfony/browser-kit": "^5.4 | ^6.0 | ^7.0 | ^8.0"
-            },
-            "conflict": {
-                "codeception/codeception": "<5.0",
-                "codeception/lib-innerbrowser": "<3.0"
-            },
-            "require-dev": {
-                "aws/aws-sdk-php": "^3.199",
-                "codeception/module-rest": "^2.0 | *@dev",
-                "ext-curl": "*",
-                "phpstan/phpstan": "^2.2.6",
-                "squizlabs/php_codesniffer": "^3.10"
-            },
-            "suggest": {
-                "codeception/phpbuiltinserver": "Start and stop PHP built-in web server for your tests"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Bodnarchuk"
-                },
-                {
-                    "name": "Gintautas Miselis"
-                }
-            ],
-            "description": "Codeception module for testing web application over HTTP",
-            "homepage": "https://codeception.com/",
-            "keywords": [
-                "codeception",
-                "functional-testing",
-                "http"
-            ],
-            "support": {
-                "issues": "https://github.com/Codeception/module-phpbrowser/issues",
-                "source": "https://github.com/Codeception/module-phpbrowser/tree/4.1.0"
-            },
-            "time": "2026-07-27T06:11:37+00:00"
-        },
-        {
-            "name": "codeception/module-webdriver",
-            "version": "4.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Codeception/module-webdriver.git",
-                "reference": "af40affda67d631ba58fd68361db9eacaa2828f5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-webdriver/zipball/af40affda67d631ba58fd68361db9eacaa2828f5",
-                "reference": "af40affda67d631ba58fd68361db9eacaa2828f5",
-                "shasum": ""
-            },
-            "require": {
-                "codeception/codeception": "^5.0.8",
-                "codeception/lib-web": "^1.0.1 || ^2",
-                "codeception/stub": "^4.0",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "php": "^8.1",
-                "php-webdriver/webdriver": "^1.14.0",
-                "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0 || ^13.0"
-            },
-            "suggest": {
-                "codeception/phpbuiltinserver": "Start and stop PHP built-in web server for your tests"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Bodnarchuk"
-                },
-                {
-                    "name": "Gintautas Miselis"
-                },
-                {
-                    "name": "Zaahid Bateson"
-                }
-            ],
-            "description": "WebDriver module for Codeception",
-            "homepage": "https://codeception.com/",
-            "keywords": [
-                "acceptance-testing",
-                "browser-testing",
-                "codeception"
-            ],
-            "support": {
-                "issues": "https://github.com/Codeception/module-webdriver/issues",
-                "source": "https://github.com/Codeception/module-webdriver/tree/4.0.5"
-            },
-            "time": "2026-02-18T06:28:45+00:00"
-        },
-        {
             "name": "codeception/module-yii2",
             "version": "1.1.12",
             "source": {
@@ -8112,72 +7983,6 @@
                 "source": "https://github.com/phar-io/version/tree/3.2.1"
             },
             "time": "2022-02-21T01:04:05+00:00"
-        },
-        {
-            "name": "php-webdriver/webdriver",
-            "version": "1.16.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-webdriver/php-webdriver.git",
-                "reference": "ac0662863aa120b4f645869f584013e4c4dba46a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/ac0662863aa120b4f645869f584013e4c4dba46a",
-                "reference": "ac0662863aa120b4f645869f584013e4c4dba46a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "ext-zip": "*",
-                "php": "^7.3 || ^8.0",
-                "symfony/polyfill-mbstring": "^1.12",
-                "symfony/process": "^5.0 || ^6.0 || ^7.0 || ^8.0"
-            },
-            "replace": {
-                "facebook/webdriver": "*"
-            },
-            "require-dev": {
-                "ergebnis/composer-normalize": "^2.20.0",
-                "ondram/ci-detector": "^4.0",
-                "php-coveralls/php-coveralls": "^2.4",
-                "php-mock/php-mock-phpunit": "^2.0",
-                "php-parallel-lint/php-parallel-lint": "^1.2",
-                "phpunit/phpunit": "^9.3",
-                "squizlabs/php_codesniffer": "^3.5",
-                "symfony/var-dumper": "^5.0 || ^6.0 || ^7.0 || ^8.0"
-            },
-            "suggest": {
-                "ext-simplexml": "For Firefox profile creation"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/Exception/TimeoutException.php"
-                ],
-                "psr-4": {
-                    "Facebook\\WebDriver\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "A PHP client for Selenium WebDriver. Previously facebook/webdriver.",
-            "homepage": "https://github.com/php-webdriver/php-webdriver",
-            "keywords": [
-                "Chromedriver",
-                "geckodriver",
-                "php",
-                "selenium",
-                "webdriver"
-            ],
-            "support": {
-                "issues": "https://github.com/php-webdriver/php-webdriver/issues",
-                "source": "https://github.com/php-webdriver/php-webdriver/tree/1.16.0"
-            },
-            "time": "2025-12-28T23:57:40+00:00"
         },
         {
             "name": "phpmd/phpmd",
@@ -10493,71 +10298,6 @@
                 }
             ],
             "time": "2026-06-26T15:18:24+00:00"
-        },
-        {
-            "name": "symfony/process",
-            "version": "v7.4.13",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/process.git",
-                "reference": "f5804be144caceb570f6747519999636b664f24c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/f5804be144caceb570f6747519999636b664f24c",
-                "reference": "f5804be144caceb570f6747519999636b664f24c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Process\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Executes commands in sub-processes",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/process/tree/v7.4.13"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2026-05-23T16:05:06+00:00"
         },
         {
             "name": "symfony/var-dumper",
