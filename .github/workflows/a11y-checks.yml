@@ -19,10 +19,6 @@ jobs:
     name: Pa11y WCAG 2.1 AA Scans
     runs-on: ubuntu-latest
 
-    env:
-      APP_DOMAIN: test.antragsgruen.test:8080
-      APP_PROTOCOL: http
-
     services:
       mysql:
         image: mysql:latest
@@ -75,8 +71,11 @@ jobs:
       - name: Prepare test configuration and database
         run: |
           cp config/config_tests.template.json config/config.json
-          sed -i 's/32768/3306/g' config/config.json
-          sed -i 's|http://localhost:8080/index-test.php|http://test.antragsgruen.test:8080|g' config/config.json
+          cp config/config_tests.template.json config/config_tests.json
+          sed -i 's/32768/3306/g' config/config.json config/config_tests.json
+          sed -i 's|"domainPlain": *"http://localhost:8080/index-test.php"|"domainPlain": "http://test.antragsgruen.test"|' config/config_tests.json
+          sed -i 's|"domainSubdomain": *"http://localhost:8080/index-test.php"|"domainSubdomain": "http://test.antragsgruen.test/<subdomain:[\\\\w_-]+>/"|' config/config_tests.json
+          grep -n -E '"(domainPlain|domainSubdomain)"' config/config_tests.json
           echo "127.0.0.1 test.antragsgruen.test" | sudo tee -a /etc/hosts
           touch config/DEBUG
           php yii database/init
@@ -97,8 +96,8 @@ jobs:
           $_SERVER['PHP_SELF'] = '/index.php';
           require $_SERVER['DOCUMENT_ROOT'] . '/index.php';
           PHP
-          php -S 127.0.0.1:8080 -t web/ /tmp/a11y-router.php &
-          url="http://test.antragsgruen.test:8080/stdparteitag/std-parteitag"
+          sudo php -S 127.0.0.1:80 -t web/ /tmp/a11y-router.php &
+          url="http://test.antragsgruen.test/stdparteitag/std-parteitag"
           for i in $(seq 1 30); do
             code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || true)
             if [ "$code" = "200" ]; then
@@ -118,7 +117,7 @@ jobs:
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
           for u in "/" "/stdparteitag/std-parteitag" "/std-parteitag"; do
-            code=$(curl -s -o /tmp/a11y-probe.html -w "%{http_code}" "http://test.antragsgruen.test:8080$u" || true)
+            code=$(curl -s -o /tmp/a11y-probe.html -w "%{http_code}" "http://test.antragsgruen.test$u" || true)
             echo "== GET $u -> HTTP ${code}"
             echo "- \`GET $u\` -> HTTP ${code}" >> "$GITHUB_STEP_SUMMARY"
             if [ "$code" != "200" ]; then
@@ -128,15 +127,15 @@ jobs:
             fi
           done
           echo "----- Yii runtime log (last 150 lines) -----"
-          tail -n 150 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
+          sudo tail -n 150 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
           {
             echo ""
             echo "\`\`\`"
-            tail -n 40 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
+            sudo tail -n 40 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
             echo "\`\`\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run automated A11y tests
-        run: node bin/test-a11y.mjs --url=http://test.antragsgruen.test:8080/stdparteitag/std-parteitag --threshold=50
+        run: node bin/test-a11y.mjs --url=http://test.antragsgruen.test/stdparteitag/std-parteitag --threshold=50
         env:
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
