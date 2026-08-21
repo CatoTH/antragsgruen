@@ -35,7 +35,8 @@ class ClaudeClient
     private function getClient(): Client
     {
         if ($this->client === null) {
-            $this->client = new Client(['base_uri' => self::API_BASE_URI]);
+            $baseUri = $this->credentials->baseUrl ?: self::API_BASE_URI;
+            $this->client = new Client(['base_uri' => $baseUri]);
         }
         return $this->client;
     }
