@@ -301,6 +301,16 @@ class EnvironmentConfigLoaderTest extends TestBase
         $this->assertArrayNotHasKey('notifications', $config['backgroundJobs']);
     }
 
+    public function testGetApplicationConfigWithBlockedSubdomains(): void
+    {
+        $_ENV['BLOCKED_SUBDOMAINS'] = 'admin, api, auth, login, volt, std';
+
+        $config = EnvironmentConfigLoader::getApplicationConfig();
+
+        $this->assertArrayHasKey('blockedSubdomains', $config);
+        $this->assertEquals(['admin', 'api', 'auth', 'login', 'volt', 'std'], $config['blockedSubdomains']);
+    }
+
     public function testGetApplicationConfigWithBothBackgroundJobFlagsIndependently(): void
     {
         $_ENV['BACKGROUND_JOBS_NOTIFICATIONS'] = 'true';

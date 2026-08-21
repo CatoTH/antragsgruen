@@ -243,6 +243,15 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $this->assertEquals('/usr/local/texlive/bin/lualatex', $app->lualatexPath);
     }
 
+    public function testBlockedSubdomainsFromEnvironment(): void
+    {
+        $_ENV['BLOCKED_SUBDOMAINS'] = 'admin, api, auth, login, volt';
+
+        $app = new AntragsgruenApp('{}');
+
+        $this->assertEquals(['admin', 'api', 'auth', 'login', 'volt'], $app->blockedSubdomains);
+    }
+
     public function testTablePrefixFromEnvironment(): void
     {
         $_ENV['DB_HOST'] = 'localhost';

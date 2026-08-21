@@ -350,6 +350,12 @@ class EnvironmentConfigLoader
             $config['lualatexPath'] = $path;
         }
 
+        // Blocked subdomains (comma-separated list)
+        if ($blocked = self::getEnv('BLOCKED_SUBDOMAINS')) {
+            $list = array_map('trim', explode(',', $blocked));
+            $config['blockedSubdomains'] = array_values(array_filter($list, fn(string $s) => $s !== ''));
+        }
+
         return $config;
     }
 
