@@ -372,7 +372,7 @@ class UsersController extends AdminBase
         $delimiter = (substr_count($cleanFirstLine, ';') > substr_count($cleanFirstLine, ',')) ? ';' : ',';
 
         $header = str_getcsv($cleanFirstLine, $delimiter, escape: '\\');
-        if (empty($header) || (count($header) === 1 && $header[0] === null)) {
+        if ($header === [null] || $header[0] === null) {
             fclose($fp);
             @unlink($filePath);
             return new JsonResponse(['success' => false, 'error' => 'File is empty.']);
