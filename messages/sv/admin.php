@@ -481,6 +481,7 @@ Eftersom <strong>ingen e-postutskick är konfigurerad</strong> måste du ange l�
     'siteacc_new_mail_send' => 'Skicka ett mejl',
     'siteacc_new_hint_accexists' => 'Denna användare har redan ett konto. Du kan ge personen behörigheter.',
     'siteacc_new_mail_hint' => '%LINK% ersätts med en länk till webbplatsen.<br>%ACCOUNT% ersätts med användarens inloggningsuppgifter.',
+    'siteacc_customize_email_template' => 'Anpassa standardmallen',
     'siteacc_new_text' => 'E-posttext',
     'siteacc_new_do' => 'Skapa',
     'siteacc_new_err_already' => 'Denna användare är redan tillagd i detta evenemang.',

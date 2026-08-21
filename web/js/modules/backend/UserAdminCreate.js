@@ -322,14 +322,14 @@ export class UserAdminCreate {
         if (!this.csvForm) return;
 
         const sendEmailCheckbox = this.csvForm.querySelector('#csvSendEmail');
-        const emailTextarea = this.csvForm.querySelector('#csvEmailText');
+        const emailContainer = this.csvForm.querySelector('#csvEmailTextContainer') || this.csvForm.querySelector('#csvEmailText');
         
-        if (sendEmailCheckbox && emailTextarea) {
+        if (sendEmailCheckbox && emailContainer) {
             sendEmailCheckbox.addEventListener('change', () => {
                 if (sendEmailCheckbox.checked) {
-                    emailTextarea.classList.remove('hidden');
+                    emailContainer.classList.remove('hidden');
                 } else {
-                    emailTextarea.classList.add('hidden');
+                    emailContainer.classList.add('hidden');
                 }
             });
         }

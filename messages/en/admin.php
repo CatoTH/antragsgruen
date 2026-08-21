@@ -662,6 +662,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'siteacc_new_mail_send'       => 'Send an e-mail',
     'siteacc_new_hint_accexists'  => 'This user already has an account. You can grant him/her permissions.',
     'siteacc_new_mail_hint'       => '%LINK% will be replaced by a link to the site.<br>%ACCOUNT% will be replaced by the access data of the user.',
+    'siteacc_customize_email_template' => 'Customize default template',
     'siteacc_new_text'            => 'E-mail text',
     'siteacc_new_do'              => 'Create',
     'siteacc_new_err_already'     => 'This user was already added to this consultation.',

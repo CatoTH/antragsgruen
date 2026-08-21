@@ -486,6 +486,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'siteacc_new_groups'         => 'Gruppen',
     'siteacc_new_mail_send'      => 'Mail verschicken',
     'siteacc_new_mail_hint'      => '%LINK% wird durch einen Link auf die Seite ersetzt.<br>%ACCOUNT% wird durch die jeweilen Zugangsdaten ersetzt.',
+    'siteacc_customize_email_template' => 'Standard-Vorlage anpassen',
     'siteacc_new_hint_accexists' => 'Diese Nutzer*in hat bereits einen Account. Du kannst ihr Zugang zu dieser Veranstaltung geben.',
     'siteacc_new_text'           => 'Text der E-Mail',
     'siteacc_new_do'             => 'Berechtigen / Anlegen',

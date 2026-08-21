@@ -459,6 +459,7 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'siteacc_new_mail_send' => 'Pošaljite e-mail', // Original: Send an e-mail
     'siteacc_new_hint_accexists' => 'Ovaj korisnik već ima račun. Možete mu dati dopuštenja.', // Original: This user already has an account. You can grant him/her permissions.
     'siteacc_new_mail_hint' => '%LINK% bit će zamijenjen poveznicom na stranicu. <br>%ACCOUNT% bit će zamijenjen pristupnim podacima korisnika.', // Original: %LINK% will be replaced by a link to the site.<br>%ACCOUNT% will be replaced by the access data of the user.
+    'siteacc_customize_email_template' => 'Prilagodi zadani predložak',
     'siteacc_new_text' => 'Tekst e-pošte', // Original: E-mail text
     'siteacc_new_do' => 'Kreiraj', // Original: Create
     'siteacc_new_err_already' => 'Ovaj je korisnik već dodat u ovu konsultaciju.', // Original: This user was already added to this consultation.

@@ -632,6 +632,7 @@ Comme <strong>aucun envoi d\'email n\'est configuré</strong>, tu dois saisir to
     'siteacc_new_mail_send' => 'Envoyer un email',
     'siteacc_new_hint_accexists' => 'Cet utilisateur a déjà un compte. Tu peux lui donner accès à cette consultation.',
     'siteacc_new_mail_hint' => '%LINK% sera remplacé par un lien vers le site.<br>%ACCOUNT% sera remplacé par les données d\'accès de l\'utilisateur.',
+    'siteacc_customize_email_template' => 'Personnaliser le modèle par défaut',
     'siteacc_new_err_already' => 'Cet utilisateur a déjà été ajouté à cette consultation.',
     'siteacc_err_siteprivesc' => 'Seuls les administrateurs du site peuvent ajouter ou retirer des utilisateurs de ce groupe',
     'siteacc_err_lockout' => 'Tu ne peux pas retirer tes propres droits d\'accès à ce site',
