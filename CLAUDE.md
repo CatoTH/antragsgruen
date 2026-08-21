@@ -55,16 +55,51 @@ Use named arguments for function and method calls whenever boolean values are pa
 
 ### Testing
 ```bash
-vendor/bin/codecept run Unit                          # All unit tests
 vendor/bin/codecept run Unit --skip-group=database    # Unit tests without DB
-vendor/bin/codecept run Acceptance                    # All acceptance tests (requires Selenium + test.antragsgruen.test)
-vendor/bin/codecept run Acceptance motions/CreateCept # Single acceptance test
+vendor/bin/codecept run Unit                          # All unit tests (includes DB group; needs MySQL)
+pnpm test:e2e                                         # All Playwright e2e tests (chromium + firefox + webkit)
+pnpm test:e2e:chromium                                # Chromium-only e2e
+pnpm test:e2e:firefox                                 # Firefox-only e2e
+pnpm test:e2e:webkit                                  # WebKit-only e2e
+pnpm test:e2e:ui                                      # Playwright UI mode (debug)
+pnpm test:e2e:install                                 # Install Playwright browsers (first time)
 ```
 
-Acceptance tests require:
-- MariaDB test database (`antragsgruen_tests`) configured in `config/config_tests.json`
+#### End-to-end (Playwright)
+The end-to-end suite lives in `e2e/` (TypeScript). It replaced the legacy
+Codeception + Selenium WebDriver + ChromeDriver stack (see PRs #1158,
+#1180). Playwright drives Chromium / Firefox / WebKit via the Chrome DevTools
+Protocol directly, with native auto-waiting that works correctly with the
+Vue.js widgets (voting, speaking list, amendment merging).
+
+- `e2e/playwright.config.ts` — projects, base URL, webServer config
+- `e2e/tests/` — 239 spec files mirroring the old `tests/Acceptance/*Cept.php`
+- `e2e/fixtures/index.ts` — Playwright `test.extend({ db })` with DBFixture
+- `e2e/utils/` — `auth.ts` (login helpers + RestAuth.bearerHeaders), `dom.ts`
+  (CKEditor + Bootbox helpers), `test-api.ts` (REST client + /test/* DB
+  helpers), `validators.ts` (vnu + pa11y), `constants.ts`
+- `e2e/pages/` — Page Objects (extends BasePage which calls /test/url-builder)
+- `controllers/TestController.php` — test-only Yii controller exposing
+  `/test/populate-db`, `/test/reset-db`, `/test/set-config`,
+  `/test/url-builder`, `/test/set-api-enabled`, `/test/set-amendment-status`,
+  `/test/set-user-fixed-data`, `/test/user-votes`, `/test/totp-code`.
+  Gated by `YII_ENV === 'test'` AND IP allowlist (127.0.0.1, ::1,
+  localhost, RFC1918 ranges).
+
+Prerequisites for e2e tests:
+- MariaDB test database (`antragsgruen_tests`) configured in
+  `config/config_tests.json`
 - `test.antragsgruen.test` pointing to localhost in `/etc/hosts`
-- Selenium Grid running: `java -jar selenium-server-4.x.jar standalone --config selenium-antragsgruen.toml`
+- For local development, run the Docker dev stack
+  (`docker compose -f docker-compose.development.yml --profile pnpm-helper up`)
+  so the web server is reachable on the configured port.
+- `pnpm test:e2e:install` once to download the browser binaries.
+
+#### Unit
+Unit tests are Codeception-based but with the WebDriver modules removed.
+They share the `dbdata1.sql` fixture with the Playwright suite via
+`Tests\Support\Helper\DBTestBase`. The `Tests\Support\TestFixtures` class
+holds the IDs/prefixes constants previously on `AcceptanceTester`.
 
 ### Development environment (Docker)
 ```bash

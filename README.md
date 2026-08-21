@@ -608,32 +608,38 @@ The PHP DTOs used to create the response are (for newer endpoints) automatically
 
 ## Testing
 
-### Codecept (acceptance & unit test)
+### Tests (unit + Playwright e2e)
 
 #### Installation
 
 * Create a separate (MySQL/MariaDB-)database for testing (`antragsgruen_tests`)
-* Set up the configuration file: ```
-cp config/config_tests.template.json config/config_tests.json && vi config/config_tests.json```
-* Download [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/) (either the matching ChromeDriver for your already installed Chrome or the full Chrome Bundle) and move it into any path.
-* Download the [Selenium Server (Grid)](https://www.selenium.dev/downloads/)
-* Copy the [docs/selenium-antragsgruen.toml](docs/selenium-antragsgruen.toml) to the directory that has the downloaded JAR and set the correct path to the ChromeDriver binary in it.
-* For the automated HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
-* For the automated accessibility validation, [Pa11y](https://pa11y.org/) needs to be installed. (is done by ``pnpm install``)
-* The host name ``test.antragsgruen.test`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured. If another host name is to be used, it has to be changed in the [config/TEST_DOMAIN](config/TEST_DOMAIN) and [tests/acceptance.suite.yml](tests/acceptance.suite.yml).
+* Set up the configuration file:
+```
+cp config/config_tests.template.json config/config_tests.json && vi config/config_tests.json
+```
+* For the automated HTML validation (optional), Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
+* For the automated accessibility validation (optional), [Pa11y](https://pa11y.org/) needs to be installed. (is done by `pnpm install`)
+* The host name `test.antragsgruen.test` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the `web/`-directory of this installation has to be configured. If another host name is to be used, it has to be changed in the `config/TEST_DOMAIN` and `e2e/playwright.config.ts`.
 
 #### Running
 
-* Start Selenium:
-```java -jar selenium-server-4.40.0.jar standalone --config selenium-antragsgruen.toml```
-* Run all acceptance tests:
-```vendor/bin/codecept run Acceptance```
-* Run all unit tests:
-```vendor/bin/codecept run Unit```
-* Run unit tests without a database:
-```vendor/bin/codecept run Unit --skip-group=database```
-* Run a single acceptance-test: 
-```vendor/bin/codecept run Acceptance motions/CreateCept```
+Unit tests (Codeception):
+```bash
+vendor/bin/codecept run Unit --skip-group=database   # Without DB
+vendor/bin/codecept run Unit                         # All (includes DB group)
+```
+
+End-to-end tests (Playwright — Chromium + Firefox + WebKit via Chrome DevTools Protocol):
+```bash
+pnpm test:e2e:install           # Download browser binaries (first time only)
+pnpm test:e2e                   # All browsers in parallel
+pnpm test:e2e:chromium          # Chromium only
+pnpm test:e2e:firefox           # Firefox only
+pnpm test:e2e:webkit            # WebKit only
+pnpm test:e2e:ui                # Playwright UI mode for debugging
+```
+
+The Playwright suite replaces the legacy Codeception + Selenium WebDriver + ChromeDriver stack that was tied to specific Chrome versions and broke on modern browsers (see PRs #1158, #1180). It uses native auto-waiting for Vue.js widgets — no ChromeDriver, no Selenium Grid, no version-pinning.
 
 ### phpstan
 
