@@ -84,7 +84,20 @@ jobs:
 
       - name: Start PHP built-in web server
         run: |
-          php -S 127.0.0.1:8080 -t web/ &
+          cat > /tmp/a11y-router.php <<'PHP'
+          <?php
+          // Mirrors docker/nginx/default.conf: try_files $uri $uri/ /index.php?$args;
+          $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+          $file = $_SERVER['DOCUMENT_ROOT'] . $path;
+          if ($path !== '/' && is_file($file) && pathinfo($file, PATHINFO_EXTENSION) !== 'php') {
+              return false; // let the built-in server serve static assets as-is
+          }
+          $_SERVER['SCRIPT_NAME'] = '/index.php';
+          $_SERVER['SCRIPT_FILENAME'] = $_SERVER['DOCUMENT_ROOT'] . '/index.php';
+          $_SERVER['PHP_SELF'] = '/index.php';
+          require $_SERVER['DOCUMENT_ROOT'] . '/index.php';
+          PHP
+          php -S 127.0.0.1:8080 -t web/ /tmp/a11y-router.php &
           url="http://test.antragsgruen.test:8080/stdparteitag/std-parteitag"
           code=""
           for i in $(seq 1 30); do
