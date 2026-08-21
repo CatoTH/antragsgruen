@@ -138,3 +138,91 @@ jobs:
           php -d register_argc_argv=On vendor/bin/codecept clean
           php -d register_argc_argv=On vendor/bin/codecept build
           php -d register_argc_argv=On vendor/bin/codecept run Unit
+
+  e2e-playwright:
+    needs: [ set-environment, check-composer ]
+    name: E2E (Playwright) - ${{ matrix.browser }}
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+      fail-fast: false
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: yii
+          MYSQL_PASSWORD: yii
+          MYSQL_USER: yii
+          MYSQL_DATABASE: yii
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      web:
+        image: tobiashoessl/antragsgruen:4.17.1-full
+        env:
+          APP_DOMAIN: test.antragsgruen.test
+          APP_PROTOCOL: http
+          SITE_SUBDOMAIN: std
+          DB_HOST: mysql
+          DB_NAME: yii
+          DB_USER: yii
+          DB_PASSWORD: yii
+          MAILER_DISABLED: 'true'
+          MAIL_FROM_EMAIL: noreply@example.org
+          RANDOM_SEED: 'deadbeefdeadbeefdeadbeefdeadbeef'
+        ports:
+          - 80/tcp
+        options: --health-cmd="curl -fsS http://localhost/index.php" --health-interval=10s --health-timeout=5s --health-retries=12
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Set /etc/hosts entry for test.antragsgruen.test
+        run: |
+          grep -q test.antragsgruen.test /etc/hosts || echo "127.0.0.1 test.antragsgruen.test" | sudo tee -a /etc/hosts
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --dir e2e exec playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Wait for web service
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://test.antragsgruen.test/index.php > /dev/null; then
+              echo "Web service is up"; break
+            fi
+            echo "Waiting... ($i)"; sleep 2
+          done
+
+      - name: Copy test config
+        run: cp config/config_tests.template.json config/config_tests.json
+
+      - name: Run Playwright e2e tests (${{ matrix.browser }})
+        run: pnpm test:e2e --project=${{ matrix.browser }}
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: |
+            e2e/test-results
+            e2e/playwright-report
+          retention-days: 14

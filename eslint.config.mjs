@@ -35,12 +35,30 @@ const config = defineConfig(
             'no-prototype-builtins': 'off',
             'no-unused-vars': 'off',
             'promise/no-callback-in-promise': 'off',
-            /*
-            'no-empty': 'off',//todo
-            'no-useless-escape': 'off',//todo
-            'prefer-const': 'off',//todo
-            'promise/always-return': 'off',//todo
-             */
+        },
+    },
+    {
+        files: [
+            'e2e/**/*.ts',
+        ],
+        languageOptions: {
+            parserOptions: {
+                projectService: false,
+                ecmaVersion: 'latest',
+                sourceType: 'module',
+            },
+            globals: {
+                ...globals.node,
+            },
+        },
+        extends: [
+            eslint.configs.recommended,
+        ],
+        rules: {
+            'no-console': 'warn',
+            'no-unused-vars': 'off',
+            'no-empty': 'off',
+            'no-prototype-builtins': 'off',
         },
     },
 );
