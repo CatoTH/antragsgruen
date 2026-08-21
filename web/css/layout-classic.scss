@@ -12,8 +12,8 @@ $mainContentWidth: $container-md - $sidebarWidth !default;
 $content-max-width: $mainContentWidth - 2px !default;
 $grid-float-breakpoint: $screen-md-min !default;
 
-$colorLinksLight: #6d7e00;
-$colorLinks: #6d7e00;
+$colorLinksLight: #4a6800;
+$colorLinks: #3d5e00;
 $colorLinksFooter: darken($colorLinks, 5%);
 $linkTextDecoration: none;
 $colorDelLink: #FF7777;
@@ -33,8 +33,8 @@ $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(27, 74, 251);
 
 $menuFont: "Open Sans", sans-serif;
-$menuLink: #4b7000;
-$menuActive: rgb(100, 100, 100);
+$menuLink: #3d5e00;
+$menuActive: rgb(80, 80, 80);
 
 $sidebarBackground: $colorMagenta;
 $sidebarActionFont: "Open Sans", sans-serif;

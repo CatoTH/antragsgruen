@@ -6,16 +6,28 @@
 }
 
 #gotoMainContent {
-  color: transparent;
   position: absolute;
-  left: 10px;
-  top: 35px;
-  @include outlineOnFocusNoBorder();
-  &:link, &:visited {
-    color: transparent;
-  }
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 10000;
+
   &:focus {
-    color: $colorLinks;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    padding: 8px 16px;
+    background: #222;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    outline: 2px solid #66afe9;
   }
 }
 

@@ -17,7 +17,7 @@ $controller->layoutParams->canonicalUrl      = 'https://motion.tools/';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
 $controller->layoutParams->addInlineCss('
     .homeFigure { text-align: center; }
-    .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; }
+    .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; color: #4a4a4a; }
     .homeFigureAmendment img { max-width: 100%; }
     @media (min-width: 800px) {
         .homeFigureAmendment img { max-width: 600px; }
