@@ -2,128 +2,327 @@
 
 namespace app\controllers;
 
-use app\components\VotingMethods;
-use app\models\db\User;
-use yii\web\{Request, Response};
+use app\models\db\Amendment;
+use app\models\db\Site;
+use app\models\settings\AntragsgruenApp;
+use Yii;
+use yii\web\Controller;
+use yii\web\Response;
 
-class TestController extends Base
+/**
+ * Test-only endpoints for Playwright e2e tests.
+ *
+ * Gated by:
+ *   1. YII_ENV === 'test'  (env check; throws RuntimeException on prod)
+ *   2. IP allowlist         (defense-in-depth; throws HttpException 403)
+ *
+ * Replaces the DB-lifecycle logic that the legacy Codeception
+ * `AntragsgruenSetupDB` trait did in-process, so the e2e suite can manage
+ * fixtures via HTTP without bootstrapping a Yii web Application in Node.
+ *
+ * Endpoints (all POST, JSON response):
+ *   /test/populate-db          {fixture: "dbdata1"|"dbdata-yfj"|"dbdata-dbwv"}
+ *   /test/reset-db
+ *   /test/set-config           {key, value}
+ *   /test/url-builder          {route, params(JSON)}
+ *   /test/set-api-enabled      {subdomain, consultationUrl, enabled}
+ *   /test/set-amendment-status {subdomain, consultationUrl, id, status}
+ *   /test/set-user-fixed-data  {subdomain, consultationUrl, email, nameGiven,
+ *                               nameFamily, organisation, fixed}
+ *   /test/user-votes           {subdomain, consultationUrl, email, votingBlock,
+ *                               itemId, answer}
+ *   /test/totp-code            {}  → returns current TOTP code for the test user
+ *
+ * DB connection attribute PDO::MYSQL_ATTR_MULTI_STATEMENTS is set
+ * explicitly so the multi-statement fixture SQL loads regardless of
+ * server-side multi_statements flag.
+ */
+class TestController extends Controller
 {
     public $enableCsrfValidation = false;
-    public ?bool $allowNotLoggedIn = true;
 
-    public function actionIndex(string $action = ''): string
+    private const ALLOWED_IPS = [
+        '127.0.0.1',
+        '::1',
+        'localhost',
+    ];
+
+    private const ALLOWED_CIDRS = [
+        '10.0.0.0/8',
+        '172.16.0.0/12',
+        '192.168.0.0/16',
+    ];
+
+    public function init(): void
     {
+        parent::init();
         if (YII_ENV !== 'test') {
-            die("Only accessible in testing mode");
+            throw new \RuntimeException(
+                'TestController is only available when YII_ENV=test. ' .
+                'Refusing to expose test-only endpoints to a production environment.'
+            );
         }
-        if ($_SERVER['REMOTE_ADDR'] !== '::1' && $_SERVER['REMOTE_ADDR'] !== '127.0.0.1') {
-            die("Only accessible from localhost");
+        if (!$this->isRemoteIpAllowed()) {
+            throw new \yii\web\HttpException(403, 'TestController: remote IP not in allowlist');
         }
-
-        $this->getHttpResponse()->format = Response::FORMAT_RAW;
-        $this->getHttpResponse()->headers->add('Content-Type', 'application/json');
-
-        switch ($action) {
-            case 'set-amendment-status':
-                return $this->actionSetAmendmentStatus();
-            case 'set-user-fixed-data':
-                return $this->actionSetUserFixedData();
-            case 'user-votes':
-                return $this->actionUserVotes();
-            case 'set-api-enabled':
-                return $this->actionSetApiEnabled();
-        }
-
-        return json_encode(['success' => false, 'message' => 'Unknown action: ' . $action], JSON_THROW_ON_ERROR);
     }
 
-    /* Sample HTTP Request:
-
-POST http://antragsgruen-test.local/stdparteitag/std-parteitag/test/set-amendment-status
-Accept: application/json
-Content-Type: application/x-www-form-urlencoded
-
-id=270&status=3
-     */
-    private function actionSetAmendmentStatus(): string
+    public function beforeAction($action): bool
     {
-        $amendmentId = $this->getHttpRequest()->post('id');
-        $status      = $this->getHttpRequest()->post('status');
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return parent::beforeAction($action);
+    }
 
-        $amendment = $this->consultation->getAmendment($amendmentId);
+    private function isRemoteIpAllowed(): bool
+    {
+        $remoteIp = Yii::$app->request->remoteIP;
+        if (in_array($remoteIp, self::ALLOWED_IPS, true)) {
+            return true;
+        }
+        foreach (self::ALLOWED_CIDRS as $cidr) {
+            if ($this->ipInCidr($remoteIp, $cidr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function ipInCidr(string $ip, string $cidr): bool
+    {
+        if (str_contains($cidr, ':')) {
+            return false;
+        }
+        [$subnet, $bits] = explode('/', $cidr);
+        $ipLong = ip2long($ip);
+        $subnetLong = ip2long($subnet);
+        if ($ipLong === false || $subnetLong === false) {
+            return false;
+        }
+        $mask = -1 << (32 - (int)$bits);
+        return ($ipLong & $mask) === ($subnetLong & $mask);
+    }
+
+    public function actionPopulateDb(): array
+    {
+        $fixture = Yii::$app->request->post('fixture', 'dbdata1');
+        $allowed = ['dbdata1', 'dbdata-yfj', 'dbdata-dbwv'];
+        if (!in_array($fixture, $allowed, true)) {
+            return ['ok' => false, 'error' => "Unknown fixture: $fixture"];
+        }
+        try {
+            $this->createDb();
+            $this->populateDb(__DIR__ . '/../tests/Support/Data/' . $fixture . '.sql');
+            return ['ok' => true];
+        } catch (\Throwable $e) {
+            return ['ok' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function actionResetDb(): array
+    {
+        try {
+            $this->deleteDb();
+            return ['ok' => true];
+        } catch (\Throwable $e) {
+            return ['ok' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function actionSetConfig(): array
+    {
+        $key = (string)Yii::$app->request->post('key', '');
+        $value = Yii::$app->request->post('value');
+        if ($key === '') {
+            return ['ok' => false, 'error' => 'Missing key'];
+        }
+        $configFile = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config_tests.json';
+        if (!is_writable($configFile)) {
+            return ['ok' => false, 'error' => "Config file not writable: $configFile"];
+        }
+        $config = json_decode((string)file_get_contents($configFile), true);
+        if (!is_array($config) || count($config) === 0) {
+            return ['ok' => false, 'error' => 'Config file invalid'];
+        }
+        $config[$key] = $value;
+        file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT));
+        return ['ok' => true];
+    }
+
+    public function actionUrlBuilder(): array
+    {
+        $route = Yii::$app->request->post('route', '');
+        $paramsJson = Yii::$app->request->post('params', '{}');
+        $params = json_decode($paramsJson, true) ?: [];
+        if (is_string($route)) {
+            $params[0] = $route;
+        } elseif (is_array($route) && isset($route[0])) {
+            $params = array_merge($route, $params);
+        }
+        try {
+            $url = Yii::$app->getUrlManager()->createUrl($params);
+        } catch (\Throwable $e) {
+            return ['ok' => false, 'error' => $e->getMessage()];
+        }
+        return ['ok' => true, 'url' => $url];
+    }
+
+    public function actionSetApiEnabled(): array
+    {
+        $subdomain = (string)Yii::$app->request->post('subdomain', 'stdparteitag');
+        $consultationUrl = (string)Yii::$app->request->post('consultationUrl', 'std-parteitag');
+        $enabled = (string)Yii::$app->request->post('enabled', '1') === '1';
+        try {
+            $site = Site::findOne(['subdomain' => $subdomain]);
+            if (!$site) {
+                return ['ok' => false, 'error' => "Site not found: $subdomain"];
+            }
+            $settings = $site->getSettings();
+            $settings->apiEnabled = $enabled;
+            $site->setSettings($settings);
+            $site->save();
+            return ['ok' => true];
+        } catch (\Throwable $e) {
+            return ['ok' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function actionSetAmendmentStatus(): array
+    {
+        $id = (int)Yii::$app->request->post('id', 0);
+        $status = (int)Yii::$app->request->post('status', 0);
+        $amendment = Amendment::findOne($id);
         if (!$amendment) {
-            return json_encode(['success' => false, 'error' => 'Amendment not found'], JSON_THROW_ON_ERROR);
+            return ['ok' => false, 'error' => "Amendment not found: $id"];
         }
-
-        $amendment->status = intval($status);
+        $amendment->status = $status;
         $amendment->save();
-
-        return json_encode(['success' => true], JSON_THROW_ON_ERROR);
+        return ['ok' => true];
     }
 
-    private function actionSetUserFixedData(): string
+    public function actionSetUserFixedData(): array
     {
-        $user = User::findOne(['email' => $this->getHttpRequest()->post('email')]);
-        if (!$user) {
-            return json_encode(['success' => false, 'message' => 'user not found'], JSON_THROW_ON_ERROR);
+        $email = (string)Yii::$app->request->post('email', '');
+        if ($email === '') {
+            return ['ok' => false, 'error' => 'Missing email'];
         }
-        $user->fixedData = ($this->getHttpRequest()->post('fixed') ? User::FIXED_NAME : 0);
-        $user->nameFamily = $this->getHttpRequest()->post('nameFamily');
-        $user->nameGiven = $this->getHttpRequest()->post('nameGiven');
-        $user->name = $this->getHttpRequest()->post('nameGiven') . ' ' . $this->getHttpRequest()->post('nameFamily');
-        $user->organization = $this->getHttpRequest()->post('organisation');
+        $user = \app\models\db\User::findOne(['email' => $email]);
+        if (!$user) {
+            return ['ok' => false, 'error' => "User not found: $email"];
+        }
+        $given = Yii::$app->request->post('nameGiven', null);
+        if ($given !== null) {
+            $user->nameGiven = (string)$given;
+        }
+        $family = Yii::$app->request->post('nameFamily', null);
+        if ($family !== null) {
+            $user->nameFamily = (string)$family;
+        }
+        $organisation = Yii::$app->request->post('organisation', null);
+        if ($organisation !== null) {
+            $user->organisation = (string)$organisation;
+        }
+        $fixed = Yii::$app->request->post('fixed', '0');
+        if ($fixed === '1') {
+            $user->fixedData = 1;
+        }
         $user->save();
-
-        return json_encode(['success' => true], JSON_THROW_ON_ERROR);
+        return ['ok' => true];
     }
 
-    private function actionSetApiEnabled(): string
+    public function actionUserVotes(): array
     {
-        $settings = $this->site->getSettings();
-        $settings->apiEnabled = ($this->getHttpRequest()->post('enabled') === '1');
-        $this->site->setSettings($settings);
-        $this->site->save();
-
-        return json_encode(['success' => true], JSON_THROW_ON_ERROR);
-    }
-
-    private function actionUserVotes(): string
-    {
-        $user = User::findOne(['email' => $this->getHttpRequest()->post('email')]);
+        $email = (string)Yii::$app->request->post('email', '');
+        $votingBlockId = (int)Yii::$app->request->post('votingBlock', 0);
+        $itemId = (int)Yii::$app->request->post('itemId', 0);
+        $answer = (string)Yii::$app->request->post('answer', '');
+        $user = \app\models\db\User::findOne(['email' => $email]);
         if (!$user) {
-            return json_encode(['success' => false, 'message' => 'user not found'], JSON_THROW_ON_ERROR);
+            return ['ok' => false, 'error' => "User not found: $email"];
         }
+        $vote = \app\models\db\Vote::find()
+            ->andWhere(['votingBlockId' => $votingBlockId, 'itemId' => $itemId, 'userId' => $user->id])
+            ->one();
+        if (!$vote) {
+            $vote = new \app\models\db\Vote();
+            $vote->votingBlockId = $votingBlockId;
+            $vote->itemId = $itemId;
+            $vote->userId = $user->id;
+        }
+        $vote->answer = $answer;
+        $vote->save();
+        return ['ok' => true];
+    }
 
-        $votingBlock = $this->consultation->getVotingBlock(intval($this->getHttpRequest()->post('votingBlock')));
-
-        $postdata = [
-            'votes' => [[
-                'itemType' => 'question',
-                'itemId' => $this->getHttpRequest()->post('itemId'),
-                'vote' => $this->getHttpRequest()->post('answer'),
-                'public' => 2,
-            ]],
-        ];
-
-        $request = new class($postdata) extends Request {
-            private ?array $postdata;
-
-            public function __construct(?array $postdata, $config = [])
-            {
-                parent::__construct($config);
-                $this->postdata = $postdata;
+    public function actionTotpCode(): array
+    {
+        try {
+            $user = \app\models\db\User::findOne(['email' => 'testadmin@example.org']);
+            if (!$user) {
+                return ['ok' => false, 'error' => 'test admin user not found'];
             }
-
-            public function getBodyParams(): ?array
-            {
-                return $this->postdata;
+            if (empty($user->twoFactorAuthSecret)) {
+                return ['ok' => false, 'error' => 'user has no 2FA secret configured'];
             }
-        };
+            $otp = \OTPHP\TOTP::create($user->twoFactorAuthSecret);
+            $code = $otp->now();
+            return ['ok' => true, 'code' => $code];
+        } catch (\Throwable $e) {
+            return ['ok' => false, 'error' => $e->getMessage()];
+        }
+    }
 
-        $votingMethods = new VotingMethods();
-        $votingMethods->setRequestData($this->consultation, $request);
-        $votingMethods->userVote($votingBlock, $user);
+    private ?\yii\db\Connection $database = null;
+    private ?string $databaseDelete = null;
 
-        return json_encode(['success' => true], JSON_THROW_ON_ERROR);
+    private function createDb(): void
+    {
+        $this->database = Yii::$app->db;
+        $init = (string)file_get_contents(
+            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'create.sql'
+        );
+        $init = str_replace('###TABLE_PREFIX###', '', $init);
+        $data = (string)file_get_contents(
+            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'data.sql'
+        );
+        $data = str_replace('###TABLE_PREFIX###', '', $data);
+        $this->databaseDelete = (string)file_get_contents(
+            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'delete.sql'
+        );
+        $this->databaseDelete = str_replace('###TABLE_PREFIX###', '', $this->databaseDelete);
+
+        $this->deleteDb();
+        $this->executeMultiStatementSql($init);
+        $this->executeMultiStatementSql($data);
+        $this->database->getSchema()->refresh();
+    }
+
+    private function deleteDb(): void
+    {
+        if ($this->database && $this->databaseDelete) {
+            $this->executeMultiStatementSql($this->databaseDelete);
+        }
+    }
+
+    private function populateDb(string $file): void
+    {
+        $testdata = (string)file_get_contents($file);
+        $testdata = str_replace('###TABLE_PREFIX###', '', $testdata);
+        $this->executeMultiStatementSql($testdata);
+    }
+
+    private function executeMultiStatementSql(string $sql): void
+    {
+        if (trim($sql) === '') {
+            return;
+        }
+        $pdo = $this->database->getMasterPdo();
+        $pdo->setAttribute(\PDO::MYSQL_ATTR_MULTI_STATEMENTS, true);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        do {
+        } while ($stmt->nextRowset());
     }
 }
