@@ -1,6 +1,7 @@
 import { defineConfig } from "eslint/config";
 import eslint from '@eslint/js';
 import pluginPromise from 'eslint-plugin-promise'
+import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import ConfusingGlobals from 'confusing-browser-globals';
 
@@ -42,13 +43,23 @@ const config = defineConfig(
             'e2e/**/*.ts',
         ],
         languageOptions: {
+            parser: tseslint.parser,
             parserOptions: {
-                projectService: false,
+                project: './e2e/tsconfig.json',
+                tsconfigRootDir: import.meta.dirname,
                 ecmaVersion: 'latest',
                 sourceType: 'module',
             },
             globals: {
                 ...globals.node,
+                ...globals.browser,
+                ...globals.jquery,
+                "CKEDITOR": "readonly",
+                "bootbox": "readonly",
+                "Sortable": "readonly",
+                "ClipboardJS": "readonly",
+                "Isotope": "readonly",
+                "jQuery": "readonly",
             },
         },
         extends: [
