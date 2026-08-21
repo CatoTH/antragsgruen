@@ -99,9 +99,8 @@ jobs:
           PHP
           php -S 127.0.0.1:8080 -t web/ /tmp/a11y-router.php &
           url="http://test.antragsgruen.test:8080/stdparteitag/std-parteitag"
-          code=""
           for i in $(seq 1 30); do
-            code=$(curl -s -o /tmp/a11y-probe.html -w "%{http_code}" "$url" || true)
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || true)
             if [ "$code" = "200" ]; then
               echo "Server is up after ${i}s"
               exit 0
@@ -109,11 +108,33 @@ jobs:
             sleep 1
           done
           echo "Server did not become ready within 30s (last HTTP status: ${code:-none})"
-          echo "----- Response body (first 4 KB) -----"
-          head -c 4096 /tmp/a11y-probe.html 2>/dev/null || true
-          echo "----- Yii runtime log (last 100 lines) -----"
-          tail -n 100 runtime/logs/app.log 2>/dev/null || true
           exit 1
+
+      - name: Diagnose app response
+        if: failure()
+        run: |
+          {
+            echo "### A11y probe diagnostics"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+          for u in "/" "/stdparteitag/std-parteitag" "/std-parteitag"; do
+            code=$(curl -s -o /tmp/a11y-probe.html -w "%{http_code}" "http://test.antragsgruen.test:8080$u" || true)
+            echo "== GET $u -> HTTP ${code}"
+            echo "- \`GET $u\` -> HTTP ${code}" >> "$GITHUB_STEP_SUMMARY"
+            if [ "$code" != "200" ]; then
+              echo "----- Response body (first 2 KB) for $u -----"
+              head -c 2048 /tmp/a11y-probe.html 2>/dev/null || true
+              echo ""
+            fi
+          done
+          echo "----- Yii runtime log (last 150 lines) -----"
+          tail -n 150 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
+          {
+            echo ""
+            echo "\`\`\`"
+            tail -n 40 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run automated A11y tests
         run: node bin/test-a11y.mjs --url=http://test.antragsgruen.test:8080/stdparteitag/std-parteitag --threshold=50
