@@ -385,4 +385,38 @@ class EnvironmentConfigLoaderTest extends TestBase
         $this->assertEquals('dsn.example.com', $config['host']);
         $this->assertEquals('dsn-user', $config['username']);
     }
+
+    public function testGetPollingConfigNotSet(): void
+    {
+        $this->assertNull(EnvironmentConfigLoader::getPollingConfig());
+    }
+
+    public function testGetPollingConfig(): void
+    {
+        $_ENV['POLLING_INTERVAL_USER_SPEECH'] = '5000';
+        $_ENV['POLLING_INTERVAL_ADMIN_SPEECH'] = ' 2000 ';
+
+        $this->assertEquals(
+            ['user/speech' => 5000, 'admin/speech' => 2000],
+            EnvironmentConfigLoader::getPollingConfig()
+        );
+    }
+
+    public function testGetPollingConfigIgnoresInvalidEntries(): void
+    {
+        $_ENV['POLLING_INTERVAL_USER_SPEECH'] = '5000';
+        $_ENV['POLLING_INTERVAL_USER_DEBATE'] = 'fast';
+        $_ENV['POLLING_INTERVAL_ADMIN_SPEECH'] = '0';
+        $_ENV['POLLING_INTERVAL_USER'] = '1000';
+        $_ENV['POLLING_INTERVAL_'] = '1000';
+
+        $this->assertEquals(['user/speech' => 5000], EnvironmentConfigLoader::getPollingConfig());
+    }
+
+    public function testGetPollingConfigOnlyInvalidEntries(): void
+    {
+        $_ENV['POLLING_INTERVAL_USER_SPEECH'] = '';
+
+        $this->assertNull(EnvironmentConfigLoader::getPollingConfig());
+    }
 }

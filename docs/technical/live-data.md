@@ -26,6 +26,24 @@ A channel is a **role** (whose view of the data: `user` or `admin`) plus a **top
 | `admin/speech` | `/rest/<consultation>/speech/QUEUEIDS/admin` | JWT | 1000 ms | yes |
 | `user/debate` | `/rest/<consultation>/debate` | Session | 3000 ms | no |
 
+The intervals can be changed per installation using the `polling` setting of `config.json`, keyed by
+the channel ID:
+
+```json
+"polling": { "user/speech": 5000, "user/debate": 5000 }
+```
+
+or, equivalently, using one environment variable per channel - the name of the channel in upper case,
+with the slash replaced by an underscore:
+
+```
+POLLING_INTERVAL_USER_SPEECH=5000
+POLLING_INTERVAL_USER_DEBATE=5000
+```
+
+A configured interval is binding: unlike the default, it cannot be undercut by a widget asking for
+more frequent updates (see `intervalMs` below), so that the load an event causes stays predictable.
+
 **Keyed** channels do not carry one global stream, but the state of specific objects — currently
 speaking lists. Widgets pass the ID of the list they show; the JS module collects the IDs of all
 registered widgets and substitutes them into the `QUEUEIDS` placeholder, so a page showing three
@@ -53,7 +71,8 @@ import { registerListener } from "/js/modules/shared/LiveData.js";
 
 const handle = registerListener('user', 'speech', {
     key: queueId,          // only for keyed channels
-    intervalMs: 1000,      // optional, overrides the channel default (the lowest value wins)
+    intervalMs: 1000,      // optional, lowers the channel default (the lowest value wins); ignored
+                           // if the interval is set in the configuration
     initialFetch: false,   // for widgets rendered without any data, see below
     onData: (queue) => { … },
     onError: (err) => { … }, // optional

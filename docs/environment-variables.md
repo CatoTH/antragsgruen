@@ -87,6 +87,9 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `JWT_PRIVATE_KEY` | - | Either link to private key (file:///secret/private.pem), or content of private key |
 | `PLUGINS` | - | Comma-separated list of plugins to enable (e.g. `generic_sso`) |
 | `ADMIN_USER_IDS` | - | Comma-separated list of user IDs with superuser permissions |
+| `POLLING_INTERVAL_USER_SPEECH` | 3000 | How often the speaking list widgets poll for new data, in milliseconds |
+| `POLLING_INTERVAL_ADMIN_SPEECH` | 1000 | How often the speaking list moderation widget polls for new data, in milliseconds |
+| `POLLING_INTERVAL_USER_DEBATE` | 3000 | How often the "currently debated" widget polls for new data, in milliseconds |
 
 ## Automatic Initialization
 

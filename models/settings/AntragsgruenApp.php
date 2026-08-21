@@ -84,6 +84,16 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var array{installationId: string, wsUri: string, stompJsUri: string, rabbitMqUri: string, rabbitMqExchangeName: string, rabbitMqUsername: string, rabbitMqPassword: string}|null */
     public ?array $live = null;
 
+    /**
+     * How often the widgets of a page poll for up-to-date data, in milliseconds, keyed by the ID of
+     * the data channel ("<role>/<channel>", see LiveDataChannels), e.g. { "admin/speech": 2000 }.
+     * Channels that are not listed here use their default interval. Polling only takes place if no
+     * Live server is connected.
+     *
+     * @var array<string, int>
+     */
+    public array $polling = [];
+
     /** @var array{notifications?: bool, sectionAutofill?: bool}|null */
     public ?array $backgroundJobs = null;
 
@@ -182,6 +192,14 @@ class AntragsgruenApp implements \JsonSerializable
             if ($plugins !== null) {
                 /** @var array<class-string<ModuleBase>> $plugins */
                 $this->plugins = $plugins;
+            }
+        }
+
+        // Polling intervals of the live data channels
+        if ($this->polling === []) {
+            $polling = EnvironmentConfigLoader::getPollingConfig();
+            if ($polling !== null) {
+                $this->polling = $polling;
             }
         }
 

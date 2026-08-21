@@ -21,6 +21,7 @@ import { authorizedFetch, getToken } from "/js/modules/shared/ApiClient.js";
  * @property {string} poll_url
  * @property {'session'|'jwt'|'jwt-optional'} auth
  * @property {number} interval
+ * @property {boolean} interval_configured
  * @property {string|null} key_placeholder
  */
 
@@ -93,11 +94,16 @@ class Channel {
     }
 
     /**
-     * The most frequent update rate any of the registered widgets asked for.
+     * The most frequent update rate any of the registered widgets asked for. If an interval was set
+     * for this channel in the configuration, that one is binding and widgets cannot ask for more.
      *
      * @returns {number}
      */
     getIntervalMs() {
+        if (this.config.interval_configured) {
+            return this.config.interval;
+        }
+
         let interval = this.config.interval;
         this.registrations.forEach(registration => {
             if (registration.intervalMs !== null && registration.intervalMs < interval) {
