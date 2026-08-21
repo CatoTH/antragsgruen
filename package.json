@@ -1,73 +1,80 @@
 {
-    "name": "antragsgruen",
-    "license": "AGPL-3.0",
-    "private": true,
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/CatoTH/antragsgruen"
-    },
-    "scripts": {
-        "test:acceptance": "vendor/bin/codecept run Acceptance",
-        "test:unit": "vendor/bin/codecept run Unit",
-        "watch": "gulp watch",
-        "build": "gulp && rollup -c assets/rollup.js",
-        "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
-        "lint:fix": "eslint --fix 'web/js/**/*.{js,ts}'"
-    },
-    "engines": {
-        "node": ">=22"
-    },
-    "devDependencies": {
-        "@eslint/js": "^10.0.1",
-        "@types/bootbox": "^5.2.9",
-        "@types/bootstrap": "^3.4.0",
-        "@types/ckeditor": "^4.9.10",
-        "@types/eonasdan-bootstrap-datetimepicker": "^4.17.33",
-        "@types/jquery": "^4.0.1",
-        "@types/sortablejs": "^1.15.9",
-        "@types/typeahead": "^0.11.32",
-        "autoprefixer": "^10.5.4",
-        "confusing-browser-globals": "^1.0.11",
-        "eslint": "^10.8.1",
-        "eslint-plugin-promise": "^7.3.0",
-        "globals": "^17.11.0",
-        "gulp": "^5.0.1",
-        "gulp-concat": "^2.6.1",
-        "gulp-postcss": "^10.0.0",
-        "gulp-sass": "^6.0.1",
-        "gulp-sourcemaps": "^3.0.0",
-        "gulp-terser": "^2.1.0",
-        "gulp-uglify": "^3.0.2",
-        "pa11y": "^9.1.1",
-        "postcss": "^8.5.26",
-        "sass": "^1.102.0"
-    },
-    "directories": {
-        "bin": "./bin/"
-    },
-    "dependencies": {
-        "@rollup/plugin-commonjs": "^29.0.3",
-        "@rollup/plugin-node-resolve": "^16.0.3",
-        "@selectize/selectize": "^0.15.2",
-        "@vue/compiler-sfc": "^3.5.41",
-        "bootbox": "^6.0.4",
-        "bootstrap-toggle": "^2.2.2",
-        "clipboard": "^2.0.11",
-        "entreprise7pro-bootstrap": "^3.4.8",
-        "isotope-layout": "^3.0.6",
-        "moment": "^2.30.1",
-        "requirejs": "^2.3.8",
-        "rollup": "^4.62.4",
-        "sortablejs": "^1.15.7",
-        "vue": "^3.5.41",
-        "vue-draggable-plus": "^0.6.1",
-        "vuedraggable": "^4.1.0"
-    },
-    "browserslist": [
-        ">0.5%",
-        "last 10 versions",
-        "Firefox ESR",
-        "not dead"
-    ]
+  "name": "antragsgruen",
+  "license": "AGPL-3.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CatoTH/antragsgruen"
+  },
+  "scripts": {
+    "test:acceptance": "vendor/bin/codecept run Acceptance",
+    "test:unit": "vendor/bin/codecept run Unit",
+    "watch": "gulp watch",
+    "build": "gulp && rollup -c assets/rollup.js",
+    "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
+    "lint:fix": "eslint --fix 'web/js/**/*.{js,ts}'"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.62.1",
+    "@types/bootbox": "^5.2.9",
+    "@types/bootstrap": "^3.4.0",
+    "@types/ckeditor": "^4.9.10",
+    "@types/eonasdan-bootstrap-datetimepicker": "^4.17.33",
+    "@types/jquery": "^4.0.1",
+    "@types/node": "^22.7.0",
+    "@types/sortablejs": "^1.15.9",
+    "@types/typeahead": "^0.11.32",
+    "autoprefixer": "^10.5.4",
+    "confusing-browser-globals": "^1.0.11",
+    "eslint": "^10.8.1",
+    "eslint-plugin-promise": "^7.3.0",
+    "globals": "^17.11.0",
+    "gulp": "^5.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^10.0.0",
+    "gulp-sass": "^6.0.1",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-terser": "^2.1.0",
+    "gulp-uglify": "^3.0.2",
+    "pa11y": "^9.1.1",
+    "postcss": "^8.5.26",
+    "sass": "^1.102.0",
+    "typescript": "^5.6.0"
+  },
+  "directories": {
+    "bin": "./bin/"
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@selectize/selectize": "^0.15.2",
+    "@vue/compiler-sfc": "^3.5.41",
+    "bootbox": "^6.0.4",
+    "bootstrap-toggle": "^2.2.2",
+    "clipboard": "^2.0.11",
+    "e2e": "^0.1.0",
+    "entreprise7pro-bootstrap": "^3.4.8",
+    "isotope-layout": "^3.0.6",
+    "moment": "^2.30.1",
+    "requirejs": "^2.3.8",
+    "rollup": "^4.62.4",
+    "sortablejs": "^1.15.7",
+    "vue": "^3.5.41",
+    "vue-draggable-plus": "^0.6.1",
+    "vuedraggable": "^4.1.0"
+  },
+  "browserslist": [
+    ">0.5%",
+    "last 10 versions",
+    "Firefox ESR",
+    "not dead"
+  ],
+  "overrides": {
+    "postcss": "^8.5.26"
+  }
 }
