@@ -137,14 +137,7 @@
 }
 
 .infoSite {
-  color: #333;
-
-  h1, h2, h3 {
-    color: #264600;
-  }
-
-  p a, li a {
-    color: #385d00;
+  p a {
     text-decoration: underline;
   }
 
@@ -159,14 +152,6 @@
     line-height: 1.5;
     margin: 0;
   }
-}
-
-#antragsgruenTitle {
-  color: #264600;
-}
-
-#legalLink, #privacyLink {
-  color: #385d00;
 }
 
 .statusReferenceTable {
