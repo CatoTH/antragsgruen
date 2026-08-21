@@ -10,8 +10,8 @@ use app\models\amendmentNumbering\PerMotionEnglish;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use Codeception\Attribute\Group;
-use Tests\Support\AcceptanceTester;
 use Tests\Support\Helper\DBTestBase;
+use Tests\Support\TestFixtures;
 
 #[Group('database')]
 class AmendmentNumberingTest extends DBTestBase
