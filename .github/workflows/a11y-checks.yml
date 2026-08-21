@@ -63,6 +63,11 @@ jobs:
       - name: Build frontend assets
         run: pnpm run build
 
+      - name: Generate static resource manifest
+        run: |
+          rm -Rf local/cdn/dev
+          php docs/create-static-resources.php dev
+
       - name: Install PHP dependencies
         run: >-
           composer install --no-interaction
