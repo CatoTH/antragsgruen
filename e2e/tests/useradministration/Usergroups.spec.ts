@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdUser, logout } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminMotionTypePage } from '../../pages/AdminMotionTypePage';
 import { FIRST_FREE_USERGROUP_ID } from '../../utils/constants';

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { logout } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
 import { FIRST_FREE_USER_ID } from '../../utils/constants';

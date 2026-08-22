@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminMotionTypePage } from '../../pages/AdminMotionTypePage';
 
 const GENDER_NONE = '0';

@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminMotionListPage } from '../../pages/AdminMotionListPage';
 import { loginAsStdAdmin, logout } from '../../utils/auth';

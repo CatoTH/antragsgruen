@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, logout } from '../../utils/auth';
 import { FIRST_FREE_COMMENT_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
 
 test.describe('Whole-motion comment screening', () => {

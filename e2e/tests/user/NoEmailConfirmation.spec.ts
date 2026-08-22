@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { setConfig } from '../../utils/test-api';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('User: no email confirmation', () => {
     test.beforeEach(async ({ db, request }) => {

@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, loginAsStdUser, logout } from '../../utils/auth';
 import { appendCkEditorContent } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
 
 test.describe('Motion editing', () => {

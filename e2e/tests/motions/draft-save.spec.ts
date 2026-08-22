@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { setCkEditorContent, expectBootboxDialog, acceptBootbox } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('Motion draft saving', () => {
     test.beforeEach(async ({ db }) => {

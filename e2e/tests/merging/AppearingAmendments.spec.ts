@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { setAmendmentStatus } from '../../utils/test-api';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 const SUBDOMAIN = 'stdparteitag';
 const CONSULTATION = 'std-parteitag';

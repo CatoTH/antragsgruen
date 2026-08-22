@@ -14,7 +14,7 @@ test.describe('Motion creation (basic flow)', () => {
     });
 
     test('motion Create site loads', async ({ page }) => {
-        const home = new (await import('../../pages/BasePage')).ConsultationHomePage(page);
+        const home = new (await import('../../pages/ConsultationHomePage')).ConsultationHomePage(page);
         await home.gotoMotionCreatePage();
 
         await expect(page.locator('h1')).toContainText(/antrag stellen/i);
@@ -45,7 +45,7 @@ test.describe('Motion creation (basic flow)', () => {
     });
 
     test('submit without resolution date shows bootbox error', async ({ page }) => {
-        const home = new (await import('../../pages/BasePage')).ConsultationHomePage(page);
+        const home = new (await import('../../pages/ConsultationHomePage')).ConsultationHomePage(page);
         await home.gotoMotionCreatePage();
 
         await page.locator("input[name='tags[]'][value='1']").check();
@@ -64,7 +64,7 @@ test.describe('Motion creation (basic flow)', () => {
     });
 
     test('create, correct, re-submit, and confirm motion end-to-end', async ({ page }) => {
-        const home = new (await import('../../pages/BasePage')).ConsultationHomePage(page);
+        const home = new (await import('../../pages/ConsultationHomePage')).ConsultationHomePage(page);
         await home.gotoMotionCreatePage();
 
         await page.locator("input[name='tags[]'][value='1']").check();

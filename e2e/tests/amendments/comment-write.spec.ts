@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { AmendmentPage } from '../../pages/AmendmentPage';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { FIRST_FREE_COMMENT_ID } from '../../utils/constants';
 import { acceptBootbox } from '../../utils/dom';

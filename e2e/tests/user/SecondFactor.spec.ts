@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdUser, logout } from '../../utils/auth';
 import { getTotpCode } from '../../utils/test-api';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('User: second factor', () => {
     test.beforeEach(async ({ db }) => {

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { AmendmentPage } from '../../pages/AmendmentPage';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 import { loginAsStdUser, logout } from '../../utils/auth';
 import { FIRST_FREE_AMENDMENT_ID } from '../../utils/constants';
 

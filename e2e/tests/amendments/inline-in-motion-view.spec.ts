@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 
 test.describe('Amendments: InlineInMotionView', () => {
     test.beforeEach(async ({ db }) => {

@@ -6,7 +6,7 @@ import {
     FIRST_FREE_MOTION_SECTION,
     FIRST_FREE_MOTION_TYPE,
 } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminAppearancePage } from '../../pages/AdminAppearancePage';
 

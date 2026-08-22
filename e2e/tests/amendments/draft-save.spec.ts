@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 import { replaceInCkEditor, setCkEditorContent, expectBootboxDialog, acceptBootbox } from '../../utils/dom';
 
 test.describe('Amendments: DraftSave', () => {

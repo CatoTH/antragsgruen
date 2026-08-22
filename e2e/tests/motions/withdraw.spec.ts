@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdUser } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { MotionPage } from '../../pages/MotionPage';
 
 const MOTION_SLUG = '321-o-zapft-is';

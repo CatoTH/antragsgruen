@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsGlobalAdmin, logout } from '../../utils/auth';
 import { getTotpCode } from '../../utils/test-api';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 
 test.describe('Useradmin: ForceSecondFactor', () => {

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdUser, logout } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('User: account delete', () => {
     test.beforeEach(async ({ db }) => {

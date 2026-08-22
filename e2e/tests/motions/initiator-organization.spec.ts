@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { FIRST_FREE_MOTION_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 const PERSON_ORGANIZATION = '1';
 

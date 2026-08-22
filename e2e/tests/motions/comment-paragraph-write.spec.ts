@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, logout } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
 import { FIRST_FREE_COMMENT_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminMotionTypePage } from '../../pages/AdminMotionTypePage';
 
 const POLICY_ALL = '2';
