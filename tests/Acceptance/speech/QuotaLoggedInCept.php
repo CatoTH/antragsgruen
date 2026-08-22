@@ -22,6 +22,8 @@ $I->checkOption('#hasMultipleSpeechLists');
 $I->executeJS('$("#speechRequiresLogin").prop("checked", true).trigger("change");');
 $I->seeInField('.quotaName1 input', 'Offen / Männer');
 $I->fillField('.quotaName1 input', 'Offener Platz');
+// The fixture has the "Currently debated" module on, which would take the place of this widget
+$I->uncheckOption('#hasCurrentlyDebated');
 $page->saveForm();
 
 $I->gotoConsultationHome();

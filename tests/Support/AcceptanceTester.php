@@ -172,6 +172,23 @@ class AcceptanceTester extends Actor
         return $this->gotoMotionList();
     }
 
+    /**
+     * The dbdata1 fixture ships std-parteitag with the "Currently debated" module switched on, and that
+     * module takes the place of the separate speaking list and voting sections on the home page. Tests
+     * covering those separate sections switch it off first. Requires an admin session.
+     */
+    public function disableCurrentlyDebated(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): self
+    {
+        // Reached by clicking through the admin index rather than by opening the URL directly: right
+        // after a login, a blind navigation can still race the login response and end up submitting
+        // the form with a CSRF token from the previous session.
+        $page = $this->gotoStdAdminPage($subdomain, $path)->gotoAppearance();
+        $this->uncheckOption('#hasCurrentlyDebated');
+        $page->saveForm();
+
+        return $this;
+    }
+
     public function gotoStdAdminPage(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): AdminIndexPage
     {
         return AdminIndexPage::openBy(

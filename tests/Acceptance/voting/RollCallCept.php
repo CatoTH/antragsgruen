@@ -9,7 +9,10 @@ use Tests\Support\AcceptanceTester;
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->loginAndGotoStdAdminPage()->gotoVotingPage();
+$I->loginAndGotoStdAdminPage();
+// The fixture has the "Currently debated" module on, which would take the place of the voting widget
+$I->disableCurrentlyDebated();
+$I->gotoStdAdminPage()->gotoVotingPage();
 
 $I->wantTo('Create a roll call voting');
 $I->dontSeeElement('form.creatingVoting');
