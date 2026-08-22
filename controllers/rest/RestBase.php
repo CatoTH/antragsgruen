@@ -29,6 +29,14 @@ class RestBase extends Base
         RequestContext::getWebApplication()->user->enableAutoLogin = false;
         RequestContext::getWebApplication()->user->enableSession = false;
 
+        // Logging in using a JWT (OptionalHttpBearerAuth, called from parent::beforeAction()) ends up in
+        // yii\web\User::login(), which always regenerates the CSRF token if the token is kept in a cookie -
+        // enableSession = false does not prevent that. As widgets poll the API every few seconds using JWTs,
+        // that would replace the CSRF cookie of the browsing session again and again, invalidating the token
+        // embedded into every form of the HTML page that is currently open. The API never validates CSRF
+        // tokens itself (see $enableCsrfValidation above), so it has no business issuing them either.
+        RequestContext::getWebApplication()->request->enableCsrfCookie = false;
+
         return parent::beforeAction($action);
     }
 
