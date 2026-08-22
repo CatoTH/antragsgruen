@@ -69,13 +69,13 @@ class TestController extends Controller
 
     public function beforeAction($action): bool
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        $this->getHttpResponse()->format = Response::FORMAT_JSON;
         return parent::beforeAction($action);
     }
 
     private function isRemoteIpAllowed(): bool
     {
-        $remoteIp = Yii::$app->request->remoteIP;
+        $remoteIp = $this->getHttpRequest()->remoteIP;
         if (in_array($remoteIp, self::ALLOWED_IPS, true)) {
             return true;
         }
@@ -85,6 +85,20 @@ class TestController extends Controller
             }
         }
         return false;
+    }
+
+    private function getHttpRequest(): \yii\web\Request
+    {
+        /** @var \yii\web\Request $request */
+        $request = Yii::$app->request;
+        return $request;
+    }
+
+    private function getHttpResponse(): \yii\web\Response
+    {
+        /** @var \yii\web\Response $response */
+        $response = Yii::$app->response;
+        return $response;
     }
 
     private function ipInCidr(string $ip, string $cidr): bool
@@ -104,7 +118,7 @@ class TestController extends Controller
 
     public function actionPopulateDb(): array
     {
-        $fixture = Yii::$app->request->post('fixture', 'dbdata1');
+        $fixture = $this->getHttpRequest()->post('fixture', 'dbdata1');
         $allowed = ['dbdata1', 'dbdata-yfj', 'dbdata-dbwv'];
         if (!in_array($fixture, $allowed, true)) {
             return ['ok' => false, 'error' => "Unknown fixture: $fixture"];
@@ -130,8 +144,8 @@ class TestController extends Controller
 
     public function actionSetConfig(): array
     {
-        $key = (string)Yii::$app->request->post('key', '');
-        $value = Yii::$app->request->post('value');
+        $key = (string)$this->getHttpRequest()->post('key', '');
+        $value = $this->getHttpRequest()->post('value');
         if ($key === '') {
             return ['ok' => false, 'error' => 'Missing key'];
         }
@@ -150,8 +164,8 @@ class TestController extends Controller
 
     public function actionUrlBuilder(): array
     {
-        $route = Yii::$app->request->post('route', '');
-        $paramsJson = Yii::$app->request->post('params', '{}');
+        $route = $this->getHttpRequest()->post('route', '');
+        $paramsJson = $this->getHttpRequest()->post('params', '{}');
         $params = json_decode($paramsJson, true) ?: [];
         if (is_string($route)) {
             $params[0] = $route;
@@ -168,9 +182,9 @@ class TestController extends Controller
 
     public function actionSetApiEnabled(): array
     {
-        $subdomain = (string)Yii::$app->request->post('subdomain', 'stdparteitag');
-        $consultationUrl = (string)Yii::$app->request->post('consultationUrl', 'std-parteitag');
-        $enabled = (string)Yii::$app->request->post('enabled', '1') === '1';
+        $subdomain = (string)$this->getHttpRequest()->post('subdomain', 'stdparteitag');
+        $consultationUrl = (string)$this->getHttpRequest()->post('consultationUrl', 'std-parteitag');
+        $enabled = (string)$this->getHttpRequest()->post('enabled', '1') === '1';
         try {
             $site = Site::findOne(['subdomain' => $subdomain]);
             if (!$site) {
@@ -188,8 +202,8 @@ class TestController extends Controller
 
     public function actionSetAmendmentStatus(): array
     {
-        $id = (int)Yii::$app->request->post('id', 0);
-        $status = (int)Yii::$app->request->post('status', 0);
+        $id = (int)$this->getHttpRequest()->post('id', 0);
+        $status = (int)$this->getHttpRequest()->post('status', 0);
         $amendment = Amendment::findOne($id);
         if (!$amendment) {
             return ['ok' => false, 'error' => "Amendment not found: $id"];
@@ -201,7 +215,7 @@ class TestController extends Controller
 
     public function actionSetUserFixedData(): array
     {
-        $email = (string)Yii::$app->request->post('email', '');
+        $email = (string)$this->getHttpRequest()->post('email', '');
         if ($email === '') {
             return ['ok' => false, 'error' => 'Missing email'];
         }
@@ -209,19 +223,19 @@ class TestController extends Controller
         if (!$user) {
             return ['ok' => false, 'error' => "User not found: $email"];
         }
-        $given = Yii::$app->request->post('nameGiven', null);
+        $given = $this->getHttpRequest()->post('nameGiven', null);
         if ($given !== null) {
             $user->nameGiven = (string)$given;
         }
-        $family = Yii::$app->request->post('nameFamily', null);
+        $family = $this->getHttpRequest()->post('nameFamily', null);
         if ($family !== null) {
             $user->nameFamily = (string)$family;
         }
-        $organisation = Yii::$app->request->post('organisation', null);
+        $organisation = $this->getHttpRequest()->post('organization', null);
         if ($organisation !== null) {
-            $user->organisation = (string)$organisation;
+            $user->organization = (string)$organisation;
         }
-        $fixed = Yii::$app->request->post('fixed', '0');
+        $fixed = $this->getHttpRequest()->post('fixed', '0');
         if ($fixed === '1') {
             $user->fixedData = 1;
         }
@@ -231,26 +245,36 @@ class TestController extends Controller
 
     public function actionUserVotes(): array
     {
-        $email = (string)Yii::$app->request->post('email', '');
-        $votingBlockId = (int)Yii::$app->request->post('votingBlock', 0);
-        $itemId = (int)Yii::$app->request->post('itemId', 0);
-        $answer = (string)Yii::$app->request->post('answer', '');
+        $email = (string)$this->getHttpRequest()->post('email', '');
+        $votingBlockId = (int)$this->getHttpRequest()->post('votingBlock', 0);
+        $itemId = (int)$this->getHttpRequest()->post('itemId', 0);
+        $answer = (string)$this->getHttpRequest()->post('answer', '');
         $user = \app\models\db\User::findOne(['email' => $email]);
         if (!$user) {
             return ['ok' => false, 'error' => "User not found: $email"];
         }
         $vote = \app\models\db\Vote::find()
-            ->andWhere(['votingBlockId' => $votingBlockId, 'itemId' => $itemId, 'userId' => $user->id])
+            ->andWhere(['votingBlockId' => $votingBlockId, 'motionId' => $itemId, 'userId' => $user->id])
             ->one();
         if (!$vote) {
             $vote = new \app\models\db\Vote();
             $vote->votingBlockId = $votingBlockId;
-            $vote->itemId = $itemId;
+            $vote->motionId = $itemId;
             $vote->userId = $user->id;
         }
-        $vote->answer = $answer;
+        $vote->vote = $this->answerToInt($answer);
         $vote->save();
         return ['ok' => true];
+    }
+
+    private function answerToInt(string $answer): int
+    {
+        return match (strtolower($answer)) {
+            'yes', 'present' => \app\models\votings\AnswerTemplates::VOTE_YES,
+            'no' => \app\models\votings\AnswerTemplates::VOTE_NO,
+            'abstention' => \app\models\votings\AnswerTemplates::VOTE_ABSTENTION,
+            default => (int)$answer,
+        };
     }
 
     public function actionTotpCode(): array
@@ -263,7 +287,7 @@ class TestController extends Controller
             if (empty($user->twoFactorAuthSecret)) {
                 return ['ok' => false, 'error' => 'user has no 2FA secret configured'];
             }
-            $otp = \OTPHP\TOTP::create($user->twoFactorAuthSecret);
+            $otp = \OTPHP\TOTP::createFromSecret($user->twoFactorAuthSecret);
             $code = $otp->now();
             return ['ok' => true, 'code' => $code];
         } catch (\Throwable $e) {
