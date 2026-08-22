@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 import { loginAsFixedDataUser } from '../../utils/auth';
 
 test.describe('Amendments: FixedUserData', () => {

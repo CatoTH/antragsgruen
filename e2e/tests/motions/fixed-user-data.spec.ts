@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsFixedDataUser } from '../../utils/auth';
 import { setCkEditorContent } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('Fixed user data', () => {
     test.beforeEach(async ({ db }) => {

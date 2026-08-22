@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdUser, logout } from '../../utils/auth';
 import { FIRST_FREE_MOTION_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { MotionEditPage } from '../../pages/MotionEditPage';
 
 test.describe('Draft motion edit permissions', () => {

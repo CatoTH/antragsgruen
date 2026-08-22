@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { logout } from '../../utils/auth';
 import { setConfig } from '../../utils/test-api';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
 

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminAppearancePage } from '../../pages/AdminAppearancePage';
 
 test.describe('Speech: quota, login required', () => {

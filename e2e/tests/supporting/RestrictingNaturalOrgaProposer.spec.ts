@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, loginAsStdUser, loginAsProposalAdmin, logout } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminMotionTypePage } from '../../pages/AdminMotionTypePage';
 

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminMotionListPage } from '../../pages/AdminMotionListPage';
 
 test.describe('Empty motion prefixes', () => {

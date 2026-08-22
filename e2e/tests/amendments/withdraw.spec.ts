@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { MotionPage } from '../../pages/MotionPage';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 import { AmendmentPage } from '../../pages/AmendmentPage';
 import { loginAsStdUser } from '../../utils/auth';
 

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { VotingAdminPage } from '../../pages/VotingAdminPage';
 
 const RESULTS_PUBLIC_YES = '1';

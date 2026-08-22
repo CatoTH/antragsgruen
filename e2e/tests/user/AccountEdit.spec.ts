@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { logout } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('User: account edit', () => {
     test.beforeEach(async ({ db }) => {

@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
 import { FIRST_FREE_VOTING_BLOCK_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminMotionListPage } from '../../pages/AdminMotionListPage';
 import { AdminMotionPage } from '../../pages/AdminMotionPage';
 import { AdminAmendmentPage } from '../../pages/AdminAmendmentPage';

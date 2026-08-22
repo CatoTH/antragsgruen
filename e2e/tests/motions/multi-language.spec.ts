@@ -7,7 +7,7 @@ import {
     FIRST_FREE_MOTION_TYPE,
     FIRST_FREE_AMENDMENT_ID,
 } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
 import { MotionCreatePage } from '../../pages/MotionCreatePage';

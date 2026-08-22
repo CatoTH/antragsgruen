@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { FIRST_FREE_VOTING_BLOCK_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { VotingAdminPage } from '../../pages/VotingAdminPage';
 
 const TEMPLATE_YES_NO_ABSTENTION = '0';

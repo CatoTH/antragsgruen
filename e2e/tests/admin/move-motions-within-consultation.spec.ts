@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { MotionPage } from '../../pages/MotionPage';
 import { AmendmentPage } from '../../pages/AmendmentPage';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 import { loginAsStdAdmin } from '../../utils/auth';
 import {
     FIRST_FREE_AGENDA_ITEM_ID,

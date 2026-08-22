@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { setCkEditorContent, expectBootboxDialog, acceptBootbox } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 const PERSON_ORGANIZATION = '1';
 

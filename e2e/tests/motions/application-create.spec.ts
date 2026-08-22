@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { setCkEditorContent } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('Application creation', () => {
     test.beforeEach(async ({ db }) => {

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { MotionPage } from '../../pages/MotionPage';
-import {ConsultationHomePage} from '../../pages/BasePage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
 import { FIRST_FREE_AMENDMENT_ID } from '../../utils/constants';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { replaceInCkEditor, setCkEditorContent } from '../../utils/dom';

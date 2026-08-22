@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdUser } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 
 test.describe('User: notifications', () => {
     test.beforeEach(async ({ db }) => {

@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, logout } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
 import { FIRST_FREE_MOTION_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminMotionTypePage } from '../../pages/AdminMotionTypePage';
 
 const SUPPORT_GIVEN_BY_INITIATOR = '1';

@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { setCkEditorContent } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { MotionPage } from '../../pages/MotionPage';
 import { AdminMotionListPage } from '../../pages/AdminMotionListPage';
 

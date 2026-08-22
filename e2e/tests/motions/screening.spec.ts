@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, logout } from '../../utils/auth';
 import { FIRST_FREE_MOTION_ID } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminMotionTypePage } from '../../pages/AdminMotionTypePage';
 
 const MOTION_TITLE = 'My new, screened motion';

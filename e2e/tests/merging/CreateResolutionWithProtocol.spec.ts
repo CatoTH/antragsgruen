@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { FIRST_FREE_MOTION_ID } from '../../utils/constants';
 
 test.describe('Merging: Create resolution with protocol', () => {

@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { FIRST_FREE_MOTION_SECTION } from '../../utils/constants';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { MotionPage } from '../../pages/MotionPage';
 import { AdminMotionTypePage } from '../../pages/AdminMotionTypePage';
 

@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { loginAsConsultationAdmin, logout } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
-import { ConsultationHomePage } from '../../pages/BasePage';
+import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
 import { AdminMotionListPage } from '../../pages/AdminMotionListPage';
