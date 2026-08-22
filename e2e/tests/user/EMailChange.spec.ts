@@ -10,7 +10,7 @@ test.describe('User: email change', () => {
     test('set and change email', async ({ page }) => {
         await new ConsultationHomePage(page).open();
         await page.locator('#loginLink').click();
-        await expect(page.locator('h1')).toContainText('LOGIN');
+        await expect(page.locator('h1')).toContainText('Login');
         await page.locator('#username').fill('noemail@example.org');
         await page.locator('#passwordInput').fill('testuser');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();

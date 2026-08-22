@@ -33,7 +33,7 @@ test.describe('User: second factor', () => {
 
         await page.locator('#loginLink').click();
 
-        await expect(page.locator('h1')).toContainText('LOGIN');
+        await expect(page.locator('h1')).toContainText('Login');
         await page.locator('#username').fill('testuser@example.org');
         await page.locator('#passwordInput').fill('testuser');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();

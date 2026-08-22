@@ -10,10 +10,10 @@ test.describe('User: account edit', () => {
 
     test('change password and name', async ({ page }) => {
         await new ConsultationHomePage(page).open();
-        await expect(page.locator('#loginLink')).toContainText('LOGIN');
+        await expect(page.locator('#loginLink')).toContainText('Login');
         await page.locator('#loginLink').click();
 
-        await expect(page.locator('h1')).toContainText('LOGIN');
+        await expect(page.locator('h1')).toContainText('Login');
         await page.locator('#username').fill('testuser@example.org');
         await page.locator('#passwordInput').fill('testuser');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
@@ -40,10 +40,10 @@ test.describe('User: account edit', () => {
         await logout(page);
 
         await new ConsultationHomePage(page).open();
-        await expect(page.locator('#loginLink')).toContainText('LOGIN');
+        await expect(page.locator('#loginLink')).toContainText('Login');
         await page.locator('#loginLink').click();
 
-        await expect(page.locator('h1')).toContainText('LOGIN');
+        await expect(page.locator('h1')).toContainText('Login');
         await page.locator('#username').fill('testuser@example.org');
         await page.locator('#passwordInput').fill('testuser');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
