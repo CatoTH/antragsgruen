@@ -1,4 +1,8 @@
 import { Page } from '@playwright/test';
+import {
+    DEFAULT_CONSULTATION_PATH,
+    DEFAULT_SUBDOMAIN,
+} from '../utils/constants';
 
 export interface UrlResponse {
     url: string;
@@ -12,10 +16,15 @@ export abstract class BasePage {
     constructor(protected readonly page: Page) {}
 
     async getUrl(params: Record<string, any> = {}): Promise<string> {
+        const merged: Record<string, any> = {
+            subdomain: DEFAULT_SUBDOMAIN,
+            consultationPath: DEFAULT_CONSULTATION_PATH,
+            ...params,
+        };
         const response = await this.page.request.post('/test/url-builder', {
             form: {
                 route: this.route as string,
-                params: JSON.stringify(params),
+                params: JSON.stringify(merged),
             },
         });
         if (!response.ok()) {
@@ -35,3 +44,4 @@ export abstract class BasePage {
         await this.page.goto(url);
     }
 }
+
