@@ -1,0 +1,37 @@
+{
+    "dbConnection": {
+        "dsn": "mysql:host=127.0.0.1;port=32768;dbname=yii",
+        "emulatePrepare": true,
+        "username": "yii",
+        "password": "yii",
+        "charset": "utf8mb4"
+    },
+    "mailService": {
+        "transport": "sendmail"
+    },
+    "prettyUrl": false,
+    "baseLanguage": "de",
+    "multisiteMode": true,
+    "confirmEmailAddresses": true,
+    "captcha": {
+        "ignoredIps": [
+            "127.0.0.1",
+            "::1"
+        ]
+    },
+    "domainPlain": "",
+    "domainSubdomain": "",
+    "prependWWWToSubdomain": false,
+    "randomSeed": "123456",
+    "mailFromName": "Antragsgr\u00fcn Test",
+    "mailFromEmail": "test@antragsgruen.de",
+    "adminUserIds": [
+        3
+    ],
+    "plugins": [
+        "gruen_ci",
+        "antragsgruen_sites"
+    ],
+    "pdfExportConcat": true,
+    "apiEnabled": "true"
+}

@@ -37,6 +37,7 @@ services:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
       - "./docker/php/zz-local.ini:/usr/local/etc/php/conf.d/zz-local.ini:ro"
+      - "./docker/config_tests.local.json:/var/www/antragsgruen/config/config_tests.json"
 
   nginx:
     image: nginx:latest
