@@ -42,7 +42,6 @@ export default defineConfig({
             use: {
                 ...devices['Desktop Chrome'],
                 channel: undefined,
-                storageState: '.auth/std-admin.json',
             },
             dependencies: ['setup'],
         },
@@ -50,7 +49,6 @@ export default defineConfig({
             name: 'firefox',
             use: {
                 ...devices['Desktop Firefox'],
-                storageState: '.auth/std-admin.json',
             },
             dependencies: ['setup'],
         },
@@ -58,7 +56,6 @@ export default defineConfig({
             name: 'webkit',
             use: {
                 ...devices['Desktop Safari'],
-                storageState: '.auth/std-admin.json',
             },
             dependencies: ['setup'],
         },
