@@ -27,7 +27,7 @@ test.describe('API: Consultation overview endpoint', () => {
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('#logoutLink').waitFor({ state: 'visible' });
 
-        await page.goto(`/${SUBDOMAIN}/${CONSULTATION}/admin/index/appearance`);
+        await page.goto(`/${SUBDOMAIN}/${CONSULTATION}/admin/appearance`);
         await page.evaluate(() => {
             const el = document.querySelector('#apiEnabled') as HTMLElement | null as HTMLInputElement | null;
             if (el) {

@@ -11,7 +11,7 @@ test.describe('Useradmin: PreventPwdChange', () => {
     test('prevent password change', async ({ page }) => {
         await new ConsultationHomePage(page).open();
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index');
+        await page.goto('/stdparteitag/std-parteitag/admin');
         await page.locator('#username').fill('globaladmin@example.org');
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
@@ -50,7 +50,7 @@ test.describe('Useradmin: PreventPwdChange', () => {
 
         await logout(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index');
+        await page.goto('/stdparteitag/std-parteitag/admin');
         await page.locator('#username').fill('globaladmin@example.org');
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();

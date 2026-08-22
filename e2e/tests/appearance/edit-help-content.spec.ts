@@ -20,7 +20,7 @@ test.describe('Appearance: edit help content', () => {
 
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index');
+        await page.goto('/stdparteitag/std-parteitag/admin');
         await page.locator('#contentPages').click();
         await expect(page.locator('.editPage.help')).toHaveCount(0);
 

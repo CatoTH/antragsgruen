@@ -20,7 +20,7 @@ test.describe('Appearance: translation services', () => {
 
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index');
+        await page.goto('/stdparteitag/std-parteitag/admin');
         await page.locator('#appearanceLink').click();
         await expect(page.locator('#translationService')).not.toBeChecked();
         await expect(page.locator('.translationService .services')).toHaveCount(0);

@@ -10,7 +10,7 @@ test.describe('Appearance: force single motion', () => {
         await page.goto('/stdparteitag/std-parteitag');
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/consultation');
+        await page.goto('/stdparteitag/std-parteitag/admin/consultation');
         await expect(page.locator('#forceMotionRow')).toHaveCount(0);
         await expect(page.locator('#singleMotionMode')).not.toBeChecked();
 
