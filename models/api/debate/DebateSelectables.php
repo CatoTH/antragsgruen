@@ -55,6 +55,10 @@ class DebateSelectables
 
         $agendaItemDtos = [];
         foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $agendaItem) {
+            if ($agendaItem->isDateSeparator()) {
+                // Date separators only structure the agenda visually; there is nothing to debate about them
+                continue;
+            }
             $code = $agendaItem->getShownCode(true);
             $agendaItemDtos[] = new DebateSelectableItem(
                 targetType: DebateItemTargetType::AGENDA_ITEM,

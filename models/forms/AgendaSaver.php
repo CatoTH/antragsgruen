@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\forms;
 
+use app\components\DebateTools;
 use app\models\api\agenda\{AgendaItem, AgendaList};
 use app\models\exceptions\NotFound;
 use app\models\db\{Consultation, ConsultationAgendaItem};
@@ -108,6 +109,7 @@ readonly class AgendaSaver
                 foreach ($agItem->speechQueues as $speechQueue) {
                     $agItem->unlink('speechQueues', $speechQueue);
                 }
+                DebateTools::deleteDebatesForAgendaItem($agItem);
                 $agItem->delete();
             }
         }

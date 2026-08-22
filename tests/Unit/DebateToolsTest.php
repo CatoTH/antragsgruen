@@ -3,7 +3,10 @@
 namespace Tests\Unit;
 
 use app\components\DebateTools;
-use app\models\db\{Consultation, DebateItem};
+use app\models\api\agenda\{AgendaItem, AgendaList};
+use app\models\api\debate\DebateState;
+use app\models\forms\AgendaSaver;
+use app\models\db\{Consultation, ConsultationAgendaItem, DebateItem};
 use Codeception\Attribute\Group;
 use Tests\Support\Helper\DBTestBase;
 
@@ -161,6 +164,52 @@ class DebateToolsTest extends DBTestBase
         $state = \app\models\api\debate\DebateState::fromConsultation($consultation);
         $this->assertNotNull($state->current->speechQueue);
         $this->assertTrue($state->current->speechQueue->isActive);
+    }
+
+    /**
+     * Removing an agenda item that has been debated must not be blocked by the foreign key
+     * debateItem.agendaItemId - neither by the open debate nor by closed history entries.
+     */
+    public function testRemovingADebatedAgendaItemViaTheAgendaAdmin(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(3);
+
+        $agendaItem = $consultation->getAgendaItem(7);
+        DebateTools::startDebate($consultation, $agendaItem);
+        // Switching away and back leaves a closed history entry for the same agenda item
+        DebateTools::startDebate($consultation, $consultation->getAgendaItem(6));
+        DebateTools::startDebate($consultation, $agendaItem);
+        $this->assertSame(2, (int)DebateItem::find()->where(['agendaItemId' => 7])->count());
+
+        // Saving the agenda without that item is how the admin deletes it
+        $agenda = AgendaList::getItemsFromConsultation($consultation);
+        $agenda->items = array_values(array_filter($agenda->items, fn (AgendaItem $item) => $item->id !== 7));
+        (new AgendaSaver($consultation))->saveAgendaFromApi($agenda);
+
+        $this->assertNull(ConsultationAgendaItem::findOne(7));
+        $this->assertSame(0, (int)DebateItem::find()->where(['agendaItemId' => 7])->count());
+        // The debate history of the agenda items that remain is untouched
+        $this->assertSame(1, (int)DebateItem::find()->where(['agendaItemId' => 6])->count());
+
+        // The open debate was on the deleted item, so nothing is being debated anymore
+        $consultation->refresh();
+        $this->assertNull(DebateItem::getCurrentForConsultation($consultation));
+        $this->assertNull(DebateState::fromConsultation($consultation)->current);
+    }
+
+    public function testDeleteWithAllDependenciesRemovesTheDebatesToo(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(3);
+
+        $agendaItem = $consultation->getAgendaItem(7);
+        DebateTools::startDebate($consultation, $agendaItem);
+
+        $agendaItem->deleteWithAllDependencies();
+
+        $this->assertNull(ConsultationAgendaItem::findOne(7));
+        $this->assertSame(0, (int)DebateItem::find()->where(['agendaItemId' => 7])->count());
     }
 
     public function testEndDebate(): void

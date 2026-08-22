@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\{AgendaItem, AntragsgruenApp};
-use app\components\{IMotionStatusFilter, Tools, UrlHelper};
+use app\components\{DebateTools, IMotionStatusFilter, Tools, UrlHelper};
 use app\views\consultation\LayoutHelper;
 use yii\db\{ActiveQuery, ActiveRecord};
 
@@ -196,6 +196,8 @@ class ConsultationAgendaItem extends ActiveRecord
         // We use SQL queries here to make sure that no foreign key from any soft-deleted motion/amendment still points to this agenda item, making it undeletable.
         \Yii::$app->db->createCommand('UPDATE `motion` SET `agendaItemId` = NULL WHERE `agendaItemId` = ' . intval($this->id))->execute();
         \Yii::$app->db->createCommand('UPDATE `amendment` SET `agendaItemId` = NULL WHERE `agendaItemId` = ' . intval($this->id))->execute();
+
+        DebateTools::deleteDebatesForAgendaItem($this);
 
         $this->delete();
     }

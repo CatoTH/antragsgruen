@@ -111,6 +111,36 @@ class DebateTools
     }
 
     /**
+     * Removes the debate history of an agenda item that is about to be deleted. A debateItem row whose
+     * target is gone has no meaning anymore (and DebateState could not describe it), so the rows are
+     * deleted rather than unlinked - which the foreign key on agendaItemId requires anyway, as it would
+     * otherwise make the agenda item undeletable.
+     */
+    public static function deleteDebatesForAgendaItem(ConsultationAgendaItem $agendaItem): void
+    {
+        /** @var DebateItem[] $debates */
+        $debates = DebateItem::find()->where(['agendaItemId' => $agendaItem->id])->all();
+        if (count($debates) === 0) {
+            return;
+        }
+
+        $endedOpenDebate = false;
+        foreach ($debates as $debate) {
+            if ($debate->dateStopped === null) {
+                $endedOpenDebate = true;
+            }
+            $debate->delete();
+        }
+
+        $consultation = $agendaItem->getMyConsultation();
+        if ($endedOpenDebate && $consultation) {
+            // The consultation is not debating anything anymore; without this, clients that rely on live
+            // events (and therefore do not poll) would keep showing the deleted agenda item indefinitely.
+            LiveTools::sendDebate($consultation, DebateState::fromConsultation($consultation));
+        }
+    }
+
+    /**
      * Finds the speech queue for the debated item, creating a fresh, inactive one (with the consultation's
      * configured subqueues) if none exists yet. Motions, amendments, and agenda items get their own queue;
      * free-text debates share the generic fallback queue (not assigned to any item). The admin activates it

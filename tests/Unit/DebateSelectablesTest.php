@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use app\components\Tools;
 use app\models\api\debate\{DebateItemTargetType, DebateSelectableItem, DebateSelectables};
-use app\models\db\Consultation;
+use app\models\db\{Consultation, ConsultationAgendaItem};
 use Codeception\Attribute\Group;
 use Tests\Support\Helper\DBTestBase;
 
@@ -58,5 +58,25 @@ class DebateSelectablesTest extends DBTestBase
         $this->assertSame('Tagesordnung', $first->title);
         $this->assertStringContainsString('0.', $first->titleWithPrefix);
         $this->assertNull($first->initiatorsHtml);
+    }
+
+    public function testDateSeparatorsAreNotSelectable(): void
+    {
+        /** @var ConsultationAgendaItem $separator */
+        $separator = ConsultationAgendaItem::findOne(7);
+        $separator->time = '2026-08-22';
+        $separator->save();
+        $this->assertTrue($separator->isDateSeparator());
+
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(3);
+
+        $selectables = DebateSelectables::fromConsultation($consultation);
+
+        $agendaItemIds = array_map(fn (DebateSelectableItem $item) => $item->targetId, $selectables->agendaItems);
+        $this->assertNotContains(7, $agendaItemIds);
+        // Regular agenda items - including ones with a time of day, which is not a separator - are unaffected
+        $this->assertContains(1, $agendaItemIds);
+        $this->assertContains(6, $agendaItemIds);
     }
 }
