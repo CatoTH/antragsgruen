@@ -36,12 +36,13 @@ services:
     volumes:
       - "./:/var/www/antragsgruen"
       - "../antragsgruen-plugins/:/var/www/antragsgruen-plugins/:ro"
+      - "./docker/php/zz-local.ini:/usr/local/etc/php/conf.d/zz-local.ini:ro"
 
   nginx:
     image: nginx:latest
     ports:
-      - "12380:80"
-      - "12443:443"
+      - "22380:80"
+      - "22443:443"
     volumes:
       - "./:/var/www/antragsgruen:ro"
       - "./docker/nginx:/etc/nginx/conf.d"
@@ -93,9 +94,11 @@ services:
     image: mariadb
     command: --max_allowed_packet=33554432
     ports:
-      - "13306:3306"
+      - "23306:3306"
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}
+      MARIADB_USER: ${DB_USER:?Please set DB_USER in .env}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Please set DB_PASSWORD in .env}
       MARIADB_DATABASE: antragsgruen
     volumes:
       - "mysql-data:/var/lib/mysql"
@@ -110,6 +113,33 @@ services:
     image: "redis:7"
     volumes:
       - 'redis-data:/data'
+
+  # Local e2e test-DB sidecar. config/config_tests.json pins the test config
+  # to mysql:host=127.0.0.1;port=32768 (yii/yii/yii/yii) — same DSN the legacy
+  # Unit suite uses on CI. Sharing the PHP-FPM container's network namespace
+  # makes the sidecar reachable from inside the web container as
+  # 127.0.0.1:32768 with no host port binding and no /etc/hosts edit. The
+  # sidecar carries no host port mapping, so it does not collide with the
+  # occasional host MySQL on 32768 used by the host-run Unit suite.
+  mysql-test:
+    image: mariadb:latest
+    network_mode: service:web
+    depends_on:
+      web:
+        condition: service_started
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+      MARIADB_DATABASE: yii
+      MARIADB_USER: yii
+      MARIADB_PASSWORD: yii
+    command: --port=32768
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized", "--port", "32768"]
+      start_period: 5s
+      interval: 3s
+      timeout: 5s
+      retries: 30
+
 
   rabbitmq:
     image: 'rabbitmq:3-management-alpine'
