@@ -32,10 +32,10 @@ export async function setCkEditorContent(
             const w = window as any;
             const editor = w.CKEDITOR.instances[name];
             editor.setData(content, () => {
-                const textarea = editor.element;
-                if (textarea) {
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                const el = ckEditorRawElement(editor);
+                if (el) {
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
         },
@@ -55,15 +55,38 @@ export async function appendCkEditorContent(
             const editor = w.CKEDITOR.instances[name];
             const current = editor.getData();
             editor.setData(current + content, () => {
-                const textarea = editor.element;
-                if (textarea) {
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                const el = ckEditorRawElement(editor);
+                if (el) {
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
         },
         { name: instanceName, content: html },
     );
+}
+
+function ckEditorRawElement(editor: any): HTMLElement | null {
+    const candidate = editor.element;
+    if (!candidate) return null;
+    if (typeof candidate.dispatchEvent === 'function') {
+        return candidate as HTMLElement;
+    }
+    if (candidate.$ && typeof candidate.$.dispatchEvent === 'function') {
+        return candidate.$ as HTMLElement;
+    }
+    return null;
+}
+
+export async function getCkEditorContent(
+    page: Page,
+    instanceName: string,
+): Promise<string> {
+    await waitForCkEditorInstance(page, instanceName);
+    return page.evaluate((name) => {
+        const w = window as any;
+        return w.CKEDITOR.instances[name].getData();
+    }, instanceName);
 }
 
 export async function replaceInCkEditor(
@@ -83,10 +106,10 @@ export async function replaceInCkEditor(
                     : new RegExp(findStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
             const next = editor.getData().replace(re, replacement);
             editor.setData(next, () => {
-                const textarea = editor.element;
-                if (textarea) {
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                const el = ckEditorRawElement(editor);
+                if (el) {
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
         },
@@ -97,17 +120,6 @@ export async function replaceInCkEditor(
             replacement,
         },
     );
-}
-
-export async function getCkEditorContent(
-    page: Page,
-    instanceName: string,
-): Promise<string> {
-    await waitForCkEditorInstance(page, instanceName);
-    return page.evaluate((name) => {
-        const w = window as any;
-        return w.CKEDITOR.instances[name].getData();
-    }, instanceName);
 }
 
 export async function focusCkEditor(
