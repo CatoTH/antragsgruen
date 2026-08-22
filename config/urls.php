@@ -186,4 +186,13 @@ if ($params->multisiteMode) {
     }
 }
 
+if (YII_ENV === 'test') {
+    // /test/<action> registered last so it wins over the multisite
+    // plugin's empty-pattern catch-all (route
+    // antragsgruen_sites/manager/index). Path-style URLs
+    // (/test/url-builder) used by Playwright specs resolve here
+    // without requiring nginx query-string rewriting.
+    $urlRules['test/<action:[^\/]+>'] = '/test/index';
+}
+
 return $urlRules;

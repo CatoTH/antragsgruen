@@ -9,7 +9,7 @@
     "mailService": {
         "transport": "sendmail"
     },
-    "prettyUrl": false,
+    "prettyUrl": true,
     "baseLanguage": "de",
     "multisiteMode": true,
     "confirmEmailAddresses": true,
