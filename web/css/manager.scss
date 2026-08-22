@@ -263,3 +263,17 @@
     display: none;
   }
 }
+
+// Accessible link styling (WCAG 2.1 AA 1.4.1) & color contrast
+.homeDescription, .content-section, section {
+  p a {
+    text-decoration: underline;
+    &:hover, &:focus {
+      text-decoration: none;
+    }
+  }
+}
+
+.homeFigure figcaption {
+  color: #4a4a4a;
+}

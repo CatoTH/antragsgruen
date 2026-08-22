@@ -137,6 +137,10 @@
 }
 
 .infoSite {
+  p a {
+    text-decoration: underline;
+  }
+
   ul {
     margin-bottom: 25px;
     li {
