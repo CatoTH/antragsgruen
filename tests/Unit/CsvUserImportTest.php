@@ -268,20 +268,138 @@ class CsvUserImportTest extends TestBase
         fclose($fp);
     }
 
-    public function testCsvWithSemicolonSeparatorUsesDefaultComma(): void
+    // ---------------------------------------------------------------
+    //  Delimiter auto-detection helpers
+    // ---------------------------------------------------------------
+
+    /**
+     * Detects delimiter (; or ,) from the first line exactly like actionProcessCsvChunk does.
+     */
+    private function detectDelimiter(string $firstLine): string
     {
-        // fgetcsv defaults to comma — semicolons won't be split
-        $csvContent = "Email;First_Name;Last_Name\nuser@test.org;Jane;Smith";
+        $cleanFirstLine = (string) preg_replace('/^\xEF\xBB\xBF/', '', $firstLine);
+        return (substr_count($cleanFirstLine, ';') > substr_count($cleanFirstLine, ',')) ? ';' : ',';
+    }
+
+    /**
+     * Parses the first line with auto-detected delimiter exactly like actionProcessCsvChunk does.
+     *
+     * @return array{delimiter: string, headerMap: array<string, int>}
+     */
+    private function parseFirstLine(string $firstLine): array
+    {
+        $cleanFirstLine = (string) preg_replace('/^\xEF\xBB\xBF/', '', $firstLine);
+        $delimiter = (substr_count($cleanFirstLine, ';') > substr_count($cleanFirstLine, ',')) ? ';' : ',';
+        $header = str_getcsv($cleanFirstLine, $delimiter, escape: '\\');
+        $header[0] = preg_replace('/^\xEF\xBB\xBF/', '', (string) $header[0]);
+        $headerMap = array_flip(
+            array_map(
+                'trim',
+                array_map(function ($v) { return strtolower((string) $v); }, $header)
+            )
+        );
+
+        return [
+            'delimiter' => $delimiter,
+            'headerMap' => $headerMap,
+        ];
+    }
+
+    public function testDelimiterDetectionWithComma(): void
+    {
+        $line = "Email,First_Name,Last_Name,Organization,Groups\n";
+        $this->assertSame(',', $this->detectDelimiter($line));
+
+        $parsed = $this->parseFirstLine($line);
+        $this->assertSame(',', $parsed['delimiter']);
+        $this->assertArrayHasKey('email', $parsed['headerMap']);
+        $this->assertArrayHasKey('first_name', $parsed['headerMap']);
+    }
+
+    public function testDelimiterDetectionWithSemicolon(): void
+    {
+        $line = "Email;First_Name;Last_Name;Organization;Groups\n";
+        $this->assertSame(';', $this->detectDelimiter($line));
+
+        $parsed = $this->parseFirstLine($line);
+        $this->assertSame(';', $parsed['delimiter']);
+        $this->assertArrayHasKey('email', $parsed['headerMap']);
+        $this->assertArrayHasKey('first_name', $parsed['headerMap']);
+        $this->assertSame(0, $parsed['headerMap']['email']);
+        $this->assertSame(1, $parsed['headerMap']['first_name']);
+    }
+
+    public function testDelimiterDetectionWithBomAndSemicolon(): void
+    {
+        $bom = "\xEF\xBB\xBF";
+        $line = $bom . "Email;First_Name;Last_Name\n";
+        $parsed = $this->parseFirstLine($line);
+
+        $this->assertSame(';', $parsed['delimiter']);
+        $this->assertArrayHasKey('email', $parsed['headerMap']);
+        $this->assertSame(0, $parsed['headerMap']['email']);
+    }
+
+    public function testDelimiterDetectionDefaultsToCommaOnSingleColumn(): void
+    {
+        $line = "Email\n";
+        $parsed = $this->parseFirstLine($line);
+
+        $this->assertSame(',', $parsed['delimiter']);
+        $this->assertArrayHasKey('email', $parsed['headerMap']);
+    }
+
+    public function testFullCsvWithSemicolonDelimiterParsing(): void
+    {
+        $csvContent = "Email;First_Name;Last_Name;Organization;Groups\nuser@test.org;Jane;Smith;Org;Admin";
         $fp = fopen('php://memory', 'r+');
         fwrite($fp, $csvContent);
         rewind($fp);
 
-        $header = fgetcsv($fp);
-        $headerMap = $this->parseHeader($header);
+        $firstLine = fgets($fp);
+        $this->assertNotFalse($firstLine);
 
-        // The entire line is treated as one column when using comma delimiter
-        $this->assertArrayNotHasKey('email', $headerMap, 'Semicolon-separated CSV should not parse correctly with default comma delimiter');
+        $parsed = $this->parseFirstLine($firstLine);
+        $this->assertSame(';', $parsed['delimiter']);
+        $this->assertArrayHasKey('email', $parsed['headerMap']);
+
+        // Read data row with detected delimiter
+        $row = fgetcsv($fp, separator: $parsed['delimiter'], escape: '\\');
+        $this->assertNotFalse($row);
+        $this->assertSame('user@test.org', $row[$parsed['headerMap']['email']]);
+        $this->assertSame('Jane', $row[$parsed['headerMap']['first_name']]);
+        $this->assertSame('Smith', $row[$parsed['headerMap']['last_name']]);
+        $this->assertSame('Org', $row[$parsed['headerMap']['organization']]);
+        $this->assertSame('Admin', $row[$parsed['headerMap']['groups']]);
 
         fclose($fp);
+    }
+
+    public function testFullCsvWithBomAndSemicolonParsing(): void
+    {
+        $bom = "\xEF\xBB\xBF";
+        $csvContent = $bom . "Email;First_Name;Last_Name\nuser@test.org;Jane;Smith";
+        $fp = fopen('php://memory', 'r+');
+        fwrite($fp, $csvContent);
+        rewind($fp);
+
+        $firstLine = fgets($fp);
+        $parsed = $this->parseFirstLine($firstLine);
+
+        $this->assertSame(';', $parsed['delimiter']);
+        $this->assertArrayHasKey('email', $parsed['headerMap']);
+
+        $row = fgetcsv($fp, separator: $parsed['delimiter'], escape: '\\');
+        $this->assertSame('user@test.org', $row[$parsed['headerMap']['email']]);
+
+        fclose($fp);
+    }
+
+    public function testEmailNormalization(): void
+    {
+        $rawEmail = "  User.Name+Tag@Example.COM  \n";
+        $normalized = mb_strtolower(trim($rawEmail));
+
+        $this->assertSame('user.name+tag@example.com', $normalized);
     }
 }

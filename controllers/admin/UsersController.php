@@ -359,9 +359,22 @@ class UsersController extends AdminBase
             return new JsonResponse(['success' => false, 'error' => 'Could not open file.']);
         }
 
-        // Always read the header first to establish mappings
-        $header = fgetcsv($fp, escape: '\\');
-        if ($header === false) {
+        // Always read the header first to establish mappings and detect delimiter
+        $firstLine = fgets($fp);
+        if ($firstLine === false || trim($firstLine) === '') {
+            fclose($fp);
+            @unlink($filePath);
+            return new JsonResponse(['success' => false, 'error' => 'File is empty.']);
+        }
+
+        // Detect delimiter (; or ,) from the first line
+        $cleanFirstLine = (string) preg_replace('/^\xEF\xBB\xBF/', '', $firstLine);
+        $delimiter = (substr_count($cleanFirstLine, ';') > substr_count($cleanFirstLine, ',')) ? ';' : ',';
+
+        $header = str_getcsv($cleanFirstLine, $delimiter, escape: '\\');
+        if ($header === [null] || $header[0] === null) {
+            fclose($fp);
+            @unlink($filePath);
             return new JsonResponse(['success' => false, 'error' => 'File is empty.']);
         }
 
@@ -379,7 +392,7 @@ class UsersController extends AdminBase
             fseek($fp, $offset);
         }
 
-        $result = $this->userGroupAdminMethods->processCsvChunk($fp, $headerMap, $collisionBehavior, $sendEmail, $emailText);
+        $result = $this->userGroupAdminMethods->processCsvChunk($fp, $headerMap, $collisionBehavior, $sendEmail, $emailText, $delimiter);
         $nextOffset = ftell($fp);
         $finished = feof($fp) || $result['processedRows'] === 0;
 
