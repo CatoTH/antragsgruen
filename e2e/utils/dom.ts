@@ -32,12 +32,19 @@ export async function setCkEditorContent(
             const w = window as any;
             const editor = w.CKEDITOR.instances[name];
             editor.setData(content, () => {
-                const el = ckEditorRawElement(editor);
+                const el = resolve(editor);
                 if (el) {
                     el.dispatchEvent(new Event('input', { bubbles: true }));
                     el.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
+            function resolve(ed: any): HTMLElement | null {
+                const c = ed.element;
+                if (!c) return null;
+                if (typeof c.dispatchEvent === 'function') return c as HTMLElement;
+                if (c.$ && typeof c.$.dispatchEvent === 'function') return c.$ as HTMLElement;
+                return null;
+            }
         },
         { name: instanceName, content: html },
     );
@@ -55,27 +62,22 @@ export async function appendCkEditorContent(
             const editor = w.CKEDITOR.instances[name];
             const current = editor.getData();
             editor.setData(current + content, () => {
-                const el = ckEditorRawElement(editor);
+                const el = resolve(editor);
                 if (el) {
                     el.dispatchEvent(new Event('input', { bubbles: true }));
                     el.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
+            function resolve(ed: any): HTMLElement | null {
+                const c = ed.element;
+                if (!c) return null;
+                if (typeof c.dispatchEvent === 'function') return c as HTMLElement;
+                if (c.$ && typeof c.$.dispatchEvent === 'function') return c.$ as HTMLElement;
+                return null;
+            }
         },
         { name: instanceName, content: html },
     );
-}
-
-function ckEditorRawElement(editor: any): HTMLElement | null {
-    const candidate = editor.element;
-    if (!candidate) return null;
-    if (typeof candidate.dispatchEvent === 'function') {
-        return candidate as HTMLElement;
-    }
-    if (candidate.$ && typeof candidate.$.dispatchEvent === 'function') {
-        return candidate.$ as HTMLElement;
-    }
-    return null;
 }
 
 export async function getCkEditorContent(
@@ -106,12 +108,19 @@ export async function replaceInCkEditor(
                     : new RegExp(findStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
             const next = editor.getData().replace(re, replacement);
             editor.setData(next, () => {
-                const el = ckEditorRawElement(editor);
+                const el = resolve(editor);
                 if (el) {
                     el.dispatchEvent(new Event('input', { bubbles: true }));
                     el.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
+            function resolve(ed: any): HTMLElement | null {
+                const c = ed.element;
+                if (!c) return null;
+                if (typeof c.dispatchEvent === 'function') return c as HTMLElement;
+                if (c.$ && typeof c.$.dispatchEvent === 'function') return c.$ as HTMLElement;
+                return null;
+            }
         },
         {
             name: instanceName,
