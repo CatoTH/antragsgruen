@@ -27,7 +27,7 @@ test.describe('API: Consultation list endpoint', () => {
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('#logoutLink').waitFor({ state: 'visible' });
 
-        await page.goto(`/${SUBDOMAIN}/${CONSULTATION}/admin/index/appearance`);
+        await page.goto(`/${SUBDOMAIN}/${CONSULTATION}/admin/appearance`);
         await expect(page.locator('#apiEnabled')).not.toBeChecked();
         await expect(page.locator('.apiBaseUrl')).toHaveCount(0);
         await page.evaluate(() => {

@@ -10,7 +10,7 @@ test.describe('Misc: discussion tags start layout', () => {
         await page.goto('/stdparteitag/std-parteitag');
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#startLayoutType').selectOption('2');
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 

@@ -17,7 +17,7 @@ test.describe('Appearance: motion data mode', () => {
 
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#motiondataMode').selectOption('0');
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 
@@ -26,7 +26,7 @@ test.describe('Appearance: motion data mode', () => {
         await page.locator('.motionData').waitFor();
         await expect(page.locator('.motionDataTable')).toHaveCount(0);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#motiondataMode').selectOption('1');
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 

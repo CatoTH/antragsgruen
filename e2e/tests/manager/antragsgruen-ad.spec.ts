@@ -15,14 +15,14 @@ test.describe('Manager: Antragsgrün ad visibility', () => {
         await page.goto('/stdparteitag/std-parteitag');
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#showAntragsgruenAd').uncheck();
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 
         await page.goto('/stdparteitag/std-parteitag');
         await expect(page.locator('#sidebar')).not.toContainText(/dein antragsgrün/i);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#showAntragsgruenAd').check();
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 

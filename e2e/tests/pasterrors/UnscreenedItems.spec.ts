@@ -42,7 +42,7 @@ test.describe('UnscreenedItems', () => {
 
             const appearance = new AdminAppearancePage(page);
             await new AdminIndexPage(page).open();
-            await page.goto('/stdparteitag/bdk/admin/index/appearance');
+            await page.goto('/stdparteitag/bdk/admin/appearance');
             await page.locator('#startLayoutType').selectOption(layoutId);
             await page.locator('#consultationAppearanceForm [name="save"]').click();
 

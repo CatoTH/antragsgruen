@@ -10,7 +10,7 @@ test.describe('Appearance: custom theme', () => {
         await page.goto('/stdparteitag/std-parteitag');
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('.editThemeLink').click();
 
         const menuLinkColor = await page.evaluate(() => {
@@ -26,7 +26,7 @@ test.describe('Appearance: custom theme', () => {
 
         await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#4B7000');
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.evaluate(() => {
             const el = document.querySelector(
                 '.thumbnailedLayoutSelector .layout.layout-dbjr',
@@ -60,7 +60,7 @@ test.describe('Appearance: custom theme', () => {
         });
         expect(newBorderRadius).toBe('5px');
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await expect(page.locator('.customThemeSelector input')).toBeChecked();
         await page.evaluate(() => {
             const el = document.querySelector("input[value='layout-classic']") as HTMLElement;

@@ -12,7 +12,7 @@ test.describe('Useradmin: ForceSecondFactor', () => {
     test('force second factor setup', async ({ page, request }) => {
         await new ConsultationHomePage(page).open();
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index');
+        await page.goto('/stdparteitag/std-parteitag/admin');
         await page.locator('#username').fill('globaladmin@example.org');
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();

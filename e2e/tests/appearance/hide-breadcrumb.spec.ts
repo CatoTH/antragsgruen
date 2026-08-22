@@ -12,14 +12,14 @@ test.describe('Appearance: hide breadcrumb', () => {
 
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#showBreadcrumbs').uncheck();
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 
         await page.goto('/stdparteitag/std-parteitag');
         await expect(page.locator('ol.breadcrumb')).toHaveCount(0);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#showBreadcrumbs').check();
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 

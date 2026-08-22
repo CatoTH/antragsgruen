@@ -13,7 +13,7 @@ test.describe('Appearance: hide title prefix', () => {
 
         await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#hideTitlePrefix').check();
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 

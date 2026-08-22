@@ -48,7 +48,7 @@ test.describe('Appearance: resolutions displayed separately', () => {
         ];
 
         for (const [layoutId, _name] of layouts) {
-            await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+            await page.goto('/stdparteitag/std-parteitag/admin/appearance');
             await page.locator('#startLayoutType').selectOption(layoutId);
             await page.evaluate(() => {
                 const el = document.querySelector(
@@ -86,7 +86,7 @@ test.describe('Appearance: resolutions displayed separately', () => {
                 await expect(page.locator('body')).not.toContainText('A2');
             }
 
-            await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+            await page.goto('/stdparteitag/std-parteitag/admin/appearance');
             await page.locator('#startLayoutType').selectOption(layoutId);
             await page.evaluate(() => {
                 const el = document.querySelector(

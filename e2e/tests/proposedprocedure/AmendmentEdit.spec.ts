@@ -134,7 +134,7 @@ test.describe('Proposed procedure: amendment edit workflow', () => {
 
         await page.goto('/stdparteitag/std-parteitag');
         await logout(page);
-        await page.goto('/stdparteitag/std-parteitag/admin/index/appearance');
+        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
         await page.locator('#proposalProcedurePage').check();
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 
