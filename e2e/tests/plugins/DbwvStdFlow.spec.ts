@@ -5,7 +5,7 @@ import { logout, loginAsStdAdmin, loginAsYfjUser } from '../../utils/auth';
 
 async function loginAsDbwvTestUser(page: Page, username: string): Promise<void> {
     await page.locator('#loginLink').click();
-    await page.locator('h1').filter({ hasText: /LOGIN/i }).waitFor();
+    await page.locator('h1').filter({ hasText: /Login/i }).waitFor();
     await page.locator('#username').fill(`${username}@example.org`);
     await page.locator('#passwordInput').fill('Test');
     await page

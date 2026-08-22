@@ -40,7 +40,7 @@ test.describe('Useradmin: ForcePwdChange', () => {
         await logout(page);
         await page.locator('#loginLink').click();
 
-        await expect(page.locator('h1')).toContainText('LOGIN');
+        await expect(page.locator('h1')).toContainText('Login');
         await page.locator('#username').fill('testadmin@example.org');
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
@@ -62,7 +62,7 @@ test.describe('Useradmin: ForcePwdChange', () => {
         await logout(page);
         await page.locator('#loginLink').click();
 
-        await expect(page.locator('h1')).toContainText('LOGIN');
+        await expect(page.locator('h1')).toContainText('Login');
         await page.locator('#username').fill('testadmin@example.org');
         await page.locator('#passwordInput').fill('MyNewPassword');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
