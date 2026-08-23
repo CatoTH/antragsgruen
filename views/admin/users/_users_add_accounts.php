@@ -160,7 +160,11 @@ $layout->addJsTranslation("admin");
                 </label><br>
                 <textarea id="addSingleEmailText" name="emailText" rows="11" cols="80"
                           title="<?= Yii::t('admin', 'siteacc_new_text') ?>"><?= Html::encode($preText) ?></textarea>
-                <small><?= Yii::t('admin', 'siteacc_new_mail_hint') ?></small>
+                <small><?= Yii::t('admin', 'siteacc_new_mail_hint') ?>
+                    <?php if ($consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null) || $consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) { ?>
+                        &middot; <?= Html::a(Yii::t('admin', 'siteacc_customize_email_template'), UrlHelper::createUrl(['admin/index/translation', 'category' => 'admin'])) ?>
+                    <?php } ?>
+                </small>
             </div>
         </div>
         <?php } ?>
@@ -300,7 +304,14 @@ $layout->addJsTranslation("admin");
                         <input type="checkbox" name="sendEmail" id="csvSendEmail" value="1">
                         <?= Yii::t('admin', 'user_csv_send_email') ?>
                     </label>
-                    <textarea id="csvEmailText" class="form-control hidden" name="emailText" rows="11"><?= Html::encode($preText) ?></textarea>
+                    <div id="csvEmailTextContainer" class="hidden">
+                        <textarea id="csvEmailText" class="form-control" name="emailText" rows="11"><?= Html::encode($preText) ?></textarea>
+                        <small><?= Yii::t('admin', 'siteacc_new_mail_hint') ?>
+                            <?php if ($consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null) || $consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) { ?>
+                                &middot; <?= Html::a(Yii::t('admin', 'siteacc_customize_email_template'), UrlHelper::createUrl(['admin/index/translation', 'category' => 'admin'])) ?>
+                            <?php } ?>
+                        </small>
+                    </div>
                 </div>
             </div>
             <?php } ?>
