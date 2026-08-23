@@ -16,26 +16,13 @@ test.describe('Useradmin: ForcePwdChange', () => {
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('.siteUsers').click();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.user1 .btnEdit') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
-        await expect(page.locator('.forcePwdChangeHolder input')).not.toBeChecked();
-        await page.evaluate(() => {
-            const chkbox = document.querySelector('.forcePwdChangeHolder input') as HTMLInputElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            chkbox.dispatchEvent(evt);
-        });
-        await expect(page.locator('.forcePwdChangeHolder input')).toBeChecked();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.user1').waitFor({ timeout: 10_000 });
+        await page.locator('.user1 .btnEdit').click();
+        await page.locator('.editUserModal.in').waitFor({ timeout: 10_000 });
+        await expect(page.locator('.preventPwdChangeHolder + .forcePwdChangeHolder input')).not.toBeChecked();
+        await page.locator('.preventPwdChangeHolder + .forcePwdChangeHolder input').check();
+        await expect(page.locator('.preventPwdChangeHolder + .forcePwdChangeHolder input')).toBeChecked();
+        await page.locator('.editUserModal .btnSave').click();
 
         await logout(page);
         await page.locator('#loginLink').click();

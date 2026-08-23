@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import { loginAsStdUser, logout } from '../../utils/auth';
+import { loginAsStdAdmin, loginAsStdUser, logout } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
@@ -12,6 +12,8 @@ test.describe('Useradmin: Usergroups', () => {
     });
 
     test('create user group and restrict amendment submission', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
         await expect(page.locator('.group4')).toContainText('Teilnehmer*in');
@@ -56,16 +58,15 @@ test.describe('Useradmin: Usergroups', () => {
 
         await logout(page);
         await page.locator(`.motionLink2`).click();
-        await page.goto('/stdparteitag/std-parteitag');
-        await page.locator('#username').fill('testuser@example.org');
-        await page.locator('#passwordInput').fill('testuser');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+        await loginAsStdUser(page);
         await expect(page.locator('#sidebar')).toContainText(
             'Nur zugelassene Gruppen können Änderungsanträge stellen',
         );
 
         await logout(page);
 
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
         await expect(page.locator('.user2')).toHaveCount(0);
@@ -88,10 +89,7 @@ test.describe('Useradmin: Usergroups', () => {
 
         await logout(page);
         await page.locator(`.motionLink2`).click();
-        await page.goto('/stdparteitag/std-parteitag');
-        await page.locator('#username').fill('testuser@example.org');
-        await page.locator('#passwordInput').fill('testuser');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+        await loginAsStdUser(page);
         await expect(page.locator('#sidebar')).not.toContainText(
             'Nur zugelassene Gruppen können Änderungsanträge stellen',
         );
@@ -99,6 +97,8 @@ test.describe('Useradmin: Usergroups', () => {
         await expect(page.locator('.breadcrumb')).toContainText('Änderungsantrag stellen');
 
         await logout(page);
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
         await page.evaluate(
