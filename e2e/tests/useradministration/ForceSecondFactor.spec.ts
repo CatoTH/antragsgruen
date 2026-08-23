@@ -17,26 +17,13 @@ test.describe('Useradmin: ForceSecondFactor', () => {
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('.siteUsers').click();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.user1 .btnEdit') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.user1').waitFor({ timeout: 10_000 });
+        await page.locator('.user1 .btnEdit').click();
+        await page.locator('.editUserModal.in').waitFor({ timeout: 10_000 });
         await expect(page.locator('.force2FaHolder input')).not.toBeChecked();
-        await page.evaluate(() => {
-            const chkbox = document.querySelector('.force2FaHolder input') as HTMLInputElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            chkbox.dispatchEvent(evt);
-        });
+        await page.locator('.force2FaHolder input').check();
         await expect(page.locator('.force2FaHolder input')).toBeChecked();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editUserModal .btnSave').click();
 
         await logout(page);
         await page.locator('#loginLink').click();

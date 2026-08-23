@@ -16,32 +16,16 @@ test.describe('Useradmin: PreventPwdChange', () => {
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('.siteUsers').click();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.user1 .btnEdit') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.user1').waitFor({ timeout: 10_000 });
+        await page.locator('.user1 .btnEdit').click();
+        await page.locator('.editUserModal.in').waitFor({ timeout: 10_000 });
         await expect(page.locator('.preventPwdChangeHolder input')).not.toBeChecked();
-        await page.evaluate(() => {
-            const chkbox = document.querySelector('.preventPwdChangeHolder input') as HTMLInputElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            chkbox.dispatchEvent(evt);
-        });
+        await page.locator('.preventPwdChangeHolder input').check();
         await expect(page.locator('.preventPwdChangeHolder input')).toBeChecked();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editUserModal .btnSave').click();
 
         await logout(page);
-        await page.goto('/stdparteitag/std-parteitag');
-        await page.locator('#username').fill('testadmin@example.org');
-        await page.locator('#passwordInput').fill('testadmin');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+        await loginAsStdAdmin(page);
 
         await page.locator('#myAccountLink').click();
         await expect(page.locator('#userPwd')).toHaveCount(0);
@@ -55,32 +39,16 @@ test.describe('Useradmin: PreventPwdChange', () => {
         await page.locator('#passwordInput').fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('.siteUsers').click();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.user1 .btnEdit') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.user1').waitFor({ timeout: 10_000 });
+        await page.locator('.user1 .btnEdit').click();
+        await page.locator('.editUserModal.in').waitFor({ timeout: 10_000 });
         await expect(page.locator('.preventPwdChangeHolder input')).toBeChecked();
-        await page.evaluate(() => {
-            const chkbox = document.querySelector('.preventPwdChangeHolder input') as HTMLInputElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            chkbox.dispatchEvent(evt);
-        });
+        await page.locator('.preventPwdChangeHolder input').uncheck();
         await expect(page.locator('.preventPwdChangeHolder input')).not.toBeChecked();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editUserModal .btnSave').click();
 
         await logout(page);
-        await page.goto('/stdparteitag/std-parteitag');
-        await page.locator('#username').fill('testadmin@example.org');
-        await page.locator('#passwordInput').fill('testadmin');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+        await loginAsStdAdmin(page);
 
         await page.locator('#myAccountLink').click();
         await expect(page.locator('#userPwd')).toBeVisible();

@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import { loginAsStdAdmin, logout } from '../../utils/auth';
+import { loginAsStdAdmin, loginAsStdUser, logout } from '../../utils/auth';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminMotionPage } from '../../pages/AdminMotionPage';
@@ -12,6 +12,8 @@ test.describe('Useradmin: RestrictedPrivileges', () => {
     });
 
     test('restricted privileges with restricted group', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
 
@@ -112,10 +114,7 @@ test.describe('Useradmin: RestrictedPrivileges', () => {
 
         await new ConsultationHomePage(page).open();
         await logout(page);
-        await page.goto('/stdparteitag/std-parteitag');
-        await page.locator('#username').fill('testuser@example.org');
-        await page.locator('#passwordInput').fill('testuser');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+        await loginAsStdUser(page);
 
         await page.locator('#motionListLink').click();
         await expect(page.locator('.actionCol')).toHaveCount(0);

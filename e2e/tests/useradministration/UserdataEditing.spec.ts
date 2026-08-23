@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import { loginAsGlobalAdmin, logout } from '../../utils/auth';
+import { loginAsGlobalAdmin, loginAsStdAdmin, logout } from '../../utils/auth';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 
@@ -9,6 +9,8 @@ test.describe('Useradmin: UserdataEditing', () => {
     });
 
     test('edit user data as global admin', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
 

@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import { logout } from '../../utils/auth';
+import { loginAsStdAdmin, logout } from '../../utils/auth';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
@@ -11,6 +11,8 @@ test.describe('Useradmin: UserAccessSingleCreation', () => {
     });
 
     test('create single user with proposed procedure permissions', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const consultationPage = new AdminConsultationPage(page);
         await consultationPage.open();

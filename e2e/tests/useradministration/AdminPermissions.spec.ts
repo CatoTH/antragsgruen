@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import { loginAsConsultationAdmin, logout } from '../../utils/auth';
+import { loginAsConsultationAdmin, loginAsStdAdmin, logout } from '../../utils/auth';
 import { expectBootboxDialog, acceptBootbox } from '../../utils/dom';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
@@ -64,25 +64,17 @@ test.describe('Useradmin: AdminPermissions', () => {
         await new ConsultationHomePage(page).open();
         await logout(page);
 
-        await loginAsConsultationAdmin(page);
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
+        await page.locator('.user7').waitFor({ timeout: 10_000 });
 
-        await expect(page.locator('.editUserModal')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelector('.user7 .btnEdit') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await expect(page.locator('.editUserModal.in')).toHaveCount(0);
+        await page.locator('.user7 .btnEdit').click();
+        await page.locator('.editUserModal.in').waitFor({ timeout: 10_000 });
         await expect(page.locator('.editUserModal')).toBeVisible();
-        await page.locator('.editUserModal .userGroup1').check();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editUserModal .userGroup1 input').check();
+        await page.locator('.editUserModal .btnSave').click();
         await expect(page.locator('.user7')).toContainText('Seiten-Admin');
 
         await logout(page);
@@ -112,40 +104,17 @@ test.describe('Useradmin: AdminPermissions', () => {
         await new ConsultationHomePage(page).open();
         await logout(page);
 
-        await loginAsConsultationAdmin(page);
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.user7 .btnEdit') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.user7').waitFor({ timeout: 10_000 });
+        await page.locator('.user7 .btnEdit').click();
+        await page.locator('.editUserModal.in').waitFor({ timeout: 10_000 });
         await expect(page.locator('.editUserModal')).toBeVisible();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .userGroup3') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .userGroup1') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .userGroup2') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editUserModal .userGroup3 input').click();
+        await page.locator('.editUserModal .userGroup1 input').click();
+        await page.locator('.editUserModal .userGroup2 input').click();
+        await page.locator('.editUserModal .btnSave').click();
         await expect(page.locator('.user7')).toContainText('Antragskommission');
 
         await logout(page);
@@ -162,16 +131,11 @@ test.describe('Useradmin: AdminPermissions', () => {
         await new ConsultationHomePage(page).open();
         await logout(page);
 
-        await loginAsConsultationAdmin(page);
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
         await expect(page.locator('.userAdminList')).toContainText('consultationadmin@example.org');
-        await page.evaluate(() => {
-            const btn = document.querySelector('.userAdminList .user7 .btnRemove') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.userAdminList .user7 .btnRemove').click();
         await expectBootboxDialog(page, /Single-Consultation Admin wirklich aus der Liste entfernen/);
         await acceptBootbox(page);
         await expect(page.locator('.userAdminList')).not.toContainText('consultationadmin@example.org');
@@ -186,34 +150,21 @@ test.describe('Useradmin: AdminPermissions', () => {
         await new ConsultationHomePage(page).open();
         await logout(page);
 
-        await loginAsConsultationAdmin(page);
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.addUsersOpener.email') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.addUsersOpener.email').click();
         await page.locator('#emailAddresses').fill('consultationadmin@example.org');
         await page.locator('#names').fill('ignored');
         await page.locator('.addUsersByLogin.multiuser [name="addUsers"]').click();
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.user7 .btnEdit') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.user7').waitFor({ timeout: 10_000 });
+        await page.locator('.user7 .btnEdit').click();
+        await page.locator('.editUserModal.in').waitFor({ timeout: 10_000 });
         await expect(page.locator('.editUserModal')).toBeVisible();
-        await page.locator('.editUserModal .userGroup2').check();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editUserModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editUserModal .userGroup2 input').check();
+        await page.locator('.editUserModal .btnSave').click();
 
         await expect(page.locator('.user7')).toContainText('Veranstaltungs-Admin');
 

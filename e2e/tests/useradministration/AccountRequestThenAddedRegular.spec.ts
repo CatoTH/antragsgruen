@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import { logout } from '../../utils/auth';
+import { loginAsStdAdmin, logout } from '../../utils/auth';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
@@ -14,6 +14,8 @@ test.describe('Useradmin: AccountRequestThenAddedRegular', () => {
     });
 
     test('request account then add as regular user', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const consultationPage = new AdminConsultationPage(page);
         await consultationPage.open();
@@ -23,7 +25,7 @@ test.describe('Useradmin: AccountRequestThenAddedRegular', () => {
         await logout(page);
 
         await new ConsultationHomePage(page).open();
-        await expect(page.locator('.managedAccountHint')).toHaveCount(0);
+        await expect(page.locator('.managedAccountHint')).not.toBeVisible();
         await page.locator('#createAccount').check();
         await expect(page.locator('.managedAccountHint')).toBeVisible();
 
@@ -46,6 +48,8 @@ test.describe('Useradmin: AccountRequestThenAddedRegular', () => {
         await expect(page.locator('.askedForPermissionAlert')).toBeVisible();
         await logout(page);
 
+        await new ConsultationHomePage(page).open();
+        await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
         await expect(page.locator('.userAdminList')).not.toContainText('testaccount@example.org');
