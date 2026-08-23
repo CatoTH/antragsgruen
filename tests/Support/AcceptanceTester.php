@@ -47,7 +47,7 @@ class AcceptanceTester extends Actor
     public const FIRST_FREE_VOTING_BLOCK_ID        = 3;
     public const FIRST_FREE_CONTENT_ID             = 4;
     public const FIRST_FREE_USER_ID                = 10;
-    public const FIRST_FREE_TAG_ID                 = 14;
+    public const FIRST_FREE_TAG_ID                 = 11;
     public const FIRST_FREE_USERGROUP_ID           = 40;
 
     public const ABSOLUTE_URL_DOMAIN = 'test.antragsgruen.test';
