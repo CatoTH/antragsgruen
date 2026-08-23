@@ -1,7 +1,8 @@
 import { test, expect } from '../../fixtures';
-import { loginAsStdAdmin, logout } from '../../utils/auth';
+import { loginAsStdAdmin } from '../../utils/auth';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminAppearancePage } from '../../pages/AdminAppearancePage';
+import { AdminIndexPage } from '../../pages/AdminIndexPage';
 
 test.describe('Speech: non-quota, loginless', () => {
     test.beforeEach(async ({ db }) => {
@@ -16,12 +17,12 @@ test.describe('Speech: non-quota, loginless', () => {
         await loginAsStdAdmin(page);
         const appearancePage = new AdminAppearancePage(page);
         await new ConsultationHomePage(page).open();
-        const adminIndexUrl = await new (await import('../../pages/AdminIndexPage')).AdminIndexPage(page).getUrl();
+        const adminIndexUrl = await new AdminIndexPage(page).getUrl();
         await page.goto(adminIndexUrl);
         await appearancePage.open();
 
         await expect(page.locator('#hasSpeechLists')).not.toBeChecked();
-        await expect(page.locator('.quotas')).toHaveCount(0);
+        await expect(page.locator('.quotas')).not.toBeVisible();
         await page.locator('#hasSpeechLists').check();
         await expect(page.locator('.quotas')).toBeVisible();
         await page.locator('#activateFirstSpeechList').uncheck();
@@ -45,20 +46,9 @@ test.describe('Speech: non-quota, loginless', () => {
 
         await expect(page.locator('.toolbarBelowTitle .settingsActive .inactive')).toBeVisible();
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.toolbarBelowTitle .settingsActive button') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.toolbarBelowTitle .settingsActive button').click();
 
-        await page.evaluate(() => {
-            const chkbox = document.querySelector('.toolbarBelowTitle.settings .settingsOpen input') as HTMLInputElement;
-            chkbox.checked = true;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('change', false, true);
-            chkbox.dispatchEvent(evt);
-        });
+        await page.locator('.toolbarBelowTitle.settings .settingsOpen input').first().check();
 
         await new ConsultationHomePage(page).open();
         await expect(page.locator('.currentSpeechInline')).toBeVisible();
@@ -68,63 +58,39 @@ test.describe('Speech: non-quota, loginless', () => {
         await expect(page.locator('.currentSpeechInline .notPossible')).toHaveCount(0);
         await expect(page.locator('.waitingSingle .apply button')).toContainText('Bewerben');
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.waitingSingle .apply button') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.waitingSingle .apply button').click();
 
         await expect(page.locator('#speechRegisterName-1')).toHaveValue('Testadmin');
 
-        await page.evaluate(() => {
-            const form = document.querySelector('.waitingSingle form') as HTMLFormElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('submit', false, true);
-            form.dispatchEvent(evt);
-        });
+        await page.locator('.waitingSingle form button').click();
 
         await expect(page.locator('.currentSpeechInline .appliedMe')).toBeVisible();
         await expect(page.locator('.currentSpeechInline .number')).toContainText('1');
         await expect(page.locator('.currentSpeechInline .nameList')).toContainText('Testadmin');
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.waitingSingle .btnWithdraw') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.waitingSingle .btnWithdraw').click();
 
-        await expect(page.locator('.currentSpeechInline .number')).toContainText('0');
-        await expect(page.locator('.currentSpeechInline .nameList')).not.toContainText('Testadmin');
+await expect(page.locator('.currentSpeechInline .number')).toContainText('0');
+{
+    const nameListExists = await page.locator('.currentSpeechInline .nameList').count();
+    const nameListText = nameListExists > 0
+        ? (await page.locator('.currentSpeechInline .nameList').textContent()) ?? ''
+        : '';
+    expect(nameListText).not.toContain('Testadmin');
+}
 
         await page.locator('.currentSpeechInline .speechAdminLink').click();
 
         await expect(page.locator('.subqueueAdder form')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelector('.subqueues .adderOpener') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.subqueues .adderOpener').click();
         await expect(page.locator('.subqueueAdder form')).toBeVisible();
         await page.locator('#subqueueAdderName-1').fill('Testperson');
-        await page.evaluate(() => {
-            const form = document.querySelector('.subqueues .subqueueAdder form') as HTMLFormElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('submit', false, true);
-            form.dispatchEvent(evt);
-        });
+        await page.locator('.subqueues .subqueueAdder form button').click();
 
         await expect(page.locator('.slotPlaceholder.active')).toContainText('Testperson');
         await expect(page.locator('.slotActive.inactive')).toBeVisible();
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.slotPlaceholder.active') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.slotPlaceholder.active').click();
 
         await expect(page.locator('.slotEntry.slotActive')).toContainText('Testperson');
         await expect(page.locator('.slotPlaceholder.inactive')).toBeVisible();
