@@ -56,12 +56,8 @@ test.describe('Useradmin: AccountRequestThenAddedRegular', () => {
         await expect(page.locator('#accountsScreenForm')).toContainText('testaccount@example.org');
 
         await page.locator('.addSingleInit .inputEmail').fill(USERNAME);
-        await page.evaluate(() => {
-            const btn = document.querySelector('.addUsersOpener.singleuser') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.addUsersOpener.singleuser').click();
+
         await expect(page.locator('.addUsersByLogin.singleuser .showIfExists')).toBeVisible();
         await expect(page.locator('.addUsersByLogin.singleuser .showIfNew')).toHaveCount(0);
         await page.locator('.addUsersByLogin.singleuser [name="addUsers"]').click();

@@ -18,20 +18,10 @@ test.describe('Useradmin: Usergroups', () => {
         await page.locator('.siteUsers').click();
         await expect(page.locator('.group4')).toContainText('Teilnehmer*in');
         await expect(page.locator('.addGroupForm')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelector('.btnGroupCreate') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.btnGroupCreate').click();
         await expect(page.locator('.addGroupForm')).toBeVisible();
         await page.locator('.addGroupForm .addGroupName input').fill('Special group');
-        await page.evaluate(() => {
-            const btn = document.querySelector('.addGroupForm .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.addGroupForm .btnSave').click();
         await expect(page.locator(`.group${FIRST_FREE_USERGROUP_ID}`)).toContainText('Special group');
 
         const motionTypePage = new AdminMotionTypePage(page);
@@ -71,12 +61,7 @@ test.describe('Useradmin: Usergroups', () => {
         await page.locator('.siteUsers').click();
         await expect(page.locator('.user2')).toHaveCount(0);
         await page.locator('.addSingleInit .inputEmail').fill('testuser@example.org');
-        await page.evaluate(() => {
-            const btn = document.querySelector('.addUsersOpener.singleuser') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.addUsersOpener.singleuser').click();
         await expect(page.locator('.addUsersByLogin.singleuser .showIfExists')).toBeVisible();
         await expect(page.locator('.addUsersByLogin.singleuser .showIfNew')).toHaveCount(0);
         await page.locator(`.addUsersByLogin.singleuser .userGroup${FIRST_FREE_USERGROUP_ID}`).check();
@@ -101,15 +86,8 @@ test.describe('Useradmin: Usergroups', () => {
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
-        await page.evaluate(
-            ([groupId]) => {
-                const btn = document.querySelector(`.group${groupId} .btnRemove`) as HTMLElement;
-                const evt = document.createEvent('HTMLEvents');
-                evt.initEvent('click', false, true);
-                btn.dispatchEvent(evt);
-            },
-            [String(FIRST_FREE_USERGROUP_ID)],
-        );
+        await page.locator(`.group${FIRST_FREE_USERGROUP_ID} .btnRemove`).click();
+
         await expectBootboxDialog(page, /Special group wirklich löschen/);
         await acceptBootbox(page);
         await expect(page.locator('.user2')).not.toContainText('Veranstaltungs-Admin');
