@@ -12,7 +12,7 @@
 // "live-data-config" meta tag, which is rendered by views/layouts/main.php for all channels the view
 // registered using $layout->addLiveDataChannel().
 
-import { authorizedFetch, getToken } from "/js/modules/shared/ApiClient.js";
+import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/ApiClient.js";
 
 /**
  * @typedef {object} ChannelConfig
@@ -36,6 +36,13 @@ import { authorizedFetch, getToken } from "/js/modules/shared/ApiClient.js";
 const MAX_BACKOFF_MS = 30000;
 
 /**
+ * How often a rejected request is retried with a freshly fetched token before the channel is given up
+ * on. A token can be rejected even though this browser still considered it valid, and renewing it fixes
+ * that - but if renewing it does not, the data is simply not accessible to this user.
+ */
+const MAX_AUTH_RETRIES = 3;
+
+/**
  * Widgets registering later than this after the page was loaded cannot rely on the data the backend
  * rendered them with anymore - it would already be stale. This is the regular case for the fullscreen
  * projector and for widgets shown by a widget that itself is kept up to date.
@@ -52,6 +59,7 @@ class Channel {
     /** @type {boolean} */ requestRunning = false;
     /** @type {boolean} */ refetchRequested = false;
     /** @type {number} */ consecutiveErrors = 0;
+    /** @type {number} */ consecutiveAuthErrors = 0;
     /** Set when the data is not accessible to this user at all; retrying would not help */
     /** @type {boolean} */ givenUp = false;
 
@@ -189,9 +197,17 @@ class Channel {
             .then(() => this.performRequest(url))
             .then(response => {
                 if (response.status === 401 || response.status === 403) {
-                    // Polling this channel will not start working by trying again - e.g. anonymous users
-                    // on installations where the public API is disabled.
-                    this.givenUp = true;
+                    this.consecutiveAuthErrors++;
+                    if (this.canRetryAuth()) {
+                        // The token this browser holds was rejected although it still considered it
+                        // valid; a freshly fetched one may well be accepted, so drop it and retry.
+                        invalidateToken();
+                    } else {
+                        // Polling this channel will not start working by trying again - e.g. anonymous
+                        // users on installations where the public API is disabled, or a user without the
+                        // privilege the channel needs.
+                        this.givenUp = true;
+                    }
                     throw new Error('Not permitted to access ' + this.config.role + '/' + this.config.channel);
                 }
                 if (!response.ok) {
@@ -201,6 +217,7 @@ class Channel {
             })
             .then(data => {
                 this.consecutiveErrors = 0;
+                this.consecutiveAuthErrors = 0;
                 this.publishData(data);
                 return data;
             })
@@ -224,6 +241,18 @@ class Channel {
                     this.reschedulePolling();
                 }
             });
+    }
+
+    /**
+     * Whether a rejected request is worth repeating. Only channels authenticated by a token can profit
+     * from it: there is a token to renew, and the renewal goes through the session-authenticated token
+     * endpoint. Session-authenticated channels have nothing to retry with.
+     */
+    canRetryAuth() {
+        if (this.config.auth === 'session' || !hasJwt()) {
+            return false;
+        }
+        return this.consecutiveAuthErrors <= MAX_AUTH_RETRIES;
     }
 
     shouldPoll() {

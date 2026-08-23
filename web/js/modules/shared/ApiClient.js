@@ -63,6 +63,17 @@ export function getToken() {
 }
 
 /**
+ * Drops the cached token, so that the next request fetches a fresh one. To be called after the backend
+ * rejected a token this module still considered valid - which happens when the signing key was rotated,
+ * the session changed, or the browser clock differs from the server's.
+ */
+export function invalidateToken() {
+    if (jwtConfig !== null) {
+        jwtConfig = { ...jwtConfig, exp: 0 };
+    }
+}
+
+/**
  * Convenience wrapper around fetch() that sends the JWT as Bearer token.
  *
  * @param {string} url

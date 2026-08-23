@@ -6,8 +6,8 @@ namespace app\controllers\rest;
 
 use app\components\{DebateTools, Tools, UrlHelper};
 use app\models\api\speech\SpeechQueueAdmin;
-use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateStartRequest, DebateState,
-    DebateVotingAssignRequest, DebateVotingBlock, DebateVotingBlockOption, DebateVotingCreateRequest,
+use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateSpeechQueueRequest, DebateStartRequest,
+    DebateState, DebateVotingAssignRequest, DebateVotingBlock, DebateVotingBlockOption, DebateVotingCreateRequest,
     DebateVotingState, DebateVotingStateCreateMode};
 use app\models\db\{Amendment, ConsultationAgendaItem, DebateItem, Motion, User, VotingBlock};
 use app\models\exceptions\NotFound;
@@ -151,9 +151,14 @@ class DebateController extends RestBase
 
         // An optional {"activate": true} body activates the speaking list (used by the debated tab's
         // "Activate speaking list" button); otherwise the list is only get-or-created (as before).
-        $body = json_decode((string)$this->getPostBody() ?: '{}', true);
-        $activate = is_array($body) && !empty($body['activate']);
-        $queue = $activate
+        try {
+            /** @var DebateSpeechQueueRequest $request */
+            $request = Tools::getSerializer()->deserialize($this->getPostBody() ?: '{}', DebateSpeechQueueRequest::class, 'json');
+        } catch (SerializerException $e) {
+            return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
+        }
+
+        $queue = ($request->activate === true)
             ? DebateTools::activateSpeechQueue($debate)
             : DebateTools::getOrCreateSpeechQueue($debate);
 

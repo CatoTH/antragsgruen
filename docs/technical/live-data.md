@@ -91,7 +91,9 @@ handle.unregister();          // in beforeUnmount()
   the widgets by key. Live events (which carry a single object) are dispatched the same way.
 - Never stacks requests: a refresh asked for while a request is in flight is performed afterwards.
 - Retries failing requests with a growing delay (up to 30 s), so a backend restart does not stop a
-  projector for good. A `401`/`403` stops the channel, as retrying cannot help there.
+  projector for good. A `401`/`403` is retried a few times with a freshly fetched JWT - a token can be
+  rejected although the browser still considered it valid - and stops the channel only afterwards, or
+  right away if there is no token to renew (an anonymous visitor, a session-authenticated channel).
 - Refreshes when the tab becomes visible again, and after a websocket **re**connect - live events
   only carry changes, so everything that happened during the outage would be missing otherwise.
 

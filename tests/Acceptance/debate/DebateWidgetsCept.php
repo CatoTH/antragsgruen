@@ -100,6 +100,9 @@ $I->waitForElement('.fullscreenMainHolder .currentDebateContent .debatedItem', 8
 $I->waitForText('O’zapft is!', 5, '.fullscreenMainHolder .currentDebateContent .debatedItem .title');
 $I->waitForText('Aktuell debattiert', 5, '.fullscreenMainHolder .imotionSelector'); // dropdown option is translated, not "UNKNOWN TRANSLATION"
 $I->dontSeeElement('.fullscreenMainHolder .speechUser'); // read-only projection: the interactive apply UI is not rendered
+// The speaking list of the debated motion was created above, but never activated - so the projector
+// hides it, just like the inline widget does
+$I->dontSeeElement('.fullscreenMainHolder .speechLists');
 $I->click('.fullscreenMainHolder .closeBtn');
 $I->waitForElementNotVisible('.fullscreenMainHolder', 5);
 

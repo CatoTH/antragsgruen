@@ -33,7 +33,7 @@ $initData = \app\components\Tools::getSerializer()->serialize(
 );
 $userData = new SpeechUser($user, $cookieUser);
 
-if ($queue->motionId || $queue->agendaItemId) {
+if ($queue->motionId || $queue->amendmentId || $queue->agendaItemId) {
     $title = $queue->getTitle();
 } else {
     $title = Yii::t('speech', 'user_section_title');

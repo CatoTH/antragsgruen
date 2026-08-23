@@ -2,7 +2,7 @@
     <section class="voting" v-t:aria-label="['voting', 'voting_current_aria']">
         <h2 class="green">
             {{ voting.title }}
-            <a :href="adminLink" class="votingsAdminLink greenHeaderExtraLink" v-if="adminLink">
+            <a :href="adminLink" class="votingsAdminLink greenHeaderExtraLink" v-if="adminLink && !projector">
               <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
               <template v-t="['voting', 'voting_admin_all']"></template>
             </a>
@@ -28,7 +28,7 @@
                         </div>
                         <div v-for="item in groupedVoting">
                             {{ item.title_with_prefix }}
-                            <a v-if="item.url_html" :href="item.url_html" v-t:title="['voting', 'voting_show_amend']"><span
+                            <a v-if="item.url_html && !projector" :href="item.url_html" v-t:title="['voting', 'voting_show_amend']"><span
                                 class="glyphicon glyphicon-new-window"
                                 v-t:aria-label="['voting', 'voting_show_amend']"></span></a><br>
                             <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', true, {'%BY%': item.initiators_html}]"></span>
@@ -143,17 +143,19 @@
                 </li>
             </ul>
             <footer class="votingFooter">
-                <div class="votedCounter" v-if="!votingIsPresenceCall && !abstained">
+                <div class="votedCounter" v-if="!votingIsPresenceCall && (!abstained || projector)">
                     <strong v-t="['voting', 'voting_votes_status']"></strong>&nbsp;
                     <span v-if="voting.votes_total === 0" v-t="['voting', 'voting_votes_0']"></span>
                     <span v-if="voting.votes_total === 1" v-t="['voting', 'voting_votes_1_1']"></span>
                     <span v-if="voting.votes_users === 1 && voting.votes_total > 1" v-t="['voting', 'voting_votes_1_x', false, {'%VOTES%': voting.votes_total}]"></span>
                     <span v-if="voting.votes_users > 1 && voting.votes_users !== voting.votes_total" v-t="['voting', 'voting_votes_x', false, {'%VOTES%': voting.votes_total, '%USERS%': voting.votes_users}]"></span>
                     <span v-if="voting.votes_users > 1 && voting.votes_users === voting.votes_total" v-t="['voting', 'voting_votes_x_same', false, {'%VOTES%': voting.votes_total}]"></span>
-                    <span>&nbsp;</span>
-                    <span v-if="voting.votes_remaining === 0" v-t="['voting', 'voting_remainig_0']"></span>
-                    <span v-if="voting.votes_remaining === 1" v-t="['voting', 'voting_remainig_1']"></span>
-                    <span v-if="voting.votes_remaining > 1" v-t="['voting', 'voting_remainig_x', false, {'%VOTES%': voting.votes_remaining}]"></span>
+                    <template v-if="!projector">
+                        <span>&nbsp;</span>
+                        <span v-if="voting.votes_remaining === 0" v-t="['voting', 'voting_remainig_0']"></span>
+                        <span v-if="voting.votes_remaining === 1" v-t="['voting', 'voting_remainig_1']"></span>
+                        <span v-if="voting.votes_remaining > 1" v-t="['voting', 'voting_remainig_x', false, {'%VOTES%': voting.votes_remaining}]"></span>
+                    </template>
                 </div>
                 <div class="votedCounter" v-if="votingIsPresenceCall">
                     <strong v-t="['voting', 'voting_votes_status']"></strong>:
@@ -163,7 +165,7 @@
                     <span v-if="voting.votes_users > 1 && voting.votes_users !== voting.votes_total" v-t="['voting', 'voting_presence_x', false, {'%VOTES%': voting.votes_total, '%USERS%': voting.votes_users}]"></span>
                     <span v-if="voting.votes_users > 1 && voting.votes_users === voting.votes_total" v-t="['voting', 'voting_presence_x_same', false, {'%VOTES%': voting.votes_total}]"></span>
                 </div>
-                <div v-if="voting.vote_weight > 1">
+                <div v-if="voting.vote_weight > 1 && !projector">
                     <template v-t="['voting', 'voting_weight']"></template>
                     <span class="votingWeight">{{ voting.vote_weight }}</span>
                 </div>

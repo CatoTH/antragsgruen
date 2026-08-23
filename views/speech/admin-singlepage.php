@@ -17,6 +17,15 @@ $layout       = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manageSpeechPage';
 if ($queue->motion) {
     $layout->addBreadcrumb($queue->motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($queue->motion));
+} elseif ($queue->amendment) {
+    $amendedMotion = $queue->amendment->getMyMotion();
+    if ($amendedMotion) {
+        $layout->addBreadcrumb($amendedMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($amendedMotion));
+    }
+    $layout->addBreadcrumb(
+        $queue->amendment->getFormattedTitlePrefix() ?? Yii::t('amend', 'amendment'),
+        UrlHelper::createAmendmentUrl($queue->amendment)
+    );
 } elseif ($queue->agendaItem) {
     $layout->addBreadcrumb(Yii::t('admin', 'index_site_agenda'), UrlHelper::createUrl(['/admin/agenda/index']));
 } else {
@@ -41,6 +50,8 @@ $initData = Tools::getSerializer()->serialize(SpeechQueueAdmin::fromEntity($queu
 
 if ($queue->motion) {
     $this->title = str_replace('%TITLE%', $queue->motion->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to'));
+} elseif ($queue->amendment) {
+    $this->title = str_replace('%TITLE%', (string)$queue->amendment->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to'));
 } elseif ($queue->agendaItem) {
     $this->title = str_replace('%TITLE%', $queue->agendaItem->title, Yii::t('speech', 'admin_title_to'));
 } else {

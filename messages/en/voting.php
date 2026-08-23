@@ -371,9 +371,18 @@ return [
         'js' => true,
     ],
 
-    'voting_current_aria' => 'Currently active voting',
-    'voting_show_amend' => 'Show amendment',
-    'voting_edit_amend' => 'Edit amendment',
+    'voting_current_aria' => [
+        'text' => 'Currently active voting',
+        'js' => true,
+    ],
+    'voting_show_amend' => [
+        'text' => 'Show amendment',
+        'js' => true,
+    ],
+    'voting_edit_amend' => [
+        'text' => 'Edit amendment',
+        'js' => true,
+    ],
     'voting_by' => [
         'text' => 'By %BY%',
         'js' => true,

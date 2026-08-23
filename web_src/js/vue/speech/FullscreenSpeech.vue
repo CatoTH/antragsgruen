@@ -1,5 +1,5 @@
 <template>
-  <article class="speechLists currentSpeechPageWidth">
+  <article class="speechLists currentSpeechPageWidth" :class="{'disabledSpeechQueue': queue && !queue.is_active }">
     <div class="content" v-if="queue">
       <div class="activeSpeaker">
         <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>

@@ -954,6 +954,94 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorNotFound'
 
+  /rest/{consultationPath}/debate/selectable:
+    get:
+      operationId: getDebateSelectables
+      summary: The items a debate moderator can pick as the debated one
+      description: >
+        Lists the motions, amendments, and agenda items of the consultation that can be made the
+        currently debated item, in the order the moderation widget offers them. Agenda items that
+        are date separators are left out, as there is nothing to debate about them. Requires the
+        privilege to moderate debates. Like the other debate endpoints, it works independently of
+        whether general API access is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The selectable items, grouped by type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateSelectables'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
+  /rest/{consultationPath}/debate/speech-queue:
+    post:
+      operationId: getOrCreateDebateSpeechQueue
+      summary: The speaking list of the currently debated item (moderation)
+      description: >
+        Returns the speaking list of the currently debated item in its admin representation, creating
+        an inactive one with the consultation's configured subqueues if the item does not have one yet.
+        With `{"activate": true}` the list is additionally marked active, which enables the speaking
+        list feature for the consultation and deactivates the other non-agenda lists - the same effect
+        the regular speech administration has. Requires the privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateSpeechQueueRequest'
+      responses:
+        '200':
+          description: The speaking list of the debated item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueAdmin'
+        '400':
+          description: The debated item cannot have a speaking list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, no debate is going on, or the feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
   /rest/{consultationPath}/speech/{queueIds}:
     get:
       operationId: getSpeechQueues
@@ -1765,6 +1853,67 @@ components:
           nullable: true
           description: The question and title of the voting, used when an agenda item is debated.
           example: "Should we adjourn the meeting?"
+
+    DebateSelectables:
+      x-php-namespace: debate
+      type: object
+      description: The items that can be made the currently debated one, grouped by type.
+      required:
+        - motions
+        - amendments
+        - agenda_items
+      properties:
+        motions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebateSelectableItem'
+        amendments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebateSelectableItem'
+        agenda_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebateSelectableItem'
+
+    DebateSelectableItem:
+      x-php-namespace: debate
+      type: object
+      description: One item that can be made the currently debated one.
+      required:
+        - target_type
+        - target_id
+        - title
+      properties:
+        target_type:
+          $ref: '#/components/schemas/DebateItemTargetType'
+        target_id:
+          type: integer
+          description: To be passed as target_id when starting a debate over this item.
+          example: 2
+        title:
+          type: string
+          example: "O’zapft is!"
+        title_with_prefix:
+          type: string
+          nullable: true
+          example: "A2: O’zapft is!"
+        initiators_html:
+          type: string
+          nullable: true
+          description: Formatted list of the initiators. Null for agenda items.
+
+    DebateSpeechQueueRequest:
+      x-php-namespace: debate
+      type: object
+      description: Options for retrieving the speaking list of the currently debated item.
+      properties:
+        activate:
+          type: boolean
+          description: >
+            If true, the speaking list is marked active, so that it is shown to the participants.
+            If false or absent, it is only created if it does not exist yet.
+          example: true
 
     MotionLinkWithAmendmentLinks:
       x-php-namespace: imotion

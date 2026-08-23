@@ -8,19 +8,17 @@ use app\components\MotionSorter;
 use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
 
 /**
- * Hand-written DTO (not part of docs/openapi.yaml): response of GET /rest/{site}/{con}/debate/selectable,
- * listing all items that a debate moderator can select as "currently debated".
+ * Response of GET /rest/{site}/{con}/debate/selectable, listing all items that a debate moderator
+ * can select as "currently debated".
  */
 class DebateSelectables
 {
-    /**
-     * @param DebateSelectableItem[] $motions
-     * @param DebateSelectableItem[] $amendments
-     * @param DebateSelectableItem[] $agendaItems
-     */
     public function __construct(
+        /** @var DebateSelectableItem[] */
         public array $motions,
+        /** @var DebateSelectableItem[] */
         public array $amendments,
+        /** @var DebateSelectableItem[] */
         public array $agendaItems,
     ) {
     }

@@ -611,7 +611,9 @@
 .currentSpeechInline:has(.disabledSpeechQueue) {
   display: none;
 }
-.currentDebateInline .disabledSpeechQueue {
+// Covers both the inline widget and the fullscreen projector, whose speaking lists are rendered by
+// different components (UserInlineWidget / FullscreenSpeech) below the same .currentDebateContent root
+.currentDebateContent .disabledSpeechQueue {
   display: none;
 }
 .currentDebateInline {
