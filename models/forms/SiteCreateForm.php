@@ -6,7 +6,7 @@ use app\components\RequestContext;
 use app\components\Tools;
 use app\models\policies\{All, LoggedIn, IPolicy};
 use app\models\motionTypeTemplates\{Application, Manifesto, PDFApplication};
-use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationText, Motion, MotionSupporter, Site, SpeechQueue, User};
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationText, Motion, MotionSection, MotionSupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
 use app\models\settings\{AntragsgruenApp, InitiatorForm};
 use app\models\supportTypes\SupportBase;
@@ -301,6 +301,16 @@ class SiteCreateForm extends Model
             $motion->status = Motion::STATUS_DRAFT;
             if (!$motion->save()) {
                 throw new FormError($motion->getErrors());
+            }
+
+            // Like a regular motion creation (MotionEditForm::createMotion), the motion gets a row for
+            // each of its type's sections. Editing it later only fills the existing ones - the text
+            // would be lost without them.
+            foreach ($type->motionSections as $sectionType) {
+                $section = MotionSection::createEmpty($sectionType->id, $sectionType->getSettingsObj()->public, $motion->id);
+                if (!$section->save()) {
+                    throw new FormError($section->getErrors());
+                }
             }
 
             $supporter               = new MotionSupporter();

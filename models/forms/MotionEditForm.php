@@ -44,6 +44,7 @@ class MotionEditForm
 
     private bool $allowEditingInitiators;
     private bool $allowTextEdit;
+    private bool $allowTitleEdit;
     private bool $allowSetTags;
     private bool $adminMode = false;
 
@@ -62,6 +63,7 @@ class MotionEditForm
         $form->initializeSectionsAndTags(null);
         $form->allowEditingInitiators = true;
         $form->allowTextEdit = true;
+        $form->allowTitleEdit = true;
         $form->allowSetTags = $consultation->getSettings()->allowUsersToSetTags;
 
         return $form;
@@ -73,6 +75,7 @@ class MotionEditForm
         $form->initializeSectionsAndTags($motion);
         $form->allowEditingInitiators = $motion->canEditInitiators();
         $form->allowTextEdit = $motion->canEditText();
+        $form->allowTitleEdit = $form->allowTextEdit; // The title is part of the text form for submitters
         $form->allowSetTags = $motion->getMyConsultation()->getSettings()->allowUsersToSetTags;
 
         return $form;
@@ -86,6 +89,9 @@ class MotionEditForm
         $form->adminMode = true;
         $form->allowEditingInitiators = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion));
         $form->allowTextEdit = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_TEXT_EDIT, PrivilegeQueryContext::motion($motion));
+        // The title is metadata like the status or the tags, not part of the text: changing it is
+        // part of PRIVILEGE_MOTION_STATUS_EDIT, which the admin form requires to save at all.
+        $form->allowTitleEdit = User::havePrivilege($con, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::motion($motion));
         $form->allowSetTags = true;
 
         return $form;
@@ -206,6 +212,33 @@ class MotionEditForm
                 $section->dataRaw = $byId[$section->sectionId]->dataRaw;
             }
         }
+    }
+
+    /**
+     * The sections of the request that may be written with the permissions at hand: everything if the
+     * text may be edited, otherwise only the title - which is metadata rather than text (see
+     * createForAdminEdit). Sections filtered out here keep the content they have.
+     *
+     * @param MotionUpdateSection[] $requestSections
+     * @return MotionUpdateSection[]
+     */
+    private function filterWritableSections(array $requestSections): array
+    {
+        if ($this->allowTextEdit) {
+            return $requestSections;
+        }
+
+        $titleSectionIds = [];
+        foreach ($this->motionType->motionSections as $sectionType) {
+            if ($sectionType->type === ISectionType::TYPE_TITLE) {
+                $titleSectionIds[] = $sectionType->id;
+            }
+        }
+
+        return array_values(array_filter(
+            $requestSections,
+            fn (MotionUpdateSection $section): bool => in_array($section->sectionId, $titleSectionIds, true)
+        ));
     }
 
     /**
@@ -477,8 +510,8 @@ class MotionEditForm
         }
 
         // 2. Validate data
-        if ($this->allowTextEdit) {
-            $this->setAndVerifySectionContent($dto->sections);
+        if ($this->allowTextEdit || $this->allowTitleEdit) {
+            $this->setAndVerifySectionContent($this->filterWritableSections($dto->sections));
         }
         if ($this->allowEditingInitiators) {
             $this->validateInitiators($supportForm, $initiators, $supporters);
@@ -492,7 +525,7 @@ class MotionEditForm
             $supportForm->submitMotion($motion, $this->supporters);
         }
 
-        if ($this->allowTextEdit) {
+        if ($this->allowTextEdit || $this->allowTitleEdit) {
             $this->overwriteSections($motion);
         }
 
