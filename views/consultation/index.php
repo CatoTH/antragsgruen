@@ -39,21 +39,28 @@ echo $controller->showErrors();
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
+if ($consultation->getSettings()->hasCurrentlyDebated) {
+    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
+        echo $this->render('_index_debate_admin', ['consultation' => $consultation]);
+    } else {
+        echo $this->render('_index_debate', ['consultation' => $consultation]);
+    }
+} else {
+    if ($consultation->getSettings()->hasSpeechLists) {
+        $queue = $consultation->getActiveSpeechQueue();
+        echo $this->render('@app/views/speech/_index_speech', [
+            'queue' => $queue,
+            'showHeader' => true,
+            'headingLevel' => 2,
+        ]);
+    }
+
+    echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
+}
+
 if ($myself) {
     echo $this->render('_index_my_motions', ['consultation' => $consultation, 'myself' => $myself]);
 }
-
-if ($consultation->getSettings()->hasSpeechLists) {
-    $queue = $consultation->getActiveSpeechQueue();
-    echo $this->render('@app/views/speech/_index_speech', [
-        'queue' => $queue,
-        'showHeader' => true,
-        'headingLevel' => 2,
-    ]);
-}
-
-echo $this->render('@app/views/voting/_index_voting', ['assignedToMotion' => null]);
-
 
 if ($contentAdmin && in_array($consultation->getSettings()->startLayoutType, [ConsultationSettings::START_LAYOUT_AGENDA_LONG, ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND, ConsultationSettings::START_LAYOUT_AGENDA])) {
     $cache->setSkipCache(true);

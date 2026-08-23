@@ -201,14 +201,16 @@
 </template>
 
 <script>
+import { postJson } from "/js/modules/shared/ApiClient.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
+
 export default {
-  props: ['initQueue', 'csrf', 'componentAdminLink', 'pollUrl', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
+  props: ['initQueue', 'csrf', 'componentAdminLink', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
   data() {
     return {
       queue: null,
       showPreviousList: false,
-      pollingId: null,
-      liveConnected: false,
+      liveDataHandle: null,
       timerId: null,
       dragging: false,
       changedSettings: {
@@ -321,21 +323,16 @@ export default {
   },
   methods: {
     _performOperation: function (itemId, op, additionalProps) {
-      let postData = {
-        _csrf: this.csrf,
-      };
-      if (additionalProps) {
-        postData = Object.assign(postData, additionalProps);
-      }
+      const postData = additionalProps ? Object.assign({}, additionalProps) : {};
       const widget = this;
       const url = this.itemPerformOperationUrl
           .replace(/QUEUEID/, widget.queue.id)
           .replace(/ITEMID/, itemId)
           .replace(/OPERATION/, op);
-      $.post(url, postData, function (data) {
+      postJson(url, postData).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     getPreviousForSubqueue: function (subqueue) {
@@ -372,7 +369,7 @@ export default {
       this._performOperation(itemId, "delete");
     },
     moveItemToSubqueue: function (itemId, newSubqueueId, position) {
-      this._performOperation(itemId, "move", {newSubqueueId, position});
+      this._performOperation(itemId, "move", {new_subqueue_id: newSubqueueId, position});
       this.itemDragEnd();
     },
     itemDragStart: function (itemId) {
@@ -399,59 +396,58 @@ export default {
       const widget = this;
       bootbox.confirm(resetConfirmation, function(result) {
         if (result) {
-          $.post(this.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), { _csrf: widget.csrf }, function (data) {
+          postJson(widget.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
             widget.queue = data;
           }).catch(function (err) {
-            alert(err.responseText);
+            alert(err.message);
           });
         }
       });
     },
     settingsChanged: function () {
       const widget = this;
-      $.post(this.setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
-        is_active: (this.queue.is_active ? 1 : 0),
-        is_open: (this.queue.settings.is_open ? 1 : 0),
-        is_open_poo: (this.queue.settings.is_open_poo ? 1 : 0),
-        prefer_nonspeaker: (this.queue.settings.prefer_nonspeaker ? 1 : 0),
-        allow_custom_names: (this.queue.settings.allow_custom_names ? 1 : 0),
-        show_names: (this.queue.settings.show_names ? 1 : 0),
+      postJson(this.setStatusUrl.replace(/QUEUEID/, widget.queue.id), {
+        is_active: this.queue.is_active,
+        is_open: this.queue.settings.is_open,
+        is_open_poo: this.queue.settings.is_open_poo,
+        prefer_nonspeaker: this.queue.settings.prefer_nonspeaker,
+        allow_custom_names: this.queue.settings.allow_custom_names,
+        show_names: this.queue.settings.show_names,
         speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : null),
-        _csrf: this.csrf,
-      }, function (data) {
+      }).then(function (data) {
         widget.queue = data['queue'];
 
         widget.changedSettings.speakingTime = null;
         widget.changedSettings.hasSpeakingTime = null;
 
-        if (data['sidebar'] && data['sidebar'][0] !== '') {
+        const isManagePage = document.querySelector("body").classList.contains("manageSpeechPage");
+        if (isManagePage && data['sidebar'] && data['sidebar'][0] !== '') {
           document.getElementById('sidebar').childNodes.item(0).innerHTML = data['sidebar'][0];
           // @TODO Secondary sidebar
         }
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     randomizeQueues: function ($event) {
       $event.preventDefault();
       $event.stopPropagation();
       const widget = this;
-      $.post(this.randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), { _csrf: widget.csrf }, function (data) {
+      postJson(this.randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     addItemToSubqueue: function (subqueue, itemName) {
       const widget = this;
-      $.post(this.createItemUrl.replace(/QUEUEID/, widget.queue.id), {
+      postJson(this.createItemUrl.replace(/QUEUEID/, widget.queue.id), {
         subqueue: subqueue.id,
         name: itemName,
-        _csrf: this.csrf,
-      }, function (data) {
+      }).then(function (data) {
         widget.queue = data;
       }).catch(function (err) {
-        alert(err.responseText);
+        alert(err.message);
       });
     },
     recalcTimeOffset: function (serverTime) {
@@ -475,19 +471,6 @@ export default {
       this.recalcTimeOffset(new Date(data['current_time']));
       this.recalcRemainingTime();
     },
-    reloadData: function () {
-      const widget = this;
-      if (widget.liveConnected) {
-        return;
-      }
-
-      $.get(
-          this.pollUrl.replace(/QUEUEID/, widget.queue.id),
-          this.setData.bind(this)
-      ).catch(function(err) {
-        console.error("Could not load speech queue data from backend", err);
-      });
-    },
     formatUsernameHtml: function (item) {
       let name = item.name;
       name = name.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
@@ -499,28 +482,22 @@ export default {
       this.recalcTimeOffset(new Date());
 
       const widget = this;
-      this.pollingId = window.setInterval(function () {
-        widget.reloadData();
-      }, 1000);
+      this.liveDataHandle = registerListener('admin', 'speech', {
+        key: this.queue.id,
+        onData: (queue) => this.setData(queue),
+      });
 
+      // The remaining speaking time is counted down locally, independently of the updates
       this.timerId = window.setInterval(function () {
         widget.recalcRemainingTime();
       }, 100);
-
-      if (window['ANTRAGSGRUEN_LIVE_EVENTS'] !== undefined) {
-        window['ANTRAGSGRUEN_LIVE_EVENTS'].registerListener('admin', 'speech', (connectionEvent, speechEvent) => {
-          if (connectionEvent !== null) {
-            widget.liveConnected = connectionEvent;
-          }
-          if (speechEvent !== null) {
-            this.setData(speechEvent);
-          }
-        });
-      }
     }
   },
   beforeUnmount() {
-    window.clearInterval(this.pollingId);
+    if (this.liveDataHandle) {
+      this.liveDataHandle.unregister();
+      this.liveDataHandle = null;
+    }
     window.clearInterval(this.timerId);
   },
   created() {

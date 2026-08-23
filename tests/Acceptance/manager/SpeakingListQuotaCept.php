@@ -16,12 +16,13 @@ $I->submitForm('.siteCreateForm', [], '');
 
 $I->wantTo('click through the wizard');
 
+// Speaking lists are set up as part of the "Currently debated" feature; they have no wizard option of their own
 $I->see('Welche Bestandteile soll die Seite haben?', '#panelFunctionality');
 $I->seeElement('.checkbox-label.value-motion.active');
-$I->dontSeeElement('.checkbox-label.value-speech.active');
-$I->clickJS('.checkbox-label.value-speech');
+$I->dontSeeElement('.checkbox-label.value-debate.active');
+$I->clickJS('.checkbox-label.value-debate');
 $I->wait(0.2);
-$I->seeElement('.checkbox-label.value-speech.active');
+$I->seeElement('.checkbox-label.value-debate.active');
 $I->click('#panelFunctionality button.btn-next');
 
 $I->click('#panelSingleMotion .value-0');
@@ -71,7 +72,21 @@ $I->submitForm('.createdForm', [], '');
 
 $I->see('Hallo auf Antragsgrün');
 $I->see('Test-Congress', 'h1');
+$I->seeElement('.currentDebateAdmin');
 
+
+$I->wantTo('replace the debate widget by a standalone speaking list');
+$I->click('#adminLink');
+$I->click('#appearanceLink');
+$I->uncheckOption('#hasCurrentlyDebated');
+$I->checkOption('#hasSpeechLists');
+// The quotas configured in the wizard are the ones the list is created with
+$I->seeCheckboxIsChecked('#activateFirstSpeechList');
+$I->seeCheckboxIsChecked('#hasMultipleSpeechLists');
+$I->submitForm('#consultationAppearanceForm', [], 'save');
+
+$I->gotoConsultationHome(true, 'testcongress', 'testcongress');
+$I->dontSeeElement('.currentDebateAdmin');
 
 $I->see('Redeliste', '.currentSpeechInline');
 $I->see('Frauen', '.waitingSubqueues');

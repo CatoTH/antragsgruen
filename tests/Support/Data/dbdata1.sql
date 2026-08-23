@@ -873,7 +873,7 @@ INSERT INTO `###TABLE_PREFIX###consultation` (`id`, `siteId`, `urlPath`, `wordin
 VALUES
   (1, 1, 'std-parteitag', 'de-parteitag', 'Test2', 'Test2', 0, 'testadmin@example.org', '2015-11-16 22:35:58',
    NULL,
-   '{\n    \"maintenanceMode\": false,\n    \"screeningMotions\": false,\n    \"screeningAmendments\": false,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}'),
+   '{\n    \"maintenanceMode\": false,\n    \"hasCurrentlyDebated\": true,\n    \"screeningMotions\": false,\n    \"screeningAmendments\": false,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}'),
   (2, 2, 'vorstandswahlen', 'de-bewerbung', 'Vorstandswahlen', 'Vorstandswahlen', 0,
       'testadmin@example.org', '2015-11-16 22:35:58', NULL,
    '{\n    \"maintenanceMode\": false,\n    \"screeningMotions\": false,\n    \"screeningAmendments\": false,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": false,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": null,\n    \"emailReplyTo\": null,\n    \"emailFromName\": null\n}'),
@@ -1055,10 +1055,7 @@ INSERT INTO `###TABLE_PREFIX###consultationSettingsTag` (`id`, `consultationId`,
   (7, 5, 0, 5, 'Verschiedenes'),
   (8, 5, 0, 6, 'Sterbehilfe'),
   (9, 5, 0, 2, 'Votum Vorstandswahlen'),
-  (10, 1, 0, 2, 'Soziales'),
-  (11, 11, 0, 0, 'Umwelt'),
-  (12, 11, 0, 1, 'Verkehr'),
-  (13, 11, 0, 2, 'Soziales');
+  (10, 1, 0, 2, 'Soziales');
 
 --
 -- Dumping data for table `consultationText`
@@ -1140,6 +1137,13 @@ INSERT INTO `###TABLE_PREFIX###userGroup` (`userId`, `groupId`) VALUES
 (7, 2),
 (8, 3),
 (9, 39);
+
+--
+-- Dumping data for table `debateItem`
+--
+-- Ongoing debate (dateStopped IS NULL) on motion 2 ("O’zapft is!", A2) of consultation 1
+INSERT INTO `###TABLE_PREFIX###debateItem` (`id`, `consultationId`, `motionId`, `amendmentId`, `agendaItemId`, `votingBlockId`, `dateStarted`, `dateStopped`, `settings`) VALUES
+(1, 1, 2, NULL, NULL, NULL, '2015-03-30 10:00:00', NULL, NULL);
 
 --
 -- Dumping data for table `motion`
@@ -1652,3 +1656,7 @@ VALUES
 INSERT INTO `###TABLE_PREFIX###votingBlock` (`id`, `consultationId`, `position`, `title`, `majorityType`, `quorumType`, `votesPublic`, `resultsPublic`, `assignedToMotionId`, `usersPresentByOrga`, `answers`, `policyVote`, `votingStatus`, `activityLog`) VALUES
   (1, 1, 0, 'Ä2 or Ä3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
   (2, 6, 0, 'Test', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL);
+
+SET SQL_MODE = @OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;

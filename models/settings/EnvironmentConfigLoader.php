@@ -388,6 +388,51 @@ class EnvironmentConfigLoader
         return $plugins === [] ? null : array_values(array_unique($plugins));
     }
 
+    private const POLLING_INTERVAL_PREFIX = 'POLLING_INTERVAL_';
+
+    /**
+     * Get the polling intervals of the live data channels from environment variables
+     *
+     * One variable per channel (see components/LiveDataChannels.php), named after the channel in
+     * upper case, with the slash replaced by an underscore:
+     * - POLLING_INTERVAL_USER_SPEECH: how often "user/speech" is polled, in milliseconds
+     * - POLLING_INTERVAL_ADMIN_SPEECH, POLLING_INTERVAL_USER_DEBATE: likewise
+     *
+     * @return array<string, int>|null Intervals by channel, or null if none of them is set
+     */
+    public static function getPollingConfig(): ?array
+    {
+        $intervals = [];
+        foreach (self::getEnvNames() as $name) {
+            if (!str_starts_with($name, self::POLLING_INTERVAL_PREFIX)) {
+                continue;
+            }
+            $interval = trim((string)self::getEnv($name, ''));
+            if (!ctype_digit($interval) || (int)$interval <= 0) {
+                continue;
+            }
+
+            // The role is the part up to the first underscore: POLLING_INTERVAL_USER_SPEECH => user/speech
+            $parts = explode('_', strtolower(substr($name, strlen(self::POLLING_INTERVAL_PREFIX))), 2);
+            if (count($parts) < 2 || $parts[0] === '' || $parts[1] === '') {
+                continue;
+            }
+            $intervals[$parts[0] . '/' . $parts[1]] = (int)$interval;
+        }
+
+        return $intervals === [] ? null : $intervals;
+    }
+
+    /**
+     * The names of all environment variables, from both sources getEnv() reads
+     *
+     * @return string[]
+     */
+    private static function getEnvNames(): array
+    {
+        return array_keys(array_merge(getenv(), $_ENV));
+    }
+
     /**
      * Get the superuser account IDs from environment variables
      *

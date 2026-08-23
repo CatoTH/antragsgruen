@@ -21,6 +21,8 @@ $I->wait(0.1);
 $I->seeElement('.quotas');
 $I->uncheckOption('#activateFirstSpeechList');
 $I->checkOption('#speechPage');
+// The fixture has the "Currently debated" module on, which would take the place of this widget
+$I->uncheckOption('#hasCurrentlyDebated');
 $page->saveForm();
 
 // The widget is not yet visible

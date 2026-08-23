@@ -2,6 +2,7 @@
 
 ## Version 4.18.0 [not released yet]
 
+- A new module "Real-Time Debate on site" improves the use of Antragsgrün directly on site, combining the speaking list, the voting and the agenda to a "Currently Debated" view.
 - The REST API has been improved. It supports (on top of previous functionality):
    - Authenticated calls.
    - Retrieving and updating Motion Type Information.

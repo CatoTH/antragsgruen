@@ -25,6 +25,7 @@ return [
     ],
     'functionality_agenda'         => 'An agenda',
     'functionality_speech'         => 'Speaking lists',
+    'functionality_debate'         => 'Real-time debate on site',
     'functionality_statute_amendments' => 'Statutes<br>amendments',
     'functionality_votings'        => 'Votings',
     'functionality_documents_desc' => '(Document)',

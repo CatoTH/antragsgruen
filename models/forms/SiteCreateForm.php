@@ -6,7 +6,7 @@ use app\components\RequestContext;
 use app\components\Tools;
 use app\models\policies\{All, LoggedIn, IPolicy};
 use app\models\motionTypeTemplates\{Application, Manifesto, PDFApplication};
-use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationText, Motion, MotionSection, MotionSupporter, Site, SpeechQueue, User};
+use app\models\db\{Consultation, ConsultationAgendaItem, ConsultationMotionType, ConsultationText, Motion, MotionSection, MotionSupporter, Site, User};
 use app\models\exceptions\FormError;
 use app\models\settings\{AntragsgruenApp, InitiatorForm};
 use app\models\supportTypes\SupportBase;
@@ -26,7 +26,7 @@ class SiteCreateForm extends Model
     public const FUNCTIONALITY_APPLICATIONS = 3;
     public const FUNCTIONALITY_AGENDA = 4;
     public const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
-    public const FUNCTIONALITY_SPEECH_LISTS = 5;
+    public const FUNCTIONALITY_DEBATE = 5;
     public const FUNCTIONALITY_VOTINGS = 7;
     public const FUNCTIONALITY_DOCUMENTS = 8;
 
@@ -160,8 +160,8 @@ class SiteCreateForm extends Model
         if (in_array(static::FUNCTIONALITY_AGENDA, $this->functionality)) {
             $this->createAgenda($con);
         }
-        if (in_array(static::FUNCTIONALITY_SPEECH_LISTS, $this->functionality)) {
-            $this->createSpeechList($con);
+        if (in_array(static::FUNCTIONALITY_DEBATE, $this->functionality)) {
+            $this->createDebate($con);
         }
         if (in_array(static::FUNCTIONALITY_VOTINGS, $this->functionality)) {
             $this->createVotings($con);
@@ -593,7 +593,7 @@ class SiteCreateForm extends Model
         $item->save();
     }
 
-    private function createSpeechList(Consultation $consultation): void
+    private function createDebate(Consultation $consultation): void
     {
         if ($this->speechQuotas) {
             $subqueues = [
@@ -604,15 +604,14 @@ class SiteCreateForm extends Model
             $subqueues = [];
         }
 
+        // The "Currently debated" widget is the umbrella feature; its speaking lists (per debated item,
+        // and the generic fallback for free-text debates) are created on demand and reuse these settings.
         $settings = $consultation->getSettings();
-        $settings->hasSpeechLists = true;
+        $settings->hasCurrentlyDebated = true;
         $settings->speechListSubqueues = $subqueues;
         $settings->speechRequiresLogin = $this->speechLogin;
         $consultation->setSettings($settings);
         $consultation->save();
-
-        $unassignedQueue = SpeechQueue::createWithSubqueues($consultation, true);
-        $unassignedQueue->save();
     }
 
     private function createVotings(Consultation $consultation): void

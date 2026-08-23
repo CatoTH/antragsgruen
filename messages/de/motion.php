@@ -209,8 +209,14 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'withdraw_yes'                       => 'Zurückziehen',
     'withdrawn_adminnoti_title'          => 'Antrag zurückgezogen',
     'withdrawn_adminnoti_body'           => "Es wurde ein Antrag zurückgezogen.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
-    'field_optional'                     => 'optional',
-    'field_required'                     => 'benötigt',
+    'field_optional'                     => [
+        'text' => 'optional',
+        'js' => true,
+    ],
+    'field_required'                     => [
+        'text' => 'benötigt',
+        'js' => true,
+    ],
     'field_unpublic'                     => 'Die Angaben in diesem Abschnitt sind nur für dich und Administrierende dieser Seite sichtbar, nicht für reguläre Nutzer*innen.',
     'field_encouraged_title'             => 'Fehlende Angaben',
     'field_encouraged_msg'               => 'Das Feld %FIELD% ist zwar nicht unbedingt nötig, aber empfohlen.',
@@ -224,8 +230,14 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'editorial_author'                   => 'Autor',
     'editorial_update_date'              => 'Datum auf jetzt setzen',
     'image_current'                      => 'Aktuelles Bild',
-    'max_len_hint'                       => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
-    'max_len_alert'                      => 'Der Text ist zu lang!',
+    'max_len_hint'                       => [
+        'text' => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
+        'js' => true,
+    ],
+    'max_len_alert'                      => [
+        'text' => 'Der Text ist zu lang!',
+        'js' => true,
+    ],
     'create_explanation'                 => '<div style="font-weight: bold; text-decoration: underline;">Antrag oder Änderungsantrag?</div>
         Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
         Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>

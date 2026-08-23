@@ -19,6 +19,7 @@ return [
     'functionality_applications' => 'Kandidature', // Original: Candidatures
     'functionality_agenda' => 'Agenda', // Original: An agenda
     'functionality_speech' => 'Liste govornika', // Original: Speaking lists
+    'functionality_debate' => 'Rasprava u realnom vremenu na licu mjesta', // Original: Real-time debate on site
     'functionality_statute_amendments' => '<br>Izmjene i dopune statuta', // Original: Statutes<br>amendments
     'functionality_votings' => 'Glasanje', // Original: Votings
     'functionality_documents_desc' => '(Dokument)', // Original: (Document)

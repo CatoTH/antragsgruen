@@ -35,6 +35,7 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property ConsultationFileGroup[] $fileGroups
  * @property ConsultationLog[] $logEntries
  * @property SpeechQueue[] $speechQueues
+ * @property DebateItem[] $debateItems
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
  * @property VotingQuestion[] $votingQuestions
@@ -421,6 +422,14 @@ class Consultation extends ActiveRecord
         return $this->hasMany(SpeechQueue::class, ['consultationId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery<DebateItem>
+     */
+    public function getDebateItems(): ActiveQuery
+    {
+        return $this->hasMany(DebateItem::class, ['consultationId' => 'id']);
+    }
+
     public function getActiveSpeechQueue(): ?SpeechQueue
     {
         $firstActive = null;
@@ -430,7 +439,7 @@ class Consultation extends ActiveRecord
                 if ($firstActive === null) {
                     $firstActive = $speechQueue;
                 }
-                if ($firstActiveWithNoAssignment === null && $speechQueue->motionId === null && $speechQueue->agendaItemId === null) {
+                if ($firstActiveWithNoAssignment === null && $speechQueue->motionId === null && $speechQueue->amendmentId === null && $speechQueue->agendaItemId === null) {
                     $firstActiveWithNoAssignment = $speechQueue;
                 }
             }

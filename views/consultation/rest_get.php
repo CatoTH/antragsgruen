@@ -2,16 +2,19 @@
 
 /** @var \app\models\db\Consultation $consultation */
 
-use app\components\{CookieUser, IMotionStatusFilter, UrlHelper};
+use app\components\{CookieUser, IMotionStatusFilter, Tools, UrlHelper};
+use app\models\api\speech\SpeechQueueUser;
 use app\models\db\{Amendment, ConsultationText, IMotion, Motion, SpeechQueue, User};
 
 if ($consultation->getSettings()->hasSpeechLists) {
     $user = User::getCurrentUser();
     $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
 
-    $speakingLists = array_map(function (SpeechQueue $queue) use ($user, $cookieUser): array {
-        return \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
-    }, $consultation->speechQueues);
+    $speakingListDtos = array_map(function (SpeechQueue $queue) use ($user, $cookieUser): SpeechQueueUser {
+        return SpeechQueueUser::fromEntity($queue, $user, $cookieUser);
+    }, array_values($consultation->speechQueues));
+    // Normalize to plain arrays so they embed correctly (snake_case) in the json_encode below
+    $speakingLists = json_decode(Tools::getSerializer()->serialize($speakingListDtos, 'json'), true);
 } else {
     $speakingLists = null;
 }

@@ -75,6 +75,7 @@ class Motion extends IMotion implements IRSSItem
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
         $this->on(static::EVENT_CREATED, [$this, 'setInitialCreated'], null, false);
         $this->on(static::EVENT_MERGED, [$this, 'onMerged'], null, false);
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'endDebateIfNotVisibleAnymore'], null, false);
     }
 
     public static function tableName(): string

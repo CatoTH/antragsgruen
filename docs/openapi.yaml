@@ -681,6 +681,709 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/debate:
+    get:
+      operationId: getCurrentDebate
+      summary: The current state of the "Currently debated" section
+      description: >
+        Returns the motion, amendment, or agenda item that is currently being debated.
+        This endpoint is available without authentication as long as the "Currently debated"
+        feature is enabled for the consultation, independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The current debate state. `current` is null if nothing is being debated right now.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    put:
+      operationId: startDebate
+      summary: Start a debate over a motion, amendment, or agenda item
+      description: >
+        Makes the given item the consultation's currently debated item, ending the debate over
+        another item if one is going on. If the given item is already being debated, nothing
+        changes (no new debate history entry is created). Requires the privilege to moderate
+        debates. Like the GET endpoint, it works independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateStartRequest'
+      responses:
+        '200':
+          description: The debate was started; the new debate state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '400':
+          description: The request body could not be parsed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: >
+            The consultation or the item to be debated was not found (this includes motions and
+            amendments that are not published), or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    delete:
+      operationId: endDebate
+      summary: End the ongoing debate
+      description: >
+        Ends the debate over the currently debated item, if there is one; the item goes into the
+        debate history. Does nothing if no debate is going on. Requires the privilege to moderate
+        debates. Like the GET endpoint, it works independently of whether general API access
+        is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The debate was ended; the new debate state (with `current` being null) is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
+  /rest/{consultationPath}/debate/voting:
+    get:
+      operationId: getDebateVoting
+      summary: The voting state of the currently debated item (moderation)
+      description: >
+        Returns the voting attached to the currently debated item, plus the data the moderation widget
+        needs to create or assign one. The resolved voting is the block explicitly assigned to the debate,
+        or - for a debated motion/amendment that is a voting item - the block it belongs to. Requires the
+        privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The voting state for the current debate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    put:
+      operationId: assignDebateVoting
+      summary: Assign an existing voting block to the current debate
+      description: >
+        Sets the given voting block as the voting for the currently debated item. Requires the privilege
+        to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateVotingAssignRequest'
+      responses:
+        '200':
+          description: The voting block was assigned; the new voting state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '400':
+          description: The request body could not be parsed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation, the debate, or the voting block was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    post:
+      operationId: createDebateVoting
+      summary: Create a voting for the currently debated item
+      description: >
+        Creates a new voting block in preparing state and assigns it to the currently debated item. For a
+        debated motion/amendment, the item itself becomes the single voting item; for an agenda item, the
+        given question is used as the voting title and question. Requires the privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateVotingCreateRequest'
+      responses:
+        '200':
+          description: The voting was created and assigned; the new voting state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '400':
+          description: The request body could not be parsed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, no debate is going on, or the feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+    delete:
+      operationId: unassignDebateVoting
+      summary: Unassign the voting from the current debate
+      description: >
+        Clears the voting explicitly assigned to the currently debated item (does not delete the voting
+        block itself). Requires the privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The voting was unassigned; the new voting state is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateVotingState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, no debate is going on, or the feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
+  /rest/{consultationPath}/debate/selectable:
+    get:
+      operationId: getDebateSelectables
+      summary: The items a debate moderator can pick as the debated one
+      description: >
+        Lists the motions, amendments, and agenda items of the consultation that can be made the
+        currently debated item, in the order the moderation widget offers them. Agenda items that
+        are date separators are left out, as there is nothing to debate about them. Requires the
+        privilege to moderate debates. Like the other debate endpoints, it works independently of
+        whether general API access is enabled for the site.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The selectable items, grouped by type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebateSelectables'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, or the "Currently debated" feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
+  /rest/{consultationPath}/debate/speech-queue:
+    post:
+      operationId: getOrCreateDebateSpeechQueue
+      summary: The speaking list of the currently debated item (moderation)
+      description: >
+        Returns the speaking list of the currently debated item in its admin representation, creating
+        an inactive one with the consultation's configured subqueues if the item does not have one yet.
+        With `{"activate": true}` the list is additionally marked active, which enables the speaking
+        list feature for the consultation and deactivates the other non-agenda lists - the same effect
+        the regular speech administration has. Requires the privilege to moderate debates.
+      tags:
+        - Debate
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebateSpeechQueueRequest'
+      responses:
+        '200':
+          description: The speaking list of the debated item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueAdmin'
+        '400':
+          description: The debated item cannot have a speaking list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to moderate debates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          description: The consultation was not found, no debate is going on, or the feature is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
+  /rest/{consultationPath}/speech/{queueIds}:
+    get:
+      operationId: getSpeechQueues
+      summary: The user-facing state of one or more speaking lists
+      description: >
+        Returns the current state of the given speaking lists as seen by a participant. This is the
+        endpoint the speaking-list widgets poll. It is available without authentication; if a JWT is
+        sent, the response marks the current user's own applications (`have_applied`).
+      tags:
+        - Speech
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - name: queueIds
+          in: path
+          required: true
+          description: A single speaking-list ID or a comma-separated list of IDs.
+          example: "3,4"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The requested speaking lists, in the order of the requested IDs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpeechQueueUser'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueId}/item:
+    post:
+      operationId: registerToSpeak
+      summary: Apply to speak on a speaking list
+      description: >
+        Adds the current user (or, for anonymous participants, a cookie-identified user with the given
+        name) to the speaking list. Works without authentication unless the consultation requires login
+        to speak.
+      tags:
+        - Speech
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/speechQueueId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeechRegisterRequest'
+      responses:
+        '200':
+          description: The application was registered; the updated speaking list is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueUser'
+        '400':
+          description: The request body could not be parsed, or a required field (name/subqueue) is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          description: The consultation requires login to speak, but no user is authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: The list (or point-of-order sub-list) is currently not open for applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueId}/unregister:
+    post:
+      operationId: unregisterFromSpeaking
+      summary: Withdraw the current user's application from a speaking list
+      description: >
+        Removes the current user's (or cookie-identified user's) not-yet-started applications from the
+        speaking list. Has no request body.
+      tags:
+        - Speech
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/speechQueueId'
+      responses:
+        '200':
+          description: The application was withdrawn; the updated speaking list is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueUser'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueIds}/admin:
+    get:
+      operationId: getSpeechQueuesAdmin
+      summary: The moderator-facing state of one or more speaking lists
+      description: >
+        Returns the full moderation view of the given speaking lists, including applicant names and
+        metadata. This is the endpoint the moderation widgets poll. Requires the privilege to manage
+        speaking lists.
+      tags:
+        - Speech
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - name: queueIds
+          in: path
+          required: true
+          description: A single speaking-list ID or a comma-separated list of IDs.
+          example: "3,4"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The moderation views of the speaking lists, in the order of the requested IDs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpeechQueueAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to manage speaking lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueId}/admin/settings:
+    post:
+      operationId: setSpeechQueueSettings
+      summary: Update a speaking list's settings and activation
+      description: >
+        Updates a speaking list's settings (open state, speaking time, etc.) and activation. Activating a
+        non-agenda-item list deactivates the other active list. Requires the privilege to manage speaking
+        lists.
+      tags:
+        - Speech
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/speechQueueId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeechQueueSettingsRequest'
+      responses:
+        '200':
+          description: The settings were saved; the updated list plus the rendered sidebar HTML are returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueSettingsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to manage speaking lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueId}/admin/reset:
+    post:
+      operationId: resetSpeechQueue
+      summary: Empty a speaking list
+      description: Deletes all items (applications and slots) of a speaking list. Requires the privilege to manage speaking lists.
+      tags:
+        - Speech
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/speechQueueId'
+      responses:
+        '200':
+          description: The list was emptied; the updated moderation view is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to manage speaking lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueId}/admin/randomize:
+    post:
+      operationId: randomizeSpeechQueue
+      summary: Shuffle the waiting applicants of a speaking list
+      description: Randomizes the order of the not-yet-scheduled applications. Requires the privilege to manage speaking lists.
+      tags:
+        - Speech
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/speechQueueId'
+      responses:
+        '200':
+          description: The waiting list was shuffled; the updated moderation view is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to manage speaking lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueId}/admin/item:
+    post:
+      operationId: createSpeechQueueItem
+      summary: Add a named applicant to a speaking list (moderator)
+      description: Adds a manually named entry to the applied list of a speaking list. Requires the privilege to manage speaking lists.
+      tags:
+        - Speech
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/speechQueueId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeechCreateItemRequest'
+      responses:
+        '200':
+          description: The entry was added; the updated moderation view is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueAdmin'
+        '400':
+          description: No name was given, or a subqueue is required but missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to manage speaking lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /rest/{consultationPath}/speech/{queueId}/admin/item/{itemId}/{op}:
+    post:
+      operationId: performSpeechItemOperation
+      summary: Perform a moderation operation on a speaking-list item
+      description: >
+        Applies an operation to a single speaking-list item: scheduling it into a slot, starting/stopping
+        the speech, moving it within/between sub-lists, or deleting it. A request body is only required
+        for the `move` operation. Requires the privilege to manage speaking lists.
+      tags:
+        - Speech
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+        - $ref: '#/components/parameters/speechQueueId'
+        - name: itemId
+          in: path
+          required: true
+          description: The numeric ID of the speaking-list item.
+          example: 17
+          schema:
+            type: integer
+        - name: op
+          in: path
+          required: true
+          description: The operation to perform on the item.
+          schema:
+            type: string
+            enum:
+              - set-slot
+              - unset-slot
+              - set-slot-and-start
+              - start
+              - stop
+              - move
+              - delete
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeechItemOperationRequest'
+      responses:
+        '200':
+          description: The operation was applied; the updated moderation view is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeechQueueAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Missing privilege to manage speaking lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -730,6 +1433,14 @@ components:
       example: true
       schema:
         type: boolean
+    speechQueueId:
+      in: path
+      name: queueId
+      description: The numeric ID of the speaking list
+      required: true
+      example: 3
+      schema:
+        type: string
 
   responses:
     ApiDisabled:
@@ -891,6 +1602,318 @@ components:
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation
+
+    DebateState:
+      x-php-namespace: debate
+      type: object
+      properties:
+        current:
+          $ref: '#/components/schemas/DebateItem'
+
+    DebateItemTargetType:
+      x-php-namespace: debate
+      type: string
+      description: The type of item a debate refers to
+      enum:
+        - motion
+        - amendment
+        - agenda_item
+        - free_text
+
+    DebateStartRequest:
+      x-php-namespace: debate
+      type: object
+      description: >
+        Names what should be debated from now on: a motion, amendment, or agenda item (via target_id),
+        or free text (via text, with target_type "free_text").
+      required:
+        - target_type
+      properties:
+        target_type:
+          $ref: '#/components/schemas/DebateItemTargetType'
+        target_id:
+          type: integer
+          nullable: true
+          description: The ID of the motion, amendment, or agenda item to be debated. Null for free_text.
+          example: 2
+        text:
+          type: string
+          nullable: true
+          description: The free text to be shown as debated. Used (and required) only for target_type "free_text".
+          example: "General debate on the budget"
+
+    DebateItem:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: The currently debated item. Null if nothing is being debated right now.
+      required:
+        - id
+        - target_type
+        - title
+        - date_started
+      properties:
+        id:
+          type: integer
+          example: 1
+        target_type:
+          $ref: '#/components/schemas/DebateItemTargetType'
+        target_id:
+          type: integer
+          nullable: true
+          description: The ID of the debated motion, amendment, or agenda item (depending on target_type). Null for free_text.
+          example: 2
+        title:
+          type: string
+          example: "O’zapft is!"
+        title_with_prefix:
+          type: string
+          nullable: true
+          example: "A2: O’zapft is!"
+        initiators_html:
+          type: string
+          nullable: true
+          description: Formatted list of the initiators. Null for agenda items.
+        date_started:
+          type: string
+          example: "2026-07-10T10:00:00+02:00"
+        url_json:
+          type: string
+          nullable: true
+          description: REST URL of the debated motion or amendment. Null for agenda items.
+          example: https://test.antragsgruen.de/rest/consultation/2-ozapft-is
+        url_html:
+          type: string
+          nullable: true
+          description: URL of the HTML page of the debated motion or amendment. Null for agenda items.
+          example: https://test.antragsgruen.de/consultation/2-ozapft-is
+        speech_queue:
+          $ref: '#/components/schemas/DebateItemSpeechQueue'
+        voting_block:
+          $ref: '#/components/schemas/DebateItemVotingBlock'
+
+    DebateItemSpeechQueue:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: The speaking list attached to the debated item. Null if none is attached.
+      required:
+        - id
+        - is_active
+        - title
+      properties:
+        id:
+          type: integer
+          description: ID of the speaking list, usable with the speech endpoints
+          example: 23
+        is_active:
+          type: boolean
+          description: Whether the speaking list is currently active
+        title:
+          type: string
+          description: Title of the speaking list
+
+    DebateItemVotingBlock:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: >
+        The voting block for the debated item: the one explicitly assigned to the debate, or - for a
+        debated motion/amendment that is a voting item - the block it belongs to. Null if none.
+      required:
+        - id
+        - status
+        - title
+      properties:
+        id:
+          type: integer
+          description: ID of the voting block, usable with the voting endpoints
+          example: 42
+        status:
+          type: integer
+          description: Status of the voting block (see VotingBlock statuses)
+          example: 1
+        title:
+          type: string
+          description: Title of the voting block
+
+    DebateVotingState:
+      x-php-namespace: debate
+      type: object
+      description: The voting attached to the current debate plus the data needed to create or assign one.
+      required:
+        - create_mode
+        - selectable_voting_blocks
+        - can_unassign
+      properties:
+        assigned_voting_block_id:
+          type: integer
+          nullable: true
+          description: The voting block explicitly assigned to the debate (debateItem.votingBlockId). Null if none is assigned.
+          example: 42
+        can_unassign:
+          type: boolean
+          description: >
+            Whether unassigning the explicitly assigned voting block would actually remove the voting from
+            the debate. False when the debated motion/amendment is itself a voting item of a block, so a
+            fallback voting would remain; the moderation widget then hides the "unassign" button (which
+            would otherwise appear to do nothing).
+        resolved_voting_block:
+          $ref: '#/components/schemas/DebateVotingBlock'
+        create_mode:
+          type: string
+          description: >
+            Which creation UI the moderator should see when no voting is resolved yet: "motion"/"amendment"
+            offer a one-click "create voting" for the debated item, "question" offers a free-text question
+            form, "none" when nothing is being debated.
+          enum:
+            - motion
+            - amendment
+            - question
+            - none
+        selectable_voting_blocks:
+          type: array
+          description: All voting blocks of the consultation, offered for manual assignment.
+          items:
+            $ref: '#/components/schemas/DebateVotingBlockOption'
+
+    DebateVotingBlock:
+      x-php-namespace: debate
+      type: object
+      nullable: true
+      description: Compact representation of the voting attached to the debate, shown as a card in the moderation widget.
+      required:
+        - id
+        - title
+        - status
+        - votes_total
+        - votes_users
+        - admin_link
+      properties:
+        id:
+          type: integer
+          example: 42
+        title:
+          type: string
+          example: "A2: O’zapft is!"
+        status:
+          type: integer
+          description: Voting block status (0 = offline, 1 = preparing, 2 = open, 3 = closed/published, 4 = closed/unpublished)
+          example: 1
+        votes_total:
+          type: integer
+          example: 0
+        votes_users:
+          type: integer
+          example: 0
+        admin_link:
+          type: string
+          description: URL of the full voting administration page for managing, opening, or closing this voting.
+          example: https://test.antragsgruen.de/std-parteitag/consultation/admin-votings
+
+    DebateVotingBlockOption:
+      x-php-namespace: debate
+      type: object
+      description: A voting block offered in the "assign existing voting" dropdown.
+      required:
+        - id
+        - title
+        - status
+      properties:
+        id:
+          type: integer
+          example: 42
+        title:
+          type: string
+          example: "A2: O’zapft is!"
+        status:
+          type: integer
+          example: 1
+
+    DebateVotingAssignRequest:
+      x-php-namespace: debate
+      type: object
+      description: Assigns an existing voting block to the current debate.
+      required:
+        - voting_block_id
+      properties:
+        voting_block_id:
+          type: integer
+          example: 42
+
+    DebateVotingCreateRequest:
+      x-php-namespace: debate
+      type: object
+      description: >
+        Creates a voting for the current debate. For a debated motion/amendment the item itself becomes the
+        voting item and "question" is ignored; for a debated agenda item, "question" is the voting title and question.
+      properties:
+        question:
+          type: string
+          nullable: true
+          description: The question and title of the voting, used when an agenda item is debated.
+          example: "Should we adjourn the meeting?"
+
+    DebateSelectables:
+      x-php-namespace: debate
+      type: object
+      description: The items that can be made the currently debated one, grouped by type.
+      required:
+        - motions
+        - amendments
+        - agenda_items
+      properties:
+        motions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebateSelectableItem'
+        amendments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebateSelectableItem'
+        agenda_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebateSelectableItem'
+
+    DebateSelectableItem:
+      x-php-namespace: debate
+      type: object
+      description: One item that can be made the currently debated one.
+      required:
+        - target_type
+        - target_id
+        - title
+      properties:
+        target_type:
+          $ref: '#/components/schemas/DebateItemTargetType'
+        target_id:
+          type: integer
+          description: To be passed as target_id when starting a debate over this item.
+          example: 2
+        title:
+          type: string
+          example: "O’zapft is!"
+        title_with_prefix:
+          type: string
+          nullable: true
+          example: "A2: O’zapft is!"
+        initiators_html:
+          type: string
+          nullable: true
+          description: Formatted list of the initiators. Null for agenda items.
+
+    DebateSpeechQueueRequest:
+      x-php-namespace: debate
+      type: object
+      description: Options for retrieving the speaking list of the currently debated item.
+      properties:
+        activate:
+          type: boolean
+          description: >
+            If true, the speaking list is marked active, so that it is shown to the participants.
+            If false or absent, it is only created if it does not exist yet.
+          example: true
 
     MotionLinkWithAmendmentLinks:
       x-php-namespace: imotion
@@ -2105,6 +3128,7 @@ components:
         - id
         - description
         - deadlines
+        - current_user_permitted
       properties:
         id:
           $ref: '#/components/schemas/MotionTypePolicyId'
@@ -2112,6 +3136,13 @@ components:
           type: string
           description: Human-readable label for the policy (language depends on the site locale)
           example: Everybody
+        current_user_permitted:
+          type: boolean
+          description: >
+            Whether the user performing the request fulfills this policy right now, including
+            deadline restrictions where applicable. Computed for the anonymous public if the
+            request is unauthenticated.
+          example: true
         user_group_ids:
           type: array
           nullable: true
@@ -2563,3 +3594,396 @@ components:
           nullable: true
           description: Maximum number of supporters listed on generated PDFs for amendments. Null means no limit.
           example: null
+
+    SpeechRegisterRequest:
+      x-php-namespace: speech
+      type: object
+      description: Request body for applying to speak. All fields are optional; a name is only needed for anonymous participants, a subqueue only if the list has several.
+      properties:
+        subqueue:
+          type: integer
+          nullable: true
+          description: ID of the sub-list (e.g. "in favor"/"against") to apply to. Null/omitted when the list has no sub-lists.
+          example: 4
+        username:
+          type: string
+          nullable: true
+          description: Display name for anonymous participants. Ignored for logged-in users unless custom names are allowed.
+          example: Jane Doe
+        point_of_order:
+          type: boolean
+          description: Whether this is a point-of-order application. Defaults to false.
+          example: false
+
+    SpeechQueueSettingsRequest:
+      x-php-namespace: speech
+      type: object
+      description: Request body for updating a speaking list's settings and activation.
+      required:
+        - is_active
+        - is_open
+        - is_open_poo
+        - prefer_nonspeaker
+        - allow_custom_names
+        - show_names
+      properties:
+        is_active:
+          type: boolean
+          example: true
+        is_open:
+          type: boolean
+          example: true
+        is_open_poo:
+          type: boolean
+          description: Whether point-of-order applications are currently accepted.
+          example: false
+        prefer_nonspeaker:
+          type: boolean
+          example: false
+        allow_custom_names:
+          type: boolean
+          example: true
+        show_names:
+          type: boolean
+          example: true
+        speaking_time:
+          type: integer
+          nullable: true
+          description: Speaking time limit in seconds. Null disables the limit.
+          example: 120
+
+    SpeechCreateItemRequest:
+      x-php-namespace: speech
+      type: object
+      description: Request body for a moderator adding a named applicant to a speaking list.
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Jane Doe
+        subqueue:
+          type: integer
+          nullable: true
+          description: ID of the sub-list to add the entry to. Required if the list has sub-lists.
+          example: 4
+
+    SpeechItemOperationRequest:
+      x-php-namespace: speech
+      type: object
+      description: Optional request body for the `move` operation, giving the target position and sub-list.
+      properties:
+        new_subqueue_id:
+          type: integer
+          nullable: true
+          description: ID of the sub-list to move the item into. Null/omitted keeps it out of any sub-list.
+          example: 4
+        position:
+          type: integer
+          nullable: true
+          description: Zero-based target position within the (waiting) list.
+          example: 0
+
+    SpeechQueueUser:
+      x-php-namespace: speech
+      type: object
+      description: The participant-facing view of a speaking list.
+      required:
+        - id
+        - is_active
+        - is_open
+        - have_applied
+        - allow_custom_names
+        - is_open_poo
+        - subqueues
+        - slots
+        - requires_login
+        - current_time
+      properties:
+        id:
+          type: integer
+          example: 3
+        is_active:
+          type: boolean
+          example: true
+        is_open:
+          type: boolean
+          example: true
+        have_applied:
+          type: boolean
+          description: Whether the current user/cookie-user has a pending application on this list.
+          example: false
+        allow_custom_names:
+          type: boolean
+          example: true
+        is_open_poo:
+          type: boolean
+          example: false
+        subqueues:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeechSubqueueUser'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeechSlot'
+        requires_login:
+          type: boolean
+          example: false
+        current_time:
+          type: integer
+          description: Server time in milliseconds since the epoch, used by clients to compute remaining speaking time.
+          example: 1785091812308
+        speaking_time:
+          type: integer
+          nullable: true
+          description: Speaking time limit in seconds, or null if none.
+          example: 120
+
+    SpeechSubqueueUser:
+      x-php-namespace: speech
+      type: object
+      description: A sub-list (e.g. "in favor"/"against") as seen by participants.
+      required:
+        - id
+        - name
+        - num_applied
+        - have_applied
+      properties:
+        id:
+          type: integer
+          description: Sub-list ID, or -1 for the implicit default list.
+          example: 4
+        name:
+          type: string
+          example: default
+        num_applied:
+          type: integer
+          example: 2
+        have_applied:
+          type: boolean
+          example: false
+        applied:
+          type: array
+          description: Applicants on this sub-list. Empty when the list is configured to hide names.
+          items:
+            $ref: '#/components/schemas/SpeechAppliedItem'
+
+    SpeechAppliedItem:
+      x-php-namespace: speech
+      type: object
+      description: An applicant on a speaking list, as shown to participants.
+      required:
+        - id
+        - name
+        - is_point_of_order
+        - applied_at
+      properties:
+        id:
+          type: integer
+          example: 17
+        name:
+          type: string
+          example: Jane Doe
+        is_point_of_order:
+          type: boolean
+          example: false
+        applied_at:
+          type: string
+          description: ISO-8601 timestamp of when the application was made.
+          example: "2026-07-10T10:00:00+02:00"
+
+    SpeechSlot:
+      x-php-namespace: speech
+      type: object
+      description: A scheduled or past speaking slot.
+      required:
+        - id
+        - subqueue
+        - name
+        - position
+      properties:
+        id:
+          type: integer
+          example: 17
+        subqueue:
+          $ref: '#/components/schemas/SpeechSlotSubqueue'
+        name:
+          type: string
+          example: Jane Doe
+        position:
+          type: integer
+          example: 1
+        date_started:
+          type: string
+          nullable: true
+          description: ISO-8601 timestamp when the speech started, or null if not started.
+          example: "2026-07-10T10:05:00+02:00"
+        date_stopped:
+          type: string
+          nullable: true
+          description: ISO-8601 timestamp when the speech ended, or null if not ended.
+          example: null
+        date_applied:
+          type: string
+          nullable: true
+          description: ISO-8601 timestamp of the original application, or null.
+          example: "2026-07-10T10:00:00+02:00"
+
+    SpeechSlotSubqueue:
+      x-php-namespace: speech
+      type: object
+      description: The sub-list a slot belongs to.
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          nullable: true
+          description: Sub-list ID, or null for the default list.
+          example: 4
+        name:
+          type: string
+          example: default
+
+    SpeechQueueAdmin:
+      x-php-namespace: speech
+      type: object
+      description: The moderator-facing view of a speaking list.
+      required:
+        - id
+        - is_active
+        - settings
+        - subqueues
+        - slots
+        - current_time
+      properties:
+        id:
+          type: integer
+          example: 3
+        is_active:
+          type: boolean
+          example: true
+        settings:
+          $ref: '#/components/schemas/SpeechQueueSettings'
+        subqueues:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeechSubqueueAdmin'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeechSlot'
+        other_active_name:
+          type: string
+          nullable: true
+          description: Title of the other currently active list, if activating this one would deactivate it.
+          example: null
+        current_time:
+          type: integer
+          example: 1785091812308
+
+    SpeechSubqueueAdmin:
+      x-php-namespace: speech
+      type: object
+      description: A sub-list as seen by moderators, split into scheduled ("onlist") and waiting ("applied") entries.
+      required:
+        - id
+        - name
+        - onlist
+        - applied
+      properties:
+        id:
+          type: integer
+          example: 4
+        name:
+          type: string
+          example: default
+        onlist:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeechAdminItem'
+        applied:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeechAdminItem'
+
+    SpeechAdminItem:
+      x-php-namespace: speech
+      type: object
+      description: A speaking-list entry with the metadata available to moderators.
+      required:
+        - id
+        - name
+        - is_point_of_order
+        - applied_at
+      properties:
+        id:
+          type: integer
+          example: 17
+        name:
+          type: string
+          example: Jane Doe
+        user_id:
+          type: integer
+          nullable: true
+          description: The account ID of the applicant, or null for anonymous/manually added entries.
+          example: 42
+        user_token:
+          type: string
+          nullable: true
+          description: The cookie-user token of an anonymous applicant, or null.
+          example: null
+        is_point_of_order:
+          type: boolean
+          example: false
+        applied_at:
+          type: string
+          example: "2026-07-10T10:00:00+02:00"
+
+    SpeechQueueSettings:
+      x-php-namespace: speech
+      type: object
+      description: The settings of a speaking list, as returned in the moderation view.
+      required:
+        - is_open
+        - is_open_poo
+        - allow_custom_names
+        - prefer_nonspeaker
+        - show_names
+      properties:
+        is_open:
+          type: boolean
+          example: true
+        is_open_poo:
+          type: boolean
+          example: false
+        allow_custom_names:
+          type: boolean
+          example: true
+        prefer_nonspeaker:
+          type: boolean
+          example: false
+        show_names:
+          type: boolean
+          example: true
+        speaking_time:
+          type: integer
+          nullable: true
+          example: 120
+
+    SpeechQueueSettingsResponse:
+      x-php-namespace: speech
+      type: object
+      description: Response of the settings update - the updated moderation view plus the re-rendered sidebar HTML.
+      required:
+        - queue
+        - sidebar
+      properties:
+        queue:
+          $ref: '#/components/schemas/SpeechQueueAdmin'
+        sidebar:
+          type: array
+          description: The [primary, secondary] sidebar HTML fragments (empty strings when there is none).
+          items:
+            type: string

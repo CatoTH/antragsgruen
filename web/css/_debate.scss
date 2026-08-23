@@ -1,0 +1,199 @@
+.currentDebateInline, .currentDebateAdmin, .projectorWidget {
+  .nothingDebated {
+    margin: 10px 0;
+    text-align: center;
+    font-style: italic;
+    color: #777;
+  }
+
+  .debatedItem {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+
+    .title {
+      font-size: 20px;
+    }
+
+    .proposer {
+      font-size: 12px;
+
+      .fulltextLink {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+// The fullscreen toggle sits inside the widget's green section header; align it to the right edge
+// instead of letting it inflate the heading (matches the .primaryHeader .btnFullscreen behaviour).
+.currentDebateInline, .currentDebateAdmin {
+  > h2.green {
+    .btnFullscreen {
+      float: right;
+      padding: 0;
+      margin: 0;
+      line-height: inherit;
+      color: darken($colorLinks, 10%);
+
+      &:hover, &:focus, &.active {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.currentDebateInline {
+  .secondaryMotionRow {
+    border-top: solid 1px #ccc;
+    display: flex;
+    width: 100%;
+
+    .raisedSecondaryMotions {
+      text-align: left;
+      flex-basis: 66%;
+
+      .noSecondaryMotion {
+        font-style: italic;
+        color: #777;
+      }
+    }
+
+    .raiseSecondaryMotion {
+      text-align: right;
+      flex-basis: 34%;
+      align-self: center;
+    }
+  }
+}
+
+.currentDebateAdmin {
+  .debateAdminTabs {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .tab {
+      flex: 1 1 25%;
+      text-align: center;
+      background: none;
+      border: none;
+      padding: 7px 5px;
+      color: green;
+
+      &.active {
+        font-weight: bold;
+        color: inherit;
+      }
+    }
+  }
+
+  .speechTab {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .toolbarBelowTitle {
+    border-top: solid 1px #aaa;
+  }
+
+  .debatedItemActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .startDebateTitle {
+    font-weight: bold;
+    margin: 15px 0 10px;
+  }
+
+  .selectRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .rowLabel {
+      width: 170px;
+      flex-shrink: 0;
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+
+    .rowSelect {
+      width: 360px;
+
+      select {
+        max-width: 100%;
+      }
+    }
+
+    .rowButton {
+      margin-left: 10px;
+    }
+  }
+
+  .votingTab {
+    .votingCard {
+      border: solid 1px #ddd;
+      border-radius: 4px;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+
+      .votingCardHead {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+
+        .votingCardTitle {
+          font-weight: bold;
+        }
+      }
+
+      .votingCardCounts {
+        color: #777;
+        margin-top: 4px;
+      }
+
+      .votingCardActions {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+    }
+
+    .votingAssignRow {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+
+      .rowLabel {
+        font-weight: normal;
+        margin-bottom: 0;
+      }
+
+      select {
+        max-width: 100%;
+      }
+    }
+
+    .votingCreate > .input-group {
+      max-width: 480px;
+    }
+  }
+
+  .underConstruction {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    padding: 20px 0;
+  }
+}

@@ -73,11 +73,13 @@ if ($longVersion) {
         }
 
         foreach ($agendaItem->speechQueues as $speechQueue) {
-            echo $this->render('@app/views/speech/_index_speech', [
-                'queue' => $speechQueue,
-                'showHeader' => !$hasIMotionQueues,
-                'headingLevel' => 3,
-            ]);
+            if ($speechQueue->isActive) {
+                echo $this->render('@app/views/speech/_index_speech', [
+                    'queue' => $speechQueue,
+                    'showHeader' => !$hasIMotionQueues,
+                    'headingLevel' => 3,
+                ]);
+            }
         }
 
         if (count($itemImotions) > 0) {

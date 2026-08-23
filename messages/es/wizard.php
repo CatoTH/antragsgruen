@@ -18,6 +18,7 @@ return [
     'functionality_applications' => 'Candidaturas',
     'functionality_agenda' => 'Un orden del día',
     'functionality_speech' => 'Listas de oradores',
+    'functionality_debate' => 'Debate presencial en tiempo real',
     'functionality_statute_amendments' => 'Enmiendas<br>a los estatutos',
     'functionality_votings' => 'Votaciones',
     'functionality_documents_desc' => '(Documentos)',

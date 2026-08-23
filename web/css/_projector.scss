@@ -239,7 +239,7 @@ $fullscreenHeaderHeight: 36px;
     h2.green {
       @include stdHeading($headingSecondaryText, $headingSecondaryBackground, $headingSecondarySize);
       margin: 3vh 0;
-      padding-left: 24vw;
+      //padding-left: 24vw;
     }
     .waitingSingle {
       .nameList {
@@ -341,6 +341,27 @@ $fullscreenHeaderHeight: 36px;
     // @TODO remove this again if the final css classes for the motion list are defined
     .motionList .motion > .title a, .motionList .motion > .title .motionLink {
       font-size: 1.6vw;
+    }
+  }
+
+  .currentDebateContent {
+    padding: 20px;
+
+    .debatedItem {
+      .title {
+        font-size: 2.5vw;
+      }
+
+      .proposer {
+        font-size: 16px;
+      }
+    }
+
+    .speechLists {
+      // this adds to the styles from _speech_lists.scss
+      .activeSpeaker, .remainingTime {
+        font-size: 2.0vw;
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use app\components\UrlHelper;
-use app\models\api\SpeechQueue as SpeechQueueApi;
+use app\components\{LiveDataChannels, Tools, UrlHelper};
+use app\models\api\speech\SpeechQueueAdmin;
 use app\models\db\SpeechQueue;
 use yii\helpers\Html;
 
@@ -14,8 +14,18 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
+$layout->bodyCssClasses[] = 'manageSpeechPage';
 if ($queue->motion) {
     $layout->addBreadcrumb($queue->motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($queue->motion));
+} elseif ($queue->amendment) {
+    $amendedMotion = $queue->amendment->getMyMotion();
+    if ($amendedMotion) {
+        $layout->addBreadcrumb($amendedMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($amendedMotion));
+    }
+    $layout->addBreadcrumb(
+        $queue->amendment->getFormattedTitlePrefix() ?? Yii::t('amend', 'amendment'),
+        UrlHelper::createAmendmentUrl($queue->amendment)
+    );
 } elseif ($queue->agendaItem) {
     $layout->addBreadcrumb(Yii::t('admin', 'index_site_agenda'), UrlHelper::createUrl(['/admin/agenda/index']));
 } else {
@@ -24,7 +34,7 @@ if ($queue->motion) {
 $layout->addBreadcrumb(Yii::t('speech', 'admin_bc'));
 
 $layout->provideJwt = true;
-$layout->addLiveEventSubscription('admin', 'speech');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_ADMIN, LiveDataChannels::CHANNEL_SPEECH);
 
 $layout->addJsTranslation('speech');
 
@@ -36,36 +46,36 @@ if ($htmls[1] !== '') {
     $layout->menusHtmlSmall[] = $htmls[1];
 }
 
-$initData = SpeechQueueApi::fromEntity($queue)->getAdminApiObject();
+$initData = Tools::getSerializer()->serialize(SpeechQueueAdmin::fromEntity($queue), 'json');
 
 if ($queue->motion) {
     $this->title = str_replace('%TITLE%', $queue->motion->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to'));
+} elseif ($queue->amendment) {
+    $this->title = str_replace('%TITLE%', (string)$queue->amendment->getFormattedTitlePrefix(), Yii::t('speech', 'admin_title_to'));
 } elseif ($queue->agendaItem) {
     $this->title = str_replace('%TITLE%', $queue->agendaItem->title, Yii::t('speech', 'admin_title_to'));
 } else {
     $this->title = Yii::t('speech', 'admin_title_plain');
 }
 
-$componentAdminLink = UrlHelper::createUrl('admin/index/appearance') . '#hasSpeechLists';
-$setStatusUrl      = UrlHelper::createUrl(['/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
-$itemPerformOpUrl  = UrlHelper::createUrl(['/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
-$createItemUrl     = UrlHelper::createUrl(['/speech/admin-create-item', 'queueId' => 'QUEUEID']);
-$resetQueueUrl     = UrlHelper::createUrl(['/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
-$randomizeQueueUrl = UrlHelper::createUrl(['/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
-$pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' => 'QUEUEID']);
+$componentAdminLink = UrlHelper::createUrl('/admin/index/appearance') . '#hasSpeechLists';
+$setStatusUrl       = UrlHelper::createUrl(['/rest/speech/post-queue-settings', 'queueId' => 'QUEUEID']);
+$itemPerformOpUrl   = UrlHelper::createUrl(['/rest/speech/post-item-operation', 'queueId' => 'QUEUEID', 'itemId' => 'ITEMID', 'op' => 'OPERATION']);
+$createItemUrl      = UrlHelper::createUrl(['/rest/speech/admin-create-item', 'queueId' => 'QUEUEID']);
+$resetQueueUrl      = UrlHelper::createUrl(['/rest/speech/admin-queue-reset', 'queueId' => 'QUEUEID']);
+$randomizeQueueUrl  = UrlHelper::createUrl(['/rest/speech/admin-queue-randomize', 'queueId' => 'QUEUEID']);
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="manageSpeechQueue">
     <section class="manageSpeechQueueWidget"
              data-component-admin-link="<?= Html::encode($componentAdminLink) ?>"
-             data-poll-url="<?= Html::encode($pollUrl) ?>"
              data-item-perform-operation-url="<?= Html::encode($itemPerformOpUrl) ?>"
              data-randomize-queue-url="<?= Html::encode($randomizeQueueUrl) ?>"
              data-reset-queue-url="<?= Html::encode($resetQueueUrl) ?>"
              data-create-item-url="<?= Html::encode($createItemUrl) ?>"
              data-set-status-url="<?= Html::encode($setStatusUrl) ?>"
-             data-queue="<?= Html::encode(json_encode($initData)) ?>">
+             data-queue="<?= Html::encode($initData) ?>">
         <div class="speechAdmin"></div>
     </section>
 </div>
@@ -85,7 +95,6 @@ $pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' 
                 initQueue: this.queue,
                 csrf: this.csrf,
                 componentAdminLink: this.componentAdminLink,
-                pollUrl: this.pollUrl,
                 itemPerformOperationUrl: this.itemPerformOperationUrl,
                 randomizeQueueUrl: this.randomizeQueueUrl,
                 resetQueueUrl: this.resetQueueUrl,
@@ -97,7 +106,6 @@ $pollUrl           = UrlHelper::createUrl(['/speech/get-queue-admin', 'queueId' 
             queue: JSON.parse(element.getAttribute("data-queue")),
             csrf: document.querySelector("meta[name='csrf-token']").getAttribute("content"),
             componentAdminLink: element.getAttribute("data-component-admin-link"),
-            pollUrl: element.getAttribute("data-poll-url"),
             itemPerformOperationUrl: element.getAttribute("data-item-perform-operation-url"),
             randomizeQueueUrl: element.getAttribute("data-randomize-queue-url"),
             resetQueueUrl: element.getAttribute("data-reset-queue-url"),

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\api\{agenda\AgendaList, SpeechQueue};
-use app\models\exceptions\{ConfigurationError, Internal};
+use app\models\api\{agenda\AgendaList, debate\DebateState, SpeechQueue};
+use app\models\exceptions\Internal;
 use app\models\db\Consultation;
 use app\models\settings\AntragsgruenApp;
 use GuzzleHttp\{Client, Exception\GuzzleException, RequestOptions};
@@ -13,22 +13,27 @@ use GuzzleHttp\{Client, Exception\GuzzleException, RequestOptions};
 class LiveTools
 {
     /**
-     * @param array<array{role: string, channel: string}> $subscriptions
+     * The configuration of the central LiveData JS module: the channels the widgets of this page need,
+     * including how to poll them, and - if a Live server is configured - how to subscribe to them.
+     *
+     * @param array<array{role: string, channel: string}> $channels
      */
-    public static function getJsConfig(Consultation $consultation, array $subscriptions): array
+    public static function getJsConfig(Consultation $consultation, array $channels): array
     {
         $params = AntragsgruenApp::getInstance()->live;
-        if (!$params) {
-            throw new ConfigurationError('live settings not set');
-        }
 
         return [
-            'uri' => $params['wsUri'],
-            'user_id' => JwtCreator::getCurrJwtUserId(),
-            'installation' => $params['installationId'],
-            'subdomain' => $consultation->site->subdomain,
-            'consultation' => $consultation->urlPath,
-            'subscriptions' => $subscriptions,
+            'channels' => array_map(
+                fn (array $channel) => LiveDataChannels::getChannelConfig($channel['role'], $channel['channel']),
+                $channels
+            ),
+            'live' => $params ? [
+                'uri' => $params['wsUri'],
+                'user_id' => JwtCreator::getCurrJwtUserId(),
+                'installation' => $params['installationId'],
+                'subdomain' => $consultation->site->subdomain,
+                'consultation' => $consultation->urlPath,
+            ] : null,
         ];
     }
 
@@ -75,6 +80,25 @@ class LiveTools
         }
 
         $routingKey = 'speech.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
+
+        self::sendToRabbitMq($routingKey, $json);
+    }
+
+    public static function sendDebate(Consultation $consultation, DebateState $debateState, bool $debug = false): void
+    {
+        $params = AntragsgruenApp::getInstance()->live;
+        if (!$params) {
+            return;
+        }
+
+        $serializer = Tools::getSerializer();
+        $json = $serializer->serialize($debateState, 'json');
+
+        if ($debug) {
+            echo $json . "\n";
+        }
+
+        $routingKey = 'debate.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
 
         self::sendToRabbitMq($routingKey, $json);
     }

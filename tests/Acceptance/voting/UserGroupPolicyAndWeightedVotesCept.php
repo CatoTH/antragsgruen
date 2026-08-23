@@ -19,7 +19,10 @@ $userGroupsJson = '{ "id": 1, "title": "Seiten-Admin", "member_count": 2 },
 
 
 $I->wantTo('Create a user group and assign testuser to it');
-$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+$I->loginAndGotoStdAdminPage();
+// The fixture has the "Currently debated" module on, which would take the place of the voting widget
+$I->disableCurrentlyDebated();
+$I->gotoStdAdminPage()->gotoUserAdministration();
 $I->clickJS('.btnGroupCreate');
 $I->seeElement('.addGroupForm');
 $I->fillField('.addGroupForm .addGroupName input', 'Voting group');
