@@ -17,7 +17,7 @@ test.describe('Speech: quota, login required', () => {
         await appearancePage.open();
 
         await expect(page.locator('#hasSpeechLists')).not.toBeChecked();
-        await expect(page.locator('.quotas')).toHaveCount(0);
+        await expect(page.locator('.quotas')).not.toBeVisible();
         await page.locator('#hasSpeechLists').check();
         await expect(page.locator('.quotas')).toBeVisible();
         await page.locator('#hasMultipleSpeechLists').check();
@@ -50,77 +50,41 @@ test.describe('Speech: quota, login required', () => {
         await expect(page.locator('.subqueues')).toContainText('Frauen');
         await expect(page.locator('.subqueues')).toContainText('Offener Platz');
 
-        await page.evaluate(() => {
-            const chkbox = document.querySelector('.toolbarBelowTitle.settings .settingsOpen input') as HTMLInputElement;
-            chkbox.checked = true;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('change', false, true);
-            chkbox.dispatchEvent(evt);
-        });
+        await page.locator('.toolbarBelowTitle.settings .settingsOpen input').first().check();
 
         await new ConsultationHomePage(page).open();
         await expect(page.locator('.currentSpeechInline')).toBeVisible();
         await expect(page.locator('.currentSpeechInline .appliedMe')).toHaveCount(0);
         await expect(page.locator('.currentSpeechInline')).toContainText('Redeliste');
-        await expect(page.locator('.currentSpeechInline .number')).toContainText('0');
-        await expect(page.locator('.currentSpeechInline .notPossible')).toHaveCount(0);
-        await expect(page.locator('.waitingSubqueues .applied button')).toContainText('Bewerben');
+await expect(page.locator('.currentSpeechInline .number').first()).toContainText('0');
+await expect(page.locator('.currentSpeechInline .notPossible')).toHaveCount(0);
+        await expect(page.locator('.waitingSubqueues .applied button').first()).toContainText('Bewerben');
 
-        await page.evaluate(() => {
-            const btn = document.querySelectorAll('.waitingSubqueues .applied button').item(1) as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.waitingSubqueues .applied button').nth(1).click();
         await expect(page.locator('#speechRegisterName2')).toHaveValue('Testadmin');
 
-        await page.evaluate(() => {
-            const form = document.querySelectorAll('.waitingSubqueues form').item(0) as HTMLFormElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('submit', false, true);
-            form.dispatchEvent(evt);
-        });
+        await page.locator('.waitingSubqueues form').nth(0).locator('button').click();
 
         await expect(page.locator('.currentSpeechInline .appliedMe')).toBeVisible();
         await expect(page.locator('.currentSpeechInline .number')).toContainText('1');
         await expect(page.locator('.currentSpeechInline .nameList')).toContainText('Testadmin');
 
-        await page.evaluate(() => {
-            const btn = document.querySelectorAll('.waitingSubqueues .btnWithdraw').item(0) as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
-        await expect(page.locator('.currentSpeechInline .number')).toContainText('0');
-        await expect(page.locator('.currentSpeechInline')).not.toContainText('Testadmin');
+await page.locator('.waitingSubqueues .btnWithdraw').nth(0).click();
+await expect(page.locator('.currentSpeechInline .number').first()).toContainText('0');
+await expect(page.locator('.currentSpeechInline')).not.toContainText('Testadmin');
 
         await page.locator('.currentSpeechInline .speechAdminLink').click();
 
         await expect(page.locator('.subqueueAdder form')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelectorAll('.subqueues .adderOpener').item(0) as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.subqueues .adderOpener').nth(0).click();
         await expect(page.locator('.subqueueAdder form')).toBeVisible();
         await page.locator('#subqueueAdderName1').fill('Testperson');
-        await page.evaluate(() => {
-            const form = document.querySelectorAll('.subqueues .subqueueAdder form').item(0) as HTMLFormElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('submit', false, true);
-            form.dispatchEvent(evt);
-        });
+        await page.locator('.subqueues .subqueueAdder form').nth(0).locator('button').click();
 
         await expect(page.locator('.slotPlaceholder.active')).toContainText('Testperson');
         await expect(page.locator('.slotActive.inactive')).toBeVisible();
 
-        await page.evaluate(() => {
-            const btn = document.querySelectorAll('.slotPlaceholder.active').item(0) as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.slotPlaceholder.active').nth(0).click();
 
         await expect(page.locator('.slotEntry.slotActive')).toContainText('Testperson');
         await expect(page.locator('.slotPlaceholder.inactive')).toBeVisible();
