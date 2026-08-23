@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.17.2 [not released yet]
+### Version 4.17.2 (2026-08-23)
 
 - Automatic versioning of proposed procedures (creating new versions when users have already accepted/rejected a proposal) can now be turned off.
 - Statute amendments are now also shown like regular motions on the admin motion list.
