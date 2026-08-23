@@ -19,7 +19,7 @@ import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/A
  * @property {string} role
  * @property {string} channel
  * @property {string} poll_url
- * @property {'session'|'jwt'|'jwt-optional'} auth
+ * @property {'jwt'|'jwt-optional'} auth
  * @property {number} interval
  * @property {boolean} interval_configured
  * @property {string|null} key_placeholder
@@ -163,9 +163,6 @@ class Channel {
      * @returns {Promise<Response>}
      */
     performRequest(url) {
-        if (this.config.auth === 'session') {
-            return fetch(url, { headers: { 'Accept': 'application/json' } });
-        }
         if (this.config.auth === 'jwt-optional' && !hasJwt()) {
             return fetch(url, { headers: { 'Accept': 'application/json' } });
         }
@@ -244,12 +241,12 @@ class Channel {
     }
 
     /**
-     * Whether a rejected request is worth repeating. Only channels authenticated by a token can profit
-     * from it: there is a token to renew, and the renewal goes through the session-authenticated token
-     * endpoint. Session-authenticated channels have nothing to retry with.
+     * Whether a rejected request is worth repeating. Only makes sense if this page actually holds a
+     * token: there is one to renew then, and the renewal goes through the session-authenticated token
+     * endpoint. Without a token there is nothing to retry with.
      */
     canRetryAuth() {
-        if (this.config.auth === 'session' || !hasJwt()) {
+        if (!hasJwt()) {
             return false;
         }
         return this.consecutiveAuthErrors <= MAX_AUTH_RETRIES;

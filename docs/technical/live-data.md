@@ -24,7 +24,7 @@ A channel is a **role** (whose view of the data: `user` or `admin`) plus a **top
 |---|---|---|---|---|
 | `user/speech` | `/rest/<consultation>/speech/QUEUEIDS` | JWT if available | 3000 ms | yes |
 | `admin/speech` | `/rest/<consultation>/speech/QUEUEIDS/admin` | JWT | 1000 ms | yes |
-| `user/debate` | `/rest/<consultation>/debate` | Session | 3000 ms | no |
+| `user/debate` | `/rest/<consultation>/debate` | JWT if available | 3000 ms | no |
 
 The intervals can be changed per installation using the `polling` setting of `config.json`, keyed by
 the channel ID:
@@ -54,8 +54,14 @@ list of IDs for exactly this reason, just like the user-facing one.
 
 ```php
 $layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_SPEECH);
-$layout->provideJwt = true; // needed for the JWT-authenticated channels
+$layout->provideJwt = true; // every channel authenticates by JWT, so this is always needed
 ```
+
+All channels authenticate by JWT: `RestBase` turns the session off for the user component, so the
+REST endpoints only ever see the token. A channel polled with just the session cookie would be
+answered as a guest - which is why there is no session-authenticated channel type. The difference
+between `jwt` and `jwt-optional` is only what happens when the view forgot `provideJwt`: the former
+fails the channel, the latter falls back to an anonymous request.
 
 `views/layouts/main.php` renders the configuration of all declared channels into the
 `live-data-config` meta tag, and loads the STOMP client if a Live server is configured. The meta tag
@@ -93,7 +99,7 @@ handle.unregister();          // in beforeUnmount()
 - Retries failing requests with a growing delay (up to 30 s), so a backend restart does not stop a
   projector for good. A `401`/`403` is retried a few times with a freshly fetched JWT - a token can be
   rejected although the browser still considered it valid - and stops the channel only afterwards, or
-  right away if there is no token to renew (an anonymous visitor, a session-authenticated channel).
+  right away if there is no token to renew (a page that did not set `provideJwt`).
 - Refreshes when the tab becomes visible again, and after a websocket **re**connect - live events
   only carry changes, so everything that happened during the outage would be missing otherwise.
 

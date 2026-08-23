@@ -25,10 +25,9 @@ class LiveDataChannels
     public const CHANNEL_SPEECH = 'speech';
     public const CHANNEL_DEBATE = 'debate';
 
-    // How the poll requests need to be authenticated: using the session cookie, using a JWT (which
-    // requires $layout->provideJwt to be set), or using a JWT if one is available (anonymous users
-    // get a response without user-specific data).
-    public const AUTH_SESSION = 'session';
+    // How the poll requests need to be authenticated: using a JWT (which requires $layout->provideJwt
+    // to be set), or using a JWT if one is available (anonymous users get a response without
+    // user-specific data).
     public const AUTH_JWT = 'jwt';
     public const AUTH_JWT_OPTIONAL = 'jwt-optional';
 
@@ -90,7 +89,7 @@ class LiveDataChannels
             case self::ROLE_USER . '/' . self::CHANNEL_DEBATE:
                 $config = [
                     'poll_url'        => UrlHelper::createUrl(['/rest/debate/index']),
-                    'auth'            => self::AUTH_SESSION,
+                    'auth'            => self::AUTH_JWT_OPTIONAL,
                     'key_placeholder' => null,
                 ];
                 break;
