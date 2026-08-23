@@ -23,24 +23,14 @@ test.describe('Useradmin: UserAccessSingleCreation', () => {
         await page.locator('.siteUsers').click();
 
         await page.locator('.addSingleInit .inputEmail').fill('blibla@example.org');
-        await page.evaluate(() => {
-            const btn = document.querySelector('.addUsersOpener.singleuser') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.addUsersOpener.singleuser').click();
         await expect(page.locator('.addUsersByLogin.singleuser .showIfExists')).toHaveCount(0);
         await expect(page.locator('.addUsersByLogin.singleuser .showIfNew')).toBeVisible();
         await page.locator('#addSingleNameGiven').fill('Bli');
         await page.locator('#addSingleNameFamily').fill('Bla');
         await page.locator('#addSingleOrganization').fill('Blubb Ltd.');
         await expect(page.locator('#addUserPassword')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelector('#addSingleGeneratePassword') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('#addSingleGeneratePassword').click();
         await expect(page.locator('#addUserPassword')).toBeVisible();
         await page.locator('#addUserPassword').fill('mypassword');
         await page.locator('.addUsersByLogin.singleuser .userGroup3').check();

@@ -22,12 +22,7 @@ test.describe('Useradmin: UserAccessBatchCreationNoEmail', () => {
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.addUsersOpener.email') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.addUsersOpener.email').click();
         await expect(page.locator('.alert-info')).toContainText('Benachrichtigungs-E-Mail');
         await expect(page.locator('.alert-info')).not.toContainText('Datenschutzgründen');
         await expect(page.locator('#passwords')).toHaveCount(0);
@@ -38,12 +33,7 @@ test.describe('Useradmin: UserAccessBatchCreationNoEmail', () => {
         await page.locator('.siteUsers').click();
 
         await expect(page.locator('#emailAddresses')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelector('.addUsersOpener.email') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.addUsersOpener.email').click();
         await expect(page.locator('.alert-info')).not.toContainText('Benachrichtigungs-E-Mail');
         await expect(page.locator('.alert-info')).toContainText('Datenschutzgründen');
 

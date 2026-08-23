@@ -10,11 +10,9 @@ test.describe('Useradmin: PreventPwdChange', () => {
 
     test('prevent password change', async ({ page }) => {
         await new ConsultationHomePage(page).open();
+        await loginAsGlobalAdmin(page);
 
         await page.goto('/stdparteitag/std-parteitag/admin');
-        await page.locator('#username').fill('globaladmin@example.org');
-        await page.locator('#passwordInput').fill('testadmin');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('.siteUsers').click();
         await page.locator('.user1').waitFor({ timeout: 10_000 });
         await page.locator('.user1 .btnEdit').click();
