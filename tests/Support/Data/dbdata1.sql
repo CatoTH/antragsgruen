@@ -1055,10 +1055,7 @@ INSERT INTO `###TABLE_PREFIX###consultationSettingsTag` (`id`, `consultationId`,
   (7, 5, 0, 5, 'Verschiedenes'),
   (8, 5, 0, 6, 'Sterbehilfe'),
   (9, 5, 0, 2, 'Votum Vorstandswahlen'),
-  (10, 1, 0, 2, 'Soziales'),
-  (11, 11, 0, 0, 'Umwelt'),
-  (12, 11, 0, 1, 'Verkehr'),
-  (13, 11, 0, 2, 'Soziales');
+  (10, 1, 0, 2, 'Soziales');
 
 --
 -- Dumping data for table `consultationText`
@@ -1659,3 +1656,7 @@ VALUES
 INSERT INTO `###TABLE_PREFIX###votingBlock` (`id`, `consultationId`, `position`, `title`, `majorityType`, `quorumType`, `votesPublic`, `resultsPublic`, `assignedToMotionId`, `usersPresentByOrga`, `answers`, `policyVote`, `votingStatus`, `activityLog`) VALUES
   (1, 1, 0, 'Ä2 or Ä3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
   (2, 6, 0, 'Test', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL);
+
+SET SQL_MODE = @OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;
