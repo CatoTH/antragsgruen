@@ -118,6 +118,15 @@ class DebateItem extends ActiveRecord
             ->one();
     }
 
+    /**
+     * The debated motion, amendment or agenda item - or null for a free-text debate (and for a debate
+     * whose target does not exist anymore at all).
+     *
+     * The item is returned regardless of whether anyone is allowed to see it: the relations are used
+     * as a fallback because Consultation::getMotion() / getAmendment() hide deleted items, and the
+     * history of what has been debated has to remain describable after a deletion. Everything that
+     * shows the debated item to someone therefore has to consult isTargetVisible() first.
+     */
     public function getDebateTarget(): Motion|Amendment|ConsultationAgendaItem|null
     {
         $consultation = $this->getMyConsultation();
@@ -130,5 +139,29 @@ class DebateItem extends ActiveRecord
         } else {
             return null;
         }
+    }
+
+    /**
+     * Whether the debated item may be shown to everyone. A motion or amendment can become invisible
+     * while it is being debated - by being deleted, unpublished, or moved back to screening - and
+     * what nobody may see cannot be presented as the currently debated item either. The debate is
+     * normally ended when that happens (IMotion::afterSave()); this is the check that guarantees
+     * nothing is leaked even if the item became invisible in some other way.
+     */
+    public function isTargetVisible(): bool
+    {
+        if ($this->freeText !== null) {
+            return true;
+        }
+
+        $target = $this->getDebateTarget();
+        if ($target === null) {
+            return false;
+        }
+        if ($target instanceof ConsultationAgendaItem) {
+            return true;
+        }
+
+        return $target->isVisible() && !$target->isDeleted();
     }
 }

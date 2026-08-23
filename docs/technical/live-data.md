@@ -119,5 +119,9 @@ have no data at all to begin with, like the debate widget's speaking list.
 - `web_src/js/vue/speech/AdminWidget.vue` - the moderation widget (`admin/speech`).
 - `web_src/js/vue/debate/CurrentDebateWidget.vue` - registers `user/debate` for the debate state and
   `user/speech` for the speaking list of the debated item.
+- `web_src/js/vue/debate/DebateAdminWidget.vue` - the moderation widget. It follows `user/debate` as
+  well: the debated item is the same data for moderators, and this way a debate started by another
+  moderator (or in another tab) shows up here without a Live server channel of its own. The speaking
+  list inside it updates through the embedded admin widget; the voting tab is still loaded on demand.
 
 The voting widgets still poll on their own; they are to be migrated separately.

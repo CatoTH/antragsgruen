@@ -111,6 +111,51 @@ class DebateTools
     }
 
     /**
+     * Ends the ongoing debate if it is about the given motion or amendment - or, in the case of a motion,
+     * about one of its amendments, which become invisible along with their motion.
+     *
+     * Called whenever a motion or amendment becomes invisible: it is deleted, withdrawn from sight, or
+     * moved back to screening. An item nobody may look at cannot be what is currently debated, and unlike
+     * the agenda (where the row has to go, see below), the debate history stays intact - only the open
+     * debate is closed.
+     */
+    public static function endDebateForInvisibleItem(Motion|Amendment $item): void
+    {
+        $consultation = $item->getMyConsultation();
+        if ($consultation === null) {
+            return;
+        }
+
+        $current = DebateItem::getCurrentForConsultation($consultation);
+        if ($current === null || !self::isDebateAffectedByInvisibleItem($current, $item)) {
+            return;
+        }
+
+        self::endDebate($consultation);
+    }
+
+    private static function isDebateAffectedByInvisibleItem(DebateItem $debate, Motion|Amendment $item): bool
+    {
+        if (is_a($item, Amendment::class)) {
+            return $debate->amendmentId === $item->id;
+        }
+        if ($debate->motionId === $item->id) {
+            return true;
+        }
+        if ($debate->amendmentId === null) {
+            return false;
+        }
+
+        foreach ($item->amendments as $amendment) {
+            if ($amendment->id === $debate->amendmentId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Removes the debate history of an agenda item that is about to be deleted. A debateItem row whose
      * target is gone has no meaning anymore (and DebateState could not describe it), so the rows are
      * deleted rather than unlinked - which the foreign key on agendaItemId requires anyway, as it would

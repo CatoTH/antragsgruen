@@ -17,6 +17,9 @@ $layout->addJsTranslation('debate');
 $layout->addJsTranslation('speech');
 $layout->addLiveDataChannel(LiveDataChannels::ROLE_ADMIN, LiveDataChannels::CHANNEL_SPEECH);
 $layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_SPEECH);
+// The debated item is the same data for moderators as for everyone else, so the admin widget follows
+// the regular user channel to notice when another moderator changes it.
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_DEBATE);
 $layout->provideJwt = true;
 
 $initState = Tools::getSerializer()->serialize(DebateState::fromConsultation($consultation), 'json');

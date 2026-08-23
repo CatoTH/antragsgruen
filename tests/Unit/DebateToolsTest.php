@@ -6,7 +6,7 @@ use app\components\DebateTools;
 use app\models\api\agenda\{AgendaItem, AgendaList};
 use app\models\api\debate\DebateState;
 use app\models\forms\AgendaSaver;
-use app\models\db\{Consultation, ConsultationAgendaItem, DebateItem};
+use app\models\db\{Consultation, ConsultationAgendaItem, DebateItem, Motion};
 use Codeception\Attribute\Group;
 use Tests\Support\Helper\DBTestBase;
 
@@ -220,5 +220,73 @@ class DebateToolsTest extends DBTestBase
         DebateTools::endDebate($consultation);
 
         $this->assertNull(DebateItem::getCurrentForConsultation($consultation));
+    }
+
+    public function testDeletingTheDebatedMotionEndsTheDebate(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
+        // The fixture has an open debate on motion 2
+        $this->assertSame(2, DebateItem::getCurrentForConsultation($consultation)->motionId);
+
+        $consultation->getMotion(2)->setDeleted();
+
+        $consultation->refresh();
+        $this->assertNull(DebateItem::getCurrentForConsultation($consultation));
+        $this->assertNull(DebateState::fromConsultation($consultation)->current);
+        // Ending a debate keeps the history, unlike deleting an agenda item
+        $this->assertSame(1, (int)DebateItem::find()->where(['motionId' => 2])->count());
+    }
+
+    public function testUnpublishingTheDebatedMotionEndsTheDebate(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
+        $motion = $consultation->getMotion(2);
+        $motion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+        $motion->save();
+
+        $consultation->refresh();
+        $this->assertNull(DebateItem::getCurrentForConsultation($consultation));
+        $this->assertNull(DebateState::fromConsultation($consultation)->current);
+    }
+
+    public function testDeletingTheMotionOfTheDebatedAmendmentEndsTheDebate(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
+        // Amendment 1 amends motion 2, and is invisible once that motion is gone
+        DebateTools::startDebate($consultation, $consultation->getAmendment(1));
+
+        $consultation->getMotion(2)->setDeleted();
+
+        $consultation->refresh();
+        $this->assertNull(DebateItem::getCurrentForConsultation($consultation));
+        $this->assertNull(DebateState::fromConsultation($consultation)->current);
+    }
+
+    /**
+     * Even if a debate somehow stays open although its item is not visible anymore, the item must not
+     * be described to anyone: the state is served to anonymous visitors and broadcast to every
+     * subscriber of the live channel.
+     */
+    public function testAnInvisibleDebatedItemIsNotDescribed(): void
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+        $this->assertNotNull(DebateState::fromConsultation($consultation)->current);
+
+        // Bypassing the model layer, so that nothing gets the chance to end the debate
+        Motion::updateAll(['status' => Motion::STATUS_DELETED], ['id' => 2]);
+
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+        $debate = DebateItem::getCurrentForConsultation($consultation);
+        $this->assertNotNull($debate);
+        $this->assertFalse($debate->isTargetVisible());
+        $this->assertNull(DebateState::fromConsultation($consultation)->current);
     }
 }

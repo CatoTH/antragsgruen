@@ -197,6 +197,7 @@
 
 <script>
 import { authorizedFetch, postJson, putJson, deleteJson } from "/js/modules/shared/ApiClient.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
 import Translate from "/js/vue/Translate.vue.js";
 
 export default {
@@ -428,6 +429,14 @@ export default {
                     this.votingBusy = false;
                 });
         },
+        applyDebateState(state) {
+            if (this.starting || this.stopping) {
+                // A change of ours is on its way to the backend; its response is the newer state.
+                // Applying what we got here would make the widget jump back for a moment.
+                return;
+            }
+            this.state = state;
+        },
         reloadDebateState() {
             return authorizedFetch(this.debateUrl)
                 .then(response => {
@@ -593,6 +602,18 @@ export default {
     },
     mounted() {
         this.loadSelectables();
+
+        // Someone else may be moderating the same consultation, and starting a debate elsewhere (or
+        // activating its speaking list) changes what this widget has to show.
+        this.debateHandle = registerListener('user', 'debate', {
+            onData: (state) => this.applyDebateState(state),
+        });
+    },
+    beforeUnmount() {
+        if (this.debateHandle) {
+            this.debateHandle.unregister();
+            this.debateHandle = null;
+        }
     },
 };
 </script>
