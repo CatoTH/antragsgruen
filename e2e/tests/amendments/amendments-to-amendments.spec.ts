@@ -21,7 +21,7 @@ test.describe('Amendments: AmendmentsToAmendments', () => {
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
         await page.locator('#allowAmendmentsToAmendments').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await new AmendmentPage(page).open({
             motionSlug: 'Testing_proposed_changes-630',

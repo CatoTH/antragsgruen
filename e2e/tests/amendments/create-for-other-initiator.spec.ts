@@ -21,6 +21,7 @@ test.describe('Amendments: CreateForOtherInitiator', () => {
     });
 
     test('create an amendment as another user', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
 
@@ -42,6 +43,7 @@ test.describe('Amendments: CreateForOtherInitiator', () => {
     });
 
     test('create an amendment as myself', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
         await page.locator('input[name=otherInitiator]').uncheck();
@@ -63,6 +65,7 @@ test.describe('Amendments: CreateForOtherInitiator', () => {
     });
 
     test('enable amendment editing for initiators', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();

@@ -10,9 +10,11 @@ test.describe('Amendments: Tags', () => {
     });
 
     test('activate tags for amendments', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
         await expect(page.locator('.multipleTagsGroup')).not.toBeVisible();
 
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();

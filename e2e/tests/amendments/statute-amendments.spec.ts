@@ -16,6 +16,7 @@ test.describe('Amendments: StatuteAmendments', () => {
     });
 
     test('activate statute amendments and create a base statute', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
 
@@ -52,7 +53,7 @@ test.describe('Amendments: StatuteAmendments', () => {
     });
 
     test('create an amendment', async ({ page }) => {
-        await logout(page);
+        await new ConsultationHomePage(page).open();
         await loginAsStdUser(page);
         await new ConsultationHomePage(page).open();
 
@@ -83,11 +84,12 @@ test.describe('Amendments: StatuteAmendments', () => {
     });
 
     test('Create amendments to statute amendments', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator(`.motionType${FIRST_FREE_MOTION_TYPE}`).click();
         await page.locator('#allowAmendmentsToAmendments').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await logout(page);
         await loginAsStdUser(page);
         await page.locator(`.amendmentRow${FIRST_FREE_AMENDMENT_ID} a`).click();
@@ -122,7 +124,7 @@ test.describe('Amendments: StatuteAmendments', () => {
     });
 
     test('set up an agenda and assign the statute amendment to it', async ({ page }) => {
-        await logout(page);
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#appearanceLink').click();
@@ -179,6 +181,7 @@ test.describe('Amendments: StatuteAmendments', () => {
     });
 
     test('check the home pages (with no agenda item assigned)', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         const earth = FIRST_FREE_AGENDA_ITEM_ID;
         await new ConsultationHomePage(page).open();
@@ -197,6 +200,7 @@ test.describe('Amendments: StatuteAmendments', () => {
     });
 
     test('check the home pages (with an agenda item assigned)', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         const earth = FIRST_FREE_AGENDA_ITEM_ID;
         await page.locator('#motionListLink').click();
@@ -252,6 +256,7 @@ test.describe('Amendments: StatuteAmendments', () => {
     });
 
     test('check what happens if there are two statutes and amendments', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator(`.motionType${FIRST_FREE_MOTION_TYPE}`).click();

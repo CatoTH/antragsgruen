@@ -8,11 +8,12 @@ test.describe('Amendments: CreateLogin', () => {
     });
 
     test('enforce login when creating an amendment', async ({ page }) => {
+        await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
         await page.locator('#typePolicyAmendments').selectOption('2');
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await logout(page);
 
         await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });

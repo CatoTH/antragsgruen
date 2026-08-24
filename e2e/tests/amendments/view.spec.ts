@@ -48,6 +48,7 @@ test.describe('Amendments: View', () => {
     });
 
     test('see the amendment as the user who initiated it', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdUser(page);
         await new ConsultationHomePage(page).gotoAmendmentView(2);
         await expect(page.locator('.sidebarActions .download')).toBeVisible();
@@ -58,7 +59,7 @@ test.describe('Amendments: View', () => {
     });
 
     test('see the amendment as an admin', async ({ page }) => {
-        await logout(page);
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await new ConsultationHomePage(page).gotoAmendmentView(2);
         await expect(page.locator('.sidebarActions .download')).toBeVisible();
@@ -69,6 +70,7 @@ test.describe('Amendments: View', () => {
     });
 
     test('allow users to edit their motions and verify it works', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();

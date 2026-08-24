@@ -9,14 +9,15 @@ test.describe('Amendments: PersonalComments', () => {
     });
 
     test('not see the comment section logged out', async ({ page }) => {
-        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is' });
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await expect(page.locator('.privateNoteOpener')).not.toBeVisible();
         await expect(page.locator('.privateNotes form')).not.toBeVisible();
     });
 
     test('see the comment section logged in and write a note', async ({ page }) => {
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await loginAsStdUser(page);
-        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is' });
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await expect(page.locator('.privateNoteOpener')).toBeVisible();
         await expect(page.locator('.privateNotes form')).not.toBeVisible();
         await expect(page.locator('#privatenote1')).not.toBeVisible();
@@ -31,8 +32,9 @@ test.describe('Amendments: PersonalComments', () => {
     });
 
     test('delete the note again', async ({ page }) => {
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await loginAsStdUser(page);
-        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is' });
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await page.locator('#privatenote1 .btnEdit').click();
         await page.locator('.privateNotes form textarea').fill('');
         await page.locator('.privateNotes form [name="savePrivateNote"]').click();

@@ -8,6 +8,7 @@ test.describe('Amendments: InitiatorOrgaNaturalPerson', () => {
     });
 
     test('test having only organizations enabled', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
@@ -15,7 +16,7 @@ test.describe('Amendments: InitiatorOrgaNaturalPerson', () => {
         await expect(page.locator("input[name='initiatorCanBePerson']")).toBeChecked();
         await expect(page.locator("input[name='initiatorCanBeOrganization']")).toBeChecked();
         await page.locator("input[name='initiatorCanBePerson']").uncheck();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await expect(page.locator("input[name='initiatorCanBePerson']")).not.toBeChecked();
         await expect(page.locator("input[name='initiatorCanBeOrganization']")).toBeChecked();
@@ -35,13 +36,14 @@ test.describe('Amendments: InitiatorOrgaNaturalPerson', () => {
     });
 
     test('test having only natural persons enabled', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
 
         await page.locator("input[name='initiatorCanBePerson']").check();
         await page.locator("input[name='initiatorCanBeOrganization']").uncheck();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await logout(page);
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');

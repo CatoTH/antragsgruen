@@ -13,13 +13,14 @@ test.describe('Amendments: Screening', () => {
     });
 
     test('switch to amendment screening mode', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await expect(page.locator('#adminTodo')).not.toBeVisible();
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
         await expect(page.locator('#screeningAmendments')).not.toBeChecked();
         await page.locator('#screeningAmendments').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await expect(page.locator('#screeningAmendments')).toBeChecked();
     });
 
@@ -48,6 +49,7 @@ test.describe('Amendments: Screening', () => {
     test('screen the amendment with an invalid title prefix (race condition)', async ({
         page,
     }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminTodo').click();
         await expect(
@@ -67,6 +69,7 @@ test.describe('Amendments: Screening', () => {
     });
 
     test('screen the amendment normally', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await expect(page.locator('#amendmentScreenForm')).toBeVisible();
         await page.locator('#amendmentScreenForm [name="screen"]').click();

@@ -1,5 +1,5 @@
 import { test, expect } from '../../fixtures';
-import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
+import { MotionPage } from '../../pages/MotionPage';
 
 test.describe('Amendments: InlineInMotionView', () => {
     test.beforeEach(async ({ db }) => {
@@ -7,7 +7,7 @@ test.describe('Amendments: InlineInMotionView', () => {
     });
 
     test('check that AE2 is working correctly', async ({ page }) => {
-        await new ConsultationHomePage(page).gotoMotionView(2);
+        await new MotionPage(page).open({ motionSlug: 2 });
 
         await expect(page.locator('body')).not.toContainText('Neuer Punkt');
         await expect(page.locator('body')).toContainText('Auffi Gamsbart nimma');
