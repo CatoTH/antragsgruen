@@ -30,7 +30,7 @@ test.describe('Voting quorum', () => {
             'Voting rights',
         );
 
-        await expect(page.locator('.user2')).toHaveCount(0);
+        await expect(page.locator('.user2'.first())).toHaveCount(0);
         await page.locator('.addUsersOpener.email').click();
         await page.locator('#emailAddresses').fill('testuser@example.org');
         await page.locator('#names').fill('Testuser');

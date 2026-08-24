@@ -67,16 +67,16 @@ test.describe('Proposed procedure: tags', () => {
 
         await expect(page.locator('.motion118')).toBeVisible();
         await expect(page.locator('.motion2')).toBeVisible();
-        await expect(page.locator('.amendment279')).toBeVisible();
-        await expect(page.locator('.amendment280')).toBeVisible();
+        await expect(page.locator('.amendment279'.first())).toBeVisible();
+        await expect(page.locator('.amendment280'.first())).toBeVisible();
 
         await page.locator('#filterSelectTags').selectOption(String(FIRST_FREE_TAG_ID + 2));
         await page.locator(".motionListSearchForm [name='search']").click();
 
         await expect(page.locator('.motion118')).toBeVisible();
         await expect(page.locator('.motion2')).toHaveCount(0);
-        await expect(page.locator('.amendment279')).toBeVisible();
-        await expect(page.locator('.amendment280')).toHaveCount(0);
+        await expect(page.locator('.amendment279'.first())).toBeVisible();
+        await expect(page.locator('.amendment280'.first())).toHaveCount(0);
 
         await page.locator('#exportProcedureBtn').click();
         await page.locator('.exportProcedureDd .linkProcedureIntern a').click();
@@ -90,22 +90,22 @@ test.describe('Proposed procedure: tags', () => {
 
         await expect(page.locator('.motion118')).toBeVisible();
         await expect(page.locator('.motion2')).toBeVisible();
-        await expect(page.locator('.amendment279')).toBeVisible();
-        await expect(page.locator('.amendment280')).toBeVisible();
+        await expect(page.locator('.amendment279'.first())).toBeVisible();
+        await expect(page.locator('.amendment280'.first())).toBeVisible();
 
         await page.locator(`.tagList .tag${FIRST_FREE_TAG_ID + 2}`).click();
 
         await expect(page.locator('.motion118')).toBeVisible();
         await expect(page.locator('.motion2')).toHaveCount(0);
-        await expect(page.locator('.amendment279')).toBeVisible();
-        await expect(page.locator('.amendment280')).toHaveCount(0);
+        await expect(page.locator('.amendment279'.first())).toBeVisible();
+        await expect(page.locator('.amendment280'.first())).toHaveCount(0);
 
         await page.locator('.tagList .tagAll').click();
 
         await expect(page.locator('.motion118')).toBeVisible();
         await expect(page.locator('.motion2')).toBeVisible();
-        await expect(page.locator('.amendment279')).toBeVisible();
-        await expect(page.locator('.amendment280')).toBeVisible();
+        await expect(page.locator('.amendment279'.first())).toBeVisible();
+        await expect(page.locator('.amendment280'.first())).toBeVisible();
 
         await page.goto('/stdparteitag/std-parteitag');
         await logout(page);

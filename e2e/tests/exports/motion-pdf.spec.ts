@@ -29,7 +29,7 @@ test.describe('Exports: motion PDF', () => {
 
         await page.goto('/stdparteitag/std-parteitag/admin/motion-type/type?motionTypeId=1');
         await page.locator('.layout.php-1').click();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
 
         await page.goto('/stdparteitag/std-parteitag');
         await expect(page.locator('body')).not.toContainText('PDF');
@@ -41,7 +41,7 @@ test.describe('Exports: motion PDF', () => {
 
         await page.goto('/stdparteitag/std-parteitag/admin/motion-type/type?motionTypeId=1');
         await page.locator('.layout.php0').click();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
 
         await page.goto('/stdparteitag/std-parteitag');
         await expect(page.locator('body')).toContainText('PDF');

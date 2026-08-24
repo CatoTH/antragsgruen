@@ -21,9 +21,9 @@ test.describe('Merging: appearing amendments after status change', () => {
         await page.locator('.sidebarActions .mergeamendments a').click();
         await page.waitForTimeout(500);
 
-        await expect(page.locator('.amendment272')).toBeVisible();
-        await expect(page.locator('.amendment274')).toHaveCount(0);
-        await expect(page.locator('.amendment276')).toHaveCount(0);
+        await expect(page.locator('.amendment272'.first())).toBeVisible();
+        await expect(page.locator('.amendment274'.first())).toHaveCount(0);
+        await expect(page.locator('.amendment276'.first())).toHaveCount(0);
         await page.locator('.selectAll').first().click();
         await page.waitForTimeout(300);
         await page.locator('.mergeAllRow .btn-primary').click();

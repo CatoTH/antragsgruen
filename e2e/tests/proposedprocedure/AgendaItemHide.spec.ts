@@ -57,7 +57,7 @@ test.describe('Proposed procedure: Agenda item hide', () => {
 
         await page.goto('/laenderrat-to/laenderrat-to/admin/motiontypes/type/9');
         await page.locator('#typeProposedProcedure').uncheck();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
 
         await page.goto('/laenderrat-to/laenderrat-to');
         await page.locator('.agendaEditLink').click();

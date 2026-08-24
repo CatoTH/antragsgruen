@@ -23,7 +23,7 @@ test.describe('Merging: resolution with progress report', () => {
         await page.locator('.motionType1').click();
         await page.locator('.section4 .remover').click();
         await page.locator('.bootbox .btn-primary').click();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
         await expect(page.locator('.section3')).toBeVisible();
         await expect(page.locator('.section4')).toHaveCount(0);
 

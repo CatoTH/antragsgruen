@@ -84,10 +84,10 @@ test.describe('Proposed procedure: responsibilities', () => {
         await page.locator('#motionListLink').click();
         await expect(page.locator('.filterResponsibility')).toBeVisible();
         await expect(page.locator('.motion2')).toBeVisible();
-        await expect(page.locator('.amendment3')).toBeVisible();
+        await expect(page.locator('.amendment3'.first())).toBeVisible();
         await page.locator('.filterResponsibility select').selectOption('7');
         await page.locator(".motionListSearchForm [type='submit']").click();
         await expect(page.locator('.motion2')).toHaveCount(0);
-        await expect(page.locator('.amendment3')).toBeVisible();
+        await expect(page.locator('.amendment3'.first())).toBeVisible();
     });
 });
