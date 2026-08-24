@@ -21,7 +21,7 @@ test.describe('Supporting: AmendmentLoginless', () => {
         await motionTypePage.open({ motionTypeId: 1 });
         await page.locator('#typePolicySupportAmendments').selectOption('1');
         await page.locator('.amendmentSupportPolicy .amendmentSupport').check();
-        await motionTypePage.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await new ConsultationHomePage(page).open();
         await home.gotoAmendmentView(1);

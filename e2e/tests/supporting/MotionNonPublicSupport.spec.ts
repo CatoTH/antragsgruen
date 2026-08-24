@@ -10,6 +10,8 @@ test.describe('Supporting: MotionNonPublicSupport', () => {
     });
 
     test('enable non-public supports', async ({ page }) => {
+        const home = new ConsultationHomePage(page);
+        await home.open();
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const motionTypePage = new AdminMotionTypePage(page);
@@ -22,10 +24,8 @@ test.describe('Supporting: MotionNonPublicSupport', () => {
         await page.locator('#typeMinSupporters').fill('3');
         await page.locator('.motionSupport').check();
 
-        await motionTypePage.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        const home = new ConsultationHomePage(page);
-        await home.open();
         await home.gotoMotionCreatePage();
         await page.locator("input[name='tags[]'][value='1']").check();
         await page.locator("[name='sections[1]']").fill('Testantrag 1');

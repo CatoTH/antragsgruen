@@ -10,6 +10,8 @@ test.describe('Supporting: AmendmentNonPublicSupport', () => {
     });
 
     test('enable non-public supports', async ({ page }) => {
+        const home = new ConsultationHomePage(page);
+        await home.open();
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const motionTypePage = new AdminMotionTypePage(page);
@@ -22,10 +24,8 @@ test.describe('Supporting: AmendmentNonPublicSupport', () => {
         await page.locator('#typeMinSupporters').fill('3');
         await page.locator('.amendmentSupport').check();
 
-        await motionTypePage.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        const home = new ConsultationHomePage(page);
-        await home.open();
         await home.gotoAmendmentCreatePage();
         await page.locator('#sections_30').fill('New amendment');
         await page.locator('#amendmentEditForm [name="save"]').click();
