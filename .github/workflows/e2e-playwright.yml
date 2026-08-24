@@ -117,6 +117,8 @@ jobs:
                 MARIADB_USER: yii
                 MARIADB_PASSWORD: yii
               command: --port=32768
+            redis:
+              image: redis:7
             mysql:
               healthcheck:
                 test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
