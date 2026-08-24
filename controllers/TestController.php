@@ -335,6 +335,7 @@ class TestController extends Controller
         $testdata = (string)file_get_contents($file);
         $testdata = str_replace('###TABLE_PREFIX###', '', $testdata);
         $this->executeMultiStatementSql($testdata);
+        $this->database->createCommand('UPDATE user SET settings = NULL WHERE id <= 3')->execute();
     }
 
     private function executeMultiStatementSql(string $sql): void
