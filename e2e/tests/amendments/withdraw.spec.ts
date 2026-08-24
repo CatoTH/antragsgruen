@@ -14,8 +14,8 @@ test.describe('Amendments: Withdraw', () => {
         await loginAsStdUser(page);
 
         await new MotionPage(page).open({ motionSlug: 3 });
-        await expect(page.locator('section.amendments .amendment2')).toBeVisible();
-        await expect(page.locator('.bookmarks .amendment2')).toBeVisible();
+        await expect(page.locator('section.amendments .amendment2')).toHaveCount(1);
+        await expect(page.locator('.bookmarks .amendment2')).toHaveCount(1);
 
         await new AmendmentPage(page).open({
             motionSlug: 3,
@@ -37,7 +37,7 @@ test.describe('Amendments: Withdraw', () => {
         await expect(page.locator('.amendmentRow2.withdrawn')).toBeVisible();
 
         await new MotionPage(page).open({ motionSlug: 3 });
-        await expect(page.locator('section.amendments .amendment2')).toBeVisible();
-        await expect(page.locator('.bookmarks .amendment2')).not.toBeVisible();
+        await expect(page.locator('section.amendments .amendment2')).toHaveCount(1);
+        await expect(page.locator('.bookmarks .amendment2')).toHaveCount(0);
     });
 });

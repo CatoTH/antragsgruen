@@ -9,6 +9,7 @@ test.describe('Amendments: CommentScreening', () => {
     });
 
     test('enable screening', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await expect(page.locator('#adminTodo')).not.toBeVisible();
         await page.locator('#adminLink').click();
@@ -53,6 +54,7 @@ test.describe('Amendments: CommentScreening', () => {
     });
 
     test('screen the comments as an admin', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
 
         await page.locator('#adminTodo').click();

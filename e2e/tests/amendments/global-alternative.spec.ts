@@ -38,6 +38,7 @@ test.describe('Amendments: GlobalAlternative', () => {
     });
 
     test('toggle global alternative off and on in admin view', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
@@ -79,6 +80,7 @@ test.describe('Amendments: GlobalAlternative', () => {
     });
 
     test('merging into the motion with a global alternative sets REJECTED status', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await new ConsultationHomePage(page).gotoAmendmentView(FIRST_FREE_AMENDMENT_ID);
         await page.locator('#sidebar .mergeIntoMotion a').click();

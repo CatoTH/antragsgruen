@@ -11,7 +11,7 @@ test.describe('Amendments: CommentWrite', () => {
     });
 
     test('write a comment, but forgot my name', async ({ page }) => {
-        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is' });
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
 
         await expect(page.locator('section.comments')).toContainText('Kommentar schreiben');
         await page.locator('#comment_-1_-1_name').fill('');
@@ -31,7 +31,7 @@ test.describe('Amendments: CommentWrite', () => {
     });
 
     test('enter the missing data and submit', async ({ page }) => {
-        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is' });
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await page.locator('#comment_-1_-1_name').fill('My Name');
         await page.locator('section.comments .commentForm [name="writeComment"]').click();
 
@@ -43,7 +43,7 @@ test.describe('Amendments: CommentWrite', () => {
     });
 
     test('write a reply to this comment', async ({ page }) => {
-        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is' });
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await expect(page.locator('.replyComment')).not.toBeVisible();
         await expect(
             page.locator(`#comment_-1_-1_${FIRST_FREE_COMMENT_ID}_text`),
@@ -79,6 +79,7 @@ test.describe('Amendments: CommentWrite', () => {
     });
 
     test('disable comments for this specific amendment and delete the comment', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
@@ -88,7 +89,7 @@ test.describe('Amendments: CommentWrite', () => {
         await page.locator('.preventFunctionality .notCommentable input').check();
         await page.locator('#amendmentUpdateForm [name="save"]').click();
 
-        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is' });
+        await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await expect(page.locator('.commentsDeactivatedHint')).toBeVisible();
         await expect(page.locator('#comment_-1_-1_text')).not.toBeVisible();
 

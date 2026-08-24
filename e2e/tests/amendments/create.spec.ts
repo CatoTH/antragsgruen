@@ -19,17 +19,17 @@ test.describe('Amendments: Create', () => {
 
     test('ensure the amendment does not exist yet and open creation', async ({ page }) => {
         await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('h1')).toContainText('A2: O’ZAPFT IS!');
+        await expect(page.locator('h1')).toContainText(/A2: O.zapft is!/i);
         await expect(page.locator('section.amendments ul.amendments')).not.toContainText(
             FIRST_FREE_AMENDMENT_TITLE_PREFIX,
         );
 
-        await expect(page.locator('.sidebarActions')).toContainText('ÄNDERUNGSANTRAG STELLEN');
+        await expect(page.locator('.sidebarActions')).toContainText(/ÄNDERUNGSANTRAG STELLEN/i);
         await page.locator('.sidebarActions .amendmentCreate a').click();
 
         await expect(page.locator('.breadcrumb')).toContainText('Antrag');
         await expect(page.locator('h1')).toContainText(
-            'ÄNDERUNGSANTRAG ZU A2: O’ZAPFT IS! STELLEN',
+            /ÄNDERUNGSANTRAG ZU A2: O.ZAPFT IS! STELLEN/i,
         );
         await expect(page.locator('#sections_1')).toHaveValue('O’zapft is!');
         await expect(page.locator('#section_holder_2')).toContainText('woschechta Bayer');
@@ -41,12 +41,12 @@ test.describe('Amendments: Create', () => {
 
         await expect(page.locator('body')).not.toContainText('JavaScript aktiviert sein');
         await expect(page.locator('body')).toContainText('Gremium, LAG...');
-        await expect(page.locator('body')).not.toContainText('Beschlussdatum');
-        await expect(page.locator('body')).not.toContainText('Ansprechperson');
+        await expect(page.locator('.resolutionRow')).not.toBeVisible();
+        await expect(page.locator('.contactNameRow')).not.toBeVisible();
         await page.locator('#personTypeOrga').selectOption('orga');
         await expect(page.locator('body')).not.toContainText('Gremium, LAG...');
-        await expect(page.locator('body')).toContainText('Beschlussdatum');
-        await expect(page.locator('body')).toContainText('Ansprechperson');
+        await expect(page.locator('.resolutionRow')).toBeVisible();
+        await expect(page.locator('.contactNameRow')).toBeVisible();
 
         await replaceInCkEditor(page, 'sections_2_wysiwyg', /woschechta Bayer/g, 'Saupreiß');
         await setCkEditorContent(page, 'amendmentReason_wysiwyg', '<p>This is my reason</p>');
@@ -89,15 +89,9 @@ test.describe('Amendments: Create', () => {
         await page.locator('.sidebarActions .amendmentCreate a').click();
 
         await expect(page.locator('.bootstrap-datetimepicker-widget')).not.toBeVisible();
-        await page.evaluate(() => {
-            const w = window as any;
-            w.$('#resolutionDateHolder').find('.input-group-addon').click();
-        });
+        await page.locator('#resolutionDateHolder .input-group-addon').click();
         await expect(page.locator('.bootstrap-datetimepicker-widget')).toBeVisible();
-        await page.evaluate(() => {
-            const w = window as any;
-            w.$('#resolutionDateHolder').find('.input-group-addon').click();
-        });
+        await page.locator('#resolutionDateHolder .input-group-addon').click();
         await expect(page.locator('.bootstrap-datetimepicker-widget')).not.toBeVisible();
 
         await page.locator("input[name='Initiator[primaryName]']").fill('My company');

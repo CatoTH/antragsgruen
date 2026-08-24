@@ -13,10 +13,13 @@ test.describe('Amendments: DraftSave', () => {
         await replaceInCkEditor(page, 'sections_2_wysiwyg', /woschechta Bayer/g, 'El Capitan');
         await setCkEditorContent(page, 'amendmentReason_wysiwyg', '<p>This is my reason</p>');
 
+        // Wait for the draft auto-save to persist (legacy Cept used wait(3))
+        await page.waitForTimeout(3000);
+
         await new ConsultationHomePage(page).open();
 
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
-        await expect(page.locator('#draftHint')).toBeVisible();
+        await expect(page.locator('#draftHint')).toBeVisible({ timeout: 10_000 });
         await expect(page.locator('#draftHint')).toContainText('Entwurf vom:');
         await expect(page.locator("input[name='sections[1]']")).not.toHaveValue('Draft title');
         await expect(page.locator('body')).not.toContainText('Some text');

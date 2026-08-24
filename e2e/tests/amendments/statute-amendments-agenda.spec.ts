@@ -15,6 +15,7 @@ test.describe('Amendments: StatuteAmendmentsAgenda', () => {
     });
 
     test('activate statute amendments and create two base statutes', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
 
@@ -62,6 +63,7 @@ test.describe('Amendments: StatuteAmendmentsAgenda', () => {
     });
 
     test('create an agenda', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#appearanceLink').click();
@@ -108,6 +110,7 @@ test.describe('Amendments: StatuteAmendmentsAgenda', () => {
     });
 
     test('test that creating the statute amendment works', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await new ConsultationHomePage(page).open();
         await expect(

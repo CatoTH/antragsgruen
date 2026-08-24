@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { AmendmentPage } from '../../pages/AmendmentPage';
 import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
-import { loginAsStdUser, logout } from '../../utils/auth';
+import { loginAsStdUser } from '../../utils/auth';
 import { FIRST_FREE_AMENDMENT_ID } from '../../utils/constants';
 
 test.describe('Amendments: EditDraftPermission', () => {
@@ -10,7 +10,7 @@ test.describe('Amendments: EditDraftPermission', () => {
     });
 
     test('create and edit a draft logged out', async ({ page }) => {
-        await new ConsultationHomePage(page).gotoAmendmentCreatePage('123-textformatierungen');
+        await new ConsultationHomePage(page).gotoAmendmentCreatePage('3');
         await page.locator("input[name='tags[]'][value='1']").check();
         await page.locator("[name='sections[1]']").fill('Neuer Testantrag 1');
         await page.locator('#initiatorPrimaryName').fill('Mein Name');
@@ -20,7 +20,7 @@ test.describe('Amendments: EditDraftPermission', () => {
 
         await new ConsultationHomePage(page).open();
         await new AmendmentPage(page).open({
-            motionSlug: '123-textformatierungen',
+            motionSlug: '3',
             amendmentId: FIRST_FREE_AMENDMENT_ID,
         });
         await expect(page.locator('h1')).toContainText(
@@ -30,7 +30,7 @@ test.describe('Amendments: EditDraftPermission', () => {
     });
 
     test('create and edit a draft logged in', async ({ page }) => {
-        await new ConsultationHomePage(page).gotoAmendmentCreatePage('123-textformatierungen');
+        await new ConsultationHomePage(page).gotoAmendmentCreatePage('3');
         await loginAsStdUser(page);
         await page.locator("input[name='tags[]'][value='1']").check();
         await page.locator("[name='sections[1]']").fill('Neuer Testantrag 2');
@@ -41,7 +41,7 @@ test.describe('Amendments: EditDraftPermission', () => {
 
         await new ConsultationHomePage(page).open();
         await new AmendmentPage(page).open({
-            motionSlug: '123-textformatierungen',
+            motionSlug: '3',
             amendmentId: FIRST_FREE_AMENDMENT_ID + 1,
         });
         await expect(page.locator('h1')).toContainText(
@@ -51,9 +51,8 @@ test.describe('Amendments: EditDraftPermission', () => {
     });
 
     test('edit the draft logged out (should not work)', async ({ page }) => {
-        await logout(page);
         await new AmendmentPage(page).open({
-            motionSlug: '123-textformatierungen',
+            motionSlug: '3',
             amendmentId: FIRST_FREE_AMENDMENT_ID + 1,
         });
         await expect(page.locator('h1')).not.toContainText(

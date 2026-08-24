@@ -9,11 +9,12 @@ test.describe('Amendments: ScreeningVisibleForUser', () => {
     });
 
     test('activate screening', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
         await page.locator('#screeningAmendments').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await logout(page);
         await loginAsStdUser(page);
     });
@@ -38,7 +39,6 @@ test.describe('Amendments: ScreeningVisibleForUser', () => {
     });
 
     test('other users do not see it', async ({ page }) => {
-        await logout(page);
         await new ConsultationHomePage(page).open();
         await expect(
             page.locator(`.myAmendmentList .amendment${FIRST_FREE_AMENDMENT_ID}`),

@@ -11,6 +11,7 @@ test.describe('Amendments: Edit', () => {
     test('enable editing of amendments and edit an amendment as a regular user', async ({
         page,
     }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();
@@ -23,7 +24,7 @@ test.describe('Amendments: Edit', () => {
         await page.locator('.myAmendmentList .amendment2').click();
         await page.locator('.sidebarActions .edit a').click();
         await expect(page.locator('h1')).toContainText(
-            'ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN BEARBEITEN',
+            /ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN BEARBEITEN/i,
         );
 
         await appendCkEditorContent(page, 'sections_2_wysiwyg', '<p>attach some new text at the end</p>');
@@ -31,6 +32,6 @@ test.describe('Amendments: Edit', () => {
 
         await expect(page.locator('body')).toContainText('Die Änderungen wurden übernommen');
         await page.locator('#motionConfirmedForm button').click();
-        await expect(page.locator('p.inserted')).toContainText('attach some new text at the end');
+        await expect(page.locator('p.inserted').first()).toContainText('attach some new text at the end');
     });
 });

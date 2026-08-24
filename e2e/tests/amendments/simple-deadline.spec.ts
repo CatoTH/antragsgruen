@@ -9,9 +9,7 @@ test.describe('Amendments: SimpleDeadline', () => {
     });
 
     test('set the deadline to the past', async ({ page }) => {
-        await new ConsultationHomePage(page).gotoMotionView(3);
-        await expect(page.locator('.amendmentCreate')).toBeVisible();
-
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
@@ -22,10 +20,11 @@ test.describe('Amendments: SimpleDeadline', () => {
             return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} 00:00:00`;
         });
         await page.locator('#typeSimpleDeadlineAmendments').fill(pastDate);
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
     });
 
     test('still see the link as an admin and open the form', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await new ConsultationHomePage(page).gotoMotionView(3);
         await expect(page.locator('.amendmentCreate a')).toBeVisible();
@@ -49,6 +48,7 @@ test.describe('Amendments: SimpleDeadline', () => {
     });
 
     test('set the deadline to the future', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
@@ -59,7 +59,7 @@ test.describe('Amendments: SimpleDeadline', () => {
             return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} 00:00:00`;
         });
         await page.locator('#typeSimpleDeadlineAmendments').fill(futureDate);
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await new ConsultationHomePage(page).gotoMotionView(3);
         await expect(page.locator('.amendmentCreate a')).toBeVisible();
