@@ -21,7 +21,7 @@ test.describe('Motion protocol', () => {
 
         const motionList = new AdminMotionListPage(page);
         await motionList.open();
-        await motionList.gotoMotionEdit(2);
+        await page.locator('.adminMotionTable .motion2 .titleCol a').click();
 
         await expect(page.locator('.protocolHolder')).toHaveCount(0);
         await page.locator('.contentProtocolCaller button').click();
@@ -38,7 +38,7 @@ test.describe('Motion protocol', () => {
         await expect(page.locator('.motionProtocol .protocolOpener')).toHaveCount(0);
 
         await motionList.open();
-        await motionList.gotoMotionEdit(2);
+        await page.locator('.adminMotionTable .motion2 .titleCol a').click();
         await page.locator("input[name='protocol_public'][value='1']").check();
         await page.locator('#motionUpdateForm [name="save"]').click();
 

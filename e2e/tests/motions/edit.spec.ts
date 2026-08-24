@@ -35,7 +35,7 @@ test.describe('Motion editing', () => {
 
         await expect(page.locator('body')).toContainText('Die Änderungen wurden übernommen');
         await page.locator('#motionConfirmedForm button').click();
-        await expect(page.locator('.motionTextHolder')).toContainText(
+        await expect(page.locator('.motionTextHolder').first()).toContainText(
             'attach some new text at the end',
         );
     });

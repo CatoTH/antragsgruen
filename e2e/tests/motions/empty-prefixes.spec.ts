@@ -16,7 +16,7 @@ test.describe('Empty motion prefixes', () => {
         const motionList = new AdminMotionListPage(page);
         for (const motionId of [2, 3, 58]) {
             await motionList.open();
-            await motionList.gotoMotionEdit(motionId);
+            await page.locator(`.adminMotionTable .motion${motionId} .titleCol a`).click();
             await page.locator('#motionTitlePrefix').fill('');
             await page.locator('#motionUpdateForm [name="save"]').click();
         }

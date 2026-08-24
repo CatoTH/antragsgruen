@@ -16,7 +16,7 @@ test.describe('Unscreened motions visible for their initiator', () => {
         const motionType = new AdminMotionTypePage(page);
         await motionType.open({ motionTypeId: 1 });
         await page.locator('#screeningMotions').check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await home.open();
         await logout(page);

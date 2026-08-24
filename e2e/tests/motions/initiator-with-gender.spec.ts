@@ -41,7 +41,7 @@ test.describe('Initiator gender field', () => {
                 `input[name="motionInitiatorSettings[contactGender]"][value="${GENDER_REQUIRED}"]`,
             )
             .check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await home.open();
         const createPage = await home.gotoMotionCreatePage();
@@ -80,7 +80,7 @@ test.describe('Initiator gender field', () => {
                 `input[name="motionInitiatorSettings[contactGender]"][value="${GENDER_OPTIONAL}"]`,
             )
             .check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await home.open();
         const createPage = await home.gotoMotionCreatePage();

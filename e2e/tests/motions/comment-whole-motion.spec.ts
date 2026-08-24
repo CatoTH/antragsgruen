@@ -76,7 +76,7 @@ test.describe('Whole-motion comments', () => {
 
         const motionList = new AdminMotionListPage(page);
         await motionList.open();
-        await motionList.gotoMotionEdit(2);
+        await page.locator('.adminMotionTable .motion2 .titleCol a').click();
         await page.locator('.preventFunctionality .notCommentable input').check();
         await page.locator('#motionUpdateForm [name="save"]').click();
 

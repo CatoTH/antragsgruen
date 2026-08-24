@@ -25,7 +25,7 @@ test.describe('Initiator confirmation emails', () => {
         await motionType.open({ motionTypeId: 1 });
         await page.locator('#screeningMotions').check();
         await page.locator('#screeningAmendments').check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         const consultation = new AdminConsultationPage(page);
         await consultation.open();
@@ -65,7 +65,7 @@ test.describe('Initiator confirmation emails', () => {
         await motionType.open({ motionTypeId: 1 });
         await page.locator('#screeningMotions').check();
         await page.locator('#screeningAmendments').check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         const consultation = new AdminConsultationPage(page);
         await consultation.open();
@@ -109,7 +109,7 @@ test.describe('Initiator confirmation emails', () => {
         await motionType.open({ motionTypeId: 1 });
         await page.locator('#screeningMotions').check();
         await page.locator('#screeningAmendments').check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         const consultation = new AdminConsultationPage(page);
         await consultation.open();

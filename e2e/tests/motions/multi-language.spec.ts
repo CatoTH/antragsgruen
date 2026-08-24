@@ -76,7 +76,7 @@ async function translateMotionTypeLabels(page: Page): Promise<void> {
     await page.locator('#typeTitleSingularfr').fill('Motion ML');
     await page.locator('#typeTitlePluralfr').fill('Motions ML');
     await page.locator('#typeCreateTitlefr').fill('Déposer une motion ML');
-    await page.locator('.adminTypeForm [name="save"]').click();
+    await page.locator('.adminTypeForm [name="save"]').first().click();
 }
 
 async function createEnglishMotion(page: Page): Promise<void> {

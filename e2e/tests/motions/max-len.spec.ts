@@ -31,7 +31,7 @@ test.describe('Maximum section length', () => {
         await page.locator('.section3 .maxLenSet').check();
         await page.locator('.section3 .maxLenInput input').fill('150');
         await page.locator('.section3 .maxLenSoftCheckbox').check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await expect(page.locator('body')).toContainText('Gespeichert.');
         await expect(page.locator('.section1 .maxLenInput')).toBeVisible();
@@ -59,7 +59,7 @@ test.describe('Maximum section length', () => {
         await page.locator('.section3 .maxLenSet').check();
         await page.locator('.section3 .maxLenInput input').fill('150');
         await page.locator('.section3 .maxLenSoftCheckbox').check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         const home = new ConsultationHomePage(page);
         await home.open();
