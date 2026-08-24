@@ -20,7 +20,7 @@ test.describe('Appearance: show feeds', () => {
         await page.locator('#typePolicyMotions').selectOption('1');
         await page.locator('#typePolicyAmendments').selectOption('1');
         await page.locator('#typePolicyComments').selectOption('1');
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
 
         await page.goto('/stdparteitag/std-parteitag');
         await page.locator('#sidebar .feeds a').click();
@@ -33,7 +33,7 @@ test.describe('Appearance: show feeds', () => {
         await page.locator('#typePolicyMotions').selectOption('0');
         await page.locator('#typePolicyAmendments').selectOption('0');
         await page.locator('#typePolicyComments').selectOption('0');
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
 
         await page.goto('/stdparteitag/std-parteitag');
         await page.locator('#sidebar .feeds a').click();

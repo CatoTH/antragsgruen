@@ -49,8 +49,8 @@ test.describe('Proposed procedure: move amendment to other motion', () => {
         await page.locator('#exportProcedureBtn').click();
         await page.locator('.exportProcedureDd .linkProcedureIntern a').click();
         await expect(page.locator('.proposedProcedureOverview')).toBeVisible();
-        await expect(page.locator('.amendment1')).toContainText('Vorgeschlagene Verschiebung von anderem Antrag');
-        await expect(page.locator('.amendment279')).toContainText('Verschoben zu anderem Antrag');
+        await expect(page.locator('.amendment1'.first())).toContainText('Vorgeschlagene Verschiebung von anderem Antrag');
+        await expect(page.locator('.amendment279'.first())).toContainText('Verschoben zu anderem Antrag');
         await expect(page.locator('.amendment1 .inserted')).toContainText('Oamoi a Maß und no a Maß');
 
         await page.goto('/stdparteitag/std-parteitag');
@@ -66,7 +66,7 @@ test.describe('Proposed procedure: move amendment to other motion', () => {
         await page.locator('.motionLink2').click();
         await expect(page.locator('body')).not.toContainText('Ä1');
         await page.locator('#sidebar .mergeamendments a').click();
-        await expect(page.locator('.amendment1')).toBeVisible();
+        await expect(page.locator('.amendment1'.first())).toBeVisible();
         await expect(page.locator('#markAmendment1')).toBeChecked();
         await page.locator('#markAmendment3').check();
         await page.locator('.mergeAllRow [type="submit"]').click();

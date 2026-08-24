@@ -13,7 +13,7 @@ test.describe('Merging: simplified mode for users', () => {
 
         await expect(page.locator('#initiatorsCanMerge0')).toBeChecked();
         await page.locator('#initiatorsCanMerge1').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
         await expect(page.locator('#initiatorsCanMerge1')).toBeChecked();
 
         await page.goto('/stdparteitag/std-parteitag');

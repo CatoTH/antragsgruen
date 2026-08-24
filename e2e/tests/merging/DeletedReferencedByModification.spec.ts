@@ -18,7 +18,7 @@ test.describe('Merging: deleted referenced by modification', () => {
         await page.goto('/stdparteitag/std-parteitag/motion/Testing_proposed_changes-630');
         await page.locator('#sidebar .mergeamendments a').click();
         await page.waitForTimeout(200);
-        await expect(page.locator('.amendment281')).toHaveCount(0);
+        await expect(page.locator('.amendment281'.first())).toHaveCount(0);
         await page.evaluate(() => {
             const btn = document.querySelector('.toMergeAmendments .selectAll') as HTMLElement | null;
             if (btn) btn.click();

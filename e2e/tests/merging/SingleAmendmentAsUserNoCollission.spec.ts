@@ -17,7 +17,7 @@ test.describe('Merging: single amendment as user without collision', () => {
         await page.goto('/stdparteitag/std-parteitag/admin/motiontypes/type/1');
         await expect(page.locator('#initiatorsCanMerge0')).toBeChecked();
         await page.locator('#initiatorsCanMerge1').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
         await expect(page.locator('#initiatorsCanMerge1')).toBeChecked();
 
         await logout(page);
