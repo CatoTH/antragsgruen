@@ -53,7 +53,7 @@
                     </span>
 
               <span class="number" v-t:title="['speech', 'persons_waiting']">
-                        <span class="glyphicon glyphicon-time" v-t:aria-label="['speech', 'persons_waiting']"></span>
+                        <span class="glyphicon glyphicon-time" role="img" v-t:aria-label="['speech', 'persons_waiting']"></span>
                         {{ subqueue.num_applied }}
                     </span>
             </div>

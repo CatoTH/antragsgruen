@@ -13,7 +13,7 @@
 
     <div class="dropdown extraSettings">
       <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <span class="glyphicon glyphicon-wrench" v-t:aria-label="['admin', 'agenda_move_aria']"></span>
+        <span class="glyphicon glyphicon-wrench" role="img" v-t:aria-label="['admin', 'agenda_move_aria']"></span>
         <span class="caret" aria-hidden="true"></span>
       </button>
       <input v-if="!hasProposedProcedure()" type="checkbox" v-model="modelValue.settings.in_proposed_procedures" hidden>

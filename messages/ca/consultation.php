@@ -117,4 +117,5 @@ Pots fer-ho en les <a href=\"%URL%\">preferències</a>',
 	'discuss_sort_oldest' => 'El més antic',
 	'discuss_sort_amend' => 'Número d\'esmenes',
 	'discuss_sort_comment' => 'Número de comentaris',
+	'discuss_sort_aria' => 'Ordena les resolucions per',
 ];

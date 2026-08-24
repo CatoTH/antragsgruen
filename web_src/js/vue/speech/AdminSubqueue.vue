@@ -22,7 +22,7 @@
               <span v-t="['speech', 'admin_delete']"></span>
             </div>
 
-            <div class="operationsIndicator operationStart" tabindex="0"
+            <div class="operationsIndicator operationStart" tabindex="0" role="button"
                  @click="onItemSelected($event, item)"
                  @keyup.enter="onItemSelected($event, item)"
                  v-t:title="['speech', 'admin_subq_start']" v-t:aria-label="['speech', 'admin_subq_start']">

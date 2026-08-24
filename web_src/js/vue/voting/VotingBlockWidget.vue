@@ -29,7 +29,7 @@
                         <div v-for="item in groupedVoting">
                             {{ item.title_with_prefix }}
                             <a v-if="item.url_html && !projector" :href="item.url_html" v-t:title="['voting', 'voting_show_amend']"><span
-                                class="glyphicon glyphicon-new-window"
+                                class="glyphicon glyphicon-new-window" role="img"
                                 v-t:aria-label="['voting', 'voting_show_amend']"></span></a><br>
                             <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', true, {'%BY%': item.initiators_html}]"></span>
                         </div>
@@ -37,11 +37,11 @@
                             {{ quorumCounter(groupedVoting) }}
                         </div>
                         <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
-                            <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
+                            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             <template v-t="['voting', 'voting_show_votes']"></template>
                         </button>
                         <button v-if="hasVoteList(groupedVoting) && isVoteListShown(groupedVoting)" @click="hideVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
-                            <span class="glyphicon glyphicon-chevron-up" aria-label="true"></span>
+                            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             <template v-t="['voting', 'voting_hide_votes']"></template>
                         </button>
                     </div>

@@ -72,8 +72,10 @@ echo Html::beginForm('', 'post', [
                        data-off="<?= Html::encode(Yii::t('con', 'proposal_autoupdate')) ?>">
             </div>
             <div class="fullscreenToggle">
-                <button class="btn btn-default" type="button" data-antragsgruen-widget="frontend/FullscreenToggle">
-                    <span class="glyphicon glyphicon-fullscreen" title="Fullscreen" aria-label="Fullscreen"></span>
+                <button class="btn btn-default" type="button" title="<?= Html::encode(Yii::t('motion', 'fullscreen')) ?>"
+                        data-antragsgruen-widget="frontend/FullscreenToggle">
+                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    <span class="sr-only"><?= Yii::t('motion', 'fullscreen') ?></span>
                 </button>
             </div>
         </div>
