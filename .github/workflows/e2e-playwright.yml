@@ -74,7 +74,7 @@ jobs:
           printf '%s\n' "$E2E_HOST" > .e2e-runtime/TEST_DOMAIN
           cat > .e2e-runtime/nginx/default.conf <<'EOF'
           server {
-            server_name stdparteitag.antragsgruen.test;
+            server_name stdparteitag.antragsgruen.test 127.0.0.1;
             root /var/www/antragsgruen/web;
             set $yii_bootstrap index.php;
             rewrite ^/(.*)/$ /$1 permanent;
@@ -99,6 +99,12 @@ jobs:
               depends_on:
                 mysql:
                   condition: service_healthy
+              environment:
+                DB_HOST: mysql
+                DB_NAME: antragsgruen
+                DB_USER: e2e
+                DB_PASSWORD: e2e
+                REDIS_HOST: redis
               volumes:
                 - "./.e2e-runtime/config_tests.json:/var/www/antragsgruen/config/config_tests.json:ro"
                 - "./.e2e-runtime/TEST_DOMAIN:/var/www/antragsgruen/config/TEST_DOMAIN:ro"
