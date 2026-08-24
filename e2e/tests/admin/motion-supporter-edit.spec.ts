@@ -39,7 +39,7 @@ test.describe('Admin: MotionSupporterEdit', () => {
         await page.locator('#adminLink').click();
         await page.locator('.motionType10').click();
         await page.locator('#typeHasOrga').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
         await logout(page);
     });
 

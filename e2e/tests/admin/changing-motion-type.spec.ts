@@ -35,7 +35,7 @@ test.describe('Admin: ChangingMotionType', () => {
         await page
             .locator(`.section${FIRST_FREE_MOTION_SECTION + 1} .sectionTitle input`)
             .fill('New motion text');
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"].first()').click();
 
         await page.locator('#adminLink').click();
         await page.locator('.motionTypeCreate a').click();
