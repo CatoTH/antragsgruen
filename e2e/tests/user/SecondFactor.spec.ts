@@ -14,12 +14,8 @@ test.describe('User: second factor', () => {
         await page.locator('#myAccountLink').click();
         await expect(page.locator('.tfaNotActive')).toBeVisible();
         await expect(page.locator('.secondFactorAdderBody')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelector('.btn2FaAdderOpen') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.btn2FaAdderOpen').click();
+
         await expect(page.locator('.secondFactorAdderBody')).toBeVisible();
         const src = await page.locator('.tfaqr').getAttribute('src');
         expect(src).toContain('data:image/png;base64,');
@@ -50,12 +46,8 @@ test.describe('User: second factor', () => {
 
         await page.locator('#myAccountLink').click();
         await expect(page.locator('.tfaActive')).toBeVisible();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.btn2FaRemoveOpen') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.btn2FaRemoveOpen').click();
+
         const correct2faRemove = await getTotpCode(request);
         await page.locator("input[name='remove2fa']").fill(correct2faRemove);
         await page.locator('.userAccountForm [name="save"]').click();
