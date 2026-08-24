@@ -18,7 +18,7 @@ test.describe('Admin: DeleteMotionAmendment', () => {
 
         await expect(page.locator('body')).toContainText('A2');
         await expect(page.locator('body')).toContainText('A3');
-        await expect(page.locator('.amendment3')).toBeVisible();
+        await expect(page.locator('.amendment3'.first())).toBeVisible();
 
         await motionList.gotoMotionEdit(3);
         await page.locator('.motionDeleteForm button').click();
@@ -26,7 +26,7 @@ test.describe('Admin: DeleteMotionAmendment', () => {
         await expect(page.locator('body')).toContainText('Der Antrag wurde gelöscht.');
         await expect(page.locator('body')).toContainText('A2');
         await expect(page.locator('body')).not.toContainText('A3');
-        await expect(page.locator('.amendment3')).toBeVisible();
+        await expect(page.locator('.amendment3'.first())).toBeVisible();
 
         await page
             .locator('.amendment3 .edit, .amendment3 [href*="edit"]')
@@ -37,6 +37,6 @@ test.describe('Admin: DeleteMotionAmendment', () => {
         await expect(page.locator('body')).toContainText('Der Änderungsantrag wurde gelöscht.');
         await expect(page.locator('body')).toContainText('A2');
         await expect(page.locator('body')).not.toContainText('A3');
-        await expect(page.locator('.amendment3')).not.toBeVisible();
+        await expect(page.locator('.amendment3'.first())).not.toBeVisible();
     });
 });
