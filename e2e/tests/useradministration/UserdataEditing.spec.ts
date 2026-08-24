@@ -38,6 +38,7 @@ test.describe('Useradmin: UserdataEditing', () => {
         await page.locator('.editUserModal .inputNameFamily').fill('Anö');
         await page.locator('.editUserModal .inputOrganization').fill('Testorga');
         await page.locator('.editUserModal .btnSave').click();
+        await page.waitForLoadState('networkidle');
 
         await expect(page.locator('.user7')).toContainText('Sincon Anö');
         await expect(page.locator('.user7')).toContainText('Testorga');
@@ -48,6 +49,7 @@ test.describe('Useradmin: UserdataEditing', () => {
         await expect(page.locator('.editUserModal .inputPassword')).toBeVisible();
         await page.locator('.editUserModal .inputPassword').fill('GreatSecretPassword');
         await page.locator('.editUserModal .btnSave').click();
+        await page.waitForLoadState('networkidle');
 
         await new ConsultationHomePage(page).open();
         await logout(page);

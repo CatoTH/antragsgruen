@@ -21,6 +21,7 @@ test.describe('Useradmin: PreventPwdChange', () => {
         await page.locator('.preventPwdChangeHolder input').check();
         await expect(page.locator('.preventPwdChangeHolder input')).toBeChecked();
         await page.locator('.editUserModal .btnSave').click();
+        await page.waitForLoadState('networkidle');
 
         await logout(page);
         await loginAsStdAdmin(page);
@@ -44,6 +45,7 @@ test.describe('Useradmin: PreventPwdChange', () => {
         await page.locator('.preventPwdChangeHolder input').uncheck();
         await expect(page.locator('.preventPwdChangeHolder input')).not.toBeChecked();
         await page.locator('.editUserModal .btnSave').click();
+        await page.waitForLoadState('networkidle');
 
         await logout(page);
         await loginAsStdAdmin(page);
