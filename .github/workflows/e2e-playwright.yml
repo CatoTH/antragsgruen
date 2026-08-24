@@ -160,8 +160,8 @@ jobs:
       - name: Verify test endpoint
         run: |
           curl --fail-with-body -X POST -H "Host: $E2E_HOST" -d fixture=dbdata1 "http://127.0.0.1:$E2E_PORT/test/populate-db" | grep -F '"ok":true'
-          curl --fail "http://127.0.0.1:$E2E_PORT/stdparteitag/std-parteitag" -o /dev/null
-          curl --fail "http://127.0.0.1:$E2E_PORT/stdparteitag/rest/std-parteitag/motion/Moving_test-47262/amendment/278" -o /dev/null
+          curl --fail "http://$E2E_HOST:$E2E_PORT/stdparteitag/std-parteitag" -o /dev/null
+          curl --fail "http://$E2E_HOST:$E2E_PORT/stdparteitag/rest/std-parteitag/motion/Moving_test-47262/amendment/278" -o /dev/null
 
       - name: TypeScript and test discovery gate
         run: |
