@@ -34,6 +34,12 @@ jobs:
       - name: Install e2e package dependencies
         run: pnpm --dir e2e install
 
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --no-suggest
+
+      - name: Build application image
+        run: docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml build web
+
       - name: Install Playwright Chromium
         run: pnpm --dir e2e exec playwright install --with-deps chromium
 
@@ -93,6 +99,9 @@ jobs:
           cat > .e2e-runtime/compose.yml <<'EOF'
           services:
             web:
+              depends_on:
+                mysql:
+                  condition: service_healthy
               volumes:
                 - "./.e2e-runtime/config_tests.json:/var/www/antragsgruen/config/config_tests.json:ro"
                 - "./.e2e-runtime/TEST_DOMAIN:/var/www/antragsgruen/config/TEST_DOMAIN:ro"
@@ -111,12 +120,19 @@ jobs:
                 MARIADB_USER: yii
                 MARIADB_PASSWORD: yii
               command: --port=32768
+            mysql:
+              healthcheck:
+                test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+                start_period: 5s
+                interval: 3s
+                timeout: 5s
+                retries: 30
           EOF
 
       - name: Start PR-build stack
         run: |
           docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml up -d --build web nginx mysql-test
-          for i in $(seq 1 30); do
+          for i in $(seq 1 90); do
             docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml exec -T web sh -c 'echo >/dev/tcp/127.0.0.1/32768' && break
             sleep 2
           done
