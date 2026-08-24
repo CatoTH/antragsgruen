@@ -1,8 +1,6 @@
 name: Playwright e2e
 
 on:
-  push:
-    branches: [ci/e2e-playwright-iterate]
   pull_request:
     branches: [main]
   workflow_dispatch:
