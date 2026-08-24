@@ -31,6 +31,9 @@ jobs:
           version: 10
           run_install: true
 
+      - name: Install e2e package dependencies
+        run: pnpm --dir e2e install
+
       - name: Install Playwright Chromium
         run: pnpm --dir e2e exec playwright install --with-deps chromium
 
