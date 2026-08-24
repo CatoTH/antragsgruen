@@ -131,6 +131,10 @@ jobs:
             redis:
               image: redis:7
             mysql:
+              environment:
+                MARIADB_USER: e2e
+                MARIADB_PASSWORD: e2e
+                MARIADB_DATABASE: antragsgruen
               healthcheck:
                 test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
                 start_period: 5s
