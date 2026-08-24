@@ -22,7 +22,7 @@ test.describe('Initiator organization and natural person settings', () => {
         await page.locator("input[name='initiatorCanBePerson']").uncheck();
         await expect(page.locator('.formGroupResolutionDate')).toBeVisible();
         await expect(page.locator('.formGroupGender')).toHaveCount(0);
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await expect(page.locator("input[name='initiatorCanBePerson']")).not.toBeChecked();
         await expect(page.locator("input[name='initiatorCanBeOrganization']")).toBeChecked();
@@ -50,7 +50,7 @@ test.describe('Initiator organization and natural person settings', () => {
         await loginAsStdAdmin(page);
         await motionType.open({ motionTypeId: 1 });
         await page.locator("input[name='initiatorCanBePerson']").uncheck();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await motionType.open({ motionTypeId: 1 });
         await expect(page.locator("input[name='initiatorCanBePerson']")).not.toBeChecked();
@@ -58,7 +58,7 @@ test.describe('Initiator organization and natural person settings', () => {
         await expect(page.locator("input[name='initiatorCanBePerson']")).toBeChecked();
         await expect(page.locator('.formGroupResolutionDate')).toHaveCount(0);
         await expect(page.locator('.formGroupGender')).toBeVisible();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await logout(page);
         const home = new ConsultationHomePage(page);

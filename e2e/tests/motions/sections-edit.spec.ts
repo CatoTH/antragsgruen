@@ -28,7 +28,7 @@ test.describe('Motion section editing', () => {
         await motionType.setCurrentOrder([3, 2, 1, 4, 5]);
         expect(await motionType.getCurrentOrder()).toEqual(['3', '2', '1', '4', '5']);
 
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         expect(await motionType.getCurrentOrder()).toEqual(['3', '2', '1', '4', '5']);
 
         const motion = new MotionPage(page);
@@ -89,7 +89,7 @@ test.describe('Motion section editing', () => {
         });
         expect(sortedOrder).toEqual(['ewb', 'ewd', 'ewc']);
 
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         const newSection = `.section${FIRST_FREE_MOTION_SECTION}`;
         await expect(page.locator(newSection)).toBeVisible();
@@ -103,7 +103,7 @@ test.describe('Motion section editing', () => {
 
         await page.locator(`${newSection} .sectionTitle input`).fill('My life');
         await page.locator(`${newSection} .tabularDataRow ul li.no1 input`).fill('Birth year');
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await expect(page.locator(newSection)).toBeVisible();
         await expect(page.locator(`${newSection} .sectionTitle input`)).toHaveValue('My life');

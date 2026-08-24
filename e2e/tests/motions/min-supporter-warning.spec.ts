@@ -29,7 +29,7 @@ test.describe('Minimum supporter warning', () => {
         );
         await acceptBootbox(page);
 
-        await page.locator('#personTypeOrga').selectOption(PERSON_ORGANIZATION);
+        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
         await page.locator('#initiatorPrimaryName').fill('Meine Organisation');
         await page.locator('#motionEditForm [name="save"]').click();
 

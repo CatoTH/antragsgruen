@@ -64,8 +64,8 @@ test.describe('Whole-motion comment screening', () => {
             .locator(`.adminTodo .motionCommentScreen${FIRST_FREE_COMMENT_ID + 1} a`)
             .click();
 
-        await expect(page.locator('section.comments .motionComment')).toContainText('Mein Name 2');
-        await expect(page.locator('section.comments .motionComment')).toContainText(
+        await expect(page.locator('section.comments .motionComment').first()).toContainText('Mein Name 2');
+        await expect(page.locator('section.comments .motionComment').first()).toContainText(
             'Noch ein zweiter Kommentar',
         );
 

@@ -27,7 +27,7 @@ test.describe('Simple motion deadline', () => {
         await page
             .locator('#typeSimpleDeadlineMotions')
             .fill(formatDeadline(new Date(Date.now() - 10_000)));
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await home.open();
         await expect(page.locator('body')).not.toContainText('Antrag stellen');
@@ -54,7 +54,7 @@ test.describe('Simple motion deadline', () => {
         await page
             .locator('#typeSimpleDeadlineMotions')
             .fill(formatDeadline(new Date(Date.now() - 10_000)));
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await home.open();
         await expect(page.locator('body')).not.toContainText('Antrag stellen');
@@ -63,7 +63,7 @@ test.describe('Simple motion deadline', () => {
         await page
             .locator('#typeSimpleDeadlineMotions')
             .fill(formatDeadline(new Date(Date.now() + 3600 * 24 * 1000)));
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await home.open();
         await expect(page.locator('body')).toContainText('Antrag stellen');

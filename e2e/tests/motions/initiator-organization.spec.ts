@@ -17,7 +17,7 @@ test.describe('Motion from an organization', () => {
         const createPage = await home.gotoMotionCreatePage();
 
         await createPage.fillInValidSampleData('Sample motion from an organization');
-        await page.locator('#personTypeOrga').selectOption(PERSON_ORGANIZATION);
+        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
         await expect(page.locator('.supporterDataHead')).toHaveCount(0);
         await expect(page.locator('.supporterData')).toHaveCount(0);
         await expect(page.locator('#initiatorOrga')).toHaveCount(0);

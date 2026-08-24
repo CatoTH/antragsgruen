@@ -15,7 +15,7 @@ async function allowCommentsForEveryone(page: import('@playwright/test').Page): 
     const motionType = new AdminMotionTypePage(page);
     await motionType.open({ subdomain: 'bdk', consultationPath: 'bdk', motionTypeId: 7 });
     await page.locator('#typePolicyComments').selectOption(POLICY_ALL);
-    await motionType.saveForm();
+    await page.locator('.adminTypeForm [name="save"]').first().click();
     await logout(page);
 }
 

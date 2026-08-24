@@ -36,7 +36,7 @@ test.describe('Motion creation (basic flow)', () => {
         await expect(page.locator('body')).not.toContainText('Beschlussdatum');
         await expect(page.locator('body')).not.toContainText('Ansprechperson');
 
-        await page.locator('#personTypeOrga').selectOption('orga');
+        await page.locator('#personTypeOrga').check();
         await expect(page.locator('body')).not.toContainText('Gremium, LAG...');
         await expect(page.locator('body')).toContainText('Beschlussdatum');
         await expect(page.locator('body')).toContainText('Ansprechperson');
@@ -74,7 +74,7 @@ test.describe('Motion creation (basic flow)', () => {
         await page.locator("[name='Initiator[primaryName]']").fill('Mein Name');
         await page.locator("[name='Initiator[contactEmail]']").fill('test@example.org');
         await page.locator("[name='Initiator[contactPhone]']").fill('+49123456789');
-        await page.locator('#personTypeOrga').selectOption('orga');
+        await page.locator('#personTypeOrga').check();
         await page.locator("[name='Initiator[resolutionDate]']").fill('12.01.2015');
         await page.locator("[name='Initiator[contactName]']").fill('MeinKontakt');
         await page.locator('#motionEditForm [name="save"]').click();

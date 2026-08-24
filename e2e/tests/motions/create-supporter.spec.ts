@@ -24,7 +24,7 @@ async function enableSupporters(
     } else {
         await page.locator('#typeHasOrga').uncheck();
     }
-    await motionType.saveForm();
+    await page.locator('.adminTypeForm [name="save"]').first().click();
 }
 
 test.describe('Motion supporters', () => {
@@ -72,13 +72,13 @@ test.describe('Motion supporters', () => {
         await expect(page.locator('#initiatorOrga')).toBeVisible();
         await expect(page.locator('#resolutionDate')).toHaveCount(0);
 
-        await page.locator('#personTypeOrga').selectOption(PERSON_ORGANIZATION);
+        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
         await expect(page.locator('.supporterDataHead')).toHaveCount(0);
         await expect(page.locator('.supporterData')).toHaveCount(0);
         await expect(page.locator('#initiatorOrga')).toHaveCount(0);
         await expect(page.locator('#resolutionDate')).toBeVisible();
 
-        await page.locator('#personTypeNatural').selectOption(PERSON_NATURAL);
+        await page.locator(`#personTypeNatural[value="${PERSON_NATURAL}"]`).check();
         await expect(page.locator('.supporterDataHead')).toBeVisible();
         await expect(page.locator('.supporterData')).toBeVisible();
         await expect(page.locator('#initiatorOrga')).toBeVisible();

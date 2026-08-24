@@ -21,7 +21,7 @@ test.describe('Motion screening', () => {
         await motionType.open({ motionTypeId: 1 });
         await expect(page.locator('#screeningMotions')).not.toBeChecked();
         await page.locator('#screeningMotions').check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await expect(page.locator('#screeningMotions')).toBeChecked();
 
         await home.open();
@@ -58,6 +58,6 @@ test.describe('Motion screening', () => {
 
         await home.open();
         await expect(page.locator('.motionListStd')).toContainText(MOTION_TITLE);
-        await expect(page.locator('#sidebar ul.motions')).toContainText(MOTION_TITLE);
+        await expect(page.locator('#sidebar ul.motions').last()).toContainText(MOTION_TITLE);
     });
 });

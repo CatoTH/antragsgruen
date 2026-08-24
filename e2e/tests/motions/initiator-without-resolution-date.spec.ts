@@ -30,7 +30,7 @@ test.describe('Initiator without resolution date', () => {
                 `input[name="motionInitiatorSettings[hasResolutionDate]"][value="${RESOLUTION_OPTIONAL}"]`,
             )
             .check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await expect(
             page.locator(
                 `input[name="motionInitiatorSettings[hasResolutionDate]"][value="${RESOLUTION_OPTIONAL}"]`,
@@ -40,7 +40,7 @@ test.describe('Initiator without resolution date', () => {
         await home.open();
         const createPage = await home.gotoMotionCreatePage();
         await createPage.fillInValidSampleData();
-        await page.locator('#personTypeOrga').selectOption(PERSON_ORGANIZATION);
+        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
         await expect(page.locator('#resolutionDate')).toBeVisible();
         await page.locator('#resolutionDate').fill('');
         await page.locator('#initiatorPrimaryName').fill('My party');
@@ -61,7 +61,7 @@ test.describe('Initiator without resolution date', () => {
                 `input[name="motionInitiatorSettings[hasResolutionDate]"][value="${RESOLUTION_NONE}"]`,
             )
             .check();
-        await motionType.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await expect(
             page.locator(
                 `input[name="motionInitiatorSettings[hasResolutionDate]"][value="${RESOLUTION_NONE}"]`,
@@ -71,7 +71,7 @@ test.describe('Initiator without resolution date', () => {
         await home.open();
         const createPage = await home.gotoMotionCreatePage();
         await createPage.fillInValidSampleData();
-        await page.locator('#personTypeOrga').selectOption(PERSON_ORGANIZATION);
+        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
         await expect(page.locator('#resolutionDate')).toHaveCount(0);
         await page.locator('#initiatorPrimaryName').fill('My party');
 

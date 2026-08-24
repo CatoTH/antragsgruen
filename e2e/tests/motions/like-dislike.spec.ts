@@ -11,7 +11,7 @@ async function enableSupporting(page: import('@playwright/test').Page): Promise<
     await page.locator('#typePolicySupportMotions').selectOption(POLICY_LOGGED_IN);
     await page.locator('.motionLike').check();
     await page.locator('.motionDislike').check();
-    await motionType.saveForm();
+    await page.locator('.adminTypeForm [name="save"]').first().click();
 }
 
 test.describe('Motion likes and dislikes', () => {
