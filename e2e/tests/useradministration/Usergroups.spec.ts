@@ -22,6 +22,7 @@ test.describe('Useradmin: Usergroups', () => {
         await expect(page.locator('.addGroupForm')).toBeVisible();
         await page.locator('.addGroupForm .addGroupName input').fill('Special group');
         await page.locator('.addGroupForm .btnSave').click();
+        await page.waitForLoadState('networkidle');
         await expect(page.locator(`.group${FIRST_FREE_USERGROUP_ID}`)).toContainText('Special group');
 
         const motionTypePage = new AdminMotionTypePage(page);

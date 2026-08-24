@@ -21,6 +21,7 @@ test.describe('Useradmin: RestrictedPrivileges', () => {
         await expect(page.locator('.addGroupForm')).toBeVisible();
         await page.locator('.addGroupForm .addGroupName input').fill('General group');
         await page.locator('.addGroupForm .btnSave').click();
+        await page.waitForLoadState('networkidle');
         await expect(page.locator(`.group${FIRST_FREE_USERGROUP_ID}`)).toContainText('General group');
 
         await page.locator(`.group${FIRST_FREE_USERGROUP_ID} .btnEdit`).click();
@@ -40,6 +41,7 @@ test.describe('Useradmin: RestrictedPrivileges', () => {
         await expect(page.locator('.editGroupModal .restrictedPrivilegeList')).toContainText('Rahmendaten bearbeiten');
         await expect(page.locator('.editGroupModal .restrictedPrivilegeList')).toContainText('Umwelt');
         await page.locator('.editGroupModal .btnSave').click();
+        await page.waitForLoadState('networkidle');
         await expect(page.locator(`.group${FIRST_FREE_USERGROUP_ID}`)).toContainText('Restricted Group');
         await expect(page.locator(`.group${FIRST_FREE_USERGROUP_ID}`)).toContainText(
             'Umwelt: Rahmendaten bearbeiten',
