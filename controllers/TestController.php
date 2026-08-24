@@ -344,7 +344,10 @@ class TestController extends Controller
             return;
         }
         $pdo = $this->database->getMasterPdo();
-        $pdo->setAttribute(\PDO::MYSQL_ATTR_MULTI_STATEMENTS, true);
+        $attribute = defined('Pdo\\Mysql::ATTR_MULTI_STATEMENTS')
+            ? \Pdo\Mysql::ATTR_MULTI_STATEMENTS
+            : \PDO::MYSQL_ATTR_MULTI_STATEMENTS;
+        $pdo->setAttribute($attribute, true);
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         do {
