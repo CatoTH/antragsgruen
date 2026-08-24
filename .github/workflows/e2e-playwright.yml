@@ -1,6 +1,8 @@
 name: Playwright e2e
 
 on:
+  push:
+    branches: [ci/e2e-playwright-iterate]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -33,12 +35,6 @@ jobs:
 
       - name: Install e2e package dependencies
         run: pnpm --dir e2e install
-
-      - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress --no-suggest
-
-      - name: Build application image
-        run: docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml build web
 
       - name: Install Playwright Chromium
         run: pnpm --dir e2e exec playwright install --with-deps chromium
@@ -128,6 +124,12 @@ jobs:
                 timeout: 5s
                 retries: 30
           EOF
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+
+      - name: Build application image
+        run: docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml build web
 
       - name: Start PR-build stack
         run: |
