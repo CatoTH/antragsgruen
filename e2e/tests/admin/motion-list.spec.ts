@@ -17,8 +17,8 @@ test.describe('Admin: MotionList', () => {
         await expect(page.locator('body')).toContainText('Textformatierungen');
         await expect(page.locator('body')).toContainText('Ä2');
 
-        await expect(page.locator('.amendment1'.first())).toContainText('Tester');
-        await expect(page.locator('.amendment2'.first())).toContainText('Testuser');
+        await expect(page.locator('.amendment1').first()).toContainText('Tester');
+        await expect(page.locator('.amendment2').first()).toContainText('Testuser');
         await expect(page.locator('.motion2')).toContainText('Testuser');
 
         await expect(page.locator('.adminMotionTable')).not.toContainText('Ent-Freischalten');
@@ -32,7 +32,7 @@ test.describe('Admin: MotionList', () => {
         await page.locator('.amendment1 input.selectbox').check();
         await page.locator('.motionListForm [name="unscreen"]').click();
         await expect(page.locator('.motion3')).toContainText('ungeprüft');
-        await expect(page.locator('.amendment1'.first())).toContainText('ungeprüft');
+        await expect(page.locator('.amendment1').first()).toContainText('ungeprüft');
         await page.locator('.motion3 input.selectbox').check();
         await page.locator('.amendment1 input.selectbox').check();
         await page.locator('.motionListForm [name="screen"]').click();
@@ -51,7 +51,7 @@ test.describe('Admin: MotionList', () => {
         await expectBootboxDialog(page, /Wirklich löschen/);
         await acceptBootbox(page);
 
-        await expect(page.locator('.amendment2'.first())).not.toBeVisible();
+        await expect(page.locator('.amendment2').first()).not.toBeVisible();
         await expect(page.locator('body')).toContainText('Textformatierungen');
     });
 });

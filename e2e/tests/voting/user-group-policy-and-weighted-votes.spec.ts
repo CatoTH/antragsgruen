@@ -114,12 +114,12 @@ async function assignGroupWithWeight(page: Page): Promise<void> {
     const users = new AdminUsersPage(page);
     await users.open();
 
-    await expect(page.locator('.user2'.first())).toHaveCount(0);
+    await expect(page.locator('.user2').first()).toHaveCount(0);
     await page.locator('.addUsersOpener.email').click();
     await page.locator('#emailAddresses').fill('testuser@example.org');
     await page.locator('#names').fill('ignored');
     await page.locator('.addUsersByLogin.multiuser [name="addUsers"]').click();
-    await expect(page.locator('.user2'.first())).toBeVisible();
+    await expect(page.locator('.user2').first()).toBeVisible();
 
     await expect(page.locator('.user2 .selectize-control')).toHaveCount(0);
     await page.locator('.user2 .btnEdit').click();
@@ -130,9 +130,9 @@ async function assignGroupWithWeight(page: Page): Promise<void> {
     await page.locator('.editUserModal .inputVoteWeight').fill('7');
     await page.locator('.editUserModal .btnSave').click();
 
-    await expect(page.locator('.user2'.first())).not.toContainText('Veranstaltungs-Admin');
-    await expect(page.locator('.user2'.first())).not.toContainText('Teilnehmer*in');
-    await expect(page.locator('.user2'.first())).toContainText('Voting group');
+    await expect(page.locator('.user2').first()).not.toContainText('Veranstaltungs-Admin');
+    await expect(page.locator('.user2').first()).not.toContainText('Teilnehmer*in');
+    await expect(page.locator('.user2').first()).toContainText('Voting group');
 }
 
 test.describe('User group policy and weighted votes', () => {

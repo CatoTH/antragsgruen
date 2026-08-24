@@ -46,7 +46,7 @@ test.describe('Admin: AmendmentEdit', () => {
         await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
-        await expect(page.locator('.amendment1'.first())).toContainText('Ä1neu');
-        await expect(page.locator('.amendment1'.first())).toContainText('Erledigt (völlig erschöpft)');
+        await expect(page.locator('.amendment1').first()).toContainText('Ä1neu');
+        await expect(page.locator('.amendment1').first()).toContainText('Erledigt (völlig erschöpft)');
     });
 });
