@@ -13,56 +13,26 @@ test.describe('Supporting: OrganisationListsWithNoOrganisationField', () => {
     });
 
     test('organisation list with no organisation field', async ({ page, request }) => {
+        const home = new ConsultationHomePage(page);
+        await home.open();
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         await page.locator('.siteUsers').click();
 
         await expect(page.locator('.editOrganisationModal')).toHaveCount(0);
-        await page.evaluate(() => {
-            const btn = document.querySelector('.orgaOpenerHolder .orgaOpener') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.orgaOpenerHolder .orgaOpener').click();
         await expect(page.locator('.editOrganisationModal')).toBeVisible();
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editOrganisationModal .btnAdd') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editOrganisationModal .btnAdd') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editOrganisationModal .btnAdd') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editOrganisationModal .btnAdd').click();
+        await page.locator('.editOrganisationModal .btnAdd').click();
+        await page.locator('.editOrganisationModal .btnAdd').click();
 
-        await page.evaluate(() => {
-            (document.querySelectorAll('.editOrganisationModal input.form-control').item(0) as HTMLInputElement).value = 'Working group: environment';
-            (document.querySelectorAll('.editOrganisationModal input.form-control').item(1) as HTMLInputElement).value = 'Working group: infrastructure';
-            (document.querySelectorAll('.editOrganisationModal input.form-control').item(2) as HTMLInputElement).value = 'Working group: education';
-        });
+        await page.locator('.editOrganisationModal input.form-control').nth(0).fill('Working group: environment');
+        await page.locator('.editOrganisationModal input.form-control').nth(1).fill('Working group: infrastructure');
+        await page.locator('.editOrganisationModal input.form-control').nth(2).fill('Working group: education');
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.editOrganisationModal .btnSave') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.editOrganisationModal .btnSave').click();
 
-        await page.evaluate(() => {
-            const btn = document.querySelector('.orgaOpenerHolder .orgaOpener') as HTMLElement;
-            const evt = document.createEvent('HTMLEvents');
-            evt.initEvent('click', false, true);
-            btn.dispatchEvent(evt);
-        });
+        await page.locator('.orgaOpenerHolder .orgaOpener').click();
         await expect(page.locator('.editOrganisationModal input').first()).toHaveValue('Working group: environment');
         await expect(page.locator('.editOrganisationModal input').nth(1)).toHaveValue('Working group: infrastructure');
         await expect(page.locator('.editOrganisationModal input').nth(2)).toHaveValue('Working group: education');
@@ -71,7 +41,7 @@ test.describe('Supporting: OrganisationListsWithNoOrganisationField', () => {
         await motionTypePage.open({ motionTypeId: 1 });
         await page.locator("input[name='initiatorCanBeOrganization']").uncheck();
         await page.locator("input[name='motionInitiatorSettings[hasOrganizations]']").uncheck();
-        await motionTypePage.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await logout(page);
 
@@ -83,7 +53,7 @@ test.describe('Supporting: OrganisationListsWithNoOrganisationField', () => {
             fixed: true,
         });
 
-        await new ConsultationHomePage(page).open();
+        await home.open();
         await loginAsStdUser(page);
 
         const createPage = new MotionCreatePage(page);

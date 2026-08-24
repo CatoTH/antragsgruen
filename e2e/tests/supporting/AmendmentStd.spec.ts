@@ -27,7 +27,7 @@ test.describe('Supporting: AmendmentStd', () => {
 
         await page.locator('#typeSupportTypeAmendment').selectOption('1');
         await page.locator('#typeMinSupportersAmendment').fill('19');
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await expect(page.locator('#typeSupportType')).toHaveValue(/Nur die Antragsteller\*in/);
         await expect(page.locator('#typeMinSupporters')).toHaveCount(0);

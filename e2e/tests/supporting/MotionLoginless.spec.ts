@@ -21,7 +21,7 @@ test.describe('Supporting: MotionLoginless', () => {
         await motionTypePage.open({ motionTypeId: 1 });
         await page.locator('#typePolicySupportMotions').selectOption('1');
         await page.locator('.motionSupportPolicy .motionSupport').check();
-        await page.locator('.adminTypeForm [name="save"]').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await new ConsultationHomePage(page).open();
         await home.gotoMotionView(2);

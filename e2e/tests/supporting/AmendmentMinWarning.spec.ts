@@ -11,6 +11,8 @@ test.describe('Supporting: AmendmentMinWarning', () => {
     });
 
     test('supporter warning appears for natural persons but not for organizations', async ({ page }) => {
+        const home = new ConsultationHomePage(page);
+        await home.open();
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const motionTypePage = new AdminMotionTypePage(page);
@@ -24,7 +26,7 @@ test.describe('Supporting: AmendmentMinWarning', () => {
         await page.locator('#typeSupportTypeAmendment').selectOption('1');
         await page.locator('#typeMinSupportersAmendment').fill('19');
 
-        await motionTypePage.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await new ConsultationHomePage(page).open();
         await page.locator(`.motionLink2`).click();
@@ -42,7 +44,7 @@ test.describe('Supporting: AmendmentMinWarning', () => {
         await expectBootboxDialog(page, /Es müssen mindestens 19 Unterstützer\*innen angegeben werden/);
         await acceptBootbox(page);
 
-        await page.locator('#personTypeOrga').selectOption('1');
+        await page.locator('#personTypeOrga').check();
         await page.locator('#initiatorPrimaryName').fill('Mein Name');
         await page.locator('#amendmentEditForm [name="save"]').click();
 

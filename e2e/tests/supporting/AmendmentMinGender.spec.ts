@@ -10,6 +10,8 @@ test.describe('Supporting: AmendmentMinGender', () => {
     });
 
     test('enable collecting supporters, min. 1 female', async ({ page }) => {
+        const home = new ConsultationHomePage(page);
+        await home.open();
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const motionTypePage = new AdminMotionTypePage(page);
@@ -29,8 +31,6 @@ test.describe('Supporting: AmendmentMinGender', () => {
         await page.locator('#typeAllowMoreSupportersAmendment').check();
         await motionTypePage.saveForm();
 
-        const home = new ConsultationHomePage(page);
-        await home.open();
         await home.gotoAmendmentCreatePage();
         await page.locator('#sections_30').fill('New amendment');
         await page.locator("input[name='Initiator[primaryName]']").fill('Mein Name');

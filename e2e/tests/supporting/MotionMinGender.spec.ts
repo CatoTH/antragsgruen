@@ -10,6 +10,8 @@ test.describe('Supporting: MotionMinGender', () => {
     });
 
     test('enable collecting supporters, min. 1 female', async ({ page }) => {
+        const home = new ConsultationHomePage(page);
+        await home.open();
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const motionTypePage = new AdminMotionTypePage(page);
@@ -24,10 +26,8 @@ test.describe('Supporting: MotionMinGender', () => {
         await page.locator('#typeMinSupporters').fill('1');
         await page.locator('#typeMinSupportersFemale').fill('1');
         await page.locator('#typeAllowMoreSupporters').check();
-        await motionTypePage.saveForm();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        const home = new ConsultationHomePage(page);
-        await home.open();
         await home.gotoMotionCreatePage();
         await page.locator("input[name='tags[]'][value='1']").check();
         await page.locator("[name='sections[1]']").fill('Testantrag 1');
