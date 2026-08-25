@@ -159,7 +159,12 @@ jobs:
         run: |
           curl --fail-with-body -X POST -H "Host: $E2E_HOST" -d fixture=dbdata1 "http://127.0.0.1:$E2E_PORT/test/populate-db" | grep -F '"ok":true'
           curl --fail "http://$E2E_HOST:$E2E_PORT/stdparteitag/std-parteitag" -o /dev/null
-          curl --fail "http://$E2E_HOST:$E2E_PORT/stdparteitag/rest/std-parteitag/motion/Moving_test-47262/amendment/278" -o /dev/null
+          rest_code=$(curl -s -o /tmp/e2e-rest.json -w "%{http_code}" "http://$E2E_HOST:$E2E_PORT/stdparteitag/rest/std-parteitag/motion/Moving_test-47262/amendment/278")
+          if [ "$rest_code" != "403" ] || ! grep -q "Public API disabled" /tmp/e2e-rest.json; then
+            echo "REST smoke failed: expected the documented 403, got $rest_code"
+            cat /tmp/e2e-rest.json
+            exit 1
+          fi
 
       - name: TypeScript and test discovery gate
         run: |
