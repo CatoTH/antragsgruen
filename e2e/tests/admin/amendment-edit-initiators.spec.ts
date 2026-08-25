@@ -16,7 +16,7 @@ test.describe('Admin: AmendmentEditInitiators', () => {
         await page.locator('#motionListLink').click();
         await page.locator('.motionType1').click();
         await page.locator('#typeSupportType').selectOption('1');
-        await page.locator('.adminTypeForm [name="save"].first()').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await page.locator('.amendment2 .edit, .amendment2 [href*="edit"]').first().click();
         await expect(page.locator('.supporterForm')).toContainText('E-Mail: testuser@example.org');

@@ -31,7 +31,7 @@ test.describe('Proposed procedure: deactivating', () => {
         await page.locator('.motionType1').click();
         await expect(page.locator('#typeProposedProcedure')).toBeChecked();
         await page.locator('#typeProposedProcedure').uncheck();
-        await page.locator('.adminTypeForm [name="save"].first()').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await expect(page.locator('#typeProposedProcedure')).not.toBeChecked();
 

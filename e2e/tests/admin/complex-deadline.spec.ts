@@ -75,7 +75,7 @@ test.describe('Admin: ComplexDeadline', () => {
         });
 
         await page.locator('#deadlineDebugMode').check();
-        await page.locator('.adminTypeForm [name="save"].first()').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await expect(page.locator('.stickyAdminDebugFooter')).toBeVisible();
 
         async function setTime(date: string) {

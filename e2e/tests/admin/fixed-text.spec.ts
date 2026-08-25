@@ -20,7 +20,7 @@ test.describe('Admin: FixedText', () => {
         await page.locator('.motionType1').click();
         await page.locator('#screeningMotions').check();
         await page.locator('#screeningAmendments').check();
-        await page.locator('.adminTypeForm [name="save"].first()').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
         await replaceInCkEditor(page, 'sections_2_wysiwyg', /woschechta Bayer/g, 'Saupreiß');

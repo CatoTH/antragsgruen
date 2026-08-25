@@ -79,7 +79,7 @@ test.describe('Admin: MotionTypeCreate', () => {
         await page.locator('.motionTypeCreateForm [name="create"]').click();
 
         await page.locator('#typeCreateSidebar').check();
-        await page.locator('.adminTypeForm [name="save"].first()').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
     });
 
     test('check if I can see the new types in the sidebar', async ({ page }) => {
@@ -172,7 +172,7 @@ test.describe('Admin: MotionTypeCreate', () => {
         await loginAsStdAdmin(page);
         await expect(page.locator('#screeningMotions')).not.toBeChecked();
         await page.locator('#screeningMotions').check();
-        await page.locator('.adminTypeForm [name="save"].first()').click();
+        await page.locator('.adminTypeForm [name="save"]').first().click();
         await expect(page.locator('#screeningMotions')).toBeChecked();
         await expect(page.locator('#screeningAmendments')).not.toBeChecked();
     });
