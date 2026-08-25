@@ -166,6 +166,13 @@ jobs:
             exit 1
           fi
 
+      - name: Smoke diagnostics
+        if: always()
+        run: |
+          getent hosts "$E2E_HOST" || echo "NO HOSTS ENTRY"
+          docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml exec -T web sh -c 'cat /var/www/antragsgruen/config/TEST_DOMAIN; echo' || true
+          curl -sv --resolve "$E2E_HOST:$E2E_PORT:127.0.0.1" "http://$E2E_HOST:$E2E_PORT/test/check-populated" 2>&1 | grep -E "Connected to|Host:|HTTP/|^\{" || true
+
       - name: TypeScript and test discovery gate
         run: |
           pnpm --dir e2e exec tsc --noEmit
