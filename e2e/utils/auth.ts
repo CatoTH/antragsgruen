@@ -9,6 +9,11 @@ async function loginWithCredentials(
     username: string,
     password: string,
 ): Promise<void> {
+    const baseUrl = process.env.E2E_BASE_URL || 'http://test.antragsgruen.test';
+    const currentUrl = page.url();
+    if (currentUrl === 'about:blank' || !currentUrl.startsWith(baseUrl)) {
+        await page.goto(`/${DEFAULT_SUBDOMAIN}/${DEFAULT_CONSULTATION_PATH}`);
+    }
     await page.locator('#loginLink').waitFor({ state: 'visible', timeout: 10_000 });
     await page.locator('#loginLink').click();
     await page.locator('h1').filter({ hasText: /LOGIN/i }).waitFor();
