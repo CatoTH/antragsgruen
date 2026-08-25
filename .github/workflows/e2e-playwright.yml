@@ -69,7 +69,7 @@ jobs:
             "pdfExportConcat": true
           }
           EOF
-          printf '%s\n' "$E2E_HOST" > .e2e-runtime/TEST_DOMAIN
+          printf '%s' "$E2E_HOST:$E2E_PORT" > .e2e-runtime/TEST_DOMAIN
           cat > .e2e-runtime/nginx/default.conf <<'EOF'
           server {
             server_name stdparteitag.antragsgruen.test 127.0.0.1;
@@ -157,7 +157,7 @@ jobs:
 
       - name: Verify test endpoint
         run: |
-          curl --fail-with-body -X POST -H "Host: $E2E_HOST" -d fixture=dbdata1 "http://127.0.0.1:$E2E_PORT/test/populate-db" | grep -F '"ok":true'
+          curl --fail-with-body -X POST -d fixture=dbdata1 "http://$E2E_HOST:$E2E_PORT/test/populate-db" | grep -F '"ok":true'
           curl --fail "http://$E2E_HOST:$E2E_PORT/stdparteitag/std-parteitag" -o /dev/null
           rest_code=$(curl -s -o /tmp/e2e-rest.json -w "%{http_code}" "http://$E2E_HOST:$E2E_PORT/stdparteitag/rest/std-parteitag/motion/Moving_test-47262/amendment/278")
           if [ "$rest_code" != "403" ] || ! grep -q "Public API disabled" /tmp/e2e-rest.json; then
