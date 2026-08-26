@@ -17,18 +17,17 @@
           <div class="starter">
             <span v-html="formatUsernameHtml(item)"></span>
 
-            <div class="operationDelete" @click="onItemDelete($event, item)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
+            <button type="button" class="link operationDelete" @click="onItemDelete($event, item)">
               <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
               <span v-t="['speech', 'admin_delete']"></span>
-            </div>
+            </button>
 
-            <div class="operationsIndicator operationStart" tabindex="0" role="button"
-                 @click="onItemSelected($event, item)"
-                 @keyup.enter="onItemSelected($event, item)"
-                 v-t:title="['speech', 'admin_subq_start']" v-t:aria-label="['speech', 'admin_subq_start']">
+            <button type="button" class="link operationsIndicator operationStart"
+                    @click="onItemSelected($event, item)"
+                    v-t:title="['speech', 'admin_subq_start']" v-t:aria-label="['speech', 'admin_subq_start']">
               <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
               <span v-t="['speech', 'admin_start']"></span>
-            </div>
+            </button>
           </div>
         </li>
       </template>

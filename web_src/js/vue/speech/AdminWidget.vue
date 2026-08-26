@@ -152,21 +152,20 @@
         </li>
 
         <li class="slotPlaceholder active" v-if="slotProposal"
-            @click="addItemToSlotsAndStart(slotProposal.id)"
-            @keyup.enter="addItemToSlotsAndStart(slotProposal.id)">
+            @click="addItemToSlotsAndStart(slotProposal.id)">
           <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
           <div class="title" v-t="['speech', 'admin_next', false, {}, ':']"></div>
           <div class="name" v-html="formatUsernameHtml(slotProposal)"></div>
 
-          <div class="operationDelete" @click="onItemDelete($event, slotProposal.id)" @keyup.enter="onItemDelete($event, item)" tabindex="0">
+          <button type="button" class="link operationDelete" @click="onItemDelete($event, slotProposal.id)">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             <span v-t="['speech', 'admin_delete']"></span>
-          </div>
+          </button>
 
-          <div class="operationStart" @click="addItemToSlotsAndStart(slotProposal.id)" @keyup.enter="addItemToSlotsAndStart(slotProposal.id)" tabindex="0">
+          <button type="button" class="link operationStart" @click.stop="addItemToSlotsAndStart(slotProposal.id)">
             <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
             <span v-t="['speech', 'admin_start']"></span>
-          </div>
+          </button>
         </li>
         <li class="slotPlaceholder inactive" v-if="!slotProposal">
           <span class="glyphicon glyphicon-time iconBackground" aria-hidden="true"></span>
