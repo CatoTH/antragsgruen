@@ -41,7 +41,8 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
 $linesAria = str_replace(['%FROM%', '%TO%'], [$firstLineNo, $lastLineNo], Yii::t('amend', 'merge_line_range_aria'));
 ?>
     <div class="leftToolbar">
-        <div class="lineNumbers" aria-label="<?= Html::encode($linesAria) ?>">
+        <div class="lineNumbers">
+            <span class="sr-only"><?= Html::encode($linesAria) ?></span>
             <?php
             if ($firstLineNo <= $lastLineNo) {
                 // $lastLineNo < $firstLineNo happens for sections that only have one completely empty paragraph

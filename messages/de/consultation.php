@@ -131,4 +131,5 @@ return [
     'discuss_sort_oldest'     => 'Älteste',
     'discuss_sort_amend'      => 'Anzahl Änderungsanträge',
     'discuss_sort_comment'    => 'Anzahl Kommentare',
+    'discuss_sort_aria'       => 'Anträge sortieren nach',
 ];

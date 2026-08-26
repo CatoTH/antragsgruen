@@ -178,6 +178,8 @@
     position: absolute;
     bottom: 0;
     padding: 0 5px;
+    // button.link pins the height to 1em in Blink; these controls size to their content instead
+    -webkit-logical-height: auto;
     background-color: rgba(255, 255, 255, 0.5);
     font-size: 12px;
     opacity: 0;

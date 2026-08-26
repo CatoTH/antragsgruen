@@ -277,4 +277,6 @@ return [
     'months_10' => 'Oktobar', // Original: October
     'months_11' => 'Novembar', // Original: November
     'months_12' => 'Decembar', // Original: December
+
+    'date_spoken' => '%DAY%. %MONTHNAME% %YEAR%', // Original: %MONTHNAME% %DAY%, %YEAR%
 ];

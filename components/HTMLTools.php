@@ -873,7 +873,7 @@ class HTMLTools
     public static function getTooltipIcon(string $tooltip, string $placement = 'top', bool $html = false): string
     {
         $html = ($html ? 'data-html="true" ' : '');
-        return '<span class="tooltipIcon glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="' . $placement . '" ' .
+        return '<span class="tooltipIcon glyphicon glyphicon-info-sign" role="img" data-toggle="tooltip" data-placement="' . $placement . '" ' .
                $html .
                'aria-label="' . Html::encode(\Yii::t('base', 'aria_tooltip') . ': ' . $tooltip) . '" ' .
                'data-original-title="' . Html::encode($tooltip) . '"></span>';

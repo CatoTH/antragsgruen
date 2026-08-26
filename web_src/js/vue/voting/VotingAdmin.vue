@@ -18,7 +18,7 @@
 
       <label class="activateHeader">
         <input type="checkbox" v-model="isUsed"
-          > <template v-t="['voting', 'admin_voting_use']"></template> <span class="glyphicon glyphicon-info-sign"
+          > <template v-t="['voting', 'admin_voting_use']"></template> <span class="glyphicon glyphicon-info-sign" role="img"
               v-t:aria-label="['voting', 'admin_voting_use_h']"
               v-tooltip="['voting', 'admin_voting_use_h']"
         ></span>
@@ -30,13 +30,13 @@
         <div class="majorityType" v-if="getVotingMajority(voting)">
           <strong v-t="['voting', 'settings_majoritytype']"></strong>:
           {{ getVotingMajority(voting).name }}
-          <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingMajority(voting).description" v-tooltip="getVotingMajority(voting).description"></span>
+          <span class="glyphicon glyphicon-info-sign" role="img" :aria-label="getVotingMajority(voting).description" v-tooltip="getVotingMajority(voting).description"></span>
         </div>
         <div class="quorumType" v-if="getVotingQuorum(voting)">
           <strong v-t="['voting', 'settings_quorumtype']"></strong>:
           {{ getVotingQuorum(voting).name }}
           ({{ quorumIndicator }})
-          <span class="glyphicon glyphicon-info-sign" :aria-label="getVotingQuorum(voting).description"
+          <span class="glyphicon glyphicon-info-sign" role="img" :aria-label="getVotingQuorum(voting).description"
                 v-tooltip="getVotingQuorum(voting).description" v-if="getVotingQuorum(voting).description !== ''"></span>
         </div>
         <div class="votingPolicy">
@@ -113,9 +113,9 @@
               <div v-for="item in groupedVoting">
                 {{ item.title_with_prefix }}
                 <a v-if="item.url_html" :href="item.url_html" v-t:title="['voting', 'voting_show_amend']"><span
-                    class="glyphicon glyphicon-new-window" v-t:aria-label="['voting', 'voting_show_amend']"></span></a>
+                    class="glyphicon glyphicon-new-window" role="img" v-t:aria-label="['voting', 'voting_show_amend']"></span></a>
                 <a v-if="itemAdminUrl(item)" :href="itemAdminUrl(item)" v-t:title="['voting', 'voting_edit_amend']"
-                   :class="'adminUrl' + item.id"><span class="glyphicon glyphicon-wrench" v-t:aria-label="['voting', 'voting_edit_amend']"></span></a>
+                   :class="'adminUrl' + item.id"><span class="glyphicon glyphicon-wrench" role="img" v-t:aria-label="['voting', 'voting_edit_amend']"></span></a>
                 <br>
                 <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', true, {'%BY%': item.initiators_html}]"></span>
               </div>
@@ -123,11 +123,11 @@
                 {{ quorumCounter(groupedVoting) }}
               </div>
               <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
-                <span class="glyphicon glyphicon-chevron-down" aria-label="true"></span>
+                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                 <template v-t="['voting', 'voting_show_votes']"></template>
               </button>
               <button v-if="hasVoteList(groupedVoting) && isVoteListShown(groupedVoting)" @click="hideVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
-                <span class="glyphicon glyphicon-chevron-up" aria-label="true"></span>
+                <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                 <template v-t="['voting', 'voting_hide_votes']"></template>
               </button>
             </div>
@@ -283,14 +283,14 @@
         <label>
           <input type="radio" :value="ANSWER_TEMPLATE_YES" v-model="answerTemplate" :disabled="isOpen || isClosed"
             > <template v-t="['voting', 'settings_answers_yes']"></template
-            > <span class="glyphicon glyphicon-info-sign"
+            > <span class="glyphicon glyphicon-info-sign" role="img"
                 v-t:aria-label="['voting', 'settings_answers_yesh']"
                 v-tooltip="['voting', 'settings_answers_yesh']"></span>
         </label>
         <label>
           <input type="radio" :value="ANSWER_TEMPLATE_PRESENT" v-model="answerTemplate" :disabled="isOpen || isClosed"
             > <template v-t="['voting', 'settings_answers_present']"></template
-            > <span class="glyphicon glyphicon-info-sign"
+            > <span class="glyphicon glyphicon-info-sign" role="img"
                 v-t:aria-label="['voting', 'settings_answers_presenth']"
                 v-tooltip="['voting', 'settings_answers_presenth']"></span>
         </label>
@@ -302,7 +302,7 @@
 
       <fieldset class="votesMaxVotes">
         <legend><template v-t="['voting', 'settings_maxvotes']"></template>:
-          <span class="glyphicon glyphicon-info-sign"
+          <span class="glyphicon glyphicon-info-sign" role="img"
                 v-t:aria-label="['voting', 'settings_maxvotes_h']"
                 v-tooltip="['voting', 'settings_maxvotes_h']"></span>
         </legend>
@@ -343,7 +343,7 @@
         <label v-for="majorityTypeDef in MAJORITY_TYPES">
           <input type="radio" :value="majorityTypeDef.id" v-model="majorityType" :disabled="isOpen || isClosed">
           {{ majorityTypeDef.name }}
-          <span class="glyphicon glyphicon-info-sign"
+          <span class="glyphicon glyphicon-info-sign" role="img"
                 :aria-label="majorityTypeDef.description" v-tooltip="majorityTypeDef.description"></span>
         </label>
       </fieldset>
@@ -358,7 +358,7 @@
         <label v-for="quorumTypeDef in QUORUM_TYPES">
           <input type="radio" :value="quorumTypeDef.id" v-model="quorumType" :disabled="isOpen || isClosed">
           {{ quorumTypeDef.name }}
-          <span class="glyphicon glyphicon-info-sign"
+          <span class="glyphicon glyphicon-info-sign" role="img"
                 :aria-label="quorumTypeDef.description" v-tooltip="quorumTypeDef.description"></span>
         </label>
       </fieldset>
@@ -406,7 +406,7 @@
       </fieldset>
       <fieldset class="inputWithLabelHolder votesTimer">
         <legend><template v-t="['voting', 'settings_timer']"></template>:
-          <span class="glyphicon glyphicon-info-sign"
+          <span class="glyphicon glyphicon-info-sign" role="img"
                 v-t:aria-label="['voting', 'settings_timer_h']"
                 v-tooltip="['voting', 'settings_timer_h']"></span>
         </legend>
@@ -417,7 +417,7 @@
       </fieldset>
       <label class="assignedMotion">
         <template v-t="['voting', 'settings_motionassign']"></template>:
-        <span class="glyphicon glyphicon-info-sign"
+        <span class="glyphicon glyphicon-info-sign" role="img"
               v-t:aria-label="['voting', 'settings_motionassign_h']"
               v-tooltip="['voting', 'settings_motionassign_h']"></span>
         <br>

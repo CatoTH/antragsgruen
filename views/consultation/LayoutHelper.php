@@ -130,7 +130,7 @@ class LayoutHelper
 
         $return .= '<p class="date">';
         if ($motion->getMyConsultation()->getSettings()->showIMotionEditDate && $motion->wasContentEdited()) {
-            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit"
+            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit" role="img"
                 aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
             $return .= Tools::formatMysqlDateTime($motion->dateContentModification);
             $return .= '</span>';
@@ -173,7 +173,7 @@ class LayoutHelper
 
         $return .= '<p class="date">';
         if ($consultation->getSettings()->showIMotionEditDate && $amendment->wasContentEdited()) {
-            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit"
+            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit" role="img"
                 aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
             $return .= Tools::formatMysqlDateTime($amendment->dateContentModification);
             $return .= '</span>';
@@ -518,7 +518,7 @@ class LayoutHelper
         $tooltip = Html::encode(implode(" - ", $texts));
 
         $str = '<a href="' . Html::encode($link) . '" class="privateCommentsIndicator">';
-        $str .= '<span class="glyphicon glyphicon-pushpin" data-toggle="tooltip" data-placement="right" ' .
+        $str .= '<span class="glyphicon glyphicon-pushpin" role="img" data-toggle="tooltip" data-placement="right" ' .
             'aria-label="' . Html::encode(\Yii::t('base', 'aria_tooltip')) . ': ' . $tooltip . '" ' .
             'data-original-title="' . $tooltip . '"></span>';
         $str .= '</a>';

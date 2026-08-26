@@ -3,7 +3,7 @@
     <header class="widgetTitle">
       {{ title }}
       <a v-if="adminUrl" :href="adminUrl" class="speechAdminLink">
-        <span class="glyphicon glyphicon-wrench" v-t:title="['speech', 'goto_admin']" v-t:aria-label="['speech', 'goto_admin']"></span>
+        <span class="glyphicon glyphicon-wrench" role="img" v-t:title="['speech', 'goto_admin']" v-t:aria-label="['speech', 'goto_admin']"></span>
       </a>
     </header>
 
@@ -40,7 +40,7 @@
     <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" v-t:aria-label="['speech', 'waiting_aria_1']">
       <header>
         <div v-if="queue.subqueues[0].have_applied" class="appliedMe">
-          <span class="label label-success" v-t:aria-label="['speech', 'applied_aria']" v-t="['speech', 'applied_aria']"></span>
+          <span class="label label-success" v-t="['speech', 'applied_aria']"></span>
           <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
                   v-t:title="['speech', 'apply_revoke_aria']" v-t:aria-label="['speech', 'apply_revoke_aria']">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
@@ -112,19 +112,19 @@
         <div class="nameNumber">
                 <span class="name"
                       v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'">
-                    <span class="glyphicon glyphicon-time" v-t:aria-label="['speech', 'waiting_list']"></span>
+                    <span class="glyphicon glyphicon-time" role="img" v-t:aria-label="['speech', 'waiting_list']"></span>
                     {{ subqueue.name }}
                 </span>
 
           <span class="number"
                 v-if="showApplicationForm !== subqueue.id && showApplicationForm !== subqueue.id + '_poo'"
-                :aria-label="numAppliedTitle(subqueue)" :title="numAppliedTitle(subqueue)">{{ subqueue.num_applied
-            }}
-                </span>
+                :title="numAppliedTitle(subqueue)"><span
+              class="sr-only">{{ numAppliedTitle(subqueue) }}</span><span
+              aria-hidden="true">{{ subqueue.num_applied }}</span></span>
         </div>
 
         <div v-if="subqueue.have_applied && showApplicationForm !== subqueue.id" class="appliedMe">
-          <span class="label label-success" v-t:aria-label="['speech', 'applied_aria']" v-t="['speech', 'applied_aria']"></span>
+          <span class="label label-success" v-t="['speech', 'applied_aria']"></span>
           <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
                   v-t:title="['speech', 'apply_revoke_aria']" v-t:aria-label="['speech', 'apply_revoke_aria']">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>

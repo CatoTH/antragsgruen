@@ -139,7 +139,7 @@
                         </a>
 
                         <span class="number" v-if="showApplicationForm !== subqueue.id" v-t:title="['speech', 'persons_waiting']">
-                            <span class="glyphicon glyphicon-time" v-t:aria-label="['speech', 'persons_waiting']"></span>
+                            <span class="glyphicon glyphicon-time" role="img" v-t:aria-label="['speech', 'persons_waiting']"></span>
                             {{ subqueue.num_applied }}
                         </span>
                         <ol class="nameList" v-if="subqueue.applied && subqueue.applied.length > 0 && showApplicationForm !== subqueue.id" v-t:title="['speech', 'persons_waiting']">
