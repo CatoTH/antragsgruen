@@ -106,7 +106,7 @@ jobs:
                 DB_PASSWORD: e2e
                 REDIS_HOST: redis
               volumes:
-                - "./.e2e-runtime/config_tests.json:/var/www/antragsgruen/config/config_tests.json:ro"
+                - "./.e2e-runtime/config_tests.json:/var/www/antragsgruen/config/config_tests.json"
                 - "./.e2e-runtime/TEST_DOMAIN:/var/www/antragsgruen/config/TEST_DOMAIN:ro"
             nginx:
               depends_on:
