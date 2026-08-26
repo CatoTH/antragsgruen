@@ -20,7 +20,7 @@ test.describe('Misc: layout (HTML/Pa11y)', () => {
 
         await expect(page.locator('.breadcrumb')).toContainText('Test2');
         await expect(page.locator('.breadcrumb')).toContainText('Antrag');
-        await expect(page.locator('.breadcrumb')).not.toContainText('HoesslTo');
+        await expect(page.locator('.breadcrumb').getByText('HoesslTo').filter({ visible: true })).toHaveCount(0);
     });
 
     test('motion create page layout', async ({ page }) => {

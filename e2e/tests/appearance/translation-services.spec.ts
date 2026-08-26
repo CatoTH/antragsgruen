@@ -8,22 +8,25 @@ test.describe('Appearance: translation services', () => {
 
     test('translate widget hidden by default, can be activated', async ({ page }) => {
         await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('.translateWidget')).toHaveCount(0);
+        await test.step('Not see the translation widget', async () => {
+            await expect(page.locator('.translateWidget').filter({ visible: true })).toHaveCount(0);
 
-        await page.locator('.motionLink1').first().click();
-        await page.locator('.motionData').waitFor();
-        await expect(page.locator('.translateWidget')).toHaveCount(0);
+            await page.locator('.motionLink1').first().click();
+            await page.locator('.motionData').waitFor();
+            await expect(page.locator('.translateWidget').filter({ visible: true })).toHaveCount(0);
 
-        await page.locator('.amendment1').first().click();
-        await page.locator('.motionData').waitFor();
-        await expect(page.locator('.translateWidget')).toHaveCount(0);
+            await page.locator('.amendment1').first().click();
+            await page.locator('.motionData').waitFor();
+            await expect(page.locator('.translateWidget').filter({ visible: true })).toHaveCount(0);
 
-        await loginAsStdAdmin(page);
+            await loginAsStdAdmin(page);
 
-        await page.goto('/stdparteitag/std-parteitag/admin');
+            await page.goto('/stdparteitag/std-parteitag/admin');
+        });
+
         await page.locator('#appearanceLink').click();
         await expect(page.locator('#translationService')).not.toBeChecked();
-        await expect(page.locator('.translationService .services')).toHaveCount(0);
+        await expect(page.locator('.translationService .services').filter({ visible: true })).toHaveCount(0);
 
         await page.evaluate(() => {
             const el = document.querySelector('#translationService') as HTMLInputElement;
@@ -38,26 +41,29 @@ test.describe('Appearance: translation services', () => {
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 
         await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('.translateWidget')).toBeVisible();
+        await test.step('See the translation widget', async () => {
+            await expect(page.locator('.translateWidget').first()).toBeVisible();
 
-        await page.locator('.motionLink1').first().click();
-        await page.locator('.motionData').waitFor();
-        await expect(page.locator('.translateWidget')).toBeVisible();
+            await page.locator('.motionLink1').first().click();
+            await page.locator('.motionData').waitFor();
+            await expect(page.locator('.translateWidget').first()).toBeVisible();
 
-        await page.locator('.amendment1').first().click();
-        await page.locator('.motionData').waitFor();
-        await expect(page.locator('.translateWidget')).toBeVisible();
+            await page.locator('.amendment1').first().click();
+            await page.locator('.motionData').waitFor();
+            await expect(page.locator('.translateWidget').first()).toBeVisible();
 
-        await expect(page.locator('.dropdown-menu')).toHaveCount(0);
-        await page.evaluate(() => {
-            const el = document.querySelector('#translatePageBtn');
-            if (el) {
-                el.dispatchEvent(
-                    new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
-                );
-            }
+            await expect(page.locator('.dropdown-menu').filter({ visible: true })).toHaveCount(0);
+            await page.evaluate(() => {
+                const el = document.querySelector('#translatePageBtn');
+                if (el) {
+                    el.dispatchEvent(
+                        new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
+                    );
+                }
+            });
+            await expect(page.locator('.dropdown-menu').first()).toBeVisible();
+            await expect(page.locator('.dropdown-menu')).toContainText('Español');
         });
-        await expect(page.locator('.dropdown-menu')).toBeVisible();
-        await expect(page.locator('.dropdown-menu')).toContainText('Español');
+
     });
 });

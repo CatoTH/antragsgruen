@@ -14,22 +14,24 @@ test.describe('Appearance: hide title prefix', () => {
         await loginAsStdAdmin(page);
 
         await page.goto('/stdparteitag/std-parteitag/admin/appearance');
-        await page.locator('#hideTitlePrefix').check();
-        await page.locator('#consultationAppearanceForm [name="save"]').click();
+        await test.step('disable title prefixes', async () => {
+            await page.locator('#hideTitlePrefix').first().check();
+            await page.locator('#consultationAppearanceForm [name="save"]').click();
 
-        await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('body')).not.toContainText('A2');
+            await page.goto('/stdparteitag/std-parteitag');
+            await expect(page.locator('body')).not.toContainText('A2', { useInnerText: true });
 
-        await page.locator('.motionLink2').click();
-        await page.locator('.motionData').waitFor();
-        await expect(page.locator('body')).not.toContainText('A2');
+            await page.locator('.motionLink2').click();
+            await page.locator('.motionData').waitFor();
+            await expect(page.locator('body')).not.toContainText('A2', { useInnerText: true });
 
-        await page.locator('.amendmentCreate a').click();
-        await expect(page.locator('body')).not.toContainText('A2');
+            await page.locator('.amendmentCreate a').click();
+            await expect(page.locator('body')).not.toContainText('A2', { useInnerText: true });
 
-        await page.goto('/stdparteitag/std-parteitag');
-        await page.locator('.amendment1').first().click();
-        await page.locator('.motionData').waitFor();
-        await expect(page.locator('body')).not.toContainText('A2');
+            await page.goto('/stdparteitag/std-parteitag');
+            await page.locator('.amendment1').first().click();
+            await page.locator('.motionData').waitFor();
+            await expect(page.locator('body')).not.toContainText('A2', { useInnerText: true });
+        });
     });
 });

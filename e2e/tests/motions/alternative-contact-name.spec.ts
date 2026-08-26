@@ -16,34 +16,36 @@ test.describe('Alternative contact name', () => {
         const home = new ConsultationHomePage(page);
         await home.open();
         await home.gotoMotionCreatePage();
-        await expect(page.locator('#initiatorContactName')).toHaveCount(0);
+        await test.step('motion Create site loads', async () => {
+            await expect(page.locator('#initiatorContactName').filter({ visible: true })).toHaveCount(0);
 
-        await home.open();
-        await loginAsStdAdmin(page);
+            await home.open();
+            await loginAsStdAdmin(page);
 
-        const motionType = new AdminMotionTypePage(page);
-        await motionType.open({ motionTypeId: 1 });
-        await expect(
-            page.locator(`input[name="motionInitiatorSettings[contactName]"][value="${CONTACT_NONE}"]`),
-        ).toBeChecked();
-        await page
-            .locator(`input[name="motionInitiatorSettings[contactName]"][value="${CONTACT_REQUIRED}"]`)
-            .check();
-        await motionType.saveForm();
-        await expect(
-            page.locator(`input[name="motionInitiatorSettings[contactName]"][value="${CONTACT_REQUIRED}"]`),
-        ).toBeChecked();
+            const motionType = new AdminMotionTypePage(page);
+            await motionType.open({ motionTypeId: 1 });
+            await expect(
+                page.locator(`input[name="motionInitiatorSettings[contactName]"][value="${CONTACT_NONE}"]`),
+            ).toBeChecked();
+            await page
+                .locator(`input[name="motionInitiatorSettings[contactName]"][value="${CONTACT_REQUIRED}"]`)
+                .check();
+            await motionType.saveForm();
+            await expect(
+                page.locator(`input[name="motionInitiatorSettings[contactName]"][value="${CONTACT_REQUIRED}"]`),
+            ).toBeChecked();
 
-        await home.open();
-        const createPage = await home.gotoMotionCreatePage();
-        await expect(page.locator('#initiatorContactName')).toBeVisible();
-        await expect(page.locator('#initiatorContactName')).toHaveAttribute('required', '');
+            await home.open();
+            const createPage = await home.gotoMotionCreatePage();
+            await expect(page.locator('#initiatorContactName').first()).toBeVisible();
+            await expect(page.locator('#initiatorContactName')).toHaveAttribute('required', '');
 
-        await createPage.fillInValidSampleData();
-        await page.locator('#initiatorContactName').fill('Alternative contact person');
-        await createPage.saveForm();
+            await createPage.fillInValidSampleData();
+            await page.locator('#initiatorContactName').first().fill('Alternative contact person');
+            await createPage.saveForm();
 
-        await page.locator('#motionConfirmForm [name="modify"]').click();
-        await expect(page.locator('#initiatorContactName')).toHaveValue('Alternative contact person');
+            await page.locator('#motionConfirmForm [name="modify"]').click();
+            await expect(page.locator('#initiatorContactName')).toHaveValue('Alternative contact person');
+        });
     });
 });

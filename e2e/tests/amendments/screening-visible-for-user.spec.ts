@@ -13,7 +13,7 @@ test.describe('Amendments: ScreeningVisibleForUser', () => {
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
-        await page.locator('#screeningAmendments').check();
+        await page.locator('#screeningAmendments').first().check();
         await page.locator('.adminTypeForm [name="save"]').first().click();
         await logout(page);
         await loginAsStdUser(page);
@@ -21,21 +21,26 @@ test.describe('Amendments: ScreeningVisibleForUser', () => {
 
     test('create an unscreened amendment and only see it in my list', async ({ page }) => {
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
-        await page.locator("input[name='tags[]'][value='1']").check();
-        await page.locator("[name='sections[1]']").fill('Unscreened amendment');
-        await page.locator('#initiatorPrimaryName').fill('Testuser');
-        await page.locator('#initiatorEmail').fill('testuser@example.org');
+        await page.locator("input[name='tags[]'][value='1']").first().check();
+        await page.locator("[name='sections[1]']").first().fill('Unscreened amendment');
+        await page.locator('#initiatorPrimaryName').first().fill('Testuser');
+        await page.locator('#initiatorEmail').first().fill('testuser@example.org');
         await page.locator('#amendmentEditForm [name="save"]').click();
         await page.locator('#amendmentConfirmForm [name="confirm"]').click();
 
         await new ConsultationHomePage(page).open();
-        await expect(page.locator('.motionListStd')).toBeVisible();
-        await expect(
-            page.locator(`.motionListStd .amendment${FIRST_FREE_AMENDMENT_ID}`),
-        ).not.toBeVisible();
-        await expect(
-            page.locator(`.myAmendmentList .amendment${FIRST_FREE_AMENDMENT_ID}`),
-        ).toBeVisible();
+        await test.step('create an amendment', async () => {
+            await expect(page.locator('.motionListStd').first()).toBeVisible();
+            await expect(
+                page.locator(`.motionListStd .amendment${FIRST_FREE_AMENDMENT_ID}`),
+            ).not.toBeVisible();
+        });
+
+        await test.step('check that other users don\\\'t see it', async () => {
+            await expect(
+                page.locator(`.myAmendmentList .amendment${FIRST_FREE_AMENDMENT_ID}`),
+            ).toBeVisible();
+        });
     });
 
     test('other users do not see it', async ({ page }) => {

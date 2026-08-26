@@ -20,8 +20,13 @@ test.describe('Initiator gender field', () => {
         await home.open();
         await home.gotoMotionCreatePage();
 
-        await expect(page.locator('#personTypeNatural')).toBeChecked();
-        await expect(page.locator('.genderRow')).toHaveCount(0);
+        await test.step('see no gender selection at first', async () => {
+            await expect(page.locator('#personTypeNatural')).toBeChecked();
+        });
+
+        await test.step('set the gender as required', async () => {
+            await expect(page.locator('.genderRow').filter({ visible: true })).toHaveCount(0);
+        });
     });
 
     test('a required gender field blocks submitting until it is filled', async ({ page }) => {
@@ -45,27 +50,34 @@ test.describe('Initiator gender field', () => {
 
         await home.open();
         const createPage = await home.gotoMotionCreatePage();
-        await expect(page.locator('.genderRow')).toBeVisible();
-        await expect(page.locator('#initiatorGender')).toHaveValue('');
+        await test.step('see the field being required', async () => {
+            await expect(page.locator('.genderRow').first()).toBeVisible();
+        });
 
-        await createPage.fillInValidSampleData();
-        await page.locator('#motionEditForm button[name=save]').click();
+        await test.step('save the form', async () => {
+            await expect(page.locator('#initiatorGender')).toHaveValue('');
 
-        await expectBootboxDialog(page, /Bitte gib etwas im Gender-Feld an/);
-        await acceptBootbox(page);
+            await createPage.fillInValidSampleData();
+            await page.locator('#motionEditForm button[name=save]').click();
 
-        await page.locator('#initiatorGender').selectOption('diverse');
-        await expect(page.locator('#initiatorGender')).toHaveValue('diverse');
+            await expectBootboxDialog(page, /Bitte gib etwas im Gender-Feld an/);
+            await acceptBootbox(page);
 
-        await page.locator('#motionEditForm button[name=save]').click();
-        await expect(page.locator('#motionConfirmForm')).toBeVisible();
+            await page.locator('#initiatorGender').first().selectOption('diverse');
+            await expect(page.locator('#initiatorGender')).toHaveValue('diverse');
 
-        await page.locator('#motionConfirmForm button[name=modify]').click();
-        await expect(page.locator('#initiatorGender')).toHaveValue('diverse');
+            await page.locator('#motionEditForm button[name=save]').click();
+            await expect(page.locator('#motionConfirmForm').first()).toBeVisible();
+        });
 
-        await page.locator('#initiatorGender').selectOption('female');
-        await page.locator('#motionEditForm button[name=save]').click();
-        await expect(page.locator('#motionConfirmForm')).toBeVisible();
+        await test.step('make a change', async () => {
+            await page.locator('#motionConfirmForm button[name=modify]').click();
+            await expect(page.locator('#initiatorGender')).toHaveValue('diverse');
+
+            await page.locator('#initiatorGender').first().selectOption('female');
+            await page.locator('#motionEditForm button[name=save]').click();
+            await expect(page.locator('#motionConfirmForm').first()).toBeVisible();
+        });
     });
 
     test('an optional gender field allows submitting without a value', async ({ page }) => {
@@ -84,11 +96,16 @@ test.describe('Initiator gender field', () => {
 
         await home.open();
         const createPage = await home.gotoMotionCreatePage();
-        await expect(page.locator('.genderRow')).toBeVisible();
-        await expect(page.locator('#initiatorGender')).toHaveValue('');
+        await test.step('make the selection optional', async () => {
+            await expect(page.locator('.genderRow').first()).toBeVisible();
+            await expect(page.locator('#initiatorGender')).toHaveValue('');
 
-        await createPage.fillInValidSampleData();
-        await page.locator('#motionEditForm button[name=save]').click();
-        await expect(page.locator('#motionConfirmForm')).toBeVisible();
+            await createPage.fillInValidSampleData();
+        });
+
+        await test.step('see the field being optional', async () => {
+            await page.locator('#motionEditForm button[name=save]').click();
+            await expect(page.locator('#motionConfirmForm').first()).toBeVisible();
+        });
     });
 });

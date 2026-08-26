@@ -42,7 +42,7 @@ test.describe('Draft motion edit permissions', () => {
         await home.open();
         await logout(page);
         await editPage.open({ motionSlug: String(FIRST_FREE_MOTION_ID) });
-        await expect(page.locator('h1')).not.toContainText('Antrag stellen');
-        await expect(page.locator('[name="sections[1]"]')).toHaveCount(0);
+        await expect(page.locator('h1').getByText('Antrag stellen').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('[name="sections[1]"]').filter({ visible: true })).toHaveCount(0);
     });
 });

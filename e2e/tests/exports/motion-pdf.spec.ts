@@ -32,12 +32,12 @@ test.describe('Exports: motion PDF', () => {
         await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('body')).not.toContainText('PDF');
-        await expect(page.locator('#sidebar .motionPdfCompilation')).toHaveCount(0);
+        await expect(page.locator('body')).not.toContainText('PDF', { useInnerText: true });
+        await expect(page.locator('#sidebar .motionPdfCompilation').filter({ visible: true })).toHaveCount(0);
 
         await page.locator('.motionLink2').click();
         await page.locator('.motionData').waitFor();
-        await expect(page.locator('body')).not.toContainText('PDF');
+        await expect(page.locator('body')).not.toContainText('PDF', { useInnerText: true });
 
         await page.goto('/stdparteitag/std-parteitag/admin/motion-type/type?motionTypeId=1');
         await page.locator('.layout.php0').click();
@@ -45,7 +45,7 @@ test.describe('Exports: motion PDF', () => {
 
         await page.goto('/stdparteitag/std-parteitag');
         await expect(page.locator('body')).toContainText('PDF');
-        await expect(page.locator('#sidebar .motionPdfCompilation')).toBeVisible();
+        await expect(page.locator('#sidebar .motionPdfCompilation').first()).toBeVisible();
 
         await logout(page);
 

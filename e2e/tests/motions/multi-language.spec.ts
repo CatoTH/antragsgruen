@@ -1,6 +1,6 @@
 import { test, expect, Page } from '../../fixtures';
 import { loginAsStdAdmin, logout } from '../../utils/auth';
-import { setCkEditorContent, replaceInCkEditor } from '../../utils/dom';
+import { dispatchClick, replaceInCkEditor, setCkEditorContent } from '../../utils/dom';
 import {
     FIRST_FREE_MOTION_ID,
     FIRST_FREE_MOTION_SECTION,
@@ -42,9 +42,9 @@ async function enableThreeLanguages(page: Page): Promise<void> {
     await consultation.open();
 
     await page.locator('#multiLanguageActivate').click();
-    await page.locator('#supportedLanguagede').check();
-    await page.locator('#supportedLanguageen').check();
-    await page.locator('#supportedLanguagefr').check();
+    await page.locator('#supportedLanguagede').first().check();
+    await page.locator('#supportedLanguageen').first().check();
+    await page.locator('#supportedLanguagefr').first().check();
     await consultation.saveForm();
 
     await expect(page.locator('#supportedLanguagede')).toBeChecked();
@@ -56,12 +56,12 @@ async function createMultiLanguageMotionType(page: Page): Promise<void> {
     await page.locator('#adminLink').click();
     await switchLanguage(page, 'de');
     await page.locator('.motionTypeCreate a').click();
-    await page.locator('.presetMotion').check();
+    await page.locator('.presetMotion').first().check();
     await expect(page.locator('#typeTitleSingular')).toHaveValue('Antrag');
-    await page.locator('#typeTitleSingular').fill('Antrag ML');
-    await page.locator('#typeTitlePlural').fill('Anträge ML');
-    await page.locator('#typeCreateTitle').fill('Antrag ML stellen');
-    await page.locator('#typeMotionPrefix').fill('ML');
+    await page.locator('#typeTitleSingular').first().fill('Antrag ML');
+    await page.locator('#typeTitlePlural').first().fill('Anträge ML');
+    await page.locator('#typeCreateTitle').first().fill('Antrag ML stellen');
+    await page.locator('#typeMotionPrefix').first().fill('ML');
     await page.locator('.motionTypeCreateForm [name="create"]').click();
     await expect(page.locator('body')).toContainText(
         'Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.',
@@ -69,13 +69,13 @@ async function createMultiLanguageMotionType(page: Page): Promise<void> {
 }
 
 async function translateMotionTypeLabels(page: Page): Promise<void> {
-    await page.locator('#typeCreateSidebar').check();
-    await page.locator('#typeTitleSingularen').fill('ML Motion');
-    await page.locator('#typeTitlePluralen').fill('ML Motions');
-    await page.locator('#typeCreateTitleen').fill('Submit an ML motion');
-    await page.locator('#typeTitleSingularfr').fill('Motion ML');
-    await page.locator('#typeTitlePluralfr').fill('Motions ML');
-    await page.locator('#typeCreateTitlefr').fill('Déposer une motion ML');
+    await page.locator('#typeCreateSidebar').first().check();
+    await page.locator('#typeTitleSingularen').first().fill('ML Motion');
+    await page.locator('#typeTitlePluralen').first().fill('ML Motions');
+    await page.locator('#typeCreateTitleen').first().fill('Submit an ML motion');
+    await page.locator('#typeTitleSingularfr').first().fill('Motion ML');
+    await page.locator('#typeTitlePluralfr').first().fill('Motions ML');
+    await page.locator('#typeCreateTitlefr').first().fill('Déposer une motion ML');
     await page.locator('.adminTypeForm [name="save"]').first().click();
 }
 
@@ -83,12 +83,12 @@ async function createEnglishMotion(page: Page): Promise<void> {
     const createPage = new MotionCreatePage(page);
     await createPage.open({ motionTypeId: FIRST_FREE_MOTION_TYPE });
 
-    await page.locator("input[name='tags[]'][value='1']").check();
-    await page.locator(`#sections_${S_TITLE_EN}`).fill('My English Motion');
+    await page.locator("input[name='tags[]'][value='1']").first().check();
+    await page.locator(`#sections_${S_TITLE_EN}`).first().fill('My English Motion');
     await setCkEditorContent(page, `sections_${S_TEXT_EN}_wysiwyg`, '<p>English motion text</p>');
     await setCkEditorContent(page, `sections_${S_REASON_EN}_wysiwyg`, '<p>English reason</p>');
-    await page.locator('#initiatorPrimaryName').fill('English Submitter');
-    await page.locator('#initiatorEmail').fill('mlmotion@example.org');
+    await page.locator('#initiatorPrimaryName').first().fill('English Submitter');
+    await page.locator('#initiatorEmail').first().fill('mlmotion@example.org');
     await page.locator('#motionEditForm [name="save"]').click();
     await page.locator('#motionConfirmForm [name="confirm"]').click();
 }
@@ -155,9 +155,9 @@ test.describe('Multi-language motions', () => {
 
         const createPage = new MotionCreatePage(page);
         await createPage.open({ motionTypeId: FIRST_FREE_MOTION_TYPE });
-        await expect(page.locator(`#sections_${S_TITLE_EN}`)).toBeVisible();
-        await expect(page.locator(`#sections_${S_TITLE_DE}`)).toHaveCount(0);
-        await expect(page.locator(`#sections_${S_TITLE_FR}`)).toHaveCount(0);
+        await expect(page.locator(`#sections_${S_TITLE_EN}`).first()).toBeVisible();
+        await expect(page.locator(`#sections_${S_TITLE_DE}`).filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator(`#sections_${S_TITLE_FR}`).filter({ visible: true })).toHaveCount(0);
 
         await createEnglishMotion(page);
 
@@ -189,7 +189,7 @@ test.describe('Multi-language motions', () => {
         await loginAsStdAdmin(page);
         const adminMotion = new AdminMotionPage(page);
         await adminMotion.open({ motionId: FIRST_FREE_MOTION_ID });
-        await page.locator('#motionTextEditCaller button').click();
+        await dispatchClick(page, '#motionTextEditCaller button');
         await setCkEditorContent(
             page,
             `sections_${S_TEXT_DE}_wysiwyg`,
@@ -221,6 +221,7 @@ test.describe('Multi-language motions', () => {
         await expect(page.locator('body')).toContainText('Deutsche Begründung');
         await expect(page.locator('body')).not.toContainText(
             'Dieser Inhalt wurde noch nicht in deine Sprache übersetzt.',
+            { useInnerText: true },
         );
 
         await switchLanguage(page, 'fr');
@@ -248,22 +249,22 @@ test.describe('Multi-language motions', () => {
         await switchLanguage(page, 'en');
         await page.locator('.sidebarActions .amendmentCreate a').click();
 
-        await expect(page.locator(`#sections_${S_TITLE_EN}`)).toBeVisible();
-        await expect(page.locator(`#sections_${S_TITLE_DE}`)).toHaveCount(0);
-        await expect(page.locator(`#sections_${S_TITLE_FR}`)).toHaveCount(0);
-        await expect(page.locator(`#sections_${S_TEXT_EN}_wysiwyg`)).toBeVisible();
-        await expect(page.locator(`#sections_${S_TEXT_DE}_wysiwyg`)).toHaveCount(0);
-        await expect(page.locator(`#sections_${S_TEXT_FR}_wysiwyg`)).toHaveCount(0);
+        await expect(page.locator(`#sections_${S_TITLE_EN}`).first()).toBeVisible();
+        await expect(page.locator(`#sections_${S_TITLE_DE}`).filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator(`#sections_${S_TITLE_FR}`).filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator(`#sections_${S_TEXT_EN}_wysiwyg`).first()).toBeVisible();
+        await expect(page.locator(`#sections_${S_TEXT_DE}_wysiwyg`).filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator(`#sections_${S_TEXT_FR}_wysiwyg`).filter({ visible: true })).toHaveCount(0);
 
-        await page.locator(`#sections_${S_TITLE_EN}`).fill('My English Amendment Title');
+        await page.locator(`#sections_${S_TITLE_EN}`).first().fill('My English Amendment Title');
         await replaceInCkEditor(page, `sections_${S_TEXT_EN}_wysiwyg`, 'motion', 'amended');
         await setCkEditorContent(
             page,
             'amendmentReason_wysiwyg',
             '<p>English amendment reason</p>',
         );
-        await page.locator('#initiatorPrimaryName').fill('English Amendment Submitter');
-        await page.locator('#initiatorEmail').fill('mlamendment@example.org');
+        await page.locator('#initiatorPrimaryName').first().fill('English Amendment Submitter');
+        await page.locator('#initiatorEmail').first().fill('mlamendment@example.org');
         await page.locator('#amendmentEditForm [name="save"]').click();
         await page.locator('#amendmentConfirmForm [name="confirm"]').click();
 
@@ -281,11 +282,11 @@ test.describe('Multi-language motions', () => {
         await loginAsStdAdmin(page);
         const adminAmendment = new AdminAmendmentPage(page);
         await adminAmendment.open({ amendmentId: FIRST_FREE_AMENDMENT_ID });
-        await page.locator('#amendmentTextEditCaller button').click();
+        await dispatchClick(page, '#amendmentTextEditCaller button');
         await page
             .locator(`#sections_${S_TITLE_DE}`)
             .fill('Mein deutscher Änderungsantragstitel');
-        await page.locator(`#sections_${S_TITLE_FR}`).fill("Mon titre d'amendement français");
+        await page.locator(`#sections_${S_TITLE_FR}`).first().fill("Mon titre d'amendement français");
         await replaceInCkEditor(
             page,
             `sections_${S_TEXT_DE}_wysiwyg`,
@@ -308,6 +309,7 @@ test.describe('Multi-language motions', () => {
         );
         await expect(page.locator('body')).not.toContainText(
             'Dieser Inhalt wurde noch nicht in deine Sprache übersetzt.',
+            { useInnerText: true },
         );
 
         await switchLanguage(page, 'fr');

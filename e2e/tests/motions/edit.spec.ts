@@ -16,27 +16,32 @@ test.describe('Motion editing', () => {
 
         const consultation = new AdminConsultationPage(page);
         await consultation.open();
-        await page.locator('#iniatorsMayEdit').check();
-        await consultation.saveForm();
-        await logout(page);
+        await test.step('enable editing of motions', async () => {
+            await page.locator('#iniatorsMayEdit').first().check();
+            await consultation.saveForm();
+            await logout(page);
 
-        await home.open();
-        await loginAsStdUser(page);
-        await page.locator('.myMotionList .motion58').click();
-        await page.locator('.sidebarActions .edit a').click();
-        await expect(page.locator('h1')).toContainText('Antrag bearbeiten');
+            await home.open();
+            await loginAsStdUser(page);
+        });
 
-        await appendCkEditorContent(
-            page,
-            'sections_2_wysiwyg',
-            '<p>attach some new text at the end</p>',
-        );
-        await page.locator('#motionEditForm [name="save"]').click();
+        await test.step('edit an motion', async () => {
+            await page.locator('.myMotionList .motion58').click();
+            await page.locator('.sidebarActions .edit a').click();
+            await expect(page.locator('h1')).toContainText('Antrag bearbeiten');
 
-        await expect(page.locator('body')).toContainText('Die Änderungen wurden übernommen');
-        await page.locator('#motionConfirmedForm button').click();
-        await expect(page.locator('.motionTextHolder').first()).toContainText(
-            'attach some new text at the end',
-        );
+            await appendCkEditorContent(
+                page,
+                'sections_2_wysiwyg',
+                '<p>attach some new text at the end</p>',
+            );
+            await page.locator('#motionEditForm [name="save"]').click();
+
+            await expect(page.locator('body')).toContainText('Die Änderungen wurden übernommen');
+            await page.locator('#motionConfirmedForm button').click();
+            await expect(page.locator('.motionTextHolder').first()).toContainText(
+                'attach some new text at the end',
+            );
+        });
     });
 });

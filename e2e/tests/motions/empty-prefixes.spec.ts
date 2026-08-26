@@ -17,13 +17,16 @@ test.describe('Empty motion prefixes', () => {
         for (const motionId of [2, 3, 58]) {
             await motionList.open();
             await page.locator(`.adminMotionTable .motion${motionId} .titleCol a`).click();
-            await page.locator('#motionTitlePrefix').fill('');
+            await page.locator('#motionTitlePrefix').first().fill('');
             await page.locator('#motionUpdateForm [name="save"]').click();
         }
 
         await home.open();
-        await expect(page.locator('.motionLink2')).toBeVisible();
-        await expect(page.locator('.motionLink3')).toBeVisible();
-        await expect(page.locator('.motionLink58')).toBeVisible();
+        await test.step('check that all motions are still visible', async () => {
+            await expect(page.locator('.motionLink2').first()).toBeVisible();
+            await expect(page.locator('.motionLink3').first()).toBeVisible();
+            await expect(page.locator('.motionLink58').first()).toBeVisible();
+        });
+
     });
 });

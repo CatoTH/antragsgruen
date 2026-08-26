@@ -18,41 +18,50 @@ test.describe('Wurzelwerk motion creation permissions', () => {
     test('logging in is required to create a motion', async ({ page }) => {
         const home = new ConsultationHomePage(page);
         await home.open({ subdomain: SUBDOMAIN, consultationPath: CONSULTATION_PATH });
-        await expect(page.locator('#sidebar .createMotion')).toBeVisible();
-        await page.locator('#sidebar .createMotion').click();
-        await expect(page.locator('h1')).toContainText(/login/i);
+        await test.step('check that I have to login in order to create a motion', async () => {
+            await expect(page.locator('#sidebar .createMotion').first()).toBeVisible();
+        });
+
+        await test.step('check that I cannot create a motion as a standard user', async () => {
+            await page.locator('#sidebar .createMotion').click();
+            await expect(page.locator('h1')).toContainText(/login/i);
+        });
     });
 
     test('a standard user may not create a motion', async ({ page }) => {
         const home = new ConsultationHomePage(page);
         await home.open({ subdomain: SUBDOMAIN, consultationPath: CONSULTATION_PATH });
         await loginAsStdUser(page);
-        await expect(page.locator('#sidebar .createMotion')).toHaveCount(0);
+        await test.step('check that I can create a motion as a Wurzelwerk-user', async () => {
+            await expect(page.locator('#sidebar .createMotion').filter({ visible: true })).toHaveCount(0);
 
-        const editPage = new MotionEditPage(page);
-        await editPage.open({
-            subdomain: SUBDOMAIN,
-            consultationPath: CONSULTATION_PATH,
-            motionTypeId: MOTION_TYPE_ID,
+            const editPage = new MotionEditPage(page);
+            await editPage.open({
+                subdomain: SUBDOMAIN,
+                consultationPath: CONSULTATION_PATH,
+                motionTypeId: MOTION_TYPE_ID,
+            });
+            await expect(page.locator('h1').getByText(/antrag stellen/i).filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('body')).toContainText(
+                'Keine Berechtigung zum Anlegen von Anträgen',
+            );
         });
-        await expect(page.locator('h1')).not.toContainText(/antrag stellen/i);
-        await expect(page.locator('body')).toContainText(
-            'Keine Berechtigung zum Anlegen von Anträgen',
-        );
     });
 
     test('an admin may create a motion via the direct URL', async ({ page }) => {
         const home = new ConsultationHomePage(page);
         await home.open({ subdomain: SUBDOMAIN, consultationPath: CONSULTATION_PATH });
         await loginAsStdAdmin(page);
-        await expect(page.locator('#sidebar .createMotion')).toHaveCount(0);
+        await test.step('change that I can create a motion as admin', async () => {
+            await expect(page.locator('#sidebar .createMotion').filter({ visible: true })).toHaveCount(0);
 
-        const createPage = new MotionCreatePage(page);
-        await createPage.open({
-            subdomain: SUBDOMAIN,
-            consultationPath: CONSULTATION_PATH,
-            motionTypeId: MOTION_TYPE_ID,
+            const createPage = new MotionCreatePage(page);
+            await createPage.open({
+                subdomain: SUBDOMAIN,
+                consultationPath: CONSULTATION_PATH,
+                motionTypeId: MOTION_TYPE_ID,
+            });
+            await expect(page.locator('h1')).toContainText(/antrag stellen/i);
         });
-        await expect(page.locator('h1')).toContainText(/antrag stellen/i);
     });
 });

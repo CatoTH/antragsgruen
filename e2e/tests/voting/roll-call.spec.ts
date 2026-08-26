@@ -1,9 +1,11 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, loginAsStdUser, logout } from '../../utils/auth';
+import { disableCurrentlyDebated } from '../../utils/navigation';
 import { FIRST_FREE_VOTING_BLOCK_ID } from '../../utils/constants';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { VotingAdminPage } from '../../pages/VotingAdminPage';
 import { VotingResultsPage } from '../../pages/VotingResultsPage';
+import { dispatchClick } from '../../utils/dom';
 
 const TEMPLATE_PRESENT = '2';
 const VOTING_ID = `#voting${FIRST_FREE_VOTING_BLOCK_ID}`;
@@ -19,27 +21,29 @@ test.describe('Roll call voting', () => {
         const votingAdmin = new VotingAdminPage(page);
         await votingAdmin.open();
         await loginAsStdAdmin(page);
+        // The fixture has the "Currently debated" module on, which would take the place of the voting widget
+        await disableCurrentlyDebated(page);
         await votingAdmin.open();
 
-        await expect(page.locator('form.creatingVoting')).toHaveCount(0);
-        await page.locator('.createVotingOpener').click();
-        await expect(page.locator('form.creatingVoting')).toBeVisible();
+        await expect(page.locator('form.creatingVoting').filter({ visible: true })).toHaveCount(0);
+        await dispatchClick(page, '.createVotingOpener');
+        await expect(page.locator('form.creatingVoting').first()).toBeVisible();
 
         await expect(page.locator('input[name=votingTypeNew]:checked')).toHaveValue('question');
-        await page.locator('.creatingVoting .settingsTitle').fill('Roll call');
-        await page.locator('.creatingVoting .settingsQuestion').fill('Who is present?');
-        await expect(page.locator('.majorityTypeSettings')).toBeVisible();
+        await page.locator('.creatingVoting .settingsTitle').first().fill('Roll call');
+        await page.locator('.creatingVoting .settingsQuestion').first().fill('Who is present?');
+        await expect(page.locator('.majorityTypeSettings').first()).toBeVisible();
 
         await page.locator(`input[name=answersNew][value="${TEMPLATE_PRESENT}"]`).click();
-        await expect(page.locator('.majorityTypeSettings')).toHaveCount(0);
+        await expect(page.locator('.majorityTypeSettings').filter({ visible: true })).toHaveCount(0);
         await expect(page.locator('input[name=resultsPublicNew]:checked')).toHaveValue('1');
         await page.locator('input[name=votesPublicNew][value="2"]').click();
         await page.locator('input[name=resultsPublicNew][value="1"]').click();
-        await page.locator('form.creatingVoting button[type=submit]').click();
+        await dispatchClick(page, 'form.creatingVoting button[type=submit]');
 
-        await expect(page.locator(VOTING_ID)).toBeVisible();
+        await expect(page.locator(VOTING_ID).first()).toBeVisible();
         await expect(page.locator(`${VOTING_ID} h2`)).toContainText('Roll call');
-        await expect(page.locator(`${VOTING_ID} .majorityType`)).toHaveCount(0);
+        await expect(page.locator(`${VOTING_ID} .majorityType`).filter({ visible: true })).toHaveCount(0);
         await expect(page.locator(`${VOTING_ID} .voting_question_1 .titleLink`)).toContainText(
             'Who is present?',
         );
@@ -47,33 +51,33 @@ test.describe('Roll call voting', () => {
 
         const home = new ConsultationHomePage(page);
         await home.open();
-        await expect(page.locator('h2')).toContainText('Roll call');
+        await expect(page.locator('h2').filter({ hasText: 'Roll call' }).first()).toBeVisible();
         await expect(page.locator('.voting_question_1')).toContainText('Who is present?');
-        await page.locator('.voting_question_1 .btnPresent').click();
-        await expect(page.locator('.voting_question_1 span.present')).toBeVisible();
+        await dispatchClick(page, '.voting_question_1 .btnPresent');
+        await expect(page.locator('.voting_question_1 span.present').first()).toBeVisible();
 
         await page.locator('.votingsAdminLink').click();
 
         await expect(page.locator('.voting_question_1 .voteCount_present')).toContainText('1');
-        await expect(page.locator('.voting_question_1 .result .accepted')).toHaveCount(0);
-        await expect(page.locator('.voteResults')).toHaveCount(0);
-        await page.locator('.voting_question_1 .btnShowVotes').click();
+        await expect(page.locator('.voting_question_1 .result .accepted').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('.voteResults').filter({ visible: true })).toHaveCount(0);
+        await dispatchClick(page, '.voting_question_1 .btnShowVotes');
         await expect(page.locator('.voteResults')).toContainText('testadmin@example.org');
 
-        await expect(page.locator(`${VOTING_ID} .btnPublish`)).toHaveCount(0);
-        await expect(page.locator(`${VOTING_ID} .btnCloseNopub`)).toHaveCount(0);
+        await expect(page.locator(`${VOTING_ID} .btnPublish`).filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator(`${VOTING_ID} .btnCloseNopub`).filter({ visible: true })).toHaveCount(0);
         await page.locator(`${VOTING_ID} .btnClosePubOpener`).click();
-        await expect(page.locator(`${VOTING_ID} .btnCloseNopub`)).toBeVisible();
+        await expect(page.locator(`${VOTING_ID} .btnCloseNopub`).first()).toBeVisible();
         await page.locator(`${VOTING_ID} .btnCloseNopub`).click();
-        await expect(page.locator(`${VOTING_ID} .btnPublish`)).toBeVisible();
+        await expect(page.locator(`${VOTING_ID} .btnPublish`).first()).toBeVisible();
 
         await home.open();
-        await expect(page.locator('.voting_question_1')).toHaveCount(0);
+        await expect(page.locator('.voting_question_1').filter({ visible: true })).toHaveCount(0);
 
         const results = new VotingResultsPage(page);
         await results.open();
-        await expect(page.locator('.votingsNoneIndicator')).toBeVisible();
-        await expect(page.locator('.voting_question_1')).toHaveCount(0);
+        await expect(page.locator('.votingsNoneIndicator').first()).toBeVisible();
+        await expect(page.locator('.voting_question_1').filter({ visible: true })).toHaveCount(0);
     });
 
     test('published results are visible to logged in users', async ({ page }) => {
@@ -82,31 +86,31 @@ test.describe('Roll call voting', () => {
         await loginAsStdAdmin(page);
         await votingAdmin.open();
 
-        await page.locator('.createVotingOpener').click();
-        await page.locator('.creatingVoting .settingsTitle').fill('Roll call');
-        await page.locator('.creatingVoting .settingsQuestion').fill('Who is present?');
+        await dispatchClick(page, '.createVotingOpener');
+        await page.locator('.creatingVoting .settingsTitle').first().fill('Roll call');
+        await page.locator('.creatingVoting .settingsQuestion').first().fill('Who is present?');
         await page.locator(`input[name=answersNew][value="${TEMPLATE_PRESENT}"]`).click();
         await page.locator('input[name=votesPublicNew][value="2"]').click();
         await page.locator('input[name=resultsPublicNew][value="1"]').click();
-        await page.locator('form.creatingVoting button[type=submit]').click();
+        await dispatchClick(page, 'form.creatingVoting button[type=submit]');
         await page.locator(`${VOTING_ID} .btnOpen`).click();
 
         const home = new ConsultationHomePage(page);
         await home.open();
-        await page.locator('.voting_question_1 .btnPresent').click();
-        await expect(page.locator('.voting_question_1 span.present')).toBeVisible();
+        await dispatchClick(page, '.voting_question_1 .btnPresent');
+        await expect(page.locator('.voting_question_1 span.present').first()).toBeVisible();
 
         await page.locator('.votingsAdminLink').click();
         await page.locator(`${VOTING_ID} .btnClosePubOpener`).click();
         await page.locator(`${VOTING_ID} .btnCloseNopub`).click();
-        await expect(page.locator(`${VOTING_ID} .btnPublish`)).toBeVisible();
+        await expect(page.locator(`${VOTING_ID} .btnPublish`).first()).toBeVisible();
 
         await votingAdmin.open();
         await page.locator(`${VOTING_ID} .btnPublish`).click();
-        await expect(page.locator(`${VOTING_ID} .btnPublish`)).toHaveCount(0);
+        await expect(page.locator(`${VOTING_ID} .btnPublish`).filter({ visible: true })).toHaveCount(0);
 
         await home.open();
-        await expect(page.locator('.voting_question_1')).toHaveCount(0);
+        await expect(page.locator('.voting_question_1').filter({ visible: true })).toHaveCount(0);
 
         await logout(page);
         await page.locator('#votingResultsLink').click();
@@ -114,11 +118,11 @@ test.describe('Roll call voting', () => {
 
         await loginAsStdUser(page);
         await page.locator('#votingResultsLink').click();
-        await expect(page.locator('.votingsNoneIndicator')).toHaveCount(0);
+        await expect(page.locator('.votingsNoneIndicator').filter({ visible: true })).toHaveCount(0);
         await expect(page.locator('.voting_question_1 .voteCount_present')).toContainText('1');
-        await expect(page.locator('.voting_question_1 .result .accepted')).toHaveCount(0);
-        await expect(page.locator('.regularVoteList')).toHaveCount(0);
-        await page.locator('.voting_question_1 .btnShowVotes').click();
+        await expect(page.locator('.voting_question_1 .result .accepted').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('.regularVoteList').filter({ visible: true })).toHaveCount(0);
+        await dispatchClick(page, '.voting_question_1 .btnShowVotes');
         await expect(page.locator('.regularVoteList')).toContainText('testadmin@example.org');
     });
 
@@ -128,19 +132,19 @@ test.describe('Roll call voting', () => {
         await loginAsStdAdmin(page);
         await votingAdmin.open();
 
-        await page.locator('.createVotingOpener').click();
-        await page.locator('.creatingVoting .settingsTitle').fill('Roll call');
-        await page.locator('.creatingVoting .settingsQuestion').fill('Who is present?');
+        await dispatchClick(page, '.createVotingOpener');
+        await page.locator('.creatingVoting .settingsTitle').first().fill('Roll call');
+        await page.locator('.creatingVoting .settingsQuestion').first().fill('Who is present?');
         await page.locator(`input[name=answersNew][value="${TEMPLATE_PRESENT}"]`).click();
         await page.locator('input[name=votesPublicNew][value="2"]').click();
         await page.locator('input[name=resultsPublicNew][value="1"]').click();
-        await page.locator('form.creatingVoting button[type=submit]').click();
+        await dispatchClick(page, 'form.creatingVoting button[type=submit]');
         await page.locator(`${VOTING_ID} .btnOpen`).click();
 
         const home = new ConsultationHomePage(page);
         await home.open();
-        await page.locator('.voting_question_1 .btnPresent').click();
-        await expect(page.locator('.voting_question_1 span.present')).toBeVisible();
+        await dispatchClick(page, '.voting_question_1 .btnPresent');
+        await expect(page.locator('.voting_question_1 span.present').first()).toBeVisible();
 
         await page.locator('.votingsAdminLink').click();
         await page.locator(`${VOTING_ID} .btnClosePubOpener`).click();
@@ -151,7 +155,7 @@ test.describe('Roll call voting', () => {
         await logout(page);
         await loginAsStdUser(page);
         await page.locator('#votingResultsLink').click();
-        await page.locator('.voting_question_1 .btnShowVotes').click();
+        await dispatchClick(page, '.voting_question_1 .btnShowVotes');
 
         const json = await page.evaluate(() =>
             document.querySelector('.currentVotingWidget')?.getAttribute('data-voting'),

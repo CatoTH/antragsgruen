@@ -14,21 +14,21 @@ test.describe('Admin: VotingResults', () => {
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
-            .locator('.motion2 .edit, .motion2 [href*="edit"]')
+            .locator('.adminMotionTable .motion2 .titleCol a')
             .first()
             .click();
 
-        await expect(page.locator('.votingDataHolder')).not.toBeVisible();
+        await expect(page.locator('.votingDataHolder').filter({ visible: true })).toHaveCount(0);
         await dispatchClick(page, '.votingDataOpener');
-        await expect(page.locator('.votingDataHolder')).toBeVisible();
-        await page.locator('#votesYes').fill('15');
-        await page.locator('#votesNo').fill('5');
-        await page.locator('#votesAbstention').fill('2');
-        await page.locator('#votesInvalid').fill('0');
-        await page.locator('#votesComment').fill('Accepted by mayority');
+        await expect(page.locator('.votingDataHolder').first()).toBeVisible();
+        await page.locator('#votesYes').first().fill('15');
+        await page.locator('#votesNo').first().fill('5');
+        await page.locator('#votesAbstention').first().fill('2');
+        await page.locator('#votesInvalid').first().fill('0');
+        await page.locator('#votesComment').first().fill('Accepted by mayority');
 
         await page.locator('#motionUpdateForm [name="save"]').click();
-        await expect(page.locator('.votingDataHolder')).toBeVisible();
+        await expect(page.locator('.votingDataHolder').first()).toBeVisible();
 
         await new MotionPage(page).open({ motionSlug: 2 });
 
@@ -42,18 +42,18 @@ test.describe('Admin: VotingResults', () => {
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
-            .locator('.amendment273 .edit, .amendment273 [href*="edit"]')
+            .locator('.adminMotionTable .amendment273 .titleCol a')
             .first()
             .click();
 
-        await expect(page.locator('.votingDataHolder')).not.toBeVisible();
+        await expect(page.locator('.votingDataHolder').filter({ visible: true })).toHaveCount(0);
         await dispatchClick(page, '.votingDataOpener');
-        await expect(page.locator('.votingDataHolder')).toBeVisible();
-        await page.locator('#votesYes').fill('5');
-        await page.locator('#votesNo').fill('7');
-        await page.locator('#votesAbstention').fill('');
-        await page.locator('#votesInvalid').fill('1');
-        await page.locator('#votesComment').fill('Rejected');
+        await expect(page.locator('.votingDataHolder').first()).toBeVisible();
+        await page.locator('#votesYes').first().fill('5');
+        await page.locator('#votesNo').first().fill('7');
+        await page.locator('#votesAbstention').first().fill('');
+        await page.locator('#votesInvalid').first().fill('1');
+        await page.locator('#votesComment').first().fill('Rejected');
 
         await page.locator('#amendmentUpdateForm [name="save"]').click();
 

@@ -1,5 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
+import { gotoConsultationHome, gotoMotionList } from '../../utils/navigation';
 
 test.describe('Misc: activity log', () => {
     test.beforeEach(async ({ db }) => {
@@ -7,32 +8,41 @@ test.describe('Misc: activity log', () => {
     });
 
     test('consultation-wide and per-motion activity log entries', async ({ page }) => {
-        await page.goto('/stdparteitag/std-parteitag');
-        await loginAsStdAdmin(page);
+        await test.step('go to the regular activity log', async () => {
+            await gotoConsultationHome(page);
+            await loginAsStdAdmin(page);
 
-        await page.locator('#sidebar .activitylog a').click();
-        await expect(page.locator('body')).toContainText('Änderungsantrag Ä2 veröffentlicht');
-        await expect(page.locator('body')).not.toContainText(
-            'Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet',
-        );
-        await expect(page.locator('body')).toContainText('Testuser hat den Änderungsantrag Ä3');
+            await page.locator('#sidebar .activitylog a').click();
+            await expect(page.locator('body')).toContainText(
+                'Änderungsantrag Ä2 veröffentlicht',
+            );
+            await expect(page.locator('body')).not.toContainText(
+                'Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet',
+                { useInnerText: true },
+            );
+            await expect(page.locator('body')).toContainText(
+                'Testuser hat den Änderungsantrag Ä3',
+            );
 
-        await page.locator('#motionListLink').click();
-        await expect(page.locator('h1')).toContainText(/liste: anträge/i);
-        await page.locator('.motion118 .edit, .motion118 [href*="edit"]').first().click();
-        await page.locator('.sidebarActions .activity').click();
-        await expect(page.locator('body')).toContainText('Testuser hat den Antrag veröffentlicht');
-        await expect(page.locator('body')).toContainText(
-            'Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet',
-        );
+            const motionList = await gotoMotionList(page);
+            await motionList.gotoMotionEdit(118);
+            await page.locator('.sidebarActions .activity').click();
+            await expect(page.locator('body')).toContainText(
+                'Testuser hat den Antrag veröffentlicht',
+            );
+            await expect(page.locator('body')).toContainText(
+                'Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet',
+            );
 
-        await page.locator('#motionListLink').click();
-        await expect(page.locator('h1')).toContainText(/liste: anträge/i);
-        await page.locator('.amendment281 .edit, .amendment281 [href*="edit"]').first().click();
-        await page.locator('.sidebarActions .activity').click();
-        await expect(page.locator('body')).toContainText('Testuser hat den Änderungsantrag Ä3');
-        await expect(page.locator('body')).toContainText(
-            'Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet',
-        );
+            const motionList2 = await gotoMotionList(page);
+            await motionList2.gotoAmendmentEdit(281);
+            await page.locator('.sidebarActions .activity').click();
+            await expect(page.locator('body')).toContainText(
+                'Testuser hat den Änderungsantrag Ä3',
+            );
+            await expect(page.locator('body')).toContainText(
+                'Testadmin hat den Verfahrensvorschlag (Version -) bearbeitet',
+            );
+        });
     });
 });

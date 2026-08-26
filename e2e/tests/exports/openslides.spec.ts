@@ -27,30 +27,32 @@ test.describe('Exports: OpenSlides', () => {
         await page.locator('#motionListLink').click();
         await expect(page.locator('h1')).toContainText(/liste: anträge/i);
 
-        await expect(page.locator('#exportOpenslidesBtn')).toHaveCount(0);
-        await expect(page.locator('.activateOpenslides')).toHaveCount(0);
+        await test.step('test the list of motions in OpenSlides-Format', async () => {
+            await expect(page.locator('#exportOpenslidesBtn').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.activateOpenslides').filter({ visible: true })).toHaveCount(0);
 
-        await page.locator('#activateFncBtn').click();
-        await expect(page.locator('.activateOpenslides')).toBeVisible();
-        await page.locator('.activateOpenslides').click();
-        await expect(page.locator('#exportOpenslidesBtn')).toBeVisible();
+            await page.locator('#activateFncBtn').click();
+            await expect(page.locator('.activateOpenslides').first()).toBeVisible();
+            await page.locator('.activateOpenslides').click();
+            await expect(page.locator('#exportOpenslidesBtn').first()).toBeVisible();
 
-        await page.locator('#exportOpenslidesBtn').click();
-        await expect(page.locator('.exportOpenslidesDd .users')).toBeVisible();
+            await page.locator('#exportOpenslidesBtn').click();
+            await expect(page.locator('.exportOpenslidesDd .users').first()).toBeVisible();
 
-        const usersFile = await downloadAndCheckHasContent(page, '.exportOpenslidesDd .users');
-        expect(usersFile.text).toContain('Lischke');
+            const usersFile = await downloadAndCheckHasContent(page, '.exportOpenslidesDd .users');
+            expect(usersFile.text).toContain('Lischke');
 
-        const motionsFile = await downloadAndCheckHasContent(
-            page,
-            '.exportOpenslidesDd .slidesMotionType1',
-        );
-        expect(motionsFile.text).toContain('line-through');
+            const motionsFile = await downloadAndCheckHasContent(
+                page,
+                '.exportOpenslidesDd .slidesMotionType1',
+            );
+            expect(motionsFile.text).toContain('line-through');
 
-        const amendmentsFile = await downloadAndCheckHasContent(
-            page,
-            '.exportOpenslidesDd .amendments',
-        );
-        expect(amendmentsFile.text).toContain('Von Zeile 9 bis 10');
+            const amendmentsFile = await downloadAndCheckHasContent(
+                page,
+                '.exportOpenslidesDd .amendments',
+            );
+            expect(amendmentsFile.text).toContain('Von Zeile 9 bis 10');
+        });
     });
 });

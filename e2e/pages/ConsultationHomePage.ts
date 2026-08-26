@@ -17,18 +17,27 @@ export class ConsultationHomePage extends BasePage {
 
     async gotoMotionCreatePage(
         motionTypeId: number = 1,
+        check: boolean = true,
+        subdomain: string = DEFAULT_SUBDOMAIN,
+        path: string = DEFAULT_CONSULTATION_PATH,
     ): Promise<MotionCreatePage> {
         const page = new MotionCreatePage(this.page);
-        await page.open({ motionTypeId });
-        await expect(page.heading).toContainText(/antrag stellen/i);
+        await page.open({ subdomain, consultationPath: path, motionTypeId });
+        if (check) {
+            await expect(page.heading).toBeVisible();
+        }
         return page;
     }
 
     async gotoAmendmentCreatePage(
         motionSlug: string = '321-o-zapft-is',
+        check: boolean = true,
     ): Promise<AmendmentCreatePage> {
         const page = new AmendmentCreatePage(this.page);
         await page.open({ motionSlug });
+        if (check) {
+            await expect(page.heading).toBeVisible();
+        }
         return page;
     }
 

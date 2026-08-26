@@ -11,43 +11,47 @@ test.describe('Amendments: EditDraftPermission', () => {
 
     test('create and edit a draft logged out', async ({ page }) => {
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('3');
-        await page.locator("input[name='tags[]'][value='1']").check();
-        await page.locator("[name='sections[1]']").fill('Neuer Testantrag 1');
-        await page.locator('#initiatorPrimaryName').fill('Mein Name');
-        await page.locator('#initiatorEmail').fill('test@example.org');
+        await page.locator("input[name='tags[]'][value='1']").first().check();
+        await page.locator("[name='sections[1]']").first().fill('Neuer Testantrag 1');
+        await page.locator('#initiatorPrimaryName').first().fill('Mein Name');
+        await page.locator('#initiatorEmail').first().fill('test@example.org');
         await page.locator('#amendmentEditForm [name="save"]').click();
-        await expect(page.locator('h1')).toContainText('ÄNDERUNGSANTRAG BESTÄTIGEN');
+        await test.step('create a draft amendment logged out', async () => {
+            await expect(page.locator('h1')).toContainText(/Änderungsantrag bestätigen/i);
 
-        await new ConsultationHomePage(page).open();
-        await new AmendmentPage(page).open({
-            motionSlug: '3',
-            amendmentId: FIRST_FREE_AMENDMENT_ID,
+            await new ConsultationHomePage(page).open();
+            await new AmendmentPage(page).open({
+                motionSlug: '3',
+                amendmentId: FIRST_FREE_AMENDMENT_ID,
+            });
+            await expect(page.locator('h1')).toContainText(
+                'ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN STELLEN',
+            );
+            await expect(page.locator("input[name='sections[1]']")).toHaveValue('Neuer Testantrag 1');
         });
-        await expect(page.locator('h1')).toContainText(
-            'ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN STELLEN',
-        );
-        await expect(page.locator("input[name='sections[1]']")).toHaveValue('Neuer Testantrag 1');
     });
 
     test('create and edit a draft logged in', async ({ page }) => {
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('3');
         await loginAsStdUser(page);
-        await page.locator("input[name='tags[]'][value='1']").check();
-        await page.locator("[name='sections[1]']").fill('Neuer Testantrag 2');
-        await page.locator('#initiatorPrimaryName').fill('My Name');
-        await page.locator('#initiatorEmail').fill('test@example.org');
+        await page.locator("input[name='tags[]'][value='1']").first().check();
+        await page.locator("[name='sections[1]']").first().fill('Neuer Testantrag 2');
+        await page.locator('#initiatorPrimaryName').first().fill('My Name');
+        await page.locator('#initiatorEmail').first().fill('test@example.org');
         await page.locator('#amendmentEditForm [name="save"]').click();
-        await expect(page.locator('h1')).toContainText('ÄNDERUNGSANTRAG BESTÄTIGEN');
+        await test.step('create a draft amendment logged in', async () => {
+            await expect(page.locator('h1')).toContainText(/Änderungsantrag bestätigen/i);
 
-        await new ConsultationHomePage(page).open();
-        await new AmendmentPage(page).open({
-            motionSlug: '3',
-            amendmentId: FIRST_FREE_AMENDMENT_ID + 1,
+            await new ConsultationHomePage(page).open();
+            await new AmendmentPage(page).open({
+                motionSlug: '3',
+                amendmentId: FIRST_FREE_AMENDMENT_ID + 1,
+            });
+            await expect(page.locator('h1')).toContainText(
+                'ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN STELLEN',
+            );
+            await expect(page.locator("input[name='sections[1]']")).toHaveValue('Neuer Testantrag 2');
         });
-        await expect(page.locator('h1')).toContainText(
-            'ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN STELLEN',
-        );
-        await expect(page.locator("input[name='sections[1]']")).toHaveValue('Neuer Testantrag 2');
     });
 
     test('edit the draft logged out (should not work)', async ({ page }) => {
@@ -55,9 +59,7 @@ test.describe('Amendments: EditDraftPermission', () => {
             motionSlug: '3',
             amendmentId: FIRST_FREE_AMENDMENT_ID + 1,
         });
-        await expect(page.locator('h1')).not.toContainText(
-            'ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN STELLEN',
-        );
-        await expect(page.locator("input[name='sections[1]']")).not.toBeVisible();
+        await expect(page.locator('h1').getByText('ÄNDERUNGSANTRAG ZU A3: TEXTFORMATIERUNGEN STELLEN').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator("input[name='sections[1]']").filter({ visible: true })).toHaveCount(0);
     });
 });

@@ -14,7 +14,7 @@ test.describe('Motion creation requires login', () => {
             motionTypeId: 7,
         });
 
-        await expect(page.locator('h1')).not.toContainText(/antrag stellen/i);
+        await expect(page.locator('h1').getByText(/antrag stellen/i).filter({ visible: true })).toHaveCount(0);
         await expect(page.locator('h1')).toContainText(/login/i);
     });
 });

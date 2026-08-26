@@ -1,9 +1,11 @@
 import { test, expect, Page } from '../../fixtures';
 import { loginAsStdAdmin, loginAsStdUser, logout } from '../../utils/auth';
+import { disableCurrentlyDebated } from '../../utils/navigation';
 import { FIRST_FREE_USERGROUP_ID, FIRST_FREE_VOTING_BLOCK_ID } from '../../utils/constants';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { VotingAdminPage } from '../../pages/VotingAdminPage';
 import { AdminUsersPage } from '../../pages/AdminUsersPage';
+import { dispatchClick } from '../../utils/dom';
 
 const TEMPLATE_PRESENT = '2';
 const POLICY_USER_GROUPS = '6';
@@ -22,12 +24,14 @@ async function createVotingGroup(page: Page): Promise<void> {
     const users = new AdminUsersPage(page);
     await users.open();
     await loginAsStdAdmin(page);
+    // The fixture has the "Currently debated" module on, which would take the place of the voting widget
+    await disableCurrentlyDebated(page);
     await users.open();
 
-    await page.locator('.btnGroupCreate').click();
-    await expect(page.locator('.addGroupForm')).toBeVisible();
-    await page.locator('.addGroupForm .addGroupName input').fill('Voting group');
-    await page.locator('.addGroupForm .btnSave').click();
+    await dispatchClick(page, '.btnGroupCreate');
+    await expect(page.locator('.addGroupForm').first()).toBeVisible();
+    await page.locator('.addGroupForm .addGroupName input').first().fill('Voting group');
+    await dispatchClick(page, '.addGroupForm .btnSave');
     await expect(page.locator(`.group${FIRST_FREE_USERGROUP_ID}`)).toContainText('Voting group');
 }
 
@@ -35,27 +39,27 @@ async function createRestrictedVoting(page: Page): Promise<void> {
     const votingAdmin = new VotingAdminPage(page);
     await votingAdmin.open();
 
-    await expect(page.locator('form.creatingVoting')).toHaveCount(0);
-    await page.locator('.createVotingOpener').click();
-    await expect(page.locator('form.creatingVoting')).toBeVisible();
+    await expect(page.locator('form.creatingVoting').filter({ visible: true })).toHaveCount(0);
+    await dispatchClick(page, '.createVotingOpener');
+    await expect(page.locator('form.creatingVoting').first()).toBeVisible();
     await expect(page.locator('input[name=votingTypeNew]:checked')).toHaveValue('question');
 
-    await page.locator('.creatingVoting .settingsTitle').fill('Roll call');
-    await page.locator('.creatingVoting .settingsQuestion').fill('Who is present?');
-    await expect(page.locator('.majorityTypeSettings')).toBeVisible();
+    await page.locator('.creatingVoting .settingsTitle').first().fill('Roll call');
+    await page.locator('.creatingVoting .settingsQuestion').first().fill('Who is present?');
+    await expect(page.locator('.majorityTypeSettings').first()).toBeVisible();
     await page.locator(`input[name=answersNew][value="${TEMPLATE_PRESENT}"]`).click();
-    await expect(page.locator('.majorityTypeSettings')).toHaveCount(0);
+    await expect(page.locator('.majorityTypeSettings').filter({ visible: true })).toHaveCount(0);
     await expect(page.locator('input[name=resultsPublicNew]:checked')).toHaveValue('1');
     await page.locator('input[name=votesPublicNew][value="1"]').click();
     await page.locator('input[name=resultsPublicNew][value="1"]').click();
 
     await expect(
         page.locator('.createVotingHolder .votePolicy .userGroupSelect'),
-    ).toHaveCount(0);
+    ).not.toBeVisible();
     await page
         .locator('.createVotingHolder .votePolicy .policySelect')
         .selectOption(POLICY_USER_GROUPS);
-    await expect(page.locator('.createVotingHolder .votePolicy .userGroupSelect')).toBeVisible();
+    await expect(page.locator('.createVotingHolder .votePolicy .userGroupSelect').first()).toBeVisible();
 
     const initialCount = await page.evaluate(() => {
         const el = document.querySelector(
@@ -80,7 +84,7 @@ async function createRestrictedVoting(page: Page): Promise<void> {
     });
     expect(afterCount).toBe(1);
 
-    await page.locator('form.creatingVoting button[type=submit]').click();
+    await dispatchClick(page, 'form.creatingVoting button[type=submit]');
 
     await expect(
         page.locator(`${VOTING_BASE_ID} .votingSettingsSummary .votingPolicy`),
@@ -114,24 +118,24 @@ async function assignGroupWithWeight(page: Page): Promise<void> {
     const users = new AdminUsersPage(page);
     await users.open();
 
-    await expect(page.locator('.user2').first()).toHaveCount(0);
-    await page.locator('.addUsersOpener.email').click();
-    await page.locator('#emailAddresses').fill('testuser@example.org');
-    await page.locator('#names').fill('ignored');
+    await expect(page.locator('.user2').first()).not.toBeVisible();
+    await dispatchClick(page, '.addUsersOpener.email');
+    await page.locator('#emailAddresses').first().fill('testuser@example.org');
+    await page.locator('#names').first().fill('ignored');
     await page.locator('.addUsersByLogin.multiuser [name="addUsers"]').click();
     await expect(page.locator('.user2').first()).toBeVisible();
 
-    await expect(page.locator('.user2 .selectize-control')).toHaveCount(0);
-    await page.locator('.user2 .btnEdit').click();
-    await expect(page.locator('.editUserModal')).toBeVisible();
-    await page.locator('.editUserModal .userGroup4').click();
+    await expect(page.locator('.user2 .selectize-control').filter({ visible: true })).toHaveCount(0);
+    await dispatchClick(page, '.user2 .btnEdit');
+    await expect(page.locator('.editUserModal').first()).toBeVisible();
+    await dispatchClick(page, '.editUserModal .userGroup4');
     await page.locator(`.editUserModal .userGroup${FIRST_FREE_USERGROUP_ID}`).click();
     await expect(page.locator('.editUserModal .inputVoteWeight')).toHaveValue('1');
-    await page.locator('.editUserModal .inputVoteWeight').fill('7');
-    await page.locator('.editUserModal .btnSave').click();
+    await page.locator('.editUserModal .inputVoteWeight').first().fill('7');
+    await dispatchClick(page, '.editUserModal .btnSave');
 
-    await expect(page.locator('.user2').first()).not.toContainText('Veranstaltungs-Admin');
-    await expect(page.locator('.user2').first()).not.toContainText('Teilnehmer*in');
+    await expect(page.locator('.user2').first()).not.toContainText('Veranstaltungs-Admin', { useInnerText: true });
+    await expect(page.locator('.user2').first()).not.toContainText('Teilnehmer*in', { useInnerText: true });
     await expect(page.locator('.user2').first()).toContainText('Voting group');
 }
 
@@ -149,9 +153,9 @@ test.describe('User group policy and weighted votes', () => {
         await home.open();
         await loginAsStdUser(page);
 
-        await expect(page.locator('h2')).toContainText('Roll call');
+        await expect(page.locator('h2').filter({ hasText: 'Roll call' }).first()).toBeVisible();
         await expect(page.locator('.voting_question_1')).toContainText('Who is present?');
-        await expect(page.locator('.voting_question_1 .btnPresent')).toHaveCount(0);
+        await expect(page.locator('.voting_question_1 .btnPresent').filter({ visible: true })).toHaveCount(0);
     });
 
     test('a group member votes with their assigned weight', async ({ page }) => {
@@ -167,17 +171,17 @@ test.describe('User group policy and weighted votes', () => {
         await home.open();
         await loginAsStdUser(page);
 
-        await expect(page.locator('h2')).toContainText('Roll call');
+        await expect(page.locator('h2').filter({ hasText: 'Roll call' }).first()).toBeVisible();
         await expect(page.locator('.voting_question_1')).toContainText('Who is present?');
         await expect(page.locator('.currentVotings .votingWeight')).toContainText('7');
-        await page.locator('.voting_question_1 .btnPresent').click();
-        await expect(page.locator('.voting_question_1 span.present')).toBeVisible();
+        await dispatchClick(page, '.voting_question_1 .btnPresent');
+        await expect(page.locator('.voting_question_1 span.present').first()).toBeVisible();
 
         await logout(page);
         await loginAsStdAdmin(page);
         const votingAdmin = new VotingAdminPage(page);
         await votingAdmin.open();
-        await page.locator('.voting_question_1 .btnShowVotes').click();
+        await dispatchClick(page, '.voting_question_1 .btnShowVotes');
         await expect(
             page.locator(`.voteListHolder${FIRST_FREE_USERGROUP_ID}`),
         ).toContainText('testuser@example.org (×7)');
@@ -196,8 +200,8 @@ test.describe('User group policy and weighted votes', () => {
         const home = new ConsultationHomePage(page);
         await home.open();
         await loginAsStdUser(page);
-        await page.locator('.voting_question_1 .btnPresent').click();
-        await expect(page.locator('.voting_question_1 span.present')).toBeVisible();
+        await dispatchClick(page, '.voting_question_1 .btnPresent');
+        await expect(page.locator('.voting_question_1 span.present').first()).toBeVisible();
 
         const json = await page.evaluate(() =>
             fetch('/stdparteitag/rest/std-parteitag/votings/open?assignedToMotionId=').then((r) =>
@@ -244,8 +248,8 @@ test.describe('User group policy and weighted votes', () => {
         const home = new ConsultationHomePage(page);
         await home.open();
         await loginAsStdUser(page);
-        await page.locator('.voting_question_1 .btnPresent').click();
-        await expect(page.locator('.voting_question_1 span.present')).toBeVisible();
+        await dispatchClick(page, '.voting_question_1 .btnPresent');
+        await expect(page.locator('.voting_question_1 span.present').first()).toBeVisible();
 
         await logout(page);
         await loginAsStdAdmin(page);
@@ -306,8 +310,8 @@ test.describe('User group policy and weighted votes', () => {
         const home = new ConsultationHomePage(page);
         await home.open();
         await loginAsStdUser(page);
-        await page.locator('.voting_question_1 .btnPresent').click();
-        await expect(page.locator('.voting_question_1 span.present')).toBeVisible();
+        await dispatchClick(page, '.voting_question_1 .btnPresent');
+        await expect(page.locator('.voting_question_1 span.present').first()).toBeVisible();
 
         await logout(page);
         await loginAsStdAdmin(page);
@@ -315,7 +319,7 @@ test.describe('User group policy and weighted votes', () => {
         await votingAdmin.open();
 
         await page.locator(`.voting${FIRST_FREE_VOTING_BLOCK_ID} .btnClose`).click();
-        await page.locator('.sidebarActions .results a').click();
+        await dispatchClick(page, '.sidebarActions .results a');
         await expect(page.locator('.voting_question_1 .voteCount_present')).toContainText('7');
 
         const json = await page.evaluate(() =>

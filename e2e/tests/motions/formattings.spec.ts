@@ -12,8 +12,10 @@ test.describe('Motion text formattings', () => {
         await home.open();
         await home.gotoMotionView(3);
 
-        await expect(page.locator('body')).toContainText('Zeilenumbruch unterstrichen');
-        await expect(page.locator('#section_2_2 .text ol')).toHaveAttribute('start', '1');
-        await expect(page.locator('#section_2_3 .text ol')).toHaveAttribute('start', '2');
+        await test.step('test numbered lists', async () => {
+            await expect(page.locator('body')).toContainText('Zeilenumbruch unterstrichen');
+            await expect(page.locator('#section_2_2 .text ol')).toHaveAttribute('start', '1');
+            await expect(page.locator('#section_2_3 .text ol')).toHaveAttribute('start', '2');
+        });
     });
 });

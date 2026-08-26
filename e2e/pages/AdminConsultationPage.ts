@@ -11,6 +11,6 @@ export class AdminConsultationPage extends BasePage {
     }
 
     async saveForm(): Promise<void> {
-        await this.page.locator('#consultationSettingsForm [name="save"]').click();
+        await this.page.locator('#consultationSettingsForm [name="save"]').first().click();
     }
 }

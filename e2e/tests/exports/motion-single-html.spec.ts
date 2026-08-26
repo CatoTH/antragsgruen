@@ -13,9 +13,11 @@ test.describe('Exports: motion single HTML', () => {
         await page.locator('#motionListLink').click();
         await expect(page.locator('h1')).toContainText(/liste: anträge/i);
 
-        await page.locator('.adminMotionTable .motion3 a.plainHtml').click();
-        await expect(page.locator('body')).toContainText(
-            'Seltsame Zeichen: & % $ # _ { } ~ ^ \\ \\today',
-        );
+        await test.step('test the single-motion-HTML from the admin interface', async () => {
+            await page.locator('.adminMotionTable .motion3 a.plainHtml').click();
+            await expect(page.locator('body')).toContainText(
+                'Seltsame Zeichen: & % $ # _ { } ~ ^ \\ \\today',
+            );
+        });
     });
 });

@@ -146,13 +146,33 @@ export async function dispatchClick(
     page: Page,
     selector: string,
 ): Promise<void> {
-    await page.evaluate((sel) => {
-        const el = document.querySelector(sel);
-        if (el) {
-            el.dispatchEvent(
-                new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
-            );
+    // Stands in for AcceptanceTester::clickJS(), which the Cepts use to get past elements Selenium
+    // refused to click. A real click is preferred: some widgets (Vue) only respond to a trusted
+    // event, so a scripted click silently does nothing and the test carries on as if it worked.
+    // When something genuinely covers the element, fall back to the scripted click clickJS does.
+    const element = page.locator(selector).first();
+    await element.waitFor({ state: 'visible' });
+    try {
+        await element.click();
+        return;
+    } catch (err) {
+        // Only an element covered by something else justifies the scripted click. Any other
+        // failure (never became actionable, detached, ...) is a real problem and must surface,
+        // because the scripted click would paper over it by doing nothing.
+        if (!String(err).includes('intercepts pointer events')) {
+            throw err;
         }
+    }
+    await page.evaluate((sel) => {
+        // jQuery's trigger also runs handlers bound through .on(), which a bare MouseEvent misses.
+        const jq = (window as any).$;
+        if (jq && jq(sel).length) {
+            jq(sel).click();
+            return;
+        }
+        document.querySelector(sel)?.dispatchEvent(
+            new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
+        );
     }, selector);
 }
 

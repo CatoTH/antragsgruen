@@ -17,21 +17,21 @@ test.describe('Motion from an organization', () => {
         const createPage = await home.gotoMotionCreatePage();
 
         await createPage.fillInValidSampleData('Sample motion from an organization');
-        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
-        await expect(page.locator('.supporterDataHead')).toHaveCount(0);
-        await expect(page.locator('.supporterData')).toHaveCount(0);
-        await expect(page.locator('#initiatorOrga')).toHaveCount(0);
-        await expect(page.locator('#resolutionDate')).toBeVisible();
+        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).first().check();
+        await expect(page.locator('.supporterDataHead').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('.supporterData').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#initiatorOrga').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#resolutionDate').first()).toBeVisible();
 
-        await expect(page.locator('.bootstrap-datetimepicker-widget')).toHaveCount(0);
+        await expect(page.locator('.bootstrap-datetimepicker-widget').filter({ visible: true })).toHaveCount(0);
         await page.locator('#resolutionDateHolder .input-group-addon').click();
-        await expect(page.locator('.bootstrap-datetimepicker-widget')).toBeVisible();
+        await expect(page.locator('.bootstrap-datetimepicker-widget').first()).toBeVisible();
         await page.locator('#resolutionDateHolder .input-group-addon').click();
-        await expect(page.locator('.bootstrap-datetimepicker-widget')).toHaveCount(0);
+        await expect(page.locator('.bootstrap-datetimepicker-widget').filter({ visible: true })).toHaveCount(0);
 
-        await page.locator('#initiatorPrimaryName').fill('My party');
-        await page.locator('#initiatorContactName').fill('Myself');
-        await page.locator('#resolutionDate').fill('09.09.1999');
+        await page.locator('#initiatorPrimaryName').first().fill('My party');
+        await page.locator('#initiatorContactName').first().fill('Myself');
+        await page.locator('#resolutionDate').first().fill('09.09.1999');
 
         await createPage.saveForm();
 

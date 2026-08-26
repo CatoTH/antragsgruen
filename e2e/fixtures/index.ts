@@ -1,5 +1,5 @@
 import { test as base, Page, APIRequestContext } from '@playwright/test';
-import { DBFixture, FixtureName } from '../utils/test-api';
+import { DBFixture, FixtureName, resetConfig } from '../utils/test-api';
 import {
     clearLocalStorage,
     loginAsStdAdmin,
@@ -16,12 +16,24 @@ import { DEFAULT_CONSULTATION_PATH, DEFAULT_SUBDOMAIN } from '../utils/constants
 type AntragsgruenFixtures = {
     db: DBFixture;
     freshDB: void;
+    resetConfig: void;
 };
 
 export const test = base.extend<AntragsgruenFixtures>({
     db: async ({ request }, use) => {
         await use(new DBFixture(request));
     },
+
+    // config_tests.json is a file, so setConfig() survives populate-db and would otherwise leak
+    // into every later test of the run. Reset it before each test, as ConfigurationChanger does
+    // for the Codeception suite.
+    resetConfig: [
+        async ({ request }, use) => {
+            await resetConfig(request);
+            await use();
+        },
+        { auto: true },
+    ],
 
     freshDB: [
         async ({ request }, use) => {

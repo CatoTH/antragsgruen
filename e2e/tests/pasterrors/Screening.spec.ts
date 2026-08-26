@@ -25,8 +25,8 @@ test.describe('Screening', () => {
         const motionTypePage = new AdminMotionTypePage(page);
         await new AdminIndexPage(page).open();
         await motionTypePage.open({ motionTypeId: 1 });
-        await page.locator('#screeningMotions').check();
-        await page.locator('#screeningAmendments').check();
+        await page.locator('#screeningMotions').first().check();
+        await page.locator('#screeningAmendments').first().check();
         await motionTypePage.saveForm();
 
         const home = new ConsultationHomePage(page);
@@ -48,7 +48,7 @@ test.describe('Screening', () => {
         const motionList = new AdminMotionListPage(page);
         await new AdminIndexPage(page).open();
         await motionList.open();
-        await expect(page.locator('body')).not.toContainText(FIRST_FREE_AMENDMENT_TITLE_PREFIX);
+        await expect(page.locator('body')).not.toContainText(FIRST_FREE_AMENDMENT_TITLE_PREFIX, { useInnerText: true });
         await page
             .locator(`.adminMotionTable .amendment${FIRST_FREE_AMENDMENT_ID} .selectbox`)
             .check();
@@ -61,19 +61,22 @@ test.describe('Screening', () => {
         await new ConsultationHomePage(page).open();
         const motionCreatePage = await home.gotoMotionCreatePage();
         await motionCreatePage.fillInValidSampleData();
-        await page.locator('#motionEditForm [name="save"]').click();
-        await page.locator('#motionConfirmForm [name="confirm"]').click();
+        await test.step('check that prefixes are set on motions when screening using the motion-list', async () => {
+            await page.locator('#motionEditForm [name="save"]').click();
+            await page.locator('#motionConfirmForm [name="confirm"]').click();
 
-        await new AdminIndexPage(page).open();
-        await motionList.open();
-        await expect(page.locator('body')).not.toContainText(FIRST_FREE_MOTION_TITLE_PREFIX);
-        await page
-            .locator(`.adminMotionTable .motion${FIRST_FREE_MOTION_ID} .selectbox`)
-            .check();
-        await page.locator('.motionListForm [name="screen"]').click();
-        await expect(page.locator('body')).toContainText(
-            'Die ausgewählten Anträge wurden freigeschaltet.',
-        );
-        await expect(page.locator('body')).toContainText(FIRST_FREE_MOTION_TITLE_PREFIX);
+            await new AdminIndexPage(page).open();
+            await motionList.open();
+            await expect(page.locator('body')).not.toContainText(FIRST_FREE_MOTION_TITLE_PREFIX, { useInnerText: true });
+            await page
+                .locator(`.adminMotionTable .motion${FIRST_FREE_MOTION_ID} .selectbox`)
+                .check();
+            await page.locator('.motionListForm [name="screen"]').click();
+            await expect(page.locator('body')).toContainText(
+                'Die ausgewählten Anträge wurden freigeschaltet.',
+            );
+            await expect(page.locator('body')).toContainText(FIRST_FREE_MOTION_TITLE_PREFIX);
+        });
+
     });
 });

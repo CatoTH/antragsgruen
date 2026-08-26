@@ -13,6 +13,6 @@ test.describe('AmendmentView', () => {
 
         await amendment.open({ motionSlug: '3', amendmentId: 2 });
         await expect(page.locator('body')).toContainText('Um das ganze mal zu testen');
-        await expect(page.locator('body')).not.toContainText('###FORCELINEBREAK###');
+        await expect(page.locator('body')).not.toContainText('###FORCELINEBREAK###', { useInnerText: true });
     });
 });

@@ -44,33 +44,35 @@ test.describe('Motion section editing', () => {
         const motionType = new AdminMotionTypePage(page);
         await motionType.open({ motionTypeId: 1 });
 
-        await page.locator('.sectionAdder').click();
-        await expect(page.locator('.sectionnew0')).toBeVisible();
-        await expect(page.locator('.sectionnew0 .tabularDataRow')).not.toContainText(
-            AdminMotionTypePage.TABULAR_LABEL,
-        );
-        await expect(page.locator('.sectionnew0 .commentRow')).not.toContainText(
-            AdminMotionTypePage.COMMENTS_LABEL,
-        );
+        await test.step('rearrange the list', async () => {
+            await page.locator('.sectionAdder').click();
+        });
 
-        await page.locator('.sectionnew0 select.sectionType').selectOption(TYPE_TEXT_SIMPLE);
-        await expect(page.locator('.sectionnew0 .commentRow')).toContainText(
-            AdminMotionTypePage.COMMENTS_LABEL,
-        );
+        await test.step('check if the change is reflected on the motion', async () => {
+            await expect(page.locator('.sectionnew0').first()).toBeVisible();
+        });
 
-        await page.locator('.sectionnew0 select.sectionType').selectOption(TYPE_TABULAR);
-        await expect(page.locator('.sectionnew0 .tabularDataRow')).toContainText(
-            AdminMotionTypePage.TABULAR_LABEL,
-        );
-        await expect(page.locator('.sectionnew0 .commentRow')).not.toContainText(
-            AdminMotionTypePage.COMMENTS_LABEL,
-        );
+        await test.step('create a tabular data section', async () => {
+            await expect(page.locator('.sectionnew0 .tabularDataRow').getByText(AdminMotionTypePage.TABULAR_LABEL).filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.sectionnew0 .commentRow').getByText(AdminMotionTypePage.COMMENTS_LABEL).filter({ visible: true })).toHaveCount(0);
 
-        await page.locator('.sectionnew0 .sectionTitle input').fill('Some tabular data');
-        await page.locator('.sectionnew0 .tabularDataRow ul li.no0 input').fill('Testrow');
-        await page.locator('.sectionnew0 .tabularDataRow ul li.no1 input').fill('Testrow 2');
-        await page.locator('.sectionnew0 .tabularDataRow ul li.no2 input').fill('Testrow 3');
-        await page.locator('.sectionnew0 .positionRow input').selectOption('1');
+            await page.locator('.sectionnew0 select.sectionType').first().selectOption(TYPE_TEXT_SIMPLE);
+            await expect(page.locator('.sectionnew0 .commentRow')).toContainText(
+                AdminMotionTypePage.COMMENTS_LABEL,
+            );
+
+            await page.locator('.sectionnew0 select.sectionType').first().selectOption(TYPE_TABULAR);
+            await expect(page.locator('.sectionnew0 .tabularDataRow')).toContainText(
+                AdminMotionTypePage.TABULAR_LABEL,
+            );
+            await expect(page.locator('.sectionnew0 .commentRow').getByText(AdminMotionTypePage.COMMENTS_LABEL).filter({ visible: true })).toHaveCount(0);
+        });
+
+        await page.locator('.sectionnew0 .sectionTitle input').first().fill('Some tabular data');
+        await page.locator('.sectionnew0 .tabularDataRow ul li.no0 input').first().fill('Testrow');
+        await page.locator('.sectionnew0 .tabularDataRow ul li.no1 input').first().fill('Testrow 2');
+        await page.locator('.sectionnew0 .tabularDataRow ul li.no2 input').first().fill('Testrow 3');
+        await page.locator('.sectionnew0 .positionRow input').first().selectOption('1');
 
         const initialOrder = await page.evaluate(() => {
             const w = window as any;
@@ -92,23 +94,28 @@ test.describe('Motion section editing', () => {
         await page.locator('.adminTypeForm [name="save"]').first().click();
 
         const newSection = `.section${FIRST_FREE_MOTION_SECTION}`;
-        await expect(page.locator(newSection)).toBeVisible();
-        await expect(page.locator(`${newSection} .sectionTitle input`)).toHaveValue(
-            'Some tabular data',
-        );
-        await expect(
-            page.locator(`${newSection} .tabularDataRow ul li.no1 input`),
-        ).toHaveValue('Testrow 3');
-        await expect(page.locator(`${newSection} .positionRow input`)).toHaveValue('1');
+        await expect(page.locator(newSection).first()).toBeVisible();
+        await test.step('check if the changes to tabular data section were saved', async () => {
+            await expect(page.locator(`${newSection} .sectionTitle input`)).toHaveValue(
+                'Some tabular data',
+            );
+            await expect(
+                page.locator(`${newSection} .tabularDataRow ul li.no1 input`),
+            ).toHaveValue('Testrow 3');
+            await expect(page.locator(`${newSection} .positionRow input`)).toHaveValue('1');
+        });
 
-        await page.locator(`${newSection} .sectionTitle input`).fill('My life');
-        await page.locator(`${newSection} .tabularDataRow ul li.no1 input`).fill('Birth year');
-        await page.locator('.adminTypeForm [name="save"]').first().click();
+        await test.step('change the tabular data afterwards', async () => {
+            await page.locator(`${newSection} .sectionTitle input`).first().fill('My life');
+            await page.locator(`${newSection} .tabularDataRow ul li.no1 input`).first().fill('Birth year');
+            await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        await expect(page.locator(newSection)).toBeVisible();
-        await expect(page.locator(`${newSection} .sectionTitle input`)).toHaveValue('My life');
-        await expect(
-            page.locator(`${newSection} .tabularDataRow ul li.no1 input`),
-        ).toHaveValue('Birth year');
+            await expect(page.locator(newSection).first()).toBeVisible();
+            await expect(page.locator(`${newSection} .sectionTitle input`)).toHaveValue('My life');
+            await expect(
+                page.locator(`${newSection} .tabularDataRow ul li.no1 input`),
+            ).toHaveValue('Birth year');
+        });
+
     });
 });

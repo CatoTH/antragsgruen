@@ -22,8 +22,8 @@ test.describe('YfjVoting', () => {
         await page.waitForTimeout(200);
 
         await clickJS(page, '.createRollCall');
-        await page.locator('#roll_call_number').fill('1');
-        await page.locator('#roll_call_name').fill('Friday evening');
+        await page.locator('#roll_call_number').first().fill('1');
+        await page.locator('#roll_call_name').first().fill('Friday evening');
         await expect(page.locator('#roll_call_create_groups')).toBeChecked();
         await page
             .locator('.createRollCallForm [type="submit"]')
@@ -102,8 +102,8 @@ test.describe('YfjVoting', () => {
         await clickJS(page, '#voting1 .voteListHolder48 .userGroupSetterDo');
 
         await clickJS(page, '.votingOperations .createYfjVoting');
-        await page.locator('#voting_number').fill('1');
-        await page.locator('#voting_title').fill('Should we agree?');
+        await page.locator('#voting_number').first().fill('1');
+        await page.locator('#voting_title').first().fill('Should we agree?');
         await page.locator('.createYfjVotingForm [type="submit"]').click();
 
         await page.waitForTimeout(200);

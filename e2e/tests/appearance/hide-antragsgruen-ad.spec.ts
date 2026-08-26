@@ -13,17 +13,22 @@ test.describe('Appearance: hide Antragsgrün ad', () => {
         await loginAsStdAdmin(page);
 
         await page.goto('/stdparteitag/std-parteitag/admin/appearance');
-        await page.locator('#showAntragsgruenAd').uncheck();
-        await page.locator('#consultationAppearanceForm [name="save"]').click();
+        await test.step('disable the ad', async () => {
+            await page.locator('#showAntragsgruenAd').first().uncheck();
+            await page.locator('#consultationAppearanceForm [name="save"]').click();
 
-        await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('#sidebar')).not.toContainText('Dein Antragsgrün');
+            await page.goto('/stdparteitag/std-parteitag');
+            await expect(page.locator('#sidebar').getByText('Dein Antragsgrün').filter({ visible: true })).toHaveCount(0);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
-        await page.locator('#showAntragsgruenAd').check();
-        await page.locator('#consultationAppearanceForm [name="save"]').click();
+            await page.goto('/stdparteitag/std-parteitag/admin/appearance');
+        });
 
-        await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('#sidebar')).toContainText('Dein Antragsgrün');
+        await test.step('enable it again', async () => {
+            await page.locator('#showAntragsgruenAd').first().check();
+            await page.locator('#consultationAppearanceForm [name="save"]').click();
+
+            await page.goto('/stdparteitag/std-parteitag');
+            await expect(page.locator('#sidebar')).toContainText('Dein Antragsgrün');
+        });
     });
 });

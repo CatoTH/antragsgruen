@@ -1,8 +1,6 @@
 import { test, expect } from '../../fixtures';
-import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
-import { AdminIndexPage } from '../../pages/AdminIndexPage';
-import { AdminMotionListPage } from '../../pages/AdminMotionListPage';
-import { loginAsStdAdmin, logout } from '../../utils/auth';
+import { logout } from '../../utils/auth';
+import { loginAndGotoMotionList } from '../../utils/navigation';
 
 test.describe('AmendmentEditDeleteText', () => {
     test.beforeEach(async ({ db }) => {
@@ -10,21 +8,19 @@ test.describe('AmendmentEditDeleteText', () => {
     });
 
     test('ensure the text does not get deleted', async ({ page }) => {
-        await new ConsultationHomePage(page).open();
-        await loginAsStdAdmin(page);
+        await test.step("ensure the text doesn't get deleted", async () => {
+            const motionList = await loginAndGotoMotionList(page);
+            const amendment = await motionList.gotoAmendmentEdit(1);
 
-        const motionList = new AdminMotionListPage(page);
-        await new AdminIndexPage(page).open();
-        await motionList.open();
-        await page
-            .locator('.motion1 .edit, .motion1 [href*="edit"]')
-            .first()
-            .click();
-        await page.locator('#amendmentUpdateForm [name="save"]').click();
-        await page.locator('.sidebarActions .view').click();
-        await expect(page.locator('del')).toHaveCount(0);
-        await expect(page.locator('ul.inserted')).toBeVisible();
+            await amendment.saveForm();
+            await page.locator('.sidebarActions .view').click();
+            await expect(page.locator('del').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('ul.inserted').first()).toBeVisible();
 
-        await logout(page);
+            await logout(page);
+        });
+
+        // The Cept's second scenario (editing the title prefix on laenderrat-to) is commented out
+        // there: "Broken, as original motion sections do not exist in laenderrat-to".
     });
 });

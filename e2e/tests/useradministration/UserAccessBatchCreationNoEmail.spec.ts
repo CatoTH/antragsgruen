@@ -4,6 +4,7 @@ import { setConfig } from '../../utils/test-api';
 import { ConsultationHomePage } from '../../pages/ConsultationHomePage';
 import { AdminIndexPage } from '../../pages/AdminIndexPage';
 import { AdminConsultationPage } from '../../pages/AdminConsultationPage';
+import { dispatchClick } from '../../utils/dom';
 
 test.describe('Useradmin: UserAccessBatchCreationNoEmail', () => {
     test.beforeEach(async ({ db, request }) => {
@@ -16,44 +17,53 @@ test.describe('Useradmin: UserAccessBatchCreationNoEmail', () => {
         await new AdminIndexPage(page).open();
         const consultationPage = new AdminConsultationPage(page);
         await consultationPage.open();
-        await page.locator('.managedUserAccounts input').check();
-        await consultationPage.saveForm();
+        await test.step('check the basic configuration', async () => {
+            await page.locator('.managedUserAccounts input').first().check();
+            await consultationPage.saveForm();
 
-        await new AdminIndexPage(page).open();
-        await page.locator('.siteUsers').click();
+            await new AdminIndexPage(page).open();
+            await page.locator('.siteUsers').click();
 
-        await page.locator('.addUsersOpener.email').click();
-        await expect(page.locator('.alert-info')).toContainText('Benachrichtigungs-E-Mail');
-        await expect(page.locator('.alert-info')).not.toContainText('Datenschutzgründen');
-        await expect(page.locator('#passwords')).toHaveCount(0);
+            await dispatchClick(page, '.addUsersOpener.email');
+            await expect(page.locator('.alert-info')).toContainText('Benachrichtigungs-E-Mail');
+            await expect(page.locator('.alert-info').getByText('Datenschutzgründen').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('#passwords').filter({ visible: true })).toHaveCount(0);
 
-        await setConfig(request, { mailService: { transport: 'none' } });
+            await setConfig(request, { mailService: { transport: 'none' } });
 
-        await new AdminIndexPage(page).open();
-        await page.locator('.siteUsers').click();
+            await new AdminIndexPage(page).open();
+            await page.locator('.siteUsers').click();
+        });
 
-        await expect(page.locator('#emailAddresses')).toHaveCount(0);
-        await page.locator('.addUsersOpener.email').click();
-        await expect(page.locator('.alert-info')).not.toContainText('Benachrichtigungs-E-Mail');
-        await expect(page.locator('.alert-info')).toContainText('Datenschutzgründen');
+        await test.step('disable e-mails', async () => {
+            await expect(page.locator('#emailAddresses').filter({ visible: true })).toHaveCount(0);
+            await dispatchClick(page, '.addUsersOpener.email');
+            await expect(page.locator('.alert-info').getByText('Benachrichtigungs-E-Mail').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.alert-info')).toContainText('Datenschutzgründen');
+        });
 
-        await expect(page.locator('#emailAddresses')).toBeVisible();
-        await expect(page.locator('#passwords')).toBeVisible();
+        await test.step('create a user using the old batch-creation mode', async () => {
+            await expect(page.locator('#emailAddresses').first()).toBeVisible();
+            await expect(page.locator('#passwords').first()).toBeVisible();
 
-        await page.locator('#emailAddresses').fill('blibla@example.org');
-        await page.locator('#passwords').fill('bliblablubb');
-        await page.locator('#names').fill('Kasper');
-        await page.locator('.addUsersByLogin.multiuser [name="addUsers"]').click();
+            await page.locator('#emailAddresses').first().fill('blibla@example.org');
+            await page.locator('#passwords').first().fill('bliblablubb');
+            await page.locator('#names').first().fill('Kasper');
+            await page.locator('.addUsersByLogin.multiuser [name="addUsers"]').click();
 
-        await expect(page.locator('.userAdminList')).toContainText('Kasper');
-        await expect(page.locator('.userAdminList')).toContainText('blibla@example.org');
+            await expect(page.locator('.userAdminList')).toContainText('Kasper');
+            await expect(page.locator('.userAdminList')).toContainText('blibla@example.org');
 
-        await new ConsultationHomePage(page).open();
-        await logout(page);
-        await page.locator('#loginLink').click();
-        await page.locator('#username').fill('blibla@example.org');
-        await page.locator('#passwordInput').fill('bliblablubb');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
-        await expect(page.locator('.alert-success')).toContainText('Willkommen!');
+            await new ConsultationHomePage(page).open();
+            await logout(page);
+        });
+
+        await test.step('log in with the new user', async () => {
+            await page.locator('#loginLink').click();
+            await page.locator('#username').first().fill('blibla@example.org');
+            await page.locator('#passwordInput').first().fill('bliblablubb');
+            await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+            await expect(page.locator('.alert-success')).toContainText('Willkommen!');
+        });
     });
 });

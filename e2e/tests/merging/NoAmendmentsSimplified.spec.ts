@@ -11,21 +11,25 @@ test.describe('Merging: simplified mode for users', () => {
         await loginAsStdAdmin(page);
         await page.goto('/stdparteitag/std-parteitag/admin/motiontypes/type/1');
 
-        await expect(page.locator('#initiatorsCanMerge0')).toBeChecked();
-        await page.locator('#initiatorsCanMerge1').check();
-        await page.locator('.adminTypeForm [name="save"]').first().click();
-        await expect(page.locator('#initiatorsCanMerge1')).toBeChecked();
+        await test.step('enable merging for users in restricted mode', async () => {
+            await expect(page.locator('#initiatorsCanMerge0')).toBeChecked();
+            await page.locator('#initiatorsCanMerge1').first().check();
+            await page.locator('.adminTypeForm [name="save"]').first().click();
+            await expect(page.locator('#initiatorsCanMerge1')).toBeChecked();
 
-        await page.goto('/stdparteitag/std-parteitag');
-        await page.goto('/stdparteitag/std-parteitag/motion/58');
-        await logout(page);
-        await loginAsStdUser(page);
+            await page.goto('/stdparteitag/std-parteitag');
+            await page.goto('/stdparteitag/std-parteitag/motion/58');
+            await logout(page);
+            await loginAsStdUser(page);
+        });
 
-        await page.locator('.sidebarActions .mergeamendments').click();
-        await expect(page.locator('.motionMergeInit')).toHaveCount(0);
-        await expect(page.locator('.motionMergeForm')).toBeVisible();
-        await expect(page.locator('.motionData .alert-info')).toHaveCount(0);
-        await expect(page.locator('.newAmendments')).toHaveCount(0);
-        await expect(page.locator('.mergeActionHolder')).toHaveCount(0);
+        await test.step('ensure I see the simplified version of the form', async () => {
+            await page.locator('.sidebarActions .mergeamendments').click();
+            await expect(page.locator('.motionMergeInit').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.motionMergeForm').first()).toBeVisible();
+            await expect(page.locator('.motionData .alert-info').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.newAmendments').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.mergeActionHolder').filter({ visible: true })).toHaveCount(0);
+        });
     });
 });

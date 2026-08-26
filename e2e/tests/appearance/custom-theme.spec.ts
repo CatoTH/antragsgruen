@@ -22,7 +22,9 @@ test.describe('Appearance: custom theme', () => {
                 document.querySelector('.antragsgruen-width-main.well')!,
             ).borderTopLeftRadius;
         });
-        expect(borderRadius).toBe('10px');
+        await test.step('confirm the default settings', async () => {
+            expect(borderRadius).toBe('10px');
+        });
 
         await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#4B7000');
 
@@ -37,10 +39,12 @@ test.describe('Appearance: custom theme', () => {
                 );
             }
         });
-        await page.locator('.editThemeLink').click();
-        await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#646464');
+        await test.step('see that DBJR-theme is preselected if necessary', async () => {
+            await page.locator('.editThemeLink').click();
+            await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#646464');
+        });
 
-        await page.locator('#stylesheet-contentBorderRadius').fill('5');
+        await page.locator('#stylesheet-contentBorderRadius').first().fill('5');
         await page.evaluate(() => {
             const el = document.querySelector('#stylesheet-menuLink') as HTMLInputElement;
             el.value = '#FF0000';
@@ -84,63 +88,69 @@ test.describe('Appearance: custom theme', () => {
         });
         expect(classicBorderRadius).toBe('10px');
 
-        await page.locator('.editThemeLink').click();
-        await expect(page.locator('.bootbox-prompt')).toHaveCount(0);
-        await page.locator('.btnResetTheme').click();
-        await page.waitForTimeout(1000);
-        await expect(page.locator('.bootbox-prompt')).toBeVisible();
-        await page
-            .locator("input[name='bootbox-radio'][value='layout-dbjr']")
-            .check();
-        await page.evaluate(() => {
-            const el = document.querySelector('.bootbox-accept');
-            if (el) {
-                el.dispatchEvent(
-                    new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
-                );
-            }
+        await test.step('reset custom theme to DBJR', async () => {
+            await page.locator('.editThemeLink').click();
         });
-        await page.waitForTimeout(1000);
-        await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#646464');
-        await expect(page.locator('#stylesheet-contentBorderRadius')).toHaveValue('10');
-        const dbjrMenuLinkColor = await page.evaluate(() => {
-            return getComputedStyle(document.querySelector('#motionListLink')!).color;
-        });
-        expect(dbjrMenuLinkColor).toBe('rgb(100, 100, 100)');
-        const dbjrBorderRadius = await page.evaluate(() => {
-            return getComputedStyle(
-                document.querySelector('.antragsgruen-width-main.well')!,
-            ).borderTopLeftRadius;
-        });
-        expect(dbjrBorderRadius).toBe('10px');
 
-        await page.locator('.btnResetTheme').click();
-        await page.waitForTimeout(1000);
-        await expect(page.locator('.bootbox-prompt')).toBeVisible();
-        await page
-            .locator("input[name='bootbox-radio'][value='layout-classic']")
-            .check();
-        await page.evaluate(() => {
-            const el = document.querySelector('.bootbox-accept');
-            if (el) {
-                el.dispatchEvent(
-                    new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
-                );
-            }
-        });
-        await page.waitForTimeout(1000);
-        await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#4B7000');
-        await expect(page.locator('#stylesheet-contentBorderRadius')).toHaveValue('10');
+        await test.step('reset custom theme to classic', async () => {
+            await expect(page.locator('.bootbox-prompt')).toHaveCount(0);
+            await page.locator('.btnResetTheme').click();
+            await page.waitForTimeout(1000);
+            await expect(page.locator('.bootbox-prompt').first()).toBeVisible();
+            await page
+                .locator("input[name='bootbox-radio'][value='layout-dbjr']")
+                .check();
+            await page.evaluate(() => {
+                const el = document.querySelector('.bootbox-accept');
+                if (el) {
+                    el.dispatchEvent(
+                        new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
+                    );
+                }
+            });
+            await page.waitForTimeout(1000);
+            await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#646464');
+            await expect(page.locator('#stylesheet-contentBorderRadius')).toHaveValue('10');
+            const dbjrMenuLinkColor = await page.evaluate(() => {
+                return getComputedStyle(document.querySelector('#motionListLink')!).color;
+            });
+            expect(dbjrMenuLinkColor).toBe('rgb(100, 100, 100)');
+            const dbjrBorderRadius = await page.evaluate(() => {
+                return getComputedStyle(
+                    document.querySelector('.antragsgruen-width-main.well')!,
+                ).borderTopLeftRadius;
+            });
+            expect(dbjrBorderRadius).toBe('10px');
 
-        const finalMenuLinkColor = await page.evaluate(() => {
-            return getComputedStyle(document.querySelector('#motionListLink')!).color;
+            await page.locator('.btnResetTheme').click();
+            await page.waitForTimeout(1000);
+            await expect(page.locator('.bootbox-prompt').first()).toBeVisible();
+            await page
+                .locator("input[name='bootbox-radio'][value='layout-classic']")
+                .check();
+            await page.evaluate(() => {
+                const el = document.querySelector('.bootbox-accept');
+                if (el) {
+                    el.dispatchEvent(
+                        new MouseEvent('click', { bubbles: true, cancelable: true, view: window }),
+                    );
+                }
+            });
+            await page.waitForTimeout(1000);
+            await expect(page.locator('#stylesheet-menuLink')).toHaveValue('#4B7000');
+            await expect(page.locator('#stylesheet-contentBorderRadius')).toHaveValue('10');
+
+            const finalMenuLinkColor = await page.evaluate(() => {
+                return getComputedStyle(document.querySelector('#motionListLink')!).color;
+            });
+            expect(finalMenuLinkColor).toBe('rgb(75, 112, 0)');
+            const finalBorderRadius = await page.evaluate(() => {
+                return getComputedStyle(
+                    document.querySelector('.antragsgruen-width-main.well')!,
+                ).borderTopLeftRadius;
+            });
+            expect(finalBorderRadius).toBe('10px');
         });
-        expect(finalMenuLinkColor).toBe('rgb(75, 112, 0)');
-        const finalBorderRadius = await page.evaluate(() => {
-            return getComputedStyle(
-                document.querySelector('.antragsgruen-width-main.well')!,
-            ).borderTopLeftRadius;
-        });
-        expect(finalBorderRadius).toBe('10px');
+
     });
 });

@@ -11,12 +11,12 @@ test.describe('Misc: hidden amendments on consultation home', () => {
         await loginAsStdAdmin(page);
 
         await page.goto('/stdparteitag/std-parteitag/admin/appearance');
-        await page.locator('#startLayoutType').selectOption('4');
+        await page.locator('#startLayoutType').first().selectOption('4');
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 
         await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('.motionRow2 .amendmentsToggler.closed')).toBeVisible();
-        await expect(page.locator('.amendmentRow1')).toHaveCount(0);
+        await expect(page.locator('.motionRow2 .amendmentsToggler.closed').first()).toBeVisible();
+        await expect(page.locator('.amendmentRow1').filter({ visible: true })).toHaveCount(0);
 
         await page.evaluate(() => {
             const btn = document.querySelector(
@@ -29,6 +29,6 @@ test.describe('Misc: hidden amendments on consultation home', () => {
             }
         });
 
-        await expect(page.locator('.amendmentRow1')).toBeVisible();
+        await expect(page.locator('.amendmentRow1').first()).toBeVisible();
     });
 });

@@ -30,7 +30,7 @@ test.describe('DeleteTags', () => {
         await consultationPage.saveForm();
 
         await page.waitForTimeout(500);
-        await expect(page.locator('#consultationSettingsForm')).toBeVisible();
+        await expect(page.locator('#consultationSettingsForm').first()).toBeVisible();
 
         const tagCount = await page.evaluate(
             () =>

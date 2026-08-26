@@ -10,19 +10,19 @@ test.describe('Admin: ObsoletedByStatus', () => {
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
-            .locator('.motion2 .edit, .motion2 [href*="edit"]')
+            .locator('.adminMotionTable .motion2 .titleCol a')
             .first()
             .click();
 
-        await expect(page.locator('#motionStatusString')).toBeVisible();
-        await expect(page.locator('#motionStatusMotion')).not.toBeVisible();
-        await page.locator('#motionStatus').selectOption('32');
-        await expect(page.locator('#motionStatusString')).not.toBeVisible();
-        await expect(page.locator('#motionStatusMotion')).toBeVisible();
-        await page.locator('#motionStatusMotion').selectOption('3');
+        await expect(page.locator('#motionStatusString').first()).toBeVisible();
+        await expect(page.locator('#motionStatusMotion').filter({ visible: true })).toHaveCount(0);
+        await page.locator('#motionStatus').first().selectOption('32');
+        await expect(page.locator('#motionStatusString').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#motionStatusMotion').first()).toBeVisible();
+        await page.locator('#motionStatusMotion').first().selectOption('3');
         await page.locator('#motionUpdateForm [name="save"]').click();
 
-        await expect(page.locator('#motionStatusMotion')).toBeVisible();
+        await expect(page.locator('#motionStatusMotion').first()).toBeVisible();
         const selected = await page.evaluate(
             () =>
                 (document.getElementById('motionStatusMotion') as HTMLSelectElement)?.selectedOptions?.[0]?.text,
@@ -36,19 +36,19 @@ test.describe('Admin: ObsoletedByStatus', () => {
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
-            .locator('.motion2 .edit, .motion2 [href*="edit"]')
+            .locator('.adminMotionTable .motion2 .titleCol a')
             .first()
             .click();
 
-        await expect(page.locator('#motionStatusAmendment')).not.toBeVisible();
-        await page.locator('#motionStatus').selectOption('22');
-        await expect(page.locator('#motionStatusString')).not.toBeVisible();
-        await expect(page.locator('#motionStatusMotion')).not.toBeVisible();
-        await expect(page.locator('#motionStatusAmendment')).toBeVisible();
-        await page.locator('#motionStatusAmendment').selectOption('279');
+        await expect(page.locator('#motionStatusAmendment').filter({ visible: true })).toHaveCount(0);
+        await page.locator('#motionStatus').first().selectOption('22');
+        await expect(page.locator('#motionStatusString').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#motionStatusMotion').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#motionStatusAmendment').first()).toBeVisible();
+        await page.locator('#motionStatusAmendment').first().selectOption('279');
         await page.locator('#motionUpdateForm [name="save"]').click();
 
-        await expect(page.locator('#motionStatusAmendment')).toBeVisible();
+        await expect(page.locator('#motionStatusAmendment').first()).toBeVisible();
         const selected = await page.evaluate(
             () =>
                 (document.getElementById('motionStatusAmendment') as HTMLSelectElement)?.selectedOptions?.[0]?.text,
@@ -62,19 +62,19 @@ test.describe('Admin: ObsoletedByStatus', () => {
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
-            .locator('.amendment1 .edit, .amendment1 [href*="edit"]')
+            .locator('.adminMotionTable .amendment1 .titleCol a')
             .first()
             .click();
 
-        await expect(page.locator('#amendmentStatusString')).toBeVisible();
-        await expect(page.locator('#amendmentStatusMotion')).not.toBeVisible();
-        await page.locator('#amendmentStatus').selectOption('32');
-        await expect(page.locator('#amendmentStatusString')).not.toBeVisible();
-        await expect(page.locator('#amendmentStatusMotion')).toBeVisible();
-        await page.locator('#amendmentStatusMotion').selectOption('3');
+        await expect(page.locator('#amendmentStatusString').first()).toBeVisible();
+        await expect(page.locator('#amendmentStatusMotion').filter({ visible: true })).toHaveCount(0);
+        await page.locator('#amendmentStatus').first().selectOption('32');
+        await expect(page.locator('#amendmentStatusString').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#amendmentStatusMotion').first()).toBeVisible();
+        await page.locator('#amendmentStatusMotion').first().selectOption('3');
         await page.locator('#amendmentUpdateForm [name="save"]').click();
 
-        await expect(page.locator('#amendmentStatusMotion')).toBeVisible();
+        await expect(page.locator('#amendmentStatusMotion').first()).toBeVisible();
         const selected = await page.evaluate(
             () =>
                 (document.getElementById('amendmentStatusMotion') as HTMLSelectElement)?.selectedOptions?.[0]?.text,
@@ -88,19 +88,19 @@ test.describe('Admin: ObsoletedByStatus', () => {
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
-            .locator('.amendment1 .edit, .amendment1 [href*="edit"]')
+            .locator('.adminMotionTable .amendment1 .titleCol a')
             .first()
             .click();
 
-        await expect(page.locator('#amendmentStatusAmendment')).not.toBeVisible();
-        await page.locator('#amendmentStatus').selectOption('22');
-        await expect(page.locator('#amendmentStatusString')).not.toBeVisible();
-        await expect(page.locator('#amendmentStatusMotion')).not.toBeVisible();
-        await expect(page.locator('#amendmentStatusAmendment')).toBeVisible();
-        await page.locator('#amendmentStatusAmendment').selectOption('279');
+        await expect(page.locator('#amendmentStatusAmendment').filter({ visible: true })).toHaveCount(0);
+        await page.locator('#amendmentStatus').first().selectOption('22');
+        await expect(page.locator('#amendmentStatusString').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#amendmentStatusMotion').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#amendmentStatusAmendment').first()).toBeVisible();
+        await page.locator('#amendmentStatusAmendment').first().selectOption('279');
         await page.locator('#amendmentUpdateForm [name="save"]').click();
 
-        await expect(page.locator('#amendmentStatusAmendment')).toBeVisible();
+        await expect(page.locator('#amendmentStatusAmendment').first()).toBeVisible();
         const selected = await page.evaluate(
             () =>
                 (document.getElementById('amendmentStatusAmendment') as HTMLSelectElement)?.selectedOptions?.[0]?.text,

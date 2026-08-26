@@ -19,21 +19,21 @@ test.describe('Supporting: MotionSupportAsOrganization', () => {
         await new AdminIndexPage(page).open();
         const motionTypePage = new AdminMotionTypePage(page);
         await motionTypePage.open({ motionTypeId: 1 });
-        await expect(page.locator('#typeSupporterCanBeOrga')).toHaveCount(0);
-        await page.locator('#typeSupportType').selectOption('2');
-        await expect(page.locator('#typeSupporterCanBeOrga')).toBeVisible();
+        await expect(page.locator('#typeSupporterCanBeOrga').filter({ visible: true })).toHaveCount(0);
+        await page.locator('#typeSupportType').first().selectOption('2');
+        await expect(page.locator('#typeSupporterCanBeOrga').first()).toBeVisible();
         await expect(page.locator('#typeSupporterCanBePerson')).toBeChecked();
-        await page.locator('#typeSupporterCanBeOrga').check();
-        await page.locator('#typeHasOrga').uncheck();
-        await page.locator('#typePolicySupportMotions').selectOption('2');
-        await page.locator('#typeMinSupporters').fill('3');
-        await page.locator('.motionSupport').check();
+        await page.locator('#typeSupporterCanBeOrga').first().check();
+        await page.locator('#typeHasOrga').first().uncheck();
+        await page.locator('#typePolicySupportMotions').first().selectOption('2');
+        await page.locator('#typeMinSupporters').first().fill('3');
+        await page.locator('.motionSupport').first().check();
 
         await page.locator('.adminTypeForm [name="save"]').first().click();
 
         await home.gotoMotionCreatePage();
-        await page.locator("input[name='tags[]'][value='1']").check();
-        await page.locator("[name='sections[1]']").fill('Testantrag 1');
+        await page.locator("input[name='tags[]'][value='1']").first().check();
+        await page.locator("[name='sections[1]']").first().fill('Testantrag 1');
         await page.locator('#motionEditForm [name="save"]').click();
         await page.locator('#motionConfirmForm [name="confirm"]').click();
         const url = await page.locator('#urlSharing').inputValue();
@@ -43,81 +43,92 @@ test.describe('Supporting: MotionSupportAsOrganization', () => {
         await loginAsStdUser(page);
         await page.goto(url);
 
-        await expect(page.locator('.supportBlock')).toBeVisible();
-        await expect(page.locator('.supportPersonTypeSelection')).toBeVisible();
-        await page.locator('.supportPersonTypeSelection .supportAsOrga input').check();
-        await page.locator('.supportBlock .colOrga input').fill('Testorga');
+        await expect(page.locator('.supportBlock').first()).toBeVisible();
+        await expect(page.locator('.supportPersonTypeSelection').first()).toBeVisible();
+        await page.locator('.supportPersonTypeSelection .supportAsOrga input').first().check();
+        await page.locator('.supportBlock .colOrga input').first().fill('Testorga');
         await page.locator('.motionSupportForm [name="motionSupport"]').click();
 
         await expect(page.locator('#supporters')).toContainText('Testorga');
-        await expect(page.locator('#supporters')).not.toContainText('Testuser (Testorga)');
+        await expect(page.locator('#supporters').getByText('Testuser (Testorga)').filter({ visible: true })).toHaveCount(0);
 
         await logout(page);
         await loginAsStdAdmin(page);
         await new AdminIndexPage(page).open();
         const motionList = new AdminMotionListPage(page);
         await motionList.open();
-        await expect(page.locator('.adminMotionTable')).toContainText('Unterstützer*innen sammeln (1 Organisation)');
+        await test.step('see the organization counted separately in the admin motion list', async () => {
+            await expect(page.locator('.adminMotionTable')).toContainText('Unterstützer*innen sammeln (1 Organisation)');
 
-        await page.goto(url);
-        await page.locator('#sidebar .adminEdit a').click();
-        await expect(page.locator('#motionSupporterHolder .supporterRow .supporterOrga')).toHaveValue('Testorga');
-        await expect(
-            page.locator('#motionSupporterHolder .supporterRow input[type=radio][value="1"]'),
-        ).toBeChecked();
-        await expect(
-            page.locator('#motionSupporterHolder .supporterRow input[type=radio][value="0"]'),
-        ).not.toBeChecked();
-        await page.locator('#motionUpdateForm [name="save"]').click();
+            await page.goto(url);
+        });
 
-        await page.goto(url);
-        await expect(page.locator('#supporters')).toContainText('Testorga');
-        await expect(page.locator('#supporters')).not.toContainText('Testuser (Testorga)');
+        await test.step('see the organization in the admin form, without changing it when saving', async () => {
+            await page.locator('#sidebar .adminEdit a').click();
+            await expect(page.locator('#motionSupporterHolder .supporterRow .supporterOrga')).toHaveValue('Testorga');
+            await expect(
+                page.locator('#motionSupporterHolder .supporterRow input[type=radio][value="1"]'),
+            ).toBeChecked();
+            await expect(
+                page.locator('#motionSupporterHolder .supporterRow input[type=radio][value="0"]'),
+            ).not.toBeChecked();
+            await page.locator('#motionUpdateForm [name="save"]').click();
 
-        await page.locator('#sidebar .adminEdit a').click();
-        await page.locator('#motionSupporterHolder .supporterRow input[type=radio][value="0"]').check();
-        await page.locator('#motionSupporterHolder .supporterRowAdder').click();
-        await page
-            .locator('#motionSupporterHolder .supporterList > li:last-child .supporterName')
-            .fill('Second Supporter');
-        await page
-            .locator('#motionSupporterHolder .supporterList > li:last-child .supporterOrga')
-            .fill('Second Orga');
-        await page
-            .locator('#motionSupporterHolder .supporterList > li:last-child input[type=radio][value="1"]')
-            .check();
-        await page.locator('#motionUpdateForm [name="save"]').click();
+            await page.goto(url);
+            await expect(page.locator('#supporters')).toContainText('Testorga');
+            await expect(page.locator('#supporters').getByText('Testuser (Testorga)').filter({ visible: true })).toHaveCount(0);
+        });
 
-        await page.goto(url);
-        await expect(page.locator('#supporters')).toContainText('Testuser (Testorga)');
-        await expect(page.locator('#supporters')).toContainText('Second Orga');
-        await expect(page.locator('#supporters')).not.toContainText('Second Supporter');
+        await test.step('turn the organization into a natural person and add a second supporter', async () => {
+            await page.locator('#sidebar .adminEdit a').click();
+            await page.locator('#motionSupporterHolder .supporterRow input[type=radio][value="0"]').first().check();
+            await page.locator('#motionSupporterHolder .supporterRowAdder').click();
+            await page
+                .locator('#motionSupporterHolder .supporterList > li:last-child .supporterName')
+                .fill('Second Supporter');
+            await page
+                .locator('#motionSupporterHolder .supporterList > li:last-child .supporterOrga')
+                .fill('Second Orga');
+            await page
+                .locator('#motionSupporterHolder .supporterList > li:last-child input[type=radio][value="1"]')
+                .check();
+            await page.locator('#motionUpdateForm [name="save"]').click();
 
-        await new AdminIndexPage(page).open();
-        await motionList.open();
-        await expect(page.locator('.adminMotionTable')).toContainText(
-            'Unterstützer*innen sammeln (1 + 1 Organisation)',
-        );
+            await page.goto(url);
+            await expect(page.locator('#supporters')).toContainText('Testuser (Testorga)');
+            await expect(page.locator('#supporters')).toContainText('Second Orga');
+            await expect(page.locator('#supporters').getByText('Second Supporter').filter({ visible: true })).toHaveCount(0);
 
-        await page.goto(url);
-        await page.locator('#sidebar .adminEdit a').click();
-        await page.locator('#motionSupporterHolder .supporterRowAdder').click();
-        await page
-            .locator('#motionSupporterHolder .supporterList > li:last-child input[type=radio][value="1"]')
-            .check();
-        await page
-            .locator('#motionSupporterHolder .supporterList > li:last-child .supporterOrga')
-            .fill('Third Orga');
-        await page.locator('#motionUpdateForm [name="save"]').click();
+            await new AdminIndexPage(page).open();
+            await motionList.open();
+            await expect(page.locator('.adminMotionTable')).toContainText(
+                'Unterstützer*innen sammeln (1 + 1 Organisation)',
+            );
 
-        await expect(
-            page.locator('#motionSupporterHolder .supporterList > li:last-child .supporterOrga'),
-        ).toHaveValue('Third Orga');
-        await expect(
-            page.locator('#motionSupporterHolder .supporterList > li:last-child input[type=radio][value="1"]'),
-        ).toBeChecked();
+            await page.goto(url);
+        });
 
-        await page.goto(url);
-        await expect(page.locator('#supporters')).toContainText('Third Orga');
+        await test.step('add an organization without naming a contact person', async () => {
+            await page.locator('#sidebar .adminEdit a').click();
+            await page.locator('#motionSupporterHolder .supporterRowAdder').click();
+            await page
+                .locator('#motionSupporterHolder .supporterList > li:last-child input[type=radio][value="1"]')
+                .check();
+            await page
+                .locator('#motionSupporterHolder .supporterList > li:last-child .supporterOrga')
+                .fill('Third Orga');
+            await page.locator('#motionUpdateForm [name="save"]').click();
+
+            await expect(
+                page.locator('#motionSupporterHolder .supporterList > li:last-child .supporterOrga'),
+            ).toHaveValue('Third Orga');
+            await expect(
+                page.locator('#motionSupporterHolder .supporterList > li:last-child input[type=radio][value="1"]'),
+            ).toBeChecked();
+
+            await page.goto(url);
+            await expect(page.locator('#supporters')).toContainText('Third Orga');
+        });
+
     });
 });

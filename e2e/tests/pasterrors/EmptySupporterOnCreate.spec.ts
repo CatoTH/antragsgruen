@@ -17,8 +17,8 @@ test.describe('EmptySupporterOnCreate', () => {
         const motionTypePage = new AdminMotionTypePage(page);
         await new AdminIndexPage(page).open();
         await motionTypePage.open({ motionTypeId: 1 });
-        await page.locator('#typeSupportType').selectOption('1');
-        await page.locator('#typeMinSupporters').fill('0');
+        await page.locator('#typeSupportType').first().selectOption('1');
+        await page.locator('#typeMinSupporters').first().fill('0');
         await motionTypePage.saveForm();
 
         await new ConsultationHomePage(page).open();

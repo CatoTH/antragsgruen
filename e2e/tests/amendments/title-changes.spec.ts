@@ -11,11 +11,11 @@ test.describe('Amendments: TitleChanges', () => {
         await new ConsultationHomePage(page).open();
 
         await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('.sectionType0 .amendment1')).toBeVisible();
-        await expect(page.locator('.sectionType0 .amendment274')).toBeVisible();
-        await expect(page.locator('.sectionType0 .amendment276')).not.toBeVisible();
+        await expect(page.locator('.sectionType0 .amendment1').first()).toBeVisible();
+        await expect(page.locator('.sectionType0 .amendment274').first()).toBeVisible();
+        await expect(page.locator('.sectionType0 .amendment276').filter({ visible: true })).toHaveCount(0);
 
         await new MotionPage(page).open({ motionSlug: '123-textformatierungen' });
-        await expect(page.locator('.sectionType0')).not.toBeVisible();
+        await expect(page.locator('.sectionType0').filter({ visible: true })).toHaveCount(0);
     });
 });

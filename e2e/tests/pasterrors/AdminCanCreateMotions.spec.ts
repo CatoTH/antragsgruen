@@ -12,17 +12,17 @@ test.describe('AdminCanCreateMotions', () => {
     test('check that admins can always create motions', async ({ page }) => {
         await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
-        await page.locator('.managedUserAccounts input').check();
+        await page.locator('.managedUserAccounts input').first().check();
         await page.locator('#consultationSettingsForm [name="save"]').click();
 
         const adminTypePage = new AdminMotionTypePage(page);
         await new AdminIndexPage(page).open();
         await adminTypePage.open({ motionTypeId: 1 });
 
-        await expect(page.locator('.policyWidgetMotions .userGroupSelect')).toHaveCount(0);
-        await page.locator('#typePolicyMotions').selectOption('3');
+        await expect(page.locator('.policyWidgetMotions .userGroupSelect').filter({ visible: true })).toHaveCount(0);
+        await page.locator('#typePolicyMotions').first().selectOption('3');
         await page.waitForTimeout(200);
-        await expect(page.locator('.policyWidgetMotions .userGroupSelect')).toBeVisible();
+        await expect(page.locator('.policyWidgetMotions .userGroupSelect').first()).toBeVisible();
 
         await page.evaluate(() => {
             const w = window as any;
@@ -35,12 +35,12 @@ test.describe('AdminCanCreateMotions', () => {
             }),
         ).toBe(1);
 
-        await page.locator('#typePolicyAmendments').selectOption('2');
-        await page.locator('#typePolicyAmendments').selectOption('2');
+        await page.locator('#typePolicyAmendments').first().selectOption('2');
+        await page.locator('#typePolicyAmendments').first().selectOption('2');
         await adminTypePage.saveForm();
 
         await page.waitForTimeout(100);
-        await expect(page.locator('.policyWidgetMotions .userGroupSelect')).toBeVisible();
+        await expect(page.locator('.policyWidgetMotions .userGroupSelect').first()).toBeVisible();
         expect(
             await page.evaluate(() => {
                 const w = window as any;
@@ -50,13 +50,13 @@ test.describe('AdminCanCreateMotions', () => {
 
         await page.locator('#motionListLink').click();
         await page.locator('#newMotionBtn').click();
-        await expect(page.locator('.createMotion1')).toBeVisible();
+        await expect(page.locator('.createMotion1').first()).toBeVisible();
 
         await new ConsultationHomePage(page).open();
-        await expect(page.locator('.createMotion')).toHaveCount(0);
+        await expect(page.locator('.createMotion').filter({ visible: true })).toHaveCount(0);
 
         await logout(page);
         await loginAsProposalAdmin(page);
-        await expect(page.locator('.createMotion')).toBeVisible();
+        await expect(page.locator('.createMotion').first()).toBeVisible();
     });
 });

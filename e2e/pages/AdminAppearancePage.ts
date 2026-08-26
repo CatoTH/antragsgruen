@@ -5,6 +5,6 @@ export class AdminAppearancePage extends BasePage {
     protected route = 'admin/index/appearance';
 
     async saveForm(): Promise<void> {
-        await this.page.locator('#consultationAppearanceForm [name="save"]').click();
+        await this.page.locator('#consultationAppearanceForm [name="save"]').first().click();
     }
 }

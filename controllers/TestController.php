@@ -142,13 +142,25 @@ class TestController extends Controller
         }
     }
 
-    public function actionSetConfig(): array
+    /**
+     * The settings the test suite is allowed to change, with the values every test starts from.
+     * Mirrors Tests\Support\Helper\ConfigurationChanger of the Codeception suite.
+     */
+    private const DEFAULT_TEST_CONFIGURATION = [
+        'confirmEmailAddresses' => true,
+        'xelatexPath'           => null,
+        'xdvipdfmx'             => null,
+        'mailService'           => [
+            'transport' => 'sendmail',
+        ],
+    ];
+
+    /**
+     * @param array<string, mixed> $values
+     * @return array{ok: bool, error?: string}
+     */
+    private function writeTestConfiguration(array $values): array
     {
-        $key = (string)$this->getHttpRequest()->post('key', '');
-        $value = $this->getHttpRequest()->post('value');
-        if ($key === '') {
-            return ['ok' => false, 'error' => 'Missing key'];
-        }
         $configFile = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config_tests.json';
         if (!is_writable($configFile)) {
             return ['ok' => false, 'error' => "Config file not writable: $configFile"];
@@ -157,9 +169,41 @@ class TestController extends Controller
         if (!is_array($config) || count($config) === 0) {
             return ['ok' => false, 'error' => 'Config file invalid'];
         }
-        $config[$key] = $value;
+        foreach ($values as $key => $value) {
+            if (!array_key_exists($key, self::DEFAULT_TEST_CONFIGURATION)) {
+                return ['ok' => false, 'error' => 'Invalid configuration key: ' . $key];
+            }
+            $config[$key] = $value;
+        }
         file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT));
         return ['ok' => true];
+    }
+
+    public function actionSetConfig(): array
+    {
+        $valuesJson = $this->getHttpRequest()->post('values');
+        if ($valuesJson !== null && $valuesJson !== '') {
+            $values = json_decode((string)$valuesJson, true);
+            if (!is_array($values)) {
+                return ['ok' => false, 'error' => 'Invalid "values" payload'];
+            }
+            return $this->writeTestConfiguration($values);
+        }
+
+        $key = (string)$this->getHttpRequest()->post('key', '');
+        if ($key === '') {
+            return ['ok' => false, 'error' => 'Missing key'];
+        }
+        return $this->writeTestConfiguration([$key => $this->getHttpRequest()->post('value')]);
+    }
+
+    /**
+     * Restores every setting actionSetConfig may have changed. The Codeception suite does this
+     * before each test; without it a config change leaks into every later test of the run.
+     */
+    public function actionResetConfig(): array
+    {
+        return $this->writeTestConfiguration(self::DEFAULT_TEST_CONFIGURATION);
     }
 
     public function actionUrlBuilder(): array

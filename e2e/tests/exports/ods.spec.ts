@@ -26,12 +26,14 @@ test.describe('Exports: ODS', () => {
         await page.locator('#motionListLink').click();
         await expect(page.locator('h1')).toContainText(/liste: anträge/i);
 
-        await page.locator('#exportMotionBtn').click();
-        await expect(page.locator('.motionODS1')).toBeVisible();
-        await downloadAndCheckHasContent(page, '.motionODS1');
+        await test.step('test the list of motions in ODS-Format', async () => {
+            await page.locator('#exportMotionBtn').click();
+            await expect(page.locator('.motionODS1').first()).toBeVisible();
+            await downloadAndCheckHasContent(page, '.motionODS1');
 
-        await page.locator('#exportAmendmentsBtn').click();
-        await expect(page.locator('.amendmentOds')).toBeVisible();
-        await downloadAndCheckHasContent(page, '.amendmentOds');
+            await page.locator('#exportAmendmentsBtn').click();
+            await expect(page.locator('.amendmentOds').first()).toBeVisible();
+            await downloadAndCheckHasContent(page, '.amendmentOds');
+        });
     });
 });

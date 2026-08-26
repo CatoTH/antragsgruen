@@ -7,7 +7,9 @@ test.describe('Motion prefix shortcut', () => {
 
     test('a motion can be opened via its prefix', async ({ page }) => {
         await page.goto('/stdparteitag/std-parteitag/A2');
-        await expect(page.locator('body')).toContainText('Wui helfgod Wiesn');
+        await test.step('Open a motion using the prefix shortcut', async () => {
+            await expect(page.locator('body')).toContainText('Wui helfgod Wiesn');
+        });
     });
 
     test('a prefix shortcut works in another consultation', async ({ page }) => {

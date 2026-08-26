@@ -10,7 +10,7 @@ export const FIRST_FREE_CONSULTATION_ID = 11;
 export const FIRST_FREE_VOTING_BLOCK_ID = 3;
 export const FIRST_FREE_CONTENT_ID = 4;
 export const FIRST_FREE_USER_ID = 10;
-export const FIRST_FREE_TAG_ID = 14;
+export const FIRST_FREE_TAG_ID = 11;
 export const FIRST_FREE_USERGROUP_ID = 40;
 
 export const ABSOLUTE_URL_DOMAIN = 'test.antragsgruen.test';

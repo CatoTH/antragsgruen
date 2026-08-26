@@ -13,23 +13,27 @@ test.describe('User: no email confirmation', () => {
         await page.locator('#loginLink').click();
         await expect(page.locator('h1')).toContainText('Login');
 
-        await page.locator('#createAccount').check();
-        await expect(page.locator('body')).toContainText('Passwort (Bestätigung):');
-        await page.locator('#username').fill('testaccount@example.org');
-        await page.locator('#name').fill('Tester');
-        await page.locator('#passwordInput').fill('testpassword');
-        await page.locator('#passwordConfirm').fill('testpassword');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+        await test.step('Create an account', async () => {
+            await page.locator('#createAccount').first().check();
+            await expect(page.locator('body')).toContainText('Passwort (Bestätigung):');
+            await page.locator('#username').first().fill('testaccount@example.org');
+            await page.locator('#name').first().fill('Tester');
+            await page.locator('#passwordInput').first().fill('testpassword');
+            await page.locator('#passwordConfirm').first().fill('testpassword');
+            await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
 
-        await expect(page.locator('h1')).not.toContainText(/bestätige deinen zugang/i);
-        await expect(page.locator('h1')).toContainText('Test2');
-        await expect(page.locator('.alert-success')).toContainText('Willkommen!');
+            await expect(page.locator('h1').getByText(/bestätige deinen zugang/i).filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('h1')).toContainText('Test2');
+            await expect(page.locator('.alert-success')).toContainText('Willkommen!');
+        });
 
-        await page.locator('#myAccountLink').click();
-        await page.locator('.requestEmailChange').click();
-        await page.locator('#userEmail').fill('newmail@example.org');
-        await page.locator('.userAccountForm [name="save"]').click();
-        await expect(page.locator('.currentEmail')).toContainText('newmail@example.org');
-        await expect(page.locator('body')).not.toContainText('unbestätigt');
+        await test.step('change the e-mail-address', async () => {
+            await page.locator('#myAccountLink').click();
+            await page.locator('.requestEmailChange').click();
+            await page.locator('#userEmail').first().fill('newmail@example.org');
+            await page.locator('.userAccountForm [name="save"]').click();
+            await expect(page.locator('.currentEmail')).toContainText('newmail@example.org');
+            await expect(page.locator('body')).not.toContainText('unbestätigt', { useInnerText: true });
+        });
     });
 });

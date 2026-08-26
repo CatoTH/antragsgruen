@@ -13,18 +13,20 @@ test.describe('Exports: amendments PDF list', () => {
         await page.locator('#motionListLink').click();
         await expect(page.locator('h1')).toContainText(/liste: anträge/i);
 
-        await page.locator('#exportAmendmentsBtn').click();
-        await page.locator('.amendmentPdfList').click();
+        await test.step('go to the list of all amendments-PDFs', async () => {
+            await page.locator('#exportAmendmentsBtn').click();
+            await page.locator('.amendmentPdfList').click();
 
-        await expect(page.locator('body')).toContainText('A2: O’zapft is!');
-        await expect(page.locator('body')).toContainText('Ä1');
+            await expect(page.locator('body')).toContainText('A2: O’zapft is!');
+            await expect(page.locator('body')).toContainText('Ä1');
 
-        const href = await page.locator('.amendment1').first().getAttribute('href');
-        expect(href).not.toBeNull();
-        const url = new URL(href as string, page.url()).toString();
-        const response = await page.request.get(url);
-        expect(response.ok()).toBeTruthy();
-        const body = await response.body();
-        expect(body.length).toBeGreaterThan(0);
+            const href = await page.locator('.amendment1').first().getAttribute('href');
+            expect(href).not.toBeNull();
+            const url = new URL(href as string, page.url()).toString();
+            const response = await page.request.get(url);
+            expect(response.ok()).toBeTruthy();
+            const body = await response.body();
+            expect(body.length).toBeGreaterThan(0);
+        });
     });
 });

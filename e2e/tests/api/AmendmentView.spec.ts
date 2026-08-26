@@ -26,8 +26,8 @@ test.describe('API: default disabled and amendment view', () => {
 
         await page.goto(`/${SUBDOMAIN}/${CONSULTATION}`);
         await page.locator('#loginLink').click();
-        await page.locator('#username').fill('testadmin@example.org');
-        await page.locator('#passwordInput').fill('testadmin');
+        await page.locator('#username').first().fill('testadmin@example.org');
+        await page.locator('#passwordInput').first().fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('#logoutLink').waitFor({ state: 'visible' });
 

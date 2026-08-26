@@ -12,12 +12,12 @@ test.describe('Amendments: CreateLogin', () => {
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('.motionType1').click();
-        await page.locator('#typePolicyAmendments').selectOption('2');
+        await page.locator('#typePolicyAmendments').first().selectOption('2');
         await page.locator('.adminTypeForm [name="save"]').first().click();
         await logout(page);
 
         await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('.sidebarActions .amendmentCreate')).toBeVisible();
+        await expect(page.locator('.sidebarActions .amendmentCreate').first()).toBeVisible();
         await page.locator('.sidebarActions .amendmentCreate a').click();
         await expect(page.locator('h1')).toContainText('Login');
     });

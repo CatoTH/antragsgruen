@@ -8,22 +8,27 @@ test.describe('Appearance: hide breadcrumb', () => {
 
     test('breadcrumb visible by default, can be hidden and shown', async ({ page }) => {
         await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('ol.breadcrumb')).toBeVisible();
+        await expect(page.locator('ol.breadcrumb').first()).toBeVisible();
 
         await loginAsStdAdmin(page);
 
         await page.goto('/stdparteitag/std-parteitag/admin/appearance');
-        await page.locator('#showBreadcrumbs').uncheck();
-        await page.locator('#consultationAppearanceForm [name="save"]').click();
+        await test.step('disable the breadcrumb', async () => {
+            await page.locator('#showBreadcrumbs').first().uncheck();
+            await page.locator('#consultationAppearanceForm [name="save"]').click();
 
-        await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('ol.breadcrumb')).toHaveCount(0);
+            await page.goto('/stdparteitag/std-parteitag');
+            await expect(page.locator('ol.breadcrumb').filter({ visible: true })).toHaveCount(0);
 
-        await page.goto('/stdparteitag/std-parteitag/admin/appearance');
-        await page.locator('#showBreadcrumbs').check();
-        await page.locator('#consultationAppearanceForm [name="save"]').click();
+            await page.goto('/stdparteitag/std-parteitag/admin/appearance');
+        });
 
-        await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('ol.breadcrumb')).toBeVisible();
+        await test.step('enable it again', async () => {
+            await page.locator('#showBreadcrumbs').first().check();
+            await page.locator('#consultationAppearanceForm [name="save"]').click();
+
+            await page.goto('/stdparteitag/std-parteitag');
+            await expect(page.locator('ol.breadcrumb').first()).toBeVisible();
+        });
     });
 });

@@ -2,6 +2,7 @@ import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin } from '../../utils/auth';
 import { FIRST_FREE_VOTING_BLOCK_ID } from '../../utils/constants';
 import { VotingAdminPage } from '../../pages/VotingAdminPage';
+import { dispatchClick } from '../../utils/dom';
 
 const VOTING_ID_1 = 1;
 const VOTING_ID_2 = FIRST_FREE_VOTING_BLOCK_ID;
@@ -25,52 +26,59 @@ test.describe('Sorting votings', () => {
         await loginAsStdAdmin(page);
         await votingAdmin.open();
 
-        await expect(page.locator('.votingOperations .sortVotings')).toHaveCount(0);
-        await expect(page.locator('.votingSorting')).toHaveCount(0);
+        await expect(page.locator('.votingOperations .sortVotings').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('.votingSorting').filter({ visible: true })).toHaveCount(0);
 
-        await expect(page.locator('form.creatingVoting')).toHaveCount(0);
-        await page.locator('.createVotingOpener').click();
-        await page.locator('.creatingVoting .settingsTitle').fill('Vote on question 1');
-        await page.locator('.creatingVoting .settingsQuestion').fill('Question 1?');
-        await page.locator('form.creatingVoting button[type=submit]').click();
-        await expect(page.locator(`.voting${FIRST_FREE_VOTING_BLOCK_ID}`)).toContainText(
-            'Question 1?',
-        );
+        await test.step('Create two votings with a question each', async () => {
+            await expect(page.locator('form.creatingVoting').filter({ visible: true })).toHaveCount(0);
+            await dispatchClick(page, '.createVotingOpener');
+            await page.locator('.creatingVoting .settingsTitle').first().fill('Vote on question 1');
+            await page.locator('.creatingVoting .settingsQuestion').first().fill('Question 1?');
+            await dispatchClick(page, 'form.creatingVoting button[type=submit]');
+            await expect(page.locator(`.voting${FIRST_FREE_VOTING_BLOCK_ID}`)).toContainText(
+                'Question 1?',
+            );
 
-        await expect(page.locator('form.creatingVoting')).toHaveCount(0);
-        await page.locator('.createVotingOpener').click();
-        await page.locator('.creatingVoting .settingsTitle').fill('Vote on question 2');
-        await page.locator('.creatingVoting .settingsQuestion').fill('Question 2?');
-        await page.locator('form.creatingVoting button[type=submit]').click();
-        await expect(page.locator(`.voting${FIRST_FREE_VOTING_BLOCK_ID + 1}`)).toContainText(
-            'Question 2?',
-        );
+            await expect(page.locator('form.creatingVoting').filter({ visible: true })).toHaveCount(0);
+            await dispatchClick(page, '.createVotingOpener');
+            await page.locator('.creatingVoting .settingsTitle').first().fill('Vote on question 2');
+            await page.locator('.creatingVoting .settingsQuestion').first().fill('Question 2?');
+            await dispatchClick(page, 'form.creatingVoting button[type=submit]');
+            await expect(page.locator(`.voting${FIRST_FREE_VOTING_BLOCK_ID + 1}`)).toContainText(
+                'Question 2?',
+            );
+        });
 
-        await expect(page.locator('.votingOperations .sortVotings')).toBeVisible();
-        await page.locator('.votingOperations .sortVotings').click();
-        await expect(page.locator('.votingSorting')).toBeVisible();
+        await test.step('check the sorting is possible', async () => {
+            await expect(page.locator('.votingOperations .sortVotings').first()).toBeVisible();
+        });
 
-        const sortItems = page.locator('.votingSorting .list-group-item');
-        await expect(sortItems).toContainText([
-            'Ä2 or Ä3',
-            'Vote on question 1',
-            'Vote on question 2',
-        ]);
+        await test.step('check that the order persists', async () => {
+            await dispatchClick(page, '.votingOperations .sortVotings');
+            await expect(page.locator('.votingSorting').first()).toBeVisible();
 
-        expect(await getSortedIds(page)).toEqual([VOTING_ID_3, VOTING_ID_2, VOTING_ID_1]);
-        await page.evaluate(
-            (order) => {
-                const w = window as any;
-                w.votingAdminWidget.$refs['voting-sort-widget'].setOrder(order);
-            },
-            [VOTING_ID_3, VOTING_ID_1, VOTING_ID_2],
-        );
-        expect(await getSortedIds(page)).toEqual([VOTING_ID_3, VOTING_ID_1, VOTING_ID_2]);
-        await page.locator('.votingSorting .btnSave').click();
+            const sortItems = page.locator('.votingSorting .list-group-item');
+            await expect(sortItems).toContainText([
+                'Ä2 or Ä3',
+                'Vote on question 1',
+                'Vote on question 2',
+            ]);
 
-        await votingAdmin.open();
-        await page.locator('.votingOperations .sortVotings').click();
-        await expect(page.locator('.votingSorting')).toBeVisible();
-        expect(await getSortedIds(page)).toEqual([VOTING_ID_3, VOTING_ID_1, VOTING_ID_2]);
+            expect(await getSortedIds(page)).toEqual([VOTING_ID_3, VOTING_ID_2, VOTING_ID_1]);
+            await page.evaluate(
+                (order) => {
+                    const w = window as any;
+                    w.votingAdminWidget.$refs['voting-sort-widget'].setOrder(order);
+                },
+                [VOTING_ID_3, VOTING_ID_1, VOTING_ID_2],
+            );
+            expect(await getSortedIds(page)).toEqual([VOTING_ID_3, VOTING_ID_1, VOTING_ID_2]);
+            await dispatchClick(page, '.votingSorting .btnSave');
+
+            await votingAdmin.open();
+            await dispatchClick(page, '.votingOperations .sortVotings');
+            await expect(page.locator('.votingSorting').first()).toBeVisible();
+            expect(await getSortedIds(page)).toEqual([VOTING_ID_3, VOTING_ID_1, VOTING_ID_2]);
+        });
     });
 });

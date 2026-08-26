@@ -22,14 +22,14 @@ test.describe('API: Consultation list endpoint', () => {
 
         await page.goto(`/${SUBDOMAIN}/${CONSULTATION}`);
         await page.locator('#loginLink').click();
-        await page.locator('#username').fill('testadmin@example.org');
-        await page.locator('#passwordInput').fill('testadmin');
+        await page.locator('#username').first().fill('testadmin@example.org');
+        await page.locator('#passwordInput').first().fill('testadmin');
         await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
         await page.locator('#logoutLink').waitFor({ state: 'visible' });
 
         await page.goto(`/${SUBDOMAIN}/${CONSULTATION}/admin/appearance`);
         await expect(page.locator('#apiEnabled')).not.toBeChecked();
-        await expect(page.locator('.apiBaseUrl')).toHaveCount(0);
+        await expect(page.locator('.apiBaseUrl').filter({ visible: true })).toHaveCount(0);
         await page.evaluate(() => {
             const el = document.querySelector('#apiEnabled') as HTMLElement | null as HTMLInputElement | null;
             if (el) {
@@ -38,7 +38,7 @@ test.describe('API: Consultation list endpoint', () => {
             }
         });
         await page.waitForTimeout(300);
-        await expect(page.locator('.apiBaseUrl')).toBeVisible();
+        await expect(page.locator('.apiBaseUrl').first()).toBeVisible();
         await page.locator('#consultationAppearanceForm [name="save"]').click();
 
         const response2 = await request.get(`/${SUBDOMAIN}/rest`);

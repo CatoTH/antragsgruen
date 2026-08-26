@@ -25,18 +25,20 @@ test.describe('Admin: DeleteMotionAmendment', () => {
         await acceptBootbox(page);
         await expect(page.locator('body')).toContainText('Der Antrag wurde gelöscht.');
         await expect(page.locator('body')).toContainText('A2');
-        await expect(page.locator('body')).not.toContainText('A3');
+        await expect(page.locator('body')).not.toContainText('A3', { useInnerText: true });
         await expect(page.locator('.amendment3').first()).toBeVisible();
 
         await page
-            .locator('.amendment3 .edit, .amendment3 [href*="edit"]')
+            .locator('.adminMotionTable .amendment3 .titleCol a')
             .first()
             .click();
-        await page.locator('.amendmentDeleteForm button').click();
-        await acceptBootbox(page);
-        await expect(page.locator('body')).toContainText('Der Änderungsantrag wurde gelöscht.');
-        await expect(page.locator('body')).toContainText('A2');
-        await expect(page.locator('body')).not.toContainText('A3');
-        await expect(page.locator('.amendment3').first()).not.toBeVisible();
+        await test.step('delete an amendment', async () => {
+            await page.locator('.amendmentDeleteForm button').click();
+            await acceptBootbox(page);
+            await expect(page.locator('body')).toContainText('Der Änderungsantrag wurde gelöscht.');
+            await expect(page.locator('body')).toContainText('A2');
+            await expect(page.locator('body')).not.toContainText('A3', { useInnerText: true });
+            await expect(page.locator('.amendment3').first()).not.toBeVisible();
+        });
     });
 });

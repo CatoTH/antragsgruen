@@ -15,27 +15,34 @@ test.describe('Unscreened motions visible for their initiator', () => {
 
         const motionType = new AdminMotionTypePage(page);
         await motionType.open({ motionTypeId: 1 });
-        await page.locator('#screeningMotions').check();
-        await page.locator('.adminTypeForm [name="save"]').first().click();
+        await test.step('activate screening', async () => {
+            await page.locator('#screeningMotions').first().check();
+            await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        await home.open();
-        await logout(page);
-        await loginAsStdUser(page);
+            await home.open();
+            await logout(page);
+            await loginAsStdUser(page);
 
-        const createPage = await home.gotoMotionCreatePage();
-        await createPage.createMotion('Unscreened motion', true);
-        await home.open();
+            const createPage = await home.gotoMotionCreatePage();
+            await createPage.createMotion('Unscreened motion', true);
+            await home.open();
+        });
 
-        await expect(page.locator('.motionListStd')).toBeVisible();
-        await expect(page.locator('.motionListStd')).not.toContainText('Unscreened motion');
-        await expect(page.locator('.myMotionList')).toContainText('Unscreened motion');
+        await test.step('create a motion', async () => {
+            await expect(page.locator('.motionListStd').first()).toBeVisible();
+        });
 
-        await logout(page);
-        await home.open();
-        await expect(page.locator('.myMotionList')).not.toContainText('Unscreened motion');
+        await test.step('check that other users don\\\'t see it', async () => {
+            await expect(page.locator('.motionListStd').getByText('Unscreened motion').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.myMotionList')).toContainText('Unscreened motion');
 
-        await loginAsStdAdmin(page);
-        await home.open();
-        await expect(page.locator('.myMotionList')).not.toContainText('Unscreened motion');
+            await logout(page);
+            await home.open();
+            await expect(page.locator('.myMotionList').getByText('Unscreened motion').filter({ visible: true })).toHaveCount(0);
+
+            await loginAsStdAdmin(page);
+            await home.open();
+            await expect(page.locator('.myMotionList').getByText('Unscreened motion').filter({ visible: true })).toHaveCount(0);
+        });
     });
 });

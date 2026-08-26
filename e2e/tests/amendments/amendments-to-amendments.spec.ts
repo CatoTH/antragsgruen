@@ -15,36 +15,38 @@ test.describe('Amendments: AmendmentsToAmendments', () => {
             motionSlug: 'Testing_proposed_changes-630',
             amendmentId: 279,
         });
-        await expect(page.locator('#sidebar .amendmentCreate')).not.toBeVisible();
+        await test.step('create an amendment to an amendment', async () => {
+            await expect(page.locator('#sidebar .amendmentCreate').filter({ visible: true })).toHaveCount(0);
 
-        await loginAsStdAdmin(page);
-        await page.locator('#adminLink').click();
-        await page.locator('.motionType1').click();
-        await page.locator('#allowAmendmentsToAmendments').check();
-        await page.locator('.adminTypeForm [name="save"]').first().click();
+            await loginAsStdAdmin(page);
+            await page.locator('#adminLink').click();
+            await page.locator('.motionType1').click();
+            await page.locator('#allowAmendmentsToAmendments').first().check();
+            await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        await new AmendmentPage(page).open({
-            motionSlug: 'Testing_proposed_changes-630',
-            amendmentId: 279,
+            await new AmendmentPage(page).open({
+                motionSlug: 'Testing_proposed_changes-630',
+                amendmentId: 279,
+            });
+            await page.locator('#sidebar .amendmentCreate').click();
+
+            await expect(page.locator('#sections_2_wysiwyg .ice-ins')).toContainText('A small replacement');
+            await expect(page.locator('#sections_2_wysiwyg .ice-del')).toContainText('At vero');
+            await expect(page.locator('body')).not.toContainText('The first amendment', { useInnerText: true });
+
+            await replaceInCkEditor(
+                page,
+                'sections_2_wysiwyg',
+                /Stet clita kasd gubergren/,
+                'Test 12345678',
+            );
+            await setCkEditorContent(page, 'amendmentReason_wysiwyg', 'The follow-up amendment');
+            await page.locator('#initiatorPrimaryName').first().fill('A new person');
+            await page.locator('#initiatorEmail').first().fill('test@example.org');
+
+            await page.locator('#amendmentEditForm [name="save"]').click();
+            await page.locator('#amendmentConfirmForm [name="confirm"]').click();
         });
-        await page.locator('#sidebar .amendmentCreate').click();
-
-        await expect(page.locator('#sections_2_wysiwyg .ice-ins')).toContainText('A small replacement');
-        await expect(page.locator('#sections_2_wysiwyg .ice-del')).toContainText('At vero');
-        await expect(page.locator('body')).not.toContainText('The first amendment');
-
-        await replaceInCkEditor(
-            page,
-            'sections_2_wysiwyg',
-            /Stet clita kasd gubergren/,
-            'Test 12345678',
-        );
-        await setCkEditorContent(page, 'amendmentReason_wysiwyg', 'The follow-up amendment');
-        await page.locator('#initiatorPrimaryName').fill('A new person');
-        await page.locator('#initiatorEmail').fill('test@example.org');
-
-        await page.locator('#amendmentEditForm [name="save"]').click();
-        await page.locator('#amendmentConfirmForm [name="confirm"]').click();
     });
 
     test('see the new follow-up amendment', async ({ page }) => {
@@ -52,13 +54,15 @@ test.describe('Amendments: AmendmentsToAmendments', () => {
             motionSlug: 'Testing_proposed_changes-630',
             amendmentId: 279,
         });
-        await expect(
-            page.locator(`.amendments .amendment${FIRST_FREE_AMENDMENT_ID}`),
-        ).toContainText('Ä5');
-        await page.locator(`.amendments .amendment${FIRST_FREE_AMENDMENT_ID}`).click();
-        await expect(page.locator('.amendingAmendmentRow')).toContainText('Ä1');
-        await expect(page.locator('ins')).toContainText('Test 12345678');
-        await expect(page.locator('ins')).toContainText('A small replacement');
-        await expect(page.locator('body')).toContainText('The follow-up amendment');
+        await test.step('see the new amendment', async () => {
+            await expect(
+                page.locator(`.amendments .amendment${FIRST_FREE_AMENDMENT_ID}`),
+            ).toContainText('Ä5');
+            await page.locator(`.amendments .amendment${FIRST_FREE_AMENDMENT_ID}`).click();
+            await expect(page.locator('.amendingAmendmentRow')).toContainText('Ä1');
+            await expect(page.locator('ins')).toContainText('Test 12345678');
+            await expect(page.locator('ins')).toContainText('A small replacement');
+            await expect(page.locator('body')).toContainText('The follow-up amendment');
+        });
     });
 });

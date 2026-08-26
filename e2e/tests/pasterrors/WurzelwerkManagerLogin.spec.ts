@@ -11,8 +11,8 @@ test.describe('WurzelwerkManagerLogin', () => {
         await page.goto('/antragsgruen_sites/manager/index');
         await page.locator('#loginLink').click();
         await expect(page.locator('h1')).toContainText(/Login/i);
-        await page.locator('#gruenesNetzAccount').fill('DoeJane');
+        await page.locator('#gruenesNetzAccount').first().fill('DoeJane');
         await page.locator('#gruenesNetzLoginForm [name="gruenesNetzLogin"]').click();
-        await expect(page.locator('#logoutLink')).toBeVisible();
+        await expect(page.locator('#logoutLink').first()).toBeVisible();
     });
 });

@@ -19,17 +19,22 @@ test.describe('Amendments: DraftSave', () => {
         await new ConsultationHomePage(page).open();
 
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
-        await expect(page.locator('#draftHint')).toBeVisible({ timeout: 10_000 });
-        await expect(page.locator('#draftHint')).toContainText('Entwurf vom:');
-        await expect(page.locator("input[name='sections[1]']")).not.toHaveValue('Draft title');
-        await expect(page.locator('body')).not.toContainText('Some text');
-        await expect(page.locator('body')).not.toContainText('Even more text');
+        await test.step('fill in some text and leave the page', async () => {
+            await expect(page.locator('#draftHint')).toBeVisible({ timeout: 10_000 });
+        });
 
-        await page.locator('#draftHint button.restore').click();
-        await expectBootboxDialog(page, /Diesen Entwurf wiederherstellen/);
-        await acceptBootbox(page);
-        await expect(page.locator('body')).toContainText('El Capitan');
-        await expect(page.locator('body')).toContainText('This is my reason');
-        await expect(page.locator('#draftHint')).not.toBeVisible();
+        await test.step('see the saved draft', async () => {
+            await expect(page.locator('#draftHint')).toContainText('Entwurf vom:');
+            await expect(page.locator("input[name='sections[1]']")).not.toHaveValue('Draft title');
+            await expect(page.locator('body')).not.toContainText('Some text', { useInnerText: true });
+            await expect(page.locator('body')).not.toContainText('Even more text', { useInnerText: true });
+
+            await page.locator('#draftHint button.restore').click();
+            await expectBootboxDialog(page, /Diesen Entwurf wiederherstellen/);
+            await acceptBootbox(page);
+            await expect(page.locator('body')).toContainText('El Capitan');
+            await expect(page.locator('body')).toContainText('This is my reason');
+            await expect(page.locator('#draftHint').filter({ visible: true })).toHaveCount(0);
+        });
     });
 });

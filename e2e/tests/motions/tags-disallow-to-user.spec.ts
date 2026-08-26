@@ -12,25 +12,27 @@ test.describe('Disallow tag selection for users', () => {
         const home = new ConsultationHomePage(page);
         await home.open();
         await home.gotoMotionCreatePage();
-        await expect(page.locator('#tagSelect')).toBeVisible();
+        await expect(page.locator('#tagSelect').first()).toBeVisible();
 
         await home.open();
         await loginAsStdAdmin(page);
 
         const consultation = new AdminConsultationPage(page);
         await consultation.open();
-        await expect(page.locator('#allowUsersToSetTags')).toBeChecked();
-        await page.locator('#allowUsersToSetTags').uncheck();
-        await consultation.saveForm();
+        await test.step('disable tags for users', async () => {
+            await expect(page.locator('#allowUsersToSetTags')).toBeChecked();
+            await page.locator('#allowUsersToSetTags').first().uncheck();
+            await consultation.saveForm();
 
-        await home.open();
-        await logout(page);
+            await home.open();
+            await logout(page);
 
-        const createPage = await home.gotoMotionCreatePage();
-        await expect(page.locator('#tagSelect')).toHaveCount(0);
+            const createPage = await home.gotoMotionCreatePage();
+            await expect(page.locator('#tagSelect').filter({ visible: true })).toHaveCount(0);
 
-        await createPage.fillInValidSampleData('Testantrag 1', false);
-        await createPage.saveForm();
-        await page.locator('#motionConfirmForm [name="confirm"]').click();
+            await createPage.fillInValidSampleData('Testantrag 1', false);
+            await createPage.saveForm();
+            await page.locator('#motionConfirmForm [name="confirm"]').click();
+        });
     });
 });

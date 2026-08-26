@@ -19,11 +19,11 @@ test.describe('DontShowLinenumberPlaceholders', () => {
         await motionTypePage.open({ motionTypeId: 1 });
 
         await expect(page.locator('.section2 .lineNumbers')).toBeChecked();
-        await page.locator('.section2 .lineNumbers').uncheck();
+        await page.locator('.section2 .lineNumbers').first().uncheck();
         await motionTypePage.saveForm();
         await expect(page.locator('.section2 .lineNumbers')).not.toBeChecked();
 
         await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('body')).not.toContainText('###LINENUMBER###');
+        await expect(page.locator('body')).not.toContainText('###LINENUMBER###', { useInnerText: true });
     });
 });

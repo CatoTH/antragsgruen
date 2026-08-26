@@ -10,24 +10,24 @@ test.describe('Amendments: PersonalComments', () => {
 
     test('not see the comment section logged out', async ({ page }) => {
         await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
-        await expect(page.locator('.privateNoteOpener')).not.toBeVisible();
-        await expect(page.locator('.privateNotes form')).not.toBeVisible();
+        await expect(page.locator('.privateNoteOpener').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('.privateNotes form').filter({ visible: true })).toHaveCount(0);
     });
 
     test('see the comment section logged in and write a note', async ({ page }) => {
         await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await loginAsStdUser(page);
         await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
-        await expect(page.locator('.privateNoteOpener')).toBeVisible();
-        await expect(page.locator('.privateNotes form')).not.toBeVisible();
-        await expect(page.locator('#privatenote1')).not.toBeVisible();
+        await expect(page.locator('.privateNoteOpener').first()).toBeVisible();
+        await expect(page.locator('.privateNotes form').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#privatenote1').filter({ visible: true })).toHaveCount(0);
 
         await page.locator('.privateNoteOpener button').click();
-        await expect(page.locator('.privateNoteOpener')).not.toBeVisible();
-        await expect(page.locator('.privateNotes form')).toBeVisible();
-        await page.locator('.privateNotes form textarea').fill('Some comment');
+        await expect(page.locator('.privateNoteOpener').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('.privateNotes form').first()).toBeVisible();
+        await page.locator('.privateNotes form textarea').first().fill('Some comment');
         await page.locator('.privateNotes form [name="savePrivateNote"]').click();
-        await expect(page.locator('#privatenote1')).toBeVisible();
+        await expect(page.locator('#privatenote1').first()).toBeVisible();
         await expect(page.locator('#privatenote1')).toContainText('Some comment');
     });
 
@@ -35,10 +35,12 @@ test.describe('Amendments: PersonalComments', () => {
         await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
         await loginAsStdUser(page);
         await new AmendmentPage(page).open({ motionSlug: '321-o-zapft-is', amendmentId: 1 });
-        await page.locator('#privatenote1 .btnEdit').click();
-        await page.locator('.privateNotes form textarea').fill('');
-        await page.locator('.privateNotes form [name="savePrivateNote"]').click();
+        await test.step('delete it again', async () => {
+            await page.locator('#privatenote1 .btnEdit').click();
+            await page.locator('.privateNotes form textarea').first().fill('');
+            await page.locator('.privateNotes form [name="savePrivateNote"]').click();
 
-        await expect(page.locator('#privatenote1')).not.toBeVisible();
+            await expect(page.locator('#privatenote1').filter({ visible: true })).toHaveCount(0);
+        });
     });
 });

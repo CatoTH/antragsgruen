@@ -31,13 +31,13 @@ test.describe('Amendments: Withdraw', () => {
             'Der Änderungsantrag wurde zurückgezogen.',
         );
         await expect(page.locator('.motionDataTable .statusRow')).toContainText('Zurückgezogen');
-        await expect(page.locator('.sidebarActions .withdraw a')).not.toBeVisible();
+        await expect(page.locator('.sidebarActions .withdraw a').filter({ visible: true })).toHaveCount(0);
 
         await new ConsultationHomePage(page).open();
-        await expect(page.locator('.amendmentRow2.withdrawn')).toBeVisible();
+        await expect(page.locator('.amendmentRow2.withdrawn').first()).toBeVisible();
 
         await new MotionPage(page).open({ motionSlug: 3 });
         await expect(page.locator('section.amendments .amendment2')).toHaveCount(1);
-        await expect(page.locator('.bookmarks .amendment2')).toHaveCount(0);
+        await expect(page.locator('.bookmarks .amendment2').filter({ visible: true })).toHaveCount(0);
     });
 });

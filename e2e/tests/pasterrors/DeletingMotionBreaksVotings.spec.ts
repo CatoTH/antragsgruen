@@ -17,7 +17,7 @@ test.describe('DeletingMotionBreaksVotings', () => {
         const motionList = new AdminMotionListPage(page);
         await new AdminIndexPage(page).open();
         await motionList.open();
-        await page.locator('.motion2 .edit, .motion2 [href*="edit"]').first().click();
+        await page.locator('.adminMotionTable .motion2 .titleCol a').first().click();
 
         await page.locator('.motionDeleteForm button').click();
         await page.waitForTimeout(1000);

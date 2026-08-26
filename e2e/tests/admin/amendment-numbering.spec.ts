@@ -16,7 +16,7 @@ test.describe('Admin: AmendmentNumbering', () => {
         await new ConsultationHomePage(page).open();
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();
-        await page.locator('#amendmentNumbering').selectOption('1');
+        await page.locator('#amendmentNumbering').first().selectOption('1');
         await page.locator('#consultationSettingsForm [name="save"]').click();
 
         await new ConsultationHomePage(page).open();
@@ -26,8 +26,8 @@ test.describe('Admin: AmendmentNumbering', () => {
         await replaceInCkEditor(page, 'sections_2_wysiwyg', /woschechta Bayer/g, 'Saupreiß');
         await setCkEditorContent(page, 'amendmentReason_wysiwyg', '<p>This is my reason</p>');
 
-        await page.locator('#initiatorPrimaryName').fill('My Name');
-        await page.locator('#initiatorEmail').fill('test@example.org');
+        await page.locator('#initiatorPrimaryName').first().fill('My Name');
+        await page.locator('#initiatorEmail').first().fill('test@example.org');
 
         await page.locator('#amendmentEditForm [name="save"]').click();
         await page.locator('#amendmentConfirmForm [name="confirm"]').click();

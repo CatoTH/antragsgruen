@@ -15,17 +15,20 @@ test.describe('UsersCannotSeeConsultationsWithoutAccess', () => {
         await loginAsStdAdmin(page);
 
         await new AdminIndexPage(page).open();
-        await page.locator('.siteConsultationsLink').click();
-        await page.locator('#newTitle').fill('Test3');
-        await page.locator('#newShort').fill('test3');
-        await page.locator('#newPath').fill('test3');
-        await page
-            .locator('.consultationCreateForm [name="createConsultation"]')
-            .click();
-        await logout(page);
+        await test.step('prepare the test case', async () => {
+            await page.locator('.siteConsultationsLink').click();
+            await page.locator('#newTitle').first().fill('Test3');
+            await page.locator('#newShort').first().fill('test3');
+            await page.locator('#newPath').first().fill('test3');
+            await page
+                .locator('.consultationCreateForm [name="createConsultation"]')
+                .click();
+            await logout(page);
 
-        await loginAsStdUser(page);
-        await new ConsultationHomePage(page).open();
+            await loginAsStdUser(page);
+            await new ConsultationHomePage(page).open();
+        });
+
         await page.locator('#myAccountLink').click();
         await expect(
             page.locator('.notificationLinks .consultation1'),
@@ -41,22 +44,28 @@ test.describe('UsersCannotSeeConsultationsWithoutAccess', () => {
         await new AdminIndexPage(page).open();
         const consultationPage = new AdminConsultationPage(page);
         await consultationPage.open();
-        await page.locator('.forceLogin input').check();
-        await page.locator('.managedUserAccounts input').check();
-        await consultationPage.saveForm();
-        await logout(page);
+        await test.step('Restrict access to consultations', async () => {
+            await page.locator('.forceLogin input').first().check();
+            await page.locator('.managedUserAccounts input').first().check();
+            await consultationPage.saveForm();
+            await logout(page);
 
-        await loginAsStdUser(page);
-        await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('.noAccessAlert')).toBeVisible();
-        await page.locator('#myAccountLink').click();
-        await expect(
-            page.locator('.notificationLinks .consultation1'),
-        ).toHaveCount(0);
-        await expect(
-            page.locator(
-                `.notificationLinks .consultation${FIRST_FREE_CONSULTATION_ID}`,
-            ),
-        ).toBeVisible();
+            await loginAsStdUser(page);
+            await page.goto('/stdparteitag/std-parteitag');
+        });
+
+        await test.step('See only one consultations as user', async () => {
+            await expect(page.locator('.noAccessAlert').first()).toBeVisible();
+            await page.locator('#myAccountLink').click();
+            await expect(
+                page.locator('.notificationLinks .consultation1'),
+            ).not.toBeVisible();
+            await expect(
+                page.locator(
+                    `.notificationLinks .consultation${FIRST_FREE_CONSULTATION_ID}`,
+                ),
+            ).toBeVisible();
+        });
+
     });
 });

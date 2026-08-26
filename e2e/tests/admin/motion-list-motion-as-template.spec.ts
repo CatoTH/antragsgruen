@@ -12,15 +12,17 @@ test.describe('Admin: MotionListMotionAsTemplate', () => {
         await loginAsStdAdmin(page);
 
         await page.locator('#motionListLink').click();
-        await dispatchClick(page, '.adminMotionTable .motion8 .actionCol .dropdown-toggle');
-        await dispatchClick(page, '.adminMotionTable .motion8 .actionCol .asTemplate');
+        await test.step('test if I can create a motion using another one as template', async () => {
+            await dispatchClick(page, '.adminMotionTable .motion8 .actionCol .dropdown-toggle');
+            await dispatchClick(page, '.adminMotionTable .motion8 .actionCol .asTemplate');
 
-        await expect(page.locator('h1')).toContainText('ANTRAG STELLEN');
-        await expect(page.locator('#initiatorPrimaryName')).toHaveValue('Bundesvorstand');
-        await expect(page.locator('#resolutionDate')).toBeVisible();
-        await expect(page.locator('#resolutionDate')).toHaveValue('09.03.2015');
-        await expect(page.locator('#personTypeOrga')).toBeChecked();
-        await expect(page.locator('input[name=otherInitiator]')).toBeChecked();
+            await expect(page.locator('h1')).toContainText('ANTRAG STELLEN');
+            await expect(page.locator('#initiatorPrimaryName')).toHaveValue('Bundesvorstand');
+            await expect(page.locator('#resolutionDate').first()).toBeVisible();
+            await expect(page.locator('#resolutionDate')).toHaveValue('09.03.2015');
+            await expect(page.locator('#personTypeOrga')).toBeChecked();
+            await expect(page.locator('input[name=otherInitiator]')).toBeChecked();
+        });
     });
 
     test('create motion from motion template (natural person)', async ({ page }) => {
@@ -33,7 +35,7 @@ test.describe('Admin: MotionListMotionAsTemplate', () => {
 
         await expect(page.locator('h1')).toContainText('ANTRAG STELLEN');
         await expect(page.locator('#initiatorPrimaryName')).toHaveValue('Axel Wolbring');
-        await expect(page.locator('#resolutionDate')).not.toBeVisible();
+        await expect(page.locator('#resolutionDate').filter({ visible: true })).toHaveCount(0);
         await expect(page.locator('#personTypeNatural')).toBeChecked();
         await expect(page.locator('input[name=otherInitiator]')).toBeChecked();
 

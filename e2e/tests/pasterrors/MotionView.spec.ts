@@ -11,7 +11,9 @@ test.describe('MotionView', () => {
         await new ConsultationHomePage(page).open();
         const motion = new MotionPage(page);
         await motion.open({ motionSlug: '3' });
-        await expect(page.locator('body')).toContainText('Zitat 223');
-        await expect(page.locator('body')).not.toContainText('###FORCELINEBREAK###');
+        await test.step('check ###FORCELINEBREAK### is not visible', async () => {
+            await expect(page.locator('body')).toContainText('Zitat 223');
+            await expect(page.locator('body')).not.toContainText('###FORCELINEBREAK###', { useInnerText: true });
+        });
     });
 });

@@ -10,60 +10,65 @@ test.describe('User: account edit', () => {
 
     test('change password and name', async ({ page }) => {
         await new ConsultationHomePage(page).open();
-        await expect(page.locator('#loginLink')).toContainText('Login');
-        await page.locator('#loginLink').click();
+        await test.step('change my password and name', async () => {
+            await expect(page.locator('#loginLink')).toContainText('Login');
+        });
 
-        await expect(page.locator('h1')).toContainText('Login');
-        await page.locator('#username').fill('testuser@example.org');
-        await page.locator('#passwordInput').fill('testuser');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+        await test.step('check that the changes are saved', async () => {
+            await page.locator('#loginLink').click();
 
-        await page.locator('#myAccountLink').click();
+            await expect(page.locator('h1')).toContainText('Login');
+            await page.locator('#username').first().fill('testuser@example.org');
+            await page.locator('#passwordInput').first().fill('testuser');
+            await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
 
-        await page.locator('#nameGiven').fill('My new');
-        await page.locator('#nameFamily').fill('name');
-        await page.locator('#userPwd').fill('123');
-        await page.locator('.userAccountForm [name="save"]').click();
-        await expectBootboxDialog(page, /Das Passwort muss mindestens 8 Zeichen/);
-        await acceptBootbox(page);
+            await page.locator('#myAccountLink').click();
 
-        await page.locator('#userPwd').fill('12345678');
-        await page.locator('.userAccountForm [name="save"]').click();
-        await expectBootboxDialog(page, /Die beiden Passwörter stimmen nicht überein/);
-        await acceptBootbox(page);
+            await page.locator('#nameGiven').first().fill('My new');
+            await page.locator('#nameFamily').first().fill('name');
+            await page.locator('#userPwd').first().fill('123');
+            await page.locator('.userAccountForm [name="save"]').click();
+            await expectBootboxDialog(page, /Das Passwort muss mindestens 8 Zeichen/);
+            await acceptBootbox(page);
 
-        await page.locator('#userPwd2').fill('12345678');
-        await page.locator('input[name=emailBlocklist]').check();
-        await page.locator('.userAccountForm [name="save"]').click();
-        await expect(page.locator('body')).toContainText('Gespeichert.');
+            await page.locator('#userPwd').first().fill('12345678');
+            await page.locator('.userAccountForm [name="save"]').click();
+            await expectBootboxDialog(page, /Die beiden Passwörter stimmen nicht überein/);
+            await acceptBootbox(page);
 
-        await logout(page);
+            await page.locator('#userPwd2').first().fill('12345678');
+            await page.locator('input[name=emailBlocklist]').first().check();
+            await page.locator('.userAccountForm [name="save"]').click();
+            await expect(page.locator('body')).toContainText('Gespeichert.');
 
-        await new ConsultationHomePage(page).open();
-        await expect(page.locator('#loginLink')).toContainText('Login');
-        await page.locator('#loginLink').click();
+            await logout(page);
 
-        await expect(page.locator('h1')).toContainText('Login');
-        await page.locator('#username').fill('testuser@example.org');
-        await page.locator('#passwordInput').fill('testuser');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+            await new ConsultationHomePage(page).open();
+            await expect(page.locator('#loginLink')).toContainText('Login');
+            await page.locator('#loginLink').click();
 
-        await expect(page.locator('body')).toContainText('Falsches Passwort');
-        await page.locator('#passwordInput').fill('12345678');
-        await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
+            await expect(page.locator('h1')).toContainText('Login');
+            await page.locator('#username').first().fill('testuser@example.org');
+            await page.locator('#passwordInput').first().fill('testuser');
+            await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
 
-        await expect(page.locator('body')).toContainText('Willkommen!');
-        await page.locator('#myAccountLink').click();
+            await expect(page.locator('body')).toContainText('Falsches Passwort');
+            await page.locator('#passwordInput').first().fill('12345678');
+            await page.locator('#usernamePasswordForm [name="loginusernamepassword"]').click();
 
-        await expect(page.locator('#nameGiven')).toHaveValue('My new');
-        await expect(page.locator('#nameFamily')).toHaveValue('name');
-        await expect(page.locator('input[name=emailBlocklist]')).toBeChecked();
+            await expect(page.locator('body')).toContainText('Willkommen!');
+            await page.locator('#myAccountLink').click();
 
-        await page.locator('input[name=emailBlocklist]').uncheck();
+            await expect(page.locator('#nameGiven')).toHaveValue('My new');
+            await expect(page.locator('#nameFamily')).toHaveValue('name');
+            await expect(page.locator('input[name=emailBlocklist]')).toBeChecked();
 
-        await page.locator('.userAccountForm [name="save"]').click();
-        await expect(page.locator('body')).toContainText('Gespeichert.');
+            await page.locator('input[name=emailBlocklist]').first().uncheck();
 
-        await expect(page.locator('input[name=emailBlocklist]')).not.toBeChecked();
+            await page.locator('.userAccountForm [name="save"]').click();
+            await expect(page.locator('body')).toContainText('Gespeichert.');
+
+            await expect(page.locator('input[name=emailBlocklist]')).not.toBeChecked();
+        });
     });
 });

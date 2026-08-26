@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class AdminMotionPage extends BasePage {
@@ -14,5 +14,9 @@ export class AdminMotionPage extends BasePage {
 
     get titlePrefixField(): Locator {
         return this.page.locator('#motionTitlePrefix');
+    }
+
+    async saveForm(): Promise<void> {
+        await this.page.locator('#motionUpdateForm [name="save"]').first().click();
     }
 }

@@ -11,24 +11,26 @@ test.describe('Amendments: FixedUserData', () => {
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
         await loginAsFixedDataUser(page);
 
-        await expect(page.locator('#initiatorPrimaryName')).toHaveValue('Fixed Data');
-        await expect(page.locator('#initiatorOrga')).toHaveValue('MotionTools');
-        let readonly = await page.evaluate(
-            () => (document.getElementById('initiatorPrimaryName') as HTMLInputElement).readOnly,
-        );
-        expect(readonly).toEqual(true);
+        await test.step('check that the basic functuanality works', async () => {
+            await expect(page.locator('#initiatorPrimaryName')).toHaveValue('Fixed Data');
+            await expect(page.locator('#initiatorOrga')).toHaveValue('MotionTools');
+            let readonly = await page.evaluate(
+                () => (document.getElementById('initiatorPrimaryName') as HTMLInputElement).readOnly,
+            );
+            expect(readonly).toEqual(true);
 
-        await page.locator('#personTypeOrga').check();
-        readonly = await page.evaluate(
-            () => (document.getElementById('initiatorPrimaryName') as HTMLInputElement).readOnly,
-        );
-        expect(readonly).toEqual(false);
+            await page.locator('#personTypeOrga').first().check();
+            readonly = await page.evaluate(
+                () => (document.getElementById('initiatorPrimaryName') as HTMLInputElement).readOnly,
+            );
+            expect(readonly).toEqual(false);
 
-        await page.locator('#personTypeNatural').check();
-        readonly = await page.evaluate(
-            () => (document.getElementById('initiatorPrimaryName') as HTMLInputElement).readOnly,
-        );
-        expect(readonly).toEqual(true);
+            await page.locator('#personTypeNatural').first().check();
+            readonly = await page.evaluate(
+                () => (document.getElementById('initiatorPrimaryName') as HTMLInputElement).readOnly,
+            );
+            expect(readonly).toEqual(true);
+        });
     });
 
     test('submit an amendment with a fake name (server should reject)', async ({ page }) => {
@@ -43,7 +45,7 @@ test.describe('Amendments: FixedUserData', () => {
         await page.locator('#amendmentEditForm [name="save"]').click();
 
         await expect(page.locator('body')).toContainText('Änderungsantrag bestätigen');
-        await expect(page.locator('body')).not.toContainText('Some fake name');
+        await expect(page.locator('body')).not.toContainText('Some fake name', { useInnerText: true });
         await expect(page.locator('body')).toContainText('Fixed Data (MotionTools)');
     });
 });

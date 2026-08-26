@@ -16,7 +16,7 @@ test.describe('Admin: GlobalAlternatives', () => {
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();
         await expect(page.locator('#globalAlternatives')).toBeChecked();
-        await page.locator('#globalAlternatives').uncheck();
+        await page.locator('#globalAlternatives').first().uncheck();
         await page.locator('#consultationSettingsForm [name="save"]').click();
         await expect(page.locator('#globalAlternatives')).not.toBeChecked();
 

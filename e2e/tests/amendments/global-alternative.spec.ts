@@ -12,21 +12,21 @@ test.describe('Amendments: GlobalAlternative', () => {
 
     test('create a global alternative amendment', async ({ page }) => {
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
-        await page.locator("input[name='tags[]'][value='1']").check();
-        await page.locator("[name='sections[1]']").fill('alternative motion');
+        await page.locator("input[name='tags[]'][value='1']").first().check();
+        await page.locator("[name='sections[1]']").first().fill('alternative motion');
         await setCkEditorContent(page, 'sections_2_wysiwyg', '<p>This is my new motion</p>');
         await setCkEditorContent(page, 'sections_4_wysiwyg', '<p>Part 2</p>');
-        await page.locator('input[name=globalAlternative]').check();
+        await page.locator('input[name=globalAlternative]').first().check();
 
         await page.locator('#amendmentEditForm [name="save"]').click();
         await expect(page.locator('body')).toContainText('This is my new motion');
-        await expect(page.locator('body')).not.toContainText('Woibbadinga');
+        await expect(page.locator('body')).not.toContainText('Woibbadinga', { useInnerText: true });
         await page.locator('#amendmentConfirmForm [name="confirm"]').click();
         await page.locator('#motionConfirmedForm [type="submit"]').click();
 
         await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });
         await expect(page.locator('ul.amendments')).toContainText('Ä8');
-        await expect(page.locator('.bookmarks')).not.toContainText('Ä8');
+        await expect(page.locator('.bookmarks').getByText('Ä8').filter({ visible: true })).toHaveCount(0);
     });
 
     test('view the global alternative amendment', async ({ page }) => {
@@ -34,7 +34,7 @@ test.describe('Amendments: GlobalAlternative', () => {
         await page.locator(`.amendments .amendment${FIRST_FREE_AMENDMENT_ID}`).click();
         await expect(page.locator('body')).toContainText('This is my new motion');
         await expect(page.locator('body')).toContainText('Part 2');
-        await expect(page.locator('body')).not.toContainText('Woibbadinga');
+        await expect(page.locator('body')).not.toContainText('Woibbadinga', { useInnerText: true });
     });
 
     test('toggle global alternative off and on in admin view', async ({ page }) => {
@@ -42,14 +42,14 @@ test.describe('Amendments: GlobalAlternative', () => {
         await loginAsStdAdmin(page);
         await page.locator('#motionListLink').click();
         await page
-            .locator(`.amendment${FIRST_FREE_AMENDMENT_ID} .edit, .amendment${FIRST_FREE_AMENDMENT_ID} [href*="edit"]`)
+            .locator(`.adminMotionTable .amendment${FIRST_FREE_AMENDMENT_ID} .titleCol a`)
             .first()
             .click();
         await expect(page.locator('body')).toContainText('This is my new motion');
         await expect(page.locator('body')).toContainText('Part 2');
-        await expect(page.locator('body')).not.toContainText('Woibbadinga');
+        await expect(page.locator('body')).not.toContainText('Woibbadinga', { useInnerText: true });
         await expect(page.locator('#globalAlternative')).toBeChecked();
-        await page.locator('#globalAlternative').uncheck();
+        await page.locator('#globalAlternative').first().uncheck();
         await page.locator('#amendmentUpdateForm [name="save"]').click();
 
         await expect(page.locator('#globalAlternative')).not.toBeChecked();
@@ -68,7 +68,7 @@ test.describe('Amendments: GlobalAlternative', () => {
 
         await new ConsultationHomePage(page).gotoAmendmentView(FIRST_FREE_AMENDMENT_ID);
         await page.locator('#sidebar .adminEdit a').click();
-        await page.locator('#globalAlternative').check();
+        await page.locator('#globalAlternative').first().check();
         await page.locator('#amendmentUpdateForm [name="save"]').click();
 
         await new MotionPage(page).open({ motionSlug: '321-o-zapft-is' });

@@ -12,17 +12,17 @@ test.describe('Amendments: Tags', () => {
     test('activate tags for amendments', async ({ page }) => {
         await new ConsultationHomePage(page).open();
         await new ConsultationHomePage(page).gotoAmendmentCreatePage('321-o-zapft-is');
-        await expect(page.locator('.multipleTagsGroup')).not.toBeVisible();
+        await expect(page.locator('.multipleTagsGroup').filter({ visible: true })).toHaveCount(0);
 
         await new ConsultationHomePage(page).open();
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();
-        await expect(page.locator('#tagsEditForm .editList0')).toBeVisible();
-        await expect(page.locator('#tagsEditForm .editList2')).not.toBeVisible();
+        await expect(page.locator('#tagsEditForm .editList0').first()).toBeVisible();
+        await expect(page.locator('#tagsEditForm .editList2').filter({ visible: true })).toHaveCount(0);
         await dispatchClick(page, '.tagTypeSelector input[value="2"]');
-        await expect(page.locator('#tagsEditForm .editList0')).not.toBeVisible();
-        await expect(page.locator('#tagsEditForm .editList2')).toBeVisible();
+        await expect(page.locator('#tagsEditForm .editList0').filter({ visible: true })).toHaveCount(0);
+        await expect(page.locator('#tagsEditForm .editList2').first()).toBeVisible();
         await dispatchClick(page, '#tagsEditForm .adderRow button');
         await page.evaluate(() => {
             const inputs = document.querySelectorAll(
@@ -45,7 +45,7 @@ test.describe('Amendments: Tags', () => {
             const med = inputs[inputs.length - 1]; if (med) med.value = 'Medical Issues';
         });
 
-        await page.locator('#allowMultipleTags').check();
+        await page.locator('#allowMultipleTags').first().check();
         await page.locator('#consultationSettingsForm [name="save"]').click();
 
         await dispatchClick(page, '.tagTypeSelector input[value="2"]');
@@ -58,10 +58,10 @@ test.describe('Amendments: Tags', () => {
             .locator(`input[name='tags[]'][value='${FIRST_FREE_TAG_ID}']`)
             .check();
 
-        await page.locator("input[name='tags[]'][value='1']").check();
-        await page.locator("[name='sections[1]']").fill('Test');
-        await page.locator('#initiatorPrimaryName').fill('Mein Name');
-        await page.locator('#initiatorEmail').fill('test@example.org');
+        await page.locator("input[name='tags[]'][value='1']").first().check();
+        await page.locator("[name='sections[1]']").first().fill('Test');
+        await page.locator('#initiatorPrimaryName').first().fill('Mein Name');
+        await page.locator('#initiatorEmail').first().fill('test@example.org');
         await page.locator('#amendmentEditForm [name="save"]').click();
         await page.locator('#amendmentConfirmForm [name="confirm"]').click();
     });

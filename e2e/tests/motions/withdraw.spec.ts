@@ -18,17 +18,19 @@ test.describe('Withdraw a motion', () => {
         const motion = new MotionPage(page);
         await motion.open({ motionSlug: MOTION_SLUG });
 
-        await page.locator('.sidebarActions .withdraw a').click();
-        await expect(page.locator('body')).toContainText(
-            'Willst du diesen Antrag wirklich zurückziehen?',
-        );
-        await page.locator('.withdrawForm [name="withdraw"]').click();
+        await test.step('withdraw the motion I created before', async () => {
+            await page.locator('.sidebarActions .withdraw a').click();
+            await expect(page.locator('body')).toContainText(
+                'Willst du diesen Antrag wirklich zurückziehen?',
+            );
+            await page.locator('.withdrawForm [name="withdraw"]').click();
 
-        await expect(page.locator('body')).toContainText('Der Antrag wurde zurückgezogen.');
-        await expect(page.locator('.motionDataTable .statusRow')).toContainText('Zurückgezogen');
-        await expect(page.locator('.sidebarActions .withdraw a')).toHaveCount(0);
+            await expect(page.locator('body')).toContainText('Der Antrag wurde zurückgezogen.');
+            await expect(page.locator('.motionDataTable .statusRow')).toContainText('Zurückgezogen');
+            await expect(page.locator('.sidebarActions .withdraw a').filter({ visible: true })).toHaveCount(0);
 
-        await home.open();
-        await expect(page.locator('.motionRow2.withdrawn')).toBeVisible();
+            await home.open();
+            await expect(page.locator('.motionRow2.withdrawn').first()).toBeVisible();
+        });
     });
 });

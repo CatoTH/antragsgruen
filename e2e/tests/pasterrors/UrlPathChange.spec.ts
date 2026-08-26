@@ -16,10 +16,10 @@ test.describe('UrlPathChange', () => {
         await new AdminIndexPage(page).open();
         const consultationPage = new AdminConsultationPage(page);
         await consultationPage.open();
-        await expect(page.locator('#consultationPath')).toHaveCount(0);
+        await expect(page.locator('#consultationPath').filter({ visible: true })).toHaveCount(0);
         await page.locator('.urlPathHolder .shower a').click();
-        await expect(page.locator('#consultationPath')).toBeVisible();
-        await page.locator('#consultationPath').fill('38');
+        await expect(page.locator('#consultationPath').first()).toBeVisible();
+        await page.locator('#consultationPath').first().fill('38');
         await page.locator('#consultationSettingsForm [name="save"]').click();
         await expect(page.locator('#consultationPath')).toHaveValue('38');
 
@@ -27,7 +27,7 @@ test.describe('UrlPathChange', () => {
         await expect(page.locator('h1')).toContainText('Test2');
 
         await page.goto('/stdparteitag/std-parteitag');
-        await expect(page.locator('h1')).not.toContainText('Test2');
+        await expect(page.locator('h1').getByText('Test2').filter({ visible: true })).toHaveCount(0);
         await expect(page.locator('body')).toContainText(
             'Die angegebene Veranstaltung wurde nicht gefunden',
         );

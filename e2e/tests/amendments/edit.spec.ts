@@ -15,7 +15,7 @@ test.describe('Amendments: Edit', () => {
         await loginAsStdAdmin(page);
         await page.locator('#adminLink').click();
         await page.locator('#consultationLink').click();
-        await page.locator('#iniatorsMayEdit').check();
+        await page.locator('#iniatorsMayEdit').first().check();
         await page.locator('#consultationSettingsForm [name="save"]').click();
         await logout(page);
 

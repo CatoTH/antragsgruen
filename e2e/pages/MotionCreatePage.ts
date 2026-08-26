@@ -20,6 +20,7 @@ export class MotionCreatePage extends BasePage {
         ).toBeVisible();
         await this.page
             .locator('#motionConfirmForm [name="confirm"]')
+            .first()
             .click();
         if (screeningNeeded) {
             await expect(
@@ -57,6 +58,6 @@ export class MotionCreatePage extends BasePage {
     }
 
     async saveForm(): Promise<void> {
-        await this.page.locator('#motionEditForm [name="save"]').click();
+        await this.page.locator('#motionEditForm [name="save"]').first().click();
     }
 }

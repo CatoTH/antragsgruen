@@ -30,7 +30,13 @@ async function post(
             `/test/${operation} returned non-JSON (${ct}; expected application/json): ${body.slice(0, 500)}`,
         );
     }
-    return response.json();
+    const body = await response.json();
+    // The test controller reports its own failures in the payload, with HTTP 200. Without this
+    // check a rejected call looks like a success and the test silently runs unconfigured.
+    if (body && body.ok === false) {
+        throw new Error(`/test/${operation} failed: ${body.error ?? JSON.stringify(body)}`);
+    }
+    return body;
 }
 
 export async function populateDB(
@@ -56,11 +62,24 @@ export class DBFixture {
     }
 }
 
+/**
+ * Changes settings in config_tests.json. Only the keys the test controller whitelists are
+ * accepted; anything else is rejected rather than silently written.
+ */
 export async function setConfig(
     request: APIRequestContext,
     values: Record<string, any>,
 ): Promise<void> {
-    await post(request, 'set-config', values);
+    await post(request, 'set-config', { values: JSON.stringify(values) });
+}
+
+/**
+ * Restores the settings setConfig may have changed. Runs before every test (see the `resetConfig`
+ * fixture), mirroring ConfigurationChanger::_before() of the Codeception suite -- otherwise a
+ * config change leaks into every later test of the run.
+ */
+export async function resetConfig(request: APIRequestContext): Promise<void> {
+    await post(request, 'reset-config');
 }
 
 export async function setApiEnabled(

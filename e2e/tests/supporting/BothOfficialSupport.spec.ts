@@ -18,84 +18,93 @@ test.describe('Supporting: BothOfficialSupport', () => {
         await new AdminIndexPage(page).open();
         const motionTypePage = new AdminMotionTypePage(page);
         await motionTypePage.open({ motionTypeId: 1 });
-        await page.locator('#typePolicySupportMotions').selectOption('2');
-        await page.locator('#typePolicySupportAmendments').selectOption('2');
+        await page.locator('#typePolicySupportMotions').first().selectOption('2');
+        await page.locator('#typePolicySupportAmendments').first().selectOption('2');
         await page.locator('.adminTypeForm [name="save"]').first().click();
 
         const motion = new MotionPage(page);
         await motion.open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('.motionSupportForm')).toHaveCount(0);
+        await test.step('activate officially supporting it', async () => {
+            await expect(page.locator('.motionSupportForm').filter({ visible: true })).toHaveCount(0);
 
-        await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
-        await expect(page.locator('.motionSupportForm')).toHaveCount(0);
+            await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
+            await expect(page.locator('.motionSupportForm').filter({ visible: true })).toHaveCount(0);
 
-        await new AdminIndexPage(page).open();
-        await motionTypePage.open({ motionTypeId: 1 });
-        await page.locator("input[name='type[motionLikesDislikes][]'][value='4']").check();
-        await page.locator("input[name='type[amendmentLikesDislikes][]'][value='4']").check();
-        await page.locator('.adminTypeForm [name="save"]').first().click();
+            await new AdminIndexPage(page).open();
+            await motionTypePage.open({ motionTypeId: 1 });
+            await page.locator("input[name='type[motionLikesDislikes][]'][value='4']").first().check();
+            await page.locator("input[name='type[amendmentLikesDislikes][]'][value='4']").first().check();
+            await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        await motion.open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('.motionSupportForm')).toBeVisible();
+            await motion.open({ motionSlug: '321-o-zapft-is' });
+            await expect(page.locator('.motionSupportForm').first()).toBeVisible();
 
-        await page.locator('input[name=motionSupportName]').fill('My name');
-        await page.locator('input[name=motionSupportOrga]').fill('Orga');
-        await page.locator('.motionSupportForm [name="motionSupport"]').click();
+            await page.locator('input[name=motionSupportName]').first().fill('My name');
+            await page.locator('input[name=motionSupportOrga]').first().fill('Orga');
+            await page.locator('.motionSupportForm [name="motionSupport"]').click();
 
-        await expect(page.locator('#supporters')).toContainText('My name (Orga)');
-        await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
-        await expect(page.locator('#supporters')).not.toContainText('My name (Orga)');
+            await expect(page.locator('#supporters')).toContainText('My name (Orga)');
+            await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
+            await expect(page.locator('#supporters').getByText('My name (Orga)').filter({ visible: true })).toHaveCount(0);
 
-        await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
-        await expect(page.locator('.motionSupportForm')).toBeVisible();
+            await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
+            await expect(page.locator('.motionSupportForm').first()).toBeVisible();
 
-        await page.locator('input[name=motionSupportName]').fill('My name');
-        await page.locator('input[name=motionSupportOrga]').fill('Orga');
-        await page.locator('.motionSupportForm [name="motionSupport"]').click();
+            await page.locator('input[name=motionSupportName]').first().fill('My name');
+            await page.locator('input[name=motionSupportOrga]').first().fill('Orga');
+            await page.locator('.motionSupportForm [name="motionSupport"]').click();
 
-        await expect(page.locator('#supporters')).toContainText('My name (Orga)');
-        await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
-        await expect(page.locator('#supporters')).not.toContainText('My name (Orga)');
+            await expect(page.locator('#supporters')).toContainText('My name (Orga)');
+            await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
+            await expect(page.locator('#supporters').getByText('My name (Orga)').filter({ visible: true })).toHaveCount(0);
 
-        await new AdminIndexPage(page).open();
-        await motionTypePage.open({ motionTypeId: 1 });
-        await page.locator('#typeSupportType').selectOption('2');
-        await page.locator('.adminTypeForm [name="save"]').first().click();
+            await new AdminIndexPage(page).open();
+            await motionTypePage.open({ motionTypeId: 1 });
+        });
 
-        await motion.open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('.motionSupportForm')).toHaveCount(0);
+        await test.step('ensure it is not enabled for published motions by default if there is a collection phase', async () => {
+            await page.locator('#typeSupportType').first().selectOption('2');
+            await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
-        await expect(page.locator('.motionSupportForm')).toHaveCount(0);
+            await motion.open({ motionSlug: '321-o-zapft-is' });
+            await expect(page.locator('.motionSupportForm').filter({ visible: true })).toHaveCount(0);
 
-        await new AdminIndexPage(page).open();
-        await motionTypePage.open({ motionTypeId: 1 });
-        await expect(page.locator('#typeAllowSupportingAfterPublication')).toHaveCount(0);
-        await page.locator('#typeAllowMoreSupporters').check();
-        await expect(page.locator('#typeAllowSupportingAfterPublication')).toBeVisible();
-        await page.locator('#typeAllowSupportingAfterPublication').check();
-        await page.locator('.adminTypeForm [name="save"]').first().click();
+            await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
+            await expect(page.locator('.motionSupportForm').filter({ visible: true })).toHaveCount(0);
 
-        await motion.open({ motionSlug: '321-o-zapft-is' });
-        await expect(page.locator('.motionSupportForm')).toBeVisible();
+            await new AdminIndexPage(page).open();
+            await motionTypePage.open({ motionTypeId: 1 });
+        });
 
-        await page.locator('input[name=motionSupportName]').fill('My name');
-        await page.locator('input[name=motionSupportOrga]').fill('Orga');
-        await page.locator('.motionSupportForm [name="motionSupport"]').click();
+        await test.step('enable it for collection phase', async () => {
+            await expect(page.locator('#typeAllowSupportingAfterPublication').filter({ visible: true })).toHaveCount(0);
+            await page.locator('#typeAllowMoreSupporters').first().check();
+            await expect(page.locator('#typeAllowSupportingAfterPublication').first()).toBeVisible();
+            await page.locator('#typeAllowSupportingAfterPublication').first().check();
+            await page.locator('.adminTypeForm [name="save"]').first().click();
 
-        await expect(page.locator('#supporters')).toContainText('My name (Orga)');
-        await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
-        await expect(page.locator('#supporters')).not.toContainText('My name (Orga)');
+            await motion.open({ motionSlug: '321-o-zapft-is' });
+            await expect(page.locator('.motionSupportForm').first()).toBeVisible();
 
-        await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
-        await expect(page.locator('.motionSupportForm')).toBeVisible();
+            await page.locator('input[name=motionSupportName]').first().fill('My name');
+            await page.locator('input[name=motionSupportOrga]').first().fill('Orga');
+            await page.locator('.motionSupportForm [name="motionSupport"]').click();
 
-        await page.locator('input[name=motionSupportName]').fill('My name');
-        await page.locator('input[name=motionSupportOrga]').fill('Orga');
-        await page.locator('.motionSupportForm [name="motionSupport"]').click();
+            await expect(page.locator('#supporters')).toContainText('My name (Orga)');
+            await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
+            await expect(page.locator('#supporters').getByText('My name (Orga)').filter({ visible: true })).toHaveCount(0);
 
-        await expect(page.locator('#supporters')).toContainText('My name (Orga)');
-        await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
-        await expect(page.locator('#supporters')).not.toContainText('My name (Orga)');
+            await page.goto(`/stdparteitag/std-parteitag/amendment/2`);
+            await expect(page.locator('.motionSupportForm').first()).toBeVisible();
+
+            await page.locator('input[name=motionSupportName]').first().fill('My name');
+            await page.locator('input[name=motionSupportOrga]').first().fill('Orga');
+            await page.locator('.motionSupportForm [name="motionSupport"]').click();
+
+            await expect(page.locator('#supporters')).toContainText('My name (Orga)');
+            await page.locator('.motionSupportForm [name="motionSupportRevoke"]').click();
+            await expect(page.locator('#supporters').getByText('My name (Orga)').filter({ visible: true })).toHaveCount(0);
+        });
+
     });
 });

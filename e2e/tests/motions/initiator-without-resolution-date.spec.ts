@@ -40,13 +40,15 @@ test.describe('Initiator without resolution date', () => {
         await home.open();
         const createPage = await home.gotoMotionCreatePage();
         await createPage.fillInValidSampleData();
-        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
-        await expect(page.locator('#resolutionDate')).toBeVisible();
-        await page.locator('#resolutionDate').fill('');
-        await page.locator('#initiatorPrimaryName').fill('My party');
+        await test.step('set the resolution date as optional', async () => {
+            await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).first().check();
+            await expect(page.locator('#resolutionDate').first()).toBeVisible();
+            await page.locator('#resolutionDate').first().fill('');
+            await page.locator('#initiatorPrimaryName').first().fill('My party');
 
-        await page.locator('#motionEditForm button[name=save]').click();
-        await expect(page.locator('#motionConfirmForm')).toBeVisible();
+            await page.locator('#motionEditForm button[name=save]').click();
+            await expect(page.locator('#motionConfirmForm').first()).toBeVisible();
+        });
     });
 
     test('a deactivated resolution date hides the field entirely', async ({ page }) => {
@@ -71,11 +73,19 @@ test.describe('Initiator without resolution date', () => {
         await home.open();
         const createPage = await home.gotoMotionCreatePage();
         await createPage.fillInValidSampleData();
-        await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).check();
-        await expect(page.locator('#resolutionDate')).toHaveCount(0);
-        await page.locator('#initiatorPrimaryName').fill('My party');
+        await test.step('see the field being optional', async () => {
+            await page.locator(`#personTypeOrga[value="${PERSON_ORGANIZATION}"]`).first().check();
+        });
 
-        await page.locator('#motionEditForm button[name=save]').click();
-        await expect(page.locator('#motionConfirmForm')).toBeVisible();
+        await test.step('deactivate the resolution date', async () => {
+            await expect(page.locator('#resolutionDate').filter({ visible: true })).toHaveCount(0);
+        });
+
+        await test.step('see the field being optional', async () => {
+            await page.locator('#initiatorPrimaryName').first().fill('My party');
+
+            await page.locator('#motionEditForm button[name=save]').click();
+            await expect(page.locator('#motionConfirmForm').first()).toBeVisible();
+        });
     });
 });

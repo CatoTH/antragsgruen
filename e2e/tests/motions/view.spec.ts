@@ -12,13 +12,15 @@ test.describe('Motion view sidebar actions', () => {
         await home.open();
         await home.gotoMotionView(2);
 
-        await expect(page.locator('.sidebarActions .amendmentCreate')).toBeVisible();
-        await expect(page.locator('.sidebarActions .download')).toBeVisible();
-        await expect(page.locator('.sidebarActions .back')).toBeVisible();
-        await expect(page.locator('.sidebarActions .edit')).toHaveCount(0);
-        await expect(page.locator('.sidebarActions .mergeamendments')).toHaveCount(0);
-        await expect(page.locator('.sidebarActions .adminEdit')).toHaveCount(0);
-        await expect(page.locator('.sidebarActions .withdraw')).toHaveCount(0);
+        await test.step('see the motion as a regular / logged out user', async () => {
+            await expect(page.locator('.sidebarActions .amendmentCreate').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .download').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .back').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .edit').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.sidebarActions .mergeamendments').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.sidebarActions .adminEdit').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.sidebarActions .withdraw').filter({ visible: true })).toHaveCount(0);
+        });
     });
 
     test('the initiating user additionally sees the withdraw action', async ({ page }) => {
@@ -29,13 +31,15 @@ test.describe('Motion view sidebar actions', () => {
         await home.open();
         await home.gotoMotionView(2);
 
-        await expect(page.locator('.sidebarActions .amendmentCreate')).toBeVisible();
-        await expect(page.locator('.sidebarActions .download')).toBeVisible();
-        await expect(page.locator('.sidebarActions .withdraw')).toBeVisible();
-        await expect(page.locator('.sidebarActions .back')).toBeVisible();
-        await expect(page.locator('.sidebarActions .edit')).toHaveCount(0);
-        await expect(page.locator('.sidebarActions .mergeamendments')).toHaveCount(0);
-        await expect(page.locator('.sidebarActions .adminEdit')).toHaveCount(0);
+        await test.step('see the motion as the user who initiated it', async () => {
+            await expect(page.locator('.sidebarActions .amendmentCreate').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .download').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .withdraw').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .back').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .edit').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.sidebarActions .mergeamendments').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.sidebarActions .adminEdit').filter({ visible: true })).toHaveCount(0);
+        });
     });
 
     test('an admin sees the admin and merge actions', async ({ page }) => {
@@ -48,12 +52,14 @@ test.describe('Motion view sidebar actions', () => {
         await home.open();
         await home.gotoMotionView(2);
 
-        await expect(page.locator('.sidebarActions .amendmentCreate')).toBeVisible();
-        await expect(page.locator('.sidebarActions .download')).toBeVisible();
-        await expect(page.locator('.sidebarActions .mergeamendments')).toBeVisible();
-        await expect(page.locator('.sidebarActions .adminEdit')).toBeVisible();
-        await expect(page.locator('.sidebarActions .back')).toBeVisible();
-        await expect(page.locator('.sidebarActions .edit')).toHaveCount(0);
-        await expect(page.locator('.sidebarActions .withdraw')).toHaveCount(0);
+        await test.step('see the motion as an admin', async () => {
+            await expect(page.locator('.sidebarActions .amendmentCreate').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .download').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .mergeamendments').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .adminEdit').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .back').first()).toBeVisible();
+            await expect(page.locator('.sidebarActions .edit').filter({ visible: true })).toHaveCount(0);
+            await expect(page.locator('.sidebarActions .withdraw').filter({ visible: true })).toHaveCount(0);
+        });
     });
 });

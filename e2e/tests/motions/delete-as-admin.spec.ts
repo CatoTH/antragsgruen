@@ -13,6 +13,6 @@ test.describe('Delete motion as admin', () => {
         const admin = new AdminIndexPage(page);
         await admin.open();
         await loginAsStdAdmin(page);
-        await expect(page.locator('h1')).toBeVisible();
+        await expect(page.locator('h1').first()).toBeVisible();
     });
 });

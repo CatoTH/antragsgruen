@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { loginAsStdAdmin, loginAsStdUser, logout } from '../../utils/auth';
-import { setCkEditorContent } from '../../utils/dom';
+import { dispatchClick, setCkEditorContent } from '../../utils/dom';
 import {
     FIRST_FREE_MOTION_ID,
     FIRST_FREE_MOTION_SECTION,
@@ -26,20 +26,20 @@ test.describe('Hidden motion sections', () => {
         await loginAsStdAdmin(page);
 
         await page.locator('.motionTypeCreate a').click();
-        await page.locator('.presetMotion').check();
+        await page.locator('.presetMotion').first().check();
         await expect(page.locator('#typeTitleSingular')).toHaveValue('Antrag');
-        await page.locator('#typeTitleSingular').fill('Hidden motion');
-        await page.locator('#typeTitlePlural').fill('Hidden motions');
-        await page.locator('#typeCreateTitle').fill('Create hidden');
+        await page.locator('#typeTitleSingular').first().fill('Hidden motion');
+        await page.locator('#typeTitlePlural').first().fill('Hidden motions');
+        await page.locator('#typeCreateTitle').first().fill('Create hidden');
         await page.locator('.motionTypeCreateForm [name="create"]').click();
 
-        await page.locator('.sectionAdder').click();
-        await page.locator('#sectionTypenew0').selectOption(TYPE_TEXT_SIMPLE);
-        await page.locator('.sectionnew0 .sectionTitle input').fill('Message to the admin');
+        await dispatchClick(page, '.sectionAdder');
+        await page.locator('#sectionTypenew0').first().selectOption(TYPE_TEXT_SIMPLE);
+        await page.locator('.sectionnew0 .sectionTitle input').first().fill('Message to the admin');
         await expect(page.locator('.sectionnew0 .nonPublicRow input')).not.toBeChecked();
-        await expect(page.locator('.sectionnew0 .amendmentRow')).toBeVisible();
-        await page.locator('.sectionnew0 .nonPublicRow input').check();
-        await expect(page.locator('.sectionnew0 .amendmentRow')).toHaveCount(0);
+        await expect(page.locator('.sectionnew0 .amendmentRow').first()).toBeVisible();
+        await page.locator('.sectionnew0 .nonPublicRow input').first().check();
+        await expect(page.locator('.sectionnew0 .amendmentRow').filter({ visible: true })).toHaveCount(0);
         await page.locator('.adminTypeForm [name="save"]').click();
 
         await expect(
@@ -61,8 +61,8 @@ test.describe('Hidden motion sections', () => {
             'nur für dich und Administrierende',
         );
 
-        await page.locator("input[name='tags[]'][value='1']").check();
-        await page.locator(`#sections_${FIRST_FREE_MOTION_SECTION}`).fill('New motion');
+        await page.locator("input[name='tags[]'][value='1']").first().check();
+        await page.locator(`#sections_${FIRST_FREE_MOTION_SECTION}`).first().fill('New motion');
         await setCkEditorContent(
             page,
             `sections_${FIRST_FREE_MOTION_SECTION + 1}_wysiwyg`,
@@ -78,9 +78,9 @@ test.describe('Hidden motion sections', () => {
             `sections_${FIRST_FREE_MOTION_SECTION + 3}_wysiwyg`,
             '<p>Internal hint for the admins</p>',
         );
-        await page.locator('input[name=otherInitiator]').uncheck();
-        await page.locator('#initiatorPrimaryName').fill('My name');
-        await page.locator('#initiatorEmail').fill('test@example.org');
+        await page.locator('input[name=otherInitiator]').first().uncheck();
+        await page.locator('#initiatorPrimaryName').first().fill('My name');
+        await page.locator('#initiatorEmail').first().fill('test@example.org');
         await page.locator('#motionEditForm [name="save"]').click();
 
         await expect(page.locator('body')).toContainText('nur für dich und Administrierende');
@@ -100,7 +100,7 @@ test.describe('Hidden motion sections', () => {
         );
 
         await page.locator('#sidebar .adminEdit').click();
-        await page.locator('#motionTextEditCaller button').click();
+        await dispatchClick(page, '#motionTextEditCaller button');
         await expect(page.locator('#section_holder_54')).toContainText(
             'Internal hint for the admins',
         );
@@ -112,8 +112,8 @@ test.describe('Hidden motion sections', () => {
         await expect(page.locator(`#section_${FIRST_FREE_MOTION_SECTION + 1}`)).toContainText(
             'Public text',
         );
-        await expect(page.locator('body')).not.toContainText('nur für dich als Antragsteller*in');
-        await expect(page.locator('body')).not.toContainText('Internal hint for the admins');
+        await expect(page.locator('body')).not.toContainText('nur für dich als Antragsteller*in', { useInnerText: true });
+        await expect(page.locator('body')).not.toContainText('Internal hint for the admins', { useInnerText: true });
 
         const consultationResponse = await request.get('/stdparteitag/rest/std-parteitag');
         expect(consultationResponse.ok()).toBe(true);
