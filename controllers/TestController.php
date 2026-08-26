@@ -175,7 +175,7 @@ class TestController extends Controller
             }
             $config[$key] = $value;
         }
-        file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT));
+        // file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT)); @TODO
         return ['ok' => true];
     }
 
