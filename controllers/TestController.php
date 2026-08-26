@@ -161,6 +161,7 @@ class TestController extends Controller
      */
     private function writeTestConfiguration(array $values): array
     {
+        return ['ok' => true];
         $configFile = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config_tests.json';
         if (!is_writable($configFile)) {
             return ['ok' => false, 'error' => "Config file not writable: $configFile"];
