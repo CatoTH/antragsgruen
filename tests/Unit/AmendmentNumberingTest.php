@@ -10,8 +10,8 @@ use app\models\amendmentNumbering\PerMotionEnglish;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use Codeception\Attribute\Group;
-use Tests\Support\AcceptanceTester;
 use Tests\Support\Helper\DBTestBase;
+use Tests\Support\TestFixtures;
 
 #[Group('database')]
 class AmendmentNumberingTest extends DBTestBase
@@ -37,7 +37,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $sorter = new GlobalCompact();
-        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = TestFixtures::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
@@ -47,7 +47,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(3);
 
         $sorter = new GlobalCompact();
-        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = TestFixtures::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
@@ -57,7 +57,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(58);
 
         $sorter = new GlobalCompact();
-        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = TestFixtures::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);
@@ -71,7 +71,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $sorter = new PerMotionCompact();
-        $expect = AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
+        $expect = TestFixtures::FIRST_FREE_AMENDMENT_TITLE_PREFIX;
         $out    = $sorter->getAmendmentNumber($amend, $motion, $motion->amendments);
 
         $this->assertEquals($expect, $out);

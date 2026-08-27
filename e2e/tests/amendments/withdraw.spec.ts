@@ -1,0 +1,43 @@
+import { test, expect } from '../../fixtures';
+import { MotionPage } from '../../pages/MotionPage';
+import {ConsultationHomePage} from '../../pages/ConsultationHomePage';
+import { AmendmentPage } from '../../pages/AmendmentPage';
+import { loginAsStdUser } from '../../utils/auth';
+
+test.describe('Amendments: Withdraw', () => {
+    test.beforeEach(async ({ db }) => {
+        await db.populate('dbdata1');
+    });
+
+    test('withdraw the motion I created before', async ({ page }) => {
+        await new ConsultationHomePage(page).open();
+        await loginAsStdUser(page);
+
+        await new MotionPage(page).open({ motionSlug: 3 });
+        await expect(page.locator('section.amendments .amendment2')).toHaveCount(1);
+        await expect(page.locator('.bookmarks .amendment2')).toHaveCount(1);
+
+        await new AmendmentPage(page).open({
+            motionSlug: 3,
+            amendmentId: 2,
+        });
+
+        await page.locator('.sidebarActions .withdraw a').click();
+        await expect(page.locator('body')).toContainText(
+            'Willst du diesen Änderungsantrag wirklich zurückziehen?',
+        );
+        await page.locator('.withdrawForm [name="withdraw"]').click();
+        await expect(page.locator('body')).toContainText(
+            'Der Änderungsantrag wurde zurückgezogen.',
+        );
+        await expect(page.locator('.motionDataTable .statusRow')).toContainText('Zurückgezogen');
+        await expect(page.locator('.sidebarActions .withdraw a').filter({ visible: true })).toHaveCount(0);
+
+        await new ConsultationHomePage(page).open();
+        await expect(page.locator('.amendmentRow2.withdrawn').first()).toBeVisible();
+
+        await new MotionPage(page).open({ motionSlug: 3 });
+        await expect(page.locator('section.amendments .amendment2')).toHaveCount(1);
+        await expect(page.locator('.bookmarks .amendment2').filter({ visible: true })).toHaveCount(0);
+    });
+});

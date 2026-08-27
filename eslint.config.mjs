@@ -1,6 +1,7 @@
 import { defineConfig } from "eslint/config";
 import eslint from '@eslint/js';
 import pluginPromise from 'eslint-plugin-promise'
+import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import ConfusingGlobals from 'confusing-browser-globals';
 
@@ -35,12 +36,40 @@ const config = defineConfig(
             'no-prototype-builtins': 'off',
             'no-unused-vars': 'off',
             'promise/no-callback-in-promise': 'off',
-            /*
-            'no-empty': 'off',//todo
-            'no-useless-escape': 'off',//todo
-            'prefer-const': 'off',//todo
-            'promise/always-return': 'off',//todo
-             */
+        },
+    },
+    {
+        files: [
+            'e2e/**/*.ts',
+        ],
+        languageOptions: {
+            parser: tseslint.parser,
+            parserOptions: {
+                project: './e2e/tsconfig.json',
+                tsconfigRootDir: import.meta.dirname,
+                ecmaVersion: 'latest',
+                sourceType: 'module',
+            },
+            globals: {
+                ...globals.node,
+                ...globals.browser,
+                ...globals.jquery,
+                "CKEDITOR": "readonly",
+                "bootbox": "readonly",
+                "Sortable": "readonly",
+                "ClipboardJS": "readonly",
+                "Isotope": "readonly",
+                "jQuery": "readonly",
+            },
+        },
+        extends: [
+            eslint.configs.recommended,
+        ],
+        rules: {
+            'no-console': 'warn',
+            'no-unused-vars': 'off',
+            'no-empty': 'off',
+            'no-prototype-builtins': 'off',
         },
     },
 );

@@ -1,0 +1,203 @@
+name: Playwright e2e
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: playwright-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    env:
+      E2E_HOST: stdparteitag.antragsgruen.test
+      E2E_PORT: 22380
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install project dependencies
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: true
+
+      - name: Install e2e package dependencies
+        run: pnpm --dir e2e install
+
+      - name: Install Playwright Chromium
+        run: pnpm --dir e2e exec playwright install --with-deps chromium
+
+      - name: Create test-only runtime overrides
+        run: |
+          mkdir -p .e2e-runtime/nginx
+          printf '127.0.0.1 %s\n' "$E2E_HOST" | sudo tee -a /etc/hosts
+          RANDOM_SEED="$(openssl rand -base64 32 | tr -d '\n')"
+          cat > .e2e-runtime/env <<EOF
+          DB_USER=e2e
+          DB_PASSWORD=e2e
+          RABBITMQ_DEFAULT_USER=e2e
+          RABBITMQ_DEFAULT_PASS=e2e
+          RANDOM_SEED=$RANDOM_SEED
+          EOF
+          cat > .e2e-runtime/config_tests.json <<EOF
+          {
+            "dbConnection": {"dsn": "mysql:host=127.0.0.1;port=32768;dbname=yii", "emulatePrepare": true, "username": "yii", "password": "yii", "charset": "utf8mb4"},
+            "mailService": {"transport": "sendmail"},
+            "prettyUrl": true,
+            "baseLanguage": "de",
+            "multisiteMode": true,
+            "confirmEmailAddresses": true,
+            "captcha": {"ignoredIps": ["127.0.0.1", "::1"]},
+            "domainPlain": "",
+            "domainSubdomain": "",
+            "prependWWWToSubdomain": false,
+            "randomSeed": "$RANDOM_SEED",
+            "mailFromName": "Antragsgruen Test",
+            "mailFromEmail": "test@antragsgruen.de",
+            "adminUserIds": [3],
+            "plugins": ["gruen_ci", "antragsgruen_sites"],
+            "pdfExportConcat": true
+          }
+          EOF
+          printf '%s' "$E2E_HOST:$E2E_PORT" > .e2e-runtime/TEST_DOMAIN
+          cat > .e2e-runtime/nginx/default.conf <<'EOF'
+          server {
+            server_name stdparteitag.antragsgruen.test 127.0.0.1;
+            root /var/www/antragsgruen/web;
+            set $yii_bootstrap index.php;
+            rewrite ^/(.*)/$ /$1 permanent;
+            location / {
+              rewrite ^/test/(.*)$ /index.php?r=test/$1 last;
+              try_files $uri $uri/ /index.php$uri?$args;
+            }
+            location ~ \.php {
+              fastcgi_split_path_info ^(.+\.php)(.*)$;
+              fastcgi_pass web:9000;
+              include fastcgi_params;
+              fastcgi_param SCRIPT_FILENAME /var/www/antragsgruen/web/index.php;
+              fastcgi_param PATH_INFO $request_uri;
+              fastcgi_param PATH_TRANSLATED /var/www/antragsgruen/web/index.php;
+              fastcgi_param REMOTE_ADDR 127.0.0.1;
+            }
+          }
+          EOF
+          cat > .e2e-runtime/compose.yml <<'EOF'
+          services:
+            web:
+              depends_on:
+                mysql:
+                  condition: service_healthy
+                redis:
+                  condition: service_started
+              environment:
+                DB_HOST: mysql
+                DB_NAME: antragsgruen
+                DB_USER: e2e
+                DB_PASSWORD: e2e
+                REDIS_HOST: redis
+              volumes:
+                - "./.e2e-runtime/config_tests.json:/var/www/antragsgruen/config/config_tests.json"
+                - "./.e2e-runtime/TEST_DOMAIN:/var/www/antragsgruen/config/TEST_DOMAIN:ro"
+            nginx:
+              depends_on:
+                web:
+                  condition: service_started
+              ports: ["22380:80"]
+              volumes:
+                - "./.e2e-runtime/nginx:/etc/nginx/conf.d:ro"
+            mysql-test:
+              image: mariadb:latest
+              network_mode: service:web
+              depends_on:
+                web: {condition: service_started}
+              environment:
+                MARIADB_RANDOM_ROOT_PASSWORD: "1"
+                MARIADB_DATABASE: yii
+                MARIADB_USER: yii
+                MARIADB_PASSWORD: yii
+              command: --port=32768
+            redis:
+              image: redis:7
+            mysql:
+              environment:
+                MARIADB_USER: e2e
+                MARIADB_PASSWORD: e2e
+                MARIADB_DATABASE: antragsgruen
+              healthcheck:
+                test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+                start_period: 5s
+                interval: 3s
+                timeout: 5s
+                retries: 30
+          EOF
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+
+      - name: Build application image
+        run: docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml build web
+
+      - name: Start PR-build stack
+        run: |
+          docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml up -d --build web nginx mysql-test redis
+          for i in $(seq 1 90); do
+            docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml exec -T web php -r '$pdo = @new PDO("mysql:host=127.0.0.1;port=32768;dbname=yii", "yii", "yii", [PDO::ATTR_TIMEOUT => 1]); $pdo->query("SELECT 1");' && { echo "Test DB ready at attempt $i"; break; }
+            sleep 2
+          done
+
+      - name: Create application container config
+        run: |
+          rm -rf local/cdn
+          docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml \
+            exec -T web php docs/create-static-resources.php dev
+          docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml \
+            exec -T web test -f config/js-dependencies.php
+
+      - name: Verify test endpoint
+        run: |
+          curl --fail-with-body -X POST -d fixture=dbdata1 "http://$E2E_HOST:$E2E_PORT/test/populate-db" | grep -F '"ok":true'
+          curl --fail "http://$E2E_HOST:$E2E_PORT/stdparteitag/std-parteitag" -o /dev/null
+          rest_code=$(curl -s -o /tmp/e2e-rest.json -w "%{http_code}" "http://$E2E_HOST:$E2E_PORT/stdparteitag/rest/std-parteitag/motion/Moving_test-47262/amendment/278")
+          if [ "$rest_code" != "403" ] || ! grep -q "Public API disabled" /tmp/e2e-rest.json; then
+            echo "REST smoke failed: expected the documented 403, got $rest_code"
+            cat /tmp/e2e-rest.json
+            exit 1
+          fi
+
+      - name: Smoke diagnostics
+        if: always()
+        run: |
+          getent hosts "$E2E_HOST" || echo "NO HOSTS ENTRY"
+          docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml exec -T web sh -c 'cat /var/www/antragsgruen/config/TEST_DOMAIN; echo' || true
+
+      - name: Show Antragsgruen logs on failure
+        if: failure()
+        run: |
+          docker compose --env-file .e2e-runtime/env -f docker-compose.development.yml -f .e2e-runtime/compose.yml \
+            logs --tail=200 web nginx mysql-test redis
+
+      - name: TypeScript and test discovery gate
+        run: |
+          pnpm --dir e2e exec tsc --noEmit
+          E2E_BASE_URL="http://$E2E_HOST:$E2E_PORT" pnpm --dir e2e exec playwright test --list
+
+      - name: Run Chromium shard
+        run: E2E_BASE_URL="http://$E2E_HOST:$E2E_PORT" pnpm --dir e2e exec playwright test --project=chromium --shard=${{ matrix.shard }}/8
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-shard-${{ matrix.shard }}
+          path: e2e/test-results/
+          if-no-files-found: ignore
