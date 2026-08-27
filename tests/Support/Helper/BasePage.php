@@ -79,6 +79,7 @@ abstract class BasePage extends Component
     {
         $page = new static($I);
         $I->amOnPage($page->getUrl($params));
+        $I->waitForJS('return document.readyState === "complete"', 10);
 
         return $page;
     }
