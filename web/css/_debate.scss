@@ -43,6 +43,14 @@
   }
 }
 
+// The speaking list is a sibling of .debatedItem now (the projector positions the sections
+// independently); here it stays part of the centered block of the debated item.
+.currentDebateInline, .currentDebateAdmin {
+  .debateSpeechHolder {
+    text-align: center;
+  }
+}
+
 .currentDebateInline {
   .secondaryMotionRow {
     border-top: solid 1px #ccc;
