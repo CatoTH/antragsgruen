@@ -190,4 +190,16 @@ if ($params->multisiteMode) {
     }
 }
 
+if (YII_ENV === 'test') {
+    // /test/<action> registered first so it wins over the consultation
+    // home rule (`/<subdomain>/<consultationPath>/` =>
+    // 'consultation/index'), which would otherwise interpret
+    // /test/populate-db as subdomain=test consultationPath=populate-db.
+    // Route pattern uses <action> as both the URL placeholder and the
+    // action name so /test/populate-db dispatches to
+    // testController::actionPopulateDb, /test/url-builder to
+    // testController::actionUrlBuilder, etc.
+    $urlRules = ['test/<action:[^\/]+>' => '/test/<action>'] + $urlRules;
+}
+
 return $urlRules;

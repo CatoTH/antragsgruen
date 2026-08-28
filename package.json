@@ -13,7 +13,15 @@
         "watch": "vite build --watch",
         "build": "vite build",
         "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
-        "lint:fix": "eslint --fix 'web/js/**/*.{js,ts}'"
+        "lint:fix": "eslint --fix 'web/js/**/*.{js,ts}'",
+        "test:a11y": "node bin/test-a11y.mjs",
+        "test:e2e": "pnpm --dir e2e exec playwright test",
+        "test:e2e:chromium": "pnpm --dir e2e exec playwright test --project=chromium",
+        "test:e2e:firefox": "pnpm --dir e2e exec playwright test --project=firefox",
+        "test:e2e:webkit": "pnpm --dir e2e exec playwright test --project=webkit",
+        "test:e2e:ui": "pnpm --dir e2e exec playwright test --ui",
+        "test:e2e:install": "pnpm --dir e2e exec playwright install --with-deps chromium firefox webkit",
+        "test:e2e:report": "pnpm --dir e2e exec playwright show-report"
     },
     "engines": {
         "node": ">=22"
@@ -37,7 +45,11 @@
         "postcss": "^8.5.26",
         "sass": "^1.102.0",
         "terser": "^5.50.0",
-        "vite": "^8.2.1"
+        "vite": "^8.2.1",
+        "@playwright/test": "1.62.1",
+        "@types/node": "^22.7.0",
+        "typescript": "^5.6.0",
+        "typescript-eslint": "^8.0.0"
     },
     "directories": {
         "bin": "./bin/"
