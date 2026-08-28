@@ -23,7 +23,7 @@ class SpeechSubqueueAdmin
 
         return new self(
             id: $subqueue->id,
-            name: $subqueue->name,
+            name: $subqueue->name->get(),
             onlist: array_map(fn(\app\models\api\SpeechSubqueueItem $item) => SpeechAdminItem::fromItem($item), $onList),
             applied: array_map(fn(\app\models\api\SpeechSubqueueItem $item) => SpeechAdminItem::fromItem($item), $applied),
         );

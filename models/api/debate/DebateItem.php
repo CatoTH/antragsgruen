@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\api\debate;
 
 use app\components\UrlHelper;
+use app\models\api\LocalizedString;
 use app\models\db\{Amendment, ConsultationAgendaItem, DebateItem as DebateItemEntity, Motion, SpeechQueue, VotingBlock};
 
 class DebateItem
@@ -12,11 +13,11 @@ class DebateItem
     public function __construct(
         public int $id,
         public DebateItemTargetType $targetType,
-        public string $title,
+        public \app\models\api\LocalizedString $title,
         public string $dateStarted,
         public ?int $targetId = null,
-        public ?string $titleWithPrefix = null,
-        public ?string $initiatorsHtml = null,
+        public ?\app\models\api\LocalizedString $titleWithPrefix = null,
+        public ?\app\models\api\LocalizedString $initiatorsHtml = null,
         public ?string $urlJson = null,
         public ?string $urlHtml = null,
         public ?DebateItemSpeechQueue $speechQueue = null,
@@ -24,38 +25,50 @@ class DebateItem
     ) {
     }
 
+    /**
+     * Hint: every string that depends on the language the reader is browsing the site in has to be a
+     * LocalizedString here, as this payload is not only returned to the requesting user, but also
+     * pushed to all readers of the consultation at once - in whatever language each of them is using
+     * (see LocalizedString).
+     */
     public static function fromEntity(DebateItemEntity $entity): self
     {
+        $consultation = $entity->getMyConsultation();
         $target = $entity->getDebateTarget();
         $targetId = $target?->id;
 
         if ($entity->freeText !== null) {
             $targetType = DebateItemTargetType::FREE_TEXT;
-            $title = $entity->freeText;
+            $title = LocalizedString::fromString($consultation, $entity->freeText);
             $titleWithPrefix = null;
             $initiatorsHtml = null;
             $urlJson = null;
             $urlHtml = null;
             $targetId = null;
         } elseif (is_a($target, Motion::class)) {
+            $motion = $target;
             $targetType = DebateItemTargetType::MOTION;
-            $title = $target->title;
-            $titleWithPrefix = $target->getTitleWithPrefix();
-            $initiatorsHtml = $target->getInitiatorsStr();
+            $title = LocalizedString::build($consultation, fn () => $motion->getTitleForDisplay());
+            $titleWithPrefix = LocalizedString::build($consultation, fn () => $motion->getTitleWithPrefixForDisplay());
+            $initiatorsHtml = self::buildInitiators($motion);
             $urlJson = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($target, 'rest'));
             $urlHtml = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($target));
         } elseif (is_a($target, Amendment::class)) {
+            $amendment = $target;
             $targetType = DebateItemTargetType::AMENDMENT;
-            $title = $target->getTitle();
-            $titleWithPrefix = $target->getTitleWithPrefix();
-            $initiatorsHtml = $target->getInitiatorsStr();
+            // Hint: an amendment's title is derived from its motion's canonical title; only the
+            // wording around it ("Amendment to ...") depends on the reader's language.
+            $title = LocalizedString::build($consultation, fn () => $amendment->getTitle());
+            $titleWithPrefix = LocalizedString::build($consultation, fn () => $amendment->getTitleWithPrefix());
+            $initiatorsHtml = self::buildInitiators($amendment);
             $urlJson = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($target, 'rest'));
             $urlHtml = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($target));
         } elseif (is_a($target, ConsultationAgendaItem::class)) {
+            $agendaItem = $target;
             $targetType = DebateItemTargetType::AGENDA_ITEM;
-            $title = $target->title;
-            $code = $target->getShownCode(true);
-            $titleWithPrefix = ($code !== '' ? $code . ' ' . $target->title : null);
+            $title = LocalizedString::fromString($consultation, $agendaItem->title);
+            $code = $agendaItem->getShownCode(true);
+            $titleWithPrefix = ($code !== '' ? LocalizedString::fromString($consultation, $code . ' ' . $agendaItem->title) : null);
             $initiatorsHtml = null;
             $urlJson = null;
             $urlHtml = null;
@@ -75,6 +88,18 @@ class DebateItem
             urlHtml: $urlHtml,
             speechQueue: self::buildSpeechQueue($entity),
             votingBlock: self::buildVotingBlock($entity),
+        );
+    }
+
+    /**
+     * Hint: IMotion::getInitiatorsStr() memoizes its result without keying it by language, so it
+     * must not be used here - the second language rendered would get the first one's string.
+     */
+    private static function buildInitiators(Motion|Amendment $imotion): LocalizedString
+    {
+        return LocalizedString::build(
+            $imotion->getMyConsultation(),
+            fn () => $imotion->getInitiatorsStrFromArray($imotion->getInitiators())
         );
     }
 
@@ -118,7 +143,7 @@ class DebateItem
         return new DebateItemSpeechQueue(
             id: $queue->id,
             isActive: (bool)$queue->isActive,
-            title: $queue->getTitle(),
+            title: LocalizedString::build($entity->getMyConsultation(), fn () => $queue->getTitle()),
         );
     }
 

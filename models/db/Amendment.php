@@ -1069,7 +1069,7 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+        foreach (LanguageTools::getContentLanguages($this->getMyConsultation()) as $language) {
             \Yii::$app->cache->delete($this->getPdfCacheKey($language));
         }
     }

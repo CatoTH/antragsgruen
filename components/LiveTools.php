@@ -37,13 +37,16 @@ class LiveTools
         ];
     }
 
-    public static function sendToRabbitMq(string $routingKey, string $data): void
+    /**
+     * @param array<string, string> $headers
+     */
+    public static function sendToRabbitMq(string $routingKey, string $data, array $headers = []): void
     {
         $params = AntragsgruenApp::getInstance()->live;
         $client = new Client(['base_uri' => $params['rabbitMqUri']]);
 
         $payload = json_encode([
-            'properties' => [],
+            'properties' => ($headers ? ['headers' => $headers] : []),
             'routing_key' => $routingKey,
             'payload' => $data,
             'payload_encoding' => 'string',
@@ -67,58 +70,47 @@ class LiveTools
 
     public static function sendSpeechQueue(Consultation $consultation, SpeechQueue $queue, bool $debug = false): void
     {
-        $params = AntragsgruenApp::getInstance()->live;
-        if (!$params) {
-            return;
-        }
-
-        $serializer = Tools::getSerializer();
-        $json = $serializer->serialize($queue, 'json');
-
-        if ($debug) {
-            echo $json . "\n";
-        }
-
-        $routingKey = 'speech.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
-
-        self::sendToRabbitMq($routingKey, $json);
+        self::sendToChannel($consultation, 'speech', $queue, $debug);
     }
 
     public static function sendDebate(Consultation $consultation, DebateState $debateState, bool $debug = false): void
     {
-        $params = AntragsgruenApp::getInstance()->live;
-        if (!$params) {
-            return;
-        }
-
-        $serializer = Tools::getSerializer();
-        $json = $serializer->serialize($debateState, 'json');
-
-        if ($debug) {
-            echo $json . "\n";
-        }
-
-        $routingKey = 'debate.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
-
-        self::sendToRabbitMq($routingKey, $json);
+        self::sendToChannel($consultation, 'debate', $debateState, $debug);
     }
 
     public static function sendAgenda(Consultation $consultation, AgendaList $agenda, bool $debug = false): void
+    {
+        self::sendToChannel($consultation, 'agenda', $agenda, $debug);
+    }
+
+    /**
+     * Unlike a REST response, a live event is not rendered for the user triggering it, but for
+     * everyone reading the consultation - who may well be browsing the site in a different language
+     * than the moderator pressing the button, or than the console command sending the event.
+     * Language-dependent strings are therefore serialized with all languages of the consultation
+     * (see LocalizedString), and the Live server delivers the one matching each subscriber.
+     * The language to use for subscribers whose language is not part of the message is passed along
+     * as a message header.
+     */
+    private static function sendToChannel(Consultation $consultation, string $topic, object $payload, bool $debug): void
     {
         $params = AntragsgruenApp::getInstance()->live;
         if (!$params) {
             return;
         }
 
-        $serializer = Tools::getSerializer();
-        $json = $serializer->serialize($agenda, 'json');
+        $json = Tools::getSerializer()->serialize($payload, 'json', [
+            LocalizedStringNormalizer::CONTEXT_ALL_LANGUAGES => true,
+        ]);
 
         if ($debug) {
             echo $json . "\n";
         }
 
-        $routingKey = 'agenda.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
+        $routingKey = $topic . '.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
 
-        self::sendToRabbitMq($routingKey, $json);
+        self::sendToRabbitMq($routingKey, $json, [
+            'default_language' => LanguageTools::getPrimaryLanguage($consultation),
+        ]);
     }
 }

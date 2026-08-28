@@ -90,7 +90,7 @@ class LayoutHelper
         // These caches are keyed by the reader's language (see getHomePageCacheForType() etc.), so
         // every supported language's copy needs flushing, not just whichever language this request
         // happens to be in.
-        foreach (LanguageTools::getLanguagesToFlush($consultation) as $language) {
+        foreach (LanguageTools::getContentLanguages($consultation) as $language) {
             foreach (self::getAllHomePageCaches($consultation, $language) as $homePageCache) {
                 $homePageCache->flushCache();
             }

@@ -1072,7 +1072,7 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+        foreach (LanguageTools::getContentLanguages($this->getMyConsultation()) as $language) {
             HashedStaticCache::getInstance($this->getPdfCacheKey($language), null)->setIsBulky(true)->flushCache();
         }
         foreach ($this->amendments as $amend) {
@@ -1083,7 +1083,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function flushViewCache(): void
     {
-        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+        foreach (LanguageTools::getContentLanguages($this->getMyConsultation()) as $language) {
             HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this, $language), null)->setIsBulky(true)->flushCache();
             HashedStaticCache::getInstance($this->getPdfCacheKey($language), null)->setIsBulky(true)->flushCache();
         }

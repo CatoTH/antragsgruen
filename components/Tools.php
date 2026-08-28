@@ -41,6 +41,7 @@ class Tools
                 new ArrayDenormalizer(),
                 new DateTimeNormalizer(),
                 new BackedEnumNormalizer(),
+                new LocalizedStringNormalizer(), // needs to come before the ObjectNormalizer, which would match it, too
                 new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, $propertyTypeExtractor),
             ];
             self::$serializer = new Serializer($normalizers, $encoders);
