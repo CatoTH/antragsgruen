@@ -344,10 +344,53 @@ $fullscreenHeaderHeight: 36px;
     }
   }
 
+  // The debate view splits the available height between the debated item's title, its speaking list
+  // and its voting. How many of these sections are actually shown is indicated by the debateSectionsX
+  // class set by CurrentDebateWidget.vue: with the title alone it is centered on the whole screen,
+  // with one more section the title gets the top 40%, with both it gets 30% and they get 35% each.
   .currentDebateContent {
     padding: 20px;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    > .debateTitleHolder {
+      flex: 1 1 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    > .debateSpeechHolder, > .debateVotingHolder {
+      min-height: 0;
+      overflow: auto;
+    }
+
+    &.debateSections2 {
+      > .debateTitleHolder {
+        flex: 0 0 40%;
+      }
+      > .debateSpeechHolder, > .debateVotingHolder {
+        flex: 1 1 60%;
+      }
+    }
+
+    &.debateSections3 {
+      > .debateTitleHolder {
+        flex: 0 0 30%;
+      }
+      > .debateSpeechHolder, > .debateVotingHolder {
+        flex: 1 1 35%;
+      }
+    }
 
     .debatedItem {
+      // The vertical positioning is done by the surrounding flex box
+      margin-top: 0;
+      margin-bottom: 0;
+
       .title {
         font-size: 2.5vw;
       }
@@ -358,9 +401,19 @@ $fullscreenHeaderHeight: 36px;
     }
 
     .speechLists {
-      // this adds to the styles from _speech_lists.scss
+      // this adds to the styles from _speech_lists.scss; as the speaking list only gets a part of the
+      // screen here, it is a bit more compact than the standalone fullscreen speaking list
       .activeSpeaker, .remainingTime {
         font-size: 2.0vw;
+      }
+      .activeSpeaker {
+        margin-top: 0;
+      }
+      .remainingTime {
+        margin-top: 1vh;
+      }
+      h2.green {
+        margin: 1.5vh 0;
       }
     }
   }

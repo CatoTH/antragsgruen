@@ -1,6 +1,6 @@
 <template>
-    <div class="currentDebateContent">
-        <div class="content">
+    <div class="currentDebateContent" :class="layoutClass">
+        <div class="content debateTitleHolder">
             <div v-if="loaded && !current" class="nothingDebated" v-t="['debate', 'nothing_debated']"></div>
             <div v-if="current" class="debatedItem">
                 <div class="title">{{ current.title }}</div>
@@ -14,33 +14,36 @@
                         <template v-t="['debate', 'fulltext']"></template>
                     </a>
                 </div>
-
-                <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
-                <div v-if="speechLoading && !speechQueue" class="speechLoading"
-                     v-t="['debate', 'admin_speech_loading']"></div>
-                <!-- On the projector the read-only fullscreen speech display is used; on the regular
-                     homepage the interactive inline widget (apply / withdraw) is shown instead. -->
-                <fullscreen-speech v-if="speechQueue && projector" :key="'fs-' + speechQueue.id"
-                                   :init-queue="speechQueue"
-                                   :csrf="null"
-                                   :user="null"
-                                   :title="'title'"
-                ></fullscreen-speech>
-                <speech-user-inline-widget v-if="speechQueue && !projector" :key="speechQueue.id"
-                                           :init-queue="speechQueue"
-                                           :csrf="csrf"
-                                           :user="speechUser"
-                                           :title="'title'"
-                ></speech-user-inline-widget>
             </div>
         </div>
-        <div v-if="current">
-          <div v-if="votingError" class="alert alert-danger">{{ votingError }}</div>
-          <div v-if="votingBlock" class="votingCommon currentDebateVoting">
-            <voting-block-widget :key="votingBlock.id" :voting="votingBlock"
-                                 :admin-link="votingAdminLink" :projector="projector"
-                                 @vote="vote" @abstain="abstain"></voting-block-widget>
-          </div>
+
+        <div v-if="current && hasSpeechSection" class="debateSpeechHolder">
+            <div v-if="speechError" class="alert alert-danger">{{ speechError }}</div>
+            <div v-if="speechLoading && !speechQueue" class="speechLoading"
+                 v-t="['debate', 'admin_speech_loading']"></div>
+            <!-- On the projector the read-only fullscreen speech display is used; on the regular
+                 homepage the interactive inline widget (apply / withdraw) is shown instead. -->
+            <fullscreen-speech v-if="speechQueue && projector" :key="'fs-' + speechQueue.id"
+                               :init-queue="speechQueue"
+                               :csrf="null"
+                               :user="null"
+                               :title="'title'"
+            ></fullscreen-speech>
+            <speech-user-inline-widget v-if="speechQueue && !projector" :key="speechQueue.id"
+                                       :init-queue="speechQueue"
+                                       :csrf="csrf"
+                                       :user="speechUser"
+                                       :title="'title'"
+            ></speech-user-inline-widget>
+        </div>
+
+        <div v-if="current && hasVotingSection" class="debateVotingHolder">
+            <div v-if="votingError" class="alert alert-danger">{{ votingError }}</div>
+            <div v-if="votingBlock" class="votingCommon currentDebateVoting">
+                <voting-block-widget :key="votingBlock.id" :voting="votingBlock"
+                                     :admin-link="votingAdminLink" :projector="projector"
+                                     @vote="vote" @abstain="abstain"></voting-block-widget>
+            </div>
         </div>
         <!-- Adding & seconding secondary motions is disabled for now.
         <footer class="content secondaryMotionRow">
@@ -152,6 +155,24 @@ export default {
         },
         currentVotingBlockId() {
           return this.current && this.current.voting_block ? this.current.voting_block.id : null;
+        },
+        hasSpeechSection() {
+          // An inactive speaking list renders nothing at all (see .disabledSpeechQueue), so it does
+          // not count as a section of its own.
+          return !!(this.speechError || this.speechLoading || (this.speechQueue && this.speechQueue.is_active));
+        },
+        hasVotingSection() {
+          return !!(this.votingError || this.votingBlock);
+        },
+        layoutClass() {
+          // On the projector the available height is distributed between the debated item's title,
+          // the speaking list and the voting; the number of visible sections decides the proportions
+          // (see _projector.scss).
+          if (!this.projector) {
+            return null;
+          }
+          const sections = 1 + (this.hasSpeechSection ? 1 : 0) + (this.hasVotingSection ? 1 : 0);
+          return 'debateSections' + sections;
         },
         /* Adding & seconding secondary motions is disabled for now:
         creatableMotionTypes() {
