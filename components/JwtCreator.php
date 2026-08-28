@@ -34,7 +34,7 @@ class JwtCreator
     private static bool $currTokenAuthenticated = false;
     private static ?string $currTokenSite = null;
 
-    public static function createJwt(Site $site, ?Consultation $consultation, string $userId, array $roles = [], ?User $signingUser = null, ?string $language = null): string
+    public static function createJwt(Site $site, ?Consultation $consultation, string $userId, array $roles = [], ?User $signingUser = null): string
     {
         $params = AntragsgruenApp::getInstance();
         $signingUser ??= User::getCurrentUser();
@@ -65,9 +65,6 @@ class JwtCreator
                 'consultation' => $consultation?->urlPath,
                 'site' => $site->subdomain,
                 'roles' => $roles,
-                // The language this user is browsing the site in. Not used for authorization, but by
-                // the Live Proxy, to pick the matching one out of the languages an event was sent in.
-                'language' => $language,
             ],
         ];
         if ($signingUser) {
@@ -201,7 +198,7 @@ class JwtCreator
         }
 
         return [
-            'token' => JwtCreator::createJwt($consultation->site, $consultation, $userId, $roles, language: LanguageTools::getCurrentLanguage()),
+            'token' => JwtCreator::createJwt($consultation->site, $consultation, $userId, $roles),
             'exp' => time() + self::JWT_VALIDITY,
             'reload_uri' => UrlHelper::createUrl("/user/token"),
         ];

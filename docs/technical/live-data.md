@@ -89,9 +89,25 @@ decides what ends up in the JSON:
 
 `LiveTools` is the only place setting the `CONTEXT_ALL_LANGUAGES` flag that switches to the second
 form, and it adds the consultation's primary language as the `default_language` message header. The
-Live server resolves both back into a plain string per subscriber - using the `language` claim of the
-subscriber's JWT, falling back to `default_language` - so **widgets always see a plain string**, no
-matter where their data came from.
+Live server resolves both back into a plain string per subscriber, so **widgets always see a plain
+string**, no matter where their data came from.
+
+Which language a subscriber gets is part of the **destination** they subscribed to:
+
+```
+/user/<installation>/<subdomain>/<consultation>/<user id>/<channel>/<language>
+```
+
+It is deliberately not a claim of the JWT. A JWT identifies a person, and the same person can read
+the consultation in two browser tabs in two languages: both tabs share a user id, the Live server
+addresses destinations rather than people, and Spring's user registry only keeps the principal of
+the connection that happened to arrive first - so a language taken from the token would give both
+tabs the same wording, and keep doing so until the last of them disconnects. A destination is per
+subscription, which is exactly the granularity the language needs. The language is not authorized:
+it selects a wording, not access to data.
+
+The last part may be missing, which is how a Live server of a newer Antragsgrün recognizes a client
+of an older one; those subscribers get the `default_language` of the event.
 
 What this means when adding a field to a live payload: if its value depends on who is reading it
 (anything going through `\Yii::t()`, or content that exists per language), it has to be a

@@ -16,6 +16,11 @@ class LiveTools
      * The configuration of the central LiveData JS module: the channels the widgets of this page need,
      * including how to poll them, and - if a Live server is configured - how to subscribe to them.
      *
+     * The language is part of the subscription, not of the JWT: a live event is rendered in every
+     * language of the consultation, and the Live server picks the one the destination asks for. The
+     * JWT identifies the user, and the same user can have several browser tabs open in different
+     * languages - a per-user language would mix those up (see docs/technical/live-data.md).
+     *
      * @param array<array{role: string, channel: string}> $channels
      */
     public static function getJsConfig(Consultation $consultation, array $channels): array
@@ -33,6 +38,7 @@ class LiveTools
                 'installation' => $params['installationId'],
                 'subdomain' => $consultation->site->subdomain,
                 'consultation' => $consultation->urlPath,
+                'language' => LanguageTools::getCurrentLanguage(),
             ] : null,
         ];
     }
