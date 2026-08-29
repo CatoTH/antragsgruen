@@ -146,7 +146,7 @@ class DebateToolsTest extends DBTestBase
         $this->assertNotNull($state->current);
         $this->assertNotNull($state->current->speechQueue);
         $this->assertSame($queue->id, $state->current->speechQueue->id);
-        $this->assertSame($queue->getTitle(), $state->current->speechQueue->title);
+        $this->assertSame($queue->getTitle(), $state->current->speechQueue->title->get());
     }
 
     public function testActivateSpeechQueueMarksItActive(): void

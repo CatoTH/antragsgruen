@@ -88,7 +88,8 @@ final class LanguageTools
     public static function setCurrentLanguage(string $language): bool;            // false if unsupported
     public static function getLanguageName(string $language): string;             // target-language endonym, e.g. "English"
     public static function getLanguageIcon(string $language): string;             // flag emoji, from that language's own messages
-    public static function getLanguagesToFlush(?Consultation $consultation): array;
+    public static function getContentLanguages(?Consultation $consultation): array;
+    public static function renderInLanguage(?Consultation $con, string $language, callable $cb): mixed;
     public static function resetRequestCache(): void;
 
     // Pure helpers the above wrap; unit-testable without a database
@@ -375,7 +376,7 @@ the motion view-cache key (`views/motion/LayoutHelper::getViewCacheKey()`), PDF 
 caches (`views/consultation/LayoutHelper.php`), the proposed-procedure cache, and the amendment
 diff/TeX rendering caches (both embed `\Yii::t()`-translated strings).
 
-`LanguageTools::getLanguagesToFlush(?Consultation $consultation): array` returns every supported
+`LanguageTools::getContentLanguages(?Consultation $consultation): array` returns every supported
 language on a multi-language site, else a single-element array with the consultation's primary
 language — used by `Motion`/`Amendment::flushCacheWithChildren()` and
 `views/consultation/LayoutHelper::flushViewCaches()` to loop over every language a cached render might

@@ -21,7 +21,7 @@ class SpeechSlot
     {
         return new self(
             id: $slot->id,
-            subqueue: new SpeechSlotSubqueue(name: $slot->subqueueName, id: $slot->subqueueId),
+            subqueue: new SpeechSlotSubqueue(name: $slot->subqueueName->get(), id: $slot->subqueueId),
             name: $slot->name,
             position: $slot->position,
             dateStarted: $slot->dateStarted?->format('c'),

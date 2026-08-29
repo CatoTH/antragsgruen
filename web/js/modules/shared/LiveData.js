@@ -372,8 +372,13 @@ function connectToLiveServer() {
     stompClient.onConnect = () => {
         console.info('Connected to Antragsgrün Live Server');
         getConfig().channels.forEach(channelConfig => {
+            // The language is part of the destination: a live event carries every language of the
+            // consultation, and the server sends the one this subscription asks for. It cannot be
+            // taken from the JWT instead - the same user can read the site in two tabs in two
+            // languages, and the server addresses subscriptions, not people.
             const topicUrl = '/' + channelConfig.role + '/' + liveConfig['installation'] + '/' + liveConfig['subdomain'] +
-                '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/' + channelConfig.channel;
+                '/' + liveConfig['consultation'] + '/' + encodeURIComponent(liveConfig['user_id']) + '/' + channelConfig.channel +
+                '/' + encodeURIComponent(liveConfig['language']);
             stompClient.subscribe(topicUrl, message => {
                 getChannel(channelConfig.role, channelConfig.channel).publishData(JSON.parse(message.body));
             });

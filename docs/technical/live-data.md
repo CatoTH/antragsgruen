@@ -70,6 +70,79 @@ the widgets simply poll.
 
 A widget can only register for a channel its view declared - otherwise `LiveData.js` throws.
 
+## Reader languages
+
+A REST response is rendered for the one user who requested it, in the language they are browsing the
+site in. A live event is different: it is published **once per consultation** and delivered to
+everyone reading it - who may well be using a different language than the moderator whose click
+triggered it, or than the console command that sent it.
+
+Every string of a payload that depends on the reader's language is therefore an
+`app\models\api\LocalizedString` (the motion title, the title of a speaking list, …) instead of a
+plain string. It holds a callback rather than a rendered string, and `LocalizedStringNormalizer`
+decides what ends up in the JSON:
+
+| Consumer | Serialized as | Rendered |
+|---|---|---|
+| REST response | `"Redeliste zu A4"` | the reader's language only |
+| Live event | `{"de": "Redeliste zu A4", "en": "Speaking list for A4"}` | every language of the consultation |
+
+`LiveTools` is the only place setting the `CONTEXT_ALL_LANGUAGES` flag that switches to the second
+form, and it adds the consultation's primary language as the `default_language` message header. The
+Live server resolves both back into a plain string per subscriber, so **widgets always see a plain
+string**, no matter where their data came from.
+
+Which language a subscriber gets is part of the **destination** they subscribed to:
+
+```
+/user/<installation>/<subdomain>/<consultation>/<user id>/<channel>/<language>
+```
+
+It is deliberately not a claim of the JWT. A JWT identifies a person, and the same person can read
+the consultation in two browser tabs in two languages: both tabs share a user id, the Live server
+addresses destinations rather than people, and Spring's user registry only keeps the principal of
+the connection that happened to arrive first - so a language taken from the token would give both
+tabs the same wording, and keep doing so until the last of them disconnects. A destination is per
+subscription, which is exactly the granularity the language needs. The language is not authorized:
+it selects a wording, not access to data.
+
+The last part may be missing, which is how a Live server of a newer Antragsgrün recognizes a client
+of an older one; those subscribers get the `default_language` of the event.
+
+What this means when adding a field to a live payload: if its value depends on who is reading it
+(anything going through `\Yii::t()`, or content that exists per language), it has to be a
+`LocalizedString`, and the Live server's matching MQ DTO field an `MQLocalizedText`. On a
+single-language site nothing changes - the map simply has one entry.
+
+The same holds for fields a *future* language could reach: a speaking list's subqueue names
+(`SpeechSubqueue::$name` and its copy on each slot, `SpeechQueueActiveSlot::$subqueueName`) are
+backed by one database column today and therefore resolve to the same text in every language, but
+they travel localized, so storing them per language later needs no change to the payloads, the Live
+server, or the widgets.
+
+Which class to change is decided by what is actually published: `LiveTools` serializes
+`app\models\api\SpeechQueue` and `debate\DebateState`, so those - and everything they contain -
+carry `LocalizedString`s. The `models/api/speech/*` DTOs are REST-only views derived from them
+(`SpeechController` returns nothing else) and resolve the value with `->get()` instead. If the class
+is one of the generated ones (`docs/openapi.yaml` → `docs/openapi-generate-dtos.php`), the property
+type has to be declared in the spec with the `x-php-type` vendor extension - editing the PHP alone
+is undone by the next regeneration, and the OpenAPI type stays `string`, which is what API clients
+receive:
+
+```yaml
+        title:
+          type: string
+          x-php-type: '\app\models\api\LocalizedString'
+```
+
+Two things to watch out for when building one:
+
+- The callback is invoked once per language, so it must not be built from something already rendered
+  in the current user's language, and must not use caches that are not keyed by language
+  (`IMotion::getInitiatorsStr()` is the one such cache these payloads would otherwise hit).
+- Only the *live* payloads need this. Poll-only payloads (`DebateSelectables`, the admin speech
+  endpoints) are rendered for their requester and stay plain strings.
+
 ## Registering a widget
 
 ```js

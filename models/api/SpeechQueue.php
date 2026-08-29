@@ -17,7 +17,7 @@ class SpeechQueue
     /** @var SpeechQueueActiveSlot[] */
     public array $slots;
     public bool $requiresLogin;
-    public ?string $otherActiveName;
+    public ?LocalizedString $otherActiveName;
     public int $currentTime;
 
     /**
@@ -32,7 +32,7 @@ class SpeechQueue
                 continue;
             }
             $subqueue = ($item->subqueueId ? $entity->getSubqueueById($item->subqueueId) : null);
-            $slots[] = SpeechQueueActiveSlot::fromEntity($item, $subqueue);
+            $slots[] = SpeechQueueActiveSlot::fromEntity($entity->getMyConsultation(), $item, $subqueue);
         }
         usort($slots, function (SpeechQueueActiveSlot $entry1, SpeechQueueActiveSlot $entry2) {
             return $entry1->position <=> $entry2->position;
@@ -57,7 +57,11 @@ class SpeechQueue
                 continue; // There can be multiple active queues for agenda items, so no need to detect them
             }
             if ($otherQueue->isActive && $otherQueue->id !== $entity->id && $otherQueue->agendaItemId === null) {
-                $dto->otherActiveName = $otherQueue->getTitle();
+                // Localized, as this payload is also pushed to all readers at once, in every language
+                $dto->otherActiveName = LocalizedString::build(
+                    $entity->getMyConsultation(),
+                    fn () => $otherQueue->getTitle()
+                );
             }
         }
 

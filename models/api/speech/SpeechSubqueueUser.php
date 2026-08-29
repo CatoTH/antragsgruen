@@ -35,7 +35,7 @@ class SpeechSubqueueUser
 
         return new self(
             id: $subqueue->id,
-            name: $subqueue->name,
+            name: $subqueue->name->get(),
             numApplied: count($applied),
             haveApplied: $haveApplied,
             // Names are only exposed if the list is configured to show them

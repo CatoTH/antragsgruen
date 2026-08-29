@@ -1665,14 +1665,17 @@ components:
           example: 2
         title:
           type: string
+          x-php-type: '\app\models\api\LocalizedString'
           example: "O’zapft is!"
         title_with_prefix:
           type: string
           nullable: true
+          x-php-type: '\app\models\api\LocalizedString'
           example: "A2: O’zapft is!"
         initiators_html:
           type: string
           nullable: true
+          x-php-type: '\app\models\api\LocalizedString'
           description: Formatted list of the initiators. Null for agenda items.
         date_started:
           type: string
@@ -1711,6 +1714,7 @@ components:
           description: Whether the speaking list is currently active
         title:
           type: string
+          x-php-type: '\app\models\api\LocalizedString'
           description: Title of the speaking list
 
     DebateItemVotingBlock:

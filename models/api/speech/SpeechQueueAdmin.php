@@ -30,7 +30,7 @@ class SpeechQueueAdmin
             subqueues: array_map(fn(\app\models\api\SpeechSubqueue $subqueue) => SpeechSubqueueAdmin::fromApiSubqueue($subqueue), $queue->subqueues),
             slots: array_map(fn(\app\models\api\SpeechQueueActiveSlot $slot) => SpeechSlot::fromApiSlot($slot), $queue->slots),
             currentTime: $queue->currentTime,
-            otherActiveName: $queue->otherActiveName,
+            otherActiveName: $queue->otherActiveName?->get(),
         );
     }
 }

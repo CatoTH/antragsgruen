@@ -188,20 +188,49 @@ class LanguageTools
     }
 
     /**
-     * Rendered output that varies by reader language (view/PDF caches, ...) may have a cached copy
-     * under any of these languages, all of which need flushing together. On a single-language site
-     * there is only ever one variant, in which case this returns the consultation's primary
-     * language - not the ambient getCurrentLanguage(), since a flush can be triggered by anyone
-     * (an admin action, a console command, a background job) editing content that belongs to a
-     * consultation/site other than whichever one the current request happens to be about.
+     * Every language content of this consultation can be read in: the site's supported languages, or
+     * just the consultation's primary language on a single-language site. Deliberately not the
+     * ambient getCurrentLanguage(), as this is used by code that runs on behalf of all readers at
+     * once (live events, cache flushing) and can be triggered by anyone - an admin action, a console
+     * command, a background job - for a consultation other than the one the current request is about.
      *
      * @return string[]
      */
-    public static function getLanguagesToFlush(?Consultation $consultation): array
+    public static function getContentLanguages(?Consultation $consultation): array
     {
         $supported = self::getSupportedLanguages($consultation?->site);
 
         return (count($supported) >= 2) ? $supported : [self::getPrimaryLanguage($consultation)];
+    }
+
+    /**
+     * Runs the given function as if the reader were browsing in the given language, restoring the
+     * ambient language afterwards. Needed wherever output is produced for someone other than the
+     * current user - most notably the live events, which are rendered once per language and pushed
+     * to all readers of a consultation, no matter which language the moderator triggering them
+     * happens to be using.
+     *
+     * The user's session is deliberately not touched (unlike setCurrentLanguage()): this only
+     * changes the language for the duration of the call.
+     *
+     * Hint: the consultation's wording variant ("de-parteitag") does not need to be resolved here.
+     * MessageSource reads it off the current consultation itself and applies it whenever the reader
+     * language matches the consultation's primary language.
+     */
+    public static function renderInLanguage(?Consultation $consultation, string $language, callable $callback): mixed
+    {
+        $prevMemoized = self::$currentLanguage;
+        $prevYii = \Yii::$app->language;
+
+        self::$currentLanguage = $language;
+        \Yii::$app->language = $language;
+
+        try {
+            return $callback();
+        } finally {
+            self::$currentLanguage = $prevMemoized;
+            \Yii::$app->language = $prevYii;
+        }
     }
 
     /**
