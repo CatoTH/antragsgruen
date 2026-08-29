@@ -321,6 +321,19 @@ export default {
     }
   },
   methods: {
+    /**
+     * The answer to a change already is the new state of the speaking list, so it is published on the
+     * channel rather than applied here: that way this widget applies it exactly like a polled or
+     * pushed update, the other widgets showing this speaking list get it right away, and updates that
+     * were still running when the change was made can no longer set anybody back to the old state.
+     */
+    applyQueueUpdate: function (queue) {
+      if (this.liveDataHandle) {
+        this.liveDataHandle.publishChange(queue);
+      } else {
+        this.setData(queue);
+      }
+    },
     _performOperation: function (itemId, op, additionalProps) {
       const postData = additionalProps ? Object.assign({}, additionalProps) : {};
       const widget = this;
@@ -329,7 +342,7 @@ export default {
           .replace(/ITEMID/, itemId)
           .replace(/OPERATION/, op);
       postJson(url, postData).then(function (data) {
-        widget.queue = data;
+        widget.applyQueueUpdate(data);
       }).catch(function (err) {
         alert(err.message);
       });
@@ -396,7 +409,7 @@ export default {
       bootbox.confirm(resetConfirmation, function(result) {
         if (result) {
           postJson(widget.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
-            widget.queue = data;
+            widget.applyQueueUpdate(data);
           }).catch(function (err) {
             alert(err.message);
           });
@@ -414,7 +427,7 @@ export default {
         show_names: this.queue.settings.show_names,
         speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : null),
       }).then(function (data) {
-        widget.queue = data['queue'];
+        widget.applyQueueUpdate(data['queue']);
 
         widget.changedSettings.speakingTime = null;
         widget.changedSettings.hasSpeakingTime = null;
@@ -433,7 +446,7 @@ export default {
       $event.stopPropagation();
       const widget = this;
       postJson(this.randomizeQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
-        widget.queue = data;
+        widget.applyQueueUpdate(data);
       }).catch(function (err) {
         alert(err.message);
       });
@@ -444,7 +457,7 @@ export default {
         subqueue: subqueue.id,
         name: itemName,
       }).then(function (data) {
-        widget.queue = data;
+        widget.applyQueueUpdate(data);
       }).catch(function (err) {
         alert(err.message);
       });

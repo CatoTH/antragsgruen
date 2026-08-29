@@ -99,9 +99,8 @@ export function getSpeechCommonMixins() {
                     username: this.registerName,
                     point_of_order: !!pointOfOrder,
                 }).then(function (data) {
-                    widget.queue = data;
+                    widget.applyQueueUpdate(data);
                     widget.showApplicationForm = widget.defaultApplicationForm;
-                    widget.refreshOtherWidgets();
                 }).catch(function (err) {
                     alert(err.message);
                 });
@@ -129,18 +128,23 @@ export function getSpeechCommonMixins() {
                 const widget = this;
                 postJson(TEMPLATE_UNREGISTER_URL.replace(/QUEUEID/, widget.queue.id), {})
                     .then(function (data) {
-                        widget.queue = data;
-                        widget.refreshOtherWidgets();
+                        widget.applyQueueUpdate(data);
                     }).catch(function (err) {
                         alert(err.message);
                     });
             },
-            refreshOtherWidgets: function () {
-                // This widget already got the new state as the response of its request, but other
-                // widgets showing the same speaking list did not - and might not, if this consultation
-                // has no live events.
+            /**
+             * The answer to a change already is the new state of the speaking list, so it is published
+             * on the channel rather than applied here: that way this widget applies it exactly like a
+             * polled or pushed update, the other widgets showing the same speaking list get it right
+             * away - which they would not, if this consultation has no live events - and updates that
+             * were still running when the change was made can no longer set anybody back.
+             */
+            applyQueueUpdate: function (queue) {
                 if (this.liveDataHandle) {
-                    this.liveDataHandle.refreshNow();
+                    this.liveDataHandle.publishChange(queue);
+                } else {
+                    this.setData(queue);
                 }
             },
             recalcTimeOffset: function (serverTime) {
