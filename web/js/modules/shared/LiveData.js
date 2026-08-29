@@ -60,6 +60,16 @@ class Channel {
     /** @type {boolean} */ refetchRequested = false;
     /** @type {number} */ consecutiveErrors = 0;
     /** @type {number} */ consecutiveAuthErrors = 0;
+    /**
+     * The server time of the most recent payload the widgets were given, per key (channels without a
+     * key use the empty string). Every payload carries the time it was serialized at, so one that
+     * arrives late can be recognized as describing a state that has already been superseded;
+     * publishing it would set the widgets back until the next update arrives. That happens whenever a
+     * request is overtaken by a change - no matter whether this browser or somebody else made it -
+     * and is the regular case for a poll racing a live event.
+     * @type {Object<string, number>}
+     */
+    lastPublishedAt = {};
     /** Set when the data is not accessible to this user at all; retrying would not help */
     /** @type {boolean} */ givenUp = false;
 
@@ -138,19 +148,48 @@ class Channel {
     }
 
     /**
-     * Hands data - either polled or received as live event - to the widgets it is meant for.
-     * Keyed channels deliver a list of objects when polled, but a single object as a live event.
+     * Whether a payload describes a state that is newer than the one the widgets were last given for
+     * this key, remembering it as the newest one if so. Payloads without a server time cannot be put
+     * in order and are always passed on.
+     *
+     * @param {string|number} key
+     * @param {any} item
+     * @returns {boolean}
+     */
+    isNewerThanPublished(key, item) {
+        if (!item || typeof item['current_time'] !== 'number') {
+            return true;
+        }
+        // Payloads serialized within the same millisecond describe the same state, so an equal time is
+        // still published: dropping it could lose an update if the server clock is that coarse.
+        if (this.lastPublishedAt[key] !== undefined && this.lastPublishedAt[key] > item['current_time']) {
+            return false;
+        }
+        this.lastPublishedAt[key] = item['current_time'];
+        return true;
+    }
+
+    /**
+     * Hands data - polled, received as live event, or returned as the answer to a change this browser
+     * made - to the widgets it is meant for, unless it was superseded in the meantime. Keyed channels
+     * deliver a list of objects when polled, but a single object as a live event.
      *
      * @param {any} data
      */
     publishData(data) {
         if (this.config.key_placeholder === null) {
+            if (!this.isNewerThanPublished('', data)) {
+                return;
+            }
             this.registrations.forEach(registration => registration.onData(data));
             return;
         }
 
         const items = Array.isArray(data) ? data : [data];
         items.forEach(item => {
+            if (!this.isNewerThanPublished(item.id, item)) {
+                return;
+            }
             this.registrations.forEach(registration => {
                 if (registration.key === item.id) {
                     registration.onData(item);
@@ -273,6 +312,19 @@ class Channel {
             this.timerId = null;
             this.fetchNow();
         }, delay);
+    }
+
+    /**
+     * Hands the widgets the new state this browser received as the answer to a change it made. That
+     * answer carries the same payload a poll would return and is newer than anything that was
+     * requested before the change, so there is no reason to load the data again: publishing it gives
+     * the other widgets showing the same object the new state right away, and marks the answers to
+     * requests that are still running as superseded, so they cannot set the widgets back.
+     *
+     * @param {any} data
+     */
+    publishChange(data) {
+        this.publishData(data);
     }
 
     /**
@@ -434,10 +486,15 @@ document.addEventListener('visibilitychange', () => {
  * registering later than a few seconds after the page was loaded always get the current data loaded,
  * as the state they were initialized with would be stale by then.
  *
+ * A widget that changes the state on the server passes the answer it got to `publishChange` instead
+ * of applying it itself: that answer is the new state, and going through the channel hands it to the
+ * other widgets showing the same object as well. `refreshNow` is only for loading the current data
+ * when there is nothing to publish - after an action whose answer is not the state of this channel.
+ *
  * @param {string} role
  * @param {string} channel
  * @param {{onData: function(any): void, onError?: function(Error): void, key?: string|number|null, intervalMs?: number|null, initialFetch?: boolean}} options
- * @returns {{setKey: function(string|number|null): void, setIntervalMs: function(number|null): void, refreshNow: function(): void, unregister: function(): void}}
+ * @returns {{setKey: function(string|number|null): void, setIntervalMs: function(number|null): void, refreshNow: function(): void, publishChange: function(any): void, unregister: function(): void}}
  */
 export function registerListener(role, channel, options) {
     const channelObj = getChannel(role, channel);
@@ -475,6 +532,9 @@ export function registerListener(role, channel, options) {
         },
         refreshNow: () => {
             channelObj.fetchNow();
+        },
+        publishChange: (data) => {
+            channelObj.publishChange(data);
         },
         unregister: () => {
             channelObj.removeRegistration(registration);
