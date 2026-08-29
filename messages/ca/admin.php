@@ -768,4 +768,5 @@ Com que no hi ha <strong>entrega de correus electrònics configurada</strong>, �
     'files_download_title' => 'Títol',
     'files_download_del'   => 'Eliminar aquest arxiu: %TITLE%',
     'files_download_del_c' => 'Vols eliminar aquest arxiu?',
+    'goto_update_mode_confirm' => 'Vols activar el mode d\'actualització? Mentre el mode d\'actualització estigui actiu, aquesta instal·lació d\'Antragsgrün no estarà disponible per a cap usuari.',
 ];

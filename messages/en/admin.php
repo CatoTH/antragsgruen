@@ -1105,7 +1105,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
         'text' => 'Do you really want to delete this consultation, including all motions and amendments?',
         'js' => true,
     ],
-    'goto_UpdateModeConfirm' => [
+    'goto_update_mode_confirm' => [
         'text' => 'Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users.',
         'js' => true,
     ],

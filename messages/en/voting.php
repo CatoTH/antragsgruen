@@ -23,7 +23,10 @@ return [
         'text' => 'Present',
         'description' => 'Vote-answer button label for roll-call-style votings, meaning "marked as present/attending" (an attendance status), not the verb "to present" or the adjective "current".',
     ],
-    'vote_undo' => 'Undo vote',
+    'vote_undo' => [
+        'text' => 'Undo vote',
+        'js' => true,
+    ],
     'vote_abstain' => [
         'text' => 'General Abstention',
         'js' => true,
@@ -49,6 +52,7 @@ return [
     'activity_title' => [
         'text' => 'Protocol',
         'description' => 'Heading for the voting\'s activity/action log (a record of who did what and when), not "protocol" as in formal procedural rules or a network/communication protocol.',
+        'js' => true,
     ],
     'activity_show_all' => [
         'text' => 'Show complete protocol',
@@ -86,7 +90,10 @@ return [
 
     'admin_title' => 'Voting administration',
     'admin_intro' => '<strong>Hint:</strong> you can find a manual for the voting functionality on the <a href="https://sandbox.motion.tools/help#advanced">help page</a>.',
-    'admin_aria_single' => 'Administrate voting: %TITLE%',
+    'admin_aria_single' => [
+        'text' => 'Administrate voting: %TITLE%',
+        'js' => true,
+    ],
     'admin_voting_use' => [
         'text' => 'Online voting',
         'js' => true,
@@ -133,7 +140,10 @@ return [
         'text' => 'Publish results',
         'js' => true,
     ],
-    'admin_btn_remove_item' => 'Remove from voting',
+    'admin_btn_remove_item' => [
+        'text' => 'Remove from voting',
+        'js' => true,
+    ],
     'admin_status_opened' => [
         'text' => 'The voting is <strong>open</strong>, users can now cast their votes',
         'js' => true,
@@ -179,7 +189,10 @@ return [
         'text' => 'Add all following amendments',
         'js' => true,
     ],
-    'admin_add_abort' => 'Abort adding',
+    'admin_add_abort' => [
+        'text' => 'Abort adding',
+        'js' => true,
+    ],
     'admin_settings_open' => [
         'text' => 'Show settings',
         'js' => true,
@@ -420,9 +433,18 @@ return [
         'text' => '1 vote has been cast.',
         'js' => true,
     ],
-    'voting_votes_1_x' => '%VOTES% votes have been cast by 1 user.',
-    'voting_votes_x' => '%VOTES% votes have been cast by %USERS% users.',
-    'voting_votes_x_same' => '%VOTES% votes have been cast.',
+    'voting_votes_1_x' => [
+        'text' => '%VOTES% votes have been cast by 1 user.',
+        'js' => true,
+    ],
+    'voting_votes_x' => [
+        'text' => '%VOTES% votes have been cast by %USERS% users.',
+        'js' => true,
+    ],
+    'voting_votes_x_same' => [
+        'text' => '%VOTES% votes have been cast.',
+        'js' => true,
+    ],
     'voting_remainig_0' => [
         'text' => 'You have cast all your votes.',
         'js' => true,
@@ -455,9 +477,18 @@ return [
         'text' => '1 user has marked their presence',
         'js' => true,
     ],
-    'voting_presence_1_x' => '%VOTES% presences have been marked by 1 user',
-    'voting_presence_x' => '%VOTES% presences have been marked by %USERS% users',
-    'voting_presence_x_same' => '%VOTES% presences have been marked',
+    'voting_presence_1_x' => [
+        'text' => '%VOTES% presences have been marked by 1 user',
+        'js' => true,
+    ],
+    'voting_presence_x' => [
+        'text' => '%VOTES% presences have been marked by %USERS% users',
+        'js' => true,
+    ],
+    'voting_presence_x_same' => [
+        'text' => '%VOTES% presences have been marked',
+        'js' => true,
+    ],
     'voting_weight' => [
         'text' => 'Voting weight',
         'js' => true,
@@ -470,8 +501,14 @@ return [
         'text' => 'Hide vote list',
         'js' => true,
     ],
-    'voting_abstentions_1' => '1 General Abstention',
-    'voting_abstentions_x' => '%NUM% General Abstentions',
+    'voting_abstentions_1' => [
+        'text' => '1 General Abstention',
+        'js' => true,
+    ],
+    'voting_abstentions_x' => [
+        'text' => '%NUM% General Abstentions',
+        'js' => true,
+    ],
 
     'majority_simple' => 'Simple majority',
     'majority_simple_h' => 'A motion or amendment is adopted, if more yes- than no-votes are cast. Abstentions are not counted.',
@@ -485,7 +522,10 @@ return [
     'quorum_half_h' => 'At least half of all eligible users have to cast a vote',
     'quorum_two_third' => '2/3 majority',
     'quorum_two_third_h' => 'At least two out of three of all eligible users have to cast a vote',
-    'quorum_limit' => '%QUORUM% out of %ALL% users',
+    'quorum_limit' => [
+        'text' => '%QUORUM% out of %ALL% users',
+        'js' => true,
+    ],
     'quorum_counter' => [
         'text' => 'Quorum: %CURRENT% out of %QUORUM% necessary votes',
         'js' => true,

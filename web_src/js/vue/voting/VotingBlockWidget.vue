@@ -11,7 +11,7 @@
             <div class="remainingTime" v-if="isOpen && hasVotingTime && remainingVotingTime !== null">
                 <template v-t="['voting', 'remaining_time']"></template>:
                 <span v-if="remainingVotingTime >= 0" class="time">{{ formattedRemainingTime }}</span>
-                <span v-if="remainingVotingTime < 0" class="over" v-t="['voting', 'remaining_time_over']"></span>
+                <span v-if="remainingVotingTime < 0" class="over" v-t="['speech', 'remaining_time_over']"></span>
             </div>
 
             <ul class="votingListUser votingListCommon">
@@ -144,7 +144,7 @@
             </ul>
             <footer class="votingFooter">
                 <div class="votedCounter" v-if="!votingIsPresenceCall && (!abstained || projector)">
-                    <strong v-t="['voting', 'voting_votes_status']"></strong>&nbsp;
+                    <strong v-t="['voting', 'voting_votes_status', false, {}, ':']"></strong>&nbsp;
                     <span v-if="voting.votes_total === 0" v-t="['voting', 'voting_votes_0']"></span>
                     <span v-if="voting.votes_total === 1" v-t="['voting', 'voting_votes_1_1']"></span>
                     <span v-if="voting.votes_users === 1 && voting.votes_total > 1" v-t="['voting', 'voting_votes_1_x', false, {'%VOTES%': voting.votes_total}]"></span>

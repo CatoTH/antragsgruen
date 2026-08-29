@@ -143,7 +143,7 @@
         ></button>
         <a :href="loginUrl" class="loginWarning" v-if="loginWarning">
           <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-          <template v-t="[login_warning]"></template>
+          <template v-t="['speech', 'login_warning']"></template>
         </a>
 
         <form @submit="register($event, subqueue, false)" v-if="queue.is_open && !queue.have_applied && showApplicationForm === subqueue.id">

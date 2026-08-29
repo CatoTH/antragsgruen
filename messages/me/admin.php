@@ -782,4 +782,5 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'files_download_title' => 'Naslov', // Original: Title
     'files_download_del' => 'Izbriši ovu datoteku: %TITLE%', // Original: Delete this file: %TITLE%
     'files_download_del_c' => 'Želite li izbrisati ovu datoteku?', // Original: Do you want to delete this file?
+    'goto_update_mode_confirm' => 'Želite li aktivirati režim ažuriranja? Dok je režim ažuriranja aktivan, ova instalacija Antragsgrüna neće biti dostupna nijednom korisniku.', // Original: Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users.
 ];

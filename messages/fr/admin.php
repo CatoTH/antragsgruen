@@ -859,7 +859,7 @@ Comme <strong>aucun envoi d\'email n\'est configuré</strong>, tu dois saisir to
     'del_page_confirm' => 'Veux-tu vraiment supprimer cette page ?',
     'delete_motion_section_confirm' => 'Veux-tu vraiment supprimer cette section ? Elle sera supprimée de toutes les motions de ce type.',
     'cons_delete_confirm' => 'Veux-tu vraiment supprimer cette consultation, y compris toutes ses motions et amendements ?',
-    'goto_UpdateModeConfirm' => 'Veux-tu activer le mode mise à jour ? Pendant que ce mode est actif, cette installation d\'Antragsgrün sera indisponible pour tous les utilisateurs.',
+    'goto_update_mode_confirm' => 'Veux-tu activer le mode mise à jour ? Pendant que ce mode est actif, cette installation d\'Antragsgrün sera indisponible pour tous les utilisateurs.',
     'csv_uploading' => 'Téléversement du fichier...',
     'csv_init_failed' => 'Échec de l\'initialisation du téléversement',
     'csv_processing' => 'Traitement... ({percent}%)',

@@ -994,10 +994,6 @@ Gebruikersnaam: %username%',
         'text' => 'Weet je zeker dat je deze raadpleging inclusief alle voorstellen en amendementen wilt verwijderen?',
         'js' => true,
     ],
-    'goto_UpdateModeConfirm' => [
-        'text' => 'Wil je de onderhoudsmodus/updatemodus inschakelen? Terwijl deze modus actief is, is Antragsgrün niet beschikbaar voor reguliere gebruikers.',
-        'js' => true,
-    ],
     'csv_uploading' => [
         'text' => 'Bestand uploaden...',
         'js' => true,
