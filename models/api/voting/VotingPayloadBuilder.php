@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\api\voting;
 
-use app\components\{JwtCreator, LocalizedStringNormalizer, Tools};
+use app\components\{JwtCreator, LanguageTools, LocalizedStringNormalizer, Tools};
 use app\models\api\LocalizedString;
 use app\models\db\{Consultation, ConsultationUserGroup, IMotion, IVotingItem, User, Vote, VotingBlock};
 use app\models\policies\{EligibilityByGroup, IPolicy, UserGroups};
@@ -200,6 +200,10 @@ class VotingPayloadBuilder
         $envelope = [
             'kind' => $tallyOnly ? 'tally' : 'full',
             'block_id' => $this->block->id,
+            // Which languages the localized strings within the sections were rendered in. The Live
+            // server delivers each subscriber the one they read in, and needs to know which objects
+            // of this payload are such a set of languages rather than data of their own.
+            'languages' => LanguageTools::getContentLanguages($this->block->getMyConsultation()),
             // Monotonic enough for a reader to put two events in order, and it needs no storage
             'state_version' => $this->getCurrentTime(),
             'current_time' => $this->getCurrentTime(),

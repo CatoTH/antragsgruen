@@ -98,6 +98,7 @@ Routing key `voting.<installation>.<subdomain>.<consultationPath>` — one messa
 {
   "kind": "full",                  // "full" | "tally", see §7
   "block_id": 42,
+  "languages": ["de", "en"],       // the languages the strings within the sections were rendered in
   "state_version": 1724740000123,  // the publish time in ms: monotonic enough to order two events
   "current_time": 1724740000123,   // ms, for clock-skew correction of the countdown
 
@@ -117,6 +118,11 @@ Routing key `voting.<installation>.<subdomain>.<consultationPath>` — one messa
 from the participant's, or says at all, goes there. A field added to the admin payload therefore
 lands in the right scope by itself, and `everyone ∪ admin_only` is by construction exactly what an
 administrator would have been served over REST.
+
+`languages` is what lets the Live server resolve the localized strings *without* knowing the payload:
+the sections are opaque to it, so a localized string is recognized by its shape - an object whose
+members are all strings named after one of these languages. Stating the set in the message is what
+keeps that from being a guess; no other object of a voting payload is keyed by language.
 
 `per_user` holds an entry for everyone this voting knows something about: everyone who has voted,
 and - where the policy names its voters by user group - everyone entitled to. Anybody else is
@@ -296,7 +302,10 @@ of ~100 KB each, fanned out personally to 2000 connections. So:
 
 Merge contract on the client: a `tally` message replaces exactly those four fields and leaves
 everything else — importantly `me` — untouched. `me` for the acting user is updated from the
-response of their own vote POST; no other user's `me` changes when someone votes.
+response of their own vote POST; no other user's `me` changes when someone votes. The Live server
+marks such a message `"partial": true`, and `LiveData.js` merges a partial member field by field
+instead of replacing it (a partial event about a voting the client has never seen is dropped: it says
+too little to show, and the next poll brings the whole of it).
 
 Because `tally` has no per-user content, every recipient of a given role gets a byte-identical
 message; the proxy may later broadcast it to a shared topic instead of fanning out N copies.
@@ -567,14 +576,30 @@ What this stage also had to bring:
 * `VotingBlock::preloadVotesOfAllUsers()` loads the votes of everyone in one query, so that building
   a per-user map of two thousand people is not two thousand queries.
 
-**Stage 4 - the Live server.** A `voting.#` queue and binding, a receiver, and one handler that
-applies the rule of §2 - `everyone`, plus `admin_only` for a subscriber holding `ROLE_VOTING_ADMIN`,
-plus their own `per_user` entry. Because the proxy only selects, the MQ payload can stay opaque there
-(a `JsonNode` per section): no per-field Java DTOs to keep in sync with Antragsgrün, which is the
-whole point of the rule. `TopicPermissionChecker` maps the `voting` topic to `ROLE_VOTING_ADMIN`, and
-the tests mirror the speech ones - including one that asserts an `admin_only` section never reaches a
-subscriber without the role. Deploy this **before** the publisher of stage 3 goes live: until the
-queue is declared, RabbitMQ reports every voting message as unrouted.
+**Stage 4 - the Live server. Done** (in the `antragsgruen-live` repository, branch `debate`). The
+`voting` queue and its binding, a receiver, `MQVotingEvent`, and one handler that applies the rule of
+§2: a subscriber of `/user/…/voting/<language>` is given `everyone` plus their own entry of
+`per_user`, one of `/admin/…/voting/<language>` additionally `admin_only`, merged on top. Subscribing
+to the admin destination takes `ROLE_VOTING_ADMIN`, which `TopicPermissionChecker` now maps the
+`voting` topic to. The sections stay opaque (a `JsonNode` each): no per-field Java DTOs to keep in
+sync with Antragsgrün, which is the whole point of the rule - and no field can end up in the wrong
+scope there because a DTO fell out of step. Deploy this **before** the publisher of stage 3 goes
+live: until the queue is declared, RabbitMQ reports every voting message as unrouted.
+
+What stage 4 turned out to need:
+
+* **Opaque sections and localized strings pull in opposite directions.** The other channels resolve
+  the reader's language field by field, through typed DTOs - which is exactly what this channel does
+  not have. So the resolution became generic: the event states which languages it was rendered in
+  (§4), and the mapper walks the payload replacing every object that is keyed by exactly those
+  languages with the wording for the subscriber. The resolution itself is the same `MQLocalizedText`
+  the speaking lists use, applied to a node found by shape rather than by name.
+* **The client had to learn partial members.** Stage 2's collection channel replaced a member
+  wholesale, which a tally must not do (§7); `LiveData.js` merges a member marked `partial` field by
+  field now.
+* The tests mirror the speech ones and are fed the real payloads: one asserts that what is published
+  for the administration - here the names of the voters - never reaches a participant, and it fails
+  if the admin section is handed out unconditionally.
 
 **Stage 5 - throttling in the Live server**, if and when the message rate justifies it (§7).
 

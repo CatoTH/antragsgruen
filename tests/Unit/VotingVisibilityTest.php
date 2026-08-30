@@ -313,6 +313,9 @@ class VotingVisibilityTest extends DBTestBase
         $secret = $this->getEnvelope(tallyOnly: false);
         $json = json_encode($secret, JSON_THROW_ON_ERROR);
 
+        // How the Live server tells a localized string of this payload from data of its own
+        $this->assertSame(['de'], $secret['languages']);
+
         $this->assertNull(self::findGroup($secret['everyone'])['single_votes']);
         $this->assertArrayNotHasKey('item_groups', $secret['admin_only'], 'Nothing about the items differs for an admin here');
         $this->assertStringNotContainsString(self::VOTER_YES, $json, 'A secret vote is not published at all');

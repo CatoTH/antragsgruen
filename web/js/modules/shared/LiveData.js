@@ -224,6 +224,10 @@ class Channel {
      * has left the collection. A live event carries a single member and is merged into it, appended if
      * it is one the widgets have not seen yet.
      *
+     * A live event may also describe only part of a member ("partial"), which is how the votings
+     * report a cast vote: only the counting changes, and everything the event does not mention stays
+     * as the widgets have it - the reader's own state above all, which nobody else's vote affects.
+     *
      * @param {any} data
      */
     publishCollection(data) {
@@ -240,9 +244,14 @@ class Channel {
             }
             const index = this.collection.findIndex(existing => existing.id === data.id);
             if (index === -1) {
+                if (data.partial) {
+                    // Too little to show anything with; the next poll brings the whole member
+                    return;
+                }
                 this.collection.push(data);
             } else {
-                this.collection[index] = data;
+                const { partial, ...fields } = data;
+                this.collection[index] = Object.assign({}, this.collection[index], fields);
             }
         }
 

@@ -54,7 +54,10 @@ list of IDs for exactly this reason, just like the user-facing one.
 
 **Collection** channels carry a list whose members come and go — currently the votings. A poll
 answers with the whole list and is authoritative: whatever it does not contain has left the
-collection. A live event carries a single member, which is merged into the list by its ID. Widgets
+collection. A live event carries a single member, which is merged into the list by its ID; an event
+marked `partial` describes only part of a member and is merged field by field, leaving everything it
+does not mention as it was (a cast vote reports the counting alone, see
+[voting-live-data.md](voting-live-data.md) §7). Widgets
 always receive the whole list and filter it themselves, because which members a page shows is
 nothing the backend can decide for it: the same list feeds the votings page, the widget on a motion
 and the one embedded in the debate.
@@ -100,6 +103,11 @@ decides what ends up in the JSON:
 form, and it adds the consultation's primary language as the `default_language` message header. The
 Live server resolves both back into a plain string per subscriber, so **widgets always see a plain
 string**, no matter where their data came from.
+
+The votings are the one channel whose payload the Live server does not know field by field - it only
+decides which sections of it a subscriber may see - so it finds the localized strings within it by
+their shape instead: an object keyed by exactly the languages the event states it was rendered in
+(`languages`). Same resolution, different way of finding what to resolve.
 
 Which language a subscriber gets is part of the **destination** they subscribed to:
 
