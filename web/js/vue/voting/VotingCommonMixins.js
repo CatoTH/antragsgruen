@@ -2,6 +2,13 @@
 
 import translate from "/js/vue/Translate.vue.js";
 
+// The payload the widgets work with is documented in docs/openapi.yaml (VotingBlockUser /
+// VotingBlockAdmin). Two things about it shape everything below:
+// - What is voted on together is an "item group"; an item voted on by itself gets a group of its
+//   own. Results and single votes hang off the group, so there is one code path, not two.
+// - Whether the results and the single votes are part of the payload at all is decided by the
+//   backend. A null means "not for you", an empty list means "nothing yet" - never confuse them.
+
 export function getVotingCommonMixins(constants) {
     return {
         data() {
@@ -12,41 +19,39 @@ export function getVotingCommonMixins(constants) {
             }, constants);
         },
         computed: {
-            groupedVotings: function () {
-                const knownGroupIds = {};
-                const allGroups = [];
-                this.voting.items.forEach(function (item) {
-                    if (item.item_group_same_vote) {
-                        if (knownGroupIds[item.item_group_same_vote] !== undefined) {
-                            allGroups[knownGroupIds[item.item_group_same_vote]].push(item);
-                        } else {
-                            knownGroupIds[item.item_group_same_vote] = allGroups.length;
-                            allGroups.push([item]);
-                        }
-                    } else {
-                        allGroups.push([item]);
-                    }
+            /**
+             * The item groups of this voting, each with the items it is voted on with, resolved from
+             * the flat list of items.
+             */
+            groups: function () {
+                const itemsByRef = {};
+                this.voting.items.forEach(item => {
+                    itemsByRef[item.type + '-' + item.id] = item;
                 });
-                return allGroups;
+
+                return this.voting.item_groups.map(group => Object.assign({}, group, {
+                    resolvedItems: group.items
+                        .map(ref => itemsByRef[ref.type + '-' + ref.id])
+                        .filter(item => item !== undefined)
+                }));
             },
             votingHasMajority: function () {
-                // Used for the currently running vote as it is
-                return this.voting.answers_template === this.ANSWER_TEMPLATE_YES_NO_ABSTENTION || this.voting.answers_template === this.ANSWER_TEMPLATE_YES_NO;
+                return this.voting.has_majority;
             },
             votingIsPresenceCall: function () {
-                return (this.voting.answers_template === this.ANSWER_TEMPLATE_PRESENT);
+                return this.voting.is_presence_call;
             },
             votingHasQuorum: function () {
-                return this.voting.quorum_type !== this.QUORUM_TYPE_NONE && this.voting.quorum_type !== null;
+                return this.voting.quorum !== null && this.voting.quorum !== undefined;
             },
             isPreparing: function () {
-                return this.voting.status === this.STATUS_PREPARING;
+                return this.voting.status === 'preparing';
             },
             isOpen: function () {
-                return this.voting.status === this.STATUS_OPEN;
+                return this.voting.status === 'open';
             },
             isClosed: function () {
-                return this.voting.status === this.STATUS_CLOSED_PUBLISHED || this.voting.status === this.STATUS_CLOSED_UNPUBLISHED;
+                return this.voting.status === 'closed_published' || this.voting.status === 'closed_unpublished';
             },
             hasVotingTime: function () {
                 return this.voting.voting_time > 0;
@@ -61,61 +66,83 @@ export function getVotingCommonMixins(constants) {
                 return minutes + ":" + seconds;
             },
             hasGeneralAbstention: function () {
-                return this.voting.has_general_abstention;
+                return !!this.voting.abstention && this.voting.abstention.enabled;
             }
         },
         methods: {
-            getAbsoluteNumberOfVotes(resultList) {
-                let absolute = 0;
-                this.voting.answers.forEach(answer => {
-                    absolute += resultList[answer.api_id];
-                });
-                return absolute;
-            },
-            itemIsAccepted: function (groupedItem) {
-                return groupedItem[0].voting_status === this.VOTING_STATUS_ACCEPTED;
-            },
-            itemIsRejected: function (groupedItem) {
-                return groupedItem[0].voting_status === this.VOTING_STATUS_REJECTED;
-            },
-            itemIsQuorumReached: function (groupedItem) {
-                return groupedItem[0].voting_status === this.VOTING_STATUS_QUORUM_REACHED;
-            },
-            itemIsQuorumFailed: function (groupedItem) {
-                return groupedItem[0].voting_status === this.VOTING_STATUS_QUORUM_MISSED;
-            },
-            quorumCounter: function (groupedVoting) {
-                if (groupedVoting[0].quorum_votes === null) {
-                    return groupedVoting[0].quorum_custom_current;
-                } else {
-                    const template = translate.getTranslation("voting", "quorum_counter");
-                    return template.replace(/%QUORUM%/, this.voting.quorum).replace(/%CURRENT%/, groupedVoting[0].quorum_votes);
+            /**
+             * @param {object} group
+             * @returns {object|null} the counted votes of a group, or null if they are not visible
+             */
+            getResults: function (group) {
+                if (!group.results || group.results.counts.length === 0) {
+                    return null;
                 }
+                return group.results.counts[0];
             },
-            hasVoteList: function (groupedItem) {
-                return groupedItem[0].votes !== undefined;
+            getVotesForAnswer: function (group, apiId) {
+                const results = this.getResults(group);
+                if (!results) {
+                    return null;
+                }
+                const found = results.answers.find(count => count.answer === apiId);
+
+                return found ? found.votes : 0;
             },
-            isVoteListShown: function (groupedItem) {
-                const showId = groupedItem[0].type + '-' + groupedItem[0].id;
-                return this.shownVoteLists.indexOf(showId) !== -1;
+            getAbsoluteNumberOfVotes(group) {
+                const results = this.getResults(group);
+                if (!results) {
+                    return 0;
+                }
+
+                return results.answers.reduce((sum, count) => sum + count.votes, 0);
             },
-            showVoteList: function (groupedItem) {
-                const showId = groupedItem[0].type + '-' + groupedItem[0].id;
-                this.shownVoteLists.push(showId);
+            hasResults: function (group) {
+                return this.getResults(group) !== null;
             },
-            hideVoteList: function (groupedItem) {
-                const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
-                this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
+            itemIsAccepted: function (group) {
+                return group.resolvedItems[0].result === 'accepted';
+            },
+            itemIsRejected: function (group) {
+                return group.resolvedItems[0].result === 'rejected';
+            },
+            itemIsQuorumReached: function (group) {
+                return group.resolvedItems[0].result === 'quorum_reached';
+            },
+            itemIsQuorumFailed: function (group) {
+                return group.resolvedItems[0].result === 'quorum_missed';
+            },
+            quorumCounter: function (group) {
+                const quorum = group.results ? group.results.quorum : null;
+                if (!quorum || quorum.votes === null) {
+                    return quorum ? quorum.current_label : null;
+                }
+                const template = translate.getTranslation("voting", "quorum_counter");
+
+                return template.replace(/%QUORUM%/, this.voting.quorum.target).replace(/%CURRENT%/, quorum.votes);
+            },
+            /** Whether this reader may see who voted how - not whether anyone has voted yet */
+            hasVoteList: function (group) {
+                return group.single_votes !== null && group.single_votes !== undefined;
+            },
+            isVoteListShown: function (group) {
+                return this.shownVoteLists.indexOf(group.id) !== -1;
+            },
+            showVoteList: function (group) {
+                this.shownVoteLists.push(group.id);
+            },
+            hideVoteList: function (group) {
+                this.shownVoteLists = this.shownVoteLists.filter(id => id !== group.id);
             },
             recalcTimeOffset: function (serverTime) {
                 const browserTime = (new Date()).getTime();
                 this.timeOffset = browserTime - serverTime.getTime();
             },
             recalcRemainingTime: function () {
-                if (this.voting.opened_ts === null) {
+                if (!this.voting.opened_at) {
                     return;
                 }
-                const startedTs = (new Date(this.voting.opened_ts)).getTime();
+                const startedTs = (new Date(this.voting.opened_at)).getTime();
                 const currentTs = (new Date()).getTime() - this.timeOffset;
                 const secondsPassed = Math.round((currentTs - startedTs) / 1000);
 

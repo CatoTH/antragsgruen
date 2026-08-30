@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use app\components\VotingMethods;
+use app\components\{Tools, VotingMethods};
+use app\models\api\voting\{VotingBlockAdmin, VotingBlockUser, VotingItemGroup, VotingStatus};
 use app\models\db\{Consultation, User, VotingBlock};
 use app\models\proposedProcedure\AgendaVoting;
 use Codeception\Attribute\Group;
@@ -16,16 +17,15 @@ use yii\web\Request;
  * Who may see which part of a voting payload: the confidentiality rules of "votesPublic" and
  * "resultsPublic", from the outside.
  *
- * These are the guarantees the payload rewrite (docs/technical/voting-live-data.md) has to preserve,
- * which is why each of them is asserted twice: once against the concrete keys of the current
- * structure, and once against the payload as a whole - the second form does not depend on where the
- * votes would have been, and is the one that actually says "this vote is secret".
+ * Each of them is asserted twice: once against the structure of the payload, and once against the
+ * serialized payload as a whole - the second form does not depend on where the votes would have
+ * been, and is the one that actually says "this vote is secret".
  */
 #[Group('database')]
 class VotingVisibilityTest extends DBTestBase
 {
     private const VOTING_BLOCK_ID = 1;
-    private const AMENDMENT_ID = '3';
+    private const AMENDMENT_ID = 3;
 
     private const ADMIN = 'testadmin@example.org';
     private const VOTER_YES = 'testuser@example.org';
@@ -68,7 +68,7 @@ class VotingVisibilityTest extends DBTestBase
     {
         Yii::$app->user->identity = User::findOne(['email' => self::ADMIN]);
 
-        $this->getVotingMethods(['status' => $status])->voteStatusUpdate($this->getBlock());
+        $this->getVotingMethods(['status' => VotingStatus::fromDbStatus($status)->value])->voteStatusUpdate($this->getBlock());
     }
 
     /**
@@ -92,58 +92,70 @@ class VotingVisibilityTest extends DBTestBase
         $this->getVotingMethods([
             'votes' => [
                 [
-                    'itemType' => 'amendment',
-                    'itemId' => self::AMENDMENT_ID,
+                    'groupId' => 'single:amendment:' . self::AMENDMENT_ID,
                     'vote' => $vote,
-                    // As the widget does it: it echoes back the publicity it was shown
-                    'public' => $block->votesPublic,
                 ],
             ],
         ])->userVote($block, User::findOne(['email' => $userEmail]));
     }
 
-    private function getUserPayload(): array
+    private function getUserPayload(): VotingBlockUser
     {
         $user = User::findOne(['email' => self::VOTER_YES]);
 
-        return AgendaVoting::getFromVotingBlock($this->getBlock())->getUserResultsApiObject($user);
+        return AgendaVoting::getFromVotingBlock($this->getBlock())->getUserApiObject($user);
     }
 
-    private function getAdminPayload(): array
+    private function getAdminPayload(): VotingBlockAdmin
     {
-        Yii::$app->user->identity = User::findOne(['email' => self::ADMIN]);
+        $admin = User::findOne(['email' => self::ADMIN]);
+        Yii::$app->user->identity = $admin;
 
-        return AgendaVoting::getFromVotingBlock($this->getBlock())->getAdminApiObject();
+        return AgendaVoting::getFromVotingBlock($this->getBlock())->getAdminApiObject($admin);
     }
 
     /**
-     * The item the votes were cast for.
+     * The group the votes were cast in - which, for an amendment that is not voted on together with
+     * anything else, is a group holding just that amendment.
      */
-    private function getVotedItem(array $payload): array
+    private function getVotedGroup(VotingBlockUser|VotingBlockAdmin $payload): VotingItemGroup
     {
-        foreach ($payload['items'] as $item) {
-            if ($item['type'] === 'amendment' && $item['id'] === intval(self::AMENDMENT_ID)) {
-                return $item;
+        foreach ($payload->itemGroups as $group) {
+            foreach ($group->items as $item) {
+                if ($item->type->value === 'amendment' && $item->id === self::AMENDMENT_ID) {
+                    return $group;
+                }
             }
         }
         $this->fail('The voted amendment is not part of the payload');
+    }
+
+    private function getVoteCount(VotingItemGroup $group, string $answer): ?int
+    {
+        foreach ($group->results->counts[0]->answers as $count) {
+            if ($count->answer === $answer) {
+                return $count->votes;
+            }
+        }
+
+        return null;
     }
 
     /**
      * Whether anyone could tell from this payload who cast a vote - regardless of the field the
      * names would have been in.
      */
-    private function assertPayloadNamesNobody(array $payload, string $message): void
+    private function assertPayloadNamesNobody(object $payload, string $message): void
     {
-        $json = json_encode($payload, JSON_THROW_ON_ERROR);
+        $json = Tools::getSerializer()->serialize($payload, 'json');
 
         $this->assertStringNotContainsString(self::VOTER_YES, $json, $message);
         $this->assertStringNotContainsString(self::VOTER_NO, $json, $message);
     }
 
-    private function assertPayloadNames(array $payload, string $userEmail, string $message): void
+    private function assertPayloadNames(object $payload, string $userEmail, string $message): void
     {
-        $json = json_encode($payload, JSON_THROW_ON_ERROR);
+        $json = Tools::getSerializer()->serialize($payload, 'json');
 
         $this->assertStringContainsString($userEmail, $json, $message);
     }
@@ -163,12 +175,12 @@ class VotingVisibilityTest extends DBTestBase
         $userPayload = $this->getUserPayload();
         $adminPayload = $this->getAdminPayload();
 
-        $this->assertArrayNotHasKey('votes', $this->getVotedItem($userPayload));
-        $this->assertArrayNotHasKey('votes', $this->getVotedItem($adminPayload));
+        $this->assertNull($this->getVotedGroup($userPayload)->singleVotes);
+        $this->assertNull($this->getVotedGroup($adminPayload)->singleVotes);
 
         // The counts are public, only who cast them is not
-        $this->assertSame(1, $this->getVotedItem($userPayload)['vote_results'][0]['yes']);
-        $this->assertSame(1, $this->getVotedItem($adminPayload)['vote_results'][0]['no']);
+        $this->assertSame(1, $this->getVoteCount($this->getVotedGroup($userPayload), 'yes'));
+        $this->assertSame(1, $this->getVoteCount($this->getVotedGroup($adminPayload), 'no'));
 
         $this->assertPayloadNamesNobody($userPayload, 'A secret vote must not name its voters');
         $this->assertPayloadNamesNobody($adminPayload, 'A secret vote must not name its voters, not even to an admin');
@@ -181,11 +193,10 @@ class VotingVisibilityTest extends DBTestBase
         $userPayload = $this->getUserPayload();
         $adminPayload = $this->getAdminPayload();
 
-        $this->assertArrayNotHasKey('votes', $this->getVotedItem($userPayload));
+        $this->assertNull($this->getVotedGroup($userPayload)->singleVotes);
         $this->assertPayloadNamesNobody($userPayload, 'Votes visible to admins must not reach a user');
 
-        $votes = $this->getVotedItem($adminPayload)['votes'];
-        $this->assertCount(2, $votes);
+        $this->assertCount(2, $this->getVotedGroup($adminPayload)->singleVotes);
         $this->assertPayloadNames($adminPayload, self::VOTER_YES, 'The admin sees who voted');
         $this->assertPayloadNames($adminPayload, self::VOTER_NO, 'The admin sees who voted');
     }
@@ -197,8 +208,8 @@ class VotingVisibilityTest extends DBTestBase
         $userPayload = $this->getUserPayload();
         $adminPayload = $this->getAdminPayload();
 
-        $this->assertCount(2, $this->getVotedItem($userPayload)['votes']);
-        $this->assertCount(2, $this->getVotedItem($adminPayload)['votes']);
+        $this->assertCount(2, $this->getVotedGroup($userPayload)->singleVotes);
+        $this->assertCount(2, $this->getVotedGroup($adminPayload)->singleVotes);
 
         $this->assertPayloadNames($userPayload, self::VOTER_YES, 'A public vote names its voters');
         $this->assertPayloadNames($userPayload, self::VOTER_NO, 'A public vote names its voters');
@@ -209,17 +220,22 @@ class VotingVisibilityTest extends DBTestBase
         $this->castTwoVotesAndPublish(VotingBlock::VOTES_PUBLIC_NO, VotingBlock::RESULTS_PUBLIC_NO);
 
         $userPayload = $this->getUserPayload();
-        $this->assertArrayNotHasKey('vote_results', $this->getVotedItem($userPayload));
+        $this->assertNull($this->getVotedGroup($userPayload)->results);
+        $this->assertNull($userPayload->abstention?->count, 'How many abstained is a result as well');
         $this->assertPayloadNamesNobody($userPayload, 'Withholding the results must not expose the voters either');
 
-        $adminResults = $this->getVotedItem($this->getAdminPayload())['vote_results'];
-        $this->assertSame(1, $adminResults[0]['yes']);
-        $this->assertSame(1, $adminResults[0]['no']);
+        // The turnout is not a result: it says how many have voted, never how they voted
+        $this->assertSame(2, $userPayload->statistics->votes);
+        $this->assertSame(2, $userPayload->statistics->voters);
+
+        $adminGroup = $this->getVotedGroup($this->getAdminPayload());
+        $this->assertSame(1, $this->getVoteCount($adminGroup, 'yes'));
+        $this->assertSame(1, $this->getVoteCount($adminGroup, 'no'));
     }
 
     /**
-     * While a voting is running, users get neither the counts nor the votes - whatever the publicity
-     * says. Only their own vote comes back to them.
+     * While a voting is running, participants get neither the counts nor the votes - whatever the
+     * publicity says. Only their own vote comes back to them.
      */
     public function testRunningVotingCarriesNoResultsForUsers(): void
     {
@@ -227,20 +243,24 @@ class VotingVisibilityTest extends DBTestBase
         $this->vote(self::VOTER_YES, 'yes');
         $this->vote(self::VOTER_NO, 'no');
 
-        $user = User::findOne(['email' => self::VOTER_YES]);
-        $payload = AgendaVoting::getFromVotingBlock($this->getBlock())->getUserVotingApiObject($user);
+        $payload = $this->getUserPayload();
+        $group = $this->getVotedGroup($payload);
 
-        $item = $this->getVotedItem($payload);
-        $this->assertArrayNotHasKey('votes', $item);
-        $this->assertArrayNotHasKey('vote_results', $item);
-        $this->assertSame('yes', $item['voted'], 'Voters see their own vote');
-        $this->assertStringNotContainsString(self::VOTER_NO, json_encode($payload, JSON_THROW_ON_ERROR));
+        $this->assertNull($group->results);
+        $this->assertNull($group->singleVotes);
+        $this->assertCount(1, $payload->me->votes, 'Voters see their own vote');
+        $this->assertSame('yes', $payload->me->votes[0]->answer);
+        $this->assertSame($group->id, $payload->me->votes[0]->groupId);
+        $this->assertPayloadNamesNobody($payload, 'A running voting shows nobody how anyone voted');
+
+        // The administration does follow a running voting
+        $this->assertCount(2, $this->getVotedGroup($this->getAdminPayload())->singleVotes);
     }
 
     /**
-     * A vote keeps the publicity it was cast under. Reaching a state where the block says something
-     * else takes a detour, as votesPublic cannot be changed while the voting runs: opening it again
-     * after switching to offline voting keeps the votes of the first round.
+     * A vote keeps the publicity it was cast under. Reaching a state where the voting says something
+     * else takes a detour, as votesPublic cannot be changed while it runs: opening it again after
+     * switching to offline voting keeps the votes of the first round.
      */
     public function testVotesKeepThePublicityTheyWereCastUnder(): void
     {
@@ -258,16 +278,37 @@ class VotingVisibilityTest extends DBTestBase
         $this->setStatus(VotingBlock::STATUS_CLOSED_PUBLISHED);
 
         $userPayload = $this->getUserPayload();
-        $userVotes = $this->getVotedItem($userPayload)['votes'];
+        $userVotes = $this->getVotedGroup($userPayload)->singleVotes;
 
         $this->assertCount(1, $userVotes, 'Only the vote cast under "everybody" is shown');
-        $this->assertSame('no', $userVotes[0]['vote']);
+        $this->assertSame('no', $userVotes[0]->answer);
         $this->assertStringNotContainsString(
             self::VOTER_YES,
-            json_encode($userPayload, JSON_THROW_ON_ERROR),
+            Tools::getSerializer()->serialize($userPayload, 'json'),
             'A vote cast while only admins could see it stays invisible after the setting changed'
         );
 
-        $this->assertCount(2, $this->getVotedItem($this->getAdminPayload())['votes']);
+        $this->assertCount(2, $this->getVotedGroup($this->getAdminPayload())->singleVotes);
+    }
+
+    /**
+     * Widening the publicity of a running voting does not apply to it: what its voters were promised
+     * when it was opened holds until it is reset.
+     */
+    public function testPublicityOfARunningVotingCannotBeWidened(): void
+    {
+        $this->openVoting(VotingBlock::VOTES_PUBLIC_NO, VotingBlock::RESULTS_PUBLIC_YES);
+
+        // Not something the administration interface offers, hence written to the block directly
+        $block = $this->getBlock();
+        $block->votesPublic = VotingBlock::VOTES_PUBLIC_ALL;
+        $block->save();
+
+        $this->vote(self::VOTER_YES, 'yes');
+        $this->setStatus(VotingBlock::STATUS_CLOSED_PUBLISHED);
+
+        $userPayload = $this->getUserPayload();
+        $this->assertSame([], $this->getVotedGroup($userPayload)->singleVotes);
+        $this->assertPayloadNamesNobody($userPayload, 'A vote cast under secrecy stays secret');
     }
 }

@@ -68,23 +68,16 @@ export class VotingBlock {
                         }
                     });
                 },
-                vote: function (votingBlockId, itemGroupSameVote, itemType, itemId, vote, votePublic) {
+                // How public a vote becomes is decided by the backend alone - the voting promised
+                // it when it was opened, and nothing the browser sends can change that
+                vote: function (votingBlockId, groupId, vote) {
                     this._votePost(votingBlockId, {
-                        votes: [{
-                            itemGroupSameVote,
-                            itemType,
-                            itemId,
-                            vote,
-                            "public": votePublic
-                        }]
+                        votes: [{groupId, vote}]
                     });
                 },
-                abstain: function (votingBlockId, setAbstention, votePublic) {
+                abstain: function (votingBlockId, setAbstention) {
                     this._votePost(votingBlockId, {
-                        abstention: {
-                            abstain: setAbstention,
-                            "public": votePublic,
-                        }
+                        abstention: {abstain: setAbstention}
                     });
                 },
                 addReloadedCb: function (cb) {

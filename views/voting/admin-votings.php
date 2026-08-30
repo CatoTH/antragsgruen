@@ -3,7 +3,7 @@
 use app\models\layoutHooks\Layout;
 use app\models\policies\IPolicy;
 use app\components\{HTMLTools, IMotionStatusFilter, UrlHelper};
-use app\models\db\{Amendment, Motion};
+use app\models\db\{Amendment, Motion, User};
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use app\models\votings\AnswerTemplates;
@@ -31,7 +31,7 @@ $layout->loadSortable();
 $apiData = [];
 foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
     /** @noinspection PhpUnhandledExceptionInspection */
-    $apiData[] = $votingBlock->getAdminApiObject();
+    $apiData[] = $votingBlock->getAdminApiObject(User::getCurrentUser());
 }
 
 $pollUrl = UrlHelper::createUrl(['/voting/get-admin-voting-blocks']);
@@ -93,7 +93,7 @@ $CONSTANTS = array_merge($CONSTANTS, [
      data-url-sort="<?= Html::encode($sortUrl) ?>"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
-     data-voting="<?= Html::encode(json_encode($apiData)) ?>">
+     data-voting="<?= Html::encode(\app\components\Tools::getSerializer()->serialize($apiData, 'json')) ?>">
 
     <?php
     $alternativeHeader = Layout::getVotingAlternativeAdminHeader($consultation);

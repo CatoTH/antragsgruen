@@ -25,7 +25,7 @@ include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
 $apiData = [];
 foreach (Factory::getOpenVotingBlocks($consultation, true, null) as $votingBlockToRender) {
-    $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
+    $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
@@ -46,7 +46,7 @@ $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 <section data-url-poll="<?= Html::encode($pollUrl) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
          class="currentVotingWidget votingCommon"
-         data-voting="<?= Html::encode(json_encode($apiData)) ?>"
+         data-voting="<?= Html::encode(\app\components\Tools::getSerializer()->serialize($apiData, 'json')) ?>"
 >
     <div class="currentVoting"></div>
 </section>

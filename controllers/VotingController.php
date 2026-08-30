@@ -11,6 +11,7 @@ use app\models\quorumType\IQuorumType;
 use app\models\settings\Privileges;
 use app\models\db\{User, VotingBlock, VotingQuestion};
 use app\components\{ResourceLock, Tools, UserGroupAdminMethods, VotingMethods};
+use app\models\api\voting\{VotingBlockAdmin, VotingBlockUser};
 use app\models\proposedProcedure\Factory;
 
 class VotingController extends Base
@@ -64,6 +65,9 @@ class VotingController extends Base
         return $block;
     }
 
+    /**
+     * @return VotingBlockAdmin[]
+     */
     private function getAllVotingAdminData(): array
     {
         $this->consultation->refresh();
@@ -71,10 +75,18 @@ class VotingController extends Base
         $apiData = [];
         foreach (Factory::getAllVotingBlocks($this->consultation) as $votingBlock) {
             /** @noinspection PhpUnhandledExceptionInspection */
-            $apiData[] = $votingBlock->getAdminApiObject();
+            $apiData[] = $votingBlock->getAdminApiObject(User::getCurrentUser());
         }
 
         return $apiData;
+    }
+
+    /**
+     * @param VotingBlockAdmin[]|VotingBlockUser[]|array $payload
+     */
+    private function returnVotingData(array $payload): RestApiResponse
+    {
+        return new RestApiResponse(200, null, Tools::getSerializer()->serialize($payload, 'json'));
     }
 
     public function actionGetAdminVotingBlocks(): RestApiResponse
@@ -86,9 +98,7 @@ class VotingController extends Base
             return $this->returnRestResponseFromException($e);
         }
 
-        $responseData = $this->getAllVotingAdminData();
-
-        return new RestApiResponse(200, $responseData);
+        return $this->returnVotingData($this->getAllVotingAdminData());
     }
 
     public function actionPostVoteSettings(string $votingBlockId): RestApiResponse
@@ -132,7 +142,7 @@ class VotingController extends Base
 
         ResourceLock::releaseAllLocks();
 
-        return new RestApiResponse(200, $responseData);
+        return $this->returnVotingData($responseData);
     }
 
     public function actionPostVoteOrder(): RestApiResponse
@@ -147,8 +157,7 @@ class VotingController extends Base
         $votingIds = array_values(array_map('intval', $this->getPostValue('votingIds')));
         $this->votingMethods->sortVotings($votingIds);
 
-        $responseData = $this->getAllVotingAdminData();
-        return new RestApiResponse(200, $responseData);
+        return $this->returnVotingData($this->getAllVotingAdminData());
     }
 
     public function actionCreateVotingBlock(): RestApiResponse
@@ -196,12 +205,10 @@ class VotingController extends Base
             $question->save();
         }
 
-        $votingData = $this->getAllVotingAdminData();
-
-        return new RestApiResponse(200, [
-            'votings' => $votingData,
+        return new RestApiResponse(200, null, Tools::getSerializer()->serialize([
+            'votings' => $this->getAllVotingAdminData(),
             'created_voting' => $newBlock->id,
-        ]);
+        ], 'json'));
     }
 
     public function actionDownloadVotingResults(string $votingBlockId, string $format): ResponseInterface
@@ -245,7 +252,7 @@ class VotingController extends Base
 
         $response = $this->votingMethods->getOpenVotingsForUser(($showAllOpen > 0), $assignedToMotion, User::getCurrentUser());
 
-        return new RestApiResponse(200, $response);
+        return $this->returnVotingData($response);
     }
 
     public function actionGetClosedVotingBlocks(): RestApiResponse
@@ -257,7 +264,7 @@ class VotingController extends Base
 
         $response = $this->votingMethods->getClosedPublishedVotingsForUser(User::getCurrentUser());
 
-        return new RestApiResponse(200, $response);
+        return $this->returnVotingData($response);
     }
 
     /**
@@ -313,6 +320,6 @@ class VotingController extends Base
 
         $response = $this->votingMethods->getOpenVotingsForUser(($showAllOpen > 0), $assignedToMotion, User::getCurrentUser());
 
-        return new RestApiResponse(200, $response);
+        return $this->returnVotingData($response);
     }
 }

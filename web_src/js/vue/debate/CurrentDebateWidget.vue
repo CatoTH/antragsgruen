@@ -242,14 +242,14 @@ export default {
                     this.votingLoading = false;
                 });
         },
-        vote(votingBlockId, itemGroupSameVote, itemType, itemId, vote, votePublic) {
+        vote(votingBlockId, groupId, vote) {
             this._votePost(votingBlockId, {
-                votes: [{itemGroupSameVote, itemType, itemId, vote, "public": votePublic}],
+                votes: [{groupId, vote}],
             });
         },
-        abstain(votingBlockId, setAbstention, votePublic) {
+        abstain(votingBlockId, setAbstention) {
             this._votePost(votingBlockId, {
-                abstention: {abstain: setAbstention, "public": votePublic},
+                abstention: {abstain: setAbstention},
             });
         },
         _votePost(votingBlockId, postData) {
@@ -267,7 +267,7 @@ export default {
                         alert(data.message);
                         return;
                     }
-                    this.votingBlock = (Array.isArray(data) ? data.find(voting => voting.id === votingBlockId) : null) || null;
+                    this.votingBlock = (Array.isArray(data) ? data.find(voting => parseInt(voting.id) === parseInt(votingBlockId)) : null) || null;
                 })
                 .catch(err => {
                     console.error('Could not submit the vote', err);

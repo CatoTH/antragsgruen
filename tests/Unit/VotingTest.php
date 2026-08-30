@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use app\components\VotingMethods;
+use app\models\api\voting\VotingStatus;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
@@ -49,7 +50,7 @@ class VotingTest extends DBTestBase
         $user = User::findOne(['email' => 'testadmin@example.org']);
         Yii::$app->user->identity = $user;
 
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_PREPARING]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingStatus::PREPARING->value]);
         $votingBlock = VotingBlock::findOne(1);
         $votingMethods->voteStatusUpdate($votingBlock);
 
@@ -60,7 +61,7 @@ class VotingTest extends DBTestBase
         }
 
         $votingBlock->refresh();
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_OPEN]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingStatus::OPEN->value]);
         $votingMethods->voteStatusUpdate($votingBlock);
 
         $votingBlock->refresh();
@@ -71,7 +72,7 @@ class VotingTest extends DBTestBase
     private function closeVotingAndPublishResults(VotingBlock $votingBlock): void
     {
         $votingBlock->refresh();
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_PUBLISHED]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingStatus::CLOSED_PUBLISHED->value]);
         $votingMethods->voteStatusUpdate($votingBlock);
         $votingBlock->refresh();
     }
@@ -84,10 +85,9 @@ class VotingTest extends DBTestBase
         $votingMethods = $this->getVotingMethods([
             'votes' => [
                 [
-                    'itemType' => 'amendment',
-                    'itemId' => $itemId,
+                    // An amendment that is not voted on together with others forms a group of its own
+                    'groupId' => 'single:amendment:' . $itemId,
                     'vote' => $vote,
-                    'public' => $votingBlock->votesPublic,
                 ]
             ],
         ]);
@@ -175,7 +175,7 @@ class VotingTest extends DBTestBase
 
         // Set from Offline to Preparing
         $votingMethods = $this->getVotingMethods([
-            'status' => VotingBlock::STATUS_PREPARING,
+            'status' => VotingStatus::PREPARING->value,
         ]);
         $votingBlock = VotingBlock::findOne(1);
         $this->assertSame(VotingBlock::STATUS_OFFLINE, $votingBlock->votingStatus);
@@ -185,14 +185,14 @@ class VotingTest extends DBTestBase
         $this->assertSame(VotingBlock::STATUS_PREPARING, $votingBlock->votingStatus);
 
         // Set from Preparing to Open
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_OPEN]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingStatus::OPEN->value]);
         $votingMethods->voteStatusUpdate($votingBlock);
 
         $votingBlock->refresh();
         $this->assertSame(VotingBlock::STATUS_OPEN, $votingBlock->votingStatus);
 
         // Set from Open to Closed
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_PUBLISHED]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingStatus::CLOSED_PUBLISHED->value]);
         $votingMethods->voteStatusUpdate($votingBlock);
 
         $votingBlock->refresh();
@@ -301,7 +301,7 @@ class VotingTest extends DBTestBase
 
         // The voting will be set to closed, but unpublished
         $votingBlock->refresh();
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_UNPUBLISHED]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingStatus::CLOSED_UNPUBLISHED->value]);
         $votingMethods->voteStatusUpdate($votingBlock);
         $votingBlock->refresh();
 
@@ -315,7 +315,7 @@ class VotingTest extends DBTestBase
         $this->assertCount(0, $publishedVotings);
 
         // After closing the voting, it should be visible on the results page
-        $votingMethods = $this->getVotingMethods(['status' => VotingBlock::STATUS_CLOSED_PUBLISHED]);
+        $votingMethods = $this->getVotingMethods(['status' => VotingStatus::CLOSED_PUBLISHED->value]);
         $votingMethods->voteStatusUpdate($votingBlock);
         $votingBlock->refresh();
 

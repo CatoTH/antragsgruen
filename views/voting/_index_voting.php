@@ -30,7 +30,7 @@ $layout->addJsTranslation('voting');
 
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
-    $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
+    $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
@@ -48,7 +48,7 @@ if ($iAmAdmin) {
          data-url-vote="<?= Html::encode($voteUrl) ?>"
          data-admin-link="<?= Html::encode($adminLink) ?>"
          class="currentVotingWidget votingCommon"
-         data-voting="<?= Html::encode(json_encode($apiData)) ?>"
+         data-voting="<?= Html::encode(\app\components\Tools::getSerializer()->serialize($apiData, 'json')) ?>"
 >
     <div class="currentVoting"></div>
 </section>

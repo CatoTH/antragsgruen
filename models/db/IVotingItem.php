@@ -8,6 +8,8 @@ use app\models\settings\VotingData;
 
 interface IVotingItem
 {
+    public function getId(): int;
+    public function getVotingResult(): ?int;
     public function getAgendaApiBaseObject(): array;
     public function getVotingBlockId(): ?int;
     public function getVotingData(): VotingData;

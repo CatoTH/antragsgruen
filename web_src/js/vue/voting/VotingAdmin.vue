@@ -41,13 +41,13 @@
         </div>
         <div class="votingPolicy">
           <strong v-t="['voting', 'settings_votepolicy']"></strong>:
-          {{ voting.vote_policy.description }}
+          {{ voting.policy.description }}
         </div>
         <div class="votingVisibility">
           <strong v-t="['voting', 'settings_votespublic']"></strong>:
-          <span v-if="voting.votes_public === 0" v-t="['voting', 'settings_votespublic_nobody']"></span>
-          <span v-if="voting.votes_public === 1" v-t="['voting', 'settings_votespublic_admins']"></span>
-          <span v-if="voting.votes_public === 2" v-t="['voting', 'settings_votespublic_all']"></span>
+          <span v-if="voting.publicity.single_votes === 'nobody'" v-t="['voting', 'settings_votespublic_nobody']"></span>
+          <span v-if="voting.publicity.single_votes === 'admins'" v-t="['voting', 'settings_votespublic_admins']"></span>
+          <span v-if="voting.publicity.single_votes === 'everybody'" v-t="['voting', 'settings_votespublic_all']"></span>
         </div>
       </div>
       <div class="alert alert-success" v-if="isOpen">
@@ -93,24 +93,24 @@
                   v-if="voting.status === STATUS_CLOSED_UNPUBLISHED" v-t="['voting', 'admin_btn_publish']"></button>
         </div>
       </form>
-      <div v-if="groupedVotings.length === 0" class="noVotingsYet">
+      <div v-if="groups.length === 0" class="noVotingsYet">
         <div class="alert alert-info"><p v-t="['voting', 'admin_no_items_yet']"></p></div>
       </div>
-      <ul class="votingListAdmin votingListCommon" v-if="groupedVotings.length > 0">
-        <li v-if="voting.abstentions_total > 0" class="abstentions"><div>{{ abstentionsStr }}</div></li>
-        <template v-for="groupedVoting in groupedVotings">
+      <ul class="votingListAdmin votingListCommon" v-if="groups.length > 0">
+        <li v-if="voting.abstention.count > 0" class="abstentions"><div>{{ abstentionsStr }}</div></li>
+        <template v-for="group in groups">
           <li :class="[
-                'voting_' + groupedVoting[0].type + '_' + groupedVoting[0].id,
+                'voting_' + group.resolvedItems[0].type + '_' + group.resolvedItems[0].id,
                 'answer_template_' + answerTemplate,
                 (isClosed ? 'showResults' : ''),
                 (isClosed ? 'showDetailedResults' : ''),
-                (isVoteListShown(groupedVoting) ? 'voteListShown' : '')
+                (isVoteListShown(group) ? 'voteListShown' : '')
             ]">
             <div class="titleLink" :class="{'question': voting.answers.length === 1}">
-              <div v-if="groupedVoting[0].item_group_name" class="titleGroupName">
-                {{ groupedVoting[0].item_group_name }}
+              <div v-if="group.name" class="titleGroupName">
+                {{ group.name }}
               </div>
-              <div v-for="item in groupedVoting">
+              <div v-for="item in group.resolvedItems">
                 {{ item.title_with_prefix }}
                 <a v-if="item.url_html" :href="item.url_html" v-t:title="['voting', 'voting_show_amend']"><span
                     class="glyphicon glyphicon-new-window" role="img" v-t:aria-label="['voting', 'voting_show_amend']"></span></a>
@@ -120,25 +120,25 @@
                 <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', true, {'%BY%': item.initiators_html}]"></span>
               </div>
               <div v-if="votingHasQuorum" class="quorumCounter">
-                {{ quorumCounter(groupedVoting) }}
+                {{ quorumCounter(group) }}
               </div>
-              <button v-if="hasVoteList(groupedVoting) && !isVoteListShown(groupedVoting)" @click="showVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
+              <button v-if="hasVoteList(group) && !isVoteListShown(group)" @click="showVoteList(group)" class="btn btn-link btn-xs btnShowVotes">
                 <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                 <template v-t="['voting', 'voting_show_votes']"></template>
               </button>
-              <button v-if="hasVoteList(groupedVoting) && isVoteListShown(groupedVoting)" @click="hideVoteList(groupedVoting)" class="btn btn-link btn-xs btnShowVotes">
+              <button v-if="hasVoteList(group) && isVoteListShown(group)" @click="hideVoteList(group)" class="btn btn-link btn-xs btnShowVotes">
                 <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                 <template v-t="['voting', 'voting_hide_votes']"></template>
               </button>
             </div>
             <div class="prepActions" v-if="isPreparing">
-              <button class="btn btn-link btn-xs removeBtn" type="button" @click="removeItem(groupedVoting)"
+              <button class="btn btn-link btn-xs removeBtn" type="button" @click="removeItem(group)"
                       v-t:title="['voting', 'admin_btn_remove_item']" v-t:aria-label="['voting', 'admin_btn_remove_item']">
                 <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
               </button>
             </div>
             <div class="votesDetailed" v-if="isOpen || isClosed">
-              <div v-if="groupedVoting[0].vote_results && groupedVoting[0].vote_results.length === 1 && groupedVoting[0].vote_results[0]">
+              <div v-if="hasResults(group)">
                 <table class="votingTable votingTableSingle">
                   <thead>
                   <tr>
@@ -149,10 +149,10 @@
                   <tbody>
                   <tr>
                     <td v-for="answer in voting.answers" :class="'voteCount_' + answer.api_id">
-                      {{ groupedVoting[0].vote_results[0][answer.api_id] }}
+                      {{ getVotesForAnswer(group, answer.api_id) }}
                     </td>
                     <td class="voteCountTotal total" v-if="voting.answers.length > 1">
-                      {{ getAbsoluteNumberOfVotes(groupedVoting[0].vote_results[0]) }}
+                      {{ getAbsoluteNumberOfVotes(group) }}
                     </td>
                   </tr>
                   </tbody>
@@ -160,26 +160,26 @@
               </div>
             </div>
             <div class="result" v-if="isClosed && (votingHasMajority || votingHasQuorum)">
-              <div class="accepted" v-if="itemIsAccepted(groupedVoting)">
+              <div class="accepted" v-if="itemIsAccepted(group)">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <template v-t="['voting', 'status_accepted']"></template>
               </div>
-              <div class="rejected" v-if="itemIsRejected(groupedVoting)">
+              <div class="rejected" v-if="itemIsRejected(group)">
                 <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                 <template v-t="['voting', 'status_rejected']"></template>
               </div>
-              <div class="accepted" v-if="itemIsQuorumReached(groupedVoting)">
+              <div class="accepted" v-if="itemIsQuorumReached(group)">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 <template v-t="['voting', 'status_quorum_reached']"></template>
               </div>
-              <div class="rejected" v-if="itemIsQuorumFailed(groupedVoting)">
+              <div class="rejected" v-if="itemIsQuorumFailed(group)">
                 <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                 <template v-t="['voting', 'status_quorum_missed']"></template>
               </div>
             </div>
           </li>
-          <li class="voteResults" v-if="isVoteListShown(groupedVoting)">
-            <vote-list :voting="voting" :groupedVoting="groupedVoting" :showNotVotedList="true"
+          <li class="voteResults" v-if="isVoteListShown(group)">
+            <vote-list :voting="voting" :group="group" :showNotVotedList="true"
                               :setToUserGroupSelection="userGroups" @set-user-group="setVotersToUserGroup"></vote-list>
           </li>
         </template>
@@ -506,7 +506,7 @@ export default {
     },
     majorityType: {
       get: function () {
-        return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.majority_type);
+        return (this.changedSettings.majorityType !== null ? this.changedSettings.majorityType : this.voting.settings.majority_type);
       },
       set: function (value) {
         this.changedSettings.majorityType = value;
@@ -515,8 +515,8 @@ export default {
     maxVotesRestriction: {
       get: function () {
         if (this.changedSettings.maxVotesRestriction === null) {
-          if (this.voting.max_votes_by_group) {
-            if (this.voting.max_votes_by_group.length === 1 && this.voting.max_votes_by_group[0].groupId === null) {
+          if (this.voting.settings.max_votes_by_group) {
+            if (this.voting.settings.max_votes_by_group.length === 1 && this.voting.settings.max_votes_by_group[0].group_id === null) {
               this.changedSettings.maxVotesRestriction = 1;
             } else {
               this.changedSettings.maxVotesRestriction = 2;
@@ -534,8 +534,8 @@ export default {
     maxVotesRestrictionAll: {
       get: function () {
         if (this.changedSettings.maxVotesRestrictionAll === null) {
-          if (this.voting.max_votes_by_group && this.voting.max_votes_by_group.length === 1 && this.voting.max_votes_by_group[0].groupId === null) {
-            this.changedSettings.maxVotesRestrictionAll = this.voting.max_votes_by_group[0].maxVotes;
+          if (this.voting.settings.max_votes_by_group && this.voting.settings.max_votes_by_group.length === 1 && this.voting.settings.max_votes_by_group[0].group_id === null) {
+            this.changedSettings.maxVotesRestrictionAll = this.voting.settings.max_votes_by_group[0].max_votes;
           } else {
             this.changedSettings.maxVotesRestrictionAll = '';
           }
@@ -548,7 +548,7 @@ export default {
     },
     quorumType: {
       get: function () {
-        return (this.changedSettings.quorumType !== null ? this.changedSettings.quorumType : this.voting.quorum_type);
+        return (this.changedSettings.quorumType !== null ? this.changedSettings.quorumType : this.voting.settings.quorum_type);
       },
       set: function (value) {
         this.changedSettings.quorumType = value;
@@ -556,7 +556,7 @@ export default {
     },
     answerTemplate: {
       get: function () {
-        return (this.changedSettings.answerTemplate !== null ? this.changedSettings.answerTemplate : this.voting.answers_template);
+        return (this.changedSettings.answerTemplate !== null ? this.changedSettings.answerTemplate : this.voting.settings.answers_template);
       },
       set: function (value) {
         this.changedSettings.answerTemplate = value;
@@ -564,7 +564,7 @@ export default {
     },
     votePolicy: {
       get: function () {
-        return (this.changedSettings.votePolicy !== null ? this.changedSettings.votePolicy : this.voting.vote_policy);
+        return (this.changedSettings.votePolicy !== null ? this.changedSettings.votePolicy : this.voting.settings.policy);
       },
       set: function (value) {
         this.changedSettings.votePolicy = value;
@@ -572,7 +572,7 @@ export default {
     },
     votesPublic: {
       get: function () {
-        return (this.changedSettings.votesPublic !== null ? this.changedSettings.votesPublic : this.voting.votes_public);
+        return (this.changedSettings.votesPublic !== null ? this.changedSettings.votesPublic : this.voting.settings.votes_public);
       },
       set: function (value) {
         this.changedSettings.votesPublic = value;
@@ -580,7 +580,7 @@ export default {
     },
     votesNames: {
       get: function () {
-        return (this.changedSettings.votesNames !== null ? this.changedSettings.votesNames : this.voting.votes_names);
+        return (this.changedSettings.votesNames !== null ? this.changedSettings.votesNames : this.voting.settings.votes_names);
       },
       set: function (value) {
         this.changedSettings.votesNames = value;
@@ -588,7 +588,7 @@ export default {
     },
     resultsPublic: {
       get: function () {
-        return (this.changedSettings.resultsPublic !== null ? this.changedSettings.resultsPublic : this.voting.results_public);
+        return (this.changedSettings.resultsPublic !== null ? this.changedSettings.resultsPublic : this.voting.settings.results_public);
       },
       set: function (value) {
         this.changedSettings.resultsPublic = value;
@@ -596,7 +596,7 @@ export default {
     },
     hasGeneralAbstention: {
       get: function () {
-        return (this.changedSettings.hasGeneralAbstention !== null ? this.changedSettings.hasGeneralAbstention : this.voting.has_general_abstention);
+        return (this.changedSettings.hasGeneralAbstention !== null ? this.changedSettings.hasGeneralAbstention : this.voting.abstention.enabled);
       },
       set: function (value) {
         this.changedSettings.hasGeneralAbstention = value;
@@ -604,7 +604,7 @@ export default {
     },
     votingTime: {
       get: function () {
-        return (this.changedSettings.votingTime !== null ? this.changedSettings.votingTime : this.voting.voting_time);
+        return (this.changedSettings.votingTime !== null ? this.changedSettings.votingTime : this.voting.settings.voting_time);
       },
       set: function (value) {
         this.changedSettings.votingTime = value;
@@ -612,7 +612,7 @@ export default {
     },
     settingsAssignedMotion: {
       get: function () {
-        const origAssigned = (this.voting.assigned_motion !== null ? this.voting.assigned_motion : '');
+        const origAssigned = (this.voting.assigned_motion_id !== null ? this.voting.assigned_motion_id : '');
         return (this.changedSettings.assignedMotion !== null ? this.changedSettings.assignedMotion : origAssigned);
       },
       set: function (value) {
@@ -626,19 +626,19 @@ export default {
       return this.voteDownloadUrl.replace(/VOTINGBLOCKID/, this.voting.id).replace(/FORMAT/, 'ods');
     },
     quorumIndicator: function () {
-      if (this.voting.quorum === null) {
-        return this.voting.quorum_custom_target;
+      if (!this.voting.quorum || this.voting.quorum.target === null) {
+        return this.voting.quorum ? this.voting.quorum.target_label : null;
       } else {
         const tpl = translate.getTranslation("voting", "quorum_limit");
-        return tpl.replace(/%QUORUM%/, this.voting.quorum).replace(/%ALL%/, this.voting.quorum_eligible);
+        return tpl.replace(/%QUORUM%/, this.voting.quorum.target).replace(/%ALL%/, this.voting.quorum.eligible);
       }
     },
     abstentionsStr: function () {
-      if (this.voting.abstentions_total === 1) {
+      if (this.voting.abstention.count === 1) {
         return translate.getTranslation("voting", "voting_abstentions_1");
       } else {
         const tpl = translate.getTranslation("voting", "voting_abstentions_x");
-        return tpl.replace(/%NUM%/, this.voting.abstentions_total);
+        return tpl.replace(/%NUM%/, this.voting.abstention.count);
       }
     }
   },
@@ -646,16 +646,16 @@ export default {
     formatLogEntry: function (logEntry) {
       let description = '?';
       switch (logEntry['type']) {
-        case this.ACTIVITY_TYPE_OPENED:
+        case 'opened':
           description = translate.getTranslation("voting", "activity_opened");
           break;
-        case this.ACTIVITY_TYPE_RESET:
+        case 'reset':
           description = translate.getTranslation("voting", "activity_reset");
           break;
-        case this.ACTIVITY_TYPE_CLOSED:
+        case 'closed':
           description = translate.getTranslation("voting", "activity_closed");
           break;
-        case this.ACTIVITY_TYPE_REOPENED:
+        case 'reopened':
           description = translate.getTranslation("voting", "activity_reopened");
           break;
       }
@@ -668,7 +668,7 @@ export default {
       }
 
       return Object.values(this.MAJORITY_TYPES).find(majorityType => {
-        return majorityType.id === voting.majority_type;
+        return majorityType.id === voting.settings.majority_type;
       });
     },
     getVotingQuorum: function (voting) {
@@ -676,14 +676,14 @@ export default {
         return null;
       }
       return Object.values(this.QUORUM_TYPES).find(quorumType => {
-        return quorumType.id === voting.quorum_type;
+        return quorumType.id === voting.settings.quorum_type;
       });
     },
     getGroupName: function (groupId) {
       return this.userGroups.find(group => group.id == groupId).title;
     },
-    removeItem: function (groupedVoting) {
-      this.$emit('remove-item', this.voting.id, groupedVoting[0].type, groupedVoting[0].id);
+    removeItem: function (group) {
+      this.$emit('remove-item', this.voting.id, group.resolvedItems[0].type, group.resolvedItems[0].id);
     },
     addIMotion: function ($event) {
       if ($event) {
@@ -773,20 +773,8 @@ export default {
       }
       return null;
     },
-    hasVoteList: function (groupedItem) {
-      return groupedItem[0].votes !== undefined && (this.isOpen || this.isClosed);
-    },
-    isVoteListShown: function (groupedItem) {
-      const showId = groupedItem[0].type + '-' + groupedItem[0].id;
-      return this.shownVoteLists.indexOf(showId) !== -1;
-    },
-    showVoteList: function (groupedItem) {
-      const showId = groupedItem[0].type + '-' + groupedItem[0].id;
-      this.shownVoteLists.push(showId);
-    },
-    hideVoteList: function (groupedItem) {
-      const hideId = groupedItem[0].type + '-' + groupedItem[0].id;
-      this.shownVoteLists = this.shownVoteLists.filter(id => id !== hideId);
+    hasVoteList: function (group) {
+      return group.single_votes !== null && group.single_votes !== undefined && (this.isOpen || this.isClosed);
     },
     setVotersToUserGroup: function (userIds, newUserGroup) {
       this.$emit('set-voters-to-user-group', this.voting.id, userIds, newUserGroup);
@@ -800,10 +788,10 @@ export default {
       }
 
       const setValues = {};
-      if (this.voting.max_votes_by_group) {
-        this.voting.max_votes_by_group.forEach(group => {
-          if (group.groupId) {
-            setValues[group.groupId.toString()] = group.maxVotes;
+      if (this.voting.settings.max_votes_by_group) {
+        this.voting.settings.max_votes_by_group.forEach(group => {
+          if (group.group_id) {
+            setValues[group.group_id.toString()] = group.max_votes;
           }
         });
       }

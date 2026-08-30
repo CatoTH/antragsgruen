@@ -8,6 +8,7 @@ use app\models\settings\{AntragsgruenApp, JsonConfigTrait, VotingData};
 use app\models\exceptions\FormError;
 
 /**
+ * @property int $id
  * @property int|null $votingStatus
  * @property int $votingBlockId
  * @property string|null $votingData
@@ -18,6 +19,19 @@ trait VotingItemTrait
     private ?VotingData $votingDataObject = null;
 
     abstract public function getMyConsultation(): ?Consultation;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * How the voting over this item went. Null as long as it has not been decided.
+     */
+    public function getVotingResult(): ?int
+    {
+        return $this->votingStatus;
+    }
 
     public function getVotingData(): VotingData
     {

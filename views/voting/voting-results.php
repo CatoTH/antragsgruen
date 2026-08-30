@@ -24,7 +24,7 @@ include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
 $apiData = [];
 foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockToRender) {
-    $apiData[] = $votingBlockToRender->getUserResultsApiObject(User::getCurrentUser());
+    $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
 $pollUrl   = UrlHelper::createUrl(['/voting/get-closed-voting-blocks']);
@@ -51,7 +51,7 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
 </div>
 
 <section class="currentVotingWidget votingCommon"
-         data-voting="<?= Html::encode(json_encode($apiData)) ?>"
+         data-voting="<?= Html::encode(\app\components\Tools::getSerializer()->serialize($apiData, 'json')) ?>"
 >
     <div class="currentVoting"></div>
 </section>

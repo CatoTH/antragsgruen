@@ -27,7 +27,7 @@ $I->seeElement($votingId . ' .votesMaxVotesAll');
 // Addressed by id rather than by position: the widgets are not in id order on the page
 $I->executeJS(
     'window.votingAdminWidget.$refs["voting-admin-widget"]' .
-    '.find(widget => widget.voting.id === "' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '")' .
+    '.find(widget => widget.voting.id === ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ')' .
     '.setMaxVotesRestrictionAll("2")'
 );
 $I->clickJS($votingId . ' .votingSettings .btnSave');

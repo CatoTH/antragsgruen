@@ -426,6 +426,26 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $this->userIsGenerallyAllowedToVoteFor($user, $item);
     }
 
+    private function clearVotesPublicSnapshot(): void
+    {
+        $settings = $this->getSettings();
+        $settings->votesPublicAtOpening = null;
+        $this->setSettings($settings);
+    }
+
+    /**
+     * How public a vote cast right now may become: never more than the voting promised when it was
+     * opened, and never more than it says now. Deliberately not influenced by anything the client
+     * sends - a voter cannot be given a stricter or a wider publicity than everyone else.
+     */
+    public function getPublicityForNewVotes(): int
+    {
+        $current = $this->votesPublic ?? self::VOTES_PUBLIC_NO;
+        $promised = $this->getSettings()->votesPublicAtOpening;
+
+        return $promised === null ? $current : min($promised, $current);
+    }
+
     private function resetItemResults(): void
     {
         foreach ($this->motions as $motion) {
@@ -447,6 +467,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $this->addActivity(static::ACTIVITY_TYPE_RESET);
         }
         $this->votingStatus = VotingBlock::STATUS_OFFLINE;
+        $this->clearVotesPublicSnapshot();
         $this->save();
     }
 
@@ -456,6 +477,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $this->resetItemResults();
         }
         $this->votingStatus = VotingBlock::STATUS_PREPARING;
+        $this->clearVotesPublicSnapshot();
         $this->save();
 
         foreach ($this->votes as $vote) {
@@ -485,6 +507,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
         $settings = $this->getSettings();
         $settings->openedTs = time();
+        // Only if there is none yet: re-opening a closed voting continues the same round, whose
+        // votes are still there and were cast under the publicity of the first opening
+        $settings->votesPublicAtOpening ??= $this->votesPublic;
         $this->setSettings($settings);
 
         $this->save();
@@ -687,20 +712,28 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         $voteUserIds = [];
         $abstainedUserIds = [];
 
+        // The items of this voting, not those of the whole consultation: the statistics are asked for
+        // on every poll and on every cast vote, and loading every motion of a consultation with a few
+        // hundred of them to find the handful in this voting is what made that expensive
         $groupsMyMotionIds = [];
         $groupsMyAmendmentIds = [];
         $groupsMyQuestionsIds = [];
-        foreach ($this->getMyConsultation()->motions as $motion) {
-            if ($motion->votingBlockId === $this->id && $motion->getVotingData()->itemGroupSameVote) {
+        foreach ($this->motions as $motion) {
+            if ($motion->getVotingData()->itemGroupSameVote) {
                 $groupsMyMotionIds[$motion->id] = $motion->getVotingData()->itemGroupSameVote;
             }
-            foreach ($motion->amendments as $amendment) {
-                if ($amendment->votingBlockId === $this->id && $amendment->getVotingData()->itemGroupSameVote) {
-                    $groupsMyAmendmentIds[$amendment->id] = $amendment->getVotingData()->itemGroupSameVote;
-                }
+        }
+        foreach ($this->amendments as $amendment) {
+            // An amendment whose motion has been deleted is not part of the consultation any more,
+            // and was not counted here before either (AgendaVoting skips it for the same reason)
+            if (!$amendment->getMyMotion()) {
+                continue;
+            }
+            if ($amendment->getVotingData()->itemGroupSameVote) {
+                $groupsMyAmendmentIds[$amendment->id] = $amendment->getVotingData()->itemGroupSameVote;
             }
         }
-        foreach ($this->getMyConsultation()->votingQuestions as $question) {
+        foreach ($this->questions as $question) {
             $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
         }
 

@@ -200,9 +200,10 @@ endpoint — byte-identical, as with `SpeechQueueUser` today.
 ]
 ```
 
-*"Absent" always means the key is missing, never `null` with an empty list* — so a client can never
-render "0 votes" where it should render nothing, and a bug shows up as a missing section rather than
-as a wrong result.
+*A section the reader may not see is `null`, never an empty list* — so a client can never render
+"0 votes" where it should render nothing, and a bug shows up as a missing section rather than as a
+wrong result. (The DTOs make this an explicit `null` in the JSON rather than an absent key, which
+says the same thing and is what a typed payload can express.)
 
 ### 5.3 `me` — `VotingUserState`
 
@@ -464,7 +465,7 @@ along with the payload. Both were verified by mutation - neutralizing `canSeeVot
 secret and admins-only cases, neutralizing the per-vote filter in `getFilteredVotesList()` fails the
 case below.
 
-**Stage 1 - the payload, still on polling.** The bulk of the work.
+**Stage 1 - the payload, still on polling. Done.** The bulk of the work.
 
 1. Describe the new structures in `docs/openapi.yaml` and generate the DTOs into `models/api/voting/`
    (`docs/openapi-generate-dtos.php`), as for the speech and debate DTOs.
@@ -487,6 +488,29 @@ case below.
    (§7) - the polling path benefits from that immediately.
 
 The widgets keep their own `setInterval` throughout this stage; nothing about the transport changes.
+
+What stage 1 turned out to need, beyond the list above:
+
+* `user_groups` and `policy` belong to the **participant** payload, not to the administration: the
+  public list of votes is grouped by user group. Only `eligibility` - who is entitled to vote - is
+  for the administration alone.
+* A vote is cast for an **item group** (`{groupId, vote}`), which is what the payload offers; the
+  backend maps a group of a single item back to that item. The publicity the client used to echo
+  back is gone with D3.
+* The statuses of the payload are the strings of `VotingStatus` in both directions: the widgets
+  compare against them, and `VotingMethods::voteStatusUpdate()` accepts them.
+* **The controller stays session-authenticated for now.** Moving it to `controllers/rest/` would
+  disable session authentication (`RestBase` turns it off, the widgets do not send a JWT yet), so it
+  belongs to stage 2 together with the switch to `LiveData`/`authorizedFetch`. The URLs are already
+  the REST ones; only the base class is not.
+* `IVotingItem` gained `getId()` and `getVotingResult()`: everything implementing it is an
+  ActiveRecord, but nothing in the type system said so, and the builder addresses items through the
+  interface throughout.
+* Two things the payload rewrite uncovered rather than caused: `voteSaveSettings()` fell over an
+  empty string when a form-encoded request sent a policy without user groups, and
+  `getVoteStatistics()` walked the whole consultation to find the items of one voting - now it walks
+  the voting's own items, skipping amendments whose motion has been deleted (which the consultation
+  walk never saw, and `AgendaVoting` skips for the same reason).
 
 **Stage 2 - polling through the central module.** Teach `LiveData.js` the collection channel of §8: a
 poll response that is a list, live messages that carry one element, merged by `id`, filtered
