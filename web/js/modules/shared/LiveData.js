@@ -11,6 +11,15 @@
 // The configuration (which channels exist, how to poll them, how to subscribe to them) comes from the
 // "live-data-config" meta tag, which is rendered by views/layouts/main.php for all channels the view
 // registered using $layout->addLiveDataChannel().
+//
+// Three kinds of channel exist:
+// - plain: one object describes the whole state (the debate).
+// - keyed: the state of specific objects, addressed by ID; widgets say which one they show, and a
+//   poll asks for all of them at once (the speaking lists).
+// - collection: a list whose members come and go, and which a widget shows a filtered view of. A poll
+//   answers with the whole list, a live event with a single member, merged into it by ID (the
+//   votings). Widgets always receive the whole list and filter it themselves, since which members
+//   are interesting is a question only the widget can answer.
 
 import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/ApiClient.js";
 
@@ -23,6 +32,7 @@ import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/A
  * @property {number} interval
  * @property {boolean} interval_configured
  * @property {string|null} key_placeholder
+ * @property {boolean} collection
  */
 
 /**
@@ -70,6 +80,12 @@ class Channel {
      * @type {Object<string, number>}
      */
     lastPublishedAt = {};
+    /**
+     * The members of a collection channel, in the order the backend listed them, merged across polls
+     * and live events. Empty for the other kinds of channel.
+     * @type {any[]}
+     */
+    collection = [];
     /** Set when the data is not accessible to this user at all; retrying would not help */
     /** @type {boolean} */ givenUp = false;
 
@@ -177,6 +193,11 @@ class Channel {
      * @param {any} data
      */
     publishData(data) {
+        if (this.config.collection) {
+            this.publishCollection(data);
+            return;
+        }
+
         if (this.config.key_placeholder === null) {
             if (!this.isNewerThanPublished('', data)) {
                 return;
@@ -196,6 +217,36 @@ class Channel {
                 }
             });
         });
+    }
+
+    /**
+     * A poll answers with the whole list and is therefore authoritative: whatever it does not contain
+     * has left the collection. A live event carries a single member and is merged into it, appended if
+     * it is one the widgets have not seen yet.
+     *
+     * @param {any} data
+     */
+    publishCollection(data) {
+        if (Array.isArray(data)) {
+            this.collection = data.map(item => {
+                // A member that was superseded by something more recent keeps the newer version;
+                // this is the same race a keyed channel guards against, member by member
+                const known = this.collection.find(existing => existing.id === item.id);
+                return (this.isNewerThanPublished(item.id, item) || !known) ? item : known;
+            });
+        } else {
+            if (!this.isNewerThanPublished(data.id, data)) {
+                return;
+            }
+            const index = this.collection.findIndex(existing => existing.id === data.id);
+            if (index === -1) {
+                this.collection.push(data);
+            } else {
+                this.collection[index] = data;
+            }
+        }
+
+        this.registrations.forEach(registration => registration.onData(this.collection));
     }
 
     /**

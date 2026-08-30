@@ -1,6 +1,6 @@
 <?php
 
-use app\components\UrlHelper;
+use app\components\{LiveDataChannels, UrlHelper};
 use app\models\settings\Privileges;
 use app\models\db\{Consultation, Motion, User};
 use app\models\proposedProcedure\Factory;
@@ -29,6 +29,7 @@ if (count($votingBlocksToRender) === 0 && !Factory::hasOnlineVotingBlocks($consu
 }
 
 $layout->addJsTranslation('voting');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_VOTING);
 
 $apiData = [];
 foreach ($votingBlocksToRender as $votingBlockToRender) {
@@ -37,7 +38,6 @@ foreach ($votingBlocksToRender as $votingBlockToRender) {
 
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 $assignedToMotionId = ($assignedToMotion ? $assignedToMotion->id : '');
-$pollUrl  = UrlHelper::createUrl(['/rest/voting/get-open-voting-blocks', 'assignedToMotionId' => $assignedToMotionId, 'showAllOpen' => 0]);
 $voteUrl  = UrlHelper::createUrl(['/rest/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => $assignedToMotionId]);
 $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null));
 if ($iAmAdmin) {
@@ -46,7 +46,8 @@ if ($iAmAdmin) {
     $adminLink = '';
 }
 ?>
-<section data-url-poll="<?= Html::encode($pollUrl) ?>"
+<section data-channel="<?= Html::encode(LiveDataChannels::CHANNEL_VOTING) ?>"
+         data-filter-motion="<?= Html::encode((string)$assignedToMotionId) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
          data-admin-link="<?= Html::encode($adminLink) ?>"
          class="currentVotingWidget votingCommon"

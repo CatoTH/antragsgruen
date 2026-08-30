@@ -29,7 +29,6 @@ foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockT
     $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
-$pollUrl   = UrlHelper::createUrl(['/rest/voting/get-closed-voting-blocks']);
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"

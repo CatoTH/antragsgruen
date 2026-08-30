@@ -11,6 +11,7 @@ import selectize from "/js/vue/Selectize.js";
 import tooltipDirective from "/js/vue/Tooltip.vue.js";
 import vuedraggable from "/npm/vuedraggable.js";
 import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
 
 export class VotingAdmin {
     /** @type {HTMLElement} */
@@ -38,7 +39,6 @@ export class VotingAdmin {
         const vueEl = this.element.querySelector(".votingAdmin");
         const voteDownloadUrl = this.element.getAttribute('data-url-vote-download');
         const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
-        const pollUrl = this.element.getAttribute('data-url-poll');
         const initUserGroups = JSON.parse(this.element.getAttribute('data-user-groups'));
         const sortUrl = this.element.getAttribute('data-url-sort');
         const voteSettingsUrl = this.element.getAttribute('data-url-vote-settings');
@@ -92,7 +92,7 @@ export class VotingAdmin {
                     userGroups: initUserGroups,
                     voteDownloadUrl,
                     addableMotions,
-                    pollingId: null,
+                    liveDataHandle: null,
                     onReloadedCbs: []
                 };
             },
@@ -143,7 +143,8 @@ export class VotingAdmin {
                     const url = voteSettingsUrl.replace(/VOTINGBLOCKID/, votingBlockId);
 
                     return this._post(url, additionalProps || {}, data => {
-                        widget.votings = data;
+                        widget.setVotingFromObject(data);
+                        widget.refreshOthers();
                     });
                 },
                 setVotingFromJson(data) {
@@ -187,8 +188,9 @@ export class VotingAdmin {
                     const widget = this;
 
                     this._post(sortUrl, {votingIds: sortedIds}, data => {
-                        widget.votings = data;
+                        widget.setVotingFromObject(data);
                         widget.isSorting = false;
+                        widget.refreshOthers();
                     });
                 },
                 deleteVoting(votingBlockId) {
@@ -213,7 +215,8 @@ export class VotingAdmin {
 
                     const widget = this;
                     this._post(voteCreateUrl, postData, data => {
-                        widget.votings = data['votings'];
+                        widget.setVotingFromObject(data['votings']);
+                        widget.refreshOthers();
                         widget.onReloadedCbs.forEach(cb => {
                             cb(widget.votings);
                         });
@@ -252,36 +255,31 @@ export class VotingAdmin {
                 addReloadedCb: function (cb) {
                     this.onReloadedCbs.push(cb);
                 },
-                reloadData: function () {
-                    const widget = this;
-                    // As text: the widget compares it with what it already has, so that unsaved
-                    // changes in the settings form are not thrown away by a poll that changed nothing
-                    authorizedFetch(pollUrl)
-                        .then(response => response.text())
-                        .then(data => {
-                            widget.setVotingFromJson(data);
-                            widget.onReloadedCbs.forEach(cb => {
-                                cb(widget.votings);
-                            });
-                            return null;
-                        })
-                        .catch(function (err) {
-                            console.error("Could not load voting data from backend", err);
-                        });
+                /** So that the widgets of other pages and tabs see what was just changed here */
+                refreshOthers: function () {
+                    if (this.liveDataHandle) {
+                        this.liveDataHandle.refreshNow();
+                    }
                 },
-                startPolling: function () {
-                    const widget = this;
-                    this.pollingId = window.setInterval(function () {
-                        widget.reloadData();
-                    }, 3000);
+                onLiveData: function (votings) {
+                    // Compared with what the widget already has, so that unsaved changes in a
+                    // settings form are not thrown away by an update that changed nothing
+                    this.setVotingFromJson(JSON.stringify(votings));
+                    this.onReloadedCbs.forEach(cb => {
+                        cb(this.votings);
+                    });
                 }
             },
             beforeUnmount() {
-                window.clearInterval(this.pollingId)
+                if (this.liveDataHandle) {
+                    this.liveDataHandle.unregister();
+                }
             },
             created() {
                 this.setVotingFromJson(votingInitJson);
-                this.startPolling()
+                this.liveDataHandle = registerListener('admin', 'voting', {
+                    onData: votings => this.onLiveData(votings),
+                });
             }
         });
 

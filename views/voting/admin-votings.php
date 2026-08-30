@@ -2,7 +2,7 @@
 
 use app\models\layoutHooks\Layout;
 use app\models\policies\IPolicy;
-use app\components\{HTMLTools, IMotionStatusFilter, UrlHelper};
+use app\components\{HTMLTools, IMotionStatusFilter, LiveDataChannels, UrlHelper};
 use app\models\db\{Amendment, Motion, User};
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
@@ -19,6 +19,7 @@ $consultation = $controller->consultation;
 $layout = $controller->layoutParams;
 // The voting endpoints authenticate by JWT, like the rest of the REST API
 $layout->provideJwt = true;
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_ADMIN, LiveDataChannels::CHANNEL_VOTING);
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/consultation/votings'));
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
@@ -36,7 +37,6 @@ foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
     $apiData[] = $votingBlock->getAdminApiObject(User::getCurrentUser());
 }
 
-$pollUrl = UrlHelper::createUrl(['/rest/voting/get-admin-voting-blocks']);
 $sortUrl = UrlHelper::createUrl(['/rest/voting/post-vote-order']);
 $voteCreateUrl = UrlHelper::createUrl(['/rest/voting/create-voting-block']);
 $voteSettingsUrl = UrlHelper::createUrl(['/rest/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
@@ -91,7 +91,6 @@ $CONSTANTS = array_merge($CONSTANTS, [
      data-url-vote-settings="<?= Html::encode($voteSettingsUrl) ?>"
      data-url-vote-download="<?= Html::encode($voteDownloadUrl) ?>"
      data-vote-create="<?= Html::encode($voteCreateUrl) ?>"
-     data-url-poll="<?= Html::encode($pollUrl) ?>"
      data-url-sort="<?= Html::encode($sortUrl) ?>"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"

@@ -6,6 +6,7 @@ import translateDirective from "/js/vue/Translate.vue.js";
 import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
 import voteList from "/js/vue/voting/VotingList.js";
 import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
 
 export class VotingBlock {
     constructor(el, CONSTANTS) {
@@ -18,7 +19,10 @@ export class VotingBlock {
     createVueWidget(votingInitJson, CONSTANTS) {
         const commonsMixins = getVotingCommonMixins(CONSTANTS);
         const vueEl = this.element.querySelector(".currentVoting"),
-            pollUrl = this.element.getAttribute('data-url-poll'),
+            // Which votings this page shows: everything the channel carries ("all"), the ones that
+            // belong to a motion, or the ones that belong to none (the consultation home page)
+            channel = this.element.getAttribute('data-channel'),
+            filterMotionId = this.element.getAttribute('data-filter-motion'),
             voteUrl = this.element.getAttribute('data-url-vote'),
             adminLink = this.element.getAttribute('data-admin-link');
 
@@ -41,12 +45,31 @@ export class VotingBlock {
             data() {
                 return {
                     votings: JSON.parse(votingInitJson),
-                    pollingId: null,
+                    liveDataHandle: null,
                     adminLink,
                     onReloadedCbs: []
                 };
             },
             methods: {
+                /**
+                 * Of everything the channel carries, what this page is about. The backend does not
+                 * know that: it hands out all votings that are open, or all whose results have been
+                 * published, and the collection is the same for every widget on the page.
+                 */
+                filterVotings: function (votings) {
+                    if (filterMotionId === null) {
+                        return votings;
+                    }
+                    const motionId = (filterMotionId === '' ? null : parseInt(filterMotionId, 10));
+
+                    return votings.filter(voting => voting.assigned_motion_id === motionId);
+                },
+                setVotings: function (votings) {
+                    this.votings = this.filterVotings(votings);
+                    this.onReloadedCbs.forEach(cb => {
+                        cb(this.votings);
+                    });
+                },
                 _votePost: function (votingBlockId, postData) {
                     const widget = this;
                     authorizedFetch(voteUrl.replace(/VOTINGBLOCKID/, votingBlockId), {
@@ -58,12 +81,13 @@ export class VotingBlock {
                         .then(data => {
                             if (data.success !== undefined && !data.success) {
                                 alert(data.message);
-                                return;
+                                return null;
                             }
-                            widget.votings = data;
-                            widget.onReloadedCbs.forEach(cb => {
-                                cb(widget.votings);
-                            });
+                            widget.setVotings(data);
+                            if (widget.liveDataHandle) {
+                                // So that the other widgets and tabs see the vote as well
+                                widget.liveDataHandle.refreshNow();
+                            }
                             return null;
                         })
                         .catch(err => {
@@ -85,36 +109,21 @@ export class VotingBlock {
                 addReloadedCb: function (cb) {
                     this.onReloadedCbs.push(cb);
                 },
-                reloadData: function () {
-                    if (pollUrl === null) {
-                        return;
-                    }
-                    const widget = this;
-                    authorizedFetch(pollUrl)
-                        .then(response => response.json())
-                        .then(data => {
-                            widget.votings = data;
-                            widget.onReloadedCbs.forEach(cb => {
-                                cb(widget.votings);
-                            });
-                            return null;
-                        })
-                        .catch(function (err) {
-                            console.error("Could not load voting data from backend", err);
-                        });
-                },
-                startPolling: function () {
-                    const widget = this;
-                    this.pollingId = window.setInterval(function () {
-                        widget.reloadData();
-                    }, 3000);
-                }
             },
             beforeUnmount() {
-                window.clearInterval(this.pollingId)
+                if (this.liveDataHandle) {
+                    this.liveDataHandle.unregister();
+                }
             },
             created() {
-                this.startPolling()
+                // The results of a voting that is over do not change any more, so that page is
+                // rendered once and declares no channel
+                if (!channel) {
+                    return;
+                }
+                this.liveDataHandle = registerListener('user', channel, {
+                    onData: votings => this.setVotings(votings),
+                });
             }
         });
 

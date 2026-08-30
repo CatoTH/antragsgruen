@@ -1,6 +1,7 @@
 <?php
 
 use app\components\{DebateTools, LiveDataChannels, StaticResourceTools, UrlHelper};
+use app\models\db\User;
 use yii\helpers\Html;
 
 /**
@@ -48,6 +49,10 @@ if ($debateInitData !== null) {
     $layout->addJsTranslation("debate");
     $layout->addJsTranslation("voting");
     $layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_DEBATE);
+    if (User::getCurrentUser()) {
+        // The projected debate widget shows the voting of the debated item, which needs a login
+        $layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_VOTING);
+    }
 }
 
 ?>

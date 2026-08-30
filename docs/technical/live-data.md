@@ -20,11 +20,13 @@ was polled, and from which URL, is decided centrally.
 A channel is a **role** (whose view of the data: `user` or `admin`) plus a **topic** (`speech`,
 `debate`). It is defined once, server-side, in `components/LiveDataChannels.php`:
 
-| Channel | Poll URL | Auth | Default interval | Keyed |
+| Channel | Poll URL | Auth | Default interval | Kind |
 |---|---|---|---|---|
-| `user/speech` | `/rest/<consultation>/speech/QUEUEIDS` | JWT if available | 3000 ms | yes |
-| `admin/speech` | `/rest/<consultation>/speech/QUEUEIDS/admin` | JWT | 1000 ms | yes |
-| `user/debate` | `/rest/<consultation>/debate` | JWT if available | 3000 ms | no |
+| `user/speech` | `/rest/<consultation>/speech/QUEUEIDS` | JWT if available | 3000 ms | keyed |
+| `admin/speech` | `/rest/<consultation>/speech/QUEUEIDS/admin` | JWT | 1000 ms | keyed |
+| `user/debate` | `/rest/<consultation>/debate` | JWT if available | 3000 ms | plain |
+| `user/voting` | `/rest/<consultation>/votings/open` | JWT | 3000 ms | collection |
+| `admin/voting` | `/rest/<consultation>/votings/admin` | JWT | 2000 ms | collection |
 
 The intervals can be changed per installation using the `polling` setting of `config.json`, keyed by
 the channel ID:
@@ -49,6 +51,13 @@ speaking lists. Widgets pass the ID of the list they show; the JS module collect
 registered widgets and substitutes them into the `QUEUEIDS` placeholder, so a page showing three
 speaking lists still only issues one request. The `admin/speech` endpoint accepts a comma-separated
 list of IDs for exactly this reason, just like the user-facing one.
+
+**Collection** channels carry a list whose members come and go — currently the votings. A poll
+answers with the whole list and is authoritative: whatever it does not contain has left the
+collection. A live event carries a single member, which is merged into the list by its ID. Widgets
+always receive the whole list and filter it themselves, because which members a page shows is
+nothing the backend can decide for it: the same list feeds the votings page, the widget on a motion
+and the one embedded in the debate.
 
 ## Declaring channels in a view
 
@@ -203,4 +212,7 @@ have no data at all to begin with, like the debate widget's speaking list.
   moderator (or in another tab) shows up here without a Live server channel of its own. The speaking
   list inside it updates through the embedded admin widget; the voting tab is still loaded on demand.
 
-The voting widgets still poll on their own; they are to be migrated separately.
+- `web/js/modules/frontend/VotingBlock.js` and `web/js/modules/backend/VotingAdmin.js` - the voting
+  widgets (`user/voting` and `admin/voting`). Which votings a page shows is decided in the browser:
+  the widget is given the ID of the motion it belongs to, or nothing at all on the votings page.
+  `/voting-results` shows votings that are over and therefore registers no channel at all.

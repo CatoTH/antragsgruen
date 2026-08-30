@@ -520,13 +520,23 @@ What stage 1 turned out to need, beyond the list above:
   before writing the results to the items, so a request arriving in between saw a voting that was
   over and had no results. The results are written first now.
 
-**Stage 2 - polling through the central module.** Teach `LiveData.js` the collection channel of §8: a
-poll response that is a list, live messages that carry one element, merged by `id`, filtered
-client-side. Register `user/voting` and `admin/voting` in `LiveDataChannels`, move the widgets to
-`registerListener()`, and delete `startPolling()` / `stopPolling()` from
-`web/js/modules/frontend/VotingBlock.js` and `web/js/modules/backend/VotingAdmin.js` as well as the
-voting interval in `CurrentDebateWidget.vue`. Still no Live server involved - this only centralizes
-what the widgets already do.
+**Stage 2 - polling through the central module. Done.** `LiveData.js` knows the collection channel
+of §8 now: a poll answers with the whole list and is authoritative, a live event carries one member
+and is merged in by `id`, and the widgets are handed the whole list and filter it themselves.
+`user/voting` (3000 ms) and `admin/voting` (2000 ms) are registered in `LiveDataChannels`; the three
+widgets - `web/js/modules/frontend/VotingBlock.js`, `web/js/modules/backend/VotingAdmin.js` and
+`CurrentDebateWidget.vue` - use `registerListener()` and have no interval of their own any more.
+Still no Live server involved: this only centralizes what the widgets already did.
+
+Two things worth knowing about it:
+
+* **Which votings a page shows is now decided in the browser.** The channel carries every open
+  voting of the consultation; the widget is told which motion it belongs to (`data-filter-motion`),
+  or nothing at all on the votings page. That is what lets the votings page, the widget on a motion
+  and the one inside the debate share one request.
+* **`/voting-results` registers no channel.** It never polled - its poll URL was never wired up -
+  and results that are published do not change while the page is open. It renders what the server
+  gave it, as before.
 
 **Stage 3 - publishing.** `ROLE_VOTING_ADMIN` in `JwtCreator`, and a `LiveTools::sendVoting()` that
 posts the envelope of §4 with the routing key `voting.<installation>.<site>.<consultation>`. Full

@@ -592,8 +592,10 @@ $I->assertJsonStringEqualsJsonString('[
 
 $I->wantTo('close the voting and see results');
 $I->clickJS('.voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .btnClose');
-// Closing is a request; the results page must not be opened before it has been answered
-$I->waitForElement('.voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .btnReopen', 5);
+// The widget shows the voting as closed as soon as it is clicked; the results page must not be
+// opened before the backend has answered, which it has once its activity log knows about the close
+$I->waitForJS('return window.votingAdminWidget.votings.find(voting => voting.id === ' .
+    AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ').log.length === 2', 5);
 $I->clickJS('.sidebarActions .results a');
 $I->see('7', '.voting_question_1 .voteCount_present');
 
