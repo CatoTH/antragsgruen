@@ -13,6 +13,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
+// The voting endpoints authenticate by JWT, like the rest of the REST API
+$layout->provideJwt = true;
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/consultation/votings'));
 $layout->addBreadcrumb(Yii::t('voting', 'results_bc'));
 $this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT, 'UTF-8');
@@ -27,7 +29,7 @@ foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockT
     $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
-$pollUrl   = UrlHelper::createUrl(['/voting/get-closed-voting-blocks']);
+$pollUrl   = UrlHelper::createUrl(['/rest/voting/get-closed-voting-blocks']);
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"

@@ -10,7 +10,7 @@ use app\models\quorumType\{IQuorumType, NoQuorum};
 use app\models\settings\{AntragsgruenApp, VotingBlock as VotingBlockSettings};
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
-use yii\db\{ActiveQuery, ActiveRecord};
+use yii\db\{ActiveQuery, ActiveRecord, Query};
 
 /**
  * @property int $id
@@ -192,16 +192,46 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }
     }
 
+    /** @var array<int, Vote[]> */
+    private array $votesByUserCache = [];
+
+    /**
+     * Both caches hold votes as they were when they were first asked for, so reloading the voting
+     * has to drop them - which is what the callers that cast a vote and then build a payload from
+     * the same object rely on.
+     */
+    public function refresh(): bool
+    {
+        $this->votesByUserCache = [];
+        $this->votesSortedByItemCache = null;
+
+        return parent::refresh();
+    }
+
+    /**
+     * Everything one person voted for in this voting, the general abstention included.
+     *
+     * Deliberately not filtered out of the votes of everyone: a payload built for a participant of a
+     * secret voting needs nothing but this, and loading the votes of two thousand delegates to find
+     * the two of one of them is what made every poll expensive.
+     *
+     * @return Vote[]
+     */
+    public function getAllVotesOfUser(User $user): array
+    {
+        if (!isset($this->votesByUserCache[$user->id])) {
+            $this->votesByUserCache[$user->id] = Vote::find()
+                ->where(['votingBlockId' => $this->id, 'userId' => $user->id])
+                ->all();
+        }
+
+        return $this->votesByUserCache[$user->id];
+    }
+
     public function getUserSingleItemVote(User $user, IVotingItem $item): ?Vote
     {
-        foreach ($this->votes as $vote) {
-            if ($vote->userId === $user->id && is_a($item, Motion::class) && $vote->motionId === $item->id) {
-                return $vote;
-            }
-            if ($vote->userId === $user->id && is_a($item, Amendment::class) && $vote->amendmentId === $item->id) {
-                return $vote;
-            }
-            if ($vote->userId === $user->id && is_a($item, VotingQuestion::class) && $vote->questionId === $item->id) {
+        foreach ($this->getAllVotesOfUser($user) as $vote) {
+            if ($vote->isForVotingItem($item)) {
                 return $vote;
             }
         }
@@ -279,23 +309,17 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     {
         $abstentionId = $this->getGeneralAbstentionItem()?->id;
 
-        $votes = [];
-        foreach ($this->votes as $vote) {
-            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
-                continue;
-            }
-            if ($vote->userId === $user->id) {
-                $votes[] = $vote;
-            }
-        }
-        return $votes;
+        return array_values(array_filter(
+            $this->getAllVotesOfUser($user),
+            fn (Vote $vote): bool => $vote->questionId === null || $vote->questionId !== $abstentionId
+        ));
     }
 
     public function userHasAbstained(User $user): bool
     {
         $abstentionId = $this->getGeneralAbstentionItem()?->id;
-        foreach ($this->votes as $vote) {
-            if ($vote->questionId !== null && $vote->questionId === $abstentionId && $vote->userId === $user->id) {
+        foreach ($this->getAllVotesOfUser($user) as $vote) {
+            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
                 return true;
             }
         }
@@ -535,9 +559,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         if (!$this->isClosed()) {
             $this->addActivity(static::ACTIVITY_TYPE_CLOSED);
         }
-        $this->votingStatus = ($publish ? VotingBlock::STATUS_CLOSED_PUBLISHED : VotingBlock::STATUS_CLOSED_UNPUBLISHED);
-        $this->save();
 
+        // The results are written to the items before the voting is marked as closed: a request
+        // arriving in between would otherwise see a voting that is over but has no results yet
         foreach ($this->motions as $motion) {
             $votingData = $motion->getVotingData()->augmentWithResults($this, $motion);
             $this->closeVoting_setResultToItem($motion, $votingData);
@@ -550,6 +574,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $votingData = $question->getVotingData()->augmentWithResults($this, $question);
             $this->closeVoting_setResultToItem($question, $votingData);
         }
+
+        $this->votingStatus = ($publish ? VotingBlock::STATUS_CLOSED_PUBLISHED : VotingBlock::STATUS_CLOSED_UNPUBLISHED);
+        $this->save();
 
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_CLOSE, $this->id);
     }
@@ -739,26 +766,39 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
         $abstentionId = $this->getGeneralAbstentionItem()?->id;
 
+        // Which item a vote belongs to is all this needs; loading the votes as objects only to read
+        // four of their columns is what made the turnout expensive to ask for
+        $votes = (new Query())
+            ->select(['userId', 'motionId', 'amendmentId', 'questionId'])
+            ->from(Vote::tableName())
+            ->where(['votingBlockId' => $this->id])
+            ->all();
+
         // If three motions are in a voting group, there will be three votes in the database.
         // For the statistics, we should only count them once.
         $countedItemGroups = [];
-        foreach ($this->votes as $vote) {
-            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
-                $abstainedUserIds[] = $vote->userId;
-                if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
-                    $voteUserIds[] = $vote->userId;
+        foreach ($votes as $vote) {
+            $userId = ($vote['userId'] !== null ? intval($vote['userId']) : null);
+            $motionId = ($vote['motionId'] !== null ? intval($vote['motionId']) : null);
+            $amendmentId = ($vote['amendmentId'] !== null ? intval($vote['amendmentId']) : null);
+            $questionId = ($vote['questionId'] !== null ? intval($vote['questionId']) : null);
+
+            if ($questionId !== null && $questionId === $abstentionId) {
+                $abstainedUserIds[] = $userId;
+                if ($userId && !in_array($userId, $voteUserIds)) {
+                    $voteUserIds[] = $userId;
                 }
             }
 
             $groupId = null;
-            if ($vote->motionId !== null && isset($groupsMyMotionIds[$vote->motionId])) {
-                $groupId = $groupsMyMotionIds[$vote->motionId];
+            if ($motionId !== null && isset($groupsMyMotionIds[$motionId])) {
+                $groupId = $groupsMyMotionIds[$motionId];
             }
-            if ($vote->amendmentId !== null && isset($groupsMyAmendmentIds[$vote->amendmentId])) {
-                $groupId = $groupsMyAmendmentIds[$vote->amendmentId];
+            if ($amendmentId !== null && isset($groupsMyAmendmentIds[$amendmentId])) {
+                $groupId = $groupsMyAmendmentIds[$amendmentId];
             }
-            if ($vote->questionId !== null && isset($groupsMyQuestionsIds[$vote->questionId])) {
-                $groupId = $groupsMyQuestionsIds[$vote->questionId];
+            if ($questionId !== null && isset($groupsMyQuestionsIds[$questionId])) {
+                $groupId = $groupsMyQuestionsIds[$questionId];
             }
 
             if ($groupId && in_array($groupId, $countedItemGroups)) {
@@ -766,8 +806,8 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             }
 
             $total++;
-            if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
-                $voteUserIds[] = $vote->userId;
+            if ($userId && !in_array($userId, $voteUserIds)) {
+                $voteUserIds[] = $userId;
             }
 
             if ($groupId) {

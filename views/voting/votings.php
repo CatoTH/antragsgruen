@@ -15,6 +15,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
+// The voting endpoints authenticate by JWT, like the rest of the REST API
+$layout->provideJwt = true;
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'));
 $this->title = Yii::t('voting', 'page_title');
 
@@ -28,8 +30,8 @@ foreach (Factory::getOpenVotingBlocks($consultation, true, null) as $votingBlock
     $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
-$pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
-$voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '']);
+$pollUrl   = UrlHelper::createUrl(['/rest/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
+$voteUrl   = UrlHelper::createUrl(['/rest/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '']);
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 ?>

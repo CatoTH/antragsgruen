@@ -124,7 +124,7 @@ $I->seeElement('.voting_question_1 span.present');
 $I->wantTo('check the REST response of the user endpoint');
 
 $pollUrl = '/stdparteitag/rest/std-parteitag/votings/open?assignedToMotionId=';
-$json = $I->executeJS('return await fetch("' . $pollUrl . '").then(ret => ret.text())');
+$json = $I->fetchApi($pollUrl);
 $jsonParsed = json_decode($json, true);
 $I->assertJsonStringEqualsJsonString('[
   {
@@ -223,7 +223,7 @@ $I->see('7', '.voting_question_1 .voteCount_present');
 $I->wantTo('check the REST response of the admin endpoint');
 
 $pollUrl = '/stdparteitag/rest/std-parteitag/votings/admin';
-$json = $I->executeJS('return await fetch("' . $pollUrl . '").then(ret => ret.text())');
+$json = $I->fetchApi($pollUrl);
 $jsonParsed = json_decode($json, true);
 $I->assertJsonStringEqualsJsonString('[
   {
@@ -592,6 +592,8 @@ $I->assertJsonStringEqualsJsonString('[
 
 $I->wantTo('close the voting and see results');
 $I->clickJS('.voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .btnClose');
+// Closing is a request; the results page must not be opened before it has been answered
+$I->waitForElement('.voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .btnReopen', 5);
 $I->clickJS('.sidebarActions .results a');
 $I->see('7', '.voting_question_1 .voteCount_present');
 

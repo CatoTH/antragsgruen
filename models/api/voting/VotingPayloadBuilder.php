@@ -428,7 +428,7 @@ class VotingPayloadBuilder
         if ($this->block->isClosed()) {
             $counted = $item->getVotingData()->mapToApiResults($this->block);
         } else {
-            $counted = Vote::calculateVoteResultsForApi($this->block, $votes);
+            $counted = Vote::calculateVoteResultsForApi($this->block, $item);
         }
 
         $counts = [];

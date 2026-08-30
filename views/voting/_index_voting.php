@@ -15,6 +15,8 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 $user = User::getCurrentUser();
 $layout = $controller->layoutParams;
+// The voting endpoints authenticate by JWT, like the rest of the REST API
+$layout->provideJwt = true;
 
 if (!User::getCurrentUser()) {
     return;
@@ -35,8 +37,8 @@ foreach ($votingBlocksToRender as $votingBlockToRender) {
 
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 $assignedToMotionId = ($assignedToMotion ? $assignedToMotion->id : '');
-$pollUrl  = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => $assignedToMotionId, 'showAllOpen' => 0]);
-$voteUrl  = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => $assignedToMotionId]);
+$pollUrl  = UrlHelper::createUrl(['/rest/voting/get-open-voting-blocks', 'assignedToMotionId' => $assignedToMotionId, 'showAllOpen' => 0]);
+$voteUrl  = UrlHelper::createUrl(['/rest/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => $assignedToMotionId]);
 $iAmAdmin = ($user && $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null));
 if ($iAmAdmin) {
     $adminLink = UrlHelper::createUrl(['/consultation/admin-votings']);

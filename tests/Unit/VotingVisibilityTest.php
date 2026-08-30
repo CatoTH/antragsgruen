@@ -253,8 +253,32 @@ class VotingVisibilityTest extends DBTestBase
         $this->assertSame($group->id, $payload->me->votes[0]->groupId);
         $this->assertPayloadNamesNobody($payload, 'A running voting shows nobody how anyone voted');
 
-        // The administration does follow a running voting
-        $this->assertCount(2, $this->getVotedGroup($this->getAdminPayload())->singleVotes);
+        // The administration does follow a running voting, counts included
+        $adminGroup = $this->getVotedGroup($this->getAdminPayload());
+        $this->assertCount(2, $adminGroup->singleVotes);
+        $this->assertSame(1, $this->getVoteCount($adminGroup, 'yes'));
+        $this->assertSame(1, $this->getVoteCount($adminGroup, 'no'));
+    }
+
+    public function testWeightedResultsAreStoredWhenClosing(): void
+    {
+        // A vote that counts more than one: the result stored when closing has to reflect the weight
+        $user = User::findOne(['email' => self::VOTER_YES]);
+        $settings = $user->getSettingsObj();
+        $settings->setVoteWeight(Consultation::findOne(['urlPath' => 'std-parteitag']), 7);
+        $user->setSettingsObj($settings);
+        $user->save();
+
+        $this->openVoting(VotingBlock::VOTES_PUBLIC_ALL, VotingBlock::RESULTS_PUBLIC_YES);
+        $this->vote(self::VOTER_YES, 'yes');
+
+        $runningGroup = $this->getVotedGroup($this->getAdminPayload());
+        $this->assertSame(7, $this->getVoteCount($runningGroup, 'yes'), 'While running');
+
+        $this->setStatus(VotingBlock::STATUS_CLOSED_PUBLISHED);
+
+        $closedGroup = $this->getVotedGroup($this->getUserPayload());
+        $this->assertSame(7, $this->getVoteCount($closedGroup, 'yes'), 'After closing');
     }
 
     /**

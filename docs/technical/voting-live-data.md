@@ -343,9 +343,12 @@ the whole open-voting list. Publishing at 17/s is roughly 2.5% of the load the l
 
 What to do about it, in the order the effort pays off:
 
-1. Compute statistics and results with aggregate SQL (`SUM(weight)`, `COUNT(DISTINCT userId)`,
-   `GROUP BY`) instead of hydrating every `Vote`. That removes the quadratic term, and helps the
-   polling path just as much.
+1. ~~Compute statistics and results with aggregate SQL instead of hydrating every `Vote`.~~ Done in
+   stage 1: `Vote::calculateVoteResultsForApi()` sums the weights per answer in one `GROUP BY` query
+   per item group, `getVoteStatistics()` reads four columns instead of building objects, and the
+   personal state of a reader comes from a query for their own votes. A payload nobody may see the
+   single votes in now loads no votes at all. The plugin hook follows: it is handed the item rather
+   than the votes, so that a plugin counting differently can query what it needs itself.
 2. Publish after `ResourceLock::releaseAllLocks()`, and ideally after the response has been flushed,
    so that neither the lock nor the voter waits for RabbitMQ.
 3. Only if the rate ever justifies it: replace the management API with a real AMQP client and a
@@ -499,10 +502,12 @@ What stage 1 turned out to need, beyond the list above:
   back is gone with D3.
 * The statuses of the payload are the strings of `VotingStatus` in both directions: the widgets
   compare against them, and `VotingMethods::voteStatusUpdate()` accepts them.
-* **The controller stays session-authenticated for now.** Moving it to `controllers/rest/` would
-  disable session authentication (`RestBase` turns it off, the widgets do not send a JWT yet), so it
-  belongs to stage 2 together with the switch to `LiveData`/`authorizedFetch`. The URLs are already
-  the REST ones; only the base class is not.
+* **The endpoints moved to `controllers/rest/VotingController` and authenticate by JWT**, like the
+  rest of the REST API: the widgets ask for them through `authorizedFetch()`, the pages embedding
+  them set `$layout->provideJwt`, and the CSRF token they used to send is gone (`RestBase` neither
+  validates nor issues one, which also stops a poll every three seconds from replacing the CSRF
+  cookie of the page it polls from). What stayed behind in `controllers/VotingController` is the
+  result download: the browser follows that as a link, and a link cannot carry a bearer token.
 * `IVotingItem` gained `getId()` and `getVotingResult()`: everything implementing it is an
   ActiveRecord, but nothing in the type system said so, and the builder addresses items through the
   interface throughout.
@@ -511,6 +516,9 @@ What stage 1 turned out to need, beyond the list above:
   `getVoteStatistics()` walked the whole consultation to find the items of one voting - now it walks
   the voting's own items, skipping amendments whose motion has been deleted (which the consultation
   walk never saw, and `AgendaVoting` skips for the same reason).
+* A third one, found by moving the endpoints behind the JWT: `closeVoting()` saved the new status
+  before writing the results to the items, so a request arriving in between saw a voting that was
+  over and had no results. The results are written first now.
 
 **Stage 2 - polling through the central module.** Teach `LiveData.js` the collection channel of §8: a
 poll response that is a list, live messages that carry one element, merged by `id`, filtered

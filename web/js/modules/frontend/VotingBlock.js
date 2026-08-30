@@ -5,6 +5,7 @@ import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
 import voteList from "/js/vue/voting/VotingList.js";
+import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
 
 export class VotingBlock {
     constructor(el, CONSTANTS) {
@@ -48,15 +49,13 @@ export class VotingBlock {
             methods: {
                 _votePost: function (votingBlockId, postData) {
                     const widget = this;
-                    $.ajax({
-                        url: voteUrl.replace(/VOTINGBLOCKID/, votingBlockId),
-                        type: "POST",
-                        data: JSON.stringify(postData),
-                        processData: false,
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        headers: {"X-CSRF-Token": document.querySelector('head meta[name=csrf-token]').getAttribute('content')},
-                        success: data => {
+                    authorizedFetch(voteUrl.replace(/VOTINGBLOCKID/, votingBlockId), {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json; charset=utf-8"},
+                        body: JSON.stringify(postData),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
                             if (data.success !== undefined && !data.success) {
                                 alert(data.message);
                                 return;
@@ -65,8 +64,11 @@ export class VotingBlock {
                             widget.onReloadedCbs.forEach(cb => {
                                 cb(widget.votings);
                             });
-                        }
-                    });
+                            return null;
+                        })
+                        .catch(err => {
+                            console.error("Could not submit the vote", err);
+                        });
                 },
                 // How public a vote becomes is decided by the backend alone - the voting promised
                 // it when it was opened, and nothing the browser sends can change that
@@ -88,14 +90,18 @@ export class VotingBlock {
                         return;
                     }
                     const widget = this;
-                    $.get(pollUrl, function (data) {
-                        widget.votings = data;
-                        widget.onReloadedCbs.forEach(cb => {
-                            cb(widget.votings);
+                    authorizedFetch(pollUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            widget.votings = data;
+                            widget.onReloadedCbs.forEach(cb => {
+                                cb(widget.votings);
+                            });
+                            return null;
+                        })
+                        .catch(function (err) {
+                            console.error("Could not load voting data from backend", err);
                         });
-                    }).catch(function (err) {
-                        console.error("Could not load voting data from backend", err);
-                    });
                 },
                 startPolling: function () {
                     const widget = this;

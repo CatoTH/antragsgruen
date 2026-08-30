@@ -10,6 +10,7 @@ import policySelect from "/js/vue/PolicySelect.js";
 import selectize from "/js/vue/Selectize.js";
 import tooltipDirective from "/js/vue/Tooltip.vue.js";
 import vuedraggable from "/npm/vuedraggable.js";
+import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
 
 export class VotingAdmin {
     /** @type {HTMLElement} */
@@ -91,7 +92,6 @@ export class VotingAdmin {
                     userGroups: initUserGroups,
                     voteDownloadUrl,
                     addableMotions,
-                    csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
                     pollingId: null,
                     onReloadedCbs: []
                 };
@@ -114,23 +114,36 @@ export class VotingAdmin {
                 }
             },
             methods: {
+                /**
+                 * The endpoints authenticate by JWT and answer with the new state of all votings,
+                 * which is what every operation here does with the response.
+                 */
+                _post: function (url, postData, onSuccess) {
+                    return authorizedFetch(url, {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json; charset=utf-8"},
+                        body: JSON.stringify(postData),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success !== undefined && !data.success) {
+                                alert(data.message);
+                                return;
+                            }
+                            onSuccess(data);
+                            return null;
+                        })
+                        .catch(err => {
+                            console.error("Could not perform the voting operation", err);
+                            alert(err);
+                        });
+                },
                 _performOperation: function (votingBlockId, additionalProps) {
-                    let postData = {
-                        _csrf: this.csrf,
-                    };
-                    if (additionalProps) {
-                        postData = Object.assign(postData, additionalProps);
-                    }
                     const widget = this;
                     const url = voteSettingsUrl.replace(/VOTINGBLOCKID/, votingBlockId);
-                    $.post(url, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
-                        }
+
+                    return this._post(url, additionalProps || {}, data => {
                         widget.votings = data;
-                    }).catch(function (err) {
-                        alert(err.responseText);
                     });
                 },
                 setVotingFromJson(data) {
@@ -171,20 +184,11 @@ export class VotingAdmin {
                     });
                 },
                 onSorted(sortedIds) {
-                    let postData = {
-                        _csrf: this.csrf,
-                        votingIds: sortedIds
-                    };
                     const widget = this;
-                    $.post(sortUrl, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
-                        }
+
+                    this._post(sortUrl, {votingIds: sortedIds}, data => {
                         widget.votings = data;
                         widget.isSorting = false;
-                    }).catch(function (err) {
-                        alert(err.responseText);
                     });
                 },
                 deleteVoting(votingBlockId) {
@@ -193,8 +197,7 @@ export class VotingAdmin {
                     });
                 },
                 createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, votePolicy, userGroups, resultsPublic, votesPublic, votesNames) {
-                    let postData = {
-                        _csrf: this.csrf,
+                    const postData = {
                         type,
                         answers,
                         title,
@@ -209,11 +212,7 @@ export class VotingAdmin {
                     };
 
                     const widget = this;
-                    $.post(voteCreateUrl, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
-                        }
+                    this._post(voteCreateUrl, postData, data => {
                         widget.votings = data['votings'];
                         widget.onReloadedCbs.forEach(cb => {
                             cb(widget.votings);
@@ -222,8 +221,6 @@ export class VotingAdmin {
                         window.setTimeout(() => {
                             $("#voting" + data['created_voting']).scrollintoview({top_offset: -100});
                         }, 200);
-                    }).catch(function (err) {
-                        alert(err.responseText);
                     });
                 },
                 removeItem(votingBlockId, itemType, itemId) {
@@ -257,14 +254,20 @@ export class VotingAdmin {
                 },
                 reloadData: function () {
                     const widget = this;
-                    $.get(pollUrl, function (data) {
-                        widget.setVotingFromJson(data);
-                        widget.onReloadedCbs.forEach(cb => {
-                            cb(widget.votings);
+                    // As text: the widget compares it with what it already has, so that unsaved
+                    // changes in the settings form are not thrown away by a poll that changed nothing
+                    authorizedFetch(pollUrl)
+                        .then(response => response.text())
+                        .then(data => {
+                            widget.setVotingFromJson(data);
+                            widget.onReloadedCbs.forEach(cb => {
+                                cb(widget.votings);
+                            });
+                            return null;
+                        })
+                        .catch(function (err) {
+                            console.error("Could not load voting data from backend", err);
                         });
-                    }, 'text').catch(function (err) {
-                        console.error("Could not load voting data from backend", err);
-                    });
                 },
                 startPolling: function () {
                     const widget = this;

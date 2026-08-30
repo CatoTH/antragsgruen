@@ -69,6 +69,7 @@
 <script>
 import Translate from "/js/vue/Translate.vue.js";
 import { registerListener } from "/js/modules/shared/LiveData.js";
+import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
 
 const POLLING_INTERVAL = 3000;
 
@@ -206,8 +207,8 @@ export default {
             this.speechError = null;
         },
         refreshVoting(initial) {
-            // The voting widget keeps using the session-based /voting endpoints (they require a
-            // logged-in user); anonymous visitors get an empty votingPollUrl and no voting is shown.
+            // The voting endpoints require a logged-in user; anonymous visitors get an empty
+            // votingPollUrl and no voting is shown.
             if (!this.votingPollUrl) {
                 return;
             }
@@ -220,7 +221,7 @@ export default {
                 this.votingLoading = true;
                 this.votingError = null;
             }
-            fetch(this.votingPollUrl, {headers: {'Accept': 'application/json'}})
+            authorizedFetch(this.votingPollUrl, {headers: {'Accept': 'application/json'}})
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('HTTP status ' + response.status);
@@ -253,12 +254,9 @@ export default {
             });
         },
         _votePost(votingBlockId, postData) {
-            fetch(this.votingVoteUrl.replace(/VOTINGBLOCKID/, votingBlockId), {
+            authorizedFetch(this.votingVoteUrl.replace(/VOTINGBLOCKID/, votingBlockId), {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                    'X-CSRF-Token': this.csrf,
-                },
+                headers: {'Content-Type': 'application/json; charset=utf-8'},
                 body: JSON.stringify(postData),
             })
                 .then(response => response.json())

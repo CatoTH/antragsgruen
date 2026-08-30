@@ -17,6 +17,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout = $controller->layoutParams;
+// The voting endpoints authenticate by JWT, like the rest of the REST API
+$layout->provideJwt = true;
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/consultation/votings'));
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
@@ -34,10 +36,10 @@ foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
     $apiData[] = $votingBlock->getAdminApiObject(User::getCurrentUser());
 }
 
-$pollUrl = UrlHelper::createUrl(['/voting/get-admin-voting-blocks']);
-$sortUrl = UrlHelper::createUrl(['/voting/post-vote-order']);
-$voteCreateUrl = UrlHelper::createUrl(['/voting/create-voting-block']);
-$voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
+$pollUrl = UrlHelper::createUrl(['/rest/voting/get-admin-voting-blocks']);
+$sortUrl = UrlHelper::createUrl(['/rest/voting/post-vote-order']);
+$voteCreateUrl = UrlHelper::createUrl(['/rest/voting/create-voting-block']);
+$voteSettingsUrl = UrlHelper::createUrl(['/rest/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
 $voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
 
 $addableMotionsData = [];
