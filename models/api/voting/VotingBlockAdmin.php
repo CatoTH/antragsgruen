@@ -10,6 +10,7 @@ class VotingBlockAdmin
         public int $id,
         public string $title,
         public VotingStatus $status,
+        public int $position,
         public int $currentTime,
         /** @var VotingAnswer[] */
         public array $answers,

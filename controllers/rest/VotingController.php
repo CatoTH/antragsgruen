@@ -120,30 +120,42 @@ class VotingController extends RestBase
         }
         ResourceLock::lockVotingBlockForWrite($votingBlock);
 
-        switch ($this->getPostValue('op')) {
-            case 'update-status':
-                $this->votingMethods->voteStatusUpdate($votingBlock);
-                break;
-            case 'save-settings':
-                $this->votingMethods->voteSaveSettings($votingBlock);
-                break;
-            case 'add-imotion':
-                $this->votingMethods->voteAddIMotion($votingBlock);
-                break;
-            case 'add-question':
-                $this->votingMethods->voteAddQuestion($votingBlock);
-                break;
-            case 'remove-item':
-                $this->votingMethods->voteRemoveItem($votingBlock);
-                break;
-            case 'delete-voting':
-                $this->votingMethods->deleteVoting($votingBlock);
-                break;
-            case 'set-voters-to-user-group':
-                $userIds = array_map('intval', $this->getPostValue('userIds', []));
-                $groupId = intval($this->getPostValue('newUserGroup'));
-                $this->userGroupMethods->setUserGroupUsers($groupId, $userIds);
-                break;
+        $deletedBlockId = null;
+        $userGroupsChanged = false;
+        try {
+            switch ($this->getPostValue('op')) {
+                case 'update-status':
+                    $this->votingMethods->voteStatusUpdate($votingBlock);
+                    break;
+                case 'save-settings':
+                    $this->votingMethods->voteSaveSettings($votingBlock);
+                    break;
+                case 'add-imotion':
+                    $this->votingMethods->voteAddIMotion($votingBlock);
+                    break;
+                case 'add-question':
+                    $this->votingMethods->voteAddQuestion($votingBlock);
+                    break;
+                case 'remove-item':
+                    $this->votingMethods->voteRemoveItem($votingBlock);
+                    break;
+                case 'delete-voting':
+                    $deletedBlockId = $votingBlock->id;
+                    $this->votingMethods->deleteVoting($votingBlock);
+                    break;
+                case 'set-voters-to-user-group':
+                    $userIds = array_map('intval', $this->getPostValue('userIds', []));
+                    $groupId = intval($this->getPostValue('newUserGroup'));
+                    $this->userGroupMethods->setUserGroupUsers($groupId, $userIds);
+                    $userGroupsChanged = true;
+                    break;
+            }
+        } catch (\Exception $e) {
+            // A rejected operation is an answer, not a crash - and the locks have to go either way,
+            // or the next request waits for them to time out
+            ResourceLock::releaseAllLocks();
+
+            return $this->returnRestResponseFromException($e);
         }
 
         $responseData = $this->getAllVotingAdminData();
@@ -152,7 +164,17 @@ class VotingController extends RestBase
 
         // After the locks: the event is a copy of a state that is saved, and holding a lock while
         // talking to the broker would make every voter wait for it
-        LiveTools::sendVotingState($this->consultation, $votingBlock);
+        if ($deletedBlockId !== null) {
+            // There is no state left to describe, and the readers have to be told so explicitly
+            LiveTools::sendVotingRemoved($this->consultation, $deletedBlockId);
+        } else {
+            LiveTools::sendVotingState($this->consultation, $votingBlock);
+        }
+        if ($userGroupsChanged) {
+            // Who is in a group is read by every running voting, not only by this one - which was
+            // just sent, so it is not sent again
+            LiveTools::sendVotingStatesForUserGroupChange($this->consultation, exceptBlockIds: [$votingBlock->id]);
+        }
 
         return $this->returnVotingData($responseData);
     }
@@ -167,9 +189,17 @@ class VotingController extends RestBase
         }
 
         $votingIds = array_values(array_map('intval', $this->getPostValue('votingIds')));
-        $this->votingMethods->sortVotings($votingIds);
+        $moved = $this->votingMethods->sortVotings($votingIds);
 
-        return $this->returnVotingData($this->getAllVotingAdminData());
+        $responseData = $this->getAllVotingAdminData();
+
+        // The order is part of a voting's payload, so the ones that moved have a new state to tell
+        // about - a reader that has stopped polling has no other way of learning about it
+        foreach ($moved as $votingBlock) {
+            LiveTools::sendVotingState($this->consultation, $votingBlock);
+        }
+
+        return $this->returnVotingData($responseData);
     }
 
     public function actionCreateVotingBlock(): RestApiResponse

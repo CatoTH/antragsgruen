@@ -109,19 +109,75 @@ class LiveTools
     }
 
     /**
-     * Publishing must never be what makes a vote or an administrative action fail: the event is a
-     * copy of a state that is already saved, and a broker that is down, misconfigured or without a
-     * listener is a reason to log, not to answer the request with an error.
+     * A voting that has been deleted. The only change that cannot be described by a new state, and
+     * the only one a reader who has stopped polling could otherwise never learn about.
      */
+    public static function sendVotingRemoved(Consultation $consultation, int $blockId, bool $debug = false): void
+    {
+        if (!AntragsgruenApp::getInstance()->live) {
+            return;
+        }
+
+        self::publishVotingEnvelope(
+            $consultation,
+            fn (): array => VotingPayloadBuilder::buildRemovalEnvelope($consultation, $blockId),
+            $debug
+        );
+    }
+
+    /**
+     * Who may vote, how much their vote weighs and how many members a user group has are part of
+     * every voting's payload, so changing a person's groups changes the state of the votings that
+     * read them.
+     *
+     * Only the ones that are running, though. A full event carries the state of every person the
+     * voting can name, so this is the most expensive event there is, and a routine group edit must
+     * not pay for it once per voting a consultation has ever prepared. A voting that is not open yet
+     * publishes its whole state when it is opened anyway, and a closed one keeps the list it was
+     * closed with - neither has anything to correct in the meantime that anybody is acting on.
+     *
+     * Never call this while holding a lock voters serialize on: see the note on sendVotingTally().
+     *
+     * @param int[] $exceptBlockIds votings the caller has already published the new state of
+     */
+    public static function sendVotingStatesForUserGroupChange(Consultation $consultation, array $exceptBlockIds = [], bool $debug = false): void
+    {
+        if (!AntragsgruenApp::getInstance()->live) {
+            return;
+        }
+
+        foreach ($consultation->votingBlocks as $block) {
+            if ($block->votingStatus === VotingBlock::STATUS_OPEN && !in_array($block->id, $exceptBlockIds, true)) {
+                self::sendVotingState($consultation, $block, $debug);
+            }
+        }
+    }
+
     private static function sendVoting(Consultation $consultation, VotingBlock $block, bool $tallyOnly, bool $debug): void
     {
         if (!AntragsgruenApp::getInstance()->live) {
             return;
         }
 
+        self::publishVotingEnvelope(
+            $consultation,
+            fn (): array => VotingPayloadBuilder::fromVotingBlock($block)->buildLiveEnvelope($tallyOnly),
+            $debug
+        );
+    }
+
+    /**
+     * Publishing must never be what makes a vote or an administrative action fail: the event is a
+     * copy of a state that is already saved, and a broker that is down, misconfigured or without a
+     * listener is a reason to log, not to answer the request with an error. Building the envelope
+     * happens inside the same guard, for the same reason.
+     *
+     * @param \Closure(): array<string, mixed> $buildEnvelope
+     */
+    private static function publishVotingEnvelope(Consultation $consultation, \Closure $buildEnvelope, bool $debug): void
+    {
         try {
-            $envelope = VotingPayloadBuilder::fromVotingBlock($block)->buildLiveEnvelope($tallyOnly);
-            $json = json_encode($envelope, JSON_THROW_ON_ERROR);
+            $json = json_encode($buildEnvelope(), JSON_THROW_ON_ERROR);
 
             if ($debug) {
                 echo $json . "\n";

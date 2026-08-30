@@ -131,6 +131,7 @@ $I->assertJsonStringEqualsJsonString('[
     "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
     "status": "open",
+    "position": 1,
     "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "answers": [
       {
@@ -230,6 +231,7 @@ $I->assertJsonStringEqualsJsonString('[
     "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
     "status": "open",
+    "position": 1,
     "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "answers": [
       {
@@ -373,6 +375,7 @@ $I->assertJsonStringEqualsJsonString('[
     "id": 1,
     "title": "\u00c42 or \u00c43",
     "status": "offline",
+    "position": 0,
     "current_time": ' . $jsonParsed[1]['current_time'] . ',
     "answers": [
       {
@@ -606,6 +609,7 @@ $I->assertJsonStringEqualsJsonString('[
     "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
     "status": "closed_published",
+    "position": 1,
     "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "answers": [
       {

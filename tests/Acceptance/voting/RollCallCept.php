@@ -117,6 +117,7 @@ $I->assertJsonStringEqualsJsonString('[
     "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
     "status": "closed_published",
+    "position": 1,
     "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "answers": [ { "api_id": "present", "title": "Anwesend", "result": null } ],
     "has_majority": false,

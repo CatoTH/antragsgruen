@@ -223,7 +223,12 @@ export default {
                 return;
             }
 
-            this.votingBlock = this.votings.find(voting => parseInt(voting.id) === parseInt(votingBlockId)) || null;
+            // Only while it is open: the channel also carries events about votings in other states,
+            // which say no more than their ID and their status (VotingPayloadBuilder) and are there
+            // for a reader to drop them.
+            this.votingBlock = this.votings.find(
+                voting => parseInt(voting.id) === parseInt(votingBlockId) && voting.status === 'open'
+            ) || null;
         },
         vote(votingBlockId, groupId, vote) {
             this._votePost(votingBlockId, {

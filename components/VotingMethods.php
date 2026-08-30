@@ -438,8 +438,10 @@ class VotingMethods
 
     /**
      * @param int[] $votingIds
+     * @return VotingBlock[] the votings that actually moved - the ones a live event has to be sent
+     *                       about, since the order is part of their payload
      */
-    public function sortVotings(array $votingIds): void
+    public function sortVotings(array $votingIds): array
     {
         $positionById = [];
         for ($pos = 0; $pos < count($votingIds); $pos++) {
@@ -447,14 +449,21 @@ class VotingMethods
         }
         $firstUnusedPos = $pos;
 
+        $moved = [];
         foreach ($this->consultation->votingBlocks as $votingBlock) {
+            $oldPosition = $votingBlock->position;
             if (isset($positionById[$votingBlock->id])) {
                 $votingBlock->position = $positionById[$votingBlock->id];
             } else {
                 $votingBlock->position = $firstUnusedPos;
                 $firstUnusedPos++;
             }
+            if ($votingBlock->position !== $oldPosition) {
+                $moved[] = $votingBlock;
+            }
             $votingBlock->save();
         }
+
+        return $moved;
     }
 }

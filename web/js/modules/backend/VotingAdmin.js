@@ -1,7 +1,7 @@
 // @ts-check
 
 import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
-import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
+import { getVotingCommonMixins, sortVotings } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingAdmin from "/js/vue/voting/VotingAdmin.js";
 import votingSort from "/js/vue/voting/VotingAdminSort.js";
@@ -151,11 +151,13 @@ export class VotingAdmin {
                     if (data === this.votingsJson) {
                         return;
                     }
-                    this.votings = JSON.parse(data);
+                    this.votings = sortVotings(JSON.parse(data));
                     this.votingsJson = data;
                 },
                 setVotingFromObject(data) {
-                    this.votings = data;
+                    // A live event describes one voting, so the order the administration gave them
+                    // is restored here rather than being taken from the order they arrived in
+                    this.votings = sortVotings(data);
                     this.votingsJson = null;
                 },
                 toggleSorting() {

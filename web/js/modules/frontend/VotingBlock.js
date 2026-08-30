@@ -1,7 +1,7 @@
 // @ts-check
 
 import { createApp, h } from '/npm/vue.runtime.esm-browser.prod.js';
-import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
+import { getVotingCommonMixins, sortVotings } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingBlockWidget from "/js/vue/voting/VotingBlockWidget.js";
 import voteList from "/js/vue/voting/VotingList.js";
@@ -53,16 +53,22 @@ export class VotingBlock {
             methods: {
                 /**
                  * Of everything the channel carries, what this page is about. The backend does not
-                 * know that: it hands out all votings that are open, or all whose results have been
-                 * published, and the collection is the same for every widget on the page.
+                 * know that: the collection is the same for every widget on the page.
+                 *
+                 * Only votings that are open: that is what the channel is defined over, and a live
+                 * event about one that is being prepared, was taken offline or is not published yet
+                 * only says so much (see VotingPayloadBuilder::buildEveryoneSection) - it is here to
+                 * be dropped, not to be shown. The page of results that are over gets its list from
+                 * the server and registers no channel, so it never passes through here.
                  */
                 filterVotings: function (votings) {
-                    if (filterMotionId === null) {
-                        return votings;
+                    let filtered = votings.filter(voting => voting.status === 'open');
+                    if (filterMotionId !== null) {
+                        const motionId = (filterMotionId === '' ? null : parseInt(filterMotionId, 10));
+                        filtered = filtered.filter(voting => voting.assigned_motion_id === motionId);
                     }
-                    const motionId = (filterMotionId === '' ? null : parseInt(filterMotionId, 10));
 
-                    return votings.filter(voting => voting.assigned_motion_id === motionId);
+                    return sortVotings(filtered);
                 },
                 setVotings: function (votings) {
                     this.votings = this.filterVotings(votings);

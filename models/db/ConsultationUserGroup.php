@@ -168,6 +168,16 @@ class ConsultationUserGroup extends ActiveRecord
     }
 
     /**
+     * The cache above has no invalidation of its own, so whoever changes who is in a group has to
+     * drop it - otherwise everything built from the memberships afterwards in the same request (the
+     * response, and the live event that goes with it) describes them as they were.
+     */
+    public static function flushUserIdCache(): void
+    {
+        self::$userIdCache = [];
+    }
+
+    /**
      * @return User[]
      */
     public function getUsersCached(): array

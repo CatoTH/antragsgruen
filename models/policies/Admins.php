@@ -3,7 +3,7 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\settings\Privileges;
+use app\models\settings\{AntragsgruenApp, Privileges};
 use app\models\db\{ConsultationMotionType, User};
 
 class Admins extends IPolicy
@@ -60,5 +60,24 @@ class Admins extends IPolicy
             return false;
         }
         return $user->hasPrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_STATUS_EDIT, null);
+    }
+
+    /**
+     * This policy can name the people it admits: they are the members of the user groups carrying
+     * the privilege, plus the superusers, who pass every check.
+     *
+     * @return int[]
+     */
+    public function getAdmittedUserIds(): array
+    {
+        $userIds = AntragsgruenApp::getInstance()->adminUserIds;
+
+        foreach ($this->consultation->getAllAvailableUserGroups([], true) as $group) {
+            if ($group->getGroupPermissions()->containsPrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, null)) {
+                $userIds = array_merge($userIds, $group->getUserIds());
+            }
+        }
+
+        return array_values(array_unique(array_map('intval', $userIds)));
     }
 }

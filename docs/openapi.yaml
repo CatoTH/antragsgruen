@@ -4498,6 +4498,7 @@ components:
         - id
         - title
         - status
+        - position
         - current_time
         - answers
         - has_majority
@@ -4516,6 +4517,12 @@ components:
           example: Amendments to A1
         status:
           $ref: '#/components/schemas/VotingStatus'
+        position:
+          type: integer
+          description: >
+            Where this voting is sorted among the others: descending, ties broken by descending id.
+            A live event describes one voting, so a reader that is told the order can keep a list
+            that arrives one member at a time in the order the administration gave it.
         assigned_motion_id:
           type: integer
           nullable: true

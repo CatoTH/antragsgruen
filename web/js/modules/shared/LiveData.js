@@ -228,18 +228,32 @@ class Channel {
      * report a cast vote: only the counting changes, and everything the event does not mention stays
      * as the widgets have it - the reader's own state above all, which nobody else's vote affects.
      *
+     * A member marked "removed" says that it has left the collection. Polls are authoritative about
+     * that on their own, but a client with a live connection does not poll any more, so an object
+     * that is deleted has to be able to say so.
+     *
      * @param {any} data
      */
     publishCollection(data) {
         if (Array.isArray(data)) {
             this.collection = data.map(item => {
                 // A member that was superseded by something more recent keeps the newer version;
-                // this is the same race a keyed channel guards against, member by member
+                // this is the same race a keyed channel guards against, member by member. A member
+                // the collection does not hold any more was dropped by an event this poll predates,
+                // so it stays dropped - a new one has no recorded time and passes the check anyway.
                 const known = this.collection.find(existing => existing.id === item.id);
-                return (this.isNewerThanPublished(item.id, item) || !known) ? item : known;
-            });
+                if (this.isNewerThanPublished(item.id, item)) {
+                    return item;
+                }
+                return known ?? null;
+            }).filter(item => item !== null);
         } else {
             if (!this.isNewerThanPublished(data.id, data)) {
+                return;
+            }
+            if (data.removed) {
+                this.collection = this.collection.filter(existing => existing.id !== data.id);
+                this.registrations.forEach(registration => registration.onData(this.collection));
                 return;
             }
             const index = this.collection.findIndex(existing => existing.id === data.id);

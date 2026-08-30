@@ -9,6 +9,23 @@ import translate from "/js/vue/Translate.vue.js";
 // - Whether the results and the single votes are part of the payload at all is decided by the
 //   backend. A null means "not for you", an empty list means "nothing yet" - never confuse them.
 
+/**
+ * The order the administration gave the votings, as the backend sorts them (Factory::sortVotingBlocks).
+ * A poll answers in that order, but a live event describes one voting at a time, so a client that
+ * has stopped polling has to be able to put a re-sorted list back in order itself.
+ *
+ * @param {any[]} votings
+ * @returns {any[]} a sorted copy
+ */
+export function sortVotings(votings) {
+    return votings.slice().sort((voting1, voting2) => {
+        if (voting1.position !== voting2.position) {
+            return voting2.position - voting1.position;
+        }
+        return voting2.id - voting1.id;
+    });
+}
+
 export function getVotingCommonMixins(constants) {
     return {
         data() {
@@ -71,11 +88,19 @@ export function getVotingCommonMixins(constants) {
         },
         methods: {
             /**
+             * The counted votes of a group, as one table of answer => number of votes.
+             *
+             * "counts" is a list per organization, which only a plugin that counts by organization
+             * ever fills with more than the one default entry. There is no way to show several of
+             * them in this table, and showing the first as if it were the whole would be a wrong
+             * number rather than a missing one - so a payload with several is treated as having no
+             * result to show here, which is what the widgets did before the counts became a list.
+             *
              * @param {object} group
-             * @returns {object|null} the counted votes of a group, or null if they are not visible
+             * @returns {object|null} the counted votes of a group, or null if there are none to show
              */
             getResults: function (group) {
-                if (!group.results || group.results.counts.length === 0) {
+                if (!group.results || group.results.counts.length !== 1) {
                     return null;
                 }
                 return group.results.counts[0];

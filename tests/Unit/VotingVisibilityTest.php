@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use app\components\{Tools, VotingMethods};
 use app\models\api\voting\{VotingBlockAdmin, VotingBlockUser, VotingItemGroup, VotingPayloadBuilder, VotingStatus};
 use app\models\db\{Consultation, User, VotingBlock};
+use app\models\policies\IPolicy;
 use app\models\proposedProcedure\AgendaVoting;
 use Codeception\Attribute\Group;
 use Tests\Support\Helper\DBTestBase;
@@ -367,6 +368,112 @@ class VotingVisibilityTest extends DBTestBase
         $this->assertSame(['item_groups'], array_keys($tally['admin_only']), 'Only the votes differ for an admin');
         $this->assertArrayNotHasKey('per_user', $tally);
         $this->assertArrayNotHasKey('default_user_state', $tally);
+    }
+
+    /**
+     * The votings a participant may ask for are the ones that are open, so a live event about any
+     * other one may not describe it: preparing a voting would otherwise announce its title and its
+     * items - motions that only the administration can see among them - to the whole consultation,
+     * and a reader with a live connection does not poll any more, so nothing would take it back.
+     */
+    public function testALiveEventAboutAVotingParticipantsMayNotListSaysOnlyThat(): void
+    {
+        $this->setStatus(VotingBlock::STATUS_PREPARING);
+        $preparing = $this->getEnvelope(tallyOnly: false);
+
+        // Enough for a reader to drop it from their list, and nothing else
+        $this->assertSame(['id', 'status', 'current_time'], array_keys($preparing['everyone']));
+        $this->assertSame('preparing', $preparing['everyone']['status']);
+        $this->assertStringNotContainsString(
+            'Ä2 or Ä3',
+            json_encode($preparing['everyone'], JSON_THROW_ON_ERROR),
+            'A voting that is being prepared is not announced to the participants'
+        );
+
+        // The administration still gets the whole of it: the two sections merged are their payload
+        $forAdmin = array_merge($preparing['everyone'], $preparing['admin_only']);
+        $this->assertSame('Ä2 or Ä3', $forAdmin['title']);
+        $this->assertNotEmpty($forAdmin['items']);
+        $this->assertArrayHasKey('settings', $forAdmin);
+
+        // A voting that is open is described in full, or the participants could not show it
+        $this->setStatus(VotingBlock::STATUS_OPEN);
+        $open = $this->getEnvelope(tallyOnly: false);
+        $this->assertSame('Ä2 or Ä3', $open['everyone']['title']);
+        $this->assertNotEmpty($open['everyone']['items']);
+
+        // Closing it without publishing takes it back off the participants' list
+        $this->setStatus(VotingBlock::STATUS_CLOSED_UNPUBLISHED);
+        $unpublished = $this->getEnvelope(tallyOnly: false);
+        $this->assertSame(['id', 'status', 'current_time'], array_keys($unpublished['everyone']));
+
+        // Publishing the results is what puts it back into what everyone may see
+        $this->setStatus(VotingBlock::STATUS_CLOSED_PUBLISHED);
+        $published = $this->getEnvelope(tallyOnly: false);
+        $this->assertSame('Ä2 or Ä3', $published['everyone']['title']);
+    }
+
+    /**
+     * Deleting is the one change that cannot be described by a new state.
+     */
+    public function testARemovedVotingIsAnnouncedToEveryone(): void
+    {
+        $consultation = Consultation::findOne(['urlPath' => 'std-parteitag']);
+        $envelope = VotingPayloadBuilder::buildRemovalEnvelope($consultation, self::VOTING_BLOCK_ID);
+
+        $this->assertSame('full', $envelope['kind']);
+        $this->assertSame(self::VOTING_BLOCK_ID, $envelope['block_id']);
+        $this->assertSame(self::VOTING_BLOCK_ID, $envelope['everyone']['id']);
+        $this->assertTrue($envelope['everyone']['removed']);
+        // A voting that is gone is gone for the administration as well
+        $this->assertNull($envelope['admin_only']);
+    }
+
+    /**
+     * What is assumed about a reader this voting knows nothing about. A policy that names its voters
+     * has all of them in the per-user map; one that does not is asked whether it would let an
+     * arbitrary logged-in reader vote, rather than being taken to say yes.
+     */
+    public function testTheAssumedStateOfAnUnknownReaderFollowsThePolicy(): void
+    {
+        $this->setStatus(VotingBlock::STATUS_PREPARING);
+        $this->getVotingMethods(['votePolicy' => ['id' => IPolicy::POLICY_NOBODY]])->voteSaveSettings($this->getBlock());
+        $this->setStatus(VotingBlock::STATUS_OPEN);
+
+        $nobody = $this->getEnvelope(tallyOnly: false)['default_user_state'];
+        $this->assertFalse($nobody['eligible'], 'A voting nobody may vote in offers nobody a vote');
+        $this->assertSame([], $nobody['can_vote_group_ids']);
+
+        $this->setStatus(VotingBlock::STATUS_PREPARING);
+        $this->getVotingMethods(['votePolicy' => ['id' => IPolicy::POLICY_LOGGED_IN]])->voteSaveSettings($this->getBlock());
+        $this->setStatus(VotingBlock::STATUS_OPEN);
+
+        $loggedIn = $this->getEnvelope(tallyOnly: false)['default_user_state'];
+        $this->assertTrue($loggedIn['eligible'], 'A voting open to whoever is logged in assumes the reader is');
+        $this->assertNotSame([], $loggedIn['can_vote_group_ids']);
+    }
+
+    /**
+     * A policy admitting the administrators can name them, so they get an entry of their own rather
+     * than the default state - which says "not eligible", that being right for everybody else.
+     */
+    public function testAdministratorsAreNamedByAPolicyAdmittingThem(): void
+    {
+        $this->setStatus(VotingBlock::STATUS_PREPARING);
+        $this->getVotingMethods(['votePolicy' => ['id' => IPolicy::POLICY_ADMINS]])->voteSaveSettings($this->getBlock());
+        $this->setStatus(VotingBlock::STATUS_OPEN);
+
+        $envelope = $this->getEnvelope(tallyOnly: false);
+        $perUser = (array)$envelope['per_user'];
+
+        $adminKey = 'login-' . User::findOne(['email' => self::ADMIN])->id;
+        $this->assertArrayHasKey($adminKey, $perUser, 'An administrator is named by the policy admitting them');
+        $this->assertTrue($perUser[$adminKey]['eligible']);
+        $this->assertNotSame([], $perUser[$adminKey]['can_vote_group_ids'], 'and can actually vote');
+
+        // Everybody the policy does not name is not admitted, and is told so once
+        $this->assertFalse($envelope['default_user_state']['eligible']);
+        $this->assertArrayNotHasKey('login-' . User::findOne(['email' => self::VOTER_YES])->id, $perUser);
     }
 
     /**

@@ -38,7 +38,7 @@ The message posted to the proxy is an envelope with three explicitly scoped sect
 
 | Section | Delivered to | Rule for the backend |
 |---|---|---|
-| `everyone` | every subscriber of the consultation | may only contain data every participant may see |
+| `everyone` | every subscriber of the consultation | may only contain data every participant may see - and only about a voting they could ask for, see §2.1 |
 | `admin_only` | subscribers whose JWT has `ROLE_VOTING_ADMIN` | may only contain data every `PRIVILEGE_VOTINGS` holder may see |
 | `per_user` | map, key = JWT subject; each entry only to that one subject | anything personal |
 
@@ -61,6 +61,26 @@ The three confidentiality settings map onto this without the proxy knowing them:
 * **Turnout is not a result**: `statistics.votes` / `statistics.voters` stay in `everyone`
   regardless of `resultsPublic`. They say how many have voted, never how anyone voted - and the
   widgets show "143 of 200 have voted" while a secret vote is running.
+
+### 2.1 Which votings the `everyone` section may describe at all
+
+The scopes above decide which *fields* a reader is given. What state a voting is in decides whether
+it may be described to a participant **at all**, because an event is published on every
+administrative change, in every state, while the only votings a participant can ask for are the ones
+that are open (`/votings/open`) and the ones whose results are published (the results page).
+
+A voting that is offline, being prepared, or closed without its results being published is therefore
+reduced to `{id, status, current_time}` in `everyone` - enough for a reader to keep it out of their
+list, and nothing else. Without that, preparing a voting would announce its title, its items and
+their initiators - motions that are only visible to the administration among them - to everyone in
+the consultation. The administration is unaffected: everything the reduced section leaves out lands
+in `admin_only` by the rule of §4, so `everyone ∪ admin_only` is still the whole payload.
+
+Leaving the reader uninformed instead is not an option: a client stops polling while the Live server
+is connected (`LiveData.shouldPoll()`), so the event is the only thing that can still tell it a
+voting has left its list. For the same reason, deleting a voting - the one change that has no new
+state to describe - publishes `{id, removed: true, current_time}`, which the collection channel
+drops the member on.
 
 `Vote.public` — the publicity a vote was cast under — is honoured **per vote**: each single vote is
 placed into `everyone` or `admin_only` or dropped according to its own `public` value, not according
@@ -125,9 +145,12 @@ members are all strings named after one of these languages. Stating the set in t
 keeps that from being a guess; no other object of a voting payload is keyed by language.
 
 `per_user` holds an entry for everyone this voting knows something about: everyone who has voted,
-and - where the policy names its voters by user group - everyone entitled to. Anybody else is
-described by `default_user_state`, whose `eligible` follows from whether the policy can name its
-voters at all: one that admits whoever is logged in cannot, so a reader is assumed to be among them.
+and - where the policy can name the people it admits (`IPolicy::getAdmittedUserIds()`: the members of
+the selected user groups, or the holders of the privilege for the "administrators" policy) - everyone
+entitled to. Anybody else is described by `default_user_state`, whose `eligible` follows from whether
+the policy can name them at all: one that admits whoever is logged in cannot, so a reader is assumed
+to be among them; one that can name them has already named them, so a reader who is not on the list
+is not among them.
 For a 2000-delegate consultation the map is roughly 100 KB - acceptable because `full` messages are
 triggered by admin actions (open / close / reset / settings / items), not by cast votes (§7).
 
@@ -143,6 +166,7 @@ endpoint — byte-identical, as with `SpeechQueueUser` today.
   "id": 42,
   "title": "Amendments to A1",
   "status": "open",                       // offline|preparing|open|closed_published|closed_unpublished
+  "position": 7,                          // sort order: descending, ties broken by descending id
   "assigned_motion_id": 123,              // null = shown on the votings page; used for client-side filtering
   "opened_at": 1724739000000,             // ms, null unless open
   "voting_time": 300,                     // seconds, null = no countdown
@@ -293,8 +317,14 @@ Publishing a `full` message on every cast vote would mean, for a 2000-delegate v
 of ~100 KB each, fanned out personally to 2000 connections. So:
 
 * **`full`** — complete block state incl. `per_user`. Triggered by admin actions: open, close,
-  reopen, reset, delete, settings change, item add/remove, sort, changed group membership.
-  A handful per voting.
+  reopen, reset, settings change, item add/remove, sort (for the votings that moved), and changed
+  group membership (for the votings that are *running* - one that is not open yet publishes its whole
+  state when it is opened anyway, and a closed one keeps the list it was closed with; a full event is
+  the most expensive one there is, and a routine group edit must not pay for it once per voting a
+  consultation has ever prepared). A handful per voting. Deleting one sends the removal event of §2.1
+  instead, there being no state left to describe.
+* Because the order is only ever conveyed by a poll otherwise, `position` is part of the payload:
+  a client that has stopped polling sorts the list it has assembled from single events itself.
 * **`tally`** — no `per_user`, no `settings`, no `eligibility`. Carries only
   `statistics`, `item_groups[].results`, `item_groups[].single_votes` (in whichever scope the
   publicity allows) and `abstention`. Published on every cast vote; throttling, if it is ever needed,

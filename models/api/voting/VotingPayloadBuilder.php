@@ -34,6 +34,13 @@ class VotingPayloadBuilder
     /** Prefix of the group ID of an item that is voted on by itself, rather than together with others */
     public const SINGLE_ITEM_GROUP_PREFIX = 'single:';
 
+    /**
+     * The states a participant may be told about in full: the ones they can ask for themselves.
+     * Everything they may see about an open voting is what the polling endpoint answers with, and
+     * everything about one whose results are published is what the results page shows them.
+     */
+    private const PUBLIC_STATUSES = [VotingStatus::OPEN, VotingStatus::CLOSED_PUBLISHED];
+
     private VotingBlock $block;
 
     /** @var Answer[] */
@@ -82,6 +89,7 @@ class VotingPayloadBuilder
             id: $this->block->id,
             title: $this->agendaVoting->title,
             status: $this->getStatus(),
+            position: $this->block->position,
             currentTime: $this->getCurrentTime(),
             answers: $this->getAnswers(),
             hasMajority: $this->block->votingHasMajority(),
@@ -107,6 +115,7 @@ class VotingPayloadBuilder
             id: $this->block->id,
             title: $this->agendaVoting->title,
             status: $this->getStatus(),
+            position: $this->block->position,
             currentTime: $this->getCurrentTime(),
             answers: $this->getAnswers(),
             hasMajority: $this->block->votingHasMajority(),
@@ -179,10 +188,9 @@ class VotingPayloadBuilder
             $this->block->preloadVotesOfAllUsers();
             User::preloadConsultationUserGroups($this->block->getMyConsultation());
 
-            /** @var array<string, mixed> $forUser */
-            $forUser = $serializer->normalize($this->buildForUser(null), null, $context);
             /** @var array<string, mixed> $forAdmin */
             $forAdmin = $serializer->normalize($this->buildForAdmin(null), null, $context);
+            $forUser = $this->buildEveryoneSection($serializer, $context);
             // Nobody's own state belongs to everybody
             unset($forUser['me'], $forAdmin['me']);
         }
@@ -221,6 +229,85 @@ class VotingPayloadBuilder
     }
 
     /**
+     * What every participant of the consultation is told about this voting.
+     *
+     * A live event is published whenever an administrator changes something, in whatever state the
+     * voting is in - while a voting that is being prepared, that was taken offline or whose results
+     * are deliberately not published yet is one no participant can ask for. Such a voting may not be
+     * described here at all: it is identified, and its state is named, which is exactly what a reader
+     * needs in order to keep it out of their list, and nothing more. Without this, preparing a voting
+     * would announce its title, its items and their initiators - motions that are only visible to the
+     * administration among them - to everyone in the consultation.
+     *
+     * Note that the reader cannot simply be left uninformed instead: they stop polling while the
+     * Live server is connected, so an event is the only thing that can still tell them a voting has
+     * left their list.
+     *
+     * @param array<string, mixed> $context
+     * @return array<string, mixed>
+     */
+    private function buildEveryoneSection(Serializer $serializer, array $context): array
+    {
+        if (!in_array($this->getStatus(), self::PUBLIC_STATUSES, true)) {
+            return [
+                'id' => $this->block->id,
+                'status' => $serializer->normalize($this->getStatus(), null, $context),
+                // So that this can be ordered against the full state the reader may still hold: a
+                // poll answered before the voting closed must not be able to put it back
+                'current_time' => $this->getCurrentTime(),
+            ];
+        }
+
+        /** @var array<string, mixed> $forUser */
+        $forUser = $serializer->normalize($this->buildForUser(null), null, $context);
+
+        return $forUser;
+    }
+
+    /**
+     * A voting that does not exist any more. Deleting one is the one change that cannot be described
+     * by its new state, and a reader who has stopped polling would otherwise keep showing it forever.
+     *
+     * Built without touching the deleted record beyond its ID, and addressed to everybody: a voting
+     * that is gone is gone for the administration as well.
+     *
+     * @return array<string, mixed>
+     */
+    public static function buildRemovalEnvelope(Consultation $consultation, int $blockId): array
+    {
+        $serializer = Tools::getSerializer();
+        $context = [LocalizedStringNormalizer::CONTEXT_ALL_LANGUAGES => true];
+        $currentTime = (int)round(microtime(true) * 1000);
+
+        return [
+            'kind' => 'full',
+            'block_id' => $blockId,
+            'languages' => LanguageTools::getContentLanguages($consultation),
+            'state_version' => $currentTime,
+            'current_time' => $currentTime,
+            'everyone' => ['id' => $blockId, 'removed' => true, 'current_time' => $currentTime],
+            'admin_only' => null,
+            // A "full" event carries both by contract, even though nobody has a state in a voting
+            // that no longer exists
+            'default_user_state' => $serializer->normalize(self::getStateInARemovedVoting(), null, $context),
+            'per_user' => (object)[],
+        ];
+    }
+
+    /** Nobody has a state in a voting that does not exist - the "DEFAULT_ME" of the design */
+    private static function getStateInARemovedVoting(): VotingUserState
+    {
+        return new VotingUserState(
+            eligible: false,
+            voteWeight: 1,
+            abstained: false,
+            votes: [],
+            canVoteGroupIds: [],
+            votesRemaining: null,
+        );
+    }
+
+    /**
      * What a tally event is about: the counting, and nothing else.
      *
      * @param array<string, mixed> $context
@@ -236,14 +323,47 @@ class VotingPayloadBuilder
     }
 
     /**
+     * Everyone this voting's policy admits, where it can name them at all: a closed voting keeps the
+     * list it was closed with, a running one asks its policy. Null means the policy cannot name its
+     * voters - "everybody" and "whoever is logged in" have no list to give.
+     *
+     * These are the people who get an entry of their own in the per-user map even without having
+     * voted, which is what lets everyone else be described by one shared default state.
+     *
+     * @return int[]|null
+     */
+    private function getAdmittedUserIds(): ?array
+    {
+        $eligibility = $this->getEligibility();
+        if ($eligibility !== null) {
+            $userIds = [];
+            foreach ($eligibility as $group) {
+                foreach ($group->users as $user) {
+                    $userIds[] = $user->userId;
+                }
+            }
+
+            return $userIds;
+        }
+
+        return $this->block->getVotingPolicy()->getAdmittedUserIds();
+    }
+
+    /**
      * The state of somebody this voting knows nothing about. Whether they may vote is a question of
-     * the voting policy: one that names its voters by user group has all of them in the per-user map,
-     * so anybody else may not; one that admits whoever is logged in cannot name them, so a reader is
-     * assumed to be among them.
+     * the voting policy, asked twice:
+     *
+     * - a policy that can name the people it admits has all of them in the per-user map, so anybody
+     *   else may not vote;
+     * - one that cannot name them is asked whether it would admit an arbitrary logged-in reader.
+     *   "Everybody" and "logged-in users" do, "nobody" does not - and taking the latter to admit
+     *   everyone would offer vote buttons to a whole consultation for a voting the backend then
+     *   refuses every vote for.
      */
     private function getDefaultUserState(): VotingUserState
     {
-        $eligible = ($this->getEligibility() === null);
+        $eligible = ($this->getAdmittedUserIds() === null &&
+                     $this->block->getVotingPolicy()->checkUser(null, allowAdmins: false, assumeLoggedIn: true));
         $isOpen = ($this->block->votingStatus === VotingBlock::STATUS_OPEN);
 
         return new VotingUserState(
@@ -265,12 +385,7 @@ class VotingPayloadBuilder
      */
     private function buildPerUserStates(Serializer $serializer, array $context): array
     {
-        $userIds = $this->block->getVoterUserIds();
-        foreach ($this->getEligibility() ?? [] as $group) {
-            foreach ($group->users as $user) {
-                $userIds[] = $user->userId;
-            }
-        }
+        $userIds = array_merge($this->block->getVoterUserIds(), $this->getAdmittedUserIds() ?? []);
 
         $states = [];
         foreach (array_unique($userIds) as $userId) {
