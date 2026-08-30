@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\api\{agenda\AgendaList, debate\DebateState, SpeechQueue};
+use app\models\api\{agenda\AgendaList, debate\DebateState, SpeechQueue, voting\VotingPayloadBuilder};
 use app\models\exceptions\Internal;
-use app\models\db\Consultation;
+use app\models\db\{Consultation, VotingBlock};
 use app\models\settings\AntragsgruenApp;
 use GuzzleHttp\{Client, Exception\GuzzleException, RequestOptions};
 
@@ -87,6 +87,55 @@ class LiveTools
     public static function sendAgenda(Consultation $consultation, AgendaList $agenda, bool $debug = false): void
     {
         self::sendToChannel($consultation, 'agenda', $agenda, $debug);
+    }
+
+    /**
+     * The state of one voting, as it is after something an administrator did: opened, closed, reset,
+     * settings or items changed. Carries everything, including what belongs to each person alone.
+     */
+    public static function sendVotingState(Consultation $consultation, VotingBlock $block, bool $debug = false): void
+    {
+        self::sendVoting($consultation, $block, tallyOnly: false, debug: $debug);
+    }
+
+    /**
+     * The counting of one voting, after a vote was cast: no configuration, and nothing about anyone
+     * in particular - a vote changes the state of the person who cast it, and they were answered
+     * directly (see docs/technical/voting-live-data.md §7).
+     */
+    public static function sendVotingTally(Consultation $consultation, VotingBlock $block, bool $debug = false): void
+    {
+        self::sendVoting($consultation, $block, tallyOnly: true, debug: $debug);
+    }
+
+    /**
+     * Publishing must never be what makes a vote or an administrative action fail: the event is a
+     * copy of a state that is already saved, and a broker that is down, misconfigured or without a
+     * listener is a reason to log, not to answer the request with an error.
+     */
+    private static function sendVoting(Consultation $consultation, VotingBlock $block, bool $tallyOnly, bool $debug): void
+    {
+        if (!AntragsgruenApp::getInstance()->live) {
+            return;
+        }
+
+        try {
+            $envelope = VotingPayloadBuilder::fromVotingBlock($block)->buildLiveEnvelope($tallyOnly);
+            $json = json_encode($envelope, JSON_THROW_ON_ERROR);
+
+            if ($debug) {
+                echo $json . "\n";
+            }
+
+            $params = AntragsgruenApp::getInstance()->live;
+            $routingKey = 'voting.' . $params['installationId'] . '.' . $consultation->site->subdomain . '.' . $consultation->urlPath;
+
+            self::sendToRabbitMq($routingKey, $json, [
+                'default_language' => LanguageTools::getPrimaryLanguage($consultation),
+            ]);
+        } catch (\Throwable $e) {
+            \Yii::error('Could not publish the voting event: ' . $e->getMessage(), __METHOD__);
+        }
     }
 
     /**

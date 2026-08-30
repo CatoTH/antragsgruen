@@ -10,7 +10,7 @@ class VotingQuorum
         public int $type,
         public int $eligible,
         public ?int $target = null,
-        public ?string $targetLabel = null,
+        public ?\app\models\api\LocalizedString $targetLabel = null,
     ) {
     }
 }

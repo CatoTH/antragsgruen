@@ -20,9 +20,9 @@ use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, NameConverter\
 
 class Tools
 {
-    private static SerializerInterface $serializer;
+    private static Serializer $serializer;
 
-    public static function getSerializer(): SerializerInterface
+    public static function getSerializer(): Serializer
     {
         if (!isset(self::$serializer)) {
             $reflectionExtractor = new ReflectionExtractor();

@@ -9,7 +9,7 @@ use app\models\http\RestApiResponse;
 use app\models\quorumType\IQuorumType;
 use app\models\settings\Privileges;
 use app\models\db\{User, VotingBlock, VotingQuestion};
-use app\components\{ResourceLock, Tools, UserGroupAdminMethods, VotingMethods};
+use app\components\{LiveTools, ResourceLock, Tools, UserGroupAdminMethods, VotingMethods};
 use app\models\api\voting\{VotingBlockAdmin, VotingBlockUser};
 use app\models\proposedProcedure\Factory;
 
@@ -150,6 +150,10 @@ class VotingController extends RestBase
 
         ResourceLock::releaseAllLocks();
 
+        // After the locks: the event is a copy of a state that is saved, and holding a lock while
+        // talking to the broker would make every voter wait for it
+        LiveTools::sendVotingState($this->consultation, $votingBlock);
+
         return $this->returnVotingData($responseData);
     }
 
@@ -212,6 +216,8 @@ class VotingController extends RestBase
             $question->votingBlockId = $newBlock->id;
             $question->save();
         }
+
+        LiveTools::sendVotingState($this->consultation, $newBlock);
 
         return new RestApiResponse(200, null, Tools::getSerializer()->serialize([
             'votings' => $this->getAllVotingAdminData(),
@@ -301,6 +307,8 @@ class VotingController extends RestBase
 
         ResourceLock::releaseAllLocks();
         $votingBlock->refresh();
+
+        LiveTools::sendVotingTally($this->consultation, $votingBlock);
 
         $response = $this->votingMethods->getOpenVotingsForUser(($showAllOpen > 0), $assignedToMotion, User::getCurrentUser());
 

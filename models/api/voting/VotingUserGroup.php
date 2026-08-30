@@ -8,7 +8,7 @@ class VotingUserGroup
 {
     public function __construct(
         public int $id,
-        public string $title,
+        public \app\models\api\LocalizedString $title,
         public int $memberCount,
     ) {
     }

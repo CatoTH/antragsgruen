@@ -4166,6 +4166,7 @@ components:
         title:
           type: string
           description: The label to show, in the reader's language.
+          x-php-type: '\app\models\api\LocalizedString'
           example: Ja
         result:
           $ref: '#/components/schemas/VotingItemResult'
@@ -4257,6 +4258,8 @@ components:
           type: string
           nullable: true
           description: The target as text, for quorum types that cannot express it as a number.
+          x-php-type: '\app\models\api\LocalizedString'
+
         eligible:
           type: integer
           description: How many people the quorum is calculated from.
@@ -4275,6 +4278,8 @@ components:
           type: string
           nullable: true
           description: The current state as text, for quorum types that cannot express it as a number.
+          x-php-type: '\app\models\api\LocalizedString'
+
 
     VotingItemRef:
       x-php-namespace: voting
@@ -4319,10 +4324,12 @@ components:
           example: Ä1
         title_with_prefix:
           type: string
+          x-php-type: '\app\models\api\LocalizedString'
           example: "Ä1 to A1: Renewable energy"
         initiators_html:
           type: string
           nullable: true
+          x-php-type: '\app\models\api\LocalizedString'
         url_html:
           type: string
           nullable: true
@@ -4333,6 +4340,8 @@ components:
           type: string
           nullable: true
           description: The proposed procedure, as far as it is public.
+          x-php-type: '\app\models\api\LocalizedString'
+
         result:
           $ref: '#/components/schemas/VotingItemResult'
 
@@ -4576,6 +4585,7 @@ components:
           type: integer
         title:
           type: string
+          x-php-type: '\app\models\api\LocalizedString'
         member_count:
           type: integer
 
@@ -4607,6 +4617,7 @@ components:
           type: integer
         title:
           type: string
+          x-php-type: '\app\models\api\LocalizedString'
         users:
           type: array
           items:
@@ -4624,6 +4635,7 @@ components:
         description:
           type: string
           nullable: true
+          x-php-type: '\app\models\api\LocalizedString'
         user_groups:
           type: array
           nullable: true

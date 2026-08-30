@@ -8,7 +8,7 @@ class VotingEligibilityGroup
 {
     public function __construct(
         public int $groupId,
-        public string $title,
+        public \app\models\api\LocalizedString $title,
         /** @var VotingEligibilityUser[] */
         public array $users,
     ) {

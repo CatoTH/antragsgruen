@@ -8,7 +8,7 @@ class VotingItemGroupQuorum
 {
     public function __construct(
         public ?int $votes = null,
-        public ?string $currentLabel = null,
+        public ?\app\models\api\LocalizedString $currentLabel = null,
     ) {
     }
 }

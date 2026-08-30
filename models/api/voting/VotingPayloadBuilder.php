@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace app\models\api\voting;
 
-use app\models\db\{ConsultationUserGroup, IMotion, IVotingItem, User, Vote, VotingBlock};
+use app\components\{JwtCreator, LocalizedStringNormalizer, Tools};
+use app\models\api\LocalizedString;
+use app\models\db\{Consultation, ConsultationUserGroup, IMotion, IVotingItem, User, Vote, VotingBlock};
 use app\models\policies\{EligibilityByGroup, IPolicy, UserGroups};
 use app\models\proposedProcedure\AgendaVoting;
 use app\models\quorumType\NoQuorum;
 use app\models\settings\{VotingBlock as VotingBlockSettings, VotingData};
 use app\models\votings\{Answer, AnswerTemplates};
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Builds the payloads of one voting - for a participant, for an administrator, and for the proposed
@@ -40,6 +43,13 @@ class VotingPayloadBuilder
     private ?array $itemsByGroup = null;
 
     private ?IVotingItem $generalAbstentionItem = null;
+
+    /**
+     * One reading of the clock per payload: the participant's and the administration's view of a
+     * voting are built one after the other, and a time that differs between them would look like
+     * something only an administrator may see.
+     */
+    private ?int $currentTime = null;
 
     private function __construct(
         private readonly AgendaVoting $agendaVoting,
@@ -72,7 +82,7 @@ class VotingPayloadBuilder
             id: $this->block->id,
             title: $this->agendaVoting->title,
             status: $this->getStatus(),
-            currentTime: self::getCurrentTime(),
+            currentTime: $this->getCurrentTime(),
             answers: $this->getAnswers(),
             hasMajority: $this->block->votingHasMajority(),
             isPresenceCall: $this->block->getAnswerTemplate() === AnswerTemplates::TEMPLATE_PRESENT,
@@ -97,7 +107,7 @@ class VotingPayloadBuilder
             id: $this->block->id,
             title: $this->agendaVoting->title,
             status: $this->getStatus(),
-            currentTime: self::getCurrentTime(),
+            currentTime: $this->getCurrentTime(),
             answers: $this->getAnswers(),
             hasMajority: $this->block->votingHasMajority(),
             isPresenceCall: $this->block->getAnswerTemplate() === AnswerTemplates::TEMPLATE_PRESENT,
@@ -141,6 +151,133 @@ class VotingPayloadBuilder
             policy: $this->getPolicy(),
             userGroups: $this->getUserGroups(),
         );
+    }
+
+    // *** The live event ***
+
+    /**
+     * The three scopes of a live event (see docs/technical/voting-live-data.md §2 and §4): what every
+     * participant may see, what only the administration may see on top of that, and what belongs to
+     * one person alone. The Live server picks; it decides nothing.
+     *
+     * @param bool $tallyOnly for the frequent events while a voting runs: the counting changed, but
+     *                        nothing about the voting itself or about anyone's own state
+     * @return array<string, mixed>
+     */
+    public function buildLiveEnvelope(bool $tallyOnly): array
+    {
+        $serializer = Tools::getSerializer();
+        $context = [LocalizedStringNormalizer::CONTEXT_ALL_LANGUAGES => true];
+
+        if ($tallyOnly) {
+            // Only the counting is asked for, so only the counting is built: the configuration, the
+            // list of who is entitled to vote and everyone's own state are none of a tally's
+            // business, and building them after every cast vote is what would make this expensive
+            $forUser = $this->buildTallySection(isAdmin: false, serializer: $serializer, context: $context);
+            $forAdmin = $this->buildTallySection(isAdmin: true, serializer: $serializer, context: $context);
+        } else {
+            $this->block->preloadVotesOfAllUsers();
+            User::preloadConsultationUserGroups($this->block->getMyConsultation());
+
+            /** @var array<string, mixed> $forUser */
+            $forUser = $serializer->normalize($this->buildForUser(null), null, $context);
+            /** @var array<string, mixed> $forAdmin */
+            $forAdmin = $serializer->normalize($this->buildForAdmin(null), null, $context);
+            // Nobody's own state belongs to everybody
+            unset($forUser['me'], $forAdmin['me']);
+        }
+
+        // Whatever a participant is given belongs to everyone; what an administrator is given on top
+        // of it, or differently, is theirs alone. Deriving it this way rather than listing the fields
+        // keeps the two in step: a field added to the admin payload lands in the right scope by itself.
+        $adminOnly = [];
+        foreach ($forAdmin as $key => $value) {
+            if (!array_key_exists($key, $forUser) || $forUser[$key] !== $value) {
+                $adminOnly[$key] = $value;
+            }
+        }
+
+        $envelope = [
+            'kind' => $tallyOnly ? 'tally' : 'full',
+            'block_id' => $this->block->id,
+            // Monotonic enough for a reader to put two events in order, and it needs no storage
+            'state_version' => $this->getCurrentTime(),
+            'current_time' => $this->getCurrentTime(),
+            'everyone' => $forUser,
+            'admin_only' => ($adminOnly !== [] ? $adminOnly : null),
+        ];
+
+        if (!$tallyOnly) {
+            // Nobody's own state changes because somebody else voted, so only a full event carries it
+            $envelope['default_user_state'] = $serializer->normalize($this->getDefaultUserState(), null, $context);
+            $envelope['per_user'] = (object)$this->buildPerUserStates($serializer, $context);
+        }
+
+        return $envelope;
+    }
+
+    /**
+     * What a tally event is about: the counting, and nothing else.
+     *
+     * @param array<string, mixed> $context
+     * @return array<string, mixed>
+     */
+    private function buildTallySection(bool $isAdmin, Serializer $serializer, array $context): array
+    {
+        return [
+            'statistics' => $serializer->normalize($this->getStatistics(), null, $context),
+            'item_groups' => $serializer->normalize($this->getItemGroups($isAdmin), null, $context),
+            'abstention' => $serializer->normalize($this->getAbstention($isAdmin), null, $context),
+        ];
+    }
+
+    /**
+     * The state of somebody this voting knows nothing about. Whether they may vote is a question of
+     * the voting policy: one that names its voters by user group has all of them in the per-user map,
+     * so anybody else may not; one that admits whoever is logged in cannot name them, so a reader is
+     * assumed to be among them.
+     */
+    private function getDefaultUserState(): VotingUserState
+    {
+        $eligible = ($this->getEligibility() === null);
+        $isOpen = ($this->block->votingStatus === VotingBlock::STATUS_OPEN);
+
+        return new VotingUserState(
+            eligible: $eligible,
+            voteWeight: 1,
+            abstained: false,
+            votes: [],
+            canVoteGroupIds: ($eligible && $isOpen ? array_map('strval', array_keys($this->getItemsByGroup())) : []),
+            votesRemaining: null,
+        );
+    }
+
+    /**
+     * The people this voting knows something about: everyone who has voted, and - where the policy
+     * names them - everyone entitled to. Anybody else is described by the default state.
+     *
+     * @param array<string, mixed> $context
+     * @return array<string, mixed> JWT subject => the state of that person
+     */
+    private function buildPerUserStates(Serializer $serializer, array $context): array
+    {
+        $userIds = $this->block->getVoterUserIds();
+        foreach ($this->getEligibility() ?? [] as $group) {
+            foreach ($group->users as $user) {
+                $userIds[] = $user->userId;
+            }
+        }
+
+        $states = [];
+        foreach (array_unique($userIds) as $userId) {
+            $user = User::getCachedUser($userId);
+            if (!$user) {
+                continue;
+            }
+            $states[JwtCreator::getJwtUserIdForUser($user)] = $serializer->normalize($this->getUserState($user), null, $context);
+        }
+
+        return $states;
     }
 
     // *** Who may see what ***
@@ -200,9 +337,12 @@ class VotingPayloadBuilder
 
     // *** The parts ***
 
-    private static function getCurrentTime(): int
+    private function getCurrentTime(): int
     {
-        return (int)round(microtime(true) * 1000); // needs to include milliseconds for accuracy
+        // Needs to include milliseconds for accuracy
+        $this->currentTime ??= (int)round(microtime(true) * 1000);
+
+        return $this->currentTime;
     }
 
     private function getStatus(): VotingStatus
@@ -225,14 +365,48 @@ class VotingPayloadBuilder
      */
     private function getAnswers(): array
     {
+        $consultation = $this->block->getMyConsultation();
+
         return array_map(
             fn (Answer $answer): VotingAnswer => new VotingAnswer(
                 apiId: $answer->apiId,
-                title: $answer->title,
+                // Translated, and a live event is delivered to readers of every language
+                title: LocalizedString::build($consultation, fn (): string => $this->getAnswerTitleInReaderLanguage($answer->apiId)),
                 result: VotingItemResult::fromDbStatus($answer->statusId),
             ),
             $this->answers
         );
+    }
+
+    /**
+     * Asked anew for every language a payload is rendered in: the titles of the answers come out of
+     * the translations, so the ones this builder holds are in the language of whoever triggered the
+     * event rather than in the reader's.
+     */
+    private function getAnswerTitleInReaderLanguage(string $apiId): string
+    {
+        foreach ($this->block->getAnswers() as $answer) {
+            if ($answer->apiId === $apiId) {
+                return $answer->title;
+            }
+        }
+
+        return $apiId;
+    }
+
+    /**
+     * A text that is only sometimes there: null stays null rather than becoming a localized empty
+     * string, so that "there is no proposed procedure" keeps saying that in every language.
+     *
+     * @param \Closure(): ?string $renderer
+     */
+    private static function localizedOrNull(?Consultation $consultation, ?string $current, \Closure $renderer): ?LocalizedString
+    {
+        if ($current === null) {
+            return null;
+        }
+
+        return LocalizedString::build($consultation, fn (): string => (string)$renderer());
     }
 
     private function getPublicity(): VotingPublicity
@@ -261,7 +435,11 @@ class VotingPayloadBuilder
             type: $this->block->quorumType,
             eligible: $quorumType->getRelevantEligibleVotersCount($this->block),
             target: $quorumType->getQuorum($this->block),
-            targetLabel: $quorumType->getCustomQuorumTarget($this->block),
+            targetLabel: self::localizedOrNull(
+                $this->block->getMyConsultation(),
+                $quorumType->getCustomQuorumTarget($this->block),
+                fn (): ?string => $this->block->getQuorumType()->getCustomQuorumTarget($this->block)
+            ),
         );
     }
 
@@ -345,16 +523,19 @@ class VotingPayloadBuilder
         foreach (self::groupItems($items) as $groupId => $groupItems) {
             foreach ($groupItems as $item) {
                 $base = $item->getAgendaApiBaseObject();
+                $consultation = $item->getMyConsultation();
                 $built[] = new VotingItem(
                     type: self::getItemType($item),
                     id: $item->getId(),
                     groupId: (string)$groupId,
-                    titleWithPrefix: $base['title_with_prefix'],
+                    // The wording around a motion title, the list of initiators and the proposed
+                    // procedure are translated, so they are rendered per language for live events
+                    titleWithPrefix: LocalizedString::build($consultation, fn (): string => $item->getAgendaApiBaseObject()['title_with_prefix']),
                     prefix: ($base['prefix'] !== '' ? $base['prefix'] : null),
-                    initiatorsHtml: $base['initiators_html'],
+                    initiatorsHtml: self::localizedOrNull($consultation, $base['initiators_html'], fn (): ?string => $item->getAgendaApiBaseObject()['initiators_html']),
                     urlHtml: $base['url_html'],
                     urlJson: $base['url_json'],
-                    procedureHtml: $base['procedure'],
+                    procedureHtml: self::localizedOrNull($consultation, $base['procedure'], fn (): ?string => $item->getAgendaApiBaseObject()['procedure']),
                     result: VotingItemResult::fromDbStatus($item->getVotingResult()),
                 );
             }
@@ -456,7 +637,11 @@ class VotingPayloadBuilder
 
         return new VotingItemGroupQuorum(
             votes: $quorumType->getRelevantVotedCount($this->block, $item),
-            currentLabel: $quorumType->getCustomQuorumCurrent($this->block, $item),
+            currentLabel: self::localizedOrNull(
+                $this->block->getMyConsultation(),
+                $quorumType->getCustomQuorumCurrent($this->block, $item),
+                fn (): ?string => $this->block->getQuorumType()->getCustomQuorumCurrent($this->block, $item)
+            ),
         );
     }
 
@@ -581,7 +766,12 @@ class VotingPayloadBuilder
 
         return new VotingPolicy(
             id: $apiObject['id'],
-            description: $apiObject['description'] ?? null,
+            // The name of a policy is translated, as are the names of the groups behind it
+            description: self::localizedOrNull(
+                $this->block->getMyConsultation(),
+                $apiObject['description'] ?? null,
+                fn (): ?string => $this->block->getVotingPolicy()->getApiObject()['description'] ?? null
+            ),
             userGroups: $apiObject['user_groups'] ?? null,
         );
     }
@@ -606,7 +796,8 @@ class VotingPayloadBuilder
         return array_values(array_map(
             fn (ConsultationUserGroup $group): VotingUserGroup => new VotingUserGroup(
                 id: $group->id,
-                title: $group->getNormalizedTitle(),
+                // The names of the groups Antragsgrün creates itself are translated
+                title: LocalizedString::build($consultation, fn (): string => $group->getNormalizedTitle()),
                 memberCount: $frozenCounts[$group->id] ?? count($group->getUserIds()),
             ),
             $consultation->getAllAvailableUserGroups($additionalIds, true)
@@ -654,7 +845,7 @@ class VotingPayloadBuilder
         return array_values(array_map(
             fn (EligibilityByGroup $group): VotingEligibilityGroup => new VotingEligibilityGroup(
                 groupId: $group->groupId,
-                title: $group->groupTitle,
+                title: LocalizedString::fromString($this->block->getMyConsultation(), $group->groupTitle),
                 users: array_values(array_map(
                     fn (array $user): VotingEligibilityUser => new VotingEligibilityUser(
                         userId: $user['user_id'],

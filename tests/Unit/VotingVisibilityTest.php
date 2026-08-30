@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use app\components\{Tools, VotingMethods};
-use app\models\api\voting\{VotingBlockAdmin, VotingBlockUser, VotingItemGroup, VotingStatus};
+use app\models\api\voting\{VotingBlockAdmin, VotingBlockUser, VotingItemGroup, VotingPayloadBuilder, VotingStatus};
 use app\models\db\{Consultation, User, VotingBlock};
 use app\models\proposedProcedure\AgendaVoting;
 use Codeception\Attribute\Group;
@@ -279,6 +279,91 @@ class VotingVisibilityTest extends DBTestBase
 
         $closedGroup = $this->getVotedGroup($this->getUserPayload());
         $this->assertSame(7, $this->getVoteCount($closedGroup, 'yes'), 'After closing');
+    }
+
+    private function getEnvelope(bool $tallyOnly): array
+    {
+        return VotingPayloadBuilder::fromVotingBlock($this->getBlock())->buildLiveEnvelope($tallyOnly);
+    }
+
+    private static function findGroup(array $section): array
+    {
+        foreach ($section['item_groups'] as $group) {
+            if ($group['id'] === 'single:amendment:' . self::AMENDMENT_ID) {
+                return $group;
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * The Live server picks sections, it does not decide anything - so a vote nobody may see must not
+     * be in the message at all, in no section and under no key.
+     */
+    /**
+     * The Live server picks sections, it does not decide anything - so a vote nobody may see must not
+     * be in the message at all, and what only the administration may see has to be in the section
+     * that only reaches the administration.
+     */
+    public function testLiveEventScopesWhatItCarries(): void
+    {
+        $this->castTwoVotesAndPublish(VotingBlock::VOTES_PUBLIC_NO, VotingBlock::RESULTS_PUBLIC_YES);
+
+        $secret = $this->getEnvelope(tallyOnly: false);
+        $json = json_encode($secret, JSON_THROW_ON_ERROR);
+
+        $this->assertNull(self::findGroup($secret['everyone'])['single_votes']);
+        $this->assertArrayNotHasKey('item_groups', $secret['admin_only'], 'Nothing about the items differs for an admin here');
+        $this->assertStringNotContainsString(self::VOTER_YES, $json, 'A secret vote is not published at all');
+        $this->assertStringNotContainsString(self::VOTER_NO, $json, 'A secret vote is not published at all');
+
+        // The configuration of a voting is for the administration, and only there
+        $this->assertArrayNotHasKey('settings', $secret['everyone']);
+        $this->assertArrayNotHasKey('log', $secret['everyone']);
+        $this->assertArrayHasKey('settings', $secret['admin_only']);
+        $this->assertArrayHasKey('log', $secret['admin_only']);
+
+        // What both see is sent once, in the section for everyone
+        $this->assertArrayHasKey('statistics', $secret['everyone']);
+        $this->assertArrayNotHasKey('statistics', $secret['admin_only']);
+
+        // Nobody's own state is part of what everyone gets
+        $this->assertArrayNotHasKey('me', $secret['everyone']);
+
+        // An object, not a list: the Live server looks people up in it by their JWT subject
+        $perUser = (array)$secret['per_user'];
+        $voterId = 'login-' . User::findOne(['email' => self::VOTER_YES])->id;
+        $otherId = 'login-' . User::findOne(['email' => self::VOTER_NO])->id;
+        $this->assertSame('yes', $perUser[$voterId]['votes'][0]['answer']);
+        $this->assertSame('no', $perUser[$otherId]['votes'][0]['answer']);
+
+        // Somebody this voting knows nothing about: it is open to whoever is logged in
+        $this->assertTrue($secret['default_user_state']['eligible']);
+        $this->assertSame([], $secret['default_user_state']['votes']);
+    }
+
+    /**
+     * Votes an administrator may see travel in the section that reaches them, and the event sent
+     * after every cast vote is about the counting alone: a vote changes nothing about the voting
+     * itself, and the person who cast it was answered directly.
+     */
+    public function testAdminVotesAndTallyEvents(): void
+    {
+        $this->openVoting(VotingBlock::VOTES_PUBLIC_ADMIN, VotingBlock::RESULTS_PUBLIC_YES);
+        $this->vote(self::VOTER_YES, 'yes');
+        $this->vote(self::VOTER_NO, 'no');
+
+        $full = $this->getEnvelope(tallyOnly: false);
+        $this->assertNull(self::findGroup($full['everyone'])['single_votes']);
+        $this->assertCount(2, self::findGroup($full['admin_only'])['single_votes']);
+
+        $tally = $this->getEnvelope(tallyOnly: true);
+        $this->assertSame('tally', $tally['kind']);
+        $this->assertSame(['statistics', 'item_groups', 'abstention'], array_keys($tally['everyone']));
+        $this->assertSame(['item_groups'], array_keys($tally['admin_only']), 'Only the votes differ for an admin');
+        $this->assertArrayNotHasKey('per_user', $tally);
+        $this->assertArrayNotHasKey('default_user_state', $tally);
     }
 
     /**

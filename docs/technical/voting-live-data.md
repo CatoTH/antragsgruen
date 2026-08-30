@@ -98,24 +98,32 @@ Routing key `voting.<installation>.<subdomain>.<consultationPath>` — one messa
 {
   "kind": "full",                  // "full" | "tally", see §7
   "block_id": 42,
-  "state_version": 17,             // monotonic per block; clients drop out-of-order messages
+  "state_version": 1724740000123,  // the publish time in ms: monotonic enough to order two events
   "current_time": 1724740000123,   // ms, for clock-skew correction of the countdown
 
-  "everyone": { /* VotingBlockPublic, §5 */ },
+  "everyone": { /* the fields of VotingBlockUser except "me", §5 */ },
 
-  "admin_only": { /* VotingBlockAdminExtra, §6 — null if nothing admin-specific changed */ },
+  "admin_only": { /* the fields an administrator sees differently or in addition, §6 — null if none */ },
 
-  "per_user": {                    // only in "full" messages
+  "default_user_state": { /* VotingUserState, §5.3 */ },   // only in "full" messages
+  "per_user": {                                            // only in "full" messages
     "login-42": { /* VotingUserState, §5.3 */ },
     "login-77": { /* … */ }
   }
 }
 ```
 
-`per_user` contains an entry for every user who is eligible to vote or has already voted; everybody
-else gets `DEFAULT_ME` (not eligible, no votes). For a 2000-delegate consultation that is roughly
-100 KB — acceptable because `full` messages are triggered by admin actions (open / close / reset /
-settings / items), not by cast votes (§7).
+`admin_only` is derived rather than listed: whatever the administration's payload says differently
+from the participant's, or says at all, goes there. A field added to the admin payload therefore
+lands in the right scope by itself, and `everyone ∪ admin_only` is by construction exactly what an
+administrator would have been served over REST.
+
+`per_user` holds an entry for everyone this voting knows something about: everyone who has voted,
+and - where the policy names its voters by user group - everyone entitled to. Anybody else is
+described by `default_user_state`, whose `eligible` follows from whether the policy can name its
+voters at all: one that admits whoever is logged in cannot, so a reader is assumed to be among them.
+For a 2000-delegate consultation the map is roughly 100 KB - acceptable because `full` messages are
+triggered by admin actions (open / close / reset / settings / items), not by cast votes (§7).
 
 ## 5. What clients receive: `VotingBlockUser`
 
@@ -538,11 +546,26 @@ Two things worth knowing about it:
   and results that are published do not change while the page is open. It renders what the server
   gave it, as before.
 
-**Stage 3 - publishing.** `ROLE_VOTING_ADMIN` in `JwtCreator`, and a `LiveTools::sendVoting()` that
-posts the envelope of §4 with the routing key `voting.<installation>.<site>.<consultation>`. Full
-messages on every mutation in `VotingMethods` / the controller, tallies on cast votes. Two rules for
-the call sites: publish after `ResourceLock::releaseAllLocks()`, and never let a publishing failure
-fail the request that triggered it (§7).
+**Stage 3 - publishing. Done.** `JwtCreator` puts `ROLE_VOTING_ADMIN` into the token of everyone
+holding `PRIVILEGE_VOTINGS`, and `LiveTools::sendVotingState()` / `sendVotingTally()` post the
+envelope of §4 with the routing key `voting.<installation>.<site>.<consultation>` and the
+`default_language` header. Administrative changes and a newly created voting - including one created
+from the debate widget - send the whole state; a cast vote sends a tally. Both rules of §7 hold:
+publishing happens after `ResourceLock::releaseAllLocks()`, and a broker that is down, misconfigured
+or without a listener is logged, never turned into a failed vote.
+
+What this stage also had to bring:
+
+* **The payload speaks every language of the consultation now.** A live event is published once and
+  read by everyone, so the strings whose wording depends on the reader are `LocalizedString`s: the
+  titles of the answers, an item's title, initiators and proposed procedure, the description of the
+  policy, the names of the user groups and the labels of a custom quorum. REST responses are
+  unaffected - the same DTOs serialize as plain strings there (see `docs/technical/live-data.md`).
+* **A tally builds only what it is about.** Statistics, item groups and the abstention, for both
+  audiences - not the configuration, not who is entitled to vote, not anyone's own state. Building
+  the whole payload after every cast vote is exactly what §7 warns about.
+* `VotingBlock::preloadVotesOfAllUsers()` loads the votes of everyone in one query, so that building
+  a per-user map of two thousand people is not two thousand queries.
 
 **Stage 4 - the Live server.** A `voting.#` queue and binding, a receiver, and one handler that
 applies the rule of §2 - `everyone`, plus `admin_only` for a subscriber holding `ROLE_VOTING_ADMIN`,

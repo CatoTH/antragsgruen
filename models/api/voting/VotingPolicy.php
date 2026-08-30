@@ -8,7 +8,7 @@ class VotingPolicy
 {
     public function __construct(
         public int $id,
-        public ?string $description = null,
+        public ?\app\models\api\LocalizedString $description = null,
         /** @var int[]|null */
         public ?array $userGroups = null,
     ) {

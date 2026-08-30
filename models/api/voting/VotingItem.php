@@ -10,12 +10,12 @@ class VotingItem
         public VotingItemType $type,
         public int $id,
         public string $groupId,
-        public string $titleWithPrefix,
+        public \app\models\api\LocalizedString $titleWithPrefix,
         public ?string $prefix = null,
-        public ?string $initiatorsHtml = null,
+        public ?\app\models\api\LocalizedString $initiatorsHtml = null,
         public ?string $urlHtml = null,
         public ?string $urlJson = null,
-        public ?string $procedureHtml = null,
+        public ?\app\models\api\LocalizedString $procedureHtml = null,
         public ?VotingItemResult $result = null,
     ) {
     }

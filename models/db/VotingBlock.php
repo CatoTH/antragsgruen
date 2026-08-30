@@ -195,6 +195,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     /** @var array<int, Vote[]> */
     private array $votesByUserCache = [];
 
+    /** Set once every vote of this voting has been loaded, so that people without one are known too */
+    private bool $allVotesOfUsersLoaded = false;
+
     /**
      * Both caches hold votes as they were when they were first asked for, so reloading the voting
      * has to drop them - which is what the callers that cast a vote and then build a payload from
@@ -203,6 +206,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     public function refresh(): bool
     {
         $this->votesByUserCache = [];
+        $this->allVotesOfUsersLoaded = false;
         $this->votesSortedByItemCache = null;
 
         return parent::refresh();
@@ -220,12 +224,49 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     public function getAllVotesOfUser(User $user): array
     {
         if (!isset($this->votesByUserCache[$user->id])) {
+            if ($this->allVotesOfUsersLoaded) {
+                return [];
+            }
             $this->votesByUserCache[$user->id] = Vote::find()
                 ->where(['votingBlockId' => $this->id, 'userId' => $user->id])
                 ->all();
         }
 
         return $this->votesByUserCache[$user->id];
+    }
+
+    /**
+     * Loads the votes of everyone at once, for the one caller that needs the state of many people:
+     * the live event, which describes the voting for every person it is delivered to. Asking per
+     * person would be one query each.
+     */
+    public function preloadVotesOfAllUsers(): void
+    {
+        if ($this->allVotesOfUsersLoaded) {
+            return;
+        }
+
+        $this->votesByUserCache = [];
+        foreach (Vote::find()->where(['votingBlockId' => $this->id])->all() as $vote) {
+            $this->votesByUserCache[$vote->userId][] = $vote;
+        }
+        $this->allVotesOfUsersLoaded = true;
+    }
+
+    /**
+     * @return int[] the IDs of everyone who has cast a vote here
+     */
+    public function getVoterUserIds(): array
+    {
+        $ids = (new Query())
+            ->select('userId')
+            ->distinct()
+            ->from(Vote::tableName())
+            ->where(['votingBlockId' => $this->id])
+            ->andWhere(['not', ['userId' => null]])
+            ->column();
+
+        return array_map('intval', $ids);
     }
 
     public function getUserSingleItemVote(User $user, IVotingItem $item): ?Vote

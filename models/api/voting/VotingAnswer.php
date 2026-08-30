@@ -8,7 +8,7 @@ class VotingAnswer
 {
     public function __construct(
         public string $apiId,
-        public string $title,
+        public \app\models\api\LocalizedString $title,
         public ?VotingItemResult $result = null,
     ) {
     }

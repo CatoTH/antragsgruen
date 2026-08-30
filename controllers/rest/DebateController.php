@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers\rest;
 
-use app\components\{DebateTools, Tools, UrlHelper};
+use app\components\{DebateTools, LiveTools, Tools, UrlHelper};
 use app\models\api\speech\SpeechQueueAdmin;
 use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateSpeechQueueRequest, DebateStartRequest,
     DebateState, DebateVotingAssignRequest, DebateVotingBlock, DebateVotingBlockOption, DebateVotingCreateRequest,
@@ -216,7 +216,8 @@ class DebateController extends RestBase
             } catch (SerializerException $e) {
                 return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
             }
-            DebateTools::createVotingForDebate($debate, $request->question);
+            $createdVotingBlock = DebateTools::createVotingForDebate($debate, $request->question);
+            LiveTools::sendVotingState($this->consultation, $createdVotingBlock);
         }
 
         // A mutation may have changed the assignment; reload so the returned state is current.
