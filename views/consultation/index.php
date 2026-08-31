@@ -40,11 +40,21 @@ echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
 if ($consultation->getSettings()->hasCurrentlyDebated) {
-    if (User::havePrivilege($consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null)) {
+    $debateModerator = User::havePrivilege($consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null);
+    if ($debateModerator) {
         echo $this->render('_index_debate_admin', ['consultation' => $consultation]);
     } else {
         echo $this->render('_index_debate', ['consultation' => $consultation]);
     }
+
+    // Every voting that is open belongs on the home page just as it would without a debate running.
+    // The one exception is the voting of the item being debated: the participants' debate widget
+    // already offers them that one, while the moderators' only administers it - so moderators cast
+    // their vote here, and it must not be left out for them.
+    echo $this->render('@app/views/voting/_index_voting', [
+        'assignedToMotion' => null,
+        'excludeDebatedVoting' => !$debateModerator,
+    ]);
 } else {
     if ($consultation->getSettings()->hasSpeechLists) {
         $queue = $consultation->getActiveSpeechQueue();

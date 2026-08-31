@@ -23,6 +23,10 @@ export class VotingBlock {
             // belong to a motion, or the ones that belong to none (the consultation home page)
             channel = this.element.getAttribute('data-channel'),
             filterMotionId = this.element.getAttribute('data-filter-motion'),
+            // Set where the debate is shown next to this widget: the voting of the debated item is
+            // presented there, so it is left out here rather than appearing twice
+            excludeDebated = this.element.getAttribute('data-exclude-debated') === '1',
+            initialDebatedVoting = this.element.getAttribute('data-debated-voting'),
             voteUrl = this.element.getAttribute('data-url-vote'),
             adminLink = this.element.getAttribute('data-admin-link');
 
@@ -44,8 +48,13 @@ export class VotingBlock {
             },
             data() {
                 return {
+                    // What the channel carries, and what is left of it after filtering: a change of
+                    // the debated item has to filter the list again without waiting for a new one
+                    allVotings: JSON.parse(votingInitJson),
                     votings: JSON.parse(votingInitJson),
+                    debatedVotingBlockId: (initialDebatedVoting ? parseInt(initialDebatedVoting, 10) : null),
                     liveDataHandle: null,
+                    debateHandle: null,
                     adminLink,
                     onReloadedCbs: []
                 };
@@ -67,14 +76,31 @@ export class VotingBlock {
                         const motionId = (filterMotionId === '' ? null : parseInt(filterMotionId, 10));
                         filtered = filtered.filter(voting => voting.assigned_motion_id === motionId);
                     }
+                    if (excludeDebated && this.debatedVotingBlockId !== null) {
+                        filtered = filtered.filter(voting => voting.id !== this.debatedVotingBlockId);
+                    }
 
                     return sortVotings(filtered);
                 },
                 setVotings: function (votings) {
+                    this.allVotings = votings;
                     this.votings = this.filterVotings(votings);
                     this.onReloadedCbs.forEach(cb => {
                         cb(this.votings);
                     });
+                },
+                /**
+                 * The debate moved on to another item, which is being voted on with another voting -
+                 * so the one it was on becomes this widget's business, and the new one stops being it.
+                 */
+                onDebateState: function (state) {
+                    const current = (state ? state.current : null);
+                    const votingBlockId = (current && current.voting_block ? current.voting_block.id : null);
+                    if (votingBlockId === this.debatedVotingBlockId) {
+                        return;
+                    }
+                    this.debatedVotingBlockId = votingBlockId;
+                    this.setVotings(this.allVotings);
                 },
                 _votePost: function (votingBlockId, postData) {
                     const widget = this;
@@ -120,16 +146,27 @@ export class VotingBlock {
                 if (this.liveDataHandle) {
                     this.liveDataHandle.unregister();
                 }
+                if (this.debateHandle) {
+                    this.debateHandle.unregister();
+                }
             },
             created() {
                 // The results of a voting that is over do not change any more, so that page is
-                // rendered once and declares no channel
+                // rendered once, declares no channel, and shows the list the server gave it as it is
                 if (!channel) {
                     return;
                 }
+                // The server list goes through the same filter as everything that arrives later -
+                // it is the one that knows which of them this page is about
+                this.setVotings(this.allVotings);
                 this.liveDataHandle = registerListener('user', channel, {
                     onData: votings => this.setVotings(votings),
                 });
+                if (excludeDebated) {
+                    this.debateHandle = registerListener('user', 'debate', {
+                        onData: state => this.onDebateState(state),
+                    });
+                }
             }
         });
 
