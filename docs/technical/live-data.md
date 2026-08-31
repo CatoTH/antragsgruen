@@ -57,7 +57,7 @@ answers with the whole list and is authoritative: whatever it does not contain h
 collection. A live event carries a single member, which is merged into the list by its ID; an event
 marked `partial` describes only part of a member and is merged field by field, leaving everything it
 does not mention as it was (a cast vote reports the counting alone, see
-[voting-live-data.md](voting-live-data.md) §7). A member marked `removed` has left the collection and
+[voting-live-data.md](voting-live-data.md) §6). A member marked `removed` has left the collection and
 is dropped from it — polls say that on their own by not listing it any more, but a client with a live
 connection stops polling, so an object that is deleted has to be able to say so itself. Widgets
 always receive the whole list and filter it themselves, because which members a page shows is

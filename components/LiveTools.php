@@ -101,7 +101,7 @@ class LiveTools
     /**
      * The counting of one voting, after a vote was cast: no configuration, and nothing about anyone
      * in particular - a vote changes the state of the person who cast it, and they were answered
-     * directly (see docs/technical/voting-live-data.md §7).
+     * directly (see docs/technical/voting-live-data.md §6).
      */
     public static function sendVotingTally(Consultation $consultation, VotingBlock $block, bool $debug = false): void
     {

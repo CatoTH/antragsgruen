@@ -165,7 +165,7 @@ class VotingPayloadBuilder
     // *** The live event ***
 
     /**
-     * The three scopes of a live event (see docs/technical/voting-live-data.md §2 and §4): what every
+     * The three scopes of a live event (see docs/technical/voting-live-data.md §2 and §3): what every
      * participant may see, what only the administration may see on top of that, and what belongs to
      * one person alone. The Live server picks; it decides nothing.
      *
