@@ -232,6 +232,12 @@ class Channel {
      * that on their own, but a client with a live connection does not poll any more, so an object
      * that is deleted has to be able to say so.
      *
+     * Every path replaces the collection with a new array rather than changing the one the widgets
+     * were handed before. A widget that keeps what it is given and re-derives from it - as a Vue
+     * component does - would otherwise not notice a live event at all: the array it holds would be
+     * the array that was just changed, and nothing about it would look new. Polls happened to build
+     * a new one anyway, which is why this only ever showed on installations running a Live server.
+     *
      * @param {any} data
      */
     publishCollection(data) {
@@ -262,10 +268,12 @@ class Channel {
                     // Too little to show anything with; the next poll brings the whole member
                     return;
                 }
-                this.collection.push(data);
+                this.collection = this.collection.concat([data]);
             } else {
                 const { partial, ...fields } = data;
-                this.collection[index] = Object.assign({}, this.collection[index], fields);
+                this.collection = this.collection.map(
+                    (member, memberIndex) => (memberIndex === index ? Object.assign({}, member, fields) : member)
+                );
             }
         }
 

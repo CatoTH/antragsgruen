@@ -55,8 +55,9 @@ $I->click($tabDebated);
 $I->waitForElement('.currentDebateAdmin .manageVotingBtn', 5);
 $I->see('Abstimmung anlegen', '.currentDebateAdmin .manageVotingBtn'); // no voting associated yet
 $I->click('.currentDebateAdmin .manageVotingBtn');
-$I->waitForElement('.currentDebateAdmin .votingTab .votingCard', 8); // created + switched to the tab
-$I->see('In Vorbereitung', '.votingTab .votingCard .votingCardStatus');
+// Created and switched to the tab, which administers the voting in place for an admin who may
+$I->waitForElement('.currentDebateAdmin .votingTab .embeddedVotingAdmin .voting', 8);
+$I->seeElement('.votingTab .embeddedVotingAdmin .btnOpen'); // created in preparing state, not opened
 // The debated motion is now its own voting item, so unassigning would not clear the card - the
 // "unassign" button is therefore hidden (it would otherwise be a no-op, leaving the voting box behind).
 $I->dontSeeElement('.votingTab .votingCard .votingCardActions button');
@@ -65,7 +66,7 @@ $I->wantTo('see the voting button switch to "manage" once a voting is associated
 $I->click($tabDebated);
 $I->waitForText('Abstimmung verwalten', 5, '.currentDebateAdmin .manageVotingBtn');
 $I->click('.currentDebateAdmin .manageVotingBtn'); // now just switches to the tab
-$I->waitForElement('.currentDebateAdmin .votingTab .votingCard', 8);
+$I->waitForElement('.currentDebateAdmin .votingTab .embeddedVotingAdmin .voting', 8);
 
 
 $I->wantTo('see the button labels update when switching to another item without changing tabs');

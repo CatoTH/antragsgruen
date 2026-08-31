@@ -173,6 +173,16 @@
         align-items: center;
         gap: 10px;
       }
+
+      // The voting administration hosted here brings its own frame, so the card only holds it
+      .embeddedVotingAdmin {
+        margin: -12px -15px 0;
+
+        > .voting {
+          border: none;
+          margin-bottom: 0;
+        }
+      }
     }
 
     .votingAssignRow {

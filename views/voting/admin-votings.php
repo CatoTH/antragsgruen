@@ -2,8 +2,8 @@
 
 use app\models\layoutHooks\Layout;
 use app\models\policies\IPolicy;
-use app\components\{HTMLTools, IMotionStatusFilter, LiveDataChannels, UrlHelper};
-use app\models\db\{Amendment, Motion, User};
+use app\components\{HTMLTools, LiveDataChannels, UrlHelper, VotingAdminWidgetData};
+use app\models\db\User;
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use app\models\votings\AnswerTemplates;
@@ -39,48 +39,13 @@ foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
 
 $sortUrl = UrlHelper::createUrl(['/rest/voting/post-vote-order']);
 $voteCreateUrl = UrlHelper::createUrl(['/rest/voting/create-voting-block']);
-$voteSettingsUrl = UrlHelper::createUrl(['/rest/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
-$voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
+$voteSettingsUrl = VotingAdminWidgetData::getVoteSettingsUrl();
+$voteDownloadUrl = VotingAdminWidgetData::getVoteDownloadUrl();
 
-$addableMotionsData = [];
-$filter = IMotionStatusFilter::onlyUserVisible($consultation, false)
-                             ->noAmendmentsIfMotionIsMoved();
-foreach ($filter->getFilteredConsultationIMotionsSorted() as $IMotion) {
-    if (is_a($IMotion, Amendment::class)) {
-        $addableMotionsData[] = [
-            'type' => 'amendment',
-            'id' => $IMotion->id,
-            'title' => $IMotion->getTitleWithPrefix(),
-        ];
-    } else {
-        /** @var Motion $IMotion */
-        $amendments = [];
-        foreach ($IMotion->getFilteredAmendments($filter) as $amendment) {
-            $amendments[] = [
-                'type' => 'amendment',
-                'id' => $amendment->id,
-                'title' => $amendment->titlePrefix,
-            ];
-        }
-        $addableMotionsData[] = [
-            'type' => 'motion',
-            'id' => $IMotion->id,
-            'title' => $IMotion->getTitleWithPrefix(),
-            'amendments' => $amendments,
-        ];
-    }
-}
-
-$userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): array {
-    return $group->getUserAdminApiObject();
-}, $consultation->getAllAvailableUserGroups());
-
-
-$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
-$CONSTANTS = array_merge($CONSTANTS, [
-    "motionEditUrl" => UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000']),
-    "amendmentEditUrl" => UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000']),
-]);
+// Shared with the voting tab of the debate administration, which hosts the same widget
+$addableMotionsData = VotingAdminWidgetData::getAddableMotions($consultation);
+$userGroups = VotingAdminWidgetData::getUserGroups($consultation);
+$CONSTANTS = VotingAdminWidgetData::getConstants();
 
 ?>
 <h1><?= Yii::t('voting', 'admin_title') ?></h1>

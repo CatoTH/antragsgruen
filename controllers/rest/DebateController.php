@@ -228,7 +228,11 @@ class DebateController extends RestBase
 
     private function buildVotingState(?DebateItem $debate): DebateVotingState
     {
-        $adminLink = UrlHelper::createUrl(['/consultation/admin-votings']);
+        // Choosing which voting belongs to the debated item is part of moderating a debate;
+        // administering that voting is not, and takes the privilege for it - so a moderator without
+        // it is shown the voting rather than being given the controls of it.
+        $canAdministerVotings = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null);
+        $adminLink = ($canAdministerVotings ? UrlHelper::createUrl(['/consultation/admin-votings']) : null);
 
         $selectable = array_map(
             fn (VotingBlock $block) => DebateVotingBlockOption::fromEntity($block),
@@ -237,6 +241,7 @@ class DebateController extends RestBase
 
         if ($debate === null) {
             return new DebateVotingState(
+                canAdministerVotings: $canAdministerVotings,
                 canUnassign: false,
                 createMode: DebateVotingStateCreateMode::NONE,
                 selectableVotingBlocks: $selectable,
@@ -261,6 +266,7 @@ class DebateController extends RestBase
         $canUnassign = ($debate->votingBlockId !== null) && !$hasFallback;
 
         return new DebateVotingState(
+            canAdministerVotings: $canAdministerVotings,
             canUnassign: $canUnassign,
             createMode: $createMode,
             selectableVotingBlocks: $selectable,

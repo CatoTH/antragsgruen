@@ -7,6 +7,7 @@ namespace app\models\api\debate;
 class DebateVotingState
 {
     public function __construct(
+        public bool $canAdministerVotings,
         public bool $canUnassign,
         public DebateVotingStateCreateMode $createMode,
         /** @var DebateVotingBlockOption[] */

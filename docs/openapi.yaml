@@ -1834,7 +1834,15 @@ components:
         - create_mode
         - selectable_voting_blocks
         - can_unassign
+        - can_administer_votings
       properties:
+        can_administer_votings:
+          type: boolean
+          description: >
+            Whether this moderator may also administer the voting itself - opening, closing and
+            configuring it - which takes the privilege to manage votings, not the one to moderate a
+            debate. Where it is false the moderation widget shows the voting as a read-only card;
+            where it is true it hosts the voting administration for the debated item.
         assigned_voting_block_id:
           type: integer
           nullable: true
@@ -1897,7 +1905,10 @@ components:
           example: 0
         admin_link:
           type: string
-          description: URL of the full voting administration page for managing, opening, or closing this voting.
+          nullable: true
+          description: >
+            URL of the full voting administration page for managing, opening, or closing this voting.
+            Null for a moderator without the privilege to manage votings, who cannot open that page.
           example: https://test.antragsgruen.de/std-parteitag/consultation/admin-votings
 
     DebateVotingBlockOption:

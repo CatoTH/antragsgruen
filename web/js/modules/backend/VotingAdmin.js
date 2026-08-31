@@ -10,7 +10,7 @@ import policySelect from "/js/vue/PolicySelect.js";
 import selectize from "/js/vue/Selectize.js";
 import tooltipDirective from "/js/vue/Tooltip.vue.js";
 import vuedraggable from "/npm/vuedraggable.js";
-import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
+import { createVotingAdminActions } from "/js/vue/voting/VotingAdminActions.js";
 import { registerListener } from "/js/modules/shared/LiveData.js";
 
 export class VotingAdmin {
@@ -43,6 +43,9 @@ export class VotingAdmin {
         const sortUrl = this.element.getAttribute('data-url-sort');
         const voteSettingsUrl = this.element.getAttribute('data-url-vote-settings');
         const voteCreateUrl = this.element.getAttribute('data-vote-create');
+
+        // Shared with the voting tab of the debate administration, which hosts the same widget
+        let actions = null;
 
         /** @type {import('vue').App} */
         const widget = createApp({
@@ -114,39 +117,6 @@ export class VotingAdmin {
                 }
             },
             methods: {
-                /**
-                 * The endpoints authenticate by JWT and answer with the new state of all votings,
-                 * which is what every operation here does with the response.
-                 */
-                _post: function (url, postData, onSuccess) {
-                    return authorizedFetch(url, {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json; charset=utf-8"},
-                        body: JSON.stringify(postData),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success !== undefined && !data.success) {
-                                alert(data.message);
-                                return;
-                            }
-                            onSuccess(data);
-                            return null;
-                        })
-                        .catch(err => {
-                            console.error("Could not perform the voting operation", err);
-                            alert(err);
-                        });
-                },
-                _performOperation: function (votingBlockId, additionalProps) {
-                    const widget = this;
-                    const url = voteSettingsUrl.replace(/VOTINGBLOCKID/, votingBlockId);
-
-                    return this._post(url, additionalProps || {}, data => {
-                        widget.setVotingFromObject(data);
-                        widget.refreshOthers();
-                    });
-                },
                 setVotingFromJson(data) {
                     if (data === this.votingsJson) {
                         return;
@@ -164,44 +134,28 @@ export class VotingAdmin {
                     this.isSorting = !this.isSorting;
                 },
                 setStatus(votingBlockId, newStatus) {
-                    this._performOperation(votingBlockId, {
-                        op: 'update-status',
-                        status: newStatus,
-                    });
+                    actions.setStatus(votingBlockId, newStatus);
                 },
                 saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames) {
-                    this._performOperation(votingBlockId, {
-                        op: 'save-settings',
-                        title,
-                        answerTemplate,
-                        majorityType,
-                        quorumType,
-                        hasGeneralAbstention: (hasGeneralAbstention ? 1 : 0),
-                        votePolicy,
-                        maxVotesByGroup,
-                        resultsPublic,
-                        votesPublic,
-                        votingTime,
-                        assignedMotion,
-                        votesNames,
-                    });
+                    actions.saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames);
                 },
                 onSorted(sortedIds) {
                     const widget = this;
 
-                    this._post(sortUrl, {votingIds: sortedIds}, data => {
-                        widget.setVotingFromObject(data);
-                        widget.isSorting = false;
-                        widget.refreshOthers();
+                    return actions.sortVotings(sortedIds).then(votings => {
+                        if (votings !== null) {
+                            widget.isSorting = false;
+                        }
+                        return null;
                     });
                 },
                 deleteVoting(votingBlockId) {
-                    this._performOperation(votingBlockId, {
-                        op: 'delete-voting',
-                    });
+                    actions.deleteVoting(votingBlockId);
                 },
                 createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, votePolicy, userGroups, resultsPublic, votesPublic, votesNames) {
-                    const postData = {
+                    const widget = this;
+
+                    return actions.createVoting({
                         type,
                         answers,
                         title,
@@ -213,12 +167,10 @@ export class VotingAdmin {
                         resultsPublic,
                         votesPublic,
                         votesNames
-                    };
-
-                    const widget = this;
-                    this._post(voteCreateUrl, postData, data => {
-                        widget.setVotingFromObject(data['votings']);
-                        widget.refreshOthers();
+                    }).then(data => {
+                        if (data === null) {
+                            return null;
+                        }
                         widget.onReloadedCbs.forEach(cb => {
                             cb(widget.votings);
                         });
@@ -226,33 +178,20 @@ export class VotingAdmin {
                         window.setTimeout(() => {
                             $("#voting" + data['created_voting']).scrollintoview({top_offset: -100});
                         }, 200);
+                        return null;
                     });
                 },
                 removeItem(votingBlockId, itemType, itemId) {
-                    this._performOperation(votingBlockId, {
-                        op: 'remove-item',
-                        itemType,
-                        itemId
-                    });
+                    actions.removeItem(votingBlockId, itemType, itemId);
                 },
                 addIMotion(votingBlockId, itemDefinition) {
-                    this._performOperation(votingBlockId, {
-                        op: 'add-imotion',
-                        itemDefinition
-                    });
+                    actions.addIMotion(votingBlockId, itemDefinition);
                 },
                 addQuestion(votingBlockId, question) {
-                    this._performOperation(votingBlockId, {
-                        op: 'add-question',
-                        question
-                    });
+                    actions.addQuestion(votingBlockId, question);
                 },
                 setVotersToUserGroup(votingBlockId, userIds, newUserGroup) {
-                    this._performOperation(votingBlockId, {
-                        op: 'set-voters-to-user-group',
-                        userIds,
-                        newUserGroup
-                    });
+                    actions.setVotersToUserGroup(votingBlockId, userIds, newUserGroup);
                 },
                 addReloadedCb: function (cb) {
                     this.onReloadedCbs.push(cb);
@@ -279,6 +218,15 @@ export class VotingAdmin {
             },
             created() {
                 this.setVotingFromJson(votingInitJson);
+
+                actions = createVotingAdminActions(
+                    {voteSettings: voteSettingsUrl, voteCreate: voteCreateUrl, sort: sortUrl},
+                    votings => {
+                        this.setVotingFromObject(votings);
+                        this.refreshOthers();
+                    }
+                );
+
                 this.liveDataHandle = registerListener('admin', 'voting', {
                     onData: votings => this.onLiveData(votings),
                 });

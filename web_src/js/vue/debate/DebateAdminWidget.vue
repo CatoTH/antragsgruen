@@ -128,18 +128,45 @@
                      v-t="['debate', 'admin_voting_loading']"></div>
 
                 <template v-if="votingState">
-                    <!-- A voting is resolved/assigned: compact card + link to the full voting administration -->
+                    <!-- A voting is resolved/assigned -->
                     <div v-if="votingState.resolved_voting_block" class="votingCard">
-                        <div class="votingCardHead">
-                            <span class="votingCardTitle">{{ votingState.resolved_voting_block.title }}</span>
-                            <span class="votingCardStatus label label-default">{{ votingStatusLabel(votingState.resolved_voting_block.status) }}</span>
-                        </div>
-                        <div class="votingCardCounts" v-t="['debate', 'admin_voting_votes', false, {
-                            '%TOTAL%': votingState.resolved_voting_block.votes_total,
-                            '%USERS%': votingState.resolved_voting_block.votes_users
-                        }]"></div>
+                        <!-- Administering it takes the privilege to manage votings, which moderating a
+                             debate does not grant: with it, the administration of the debated voting
+                             happens here; without it, the voting is only shown. -->
+                        <template v-if="canAdministerVotings">
+                            <div v-if="debatedVotingBlock" class="votingAdmin embeddedVotingAdmin votingCommon">
+                                <voting-admin-widget
+                                    :voting="debatedVotingBlock"
+                                    :addableMotions="votingAddableMotions"
+                                    :alreadyAddedItems="votingAlreadyAddedItems"
+                                    :userGroups="votingUserGroups"
+                                    :voteDownloadUrl="voteDownloadUrl"
+                                    @set-status="onVotingSetStatus"
+                                    @save-settings="onVotingSaveSettings"
+                                    @remove-item="onVotingRemoveItem"
+                                    @delete-voting="onVotingDeleteVoting"
+                                    @add-imotion="onVotingAddIMotion"
+                                    @add-question="onVotingAddQuestion"
+                                    @set-voters-to-user-group="onVotingSetVotersToUserGroup"
+                                ></voting-admin-widget>
+                            </div>
+                            <!-- The administration channel answers separately from the debate; showing
+                                 the card in the meantime would replace itself a moment later -->
+                            <div v-else class="votingLoading" v-t="['debate', 'admin_voting_loading']"></div>
+                        </template>
+                        <template v-else>
+                            <div class="votingCardHead">
+                                <span class="votingCardTitle">{{ votingState.resolved_voting_block.title }}</span>
+                                <span class="votingCardStatus label label-default">{{ votingStatusLabel(votingState.resolved_voting_block.status) }}</span>
+                            </div>
+                            <div class="votingCardCounts" v-t="['debate', 'admin_voting_votes', false, {
+                                '%TOTAL%': votingState.resolved_voting_block.votes_total,
+                                '%USERS%': votingState.resolved_voting_block.votes_users
+                            }]"></div>
+                        </template>
                         <div class="votingCardActions">
-                            <a :href="votingState.resolved_voting_block.admin_link" target="_blank" rel="noopener"
+                            <a v-if="votingState.resolved_voting_block.admin_link && !canAdministerVotings"
+                               :href="votingState.resolved_voting_block.admin_link" target="_blank" rel="noopener"
                                class="btn btn-default btn-xs" v-t="['debate', 'admin_voting_manage']"></a>
                             <button v-if="votingState.can_unassign" type="button" class="btn btn-link btn-xs"
                                     :disabled="votingBusy" @click="unassignVoting()"
@@ -198,6 +225,7 @@
 <script>
 import { authorizedFetch, postJson, putJson, deleteJson } from "/js/modules/shared/ApiClient.js";
 import { registerListener } from "/js/modules/shared/LiveData.js";
+import { createVotingAdminActions } from "/js/vue/voting/VotingAdminActions.js";
 import Translate from "/js/vue/Translate.vue.js";
 
 export default {
@@ -251,6 +279,24 @@ export default {
             type: String,
             required: true,
         },
+        // Only meaningful for a moderator who may also administer votings; where they may not, the
+        // voting tab shows a read-only card instead of the administration widget
+        voteSettingsUrl: {
+            type: String,
+            default: '',
+        },
+        voteDownloadUrl: {
+            type: String,
+            default: '',
+        },
+        votingAddableMotions: {
+            type: Array,
+            default: () => [],
+        },
+        votingUserGroups: {
+            type: Array,
+            default: () => [],
+        },
     },
     data() {
         return {
@@ -276,6 +322,12 @@ export default {
             votingState: null,
             votingLoading: false,
             votingError: null,
+            // Every voting of the consultation, as the administration channel describes them. Which
+            // of them belongs to the debated item is derived, not remembered - the debate can
+            // resolve to another one at any moment.
+            votingAdminList: [],
+            votingHandle: null,
+            votingActions: null,
             votingBusy: false,
             votingQuestion: '',
             selectedVotingBlockId: null,
@@ -305,6 +357,43 @@ export default {
         votingButtonLabel() {
             const hasVoting = this.current && this.current.voting_block;
             return Translate.getTranslation('debate', hasVoting ? 'admin_voting_manage' : 'admin_voting_create');
+        },
+        /**
+         * Whether this moderator may administer the voting itself, rather than only choose which one
+         * belongs to the debated item. That takes the privilege to manage votings.
+         */
+        canAdministerVotings() {
+            return !!(this.votingState && this.votingState.can_administer_votings);
+        },
+        /**
+         * What is already being voted on somewhere, so that the widget does not offer it again. Taken
+         * from every voting of the consultation, not only the debated one - an item belongs to one
+         * voting at a time.
+         */
+        votingAlreadyAddedItems() {
+            const motions = [];
+            const amendments = [];
+            this.votingAdminList.forEach(voting => {
+                voting.items.forEach(item => {
+                    if (item.type === 'motion') {
+                        motions.push(item.id);
+                    }
+                    if (item.type === 'amendment') {
+                        amendments.push(item.id);
+                    }
+                });
+            });
+
+            return {motions, amendments};
+        },
+        /** What the debated item is voted on with, if the admin channel has told us about it yet */
+        debatedVotingBlock() {
+            const resolvedId = (this.current && this.current.voting_block ? this.current.voting_block.id : null);
+            if (resolvedId === null) {
+                return null;
+            }
+
+            return this.votingAdminList.find(voting => voting.id === resolvedId) || null;
         },
         assignableOptions() {
             if (!this.votingState) {
@@ -500,10 +589,56 @@ export default {
             this.votingError = null;
             this.selectedVotingBlockId = null;
             this.votingQuestion = '';
+            // A voting that was just created is not in the list the channel last delivered, and one
+            // that was just assigned may be about to be administered here
+            this.refreshVotingOthers();
             // A voting mutation (create/assign/unassign) also changes what the debate resolves to, so
             // refresh the debate state to keep current.voting_block - and thus the debated tab's button
             // label - in sync. Failure is non-fatal; the voting change itself already succeeded.
             return this.reloadDebateState().catch(() => {});
+        },
+        /** The admin channel carries every voting of the consultation; which one this tab is about
+         *  follows from the debate, see debatedVotingBlock() */
+        onVotingAdminData(votings) {
+            this.votingAdminList = votings;
+        },
+        /** So that the voting administration page and the other moderators see what was changed here */
+        refreshVotingOthers() {
+            if (this.votingHandle) {
+                this.votingHandle.refreshNow();
+            }
+        },
+        onVotingSetStatus(votingBlockId, newStatus) {
+            return this.votingActions.setStatus(votingBlockId, newStatus).then(() => this.refreshVotingOthers());
+        },
+        onVotingSaveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames) {
+            return this.votingActions
+                .saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames)
+                .then(() => this.refreshVotingOthers());
+        },
+        onVotingRemoveItem(votingBlockId, itemType, itemId) {
+            return this.votingActions.removeItem(votingBlockId, itemType, itemId).then(() => this.refreshVotingOthers());
+        },
+        onVotingAddIMotion(votingBlockId, itemDefinition) {
+            return this.votingActions.addIMotion(votingBlockId, itemDefinition).then(() => this.refreshVotingOthers());
+        },
+        onVotingAddQuestion(votingBlockId, question) {
+            return this.votingActions.addQuestion(votingBlockId, question).then(() => this.refreshVotingOthers());
+        },
+        onVotingSetVotersToUserGroup(votingBlockId, userIds, newUserGroup) {
+            return this.votingActions.setVotersToUserGroup(votingBlockId, userIds, newUserGroup).then(() => this.refreshVotingOthers());
+        },
+        /**
+         * Deleting the voting of the item being debated also changes the debate, which resolved to
+         * it - so the debate state is reloaded rather than left pointing at something that is gone.
+         */
+        onVotingDeleteVoting(votingBlockId) {
+            return this.votingActions.deleteVoting(votingBlockId)
+                .then(() => {
+                    this.refreshVotingOthers();
+                    return this.reloadDebateState().catch(() => {});
+                })
+                .then(() => this.loadVotingState());
         },
         votingStatusLabel(status) {
             const keys = {
@@ -608,11 +743,29 @@ export default {
         this.debateHandle = registerListener('user', 'debate', {
             onData: (state) => this.applyDebateState(state),
         });
+
+        // Only where the voting administration is embedded: the channel takes the privilege to
+        // manage votings, and subscribing to it without one is refused
+        if (this.voteSettingsUrl) {
+            this.votingActions = createVotingAdminActions(
+                {voteSettings: this.voteSettingsUrl},
+                (votings) => this.onVotingAdminData(votings)
+            );
+            this.votingHandle = registerListener('admin', 'voting', {
+                onData: (votings) => this.onVotingAdminData(votings),
+                // The widget has nothing to show until this has answered
+                initialFetch: true,
+            });
+        }
     },
     beforeUnmount() {
         if (this.debateHandle) {
             this.debateHandle.unregister();
             this.debateHandle = null;
+        }
+        if (this.votingHandle) {
+            this.votingHandle.unregister();
+            this.votingHandle = null;
         }
     },
 };
