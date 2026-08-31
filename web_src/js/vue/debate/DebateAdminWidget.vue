@@ -129,13 +129,13 @@
 
                 <template v-if="votingState">
                     <!-- A voting is resolved/assigned -->
-                    <div v-if="votingState.resolved_voting_block" class="votingCard">
+                    <div v-if="votingState.resolved_voting_block" class="votingCard manageVotings">
                         <!-- Administering it takes the privilege to manage votings, which moderating a
                              debate does not grant: with it, the administration of the debated voting
                              happens here; without it, the voting is only shown. -->
                         <template v-if="canAdministerVotings">
                             <div v-if="debatedVotingBlock" class="votingAdmin embeddedVotingAdmin votingCommon">
-                                <voting-admin-widget
+                                <voting-admin-widget debateWidget
                                     :voting="debatedVotingBlock"
                                     :addableMotions="votingAddableMotions"
                                     :alreadyAddedItems="votingAlreadyAddedItems"

@@ -184,7 +184,20 @@
 
 <script>
 export default {
-   props: ['voting', 'adminLink', 'projector'],
+   props: {
+     voting: {
+       type: Object,
+       required: true,
+     },
+     adminLink: {
+       type: String,
+       required: true,
+     },
+     projector: {
+       type: Boolean,
+       default: false,
+     },
+   },
    data() {
        return {
            shownVoteLists: []

@@ -96,13 +96,18 @@
     }
   }
 
-  .speechTab {
+  .speechTab, .votingTab {
     padding-left: 0;
     padding-right: 0;
   }
 
   .toolbarBelowTitle {
     border-top: solid 1px #aaa;
+    font-size: inherit;
+  }
+
+  .activateHeader {
+    text-align: right;
   }
 
   .debatedItemActions {
@@ -146,8 +151,6 @@
 
   .votingTab {
     .votingCard {
-      border: solid 1px #ddd;
-      border-radius: 4px;
       padding: 12px 15px;
       margin-bottom: 15px;
 

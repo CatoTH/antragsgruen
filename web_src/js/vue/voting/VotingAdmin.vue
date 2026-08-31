@@ -1,7 +1,7 @@
 <template>
   <section class="voting" :class="['voting' + voting.id]" :id="'voting' + voting.id"
            v-t:aria-label="['voting', 'admin_aria_single', false, {'%TITLE%': voting.title}]">
-    <h2 class="green">
+    <h2 :class="[(debateWidget ? 'toolbarBelowTitle debateSettings' : 'green')]">
       {{ voting.title }}
       <span class="btn-group btn-group-xs settingsToggleGroup">
             <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
@@ -442,7 +442,32 @@
 import translate from "/js/vue/Translate.vue.js";
 
 export default {
-  props: ['voting', 'addableMotions', 'alreadyAddedItems', 'userGroups', 'voteDownloadUrl'],
+  props: {
+    voting: {
+      type: Object,
+      required: true,
+    },
+    addableMotions: {
+      type: Array,
+      required: true,
+    },
+    alreadyAddedItems: {
+      type: Object,
+      required: true,
+    },
+    userGroups: {
+      type: Object,
+      required: true,
+    },
+    voteDownloadUrl: {
+      type: String,
+      required: true,
+    },
+    debateWidget: {
+      type: Boolean,
+      default: false,
+    }
+  },
   data() {
     return {
       activityClosed: true,
