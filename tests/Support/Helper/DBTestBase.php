@@ -29,6 +29,13 @@ class DBTestBase extends TestBase
     protected function tearDown(): void
     {
         $this->deleteDB();
+
+        // PHPUnit keeps every test case object alive for the whole run, and the trait's $database
+        // property holds this test's connection - so without letting go of it here, each finished
+        // test leaves an open connection behind and a few hundred of them exhaust the server.
+        $this->database->close();
+        $this->database = null;
+
         parent::tearDown();
     }
 }
