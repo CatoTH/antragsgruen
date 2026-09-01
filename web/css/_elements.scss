@@ -40,6 +40,57 @@ ins, ul.inserted, ol.inserted, li.inserted, blockquote.inserted, pre.inserted, d
   }
 }
 
+/**
+ * The outer layer of a two-layered diff (an amendment amending another amendment): the changes of the amendment
+ * being amended. They are the context the actual changes are shown in, so they are marked by a subtle background
+ * tint instead of the regular colors - which are reserved for the inner layer, i.e. the changes of the amendment
+ * currently shown, and which may be nested into an element of the outer layer.
+ */
+ins.outer, del.outer, .insertedOuter, .deletedOuter {
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+ins.outer, del.outer {
+  // The <ins>/<del> element itself already conveys what happened; leave the colors to the inner layer.
+  // Not resetting the text-decoration here would make it inherit down into the nested elements, where it
+  // cannot be removed again.
+  color: inherit;
+  text-decoration: none;
+  font-weight: inherit;
+}
+
+ins.outer, .insertedOuter {
+  color: #0809;
+  background-color: rgba(0, 136, 0, 0.1);
+  box-shadow: inset 0 -2px 0 rgba(0, 136, 0, 0.3);
+}
+
+del.outer, .deletedOuter {
+  color: #8009;
+  background-color: rgba(136, 0, 0, 0.1);
+  box-shadow: inset 0 -2px 0 rgba(136, 0, 0, 0.3);
+}
+
+.amendmentComparisonLegend {
+  p {
+    margin-bottom: 0;
+  }
+  ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px 25px;
+    margin: 8px 0 0 0;
+    padding: 0;
+  }
+  li {
+    // No nowrap: the entries explaining a nested marking are long enough to overflow on small screens.
+    // Flex items only break where they do not fit anyway.
+    max-width: 100%;
+  }
+}
+
 del.space, ins.space, del.formatting, ins.formatting {
   font-style: italic;
   font-size: 0.8em;

@@ -271,12 +271,6 @@ class LayoutHelper
         $filter = IMotionStatusFilter::onlyUserVisible($consultation, true)
                                      ->noAmendmentsIfMotionIsMoved();
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getFilteredAmendments($filter));
-        if ($hasAgenda) {
-            $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
-                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
-                return $amendment->agendaItemId === null;
-            }));
-        }
         $return .= self::showMotionSubAmendments($amendments, $hideAmendmendsByDefault, $hasAgenda, $headingLevel);
         $return .= '</li>' . "\n";
 
@@ -288,8 +282,9 @@ class LayoutHelper
         $return = '';
         if ($hasAgenda) {
             $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
-                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
-                return $amendment->agendaItemId === null;
+                // Amendments with an explicit agendaItemId are shown directly at the agenda item, not as sub-item
+                // of the motion. Amendments amending another amendment are never shown there, see Amendment.
+                return !$amendment->isShownAtAgendaItemDirectly();
             }));
         }
         if (count($amendments) > 0) {
@@ -350,12 +345,6 @@ class LayoutHelper
         $filter = IMotionStatusFilter::onlyUserVisible($consultation, true)
                                      ->noAmendmentsIfMotionIsMoved();
         $amendments = MotionSorter::getSortedAmendments($consultation, $amendment->getFilteredAmendingAmendments($filter));
-        if ($hasAgenda) {
-            $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
-                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
-                return $amendment->agendaItemId === null;
-            }));
-        }
         $return .= self::showMotionSubAmendments($amendments, $hideAmendmendsByDefault, $hasAgenda, $headingLevel);
 
         $return .= '</li>' . "\n";
