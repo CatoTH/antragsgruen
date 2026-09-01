@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { apiFetch } from "/js/modules/shared/ApiClient.js";
+
 export default {
   props: ['initdata'],
   data() {
@@ -86,7 +88,7 @@ export default {
   methods: {
     loadIMotionList: function() {
       const widget = this;
-      fetch(this.consultationUrl)
+      apiFetch(this.consultationUrl)
           .then(response => {
             if (!response.ok) throw response.statusText;
             return response.json();
@@ -101,7 +103,7 @@ export default {
     loadIMotion: function (url) {
       const widget = this;
       const urlWithParams = url + '?lineNumbers=true';
-      fetch(urlWithParams)
+      apiFetch(urlWithParams)
           .then(response => {
             if (!response.ok) throw response.statusText;
             return response.json();
@@ -116,7 +118,7 @@ export default {
     },
     loadPage: function (url) {
       const widget = this;
-      fetch(url)
+      apiFetch(url)
           .then(response => {
             if (!response.ok) throw response.statusText;
             return response.json();

@@ -91,6 +91,32 @@ site in. A live event is different: it is published **once per consultation** an
 everyone reading it - who may well be using a different language than the moderator whose click
 triggered it, or than the console command that sent it.
 
+### How a REST request states its language
+
+The API is stateless: it authenticates by JWT and never touches the session (`RestBase`), so it
+cannot look up the language the user picked with the language switcher - that pick lives in the
+session. The client has to say it instead, in the **`Accept-Language`** header:
+
+* `ApiClient.js` sends the language the current page was rendered in (`<html lang>`, which
+  `views/layouts/main.php` fills from `LanguageTools::getCurrentLanguage()`) on every API request.
+  Since that value *is* the user's pick, the widgets answer in the same language as the page around
+  them - per browser tab rather than per user, the same granularity, and for the same reason, as the
+  destination-based language of the live subscriptions below.
+* Other API clients get their own `Accept-Language` honoured, falling back to the consultation's
+  primary language when it names nothing the site supports.
+
+`Accept-Language` rather than a header of our own because it is CORS-safelisted: a custom header
+would add a preflight `OPTIONS` request to every single poll.
+
+Server-side this is `LanguageTools::resolveCurrentLanguage()`, which skips its session lookup when
+`RequestContext::isRestApiRequest()`. It writes nothing back - a session write from the API is a bug,
+and the session backends (`RestSessionGuard`) reject one.
+
+**Every REST call from the frontend must therefore go through `apiFetch()` or `authorizedFetch()`**
+(`web/js/modules/shared/ApiClient.js`); a plain `fetch()` would send the browser's language
+preference rather than the page's, so a reader who picked a language differing from their browser
+setting would get widgets in the wrong one.
+
 Every string of a payload that depends on the reader's language is therefore an
 `app\models\api\LocalizedString` (the motion title, the title of a speaking list, …) instead of a
 plain string. It holds a callback rather than a rendered string, and `LocalizedStringNormalizer`

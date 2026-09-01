@@ -112,26 +112,44 @@ class LanguageTools
         return $language;
     }
 
+    /**
+     * Three sources, in this order:
+     *
+     * 1. the language the user picked, kept in their session - browsing requests only, see below
+     * 2. what the request asks for in its Accept-Language header
+     * 3. the consultation's primary language
+     *
+     * This is a pure lookup: nothing is written back. The inference in step 2 is deterministic, so
+     * seeding the session with its result (as this used to do) would only produce the same answer
+     * again next request - while making a getter that half the codebase calls write to the session,
+     * which the API is not allowed to do at all, and pinning a language that a change to the site's
+     * supported languages should have re-evaluated.
+     *
+     * Step 1 is skipped for the API, which never touches the session. Its clients state the language
+     * they want in Accept-Language instead: the frontend sends the language its page was rendered in
+     * (see web/js/modules/shared/ApiClient.js), so a user's pick is honoured there just the same,
+     * per browser tab rather than per user - the very distinction docs/technical/live-data.md draws
+     * for live events, which are addressed by language for the same reason. Other API clients get
+     * their own Accept-Language honoured, which is the best answer available for them.
+     */
     private static function resolveCurrentLanguage(): string
     {
         $supportedLanguages = self::getSupportedLanguages();
-        if (count($supportedLanguages) < 2 || !self::hasSession()) {
+        if (count($supportedLanguages) < 2 || !self::isWebRequest()) {
             return self::getPrimaryLanguage();
         }
 
-        $session      = RequestContext::getSession();
-        $chosenByUser = $session->get(self::SESSION_KEY);
-        if (is_string($chosenByUser) && in_array($chosenByUser, $supportedLanguages, true)) {
-            return $chosenByUser;
+        if (!RequestContext::isRestApiRequest()) {
+            $chosenByUser = RequestContext::getSession()->get(self::SESSION_KEY);
+            if (is_string($chosenByUser) && in_array($chosenByUser, $supportedLanguages, true)) {
+                return $chosenByUser;
+            }
         }
 
-        // No language chosen yet: infer it from the browser and remember it for the rest of the session
         $acceptableLanguages = RequestContext::getWebRequest()->getAcceptableLanguages();
-        $language            = self::matchBrowserLanguage($acceptableLanguages, $supportedLanguages)
-                               ?? self::getPrimaryLanguage();
-        $session->set(self::SESSION_KEY, $language);
 
-        return $language;
+        return self::matchBrowserLanguage($acceptableLanguages, $supportedLanguages)
+               ?? self::getPrimaryLanguage();
     }
 
     /**
@@ -234,9 +252,10 @@ class LanguageTools
     }
 
     /**
-     * Console commands and unit tests have no session to read the language from.
+     * Console commands and unit tests have neither a session nor an Accept-Language header to read
+     * the language from.
      */
-    private static function hasSession(): bool
+    private static function isWebRequest(): bool
     {
         return \Yii::$app instanceof \yii\web\Application;
     }

@@ -21,7 +21,7 @@
 //   votings). Widgets always receive the whole list and filter it themselves, since which members
 //   are interesting is a question only the widget can answer.
 
-import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/ApiClient.js";
+import { apiFetch, authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/ApiClient.js";
 
 /**
  * @typedef {object} ChannelConfig
@@ -285,7 +285,7 @@ class Channel {
      */
     performRequest(url) {
         if (this.config.auth === 'jwt-optional' && !hasJwt()) {
-            return fetch(url, { headers: { 'Accept': 'application/json' } });
+            return apiFetch(url);
         }
         return authorizedFetch(url);
     }
