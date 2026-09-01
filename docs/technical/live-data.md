@@ -112,6 +112,13 @@ Server-side this is `LanguageTools::resolveCurrentLanguage()`, which skips its s
 `RequestContext::isRestApiRequest()`. It writes nothing back - a session write from the API is a bug,
 and the session backends (`RestSessionGuard`) reject one.
 
+The same goes for flash messages, which are session state: nobody reads a flash out of a JSON
+response, so setting one from an API request only makes it pop up on whatever HTML page that user
+opens next, attributed to nothing. Code that can run under both the API and a normal page view -
+the publish notifications, which report an e-mail that could not be sent - says it through
+`RequestContext::reportProblem()` instead, which always logs and only adds the flash where there is
+a page to show it on.
+
 **Every REST call from the frontend must therefore go through `apiFetch()` or `authorizedFetch()`**
 (`web/js/modules/shared/ApiClient.js`); a plain `fetch()` would send the browser's language
 preference rather than the page's, so a reader who picked a language differing from their browser

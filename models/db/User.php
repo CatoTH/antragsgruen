@@ -674,7 +674,7 @@ class User extends ActiveRecord implements IdentityInterface
         try {
             MailTools::sendWithLog($mailType, $consultation, $this->email, $this->id, $subject, $text);
         } catch (MailNotSent | ServerConfiguration $e) {
-            RequestContext::getSession()->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+            RequestContext::reportProblem(\Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
     }
 
