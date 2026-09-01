@@ -29,9 +29,16 @@ trait EnvironmentTestTrait
             'IMAGE_MAGICK_PATH', 'WEASYPRINT_PATH', 'QPDF_PATH', 'LUALATEX_PATH',
             'BACKGROUND_JOBS_NOTIFICATIONS', 'BACKGROUND_JOBS_SECTION_AUTOFILL', 'HEALTH_CHECK_KEY',
             'JWT_PUBLIC_KEY', 'JWT_PRIVATE_KEY', 'BLOCKED_SUBDOMAINS',
-            'POLLING_INTERVAL_USER_SPEECH', 'POLLING_INTERVAL_ADMIN_SPEECH', 'POLLING_INTERVAL_USER_DEBATE',
-            'POLLING_INTERVAL_USER', 'POLLING_INTERVAL_',
         ];
+
+        // The polling intervals are not listed one by one: there is one per live-data channel, the
+        // loader finds them by their prefix rather than by name, and a list here would be one more
+        // place to forget when a channel is added
+        foreach (array_keys(array_merge(getenv(), $_ENV)) as $name) {
+            if (str_starts_with($name, 'POLLING_INTERVAL_')) {
+                $vars[] = $name;
+            }
+        }
 
         foreach ($vars as $var) {
             unset($_ENV[$var]);

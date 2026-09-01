@@ -1,12 +1,13 @@
 # Live Data: keeping widgets up to date
 
 Several widgets need to show data that changes while the page is open: the speaking lists (user- and
-admin-facing, inline and on the fullscreen projector) and the "Currently debated" widget. There are
+admin-facing, inline and on the fullscreen projector), the "Currently debated" widget and the votings
+(the participants', the administration's, and the administration embedded in the debate). There are
 two ways they can learn about changes:
 
 - **Live events**: if the Antragsgrün Live server is configured (`live` in `config.json`), the backend
-  publishes changes to RabbitMQ (`LiveTools::sendSpeechQueue()`, `sendDebate()`, …), and the browser
-  receives them over a STOMP websocket connection.
+  publishes changes to RabbitMQ (`LiveTools::sendSpeechQueue()`, `sendDebate()`, `sendVotingState()`,
+  …), and the browser receives them over a STOMP websocket connection.
 - **Polling**: the REST API is asked for the current state at a fixed interval.
 
 Neither of those is the widgets' business. They register their interest in a *channel* with the
@@ -18,7 +19,7 @@ was polled, and from which URL, is decided centrally.
 ## Channels
 
 A channel is a **role** (whose view of the data: `user` or `admin`) plus a **topic** (`speech`,
-`debate`). It is defined once, server-side, in `components/LiveDataChannels.php`:
+`debate`, `voting`). It is defined once, server-side, in `components/LiveDataChannels.php`:
 
 | Channel | Poll URL | Auth | Default interval | Kind |
 |---|---|---|---|---|
@@ -43,6 +44,11 @@ POLLING_INTERVAL_USER_SPEECH=5000
 POLLING_INTERVAL_USER_DEBATE=5000
 ```
 
+The loader knows no channel names: `EnvironmentConfigLoader::getPollingConfig()` turns every
+`POLLING_INTERVAL_<ROLE>_<CHANNEL>` it finds into `role/channel`, so a new channel is configurable the
+moment it exists. What does need a line per channel is
+[environment-variables.md](../environment-variables.md), which lists the variables for operators.
+
 A configured interval is binding: unlike the default, it cannot be undercut by a widget asking for
 more frequent updates (see `intervalMs` below), so that the load an event causes stays predictable.
 
@@ -50,7 +56,9 @@ more frequent updates (see `intervalMs` below), so that the load an event causes
 speaking lists. Widgets pass the ID of the list they show; the JS module collects the IDs of all
 registered widgets and substitutes them into the `QUEUEIDS` placeholder, so a page showing three
 speaking lists still only issues one request. The `admin/speech` endpoint accepts a comma-separated
-list of IDs for exactly this reason, just like the user-facing one.
+list of IDs for exactly this reason, just like the user-facing one. While no registered widget names
+an ID - the debate widget before anything is being debated, for instance - there is nothing to ask
+for, and the channel stays silent instead of polling an incomplete URL.
 
 **Collection** channels carry a list whose members come and go — currently the votings. A poll
 answers with the whole list and is authoritative: whatever it does not contain has left the
@@ -63,6 +71,13 @@ connection stops polling, so an object that is deleted has to be able to say so 
 always receive the whole list and filter it themselves, because which members a page shows is
 nothing the backend can decide for it: the same list feeds the votings page, the widget on a motion
 and the one embedded in the debate.
+
+Every update hands out a **new list** rather than changing the one the widgets were given before. A
+widget that keeps what it receives and re-derives from it - which is what a Vue component does - would
+otherwise not notice a merged event at all: the list it holds would be the very list that was just
+changed, and nothing about it would look new. Polls build a new list anyway, so getting this wrong
+shows up only where a Live server runs, and only for the widgets that do not happen to copy the list
+on their way to rendering it.
 
 ## Declaring channels in a view
 
@@ -83,6 +98,17 @@ is written **regardless** of whether a Live server exists: without one, the `liv
 the widgets simply poll.
 
 A widget can only register for a channel its view declared - otherwise `LiveData.js` throws.
+
+An `admin` channel additionally takes a privilege, and both ways of getting its data enforce it: the
+poll endpoint checks it like any other admin endpoint, and the Live server refuses a subscription to
+an `admin/…` destination unless the JWT carries the matching role
+(`TopicPermissionChecker::canSubscribeToDestination()`). Those roles are put into the token by
+`JwtCreator::getJwtConfigForCurrUser()` - `ROLE_SPEECH_ADMIN` for `PRIVILEGE_SPEECH_QUEUES`,
+`ROLE_VOTING_ADMIN` for `PRIVILEGE_VOTINGS`. A **new admin channel therefore needs its role in both
+places**: the Live server maps a topic to the role it requires (`getNecessaryRoleForTopic()`) and
+refuses every subscription to a topic it has no mapping for. And a view should only declare an admin
+channel where the reader actually holds the privilege - declaring it for everyone means a rejected
+subscription for everyone else.
 
 ## Reader languages
 
@@ -210,7 +236,10 @@ const handle = registerListener('user', 'speech', {
 });
 
 handle.setKey(otherQueueId);  // the widget now shows a different speaking list
-handle.refreshNow();          // after a change this widget made, so the others see it too
+handle.refreshNow();          // load the current state now - after a change whose response does not
+                              // contain it, so the other widgets and tabs see it too
+handle.publishChange(queue);  // the same, for a change whose response *is* the new state: hands it to
+                              // the other widgets directly, without a request (the speech widgets)
 handle.unregister();          // in beforeUnmount()
 ```
 
@@ -221,6 +250,13 @@ handle.unregister();          // in beforeUnmount()
 - Fires one request per channel, no matter how many widgets are registered, and hands the response to
   the widgets by key. Live events (which carry a single object) are dispatched the same way.
 - Never stacks requests: a refresh asked for while a request is in flight is performed afterwards.
+- Ignores payloads that have been **superseded**. Every payload states the time it was serialized at
+  (`current_time`, in milliseconds), and the module remembers the newest one it has published, per
+  key and per member of a collection; anything older is dropped instead of being handed to the
+  widgets, which would set them back until the next update arrives. A request being overtaken by a
+  change is the regular case, not an edge case: a poll racing a live event, or racing the answer to a
+  change somebody else made. A payload without a `current_time` cannot be ordered and is always
+  passed on - which is what the debate state does, being one object that is only ever replaced whole.
 - Retries failing requests with a growing delay (up to 30 s), so a backend restart does not stop a
   projector for good. A `401`/`403` is retried a few times with a freshly fetched JWT - a token can be
   rejected although the browser still considered it valid - and stops the channel only afterwards, or
@@ -253,9 +289,18 @@ have no data at all to begin with, like the debate widget's speaking list.
 - `web_src/js/vue/debate/DebateAdminWidget.vue` - the moderation widget. It follows `user/debate` as
   well: the debated item is the same data for moderators, and this way a debate started by another
   moderator (or in another tab) shows up here without a Live server channel of its own. The speaking
-  list inside it updates through the embedded admin widget; the voting tab is still loaded on demand.
-
+  list inside it updates through the embedded admin widget. Its voting tab follows `admin/voting` and
+  hosts the same `voting-admin-widget` the administration page does, for the voting the debated item
+  is voted on with - but only where the moderator also holds `PRIVILEGE_VOTINGS`. Where they do not,
+  the tab shows a read-only card and the channel is not declared at all, per the rule above.
 - `web/js/modules/frontend/VotingBlock.js` and `web/js/modules/backend/VotingAdmin.js` - the voting
   widgets (`user/voting` and `admin/voting`). Which votings a page shows is decided in the browser:
   the widget is given the ID of the motion it belongs to, or nothing at all on the votings page.
   `/voting-results` shows votings that are over and therefore registers no channel at all.
+  On the home page of a consultation with a running debate, the participants' widget additionally
+  follows `user/debate`: the debate presents the voting of the item being debated, so this one leaves
+  exactly that voting out - and which one that is changes while the page is open.
+- `web/js/vue/voting/VotingAdminActions.js` - not a widget, but what the two hosts of the voting
+  administration do with a button press, shared so that the debate tab cannot drift from the
+  administration page. Every operation answers with the state of all votings; the host shows that
+  answer and calls `refreshNow()` so the other widgets and tabs see it too.

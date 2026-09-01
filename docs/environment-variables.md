@@ -90,6 +90,8 @@ export RANDOM_SEED=$(openssl rand -base64 32)
 | `POLLING_INTERVAL_USER_SPEECH` | 3000 | How often the speaking list widgets poll for new data, in milliseconds |
 | `POLLING_INTERVAL_ADMIN_SPEECH` | 1000 | How often the speaking list moderation widget polls for new data, in milliseconds |
 | `POLLING_INTERVAL_USER_DEBATE` | 3000 | How often the "currently debated" widget polls for new data, in milliseconds |
+| `POLLING_INTERVAL_USER_VOTING` | 3000 | How often the voting widgets poll for new data, in milliseconds |
+| `POLLING_INTERVAL_ADMIN_VOTING` | 2000 | How often the voting administration polls for new data, in milliseconds |
 
 ## Automatic Initialization
 
