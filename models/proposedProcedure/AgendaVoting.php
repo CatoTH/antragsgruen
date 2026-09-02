@@ -33,13 +33,16 @@ class AgendaVoting
             $this->itemIds->addQuestion($question);
         }
 
+        // The proposal is only asked for when its answer can change the outcome: getLatestProposal()
+        // costs a query per item for anything without a visible proposal, and every voting call site
+        // passes $includeNotOnPublicProposalOnes = true.
         /** @var Motion[] $motions */
         $motions = MotionSorter::getSortedIMotionsFlat($this->voting->getMyConsultation(), $this->voting->motions);
         foreach ($motions as $motion) {
             if (!$motion->isVisibleForAdmins()) {
                 continue;
             }
-            if ($motion->getLatestProposal()->isProposalPublic() || $includeNotOnPublicProposalOnes) {
+            if ($includeNotOnPublicProposalOnes || $motion->getLatestProposal()->isProposalPublic()) {
                 $this->items[]   = $motion;
                 $this->itemIds->addMotion($motion);
             }
@@ -53,7 +56,7 @@ class AgendaVoting
             if (!$vAmendment->isVisibleForAdmins()) {
                 continue;
             }
-            if ($vAmendment->getLatestProposal()->isProposalPublic() || $includeNotOnPublicProposalOnes) {
+            if ($includeNotOnPublicProposalOnes || $vAmendment->getLatestProposal()->isProposalPublic()) {
                 $this->items[]  = $vAmendment;
                 $this->itemIds->addAmendment($vAmendment);
             }

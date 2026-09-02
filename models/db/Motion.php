@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\AdminTodoItem;
+use app\models\api\voting\VotingItemType;
 use app\models\db\repostory\{ConsultationRepository, MotionRepository};
 use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
@@ -1480,6 +1481,11 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    public function getVotingItemType(): VotingItemType
+    {
+        return VotingItemType::MOTION;
     }
 
     public function getAgendaApiBaseObject(): array

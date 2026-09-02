@@ -87,11 +87,46 @@ class User extends ActiveRecord implements IdentityInterface
     private static array $userCache = [];
     public static function getCachedUser(int $userId): ?User
     {
-        // Hint: also cache "null" entries
-        if (!in_array($userId, array_keys(self::$userCache))) {
+        // Hint: also cache "null" entries - hence array_key_exists() rather than isset()
+        if (!array_key_exists($userId, self::$userCache)) {
             self::$userCache[$userId] = static::find()->where(['id' => $userId])->andWhere('status != ' . User::STATUS_DELETED)->one();
         }
         return self::$userCache[$userId];
+    }
+
+    /**
+     * The people behind a list of IDs in one query instead of one per ID. Anything describing a
+     * crowd - who has cast a vote in a running voting, who is in a user group - would otherwise pay
+     * getCachedUser() once per person, which is a query per person on the first pass.
+     *
+     * Nothing is returned: this only fills the cache getCachedUser() reads, so callers keep asking
+     * for one person at a time and simply stop paying for it.
+     *
+     * @param int[] $userIds
+     */
+    public static function preloadCachedUsers(array $userIds): void
+    {
+        $missing = [];
+        foreach ($userIds as $userId) {
+            $userId = intval($userId);
+            if (!array_key_exists($userId, self::$userCache)) {
+                $missing[$userId] = $userId;
+            }
+        }
+        if (count($missing) === 0) {
+            return;
+        }
+
+        foreach (static::find()->where(['id' => array_values($missing)])->andWhere('status != ' . User::STATUS_DELETED)->all() as $user) {
+            self::$userCache[$user->id] = $user;
+            unset($missing[$user->id]);
+        }
+
+        // Whoever has no row left is cached as null, the same as getCachedUser() would, so that a
+        // deleted or unknown account is not asked for again
+        foreach ($missing as $userId) {
+            self::$userCache[$userId] = null;
+        }
     }
 
     public static function isCurrentUser(?User $user): bool

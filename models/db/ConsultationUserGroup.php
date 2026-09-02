@@ -182,6 +182,8 @@ class ConsultationUserGroup extends ActiveRecord
      */
     public function getUsersCached(): array
     {
+        User::preloadCachedUsers($this->getUserIds());
+
         $users = [];
         foreach ($this->getUserIds() as $userId) {
             $users[] = User::getCachedUser($userId);

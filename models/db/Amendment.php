@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\api\voting\VotingItemType;
 use app\models\exceptions\{Access, Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
@@ -1410,6 +1411,11 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    public function getVotingItemType(): VotingItemType
+    {
+        return VotingItemType::AMENDMENT;
     }
 
     public function getAgendaApiBaseObject(): array

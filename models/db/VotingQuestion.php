@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
+use app\models\api\voting\VotingItemType;
 use app\models\settings\AntragsgruenApp;
 use yii\db\{ActiveQuery, ActiveRecord};
 
@@ -58,6 +59,11 @@ class VotingQuestion extends ActiveRecord implements IVotingItem
     public function getVotes(): ActiveQuery
     {
         return $this->hasMany(Vote::class, ['questionId' => 'id']);
+    }
+
+    public function getVotingItemType(): VotingItemType
+    {
+        return VotingItemType::QUESTION;
     }
 
     public function getAgendaApiBaseObject(): array

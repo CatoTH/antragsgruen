@@ -629,7 +629,7 @@ class VotingPayloadBuilder
 
     public static function getItemType(IVotingItem $item): VotingItemType
     {
-        return VotingItemType::from($item->getAgendaApiBaseObject()['type']);
+        return $item->getVotingItemType();
     }
 
     /**
@@ -770,6 +770,10 @@ class VotingPayloadBuilder
      */
     private function getSingleVotes(array $votes, bool $isAdmin): array
     {
+        // Both the visibility check below and getVoter() ask for the person who cast each vote, and
+        // a running voting can have thousands of them - so they are fetched in one query
+        User::preloadCachedUsers(array_map(fn (Vote $vote): int => $vote->userId, $votes));
+
         return array_values(array_map(
             fn (Vote $vote): VotingSingleVote => new VotingSingleVote(
                 answer: (string)$vote->getVoteForApi($this->answers),
