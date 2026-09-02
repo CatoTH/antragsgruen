@@ -315,9 +315,25 @@ class VotingPayloadBuilder
      */
     private function buildTallySection(bool $isAdmin, Serializer $serializer, array $context): array
     {
+        // Without the single votes: they are the one part of a voting that grows with the number of
+        // people in the room, so carrying them here would make the n-th vote publish all n votes
+        // cast so far - and they are of no use to anybody at this point. A running voting shows them
+        // to nobody but the administration (see canSeeAnySingleVote()), which polls its channel even
+        // while the Live server is connected, and everyone else is told about them once, in the full
+        // event that closing the voting produces. See docs/technical/voting-live-data.md §6.
+        /** @var array<int, array<string, mixed>> $itemGroups */
+        $itemGroups = $serializer->normalize($this->getItemGroups($isAdmin, includeSingleVotes: false), null, $context);
+
+        // The key has to be gone, not null: a reader merges a tally's item groups into the ones it
+        // holds field by field, so an absent single_votes means "unchanged" while a null one would
+        // mean "you may not see them" - which is what a full payload uses it for.
+        foreach (array_keys($itemGroups) as $index) {
+            unset($itemGroups[$index]['single_votes']);
+        }
+
         return [
             'statistics' => $serializer->normalize($this->getStatistics(), null, $context),
-            'item_groups' => $serializer->normalize($this->getItemGroups($isAdmin), null, $context),
+            'item_groups' => $itemGroups,
             'abstention' => $serializer->normalize($this->getAbstention($isAdmin), null, $context),
         ];
     }
@@ -666,7 +682,7 @@ class VotingPayloadBuilder
     /**
      * @return VotingItemGroup[]
      */
-    private function getItemGroups(bool $isAdmin): array
+    private function getItemGroups(bool $isAdmin, bool $includeSingleVotes = true): array
     {
         $groups = [];
         foreach ($this->getItemsByGroup() as $groupId => $groupItems) {
@@ -685,7 +701,7 @@ class VotingPayloadBuilder
                 ),
                 name: $representative->getVotingData()->itemGroupName,
                 results: $this->canSeeResults($isAdmin) ? $this->getResults($representative, $votes) : null,
-                singleVotes: $this->canSeeAnySingleVote($isAdmin) ? $this->getSingleVotes($votes, $isAdmin) : null,
+                singleVotes: ($includeSingleVotes && $this->canSeeAnySingleVote($isAdmin)) ? $this->getSingleVotes($votes, $isAdmin) : null,
             );
         }
 

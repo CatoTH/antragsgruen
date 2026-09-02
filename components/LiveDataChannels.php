@@ -72,7 +72,13 @@ class LiveDataChannels
      * whole list, a live event with one member, and the widgets filter it themselves - which of the
      * votings a page shows is nothing the backend can decide for it.
      *
-     * @return array{role: string, channel: string, poll_url: string, auth: string, interval: int, interval_configured: bool, key_placeholder: string|null, collection: bool}
+     * A channel with poll_while_live keeps polling even when the Live server is connected, because
+     * its live events deliberately describe less than a poll does. Only the administration's voting
+     * channel does: a tally leaves out the single votes, which are the one part of a voting that
+     * grows with the number of people in the room (see docs/technical/voting-live-data.md §6), and
+     * nobody else is shown them while a voting is running anyway.
+     *
+     * @return array{role: string, channel: string, poll_url: string, auth: string, interval: int, interval_configured: bool, key_placeholder: string|null, collection: bool, poll_while_live: bool}
      */
     public static function getChannelConfig(string $role, string $channel): array
     {
@@ -116,6 +122,7 @@ class LiveDataChannels
                     'auth'            => self::AUTH_JWT,
                     'key_placeholder' => null,
                     'collection'      => true,
+                    'poll_while_live' => true,
                 ];
                 break;
             default:
@@ -123,7 +130,7 @@ class LiveDataChannels
         }
 
         return array_merge(
-            ['role' => $role, 'channel' => $channel, 'collection' => false],
+            ['role' => $role, 'channel' => $channel, 'collection' => false, 'poll_while_live' => false],
             self::getInterval($channelId),
             $config
         );

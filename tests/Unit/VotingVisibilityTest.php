@@ -365,9 +365,80 @@ class VotingVisibilityTest extends DBTestBase
         $tally = $this->getEnvelope(tallyOnly: true);
         $this->assertSame('tally', $tally['kind']);
         $this->assertSame(['statistics', 'item_groups', 'abstention'], array_keys($tally['everyone']));
-        $this->assertSame(['item_groups'], array_keys($tally['admin_only']), 'Only the votes differ for an admin');
+        $this->assertSame(['item_groups'], array_keys($tally['admin_only']), 'Only the results differ for an admin here');
         $this->assertArrayNotHasKey('per_user', $tally);
         $this->assertArrayNotHasKey('default_user_state', $tally);
+
+        // The single votes are what would make this message grow with every vote cast, so a tally
+        // leaves them out - as an absent key, which tells a reader to keep the ones it has
+        $this->assertArrayNotHasKey('single_votes', self::findGroup($tally['everyone']));
+        $this->assertArrayNotHasKey('single_votes', self::findGroup($tally['admin_only']));
+        $this->assertStringNotContainsString(
+            self::VOTER_YES,
+            json_encode($tally, JSON_THROW_ON_ERROR),
+            'A tally names nobody, not even to an administrator'
+        );
+    }
+
+    /**
+     * The property the whole arrangement exists for: a tally is the same size whoever has voted and
+     * however many of them have, so the n-th vote of a meeting does not publish the first n-1 again.
+     */
+    public function testATallyDoesNotGrowWithTheNumberOfVotes(): void
+    {
+        $this->openVoting(VotingBlock::VOTES_PUBLIC_ADMIN, VotingBlock::RESULTS_PUBLIC_YES);
+
+        $this->vote(self::VOTER_YES, 'yes');
+        $afterOne = $this->getEnvelope(tallyOnly: true);
+
+        $this->vote(self::VOTER_NO, 'no');
+        $afterTwo = $this->getEnvelope(tallyOnly: true);
+
+        // the counting moves...
+        $this->assertSame(1, $afterOne['everyone']['statistics']['votes']);
+        $this->assertSame(2, $afterTwo['everyone']['statistics']['votes']);
+
+        // ...while the shape of the message does not
+        $this->assertSame(array_keys($afterOne['everyone']), array_keys($afterTwo['everyone']));
+        $this->assertSame(
+            array_keys(self::findGroup($afterOne['admin_only'])),
+            array_keys(self::findGroup($afterTwo['admin_only']))
+        );
+        foreach ([$afterOne, $afterTwo] as $tally) {
+            $this->assertArrayNotHasKey('single_votes', self::findGroup($tally['everyone']));
+            $this->assertArrayNotHasKey('single_votes', self::findGroup($tally['admin_only']));
+            $json = json_encode($tally, JSON_THROW_ON_ERROR);
+            $this->assertStringNotContainsString(self::VOTER_YES, $json, 'A tally names nobody');
+            $this->assertStringNotContainsString(self::VOTER_NO, $json, 'A tally names nobody');
+        }
+    }
+
+    /**
+     * What a tally leaves out has to arrive some other way, or the administration would never see a
+     * vote at all: while the voting runs its channel polls for them (§7), and the full message that
+     * closing the voting produces carries the whole list to everybody.
+     *
+     * The envelopes are built before getAdminPayload() is asked for anything: that call logs the
+     * administrator in, and what a payload holds depends on who is asking.
+     */
+    public function testTheVotesLeftOutOfATallyStillArriveInAFullEvent(): void
+    {
+        // Visible to everybody, which for a running voting still means the administration alone:
+        // single votes reach the room when the voting is decided, not while it is being held
+        $this->openVoting(VotingBlock::VOTES_PUBLIC_ALL, VotingBlock::RESULTS_PUBLIC_NO);
+        $this->vote(self::VOTER_YES, 'yes');
+        $this->vote(self::VOTER_NO, 'no');
+
+        $running = $this->getEnvelope(tallyOnly: false);
+        $this->assertCount(2, self::findGroup($running['admin_only'])['single_votes']);
+        $this->assertNull(self::findGroup($running['everyone'])['single_votes']);
+
+        $this->setStatus(VotingBlock::STATUS_CLOSED_PUBLISHED);
+        $closed = $this->getEnvelope(tallyOnly: false);
+        $this->assertCount(2, self::findGroup($closed['everyone'])['single_votes'], 'Closing publishes them to everyone');
+
+        // and the poll the administration keeps doing while a voting runs shows them too
+        $this->assertCount(2, $this->getVotedGroup($this->getAdminPayload())->singleVotes);
     }
 
     /**

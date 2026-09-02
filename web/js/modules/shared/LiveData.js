@@ -33,6 +33,7 @@ import { apiFetch, authorizedFetch, getToken, invalidateToken } from "/js/module
  * @property {boolean} interval_configured
  * @property {string|null} key_placeholder
  * @property {boolean} collection
+ * @property {boolean} poll_while_live
  */
 
 /**
@@ -42,6 +43,57 @@ import { apiFetch, authorizedFetch, getToken, invalidateToken } from "/js/module
  * @property {function(any): void} onData
  * @property {function(Error): void|null} onError
  */
+
+/**
+ * Merges the fields a partial live event carries into the member a client already holds.
+ *
+ * Plain fields are replaced. A list of objects that carry an `id` is merged member by member
+ * instead, because such a list can describe the same things twice with a different amount of
+ * detail: a voting's item groups are named in every tally, for the counting, but the single votes
+ * within them are left out of tallies entirely - the one part of the payload that grows with the
+ * number of people voting. Replacing the list would drop what the event never meant to change; a
+ * key the event does carry still wins, null included.
+ *
+ * The incoming list decides which members exist - an item group that is gone is gone.
+ *
+ * @param {Record<string, any>} member
+ * @param {Record<string, any>} fields
+ * @returns {Record<string, any>}
+ */
+function mergeMember(member, fields) {
+    const merged = Object.assign({}, member);
+    Object.keys(fields).forEach(key => {
+        merged[key] = mergeKeyedList(member[key], fields[key]);
+    });
+
+    return merged;
+}
+
+/**
+ * @param {any} known
+ * @param {any} incoming
+ * @returns {any}
+ */
+function mergeKeyedList(known, incoming) {
+    if (!isKeyedList(known) || !isKeyedList(incoming)) {
+        return incoming;
+    }
+
+    return incoming.map(item => {
+        const previous = known.find(candidate => candidate.id === item.id);
+        return previous ? Object.assign({}, previous, item) : item;
+    });
+}
+
+/**
+ * @param {any} value
+ * @returns {boolean}
+ */
+function isKeyedList(value) {
+    return Array.isArray(value) && value.every(
+        item => item !== null && typeof item === 'object' && !Array.isArray(item) && item.id !== undefined
+    );
+}
 
 const MAX_BACKOFF_MS = 30000;
 
@@ -272,7 +324,7 @@ class Channel {
             } else {
                 const { partial, ...fields } = data;
                 this.collection = this.collection.map(
-                    (member, memberIndex) => (memberIndex === index ? Object.assign({}, member, fields) : member)
+                    (member, memberIndex) => (memberIndex === index ? mergeMember(member, fields) : member)
                 );
             }
         }
@@ -374,7 +426,14 @@ class Channel {
     }
 
     shouldPoll() {
-        return !this.givenUp && !this.liveConnected && !document.hidden &&
+        // A channel is normally polled only while it has no live connection. The exception is a
+        // channel whose live events deliberately leave something out: the votings omit the single
+        // votes from every tally, being the one part of the payload that grows with the number of
+        // people voting, so the administration - and only it, single votes reaching nobody else
+        // while a voting runs - keeps polling to see them arrive.
+        const liveIsEnough = this.liveConnected && !this.config.poll_while_live;
+
+        return !this.givenUp && !liveIsEnough && !document.hidden &&
             this.registrations.length > 0 && this.getPollUrl() !== null;
     }
 

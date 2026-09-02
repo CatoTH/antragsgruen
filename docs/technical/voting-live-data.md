@@ -942,8 +942,12 @@ endpoint — byte-identical, as with `SpeechQueueUser` today.
       "quorum": {"votes": 130, "current_label": null}
     },
 
-    "single_votes": [                     // absent unless this audience may see single votes
-      {"answer": "yes", "user_id": 12, "user_name": "…", "user_group_ids": [3], "weight": 1}
+    "single_votes": [                     // null unless this audience may see single votes,
+      {                                   // and absent entirely from a tally, see §6
+        "answer": "yes",
+        "weight": 1,
+        "voter": {"user_id": 12, "user_group_ids": [3], "user_name": "…"}
+      }
     ]
   }
 ]
@@ -953,6 +957,10 @@ endpoint — byte-identical, as with `SpeechQueueUser` today.
 "0 votes" where it should render nothing, and a bug shows up as a missing section rather than as a
 wrong result. (The DTOs make this an explicit `null` in the JSON rather than an absent key, which
 says the same thing and is what a typed payload can express.)
+
+`single_votes` is the one field where an **absent** key means something different from a `null` one:
+a tally leaves it out to say "unchanged, keep what you have", while `null` says "you may not see
+these". Nothing else in the payload distinguishes the two, and nothing else needs to — see §6.
 
 ### 4.3 `me` — `VotingUserState`
 
@@ -1036,17 +1044,32 @@ of ~100 KB each, fanned out personally to 2000 connections. So:
   instead, there being no state left to describe.
 * Because the order is only ever conveyed by a poll otherwise, `position` is part of the payload:
   a client that has stopped polling sorts the list it has assembled from single events itself.
-* **`tally`** — no `per_user`, no `settings`, no `eligibility`. Carries only
-  `statistics`, `item_groups[].results`, `item_groups[].single_votes` (in whichever scope the
-  publicity allows) and `abstention`. Published on every cast vote; throttling, if it is ever needed,
-  happens in the Live server (see below).
+* **`tally`** — no `per_user`, no `settings`, no `eligibility`, **and no `single_votes`**. Carries
+  only `statistics`, `item_groups[].results` (in whichever scope the publicity allows) and
+  `abstention`. Its size does not depend on how many people have voted. Published on every cast
+  vote; throttling, if it is ever needed, happens in the Live server (see below).
 
-Merge contract on the client: a `tally` message replaces exactly those four fields and leaves
+The single votes are left out because they are the one part of a voting that grows with the number
+of people in the room: carrying them would make the n-th vote publish all n votes cast so far, so a
+1000-delegate voting would push ~55 MB through the broker over its run instead of ~1 MB, and the
+last vote alone would build a 109 KB message. Nobody is deprived of anything by that while a voting
+is running — `canSeeAnySingleVote()` shows them to the administration and to nobody else until the
+voting is decided — and the administration's channel keeps polling for them (§7). Everyone else, if
+`votesPublic` lets them see the votes at all, learns the whole list at once: from the `full` message
+that closing the voting produces.
+
+Merge contract on the client: a `tally` message replaces exactly those three fields and leaves
 everything else — importantly `me` — untouched. `me` for the acting user is updated from the
 response of their own vote POST; no other user's `me` changes when someone votes. The Live server
 marks such a message `"partial": true`, and `LiveData.js` merges a partial member field by field
 instead of replacing it (a partial event about a voting the client has never seen is dropped: it says
 too little to show, and the next poll brings the whole of it).
+
+Within a member, a list of objects carrying an `id` is merged entry by entry rather than replaced,
+which is what lets a tally name every item group — it has to, for the counting — without discarding
+the single votes inside them. This is why the tally omits the `single_votes` key instead of setting
+it to `null`: an absent key keeps what the reader has, a `null` one overwrites it, and a full message
+needs to be able to say "you may not see these" (§4.2).
 
 Because `tally` has no per-user content, every recipient of a given role gets a byte-identical
 message; the proxy may later broadcast it to a shared topic instead of fanning out N copies.
@@ -1088,11 +1111,11 @@ inside the vote POST that triggered it.
   plugin - a few ms on localhost, tens of ms across a network with TLS. At 17/s that is a fraction of
   one worker on average; what it really costs is latency added to each voter's response, and a longer
   hold on the block's `ResourceLock`, on which the votes serialize.
-* **Building the tally is the expensive half, and it grows.** `getVoteStatistics()` walks
-  `$block->votes` as hydrated ActiveRecord objects and additionally every motion and amendment of the
-  consultation to rebuild the item-group maps; `Vote::calculateVoteResultsForApi()` walks the votes
-  again per item group. The n-th vote therefore hydrates n vote rows - about 2 million row
-  hydrations over the run, 2000 of them on the last vote alone.
+* **Building the tally used to be the expensive half, and it used to grow.** It no longer does: the
+  counting comes from aggregate SQL (stage 1 below) and the single votes are not part of a tally at
+  all, so the message is a constant ~1 KB and its cost no longer depends on how many people have
+  voted. Measured on a 1000-vote block, building and publishing one tally went from ~125 ms and 1033
+  queries to ~35 ms and 23 queries, none of which scale with the number of voters.
 
 Two things put that in perspective. The vote POST already pays this cost today, for the response it
 returns to the voter; publishing doubles it rather than introducing it. And it replaces polling:
@@ -1107,9 +1130,15 @@ What to do about it, in the order the effort pays off:
    personal state of a reader comes from a query for their own votes. A payload nobody may see the
    single votes in now loads no votes at all. The plugin hook follows: it is handed the item rather
    than the votes, so that a plugin counting differently can query what it needs itself.
-2. Publish after `ResourceLock::releaseAllLocks()`, and ideally after the response has been flushed,
+2. ~~Keep the single votes out of the tally, so that the message stops growing with the turnout.~~
+   Done: see the `tally` bullet above.
+3. ~~Fetch the people behind the votes in one query rather than one per voter.~~ Done:
+   `User::preloadCachedUsers()`, called from `VotingPayloadBuilder::getSingleVotes()` and from
+   `ConsultationUserGroup::getUsersCached()`, so a payload that does name every voter - the `full`
+   message closing a voting produces - costs one query for all of them instead of one each.
+4. Publish after `ResourceLock::releaseAllLocks()`, and ideally after the response has been flushed,
    so that neither the lock nor the voter waits for RabbitMQ.
-3. Only if the rate ever justifies it: replace the management API with a real AMQP client and a
+5. Only if the rate ever justifies it: replace the management API with a real AMQP client and a
    persistent connection. At 17/s it does not.
 
 One robustness note, which applies to the existing speech events too: `sendToRabbitMq()` throws when
@@ -1120,10 +1149,16 @@ request that triggered it.
 
 ## 7. Channels and endpoints
 
-| Channel | Poll URL | Auth | Default interval |
-|---|---|---|---|
-| `user/voting` | `GET /rest/<site>/<consultation>/votings/open?showAllOpen=1` | JWT | 3000 ms |
-| `admin/voting` | `GET /rest/<site>/<consultation>/votings/admin` | JWT | 2000 ms |
+| Channel | Poll URL | Auth | Default interval | Polls while live |
+|---|---|---|---|---|
+| `user/voting` | `GET /rest/<site>/<consultation>/votings/open?showAllOpen=1` | JWT | 3000 ms | no |
+| `admin/voting` | `GET /rest/<site>/<consultation>/votings/admin` | JWT | 2000 ms | **yes** |
+
+Polling normally stops for as long as the Live server is connected. The administration's voting
+channel is the exception (`poll_while_live` in `LiveDataChannels`): its live events deliberately
+describe less than a poll does, leaving out the single votes (§6), so the poll is what keeps that
+list moving while a voting runs. It costs nothing worth counting - the people who may see single
+votes during a voting are the handful holding `PRIVILEGE_VOTINGS`, not the room.
 
 Both are **collection channels**: the poll response is a list of `VotingBlock*` objects, a live
 message carries a single one, and the client merges it into its collection by `id`. This is the
