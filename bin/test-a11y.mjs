@@ -9,6 +9,7 @@
  * Usage:
  *   node bin/test-a11y.mjs
  *   node bin/test-a11y.mjs --url=http://localhost:12380/
+ *   node bin/test-a11y.mjs --url=http://localhost:12380/ --url=http://localhost:12380/motion/1
  *   node bin/test-a11y.mjs --threshold=5
  */
 
@@ -20,14 +21,14 @@ import pa11y from 'pa11y';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 
-// Parse CLI flags
+// Parse CLI flags (--url may be given multiple times)
 const args = process.argv.slice(2);
-let customUrl = null;
+const customUrls = [];
 let threshold = 0;
 
 for (const arg of args) {
   if (arg.startsWith('--url=')) {
-    customUrl = arg.slice(arg.indexOf('=') + 1);
+    customUrls.push(arg.slice(arg.indexOf('=') + 1));
   } else if (arg.startsWith('--threshold=')) {
     threshold = parseInt(arg.slice(arg.indexOf('=') + 1), 10) || 0;
   }
@@ -54,8 +55,8 @@ if (fs.existsSync(configPath)) {
   }
 }
 
-const targetUrls = customUrl
-  ? [customUrl]
+const targetUrls = customUrls.length > 0
+  ? customUrls
   : [
       process.env.A11Y_BASE_URL || 'http://localhost:12380/',
     ];

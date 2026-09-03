@@ -141,6 +141,10 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run automated A11y tests
-        run: node bin/test-a11y.mjs --url=http://test.antragsgruen.test/stdparteitag/std-parteitag --threshold=50
+        run: >-
+          node bin/test-a11y.mjs
+          --url=http://test.antragsgruen.test/stdparteitag/std-parteitag
+          --url=http://test.antragsgruen.test/stdparteitag/std-parteitag/motion/321-o-zapft-is
+          --url=http://test.antragsgruen.test/stdparteitag/std-parteitag/motion/321-o-zapft-is/amendment/1
         env:
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
