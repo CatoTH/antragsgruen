@@ -688,7 +688,12 @@ class VotingPayloadBuilder
         foreach ($this->getItemsByGroup() as $groupId => $groupItems) {
             // Everything in a group is voted on together, so one item speaks for all of them
             $representative = $groupItems[0];
-            $votes = $this->block->getVotesForVotingItem($representative);
+
+            // Only fetched when they are going to be described. Asking for them hydrates every vote
+            // row of the block, which is the one cost here that grows with the number of people who
+            // have voted - and a tally, published after every single vote, describes none of them.
+            $showSingleVotes = $includeSingleVotes && $this->canSeeAnySingleVote($isAdmin);
+            $votes = $showSingleVotes ? $this->block->getVotesForVotingItem($representative) : [];
 
             $groups[] = new VotingItemGroup(
                 id: (string)$groupId,
@@ -700,8 +705,8 @@ class VotingPayloadBuilder
                     $groupItems
                 ),
                 name: $representative->getVotingData()->itemGroupName,
-                results: $this->canSeeResults($isAdmin) ? $this->getResults($representative, $votes) : null,
-                singleVotes: ($includeSingleVotes && $this->canSeeAnySingleVote($isAdmin)) ? $this->getSingleVotes($votes, $isAdmin) : null,
+                results: $this->canSeeResults($isAdmin) ? $this->getResults($representative) : null,
+                singleVotes: $showSingleVotes ? $this->getSingleVotes($votes, $isAdmin) : null,
             );
         }
 
@@ -735,10 +740,7 @@ class VotingPayloadBuilder
         return $groups;
     }
 
-    /**
-     * @param Vote[] $votes
-     */
-    private function getResults(IVotingItem $item, array $votes): VotingResults
+    private function getResults(IVotingItem $item): VotingResults
     {
         // A closed voting keeps the result it was closed with; a running one is counted as it goes
         if ($this->block->isClosed()) {

@@ -777,6 +777,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     public function getVoteStatistics(): array
     {
         $total = 0;
+        // Sets keyed by what they hold, not lists searched with in_array(): this loop runs once per
+        // vote row, and scanning a growing list inside it made asking for the turnout cost O(n²) -
+        // which is paid on every cast vote and on every poll
         $voteUserIds = [];
         $abstainedUserIds = [];
 
@@ -826,8 +829,8 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
             if ($questionId !== null && $questionId === $abstentionId) {
                 $abstainedUserIds[] = $userId;
-                if ($userId && !in_array($userId, $voteUserIds)) {
-                    $voteUserIds[] = $userId;
+                if ($userId) {
+                    $voteUserIds[$userId] = true;
                 }
             }
 
@@ -842,17 +845,17 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
                 $groupId = $groupsMyQuestionsIds[$questionId];
             }
 
-            if ($groupId && in_array($groupId, $countedItemGroups)) {
+            if ($groupId !== null && isset($countedItemGroups[$groupId])) {
                 continue;
             }
 
             $total++;
-            if ($userId && !in_array($userId, $voteUserIds)) {
-                $voteUserIds[] = $userId;
+            if ($userId) {
+                $voteUserIds[$userId] = true;
             }
 
-            if ($groupId) {
-                $countedItemGroups[] = $groupId;
+            if ($groupId !== null) {
+                $countedItemGroups[$groupId] = true;
             }
         }
 
