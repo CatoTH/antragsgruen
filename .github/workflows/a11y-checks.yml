@@ -80,7 +80,8 @@ jobs:
           sed -i 's/32768/3306/g' config/config.json config/config_tests.json
           sed -i 's|"domainPlain": *"http://localhost:8080/index-test.php"|"domainPlain": "http://test.antragsgruen.test"|' config/config_tests.json
           sed -i 's|"domainSubdomain": *"http://localhost:8080/index-test.php"|"domainSubdomain": "http://test.antragsgruen.test/<subdomain:[\\\\w_-]+>/"|' config/config_tests.json
-          grep -n -E '"(domainPlain|domainSubdomain)"' config/config_tests.json
+          sed -i 's/"randomSeed": "[^"]*"/"randomSeed": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"/' config/config.json config/config_tests.json
+          grep -n -E '"(domainPlain|domainSubdomain|randomSeed)"' config/config_tests.json
           echo "127.0.0.1 test.antragsgruen.test" | sudo tee -a /etc/hosts
           touch config/DEBUG
           php yii database/init
