@@ -10,7 +10,10 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
 use app\models\db\User;
+use app\models\db\Vote;
+use app\models\votings\AnswerTemplates;
 use app\models\db\VotingBlock;
+use app\models\db\VotingQuestion;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
 use Codeception\Attribute\Group;
@@ -358,5 +361,43 @@ class VotingTest extends DBTestBase
         $this->cannotVoteForThirdAmendment($votingBlock, 'testadmin@example.org', 'yes');
         $this->cannotVoteForThirdAmendment($votingBlock, 'consultationadmin@example.org', 'yes');
         $this->cannotVoteForThirdAmendment($votingBlock, 'proposaladmin@example.org', 'no');
+    }
+
+    /**
+     * Items voted on together count once towards the turnout, however many votes they produce in the
+     * database. What decides that is whether an item is in a group at all - and an empty item group
+     * ID is not a group, the same for a question as for a motion or an amendment. Two items that are
+     * not grouped are two votes, even if both name their group the same way by naming none.
+     */
+    public function testTurnoutCountsItemsThatAreNotInAnItemGroup(): void
+    {
+        $votingBlock = VotingBlock::findOne(1);
+        $user = User::findOne(['email' => 'testuser@example.org']);
+
+        foreach (['Frage 1', 'Frage 2'] as $title) {
+            $question = new VotingQuestion();
+            $question->title = $title;
+            $question->consultationId = $votingBlock->consultationId;
+            $question->votingBlockId = $votingBlock->id;
+            $votingData = $question->getVotingData();
+            $votingData->itemGroupSameVote = '';
+            $question->setVotingData($votingData);
+            $question->save();
+
+            $vote = new Vote();
+            $vote->userId = $user->id;
+            $vote->votingBlockId = $votingBlock->id;
+            $vote->questionId = $question->id;
+            $vote->weight = 1;
+            $vote->vote = AnswerTemplates::VOTE_YES;
+            $vote->public = VotingBlock::VOTES_PUBLIC_ALL;
+            $vote->save();
+        }
+
+        $votingBlock->refresh();
+        $statistics = $votingBlock->getVoteStatistics();
+
+        $this->assertSame(2, $statistics['votes'], 'Two ungrouped questions are two votes');
+        $this->assertSame(1, $statistics['users'], 'cast by one person');
     }
 }

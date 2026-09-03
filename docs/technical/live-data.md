@@ -62,10 +62,11 @@ for, and the channel stays silent instead of polling an incomplete URL.
 
 **Collection** channels carry a list whose members come and go — currently the votings. A poll
 answers with the whole list and is authoritative: whatever it does not contain has left the
-collection. A live event carries a single member, which is merged into the list by its ID; an event
+collection. A live event carries a single member, which is placed into the list by its ID. An event
 marked `partial` describes only part of a member and is merged field by field, leaving everything it
 does not mention as it was (a cast vote reports the counting alone, see
-[voting-live-data.md](voting-live-data.md) §6). A member marked `removed` has left the collection and
+[voting-live-data.md](voting-live-data.md) §6); one that is not describes the whole member and
+*replaces* it, which is what lets a field be taken away again. A member marked `removed` has left the collection and
 is dropped from it — polls say that on their own by not listing it any more, but a client with a live
 connection stops polling, so an object that is deleted has to be able to say so itself. Widgets
 always receive the whole list and filter it themselves, because which members a page shows is

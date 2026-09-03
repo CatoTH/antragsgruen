@@ -788,6 +788,16 @@ The three confidentiality settings map onto this without the proxy knowing them:
 * `votesPublic = VOTES_PUBLIC_NO` → **the vote list is not serialized at all**, in no section, in
   no message. Secrecy then does not depend on the proxy behaving correctly, only on the backend not
   writing the field. Same for the polling endpoints, which build the identical DTOs.
+
+  That claim is about `single_votes`, and it does not extend to `per_user` (§3). A `full` message
+  carries everyone's own state keyed by their JWT subject — which is `login-<user id>` — including
+  the answers they gave, because that is how each reader is told what they themselves voted. So the
+  message that closes a secret voting is a complete record of who voted how, and it sits in RabbitMQ
+  and in the Live server's memory, where under the old polling design each vote only ever travelled
+  to the person who cast it. Nothing is exposed to a *reader*: the Live server delivers each subject
+  only their own entry, and the scope rules of §3 are what enforce that. But for a secret voting the
+  broker and the Live server are inside the trust boundary, and an operator deciding where to run
+  them, and what to do about their logs and their persistence, should know it.
 * `resultsPublic = RESULTS_PUBLIC_NO` → the per-item result counts go to `admin_only` only, and so
   does `abstention.count`: how many people abstained is a result like any other.
 * **Turnout is not a result**: `statistics.votes` / `statistics.voters` stay in `everyone`
@@ -864,6 +874,11 @@ to be among them; one that can name them has already named them, so a reader who
 is not among them.
 For a 2000-delegate consultation the map is roughly 100 KB - acceptable because `full` messages are
 triggered by admin actions (open / close / reset / settings / items), not by cast votes (§6).
+
+Every entry carries the answers that person gave, which is what makes it their own state, and the
+key is their user ID. So `per_user` is the one thing in a payload that names votes irrespective of
+`votesPublic`; what §2 says about a secret voting scopes to `single_votes`, and the note there says
+what that means for where the broker and the Live server may run.
 
 ## 4. What clients receive: `VotingBlockUser`
 
@@ -958,9 +973,11 @@ endpoint — byte-identical, as with `SpeechQueueUser` today.
 wrong result. (The DTOs make this an explicit `null` in the JSON rather than an absent key, which
 says the same thing and is what a typed payload can express.)
 
-`single_votes` is the one field where an **absent** key means something different from a `null` one:
-a tally leaves it out to say "unchanged, keep what you have", while `null` says "you may not see
-these". Nothing else in the payload distinguishes the two, and nothing else needs to — see §6.
+`single_votes` and `abstention.users` are the two fields where an **absent** key means something
+different from a `null` one: a tally leaves them out to say "unchanged, keep what you have", while
+`null` says "you may not see these". They are also the only two that grow with the number of people
+voting, which is why they are the only two a tally omits — see §6. Nothing else in the payload
+distinguishes the two, and nothing else needs to.
 
 ### 4.3 `me` — `VotingUserState`
 
@@ -1044,13 +1061,15 @@ of ~100 KB each, fanned out personally to 2000 connections. So:
   instead, there being no state left to describe.
 * Because the order is only ever conveyed by a poll otherwise, `position` is part of the payload:
   a client that has stopped polling sorts the list it has assembled from single events itself.
-* **`tally`** — no `per_user`, no `settings`, no `eligibility`, **and no `single_votes`**. Carries
-  only `statistics`, `item_groups[].results` (in whichever scope the publicity allows) and
-  `abstention`. Its size does not depend on how many people have voted. Published on every cast
-  vote; throttling, if it is ever needed, happens in the Live server (see below).
+* **`tally`** — no `per_user`, no `settings`, no `eligibility`, **and nobody named**. Carries only
+  `statistics`, `item_groups[].results` and `abstention.count` (each in whichever scope the publicity
+  allows). Its size does not depend on how many people have voted. Published on every cast vote;
+  throttling, if it is ever needed, happens in the Live server (see below).
 
-The single votes are left out because they are the one part of a voting that grows with the number
-of people in the room: carrying them would make the n-th vote publish all n votes cast so far, so a
+Two lists are left out, because they are the two parts of a voting that grow with the number of
+people in the room: `item_groups[].single_votes`, and `abstention.users` — who abstained from the
+voting as a whole, which is recorded against a question of its own and therefore sits outside the
+item groups. Carrying either would make the n-th vote publish all n votes cast so far, so a
 1000-delegate voting would push ~55 MB through the broker over its run instead of ~1 MB, and the
 last vote alone would build a 109 KB message. Nobody is deprived of anything by that while a voting
 is running — `canSeeAnySingleVote()` shows them to the administration and to nobody else until the
@@ -1058,18 +1077,30 @@ voting is decided — and the administration's channel keeps polling for them (�
 `votesPublic` lets them see the votes at all, learns the whole list at once: from the `full` message
 that closing the voting produces.
 
-Merge contract on the client: a `tally` message replaces exactly those three fields and leaves
+Leaving them out is also what keeps a tally cheap to *build*: asking a `VotingBlock` for the votes of
+any one of its items hydrates every vote row of the whole voting, so a tally asks for none of them.
+How many abstained is read off the turnout, which counts it anyway.
+
+Merge contract on the client: a `tally` message touches exactly those three fields and leaves
 everything else — importantly `me` — untouched. `me` for the acting user is updated from the
 response of their own vote POST; no other user's `me` changes when someone votes. The Live server
 marks such a message `"partial": true`, and `LiveData.js` merges a partial member field by field
 instead of replacing it (a partial event about a voting the client has never seen is dropped: it says
-too little to show, and the next poll brings the whole of it).
+too little to show, and the next poll brings the whole of it). A message that is *not* partial
+replaces the member instead, which is what makes §2.1 mean anything on the client: a voting reduced
+to its id and its status has to arrive as a member reduced to its id and its status, not as one
+field-merged over everything the reader was told while it was open.
 
-Within a member, a list of objects carrying an `id` is merged entry by entry rather than replaced,
-which is what lets a tally name every item group — it has to, for the counting — without discarding
-the single votes inside them. This is why the tally omits the `single_votes` key instead of setting
-it to `null`: an absent key keeps what the reader has, a `null` one overwrites it, and a full message
-needs to be able to say "you may not see these" (§4.2).
+The rule is that a key a partial message does not carry is left as it was, and it holds below the top
+level as well: within a member, a list of objects whose `id` identifies them is merged entry by entry,
+and a nested object member by member, rather than being replaced with something that describes the
+same thing in less detail. `id` has to *identify* them: `items[]` is not merged that way, a motion and
+an amendment in one voting being able to share the numeric id 3 - and it needs no merging, every
+message that carries it describing each of its entries in full. That is what lets a tally name every item group — it has to, for the counting —
+without discarding the single votes inside them, and lets it carry `abstention.count` without
+discarding `abstention.users`. This is why a tally omits those two keys instead of setting them to
+`null`: an absent key keeps what the reader has, a `null` one overwrites it, and a full message needs
+to be able to say "you may not see these" (§4.2).
 
 Because `tally` has no per-user content, every recipient of a given role gets a byte-identical
 message; the proxy may later broadcast it to a shared topic instead of fanning out N copies.
@@ -1133,9 +1164,13 @@ What to do about it, in the order the effort pays off:
 2. ~~Keep the single votes out of the tally, so that the message stops growing with the turnout.~~
    Done: see the `tally` bullet above.
 3. ~~Fetch the people behind the votes in one query rather than one per voter.~~ Done:
-   `User::preloadCachedUsers()`, called from `VotingPayloadBuilder::getSingleVotes()` and from
-   `ConsultationUserGroup::getUsersCached()`, so a payload that does name every voter - the `full`
-   message closing a voting produces - costs one query for all of them instead of one each.
+   `User::preloadCachedUsers()`, called from `VotingPayloadBuilder::getSingleVotes()`, from
+   `buildPerUserStates()` and from `ConsultationUserGroup::getUsersCached()`, so a payload that
+   describes every voter - the `full` message closing a voting produces - costs one query for all of
+   them instead of one each. `buildPerUserStates()` needs its own call: it is the longest of these
+   lists (everyone who has voted, *plus* everyone a policy that names its voters admits), and it is
+   reached even when nothing else on the path loads a person - a secret voting names nobody, so
+   `getSingleVotes()` never runs, and the group preload only caches memberships.
 4. Publish after `ResourceLock::releaseAllLocks()`, and ideally after the response has been flushed,
    so that neither the lock nor the voter waits for RabbitMQ.
 5. Only if the rate ever justifies it: replace the management API with a real AMQP client and a

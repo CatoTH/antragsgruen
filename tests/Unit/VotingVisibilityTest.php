@@ -12,6 +12,7 @@ use app\models\proposedProcedure\AgendaVoting;
 use Codeception\Attribute\Group;
 use Tests\Support\Helper\DBTestBase;
 use Yii;
+use yii\log\Logger;
 use yii\web\Request;
 
 /**
@@ -75,16 +76,27 @@ class VotingVisibilityTest extends DBTestBase
     /**
      * votesPublic can only be set while the voting is not running, so this goes through "preparing".
      */
-    private function openVoting(int $votesPublic, int $resultsPublic): void
+    private function openVoting(int $votesPublic, int $resultsPublic, bool $generalAbstention = false): void
     {
         $this->setStatus(VotingBlock::STATUS_PREPARING);
 
         $this->getVotingMethods([
             'votesPublic' => $votesPublic,
             'resultsPublic' => $resultsPublic,
+            'hasGeneralAbstention' => $generalAbstention,
         ])->voteSaveSettings($this->getBlock());
 
         $this->setStatus(VotingBlock::STATUS_OPEN);
+    }
+
+    /**
+     * Abstaining from the voting as a whole, which is a different thing from voting "abstention" on
+     * one of its items: it is recorded against a question of its own.
+     */
+    private function abstain(string $userEmail): void
+    {
+        $this->getVotingMethods(['abstention' => ['abstain' => true]])
+            ->userSetAbstention($this->getBlock(), User::findOne(['email' => $userEmail]));
     }
 
     private function vote(string $userEmail, string $vote): void
@@ -287,6 +299,42 @@ class VotingVisibilityTest extends DBTestBase
         return VotingPayloadBuilder::fromVotingBlock($this->getBlock())->buildLiveEnvelope($tallyOnly);
     }
 
+    /**
+     * How many queries against the `user` table $fn causes, starting from a cold User cache. The
+     * cache is static and shared by the whole request, so emptying it takes reflection - what is
+     * being asserted is the cost of the first payload built in a request, which is the only one
+     * that pays it.
+     */
+    private function countUserQueries(callable $fn): int
+    {
+        $cache = new \ReflectionProperty(User::class, 'userCache');
+        $cache->setValue(null, []);
+
+        $logger = Yii::getLogger();
+        $logger->flush();
+        $logger->messages = [];
+        $flushInterval = $logger->flushInterval;
+        $logger->flushInterval = PHP_INT_MAX;
+
+        $table = ' ' . Yii::$app->db->quoteTableName(Yii::$app->db->schema->getRawTableName(User::tableName())) . ' ';
+        try {
+            $fn();
+
+            $queries = 0;
+            foreach ($logger->messages as $message) {
+                if ($message[1] === Logger::LEVEL_PROFILE_BEGIN && $message[2] === 'yii\\db\\Command::query' &&
+                    str_contains($message[0], 'FROM' . $table)) {
+                    $queries++;
+                }
+            }
+        } finally {
+            $logger->flushInterval = $flushInterval;
+            $logger->flush();
+        }
+
+        return $queries;
+    }
+
     private static function findGroup(array $section): array
     {
         foreach ($section['item_groups'] as $group) {
@@ -411,6 +459,44 @@ class VotingVisibilityTest extends DBTestBase
             $this->assertStringNotContainsString(self::VOTER_YES, $json, 'A tally names nobody');
             $this->assertStringNotContainsString(self::VOTER_NO, $json, 'A tally names nobody');
         }
+    }
+
+    /**
+     * The same property, for the other list in a voting that grows with the number of people in it.
+     * The general abstention does not sit inside an item group - abstaining is abstaining from the
+     * voting as a whole - so leaving the single votes out of the item groups does not cover it.
+     */
+    public function testATallyCountsTheAbstentionsWithoutNamingThem(): void
+    {
+        $this->openVoting(VotingBlock::VOTES_PUBLIC_ADMIN, VotingBlock::RESULTS_PUBLIC_YES, generalAbstention: true);
+
+        $this->abstain(self::VOTER_YES);
+        $afterOne = $this->getEnvelope(tallyOnly: true);
+
+        $this->abstain(self::VOTER_NO);
+        $afterTwo = $this->getEnvelope(tallyOnly: true);
+
+        // how many abstained is counting, which is what a tally is for...
+        $this->assertSame(1, $afterOne['admin_only']['abstention']['count']);
+        $this->assertSame(2, $afterTwo['admin_only']['abstention']['count']);
+
+        // ...while who they were is left out, as an absent key rather than a null one, so that a
+        // reader keeps the list it holds instead of reading it as "you may not see them"
+        foreach ([$afterOne, $afterTwo] as $tally) {
+            $this->assertTrue($tally['everyone']['abstention']['enabled']);
+            $this->assertArrayNotHasKey('users', $tally['everyone']['abstention']);
+            $this->assertArrayNotHasKey('users', $tally['admin_only']['abstention']);
+            $this->assertStringNotContainsString(
+                self::VOTER_YES,
+                json_encode($tally, JSON_THROW_ON_ERROR),
+                'A tally names nobody who abstained either'
+            );
+        }
+
+        // and they arrive where the single votes do
+        $full = $this->getEnvelope(tallyOnly: false);
+        $this->assertCount(2, $full['admin_only']['abstention']['users']);
+        $this->assertNull($full['everyone']['abstention']['users']);
     }
 
     /**
@@ -545,6 +631,35 @@ class VotingVisibilityTest extends DBTestBase
         // Everybody the policy does not name is not admitted, and is told so once
         $this->assertFalse($envelope['default_user_state']['eligible']);
         $this->assertArrayNotHasKey('login-' . User::findOne(['email' => self::VOTER_YES])->id, $perUser);
+    }
+
+    /**
+     * A `full` message describes everyone the voting knows about, and that list is as long as the
+     * meeting is large: everyone who has voted, plus - where the policy names its voters - everyone
+     * entitled to, whether they have voted or not. They have to be fetched in one query, not one
+     * each.
+     *
+     * A secret voting is the case with nothing to fall back on: it names no single votes, so the
+     * preload that describing them would do never happens, and preloading the group memberships
+     * caches memberships, not people.
+     */
+    public function testAFullEventFetchesEveryoneItDescribesInOneQuery(): void
+    {
+        $this->setStatus(VotingBlock::STATUS_PREPARING);
+        $this->getVotingMethods([
+            'votesPublic' => VotingBlock::VOTES_PUBLIC_NO,
+            'votePolicy' => ['id' => IPolicy::POLICY_ADMINS],
+        ])->voteSaveSettings($this->getBlock());
+        $this->setStatus(VotingBlock::STATUS_OPEN);
+
+        $envelope = null;
+        $queries = $this->countUserQueries(function () use (&$envelope): void {
+            $envelope = $this->getEnvelope(tallyOnly: false);
+        });
+
+        $this->assertGreaterThan(1, count((array)$envelope['per_user']), 'The policy does name several people');
+        $this->assertNull(self::findGroup($envelope['everyone'])['single_votes'], 'and nothing else here names anyone');
+        $this->assertSame(1, $queries, 'One query for all of them, not one each');
     }
 
     /**

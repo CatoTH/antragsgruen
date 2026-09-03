@@ -47,12 +47,12 @@ import { apiFetch, authorizedFetch, getToken, invalidateToken } from "/js/module
 /**
  * Merges the fields a partial live event carries into the member a client already holds.
  *
- * Plain fields are replaced. A list of objects that carry an `id` is merged member by member
- * instead, because such a list can describe the same things twice with a different amount of
- * detail: a voting's item groups are named in every tally, for the counting, but the single votes
- * within them are left out of tallies entirely - the one part of the payload that grows with the
- * number of people voting. Replacing the list would drop what the event never meant to change; a
- * key the event does carry still wins, null included.
+ * A key the event does not carry is left as it was; a key it does carry wins, null included. That
+ * rule has to hold below the top level too, because what a tally leaves out does not sit at the top
+ * level: an item group's single votes and the list of who abstained are the two parts of a voting
+ * that grow with the number of people in it, and no tally carries either. So a list of objects that
+ * carry an `id` is merged member by member, and a nested object member by member as well, rather
+ * than being replaced with something that describes the same thing in less detail.
  *
  * The incoming list decides which members exist - an item group that is gone is gone.
  *
@@ -63,7 +63,7 @@ import { apiFetch, authorizedFetch, getToken, invalidateToken } from "/js/module
 function mergeMember(member, fields) {
     const merged = Object.assign({}, member);
     Object.keys(fields).forEach(key => {
-        merged[key] = mergeKeyedList(member[key], fields[key]);
+        merged[key] = mergeValue(member[key], fields[key]);
     });
 
     return merged;
@@ -74,25 +74,43 @@ function mergeMember(member, fields) {
  * @param {any} incoming
  * @returns {any}
  */
-function mergeKeyedList(known, incoming) {
-    if (!isKeyedList(known) || !isKeyedList(incoming)) {
-        return incoming;
+function mergeValue(known, incoming) {
+    if (isKeyedList(known) && isKeyedList(incoming)) {
+        return incoming.map(item => {
+            const previous = known.find(candidate => candidate.id === item.id);
+            return previous ? mergeMember(previous, item) : item;
+        });
+    }
+    if (isPlainObject(known) && isPlainObject(incoming)) {
+        return mergeMember(known, incoming);
     }
 
-    return incoming.map(item => {
-        const previous = known.find(candidate => candidate.id === item.id);
-        return previous ? Object.assign({}, previous, item) : item;
-    });
+    return incoming;
 }
 
 /**
  * @param {any} value
  * @returns {boolean}
  */
+function isPlainObject(value) {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Whether `id` actually identifies an entry of this list, which is what merging entry by entry
+ * relies on. `item_groups` qualifies; `items` does not - it holds a motion and an amendment that can
+ * share the numeric id 3 - and it does not need to, every message that carries it describing each of
+ * its entries in full.
+ *
+ * @param {any} value
+ * @returns {boolean}
+ */
 function isKeyedList(value) {
-    return Array.isArray(value) && value.every(
-        item => item !== null && typeof item === 'object' && !Array.isArray(item) && item.id !== undefined
-    );
+    if (!Array.isArray(value) || !value.every(item => isPlainObject(item) && item.id !== undefined)) {
+        return false;
+    }
+
+    return (new Set(value.map(item => item.id))).size === value.length;
 }
 
 const MAX_BACKOFF_MS = 30000;
@@ -322,9 +340,14 @@ class Channel {
                 }
                 this.collection = this.collection.concat([data]);
             } else {
+                // Only a partial event is merged. One that is not describes the whole member, and
+                // has to be able to take something away: a voting that goes back to being prepared
+                // is announced with nothing but its id and its status (§2.1), and merging that into
+                // what the reader holds would leave every field of the previous version standing.
                 const { partial, ...fields } = data;
+                const replacement = (partial ? mergeMember(this.collection[index], fields) : fields);
                 this.collection = this.collection.map(
-                    (member, memberIndex) => (memberIndex === index ? mergeMember(member, fields) : member)
+                    (member, memberIndex) => (memberIndex === index ? replacement : member)
                 );
             }
         }

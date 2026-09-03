@@ -805,7 +805,13 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             }
         }
         foreach ($this->questions as $question) {
-            $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
+            // Guarded like the two above, and for the same reason: "is this item voted on together
+            // with others" is a truthiness question everywhere else in this class, so an empty item
+            // group ID is not one. Only entries that are actually a group belong in these maps -
+            // what a vote is deduplicated against below is whether it found one at all.
+            if ($question->getVotingData()->itemGroupSameVote) {
+                $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
+            }
         }
 
         $abstentionId = $this->getGeneralAbstentionItem()?->id;

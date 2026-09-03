@@ -58,6 +58,16 @@ class VotingPayloadBuilder
      */
     private ?int $currentTime = null;
 
+    /**
+     * One reading of the turnout per payload, for the same reason: it is asked for by the statistics
+     * and by the general abstention, once for the participant's view and once for the
+     * administration's, and counting a whole voting's vote rows four times is a cost paid again
+     * after every single vote cast.
+     *
+     * @var array{votes: int, users: int, abstentions: int}|null
+     */
+    private ?array $voteStatistics = null;
+
     private function __construct(
         private readonly AgendaVoting $agendaVoting,
     ) {
@@ -324,17 +334,24 @@ class VotingPayloadBuilder
         /** @var array<int, array<string, mixed>> $itemGroups */
         $itemGroups = $serializer->normalize($this->getItemGroups($isAdmin, includeSingleVotes: false), null, $context);
 
-        // The key has to be gone, not null: a reader merges a tally's item groups into the ones it
-        // holds field by field, so an absent single_votes means "unchanged" while a null one would
-        // mean "you may not see them" - which is what a full payload uses it for.
+        // The key has to be gone, not null: a reader merges a tally into what it holds field by
+        // field, so an absent single_votes means "unchanged" while a null one would mean "you may
+        // not see them" - which is what a full payload uses it for.
         foreach (array_keys($itemGroups) as $index) {
             unset($itemGroups[$index]['single_votes']);
         }
 
+        // Who abstained is left out the same way and for the same reason: it is the second list in
+        // a voting that grows with the number of people in it. How many abstained stays - that is
+        // counting, which is what a tally is for.
+        /** @var array<string, mixed> $abstention */
+        $abstention = $serializer->normalize($this->getAbstention($isAdmin, includeSingleVotes: false), null, $context);
+        unset($abstention['users']);
+
         return [
             'statistics' => $serializer->normalize($this->getStatistics(), null, $context),
             'item_groups' => $itemGroups,
-            'abstention' => $serializer->normalize($this->getAbstention($isAdmin), null, $context),
+            'abstention' => $abstention,
         ];
     }
 
@@ -401,10 +418,17 @@ class VotingPayloadBuilder
      */
     private function buildPerUserStates(Serializer $serializer, array $context): array
     {
-        $userIds = array_merge($this->block->getVoterUserIds(), $this->getAdmittedUserIds() ?? []);
+        $userIds = array_unique(array_merge($this->block->getVoterUserIds(), $this->getAdmittedUserIds() ?? []));
+
+        // In one query rather than one per person: this is the list that is as long as the meeting
+        // is large - everyone who has voted, plus everyone a policy that names its voters admits,
+        // whether they have voted or not - and getCachedUser() below is a query each until something
+        // has filled the cache it reads. Nothing else on this path does: getSingleVotes() preloads
+        // the voters it describes, but a secret voting never reaches it.
+        User::preloadCachedUsers($userIds);
 
         $states = [];
-        foreach (array_unique($userIds) as $userId) {
+        foreach ($userIds as $userId) {
             $user = User::getCachedUser($userId);
             if (!$user) {
                 continue;
@@ -552,9 +576,17 @@ class VotingPayloadBuilder
         );
     }
 
+    /**
+     * @return array{votes: int, users: int, abstentions: int}
+     */
+    private function getVoteStatistics(): array
+    {
+        return $this->voteStatistics ??= $this->block->getVoteStatistics();
+    }
+
     private function getStatistics(): VotingStatistics
     {
-        $statistics = $this->block->getVoteStatistics();
+        $statistics = $this->getVoteStatistics();
 
         return new VotingStatistics(votes: $statistics['votes'], voters: $statistics['users']);
     }
@@ -583,19 +615,26 @@ class VotingPayloadBuilder
      * from the voting as a whole. In the database it is a question of its own, which is why it is
      * filtered out of the items everywhere.
      */
-    private function getAbstention(bool $isAdmin): VotingAbstention
+    private function getAbstention(bool $isAdmin, bool $includeSingleVotes = true): VotingAbstention
     {
         if (!$this->generalAbstentionItem) {
             return new VotingAbstention(enabled: false);
         }
 
-        $votes = $this->block->getVotesForVotingItem($this->generalAbstentionItem);
+        // Naming who abstained is, like the single votes of an item group, a part of the payload
+        // that grows with the number of people in the room - and asking the block for those votes
+        // hydrates every vote row of the whole voting on top of that. A tally, published after
+        // every single vote, names nobody, so it fetches nothing here either.
+        $showSingleVotes = $includeSingleVotes && $this->canSeeAnySingleVote($isAdmin);
+        $votes = $showSingleVotes ? $this->block->getVotesForVotingItem($this->generalAbstentionItem) : [];
 
         return new VotingAbstention(
             enabled: true,
-            // How many abstained is a result, and follows the result publicity
-            count: $this->canSeeResults($isAdmin) ? count($votes) : null,
-            users: $this->canSeeAnySingleVote($isAdmin) ? array_values(array_map(
+            // How many abstained is a result, and follows the result publicity. Taken from the
+            // turnout, which counts them anyway, rather than from the votes above - those are only
+            // fetched when they are going to be named.
+            count: $this->canSeeResults($isAdmin) ? $this->getVoteStatistics()['abstentions'] : null,
+            users: $showSingleVotes ? array_values(array_map(
                 fn (Vote $vote): VotingVoter => $this->getVoter($vote),
                 $this->getVisibleVotes($votes, $isAdmin)
             )) : null,
