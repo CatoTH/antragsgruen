@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\controllers\{MotionController, PagesController, UserController, VotingController};
-use app\controllers\rest\{RestBase, SpeechController};
+use app\controllers\rest\SpeechController;
 use app\models\layoutHooks\Layout;
 use app\models\db\User;
 use Endroid\QrCode\Label\Font\FontInterface;
@@ -332,7 +332,7 @@ class SecondFactorAuthentication
             // Could be an implicit load of custom CSS or a logo
             return;
         }
-        if (is_subclass_of($controller, RestBase::class)) {
+        if (RequestContext::isRestRequest($controller)) {
             // Prevent session generation
             return;
         }

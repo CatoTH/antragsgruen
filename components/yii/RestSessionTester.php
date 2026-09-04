@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace app\components\yii;
 
-use app\controllers\rest\RestBase;
+use app\components\RequestContext;
 
 class RestSessionTester extends \yii\web\Session
 {
     public function set($key, $value): void
     {
-        $controller = \Yii::$app->controller;
-        if (is_subclass_of($controller, RestBase::class)) {
+        if (RequestContext::isRestRequest()) {
             //var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5));
             die("Invalid session usage from within the API");
         }
@@ -21,8 +20,7 @@ class RestSessionTester extends \yii\web\Session
 
     protected function updateFlashCounters(): void
     {
-        $controller = \Yii::$app->controller;
-        if (is_subclass_of($controller, RestBase::class)) {
+        if (RequestContext::isRestRequest()) {
             //var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5));
             die("Invalid session usage from within the API");
         }

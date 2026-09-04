@@ -115,12 +115,14 @@ class LanguageTools
     private static function resolveCurrentLanguage(): string
     {
         $supportedLanguages = self::getSupportedLanguages();
-        if (count($supportedLanguages) < 2 || !self::hasSession()) {
+        if (count($supportedLanguages) < 2 || !self::hasWebRequest()) {
             return self::getPrimaryLanguage();
         }
 
-        $session      = RequestContext::getSession();
-        $chosenByUser = $session->get(self::SESSION_KEY);
+        // API requests are answered without ever touching the session (see canUseSessionForLanguage()),
+        // so for them the language is derived from the request alone.
+        $session      = self::canUseSessionForLanguage() ? RequestContext::getSession() : null;
+        $chosenByUser = $session?->get(self::SESSION_KEY);
         if (is_string($chosenByUser) && in_array($chosenByUser, $supportedLanguages, true)) {
             return $chosenByUser;
         }
@@ -129,7 +131,7 @@ class LanguageTools
         $acceptableLanguages = RequestContext::getWebRequest()->getAcceptableLanguages();
         $language            = self::matchBrowserLanguage($acceptableLanguages, $supportedLanguages)
                                ?? self::getPrimaryLanguage();
-        $session->set(self::SESSION_KEY, $language);
+        $session?->set(self::SESSION_KEY, $language);
 
         return $language;
     }
@@ -234,11 +236,21 @@ class LanguageTools
     }
 
     /**
-     * Console commands and unit tests have no session to read the language from.
+     * Console commands and unit tests have no request to derive the language from.
      */
-    private static function hasSession(): bool
+    private static function hasWebRequest(): bool
     {
         return \Yii::$app instanceof \yii\web\Application;
+    }
+
+    /**
+     * The chosen language is remembered in the session - except for the REST API, which has to stay
+     * stateless: merely reading from the session starts it, which would issue a session cookie for
+     * requests that widgets perform in the background of a regular browsing session.
+     */
+    private static function canUseSessionForLanguage(): bool
+    {
+        return self::hasWebRequest() && !RequestContext::isRestRequest();
     }
 
     public static function resetRequestCache(): void
