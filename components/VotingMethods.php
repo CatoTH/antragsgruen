@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\models\db\{Amendment, Consultation, ConsultationUserGroup, IMotion, IVotingItem, Motion, User, Vote, VotingBlock, VotingQuestion};
+use app\models\api\voting\{VotingBlockUser, VotingPayloadBuilder, VotingStatus};
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
@@ -28,22 +29,29 @@ class VotingMethods
         $this->request = $request;
     }
 
+    /**
+     * The status is named as the payload spells it (VotingStatus), not as the database stores it.
+     *
+     * @throws FormError
+     */
     public function voteStatusUpdate(VotingBlock $votingBlock): void
     {
-        if ($this->request->post('status') !== null) {
-            $newStatus = intval($this->request->post('status'));
-            if ($newStatus === VotingBlock::STATUS_PREPARING) {
-                $votingBlock->switchToOnlineVoting();
-            } elseif ($newStatus === VotingBlock::STATUS_OPEN) {
-                $votingBlock->openVoting();
-            } elseif ($newStatus === VotingBlock::STATUS_CLOSED_PUBLISHED) {
-                $votingBlock->closeVoting(true);
-            } elseif ($newStatus === VotingBlock::STATUS_CLOSED_UNPUBLISHED) {
-                $votingBlock->closeVoting(false);
-            } elseif ($newStatus === VotingBlock::STATUS_OFFLINE) {
-                $votingBlock->switchToOfflineVoting();
-            }
+        if ($this->request->post('status') === null) {
+            return;
         }
+
+        $newStatus = VotingStatus::tryFrom((string)$this->request->post('status'));
+        if ($newStatus === null) {
+            throw new FormError('Unknown voting status: ' . $this->request->post('status'));
+        }
+
+        match ($newStatus) {
+            VotingStatus::PREPARING => $votingBlock->switchToOnlineVoting(),
+            VotingStatus::OPEN => $votingBlock->openVoting(),
+            VotingStatus::CLOSED_PUBLISHED => $votingBlock->closeVoting(publish: true),
+            VotingStatus::CLOSED_UNPUBLISHED => $votingBlock->closeVoting(publish: false),
+            VotingStatus::OFFLINE => $votingBlock->switchToOfflineVoting(),
+        };
     }
 
     public function deleteVoting(VotingBlock $votingBlock): void
@@ -106,10 +114,13 @@ class VotingMethods
             }
             if ($this->request->post('votePolicy') !== null) {
                 $policyData = $this->request->post('votePolicy', []);
+                // A policy that admits nobody in particular sends no groups at all; a form-encoded
+                // request turns that into an empty string rather than into an absent value
+                $userGroups = $policyData['user_groups'] ?? null;
                 $votingBlock->setVotingPolicy($this->getPolicyFromUpdateData(
                     $votingBlock,
                     intval($policyData['id']),
-                    $policyData['user_groups'] ?? []
+                    is_array($userGroups) ? $userGroups : []
                 ));
             }
             if ($this->request->post('votesPublic') !== null) {
@@ -244,7 +255,7 @@ class VotingMethods
     /**
      * @throws FormError
      */
-    private function voteForSingleItem(User $user, VotingBlock $votingBlock, IVotingItem $item, int $public, string $voteChoice): Vote {
+    private function voteForSingleItem(User $user, VotingBlock $votingBlock, IVotingItem $item, string $voteChoice): Vote {
         $vote = $votingBlock->getUserSingleItemVote($user, $item);
         if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $item, $vote)) {
             throw new FormError('Not possible to vote for this item');
@@ -259,10 +270,9 @@ class VotingMethods
         $vote->questionId = (is_a($item, VotingQuestion::class) ? $item->id : null);
         $vote->weight = $user->getSettingsObj()->getVoteWeight($votingBlock->getMyConsultation());
 
-        // $public should be the same as votesPublic, as it was cached in the frontend and is sent from it as-is.
-        // This is just a safeguard so that an accidental change in the value in the database does not lead to
-        // a vote cast by the user under the assumption of being non-public accidentally being stored as public
-        $vote->public = min($public, $votingBlock->votesPublic);
+        // A vote keeps the publicity the voting promised when it was opened, even if the setting is
+        // widened afterwards. Decided by the voting alone: what the client believed is irrelevant.
+        $vote->public = $votingBlock->getPublicityForNewVotes();
 
         $vote->dateVote = date('Y-m-d H:i:s');
 
@@ -280,10 +290,10 @@ class VotingMethods
     /**
      * @throws FormError
      */
-    private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, int $public, string $voteChoice): void {
+    private function voteForItemGroup(User $user, VotingBlock $votingBlock, string $itemGroup, string $voteChoice): void {
         $votes = [];
         foreach ($votingBlock->getItemGroupItems($itemGroup) as $imotion) {
-            $votes[] = $this->voteForSingleItem($user, $votingBlock, $imotion, $public, $voteChoice);
+            $votes[] = $this->voteForSingleItem($user, $votingBlock, $imotion, $voteChoice);
         }
         foreach ($votes as $vote) {
             $vote->save();
@@ -319,7 +329,7 @@ class VotingMethods
             $abstentionData = $this->request->post('abstention');
             if ($abstentionData['abstain']) {
                 if (!$hasAbstained) {
-                    $vote = $this->voteForSingleItem($user, $votingBlock, $abstentionItem, $abstentionData['public'], 'yes');
+                    $vote = $this->voteForSingleItem($user, $votingBlock, $abstentionItem, 'yes');
                     $vote->save();
                 }
             } else {
@@ -335,6 +345,26 @@ class VotingMethods
     }
 
     /**
+     * Item groups holding a single item are named after that item; every other group ID is one that
+     * was configured for voting several items on together.
+     *
+     * @throws FormError
+     */
+    private function getSingleItemFromGroupId(string $groupId, VotingBlock $votingBlock): ?IVotingItem
+    {
+        if (!str_starts_with($groupId, VotingPayloadBuilder::SINGLE_ITEM_GROUP_PREFIX)) {
+            return null;
+        }
+
+        $parts = explode(':', substr($groupId, strlen(VotingPayloadBuilder::SINGLE_ITEM_GROUP_PREFIX)));
+        if (count($parts) !== 2 || !in_array($parts[0], ['motion', 'amendment', 'question'], true)) {
+            throw new FormError('Invalid vote');
+        }
+
+        return $this->getVotingItemByTypeAndId($parts[0], intval($parts[1]), $votingBlock);
+    }
+
+    /**
      * @throws FormError
      */
     public function userVote(VotingBlock $votingBlock, User $user): void
@@ -344,32 +374,33 @@ class VotingMethods
         }
 
         foreach ($this->request->post('votes', []) as $voteData) {
-            $public = isset($voteData['public']) ? intval($voteData['public']) : VotingBlock::VOTES_PUBLIC_NO;
-            if (isset($voteData['itemGroupSameVote']) && trim($voteData['itemGroupSameVote']) !== '') {
-                ResourceLock::lockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
+            $groupId = trim((string)($voteData['groupId'] ?? ''));
+            if ($groupId === '') {
+                throw new FormError('Invalid vote');
+            }
+            $singleItem = $this->getSingleItemFromGroupId($groupId, $votingBlock);
+
+            if ($singleItem === null) {
+                ResourceLock::lockVotingBlockItemGroup($votingBlock, $groupId);
                 try {
                     if ($voteData['vote'] === 'undo') {
-                        $this->undoVoteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote']);
+                        $this->undoVoteForItemGroup($user, $votingBlock, $groupId);
                     } else {
-                        $this->voteForItemGroup($user, $votingBlock, $voteData['itemGroupSameVote'], $public, $voteData['vote']);
+                        $this->voteForItemGroup($user, $votingBlock, $groupId, $voteData['vote']);
                     }
-                    ResourceLock::unlockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
+                    ResourceLock::unlockVotingBlockItemGroup($votingBlock, $groupId);
                 } catch (FormError $e) {
-                    ResourceLock::unlockVotingBlockItemGroup($votingBlock, $voteData['itemGroupSameVote']);
+                    ResourceLock::unlockVotingBlockItemGroup($votingBlock, $groupId);
                     throw $e;
                 }
             } else {
-                // Vote for a single item that is not assigned to a item group
-                if (!in_array($voteData['itemType'], ['motion', 'amendment', 'question'])) {
-                    throw new FormError('Invalid vote');
-                }
-                $item = $this->getVotingItemByTypeAndId($voteData['itemType'], intval($voteData['itemId']), $votingBlock);
+                $item = $singleItem;
                 ResourceLock::lockVotingItemForVoting($item);
                 try {
                     if ($voteData['vote'] === 'undo') {
                         $this->undoVoteForSingleItem($user, $votingBlock, $item);
                     } else {
-                        $vote = $this->voteForSingleItem($user, $votingBlock, $item, $public, $voteData['vote']);
+                        $vote = $this->voteForSingleItem($user, $votingBlock, $item, $voteData['vote']);
                         $vote->save();
                     }
                     ResourceLock::unlockVotingItemForVoting($item);
@@ -381,28 +412,36 @@ class VotingMethods
         }
     }
 
+    /**
+     * @return VotingBlockUser[]
+     */
     public function getOpenVotingsForUser(bool $showAllOpen, ?Motion $assignedToMotion, User $user): array
     {
         $votingData = [];
         foreach (Factory::getOpenVotingBlocks($this->consultation, $showAllOpen, $assignedToMotion) as $voting) {
-            $votingData[] = $voting->getUserVotingApiObject($user);
+            $votingData[] = $voting->getUserApiObject($user);
         }
         return $votingData;
     }
 
+    /**
+     * @return VotingBlockUser[]
+     */
     public function getClosedPublishedVotingsForUser(User $user): array
     {
         $votingData = [];
         foreach (Factory::getPublishedClosedVotingBlocks($this->consultation) as $voting) {
-            $votingData[] = $voting->getUserResultsApiObject($user);
+            $votingData[] = $voting->getUserApiObject($user);
         }
         return $votingData;
     }
 
     /**
      * @param int[] $votingIds
+     * @return VotingBlock[] the votings that actually moved - the ones a live event has to be sent
+     *                       about, since the order is part of their payload
      */
-    public function sortVotings(array $votingIds): void
+    public function sortVotings(array $votingIds): array
     {
         $positionById = [];
         for ($pos = 0; $pos < count($votingIds); $pos++) {
@@ -410,14 +449,21 @@ class VotingMethods
         }
         $firstUnusedPos = $pos;
 
+        $moved = [];
         foreach ($this->consultation->votingBlocks as $votingBlock) {
+            $oldPosition = $votingBlock->position;
             if (isset($positionById[$votingBlock->id])) {
                 $votingBlock->position = $positionById[$votingBlock->id];
             } else {
                 $votingBlock->position = $firstUnusedPos;
                 $firstUnusedPos++;
             }
+            if ($votingBlock->position !== $oldPosition) {
+                $moved[] = $votingBlock;
+            }
             $votingBlock->save();
         }
+
+        return $moved;
     }
 }

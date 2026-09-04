@@ -350,6 +350,22 @@ class AcceptanceTester extends Actor
         $this->click('#logoutLink');
     }
 
+    /**
+     * Calls a REST endpoint the way the widgets of the current page do: with the JWT that page was
+     * given (see $layout->provideJwt).
+     */
+    public function fetchApi(string $url): string
+    {
+        return $this->executeJS('
+            const meta = document.head.querySelector("meta[name=user-jwt-config]");
+            if (!meta) {
+                throw new Error("This page provides no JWT");
+            }
+            const config = JSON.parse(meta.getAttribute("content"));
+            return await fetch("' . $url . '", {headers: {"Authorization": "Bearer " + config.token}}).then(ret => ret.text());
+        ');
+    }
+
     public function clickJS(string $selector): void
     {
         $this->executeJS('document.querySelector("' . $selector . '").dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true}))');

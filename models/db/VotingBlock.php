@@ -10,7 +10,7 @@ use app\models\quorumType\{IQuorumType, NoQuorum};
 use app\models\settings\{AntragsgruenApp, VotingBlock as VotingBlockSettings};
 use app\models\votings\{Answer, AnswerTemplates, VotingItemGroup};
 use app\models\settings\VotingData;
-use yii\db\{ActiveQuery, ActiveRecord};
+use yii\db\{ActiveQuery, ActiveRecord, Query};
 
 /**
  * @property int $id
@@ -192,16 +192,87 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         }
     }
 
+    /** @var array<int, Vote[]> */
+    private array $votesByUserCache = [];
+
+    /** Set once every vote of this voting has been loaded, so that people without one are known too */
+    private bool $allVotesOfUsersLoaded = false;
+
+    /**
+     * Both caches hold votes as they were when they were first asked for, so reloading the voting
+     * has to drop them - which is what the callers that cast a vote and then build a payload from
+     * the same object rely on.
+     */
+    public function refresh(): bool
+    {
+        $this->votesByUserCache = [];
+        $this->allVotesOfUsersLoaded = false;
+        $this->votesSortedByItemCache = null;
+
+        return parent::refresh();
+    }
+
+    /**
+     * Everything one person voted for in this voting, the general abstention included.
+     *
+     * Deliberately not filtered out of the votes of everyone: a payload built for a participant of a
+     * secret voting needs nothing but this, and loading the votes of two thousand delegates to find
+     * the two of one of them is what made every poll expensive.
+     *
+     * @return Vote[]
+     */
+    public function getAllVotesOfUser(User $user): array
+    {
+        if (!isset($this->votesByUserCache[$user->id])) {
+            if ($this->allVotesOfUsersLoaded) {
+                return [];
+            }
+            $this->votesByUserCache[$user->id] = Vote::find()
+                ->where(['votingBlockId' => $this->id, 'userId' => $user->id])
+                ->all();
+        }
+
+        return $this->votesByUserCache[$user->id];
+    }
+
+    /**
+     * Loads the votes of everyone at once, for the one caller that needs the state of many people:
+     * the live event, which describes the voting for every person it is delivered to. Asking per
+     * person would be one query each.
+     */
+    public function preloadVotesOfAllUsers(): void
+    {
+        if ($this->allVotesOfUsersLoaded) {
+            return;
+        }
+
+        $this->votesByUserCache = [];
+        foreach (Vote::find()->where(['votingBlockId' => $this->id])->all() as $vote) {
+            $this->votesByUserCache[$vote->userId][] = $vote;
+        }
+        $this->allVotesOfUsersLoaded = true;
+    }
+
+    /**
+     * @return int[] the IDs of everyone who has cast a vote here
+     */
+    public function getVoterUserIds(): array
+    {
+        $ids = (new Query())
+            ->select('userId')
+            ->distinct()
+            ->from(Vote::tableName())
+            ->where(['votingBlockId' => $this->id])
+            ->andWhere(['not', ['userId' => null]])
+            ->column();
+
+        return array_map('intval', $ids);
+    }
+
     public function getUserSingleItemVote(User $user, IVotingItem $item): ?Vote
     {
-        foreach ($this->votes as $vote) {
-            if ($vote->userId === $user->id && is_a($item, Motion::class) && $vote->motionId === $item->id) {
-                return $vote;
-            }
-            if ($vote->userId === $user->id && is_a($item, Amendment::class) && $vote->amendmentId === $item->id) {
-                return $vote;
-            }
-            if ($vote->userId === $user->id && is_a($item, VotingQuestion::class) && $vote->questionId === $item->id) {
+        foreach ($this->getAllVotesOfUser($user) as $vote) {
+            if ($vote->isForVotingItem($item)) {
                 return $vote;
             }
         }
@@ -279,23 +350,17 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     {
         $abstentionId = $this->getGeneralAbstentionItem()?->id;
 
-        $votes = [];
-        foreach ($this->votes as $vote) {
-            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
-                continue;
-            }
-            if ($vote->userId === $user->id) {
-                $votes[] = $vote;
-            }
-        }
-        return $votes;
+        return array_values(array_filter(
+            $this->getAllVotesOfUser($user),
+            fn (Vote $vote): bool => $vote->questionId === null || $vote->questionId !== $abstentionId
+        ));
     }
 
     public function userHasAbstained(User $user): bool
     {
         $abstentionId = $this->getGeneralAbstentionItem()?->id;
-        foreach ($this->votes as $vote) {
-            if ($vote->questionId !== null && $vote->questionId === $abstentionId && $vote->userId === $user->id) {
+        foreach ($this->getAllVotesOfUser($user) as $vote) {
+            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
                 return true;
             }
         }
@@ -426,6 +491,26 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         return $this->userIsGenerallyAllowedToVoteFor($user, $item);
     }
 
+    private function clearVotesPublicSnapshot(): void
+    {
+        $settings = $this->getSettings();
+        $settings->votesPublicAtOpening = null;
+        $this->setSettings($settings);
+    }
+
+    /**
+     * How public a vote cast right now may become: never more than the voting promised when it was
+     * opened, and never more than it says now. Deliberately not influenced by anything the client
+     * sends - a voter cannot be given a stricter or a wider publicity than everyone else.
+     */
+    public function getPublicityForNewVotes(): int
+    {
+        $current = $this->votesPublic ?? self::VOTES_PUBLIC_NO;
+        $promised = $this->getSettings()->votesPublicAtOpening;
+
+        return $promised === null ? $current : min($promised, $current);
+    }
+
     private function resetItemResults(): void
     {
         foreach ($this->motions as $motion) {
@@ -447,6 +532,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $this->addActivity(static::ACTIVITY_TYPE_RESET);
         }
         $this->votingStatus = VotingBlock::STATUS_OFFLINE;
+        $this->clearVotesPublicSnapshot();
         $this->save();
     }
 
@@ -456,6 +542,7 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $this->resetItemResults();
         }
         $this->votingStatus = VotingBlock::STATUS_PREPARING;
+        $this->clearVotesPublicSnapshot();
         $this->save();
 
         foreach ($this->votes as $vote) {
@@ -485,6 +572,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
 
         $settings = $this->getSettings();
         $settings->openedTs = time();
+        // Only if there is none yet: re-opening a closed voting continues the same round, whose
+        // votes are still there and were cast under the publicity of the first opening
+        $settings->votesPublicAtOpening ??= $this->votesPublic;
         $this->setSettings($settings);
 
         $this->save();
@@ -510,9 +600,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
         if (!$this->isClosed()) {
             $this->addActivity(static::ACTIVITY_TYPE_CLOSED);
         }
-        $this->votingStatus = ($publish ? VotingBlock::STATUS_CLOSED_PUBLISHED : VotingBlock::STATUS_CLOSED_UNPUBLISHED);
-        $this->save();
 
+        // The results are written to the items before the voting is marked as closed: a request
+        // arriving in between would otherwise see a voting that is over but has no results yet
         foreach ($this->motions as $motion) {
             $votingData = $motion->getVotingData()->augmentWithResults($this, $motion);
             $this->closeVoting_setResultToItem($motion, $votingData);
@@ -525,6 +615,9 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
             $votingData = $question->getVotingData()->augmentWithResults($this, $question);
             $this->closeVoting_setResultToItem($question, $votingData);
         }
+
+        $this->votingStatus = ($publish ? VotingBlock::STATUS_CLOSED_PUBLISHED : VotingBlock::STATUS_CLOSED_UNPUBLISHED);
+        $this->save();
 
         ConsultationLog::log($this->getMyConsultation(), User::getCurrentUser()->id, ConsultationLog::VOTING_CLOSE, $this->id);
     }
@@ -684,61 +777,91 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     public function getVoteStatistics(): array
     {
         $total = 0;
+        // Sets keyed by what they hold, not lists searched with in_array(): this loop runs once per
+        // vote row, and scanning a growing list inside it made asking for the turnout cost O(n²) -
+        // which is paid on every cast vote and on every poll
         $voteUserIds = [];
         $abstainedUserIds = [];
 
+        // The items of this voting, not those of the whole consultation: the statistics are asked for
+        // on every poll and on every cast vote, and loading every motion of a consultation with a few
+        // hundred of them to find the handful in this voting is what made that expensive
         $groupsMyMotionIds = [];
         $groupsMyAmendmentIds = [];
         $groupsMyQuestionsIds = [];
-        foreach ($this->getMyConsultation()->motions as $motion) {
-            if ($motion->votingBlockId === $this->id && $motion->getVotingData()->itemGroupSameVote) {
+        foreach ($this->motions as $motion) {
+            if ($motion->getVotingData()->itemGroupSameVote) {
                 $groupsMyMotionIds[$motion->id] = $motion->getVotingData()->itemGroupSameVote;
             }
-            foreach ($motion->amendments as $amendment) {
-                if ($amendment->votingBlockId === $this->id && $amendment->getVotingData()->itemGroupSameVote) {
-                    $groupsMyAmendmentIds[$amendment->id] = $amendment->getVotingData()->itemGroupSameVote;
-                }
+        }
+        foreach ($this->amendments as $amendment) {
+            // An amendment whose motion has been deleted is not part of the consultation any more,
+            // and was not counted here before either (AgendaVoting skips it for the same reason)
+            if (!$amendment->getMyMotion()) {
+                continue;
+            }
+            if ($amendment->getVotingData()->itemGroupSameVote) {
+                $groupsMyAmendmentIds[$amendment->id] = $amendment->getVotingData()->itemGroupSameVote;
             }
         }
-        foreach ($this->getMyConsultation()->votingQuestions as $question) {
-            $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
+        foreach ($this->questions as $question) {
+            // Guarded like the two above, and for the same reason: "is this item voted on together
+            // with others" is a truthiness question everywhere else in this class, so an empty item
+            // group ID is not one. Only entries that are actually a group belong in these maps -
+            // what a vote is deduplicated against below is whether it found one at all.
+            if ($question->getVotingData()->itemGroupSameVote) {
+                $groupsMyQuestionsIds[$question->id] = $question->getVotingData()->itemGroupSameVote;
+            }
         }
 
         $abstentionId = $this->getGeneralAbstentionItem()?->id;
 
+        // Which item a vote belongs to is all this needs; loading the votes as objects only to read
+        // four of their columns is what made the turnout expensive to ask for
+        $votes = (new Query())
+            ->select(['userId', 'motionId', 'amendmentId', 'questionId'])
+            ->from(Vote::tableName())
+            ->where(['votingBlockId' => $this->id])
+            ->all();
+
         // If three motions are in a voting group, there will be three votes in the database.
         // For the statistics, we should only count them once.
         $countedItemGroups = [];
-        foreach ($this->votes as $vote) {
-            if ($vote->questionId !== null && $vote->questionId === $abstentionId) {
-                $abstainedUserIds[] = $vote->userId;
-                if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
-                    $voteUserIds[] = $vote->userId;
+        foreach ($votes as $vote) {
+            $userId = ($vote['userId'] !== null ? intval($vote['userId']) : null);
+            $motionId = ($vote['motionId'] !== null ? intval($vote['motionId']) : null);
+            $amendmentId = ($vote['amendmentId'] !== null ? intval($vote['amendmentId']) : null);
+            $questionId = ($vote['questionId'] !== null ? intval($vote['questionId']) : null);
+
+            if ($questionId !== null && $questionId === $abstentionId) {
+                $abstainedUserIds[] = $userId;
+                if ($userId) {
+                    $voteUserIds[$userId] = true;
                 }
             }
 
             $groupId = null;
-            if ($vote->motionId !== null && isset($groupsMyMotionIds[$vote->motionId])) {
-                $groupId = $groupsMyMotionIds[$vote->motionId];
+            if ($motionId !== null && isset($groupsMyMotionIds[$motionId])) {
+                $groupId = $groupsMyMotionIds[$motionId];
             }
-            if ($vote->amendmentId !== null && isset($groupsMyAmendmentIds[$vote->amendmentId])) {
-                $groupId = $groupsMyAmendmentIds[$vote->amendmentId];
+            if ($amendmentId !== null && isset($groupsMyAmendmentIds[$amendmentId])) {
+                $groupId = $groupsMyAmendmentIds[$amendmentId];
             }
-            if ($vote->questionId !== null && isset($groupsMyQuestionsIds[$vote->questionId])) {
-                $groupId = $groupsMyQuestionsIds[$vote->questionId];
+            if ($questionId !== null && isset($groupsMyQuestionsIds[$questionId])) {
+                $groupId = $groupsMyQuestionsIds[$questionId];
             }
 
-            if ($groupId && in_array($groupId, $countedItemGroups)) {
+            if ($groupId !== null && isset($countedItemGroups[$groupId])) {
                 continue;
             }
 
             $total++;
-            if ($vote->userId && !in_array($vote->userId, $voteUserIds)) {
-                $voteUserIds[] = $vote->userId;
+            if ($userId) {
+                $voteUserIds[$userId] = true;
             }
 
-            if ($groupId) {
-                $countedItemGroups[] = $groupId;
+            if ($groupId !== null) {
+                $countedItemGroups[$groupId] = true;
             }
         }
 

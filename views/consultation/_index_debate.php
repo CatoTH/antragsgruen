@@ -24,6 +24,11 @@ $layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANN
 // Shared with the fullscreen projector (see _fullscreen_toggle.php) so both stay in sync.
 $init = DebateTools::getUserWidgetInitData($consultation);
 
+// Votings are only accessible to logged-in users, and the widget only asks for them then
+if ($init['voting_poll_url'] !== '') {
+    $layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_VOTING);
+}
+
 $initState           = $init['init_state'];
 $motionTypesUrl      = $init['motion_types_url'];
 $createMotionUrl     = $init['create_motion_url'];

@@ -20,9 +20,9 @@ use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, NameConverter\
 
 class Tools
 {
-    private static SerializerInterface $serializer;
+    private static Serializer $serializer;
 
-    public static function getSerializer(): SerializerInterface
+    public static function getSerializer(): Serializer
     {
         if (!isset(self::$serializer)) {
             $reflectionExtractor = new ReflectionExtractor();
@@ -42,6 +42,7 @@ class Tools
                 new DateTimeNormalizer(),
                 new BackedEnumNormalizer(),
                 new LocalizedStringNormalizer(), // needs to come before the ObjectNormalizer, which would match it, too
+                new VotingSingleVoteNormalizer(), // same, and by far the most frequent object in a large voting
                 new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, $propertyTypeExtractor),
             ];
             self::$serializer = new Serializer($normalizers, $encoders);

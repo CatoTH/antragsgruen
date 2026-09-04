@@ -127,6 +127,22 @@ abstract class IPolicy
         return null;
     }
 
+    /**
+     * The users this policy admits, if it can name them at all - null if it cannot: "everybody" and
+     * "whoever is logged in" have no list to give.
+     *
+     * Needed where a permission has to be decided for people other than the reader asking. A live
+     * event of a voting describes it for everyone at once, so whoever the policy can name is given
+     * their own pre-computed state and everybody else the state assumed for an unknown reader -
+     * which, for a policy that can name its voters, is "not one of them".
+     *
+     * @return int[]|null
+     */
+    public function getAdmittedUserIds(): ?array
+    {
+        return null;
+    }
+
     abstract public function getPermissionDeniedMotionMsg(): string;
 
     abstract public function getPermissionDeniedAmendmentMsg(): string;

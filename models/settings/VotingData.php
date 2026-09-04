@@ -73,8 +73,7 @@ class VotingData implements \JsonSerializable
 
     public function augmentWithResults(VotingBlock $voting, IVotingItem $votingItem): self
     {
-        $votes = $voting->getVotesForVotingItem($votingItem);
-        $results = Vote::calculateVoteResultsForApi($voting, $votes);
+        $results = Vote::calculateVoteResultsForApi($voting, $votingItem);
         $orga = self::ORGANIZATION_DEFAULT;
         if (isset($results[$orga])) {
             $this->votesYes = $results[$orga]['yes'] ?? null;

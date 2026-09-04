@@ -1,10 +1,18 @@
 // @ts-check
 
-// Provides JWTs for the REST API and authenticated fetch helpers around it.
+// Provides JWTs for the REST API and fetch helpers around it.
 //
 // The initial token is read from the <meta name="user-jwt-config"> tag, which is rendered
 // when a view sets $layout->provideJwt = true. Shortly before the token expires,
 // it is transparently renewed via the (session-authenticated) token endpoint (/user/token).
+//
+// Every request to the API goes through apiFetch() - it is what states the reader's language.
+// The API is stateless and never reads the session, so it cannot look up the language the user
+// picked; the client has to say it. We send the language this page was rendered in, which is
+// exactly that pick, so the answer comes back in the same language as the page around it, and
+// two tabs open in two languages each get their own. Accept-Language is used rather than a
+// header of our own because it is CORS-safelisted: a custom one would add a preflight OPTIONS
+// request to every single poll.
 
 const EXPIRY_SAFETY_MARGIN_SECONDS = 10;
 
@@ -74,14 +82,46 @@ export function invalidateToken() {
 }
 
 /**
- * Convenience wrapper around fetch() that sends the JWT as Bearer token.
+ * The language this page is rendered in, as set by views/layouts/main.php from
+ * LanguageTools::getCurrentLanguage(). Read lazily, as this module is imported before <html> is
+ * necessarily parsed, and it cannot change without a page load.
+ *
+ * @returns {string|null}
+ */
+function getPageLanguage() {
+    return document.documentElement.lang || null;
+}
+
+/**
+ * fetch() against the REST API: sends the reader's language, and whatever else every API request
+ * needs. Use this instead of fetch() for anonymous calls; authorizedFetch() adds the JWT on top.
+ *
+ * @param {string} url
+ * @param {RequestInit} [options]
+ * @returns {Promise<Response>}
+ */
+export function apiFetch(url, options = {}) {
+    const language = getPageLanguage();
+
+    return fetch(url, {
+        ...options,
+        headers: {
+            'Accept': 'application/json',
+            ...(language ? { 'Accept-Language': language } : {}),
+            ...(options.headers || {}),
+        },
+    });
+}
+
+/**
+ * Convenience wrapper around apiFetch() that sends the JWT as Bearer token.
  *
  * @param {string} url
  * @param {RequestInit} [options]
  * @returns {Promise<Response>}
  */
 export function authorizedFetch(url, options = {}) {
-    return getToken().then(token => fetch(url, {
+    return getToken().then(token => apiFetch(url, {
         ...options,
         headers: {
             ...(options.headers || {}),

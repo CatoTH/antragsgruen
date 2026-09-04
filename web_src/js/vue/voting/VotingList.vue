@@ -4,7 +4,7 @@
       <strong>{{ answer.title }}:</strong>
       <ul>
         <li v-for="vote in getVoteListVotes(answer.api_id)">
-          {{ vote.user_name }}
+          {{ vote.voter.user_name }}
           <span v-if="vote.weight > 1" class="voteWeight">(×{{ vote.weight }})</span>
         </li>
       </ul>
@@ -21,7 +21,7 @@
           </div>
           <ul>
             <li v-for="vote in getVoteListForUserGroup(answer.api_id, userGroup)">
-              {{ vote.user_name }}
+              {{ vote.voter.user_name }}
               <span v-if="vote.weight > 1" class="voteWeight">(×{{ vote.weight }})</span>
             </li>
             <li v-if="getVoteListForUserGroup(answer.api_id, userGroup).length === 0" class="none">
@@ -47,17 +47,17 @@
       </ul>
     </div>
 
-    <div v-if="voting.has_general_abstention" class="regularVoteList">
+    <div v-if="hasAbstentionList" class="regularVoteList">
       <strong v-t="['voting', 'vote_abstain']"></strong>:
       <ul>
-        <li v-for="user in voting.abstention_users">{{ user.user_name }}</li>
-        <li v-if="voting.abstention_users.length === 0" class="none" v-t="['voting', 'voting_notvoted_0']"></li>
+        <li v-for="user in voting.abstention.users">{{ user.user_name }}</li>
+        <li v-if="voting.abstention.users.length === 0" class="none" v-t="['voting', 'voting_notvoted_0']"></li>
       </ul>
     </div>
 
     <div v-if="showNotVotedList && hasVoteEligibilityList" class="regularVoteList notVotedList">
-      <strong v-if="voting.status === STATUS_CLOSED_PUBLISHED || voting.status === STATUS_CLOSED_UNPUBLISHED" v-t="['voting', 'voting_notvoted']"></strong>
-      <strong v-if="voting.status !== STATUS_CLOSED_PUBLISHED && voting.status !== STATUS_CLOSED_UNPUBLISHED" v-t="['voting', 'voting_notvoted_yet']"></strong>
+      <strong v-if="isClosed" v-t="['voting', 'voting_notvoted']"></strong>
+      <strong v-if="!isClosed" v-t="['voting', 'voting_notvoted_yet']"></strong>
       <ul>
         <li v-for="userGroup in relevantUserGroups" class="voteListHolder">
           <div class="userGroupName">
@@ -79,7 +79,7 @@
 
 <script>
 export default {
-  props: ['voting', 'groupedVoting', 'setToUserGroupSelection', 'showNotVotedList'],
+  props: ['voting', 'group', 'setToUserGroupSelection', 'showNotVotedList'],
   data() {
     return {
       groupSelectionShown: [],
@@ -88,35 +88,37 @@ export default {
   },
   computed: {
     showVotesByUserGroups: function () {
-      return this.voting.vote_policy.id === this.POLICY_USER_GROUPS;
+      return this.voting.policy.id === this.POLICY_USER_GROUPS;
     },
     relevantUserGroups: function () {
-      const policy = this.voting.vote_policy;
-      return this.voting.user_groups.filter(function (group) {
-        return policy.user_groups.indexOf(group.id) !== -1;
-      });
+      const allowedIds = this.voting.policy.user_groups || [];
+      return (this.voting.user_groups || []).filter(group => allowedIds.indexOf(group.id) !== -1);
     },
+    /** Who is entitled to vote is shown to the administration only, so this is not always there */
     hasVoteEligibilityList: function () {
-      return !!this.groupedVoting[0].vote_eligibility;
+      return !!this.voting.eligibility;
+    },
+    hasAbstentionList: function () {
+      return !!this.voting.abstention && this.voting.abstention.enabled && !!this.voting.abstention.users;
     }
   },
   methods: {
-    getVoteListVotes: function (type) {
-      return this.groupedVoting[0].votes
-          .filter(vote => vote.vote === type);
+    getVoteListVotes: function (apiId) {
+      return (this.group.single_votes || [])
+          .filter(vote => vote.answer === apiId);
     },
-    getVoteListForUserGroup: function (type, userGroup) {
-      return this.groupedVoting[0].votes
-          .filter(vote => vote.vote === type && vote.user_groups.indexOf(userGroup.id) !== -1)
+    getVoteListForUserGroup: function (apiId, userGroup) {
+      return this.getVoteListVotes(apiId)
+          .filter(vote => vote.voter.user_group_ids.indexOf(userGroup.id) !== -1)
           .sort(function (vote1, vote2) {
-            const name1 = (vote1.user_name ? vote1.user_name : '');
-            const name2 = (vote2.user_name ? vote2.user_name : '');
+            const name1 = (vote1.voter.user_name ? vote1.voter.user_name : '');
+            const name2 = (vote2.voter.user_name ? vote2.voter.user_name : '');
             return name1.localeCompare(name2);
           });
     },
     getNotVotedListForUserGroup: function (userGroup) {
-      const userIds = this.groupedVoting[0].votes.map(vote => vote.user_id);
-      const group = this.groupedVoting[0].vote_eligibility.find(elGroup => elGroup.id === userGroup.id);
+      const userIds = (this.group.single_votes || []).map(vote => vote.voter.user_id);
+      const group = this.voting.eligibility.find(elGroup => elGroup.group_id === userGroup.id);
       if (!group) {
         return [];
       }

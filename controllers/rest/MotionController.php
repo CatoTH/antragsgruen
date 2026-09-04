@@ -52,8 +52,6 @@ class MotionController extends RestBase
             list($motionType, $agendaItem) = $ret;
 
         } catch (ExceptionBase $e) {
-            $this->getHttpSession()->setFlash('error', $e->getMessage());
-
             return $this->returnRestResponseFromException($e);
         }
 

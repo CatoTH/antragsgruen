@@ -400,8 +400,8 @@ class DebateTools
         // Voting: the embedded widget reuses the existing session-based /voting endpoints, which require a
         // logged-in user. Anonymous visitors therefore get empty URLs and no voting is embedded.
         if ($user) {
-            $votingPollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
-            $votingVoteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
+            $votingPollUrl   = UrlHelper::createUrl(['/rest/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
+            $votingVoteUrl   = UrlHelper::createUrl(['/rest/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
             $votingAdminLink = $user->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)
                 ? UrlHelper::createUrl(['/consultation/admin-votings'])
                 : '';

@@ -395,9 +395,18 @@ class EnvironmentConfigLoaderTest extends TestBase
     {
         $_ENV['POLLING_INTERVAL_USER_SPEECH'] = '5000';
         $_ENV['POLLING_INTERVAL_ADMIN_SPEECH'] = ' 2000 ';
+        // Nothing here knows the channels; every one of them is configurable by the name it has in
+        // LiveDataChannels, which is what the documented variables rely on
+        $_ENV['POLLING_INTERVAL_USER_VOTING'] = '6000';
+        $_ENV['POLLING_INTERVAL_ADMIN_VOTING'] = '4000';
 
         $this->assertEquals(
-            ['user/speech' => 5000, 'admin/speech' => 2000],
+            [
+                'user/speech' => 5000,
+                'admin/speech' => 2000,
+                'user/voting' => 6000,
+                'admin/voting' => 4000,
+            ],
             EnvironmentConfigLoader::getPollingConfig()
         );
     }

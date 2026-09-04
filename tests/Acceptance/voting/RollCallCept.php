@@ -114,61 +114,68 @@ $json = $I->executeJS('return document.querySelector(".currentVotingWidget").get
 $jsonParsed = json_decode($json, true);
 $I->assertJsonStringEqualsJsonString('[
   {
-    "id": "' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '",
+    "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
-    "status": 3,
-    "votes_public": 2,
-    "votes_names": 0,
-    "results_public": 1,
-    "assigned_motion": null,
-    "majority_type": 1,
-    "quorum_type": 0,
+    "status": "closed_published",
+    "position": 1,
+    "current_time": ' . $jsonParsed[0]['current_time'] . ',
+    "answers": [ { "api_id": "present", "title": "Anwesend", "result": null } ],
+    "has_majority": false,
+    "is_presence_call": true,
+    "publicity": { "single_votes": "everybody", "results": "everybody" },
+    "statistics": { "votes": 1, "voters": 1 },
+    "item_groups": [
+      {
+        "id": "single:question:1",
+        "items": [ { "type": "question", "id": 1 } ],
+        "name": null,
+        "results": {
+          "counts": [ { "answers": [ { "answer": "present", "votes": 1 } ], "organization": null } ],
+          "quorum": null
+        },
+        "single_votes": [
+          {
+            "answer": "present",
+            "weight": 1,
+            "voter": { "user_id": 1, "user_group_ids": [1], "user_name": "testadmin@example.org" }
+          }
+        ]
+      }
+    ],
+    "items": [
+      {
+        "type": "question",
+        "id": 1,
+        "group_id": "single:question:1",
+        "title_with_prefix": "Who is present?",
+        "prefix": null,
+        "initiators_html": null,
+        "url_html": null,
+        "url_json": null,
+        "procedure_html": null,
+        "result": null
+      }
+    ],
+    "me": {
+      "eligible": true,
+      "vote_weight": 1,
+      "abstained": false,
+      "votes": [],
+      "can_vote_group_ids": [],
+      "votes_remaining": null
+    },
+    "assigned_motion_id": null,
+    "opened_at": null,
+    "voting_time": null,
+    "quorum": null,
+    "abstention": { "enabled": false, "count": null, "users": null },
+    "policy": { "id": 2, "description": "Eingeloggte", "user_groups": null },
     "user_groups": [
       { "id": 1, "title": "Seiten-Admin", "member_count": 2 },
       { "id": 2, "title": "Veranstaltungs-Admin", "member_count": 1 },
       { "id": 3, "title": "Antragskommission", "member_count": 1 },
       { "id": 4, "title": "Teilnehmer*in", "member_count": 0 },
       { "id": 39, "title": "Sachst\u00e4nde bearbeiten", "member_count": 1 }
-    ],
-    "answers": [ { "api_id": "present", "title": "Anwesend", "status_id": null } ],
-    "answers_template": 2,
-    "items": [
-      {
-        "type": "question",
-        "id": 1,
-        "prefix": "",
-        "title_with_prefix": "Who is present?",
-        "url_json": null,
-        "url_html": null,
-        "initiators_html": null,
-        "procedure": null,
-        "item_group_same_vote": null,
-        "item_group_name": null,
-        "voting_status": null,
-        "vote_results": [
-          {
-            "present": 1
-          }
-        ],
-        "vote_eligibility": null,
-        "votes": [
-          {
-            "user_id": 1,
-            "user_groups": [1],
-            "user_name": "testadmin@example.org",
-            "vote": "present",
-            "weight": 1
-          }
-        ]
-      }
-    ],
-    "current_time": ' . $jsonParsed[0]['current_time'] . ',
-    "voting_time": null,
-    "opened_ts": null,
-    "abstentions_total": 0,
-    "has_general_abstention": false,
-    "votes_total": 1,
-    "votes_users": 1,
-    "vote_policy": { "id": 2, "description": "Eingeloggte" }
+    ]
   }
 ]', $json);

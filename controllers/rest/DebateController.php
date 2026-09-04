@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers\rest;
 
-use app\components\{DebateTools, Tools, UrlHelper};
+use app\components\{DebateTools, LiveTools, Tools, UrlHelper};
 use app\models\api\speech\SpeechQueueAdmin;
 use app\models\api\debate\{DebateItemTargetType, DebateSelectables, DebateSpeechQueueRequest, DebateStartRequest,
     DebateState, DebateVotingAssignRequest, DebateVotingBlock, DebateVotingBlockOption, DebateVotingCreateRequest,
@@ -216,7 +216,8 @@ class DebateController extends RestBase
             } catch (SerializerException $e) {
                 return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
             }
-            DebateTools::createVotingForDebate($debate, $request->question);
+            $createdVotingBlock = DebateTools::createVotingForDebate($debate, $request->question);
+            LiveTools::sendVotingState($this->consultation, $createdVotingBlock);
         }
 
         // A mutation may have changed the assignment; reload so the returned state is current.
@@ -227,7 +228,11 @@ class DebateController extends RestBase
 
     private function buildVotingState(?DebateItem $debate): DebateVotingState
     {
-        $adminLink = UrlHelper::createUrl(['/consultation/admin-votings']);
+        // Choosing which voting belongs to the debated item is part of moderating a debate;
+        // administering that voting is not, and takes the privilege for it - so a moderator without
+        // it is shown the voting rather than being given the controls of it.
+        $canAdministerVotings = User::havePrivilege($this->consultation, Privileges::PRIVILEGE_VOTINGS, null);
+        $adminLink = ($canAdministerVotings ? UrlHelper::createUrl(['/consultation/admin-votings']) : null);
 
         $selectable = array_map(
             fn (VotingBlock $block) => DebateVotingBlockOption::fromEntity($block),
@@ -236,6 +241,7 @@ class DebateController extends RestBase
 
         if ($debate === null) {
             return new DebateVotingState(
+                canAdministerVotings: $canAdministerVotings,
                 canUnassign: false,
                 createMode: DebateVotingStateCreateMode::NONE,
                 selectableVotingBlocks: $selectable,
@@ -260,6 +266,7 @@ class DebateController extends RestBase
         $canUnassign = ($debate->votingBlockId !== null) && !$hasFallback;
 
         return new DebateVotingState(
+            canAdministerVotings: $canAdministerVotings,
             canUnassign: $canUnassign,
             createMode: $createMode,
             selectableVotingBlocks: $selectable,

@@ -1384,6 +1384,91 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /rest/{consultationPath}/votings/open:
+    get:
+      operationId: getOpenVotings
+      summary: The votings that are currently open
+      description: >
+        Returns every voting that is open for voting right now, including what the requesting user
+        may still vote on and what they have already voted. Whether the single votes and the results
+        are part of the payload depends on the configuration of each voting; the turnout always is.
+      tags:
+        - Votings
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The open votings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VotingBlockUser'
+        '401':
+          description: Not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+
+  /rest/{consultationPath}/votings/closed:
+    get:
+      operationId: getClosedVotings
+      summary: The votings that are closed and whose results have been published
+      tags:
+        - Votings
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: The closed votings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VotingBlockUser'
+        '401':
+          description: Not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+
+  /rest/{consultationPath}/votings/admin:
+    get:
+      operationId: getVotingsAdmin
+      summary: All votings of the consultation, for administration
+      description: >
+        Like the user-facing endpoints, plus the configuration, the activity log and the people
+        entitled to vote. Requires the privilege to manage votings.
+      tags:
+        - Votings
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/consultationPath'
+      responses:
+        '200':
+          description: All votings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VotingBlockAdmin'
+        '403':
+          description: Missing the privilege to manage votings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNoPermission'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1749,7 +1834,15 @@ components:
         - create_mode
         - selectable_voting_blocks
         - can_unassign
+        - can_administer_votings
       properties:
+        can_administer_votings:
+          type: boolean
+          description: >
+            Whether this moderator may also administer the voting itself - opening, closing and
+            configuring it - which takes the privilege to manage votings, not the one to moderate a
+            debate. Where it is false the moderation widget shows the voting as a read-only card;
+            where it is true it hosts the voting administration for the debated item.
         assigned_voting_block_id:
           type: integer
           nullable: true
@@ -1812,7 +1905,10 @@ components:
           example: 0
         admin_link:
           type: string
-          description: URL of the full voting administration page for managing, opening, or closing this voting.
+          nullable: true
+          description: >
+            URL of the full voting administration page for managing, opening, or closing this voting.
+            Null for a moderator without the privilege to manage votings, who cannot open that page.
           example: https://test.antragsgruen.de/std-parteitag/consultation/admin-votings
 
     DebateVotingBlockOption:
@@ -3991,3 +4087,746 @@ components:
           description: The [primary, secondary] sidebar HTML fragments (empty strings when there is none).
           items:
             type: string
+
+    VotingStatus:
+      x-php-namespace: voting
+      type: string
+      description: >
+        The state of a voting. "offline" means the voting itself is not held using Antragsgrün -
+        only its result is recorded here.
+      enum:
+        - offline
+        - preparing
+        - open
+        - closed_published
+        - closed_unpublished
+
+    VotingItemType:
+      x-php-namespace: voting
+      type: string
+      description: The kind of thing that is being voted on.
+      enum:
+        - motion
+        - amendment
+        - question
+
+    VotingItemResult:
+      x-php-namespace: voting
+      type: string
+      description: The outcome for one item. Null as long as the voting has not been closed.
+      enum:
+        - accepted
+        - rejected
+        - quorum_reached
+        - quorum_missed
+
+    VotingVotesPublicity:
+      x-php-namespace: voting
+      type: string
+      description: >
+        Who may see who voted how. This is what the voter is promised before casting a vote; each
+        vote is stored with the publicity it was cast under.
+      enum:
+        - nobody
+        - admins
+        - everybody
+
+    VotingResultsPublicity:
+      x-php-namespace: voting
+      type: string
+      description: Who may see the counted results. The turnout is visible either way.
+      enum:
+        - admins
+        - everybody
+
+    VotingActivityType:
+      x-php-namespace: voting
+      type: string
+      description: What happened to a voting, as recorded in its activity log.
+      enum:
+        - opened
+        - closed
+        - reset
+        - reopened
+
+    VotingPublicity:
+      x-php-namespace: voting
+      type: object
+      description: What this voting promises about the visibility of votes and results.
+      required:
+        - single_votes
+        - results
+      properties:
+        single_votes:
+          $ref: '#/components/schemas/VotingVotesPublicity'
+        results:
+          $ref: '#/components/schemas/VotingResultsPublicity'
+
+    VotingAnswer:
+      x-php-namespace: voting
+      type: object
+      description: One of the options that can be voted for, e.g. "yes".
+      required:
+        - api_id
+        - title
+      properties:
+        api_id:
+          type: string
+          description: How this answer is referred to in votes and results.
+          example: yes
+        title:
+          type: string
+          description: The label to show, in the reader's language.
+          x-php-type: '\app\models\api\LocalizedString'
+          example: Ja
+        result:
+          $ref: '#/components/schemas/VotingItemResult'
+
+    VotingStatistics:
+      x-php-namespace: voting
+      type: object
+      description: >
+        The turnout. Visible to everybody regardless of the result publicity: it says how many have
+        voted, never how they voted.
+      required:
+        - votes
+        - voters
+      properties:
+        votes:
+          type: integer
+          description: Votes cast, counting an item group that was voted on as one vote.
+          example: 143
+        voters:
+          type: integer
+          description: People who have cast at least one vote.
+          example: 143
+
+    VotingVoter:
+      x-php-namespace: voting
+      type: object
+      description: A person whose vote is visible to the reader of this payload.
+      required:
+        - user_id
+        - user_group_ids
+      properties:
+        user_id:
+          type: integer
+          example: 12
+        user_name:
+          type: string
+          nullable: true
+          description: Rendered according to the voting's "votes_names" setting - the login name, the full name, or the organization.
+          example: testuser@example.org
+        user_group_ids:
+          type: array
+          description: The user groups this person belongs to, used to group the list of votes.
+          items:
+            type: integer
+
+    VotingAbstention:
+      x-php-namespace: voting
+      type: object
+      description: >
+        The general abstention: abstaining from the voting as a whole rather than voting on the
+        single items. "count" and "users" are only filled where the results, respectively the single
+        votes, may be seen.
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Whether this voting offers a general abstention at all.
+        count:
+          type: integer
+          nullable: true
+          description: How many have abstained. Null where the results may not be seen.
+          example: 4
+        users:
+          type: array
+          nullable: true
+          description: Who has abstained. Null where the single votes may not be seen.
+          items:
+            $ref: '#/components/schemas/VotingVoter'
+
+    VotingQuorum:
+      x-php-namespace: voting
+      type: object
+      description: The quorum a voting has to reach. Null if it has none.
+      required:
+        - type
+        - eligible
+      properties:
+        type:
+          type: integer
+          description: The quorum type as configured (see models/quorumType).
+          example: 1
+        target:
+          type: integer
+          nullable: true
+          description: How many votes are needed. Null for quorum types that describe their target in words instead.
+          example: 100
+        target_label:
+          type: string
+          nullable: true
+          description: The target as text, for quorum types that cannot express it as a number.
+          x-php-type: '\app\models\api\LocalizedString'
+
+        eligible:
+          type: integer
+          description: How many people the quorum is calculated from.
+          example: 200
+
+    VotingItemGroupQuorum:
+      x-php-namespace: voting
+      type: object
+      description: How far one item group is towards the quorum.
+      properties:
+        votes:
+          type: integer
+          nullable: true
+          example: 130
+        current_label:
+          type: string
+          nullable: true
+          description: The current state as text, for quorum types that cannot express it as a number.
+          x-php-type: '\app\models\api\LocalizedString'
+
+
+    VotingItemRef:
+      x-php-namespace: voting
+      type: object
+      description: Refers to one of the items of this voting.
+      required:
+        - type
+        - id
+      properties:
+        type:
+          $ref: '#/components/schemas/VotingItemType'
+        id:
+          type: integer
+          example: 3
+
+    VotingItem:
+      x-php-namespace: voting
+      type: object
+      description: >
+        One motion, amendment or question being voted on. Everything that is voted on *together*
+        hangs off the item group this item points at, not off the item itself.
+      required:
+        - type
+        - id
+        - group_id
+        - title_with_prefix
+      properties:
+        type:
+          $ref: '#/components/schemas/VotingItemType'
+        id:
+          type: integer
+          example: 3
+        group_id:
+          type: string
+          description: >
+            The item group this item is voted on as part of. Items that are voted on individually
+            have a group of their own.
+          example: single:amendment:3
+        prefix:
+          type: string
+          nullable: true
+          example: Ä1
+        title_with_prefix:
+          type: string
+          x-php-type: '\app\models\api\LocalizedString'
+          example: "Ä1 to A1: Renewable energy"
+        initiators_html:
+          type: string
+          nullable: true
+          x-php-type: '\app\models\api\LocalizedString'
+        url_html:
+          type: string
+          nullable: true
+        url_json:
+          type: string
+          nullable: true
+        procedure_html:
+          type: string
+          nullable: true
+          description: The proposed procedure, as far as it is public.
+          x-php-type: '\app\models\api\LocalizedString'
+
+        result:
+          $ref: '#/components/schemas/VotingItemResult'
+
+    VotingAnswerCount:
+      x-php-namespace: voting
+      type: object
+      required:
+        - answer
+        - votes
+      properties:
+        answer:
+          type: string
+          description: The api_id of the answer.
+          example: yes
+        votes:
+          type: integer
+          example: 120
+
+    VotingOrganizationResult:
+      x-php-namespace: voting
+      type: object
+      description: The counted votes, optionally broken down by organization.
+      required:
+        - answers
+      properties:
+        organization:
+          type: string
+          nullable: true
+          description: Null for the regular case of one result per voting.
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingAnswerCount'
+
+    VotingResults:
+      x-php-namespace: voting
+      type: object
+      description: The result of one item group. Null where the reader may not see the results.
+      required:
+        - counts
+      properties:
+        counts:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingOrganizationResult'
+        quorum:
+          $ref: '#/components/schemas/VotingItemGroupQuorum'
+
+    VotingSingleVote:
+      x-php-namespace: voting
+      type: object
+      description: One person's vote, as far as the reader may see it.
+      required:
+        - answer
+        - weight
+        - voter
+      properties:
+        answer:
+          type: string
+          description: The api_id of the answer that was voted for.
+          example: yes
+        weight:
+          type: integer
+          example: 1
+        voter:
+          $ref: '#/components/schemas/VotingVoter'
+
+    VotingItemGroup:
+      x-php-namespace: voting
+      type: object
+      description: >
+        Everything that is voted on with one click: several items voted on together, or a single
+        item. Results and votes hang off the group, so they are transmitted once rather than once
+        per item.
+      required:
+        - id
+        - items
+      properties:
+        id:
+          type: string
+          example: single:amendment:3
+        name:
+          type: string
+          nullable: true
+          description: The name of the group. Null for a group that only exists to hold one item.
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingItemRef'
+        results:
+          $ref: '#/components/schemas/VotingResults'
+        single_votes:
+          type: array
+          nullable: true
+          description: >
+            Who voted how. Null where the reader may not see the single votes - which is decided per
+            vote, as a vote keeps the publicity it was cast under.
+          items:
+            $ref: '#/components/schemas/VotingSingleVote'
+
+    VotingUserVote:
+      x-php-namespace: voting
+      type: object
+      required:
+        - group_id
+        - answer
+      properties:
+        group_id:
+          type: string
+        answer:
+          type: string
+          example: yes
+
+    VotingUserState:
+      x-php-namespace: voting
+      type: object
+      description: What this voting means for the person reading the payload.
+      required:
+        - eligible
+        - vote_weight
+        - abstained
+        - votes
+        - can_vote_group_ids
+      properties:
+        eligible:
+          type: boolean
+          description: Whether this person may vote here at all.
+        vote_weight:
+          type: integer
+          example: 1
+        votes_remaining:
+          type: integer
+          nullable: true
+          description: Null if the number of votes is not limited.
+        abstained:
+          type: boolean
+          description: Whether this person has abstained from the voting as a whole.
+        votes:
+          type: array
+          description: This person's own votes, whatever the publicity of the voting.
+          items:
+            $ref: '#/components/schemas/VotingUserVote'
+        can_vote_group_ids:
+          type: array
+          description: The item groups this person may vote on right now.
+          items:
+            type: string
+
+    VotingBlockUser:
+      x-php-namespace: voting
+      type: object
+      description: A voting as it is shown to a participant.
+      required:
+        - id
+        - title
+        - status
+        - position
+        - current_time
+        - answers
+        - has_majority
+        - is_presence_call
+        - publicity
+        - statistics
+        - item_groups
+        - items
+        - me
+      properties:
+        id:
+          type: integer
+          example: 42
+        title:
+          type: string
+          example: Amendments to A1
+        status:
+          $ref: '#/components/schemas/VotingStatus'
+        position:
+          type: integer
+          description: >
+            Where this voting is sorted among the others: descending, ties broken by descending id.
+            A live event describes one voting, so a reader that is told the order can keep a list
+            that arrives one member at a time in the order the administration gave it.
+        assigned_motion_id:
+          type: integer
+          nullable: true
+          description: The motion this voting is shown at. Null if it is shown on the votings page.
+        opened_at:
+          type: integer
+          format: int64
+          nullable: true
+          description: When the voting was opened, in milliseconds. Null unless it is open.
+        current_time:
+          type: integer
+          format: int64
+          description: The server's clock in milliseconds, so that a countdown can correct for clock skew.
+        voting_time:
+          type: integer
+          nullable: true
+          description: How long the voting is open, in seconds. Null if there is no countdown.
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingAnswer'
+        has_majority:
+          type: boolean
+          description: Whether the answers of this voting express approval and rejection, so that a majority can be calculated.
+        is_presence_call:
+          type: boolean
+          description: Whether this voting only records who is present.
+        publicity:
+          $ref: '#/components/schemas/VotingPublicity'
+        quorum:
+          $ref: '#/components/schemas/VotingQuorum'
+        statistics:
+          $ref: '#/components/schemas/VotingStatistics'
+        abstention:
+          $ref: '#/components/schemas/VotingAbstention'
+        item_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingItemGroup'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingItem'
+        me:
+          $ref: '#/components/schemas/VotingUserState'
+        policy:
+          $ref: '#/components/schemas/VotingPolicy'
+        user_groups:
+          type: array
+          nullable: true
+          description: >
+            The user groups that can be given voting rights, with the number of their members - the
+            list of votes is grouped by them. Frozen at the moment the voting is closed.
+          items:
+            $ref: '#/components/schemas/VotingUserGroup'
+
+    VotingUserGroup:
+      x-php-namespace: voting
+      type: object
+      description: A user group that can be given voting rights, with the number of its members.
+      required:
+        - id
+        - title
+        - member_count
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          x-php-type: '\app\models\api\LocalizedString'
+        member_count:
+          type: integer
+
+    VotingEligibilityUser:
+      x-php-namespace: voting
+      type: object
+      required:
+        - user_id
+        - user_name
+        - weight
+      properties:
+        user_id:
+          type: integer
+        user_name:
+          type: string
+        weight:
+          type: integer
+
+    VotingEligibilityGroup:
+      x-php-namespace: voting
+      type: object
+      description: Who is entitled to vote, by user group. Frozen at the moment the voting is closed.
+      required:
+        - group_id
+        - title
+        - users
+      properties:
+        group_id:
+          type: integer
+        title:
+          type: string
+          x-php-type: '\app\models\api\LocalizedString'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingEligibilityUser'
+
+    VotingPolicy:
+      x-php-namespace: voting
+      type: object
+      description: Who is allowed to vote.
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        description:
+          type: string
+          nullable: true
+          x-php-type: '\app\models\api\LocalizedString'
+        user_groups:
+          type: array
+          nullable: true
+          description: >
+            The IDs of the user groups admitted by the policy that works that way. Named as the
+            policy API of the rest of Antragsgrün names it, since the same widget edits both.
+          items:
+            type: integer
+
+    VotingMaxVotes:
+      x-php-namespace: voting
+      type: object
+      description: How many votes the members of one user group have.
+      required:
+        - max_votes
+      properties:
+        group_id:
+          type: integer
+          nullable: true
+          description: Null for the default that applies to everyone.
+        max_votes:
+          type: integer
+
+    VotingSettings:
+      x-php-namespace: voting
+      type: object
+      description: >
+        The configuration of a voting as the administration form works with it - the raw values
+        behind the resolved "publicity", "answers" and "quorum" of the payload.
+      required:
+        - votes_public
+        - results_public
+        - votes_names
+        - answers_template
+      properties:
+        votes_public:
+          type: integer
+          description: 0 = nobody, 1 = admins, 2 = everybody
+        results_public:
+          type: integer
+          description: 0 = admins only, 1 = everybody
+        votes_names:
+          type: integer
+          description: How voters are named in the list of votes - 0 = login name, 1 = full name, 2 = organization
+        answers_template:
+          type: integer
+          description: Which set of answers is offered (see models/votings/AnswerTemplates)
+        majority_type:
+          type: integer
+          nullable: true
+        quorum_type:
+          type: integer
+          nullable: true
+        voting_time:
+          type: integer
+          nullable: true
+        assigned_motion_id:
+          type: integer
+          nullable: true
+        policy:
+          $ref: '#/components/schemas/VotingPolicy'
+        max_votes_by_group:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/VotingMaxVotes'
+
+    VotingActivityLogEntry:
+      x-php-namespace: voting
+      type: object
+      required:
+        - type
+        - date
+      properties:
+        type:
+          $ref: '#/components/schemas/VotingActivityType'
+        date:
+          type: string
+          example: "2026-08-27T10:00:00+02:00"
+
+    VotingEditable:
+      x-php-namespace: voting
+      type: object
+      description: What the current status of the voting allows an administrator to change.
+      required:
+        - items_can_be_added
+        - items_can_be_removed
+        - settings_can_be_changed
+      properties:
+        items_can_be_added:
+          type: boolean
+        items_can_be_removed:
+          type: boolean
+        settings_can_be_changed:
+          type: boolean
+          description: Whether the settings that are frozen while a voting runs can be changed.
+
+    VotingBlockAdmin:
+      x-php-namespace: voting
+      description: >
+        A voting as it is shown to someone who administers votings: everything a participant sees,
+        plus the configuration, the people entitled to vote, and the activity log.
+      allOf:
+        - $ref: '#/components/schemas/VotingBlockUser'
+        - type: object
+          required:
+            - settings
+            - log
+            - editable
+          properties:
+            settings:
+              $ref: '#/components/schemas/VotingSettings'
+            eligibility:
+              type: array
+              nullable: true
+              description: Who is entitled to vote. Null if the voting is open to everyone rather than to selected groups.
+              items:
+                $ref: '#/components/schemas/VotingEligibilityGroup'
+            log:
+              type: array
+              items:
+                $ref: '#/components/schemas/VotingActivityLogEntry'
+            editable:
+              $ref: '#/components/schemas/VotingEditable'
+
+    VotingBlockProposedProcedure:
+      x-php-namespace: voting
+      type: object
+      description: >
+        A voting as it appears in the proposed procedure: what is to be voted on, and under which
+        rules - never how anyone voted, and never a result.
+      required:
+        - answers
+        - has_majority
+        - is_presence_call
+        - item_groups
+        - items
+      properties:
+        id:
+          type: integer
+          nullable: true
+          description: Null for items that are proposed for a voting which has not been created yet.
+        title:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/VotingStatus'
+        assigned_motion_id:
+          type: integer
+          nullable: true
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingAnswer'
+        has_majority:
+          type: boolean
+        is_presence_call:
+          type: boolean
+        quorum:
+          $ref: '#/components/schemas/VotingQuorum'
+        statistics:
+          $ref: '#/components/schemas/VotingStatistics'
+        policy:
+          $ref: '#/components/schemas/VotingPolicy'
+        user_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingUserGroup'
+        item_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingItemGroup'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VotingItem'

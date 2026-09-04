@@ -11,8 +11,17 @@
 // The configuration (which channels exist, how to poll them, how to subscribe to them) comes from the
 // "live-data-config" meta tag, which is rendered by views/layouts/main.php for all channels the view
 // registered using $layout->addLiveDataChannel().
+//
+// Three kinds of channel exist:
+// - plain: one object describes the whole state (the debate).
+// - keyed: the state of specific objects, addressed by ID; widgets say which one they show, and a
+//   poll asks for all of them at once (the speaking lists).
+// - collection: a list whose members come and go, and which a widget shows a filtered view of. A poll
+//   answers with the whole list, a live event with a single member, merged into it by ID (the
+//   votings). Widgets always receive the whole list and filter it themselves, since which members
+//   are interesting is a question only the widget can answer.
 
-import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/ApiClient.js";
+import { apiFetch, authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/ApiClient.js";
 
 /**
  * @typedef {object} ChannelConfig
@@ -23,6 +32,8 @@ import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/A
  * @property {number} interval
  * @property {boolean} interval_configured
  * @property {string|null} key_placeholder
+ * @property {boolean} collection
+ * @property {boolean} poll_while_live
  */
 
 /**
@@ -32,6 +43,75 @@ import { authorizedFetch, getToken, invalidateToken } from "/js/modules/shared/A
  * @property {function(any): void} onData
  * @property {function(Error): void|null} onError
  */
+
+/**
+ * Merges the fields a partial live event carries into the member a client already holds.
+ *
+ * A key the event does not carry is left as it was; a key it does carry wins, null included. That
+ * rule has to hold below the top level too, because what a tally leaves out does not sit at the top
+ * level: an item group's single votes and the list of who abstained are the two parts of a voting
+ * that grow with the number of people in it, and no tally carries either. So a list of objects that
+ * carry an `id` is merged member by member, and a nested object member by member as well, rather
+ * than being replaced with something that describes the same thing in less detail.
+ *
+ * The incoming list decides which members exist - an item group that is gone is gone.
+ *
+ * @param {Record<string, any>} member
+ * @param {Record<string, any>} fields
+ * @returns {Record<string, any>}
+ */
+function mergeMember(member, fields) {
+    const merged = Object.assign({}, member);
+    Object.keys(fields).forEach(key => {
+        merged[key] = mergeValue(member[key], fields[key]);
+    });
+
+    return merged;
+}
+
+/**
+ * @param {any} known
+ * @param {any} incoming
+ * @returns {any}
+ */
+function mergeValue(known, incoming) {
+    if (isKeyedList(known) && isKeyedList(incoming)) {
+        return incoming.map(item => {
+            const previous = known.find(candidate => candidate.id === item.id);
+            return previous ? mergeMember(previous, item) : item;
+        });
+    }
+    if (isPlainObject(known) && isPlainObject(incoming)) {
+        return mergeMember(known, incoming);
+    }
+
+    return incoming;
+}
+
+/**
+ * @param {any} value
+ * @returns {boolean}
+ */
+function isPlainObject(value) {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Whether `id` actually identifies an entry of this list, which is what merging entry by entry
+ * relies on. `item_groups` qualifies; `items` does not - it holds a motion and an amendment that can
+ * share the numeric id 3 - and it does not need to, every message that carries it describing each of
+ * its entries in full.
+ *
+ * @param {any} value
+ * @returns {boolean}
+ */
+function isKeyedList(value) {
+    if (!Array.isArray(value) || !value.every(item => isPlainObject(item) && item.id !== undefined)) {
+        return false;
+    }
+
+    return (new Set(value.map(item => item.id))).size === value.length;
+}
 
 const MAX_BACKOFF_MS = 30000;
 
@@ -70,6 +150,12 @@ class Channel {
      * @type {Object<string, number>}
      */
     lastPublishedAt = {};
+    /**
+     * The members of a collection channel, in the order the backend listed them, merged across polls
+     * and live events. Empty for the other kinds of channel.
+     * @type {any[]}
+     */
+    collection = [];
     /** Set when the data is not accessible to this user at all; retrying would not help */
     /** @type {boolean} */ givenUp = false;
 
@@ -177,6 +263,11 @@ class Channel {
      * @param {any} data
      */
     publishData(data) {
+        if (this.config.collection) {
+            this.publishCollection(data);
+            return;
+        }
+
         if (this.config.key_placeholder === null) {
             if (!this.isNewerThanPublished('', data)) {
                 return;
@@ -199,11 +290,77 @@ class Channel {
     }
 
     /**
+     * A poll answers with the whole list and is therefore authoritative: whatever it does not contain
+     * has left the collection. A live event carries a single member and is merged into it, appended if
+     * it is one the widgets have not seen yet.
+     *
+     * A live event may also describe only part of a member ("partial"), which is how the votings
+     * report a cast vote: only the counting changes, and everything the event does not mention stays
+     * as the widgets have it - the reader's own state above all, which nobody else's vote affects.
+     *
+     * A member marked "removed" says that it has left the collection. Polls are authoritative about
+     * that on their own, but a client with a live connection does not poll any more, so an object
+     * that is deleted has to be able to say so.
+     *
+     * Every path replaces the collection with a new array rather than changing the one the widgets
+     * were handed before. A widget that keeps what it is given and re-derives from it - as a Vue
+     * component does - would otherwise not notice a live event at all: the array it holds would be
+     * the array that was just changed, and nothing about it would look new. Polls happened to build
+     * a new one anyway, which is why this only ever showed on installations running a Live server.
+     *
+     * @param {any} data
+     */
+    publishCollection(data) {
+        if (Array.isArray(data)) {
+            this.collection = data.map(item => {
+                // A member that was superseded by something more recent keeps the newer version;
+                // this is the same race a keyed channel guards against, member by member. A member
+                // the collection does not hold any more was dropped by an event this poll predates,
+                // so it stays dropped - a new one has no recorded time and passes the check anyway.
+                const known = this.collection.find(existing => existing.id === item.id);
+                if (this.isNewerThanPublished(item.id, item)) {
+                    return item;
+                }
+                return known ?? null;
+            }).filter(item => item !== null);
+        } else {
+            if (!this.isNewerThanPublished(data.id, data)) {
+                return;
+            }
+            if (data.removed) {
+                this.collection = this.collection.filter(existing => existing.id !== data.id);
+                this.registrations.forEach(registration => registration.onData(this.collection));
+                return;
+            }
+            const index = this.collection.findIndex(existing => existing.id === data.id);
+            if (index === -1) {
+                if (data.partial) {
+                    // Too little to show anything with; the next poll brings the whole member
+                    return;
+                }
+                this.collection = this.collection.concat([data]);
+            } else {
+                // Only a partial event is merged. One that is not describes the whole member, and
+                // has to be able to take something away: a voting that goes back to being prepared
+                // is announced with nothing but its id and its status (§2.1), and merging that into
+                // what the reader holds would leave every field of the previous version standing.
+                const { partial, ...fields } = data;
+                const replacement = (partial ? mergeMember(this.collection[index], fields) : fields);
+                this.collection = this.collection.map(
+                    (member, memberIndex) => (memberIndex === index ? replacement : member)
+                );
+            }
+        }
+
+        this.registrations.forEach(registration => registration.onData(this.collection));
+    }
+
+    /**
      * @returns {Promise<Response>}
      */
     performRequest(url) {
         if (this.config.auth === 'jwt-optional' && !hasJwt()) {
-            return fetch(url, { headers: { 'Accept': 'application/json' } });
+            return apiFetch(url);
         }
         return authorizedFetch(url);
     }
@@ -292,7 +449,14 @@ class Channel {
     }
 
     shouldPoll() {
-        return !this.givenUp && !this.liveConnected && !document.hidden &&
+        // A channel is normally polled only while it has no live connection. The exception is a
+        // channel whose live events deliberately leave something out: the votings omit the single
+        // votes from every tally, being the one part of the payload that grows with the number of
+        // people voting, so the administration - and only it, single votes reaching nobody else
+        // while a voting runs - keeps polling to see them arrive.
+        const liveIsEnough = this.liveConnected && !this.config.poll_while_live;
+
+        return !this.givenUp && !liveIsEnough && !document.hidden &&
             this.registrations.length > 0 && this.getPollUrl() !== null;
     }
 

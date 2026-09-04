@@ -14,11 +14,11 @@ class DebateVotingBlock
         public int $status,
         public int $votesTotal,
         public int $votesUsers,
-        public string $adminLink,
+        public ?string $adminLink = null,
     ) {
     }
 
-    public static function fromEntity(VotingBlock $block, string $adminLink): self
+    public static function fromEntity(VotingBlock $block, ?string $adminLink): self
     {
         $stats = $block->getVoteStatistics();
 

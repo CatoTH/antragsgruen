@@ -85,7 +85,7 @@ class MotionPublished
             );
         } catch (MailNotSent | ServerConfiguration $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-            RequestContext::getSession()->setFlash('error', $errMsg);
+            RequestContext::reportProblem($errMsg);
         }
     }
 }

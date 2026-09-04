@@ -69,8 +69,8 @@
 <script>
 import Translate from "/js/vue/Translate.vue.js";
 import { registerListener } from "/js/modules/shared/LiveData.js";
+import { authorizedFetch } from "/js/modules/shared/ApiClient.js";
 
-const POLLING_INTERVAL = 3000;
 
 export default {
     name: 'CurrentDebateWidget',
@@ -140,7 +140,8 @@ export default {
             votingBlock: null,
             votingLoading: false,
             votingError: null,
-            votingPollingId: null,
+            votings: [],
+            votingHandle: null,
         };
     },
     computed: {
@@ -196,7 +197,7 @@ export default {
             // The debated item (or its assigned voting) changed: reload the matching voting block.
             this.votingBlock = null;
             this.votingError = null;
-            this.refreshVoting(true);
+            this.pickVotingOfDebate();
         },
     },
     methods: {
@@ -205,60 +206,44 @@ export default {
             this.speechLoading = false;
             this.speechError = null;
         },
-        refreshVoting(initial) {
-            // The voting widget keeps using the session-based /voting endpoints (they require a
-            // logged-in user); anonymous visitors get an empty votingPollUrl and no voting is shown.
-            if (!this.votingPollUrl) {
-                return;
-            }
+        /**
+         * The voting channel carries every voting that is open; of those, this widget shows the one
+         * the debated item is being voted on with - and nothing once that voting is closed, just
+         * like the standalone widget on the home page.
+         */
+        onVotings(votings) {
+            this.votings = votings;
+            this.votingLoading = false;
+            this.pickVotingOfDebate();
+        },
+        pickVotingOfDebate() {
             const votingBlockId = this.current && this.current.voting_block ? this.current.voting_block.id : null;
             if (!votingBlockId) {
                 this.votingBlock = null;
                 return;
             }
-            if (initial) {
-                this.votingLoading = true;
-                this.votingError = null;
-            }
-            fetch(this.votingPollUrl, {headers: {'Accept': 'application/json'}})
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('HTTP status ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(votings => {
-                    // get-open-voting-blocks only returns open blocks, so the widget disappears once
-                    // the vote is closed - identical to the standalone homepage voting widget.
-                    this.votingBlock = votings.find(voting => parseInt(voting.id) === parseInt(votingBlockId)) || null;
-                })
-                .catch(err => {
-                    console.error('Could not load the voting for the debate', err);
-                    if (initial) {
-                        this.votingError = Translate.getTranslation('debate', 'voting_err');
-                    }
-                })
-                .finally(() => {
-                    this.votingLoading = false;
-                });
+
+            // Only while it is open: the channel also carries events about votings in other states,
+            // which say no more than their ID and their status (VotingPayloadBuilder) and are there
+            // for a reader to drop them.
+            this.votingBlock = this.votings.find(
+                voting => parseInt(voting.id) === parseInt(votingBlockId) && voting.status === 'open'
+            ) || null;
         },
-        vote(votingBlockId, itemGroupSameVote, itemType, itemId, vote, votePublic) {
+        vote(votingBlockId, groupId, vote) {
             this._votePost(votingBlockId, {
-                votes: [{itemGroupSameVote, itemType, itemId, vote, "public": votePublic}],
+                votes: [{groupId, vote}],
             });
         },
-        abstain(votingBlockId, setAbstention, votePublic) {
+        abstain(votingBlockId, setAbstention) {
             this._votePost(votingBlockId, {
-                abstention: {abstain: setAbstention, "public": votePublic},
+                abstention: {abstain: setAbstention},
             });
         },
         _votePost(votingBlockId, postData) {
-            fetch(this.votingVoteUrl.replace(/VOTINGBLOCKID/, votingBlockId), {
+            authorizedFetch(this.votingVoteUrl.replace(/VOTINGBLOCKID/, votingBlockId), {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                    'X-CSRF-Token': this.csrf,
-                },
+                headers: {'Content-Type': 'application/json; charset=utf-8'},
                 body: JSON.stringify(postData),
             })
                 .then(response => response.json())
@@ -267,7 +252,13 @@ export default {
                         alert(data.message);
                         return;
                     }
-                    this.votingBlock = (Array.isArray(data) ? data.find(voting => voting.id === votingBlockId) : null) || null;
+                    if (Array.isArray(data)) {
+                        this.onVotings(data);
+                    }
+                    if (this.votingHandle) {
+                        // So that the widgets of other pages and tabs see the vote as well
+                        this.votingHandle.refreshNow();
+                    }
                 })
                 .catch(err => {
                     console.error('Could not submit the vote', err);
@@ -359,8 +350,18 @@ export default {
         // this.loadMotionTypes();
 
         // Votings are not pushed via Live yet, so the widget keeps its own polling cycle.
-        this.refreshVoting(true);
-        this.votingPollingId = window.setInterval(() => this.refreshVoting(false), POLLING_INTERVAL);
+        // Anonymous visitors have no access to the votings, and the channel is not declared for them
+        if (this.votingPollUrl) {
+            this.votingLoading = true;
+            this.votingHandle = registerListener('user', 'voting', {
+                onData: votings => this.onVotings(votings),
+                onError: () => {
+                    this.votingLoading = false;
+                    this.votingError = Translate.getTranslation('debate', 'voting_err');
+                },
+                initialFetch: true,
+            });
+        }
     },
     beforeUnmount() {
         if (this.debateHandle) {
@@ -371,7 +372,9 @@ export default {
             this.speechHandle.unregister();
             this.speechHandle = null;
         }
-        window.clearInterval(this.votingPollingId);
+        if (this.votingHandle) {
+            this.votingHandle.unregister();
+        }
     },
 };
 </script>

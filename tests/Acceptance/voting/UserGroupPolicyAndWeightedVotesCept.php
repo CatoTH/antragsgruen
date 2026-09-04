@@ -124,56 +124,90 @@ $I->seeElement('.voting_question_1 span.present');
 $I->wantTo('check the REST response of the user endpoint');
 
 $pollUrl = '/stdparteitag/rest/std-parteitag/votings/open?assignedToMotionId=';
-$json = $I->executeJS('return await fetch("' . $pollUrl . '").then(ret => ret.text())');
+$json = $I->fetchApi($pollUrl);
 $jsonParsed = json_decode($json, true);
 $I->assertJsonStringEqualsJsonString('[
   {
-    "id": "' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '",
+    "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
-    "status": 2,
-    "votes_public": 1,
-    "votes_names": 0,
-    "results_public": 1,
-    "assigned_motion": null,
-    "majority_type": 1,
-    "quorum_type": 0,
-    "user_groups": [' . $userGroupsJson . '],
+    "status": "open",
+    "position": 1,
+    "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "answers": [
-      { "api_id": "present", "title": "Anwesend", "status_id": null }
+      {
+        "api_id": "present",
+        "title": "Anwesend",
+        "result": null
+      }
     ],
-    "answers_template": 2,
+    "has_majority": false,
+    "is_presence_call": true,
+    "publicity": {
+      "single_votes": "admins",
+      "results": "everybody"
+    },
+    "statistics": {
+      "votes": 1,
+      "voters": 1
+    },
+    "item_groups": [
+      {
+        "id": "single:question:1",
+        "items": [
+          {
+            "type": "question",
+            "id": 1
+          }
+        ],
+        "name": null,
+        "results": null,
+        "single_votes": null
+      }
+    ],
     "items": [
       {
         "type": "question",
         "id": 1,
-        "prefix": "",
+        "group_id": "single:question:1",
         "title_with_prefix": "Who is present?",
-        "url_json": null,
-        "url_html": null,
+        "prefix": null,
         "initiators_html": null,
-        "procedure": null,
-        "item_group_same_vote": null,
-        "item_group_name": null,
-        "voting_status": null,
-        "voted": "present",
-        "can_vote": false
+        "url_html": null,
+        "url_json": null,
+        "procedure_html": null,
+        "result": null
       }
     ],
-    "current_time": ' . $jsonParsed[0]['current_time'] . ',
-    "voting_time": null,
-    "opened_ts": ' . $jsonParsed[0]['opened_ts'] . ',
-    "abstentions_total": 0,
-    "has_abstained": false,
-    "has_general_abstention": false,
-    "votes_total": 1,
-    "votes_users": 1,
-    "vote_policy": {
-      "id": 6,
-      "user_groups": [ ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ' ],
-      "description": "Voting group"
+    "me": {
+      "eligible": true,
+      "vote_weight": 7,
+      "abstained": false,
+      "votes": [
+        {
+          "group_id": "single:question:1",
+          "answer": "present"
+        }
+      ],
+      "can_vote_group_ids": [],
+      "votes_remaining": null
     },
-    "votes_remaining": null,
-    "vote_weight": 7
+    "assigned_motion_id": null,
+    "opened_at": ' . $jsonParsed[0]['opened_at'] . ',
+    "voting_time": null,
+    "quorum": null,
+    "abstention": {
+      "enabled": false,
+      "count": null,
+      "users": null
+    },
+    "policy": {
+      "id": 6,
+      "description": "Voting group",
+      "user_groups": [
+        ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '
+      ]
+    },
+    "user_groups": [' . $userGroupsJson . ']
   }
 ]', $json);
 
@@ -190,155 +224,381 @@ $I->see('7', '.voting_question_1 .voteCount_present');
 $I->wantTo('check the REST response of the admin endpoint');
 
 $pollUrl = '/stdparteitag/rest/std-parteitag/votings/admin';
-$json = $I->executeJS('return await fetch("' . $pollUrl . '").then(ret => ret.text())');
+$json = $I->fetchApi($pollUrl);
 $jsonParsed = json_decode($json, true);
 $I->assertJsonStringEqualsJsonString('[
   {
-    "id": "' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '",
+    "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
-    "status": 2,
-    "votes_public": 1,
-    "votes_names": 0,
-    "results_public": 1,
-    "assigned_motion": null,
-    "majority_type": 1,
-    "quorum_type": 0,
-    "user_groups": [' . $userGroupsJson . '],
+    "status": "open",
+    "position": 1,
+    "current_time": ' . $jsonParsed[0]['current_time'] . ',
     "answers": [
-      { "api_id": "present", "title": "Anwesend", "status_id": null }
-    ],
-    "answers_template": 2,
-    "items": [
       {
-        "type": "question",
-        "id": 1,
-        "prefix": "",
-        "title_with_prefix": "Who is present?",
-        "url_json": null,
-        "url_html": null,
-        "initiators_html": null,
-        "procedure": null,
-        "item_group_same_vote": null,
-        "item_group_name": null,
-        "voting_status": null,
-        "vote_results": [
-          { "present": 7 }
-        ],
-        "vote_eligibility": [
+        "api_id": "present",
+        "title": "Anwesend",
+        "result": null
+      }
+    ],
+    "has_majority": false,
+    "is_presence_call": true,
+    "publicity": {
+      "single_votes": "admins",
+      "results": "everybody"
+    },
+    "statistics": {
+      "votes": 1,
+      "voters": 1
+    },
+    "item_groups": [
+      {
+        "id": "single:question:1",
+        "items": [
           {
-            "id": 40,
-            "title": "Voting group",
-            "users": [
-              { "user_id": 2, "user_name": "testuser@example.org", "weight": 7 }
-            ]
+            "type": "question",
+            "id": 1
           }
         ],
-        "votes": [
+        "name": null,
+        "results": {
+          "counts": [
+            {
+              "answers": [
+                {
+                  "answer": "present",
+                  "votes": 7
+                }
+              ],
+              "organization": null
+            }
+          ],
+          "quorum": null
+        },
+        "single_votes": [
           {
-            "vote": "present",
+            "answer": "present",
             "weight": 7,
-            "user_id": 2,
-            "user_name": "testuser@example.org",
-            "user_groups": [ ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ' ]
+            "voter": {
+              "user_id": 2,
+              "user_group_ids": [
+                ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '
+              ],
+              "user_name": "testuser@example.org"
+            }
           }
         ]
       }
     ],
-    "current_time": ' . $jsonParsed[0]['current_time'] . ',
+    "items": [
+      {
+        "type": "question",
+        "id": 1,
+        "group_id": "single:question:1",
+        "title_with_prefix": "Who is present?",
+        "prefix": null,
+        "initiators_html": null,
+        "url_html": null,
+        "url_json": null,
+        "procedure_html": null,
+        "result": null
+      }
+    ],
+    "me": {
+      "eligible": false,
+      "vote_weight": 1,
+      "abstained": false,
+      "votes": [],
+      "can_vote_group_ids": [],
+      "votes_remaining": null
+    },
+    "settings": {
+      "votes_public": 1,
+      "results_public": 1,
+      "votes_names": 0,
+      "answers_template": 2,
+      "majority_type": 1,
+      "quorum_type": 0,
+      "voting_time": null,
+      "assigned_motion_id": null,
+      "policy": {
+        "id": 6,
+        "description": "Voting group",
+        "user_groups": [
+          ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '
+        ]
+      },
+      "max_votes_by_group": null
+    },
+    "log": [
+      {
+        "type": "opened",
+        "date": "' . $jsonParsed[0]['log'][0]['date'] . '"
+      }
+    ],
+    "editable": {
+      "items_can_be_added": false,
+      "items_can_be_removed": false,
+      "settings_can_be_changed": false
+    },
+    "assigned_motion_id": null,
+    "opened_at": ' . $jsonParsed[0]['opened_at'] . ',
     "voting_time": null,
-    "opened_ts": ' . $jsonParsed[0]['opened_ts'] . ',
-    "log": [ { "type": 1, "date": "' . $jsonParsed[0]['log'][0]['date'] . '" } ],
-    "max_votes_by_group": null,
-    "abstentions_total": 0,
-    "has_general_abstention": false,
-    "votes_total": 1,
-    "votes_users": 1,
-    "vote_policy": {
+    "quorum": null,
+    "abstention": {
+      "enabled": false,
+      "count": null,
+      "users": null
+    },
+    "policy": {
       "id": 6,
-      "user_groups": [ ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ' ],
-      "description": "Voting group"
-    }
+      "description": "Voting group",
+      "user_groups": [
+        ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '
+      ]
+    },
+    "user_groups": [' . $userGroupsJson . '],
+    "eligibility": [
+      {
+        "group_id": ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ',
+        "title": "Voting group",
+        "users": [
+          {
+            "user_id": 2,
+            "user_name": "testuser@example.org",
+            "weight": 7
+          }
+        ]
+      }
+    ]
   },
   {
-    "id": "1",
+    "id": 1,
     "title": "\u00c42 or \u00c43",
-    "status": 0,
-    "votes_public": null,
-    "votes_names": 0,
-    "results_public": null,
-    "assigned_motion": null,
-    "majority_type": null,
-    "quorum_type": null,
-    "user_groups": [' . $userGroupsJson . '],
+    "status": "offline",
+    "position": 0,
+    "current_time": ' . $jsonParsed[1]['current_time'] . ',
     "answers": [
-      { "api_id": "yes", "title": "Ja", "status_id": 4 },
-      { "api_id": "no", "title": "Nein", "status_id": 5 },
-      { "api_id": "abstention", "title": "Enthaltung", "status_id": null }
+      {
+        "api_id": "yes",
+        "title": "Ja",
+        "result": "accepted"
+      },
+      {
+        "api_id": "no",
+        "title": "Nein",
+        "result": "rejected"
+      },
+      {
+        "api_id": "abstention",
+        "title": "Enthaltung",
+        "result": null
+      }
     ],
-    "answers_template": 0,
+    "has_majority": true,
+    "is_presence_call": false,
+    "publicity": {
+      "single_votes": "nobody",
+      "results": "everybody"
+    },
+    "statistics": {
+      "votes": 0,
+      "voters": 0
+    },
+    "item_groups": [
+      {
+        "id": "single:amendment:3",
+        "items": [
+          {
+            "type": "amendment",
+            "id": 3
+          }
+        ],
+        "name": null,
+        "results": {
+          "counts": [
+            {
+              "answers": [
+                {
+                  "answer": "yes",
+                  "votes": 0
+                },
+                {
+                  "answer": "no",
+                  "votes": 0
+                },
+                {
+                  "answer": "abstention",
+                  "votes": 0
+                }
+              ],
+              "organization": null
+            }
+          ],
+          "quorum": null
+        },
+        "single_votes": null
+      },
+      {
+        "id": "single:amendment:270",
+        "items": [
+          {
+            "type": "amendment",
+            "id": 270
+          }
+        ],
+        "name": null,
+        "results": {
+          "counts": [
+            {
+              "answers": [
+                {
+                  "answer": "yes",
+                  "votes": 0
+                },
+                {
+                  "answer": "no",
+                  "votes": 0
+                },
+                {
+                  "answer": "abstention",
+                  "votes": 0
+                }
+              ],
+              "organization": null
+            }
+          ],
+          "quorum": null
+        },
+        "single_votes": null
+      },
+      {
+        "id": "single:amendment:274",
+        "items": [
+          {
+            "type": "amendment",
+            "id": 274
+          }
+        ],
+        "name": null,
+        "results": {
+          "counts": [
+            {
+              "answers": [
+                {
+                  "answer": "yes",
+                  "votes": 0
+                },
+                {
+                  "answer": "no",
+                  "votes": 0
+                },
+                {
+                  "answer": "abstention",
+                  "votes": 0
+                }
+              ],
+              "organization": null
+            }
+          ],
+          "quorum": null
+        },
+        "single_votes": null
+      }
+    ],
     "items": [
       {
         "type": "amendment",
         "id": 3,
-        "prefix": "\u00c42",
+        "group_id": "single:amendment:3",
         "title_with_prefix": "\u00c42 zu A2: O\u2019zapft is!",
-        "url_json": "http:\/\/test.antragsgruen.test\/stdparteitag\/rest\/std-parteitag\/motion\/321-o-zapft-is\/amendment\/3",
-        "url_html": "http:\/\/test.antragsgruen.test\/stdparteitag\/std-parteitag\/motion\/321-o-zapft-is\/amendment\/3",
+        "prefix": "\u00c42",
         "initiators_html": "Testadmin",
-        "procedure": "<p>Abstimmung<\/p>",
-        "item_group_same_vote": null,
-        "item_group_name": null,
-        "voting_status": 11,
-        "vote_results": [ { "yes": 0, "no": 0, "abstention": 0 } ],
-        "vote_eligibility": null
+        "url_html": "http://test.antragsgruen.test/stdparteitag/std-parteitag/motion/321-o-zapft-is/amendment/3",
+        "url_json": "http://test.antragsgruen.test/stdparteitag/rest/std-parteitag/motion/321-o-zapft-is/amendment/3",
+        "procedure_html": "<p>Abstimmung</p>",
+        "result": null
       },
       {
         "type": "amendment",
         "id": 270,
-        "prefix": "\u00c43",
+        "group_id": "single:amendment:270",
         "title_with_prefix": "\u00c43 zu A2: O\u2019zapft is!",
-        "url_json": "http:\/\/test.antragsgruen.test\/stdparteitag\/rest\/std-parteitag\/motion\/321-o-zapft-is\/amendment\/270",
-        "url_html": "http:\/\/test.antragsgruen.test\/stdparteitag\/std-parteitag\/motion\/321-o-zapft-is\/amendment\/270",
+        "prefix": "\u00c43",
         "initiators_html": "Tester",
-        "procedure": "<p>Abstimmung<\/p>",
-        "item_group_same_vote": null,
-        "item_group_name": null,
-        "voting_status": 11,
-        "vote_results": [ { "yes": 0, "no": 0, "abstention": 0 } ],
-        "vote_eligibility": null
+        "url_html": "http://test.antragsgruen.test/stdparteitag/std-parteitag/motion/321-o-zapft-is/amendment/270",
+        "url_json": "http://test.antragsgruen.test/stdparteitag/rest/std-parteitag/motion/321-o-zapft-is/amendment/270",
+        "procedure_html": "<p>Abstimmung</p>",
+        "result": null
       },
       {
         "type": "amendment",
         "id": 274,
-        "prefix": "\u00c46",
+        "group_id": "single:amendment:274",
         "title_with_prefix": "\u00c46 zu A2: O\u2019zapft is!",
-        "url_json": "http:\/\/test.antragsgruen.test\/stdparteitag\/rest\/std-parteitag\/motion\/321-o-zapft-is\/amendment\/274",
-        "url_html": "http:\/\/test.antragsgruen.test\/stdparteitag\/std-parteitag\/motion\/321-o-zapft-is\/amendment\/274",
+        "prefix": "\u00c46",
         "initiators_html": "Tester",
-        "procedure": "<p>Erledigt durch: <a href=\"\/stdparteitag\/std-parteitag\/motion\/321-o-zapft-is\/amendment\/270\">\u00c43 zu A2<\/a><\/p>",
-        "item_group_same_vote": null,
-        "item_group_name": null,
-        "voting_status": null,
-        "vote_results": [ { "yes": 0, "no": 0, "abstention": 0 } ],
-        "vote_eligibility": null
+        "url_html": "http://test.antragsgruen.test/stdparteitag/std-parteitag/motion/321-o-zapft-is/amendment/274",
+        "url_json": "http://test.antragsgruen.test/stdparteitag/rest/std-parteitag/motion/321-o-zapft-is/amendment/274",
+        "procedure_html": "<p>Erledigt durch: <a href=\"/stdparteitag/std-parteitag/motion/321-o-zapft-is/amendment/270\">\u00c43 zu A2</a></p>",
+        "result": null
       }
     ],
-    "current_time": ' . $jsonParsed[1]['current_time'] . ',
-    "voting_time": null,
-    "opened_ts": null,
+    "me": {
+      "eligible": true,
+      "vote_weight": 1,
+      "abstained": false,
+      "votes": [],
+      "can_vote_group_ids": [],
+      "votes_remaining": null
+    },
+    "settings": {
+      "votes_public": 0,
+      "results_public": 1,
+      "votes_names": 0,
+      "answers_template": 0,
+      "majority_type": null,
+      "quorum_type": null,
+      "voting_time": null,
+      "assigned_motion_id": null,
+      "policy": {
+        "id": 2,
+        "description": "Eingeloggte",
+        "user_groups": null
+      },
+      "max_votes_by_group": null
+    },
     "log": [],
-    "max_votes_by_group": null,
-    "abstentions_total": 0,
-    "has_general_abstention": false,
-    "votes_total": 0,
-    "votes_users": 0,
-    "vote_policy": { "id": 2, "description": "Eingeloggte" }
+    "editable": {
+      "items_can_be_added": true,
+      "items_can_be_removed": true,
+      "settings_can_be_changed": true
+    },
+    "assigned_motion_id": null,
+    "opened_at": null,
+    "voting_time": null,
+    "quorum": null,
+    "abstention": {
+      "enabled": false,
+      "count": null,
+      "users": null
+    },
+    "policy": {
+      "id": 2,
+      "description": "Eingeloggte",
+      "user_groups": null
+    },
+    "user_groups": [' . $userGroupsJson . '],
+    "eligibility": null
   }
 ]', $json);
 
 
 $I->wantTo('close the voting and see results');
 $I->clickJS('.voting' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ' .btnClose');
+// The widget shows the voting as closed as soon as it is clicked; the results page must not be
+// opened before the backend has answered, which it has once its activity log knows about the close
+$I->waitForJS('return window.votingAdminWidget.votings.find(voting => voting.id === ' .
+    AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ').log.length === 2', 5);
 $I->clickJS('.sidebarActions .results a');
 $I->see('7', '.voting_question_1 .voteCount_present');
 
@@ -346,54 +606,93 @@ $json = $I->executeJS('return document.querySelector(".currentVotingWidget").get
 $jsonParsed = json_decode($json, true);
 $I->assertJsonStringEqualsJsonString('[
   {
-    "id": "' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . '",
+    "id": ' . AcceptanceTester::FIRST_FREE_VOTING_BLOCK_ID . ',
     "title": "Roll call",
-    "status": 3,
-    "votes_public": 1,
-    "votes_names": 0,
-    "results_public": 1,
-    "assigned_motion": null,
-    "majority_type": 1,
-    "quorum_type": 0,
-    "user_groups": [' . $userGroupsJson . '],
-    "answers": [ { "api_id": "present", "title": "Anwesend", "status_id": null } ],
-    "answers_template": 2,
+    "status": "closed_published",
+    "position": 1,
+    "current_time": ' . $jsonParsed[0]['current_time'] . ',
+    "answers": [
+      {
+        "api_id": "present",
+        "title": "Anwesend",
+        "result": null
+      }
+    ],
+    "has_majority": false,
+    "is_presence_call": true,
+    "publicity": {
+      "single_votes": "admins",
+      "results": "everybody"
+    },
+    "statistics": {
+      "votes": 1,
+      "voters": 1
+    },
+    "item_groups": [
+      {
+        "id": "single:question:1",
+        "items": [
+          {
+            "type": "question",
+            "id": 1
+          }
+        ],
+        "name": null,
+        "results": {
+          "counts": [
+            {
+              "answers": [
+                {
+                  "answer": "present",
+                  "votes": 7
+                }
+              ],
+              "organization": null
+            }
+          ],
+          "quorum": null
+        },
+        "single_votes": null
+      }
+    ],
     "items": [
       {
         "type": "question",
         "id": 1,
-        "prefix": "",
+        "group_id": "single:question:1",
         "title_with_prefix": "Who is present?",
-        "url_json": null,
-        "url_html": null,
+        "prefix": null,
         "initiators_html": null,
-        "procedure": null,
-        "item_group_same_vote": null,
-        "item_group_name": null,
-        "voting_status": null,
-        "vote_results": [
-          {
-            "present": 7
-          }
-        ],
-        "vote_eligibility": [
-          {
-            "id": ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ',
-            "title": "Voting group",
-            "users": [
-              { "user_id": 2, "user_name": "testuser@example.org", "weight": 7 }
-            ]
-          }
-        ]
+        "url_html": null,
+        "url_json": null,
+        "procedure_html": null,
+        "result": null
       }
     ],
-    "current_time": ' . $jsonParsed[0]['current_time'] . ',
+    "me": {
+      "eligible": false,
+      "vote_weight": 1,
+      "abstained": false,
+      "votes": [],
+      "can_vote_group_ids": [],
+      "votes_remaining": null
+    },
+    "assigned_motion_id": null,
+    "opened_at": null,
     "voting_time": null,
-    "opened_ts": null,
-    "abstentions_total": 0,
-    "has_general_abstention": false,
-    "votes_total": 1,
-    "votes_users": 1,
-    "vote_policy": { "id": 6, "user_groups": [ ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . ' ], "description": "Voting group" }
+    "quorum": null,
+    "abstention": {
+      "enabled": false,
+      "count": null,
+      "users": null
+    },
+    "policy": {
+      "id": 6,
+      "description": "Voting group",
+      "user_groups": [
+        ' . AcceptanceTester::FIRST_FREE_USERGROUP_ID . '
+      ]
+    },
+    "user_groups": [' . $userGroupsJson . ']
   }
 ]', $json);

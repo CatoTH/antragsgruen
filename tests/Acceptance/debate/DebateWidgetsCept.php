@@ -33,9 +33,11 @@ $I->waitForElement('.currentDebateAdmin .votingTab .votingCreate', 8);
 $I->selectOption('.votingTab #debateVotingSelectExisting', 'Ä2 or Ä3');
 $I->wait(0.2); // let Vue enable the "assign" button
 $I->click('.votingTab .votingCreate .votingAssignRow button');
-$I->waitForElement('.currentDebateAdmin .votingTab .votingCard', 8);
-$I->see('Ä2 or Ä3', '.votingTab .votingCard .votingCardTitle');
-$I->see('Abstimmung verwalten', '.votingTab .votingCard'); // link into the full voting administration
+// Holding the privilege to manage votings, this admin administers the voting right here rather than
+// being sent to the voting administration page for it
+$I->waitForElement('.currentDebateAdmin .votingTab .embeddedVotingAdmin .voting', 8);
+$I->see('Ä2 or Ä3', '.votingTab .embeddedVotingAdmin .voting h2');
+$I->dontSee('Abstimmung verwalten', '.votingTab .votingCard');
 // The motion is not itself a voting item, so unassigning returns to the create/assign UI
 $I->click('.votingTab .votingCard .votingCardActions button');
 $I->waitForElement('.currentDebateAdmin .votingTab .votingCreate', 8);
@@ -43,9 +45,15 @@ $I->waitForElement('.currentDebateAdmin .votingTab .votingCreate', 8);
 
 $I->wantTo('create a fresh voting for the debated motion');
 $I->click('.votingTab .votingCreate > button');
-$I->waitForElement('.currentDebateAdmin .votingTab .votingCard', 8);
-$I->see('O’zapft is!', '.votingTab .votingCard .votingCardTitle');
-$I->see('In Vorbereitung', '.votingTab .votingCard .votingCardStatus'); // created in preparing state, not opened
+$I->waitForElement('.currentDebateAdmin .votingTab .embeddedVotingAdmin .voting', 8);
+$I->see('O’zapft is!', '.votingTab .embeddedVotingAdmin .voting h2');
+$I->seeElement('.votingTab .embeddedVotingAdmin .btnOpen'); // created in preparing state, not opened
+
+
+$I->wantTo('open the voting without leaving the debate administration');
+$I->clickJS('.votingTab .embeddedVotingAdmin .btnOpen');
+$I->waitForElement('.currentDebateAdmin .votingTab .embeddedVotingAdmin .btnClosePubOpener', 8);
+$I->seeElement('.votingTab .embeddedVotingAdmin .alert-success');
 
 
 $I->wantTo('debate an amendment: both a speaking list and a voting can be created for it');
@@ -61,9 +69,9 @@ $I->waitForElement('.currentDebateAdmin .speechTab .speechAdmin', 8);
 $I->click($tabVoting);
 $I->waitForElement('.currentDebateAdmin .votingTab .votingCreate', 8);
 $I->click('.votingTab .votingCreate > button');
-$I->waitForElement('.currentDebateAdmin .votingTab .votingCard', 8);
-$I->see('Ä1', '.votingTab .votingCard .votingCardTitle');
-$I->see('In Vorbereitung', '.votingTab .votingCard .votingCardStatus');
+$I->waitForElement('.currentDebateAdmin .votingTab .embeddedVotingAdmin .voting', 8);
+$I->see('Ä1', '.votingTab .embeddedVotingAdmin .voting h2');
+$I->seeElement('.votingTab .embeddedVotingAdmin .btnOpen');
 
 
 $I->wantTo('debate free text, which uses the generic fallback speaking list');
@@ -132,9 +140,9 @@ $I->click($tabVoting);
 $I->waitForElement('.votingTab #debateVotingQuestion', 8);
 $I->fillField('.votingTab #debateVotingQuestion', 'Sollen wir die Sitzung vertagen?');
 $I->click('.votingTab .votingCreate .input-group button');
-$I->waitForElement('.currentDebateAdmin .votingTab .votingCard', 8);
-$I->see('Sollen wir die Sitzung vertagen?', '.votingTab .votingCard .votingCardTitle');
-$I->see('In Vorbereitung', '.votingTab .votingCard .votingCardStatus');
+$I->waitForElement('.currentDebateAdmin .votingTab .embeddedVotingAdmin .voting', 8);
+$I->see('Sollen wir die Sitzung vertagen?', '.votingTab .embeddedVotingAdmin .voting h2');
+$I->seeElement('.votingTab .embeddedVotingAdmin .btnOpen');
 
 $I->wantTo('confirm the debated agenda item is visible to a regular user');
 $I->logout();

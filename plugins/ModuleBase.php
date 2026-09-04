@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, AmendmentSection, Consultation, IMotion, ISupporter, Motion, MotionSection, Site, User, Vote, VotingBlock};
+use app\models\db\{Amendment, AmendmentSection, Consultation, IMotion, ISupporter, IVotingItem, Motion, MotionSection, Site, User, VotingBlock};
 use app\components\LoginProviderInterface;
 use app\controllers\Base;
 use app\models\AdminTodoItem;
@@ -275,11 +275,16 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Vote[] $votes
+     * Lets a plugin count the votes of one item differently - by organization, for example.
+     * Returning null leaves the counting to Antragsgrün.
      *
-     * @return array<int|string, array<string, int>>|null
+     * Hint: this used to be handed the votes as objects. It is given the item instead, so that the
+     * default implementation can let the database do the counting; a plugin that needs the single
+     * votes can still query them itself.
+     *
+     * @return array<int|string, array<string, int>>|null organization => answer => weight
      */
-    public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): ?array
+    public static function calculateVoteResultsForApi(VotingBlock $voting, IVotingItem $item): ?array
     {
         return null;
     }

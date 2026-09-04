@@ -424,7 +424,7 @@ If configuring Antragsgrün [using environment variables](./docs/environment-var
 
 ### Enabling the Live Server
 
-The optional [Live Server](https://github.com/CatoTH/antragsgruen-live) can be installed to enable live updates for speaking lists (and potentially more components in the future).
+The optional [Live Server](https://github.com/CatoTH/antragsgruen-live) can be installed to enable live updates for the speaking lists, the votings and the "Currently debated" widget. Without it, those widgets poll the REST API instead; both ways are described in [Live Data](./docs/technical/live-data.md).
 
 As a prerequisite, JWT Signing needs to be enabled (see above). Then, the location of the RabbitMQ server, the credentials of the management API and the name of the exchange needs to configured, along with the absolute URI of the Websocket endpoint the Live Server exposes:
 
@@ -441,6 +441,24 @@ As a prerequisite, JWT Signing needs to be enabled (see above). Then, the locati
     }
 }
 ```
+
+### Polling intervals
+
+Wherever no Live Server is reachable, the widgets ask the REST API for the current state at a fixed interval. How often that is can be set per data channel, to trade the delay of an update against the load a large event causes:
+
+```json5
+{
+    "polling": {
+        "user/speech": 5000, // How often a participant's speaking list is loaded, in milliseconds
+        "admin/speech": 1000,
+        "user/debate": 5000,
+        "user/voting": 5000,
+        "admin/voting": 2000
+    }
+}
+```
+
+Every channel that is not listed uses its default (see [Live Data](./docs/technical/live-data.md), which also lists the equivalent `POLLING_INTERVAL_*` environment variables). A configured interval is binding: widgets that ask for faster updates - the fullscreen projector does - do not get them.
 
 Developing
 ----------
