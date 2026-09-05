@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Pre-push hook for Antragsgrün
+# Runs PHPStan static analysis before pushing.
+# Bypass: SKIP_PHPSTAN=1 git push (or git push --no-verify)
+
+set -e
+
+if [ -n "$SKIP_PHPSTAN" ] || [ -n "$NO_PHPSTAN" ]; then
+    echo "ℹ️ PHPStan pre-push check skipped via environment variable."
+    exit 0
+fi
+
+# Bypass hook when deleting remote branches
+while read -r local_ref local_oid remote_ref remote_oid; do
+    if [ "$local_oid" = "0000000000000000000000000000000000000000" ] || [ "$local_ref" = "(delete)" ]; then
+        exit 0
+    fi
+done
+
+# 1. Native host execution (fastest if local PHP environment is available)
+if [ -x "vendor/bin/phpstan" ] && command -v php >/dev/null 2>&1; then
+    echo "Running PHPStan analysis (host PHP)..."
+    php vendor/bin/phpstan analyse
+    exit 0
+fi
+
+# 2. Docker Compose execution (if Docker and 'web' or 'php' service container is running)
+if command -v docker >/dev/null 2>&1; then
+    CONTAINER=$(docker compose ps --services --filter "status=running" 2>/dev/null | grep -E "^(web|php)$" | head -n1 || true)
+    if [ -n "$CONTAINER" ]; then
+        echo "Running PHPStan analysis (Docker Compose '$CONTAINER' container)..."
+        docker compose exec -T "$CONTAINER" vendor/bin/phpstan analyse
+        exit 0
+    fi
+fi
+
+# 3. Graceful fallback if no PHP runtime is currently active
+echo "ℹ️ PHPStan pre-push check: Neither local PHP nor a running Docker Compose ('web'/'php') container was detected."
+echo "   Skipping local analysis. GitHub Actions CI will validate PHPStan on PR."
+exit 0
