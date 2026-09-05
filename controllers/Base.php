@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
-use app\components\{ConsultationAccess, JwtCreator, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
+use app\components\{ConsultationAccess, HTMLTools, JwtCreator, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, repostory\MotionRepository, Site, User};
 use Yii;
@@ -413,8 +413,21 @@ class Base extends Controller
         return $str;
     }
 
+    /**
+     * @throws ApiResponseException
+     * @throws \yii\base\ExitException
+     */
     protected function showErrorpage(int $status, ?string $message): void
     {
+        if (RequestContext::isRestApiRequest()) {
+            // The API answers in JSON, and an API client can do nothing with an HTML page anyway.
+            // Rendering the layout would also write to the session, which the API must not do: with
+            // enableCsrfCookie switched off for it (see RestBase::beforeAction()), the CSRF token
+            // that Html::csrfMetaTags() puts into every page is stored in the session instead.
+            // Base::runAction() turns this into a JSON response of the same status.
+            throw new ApiResponseException(trim(HTMLTools::toPlainText($message ?? '')), $status);
+        }
+
         /** @var Response $response */
         $response = Yii::$app->response;
 
