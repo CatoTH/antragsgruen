@@ -20,11 +20,42 @@ class DiffRenderer
     public const DEL_START = '###DEL_START###';
     public const DEL_END   = '###DEL_END###';
 
-    private const INS_START_MATCH = '/###INS_START([^#]{0,20})###/siu';
-    private const DEL_START_MATCH = '/###DEL_START([^#]{0,20})###/siu';
+    /**
+     * Markers of the "outer" layer, used when two levels of changes are shown at once
+     * (an amendment amending another amendment, see TwoLayerDiff).
+     * The prefix is chosen so that the regular INS_START/DEL_START-patterns above cannot match them:
+     * they all require three "#" immediately in front of "INS_"/"DEL_", which the prefix prevents.
+     */
+    public const MARKER_PREFIX_OUTER = 'OUTER_';
+
+    public const OUTER_INS_START = '###OUTER_INS_START###';
+    public const OUTER_INS_END   = '###OUTER_INS_END###';
+    public const OUTER_DEL_START = '###OUTER_DEL_START###';
+    public const OUTER_DEL_END   = '###OUTER_DEL_END###';
+
+    /**
+     * The CSS class marking the <ins>/<del>-elements of the outer layer.
+     * Block elements cannot be wrapped into <ins>/<del> and carry the change in their class attribute instead
+     * ("inserted"/"deleted"); as one and the same block can be changed by both layers at once, those need
+     * a separate class name per layer.
+     */
+    public const CSS_CLASS_OUTER          = 'outer';
+    public const CSS_CLASS_INSERTED_OUTER = 'insertedOuter';
+    public const CSS_CLASS_DELETED_OUTER  = 'deletedOuter';
+
+    private const MARKER_MATCH_ALL = '/###(?:OUTER_)?(?:INS|DEL)_(?:START|END)([^#]{0,20})###/siu';
 
     private \DOMDocument $nodeCreator;
     private int $formatting = 0;
+
+    private string $markerPrefix = '';
+    private string $insEnd;
+    private string $delEnd;
+    private string $insStartMatch;
+    private string $delStartMatch;
+    private string $insEndSplit;
+    private string $delEndSplit;
+    private string $anyStartSplit;
 
     /** @var null|callable */
     private $insCallback = null;
@@ -34,6 +65,29 @@ class DiffRenderer
     public function __construct()
     {
         $this->nodeCreator = new \DOMDocument();
+        $this->updateMarkerPatterns();
+    }
+
+    /**
+     * Switches this renderer to a different set of markers, e.g. self::MARKER_PREFIX_OUTER.
+     * Markers of the other layers are left untouched in the output and can be rendered by a subsequent pass.
+     */
+    public function setMarkerPrefix(string $markerPrefix): void
+    {
+        $this->markerPrefix = $markerPrefix;
+        $this->updateMarkerPatterns();
+    }
+
+    private function updateMarkerPatterns(): void
+    {
+        $prefix              = $this->markerPrefix;
+        $this->insEnd        = '###' . $prefix . 'INS_END###';
+        $this->delEnd        = '###' . $prefix . 'DEL_END###';
+        $this->insStartMatch = '/###' . $prefix . 'INS_START([^#]{0,20})###/siu';
+        $this->delStartMatch = '/###' . $prefix . 'DEL_START([^#]{0,20})###/siu';
+        $this->insEndSplit   = '/###' . $prefix . 'INS_END###/siu';
+        $this->delEndSplit   = '/###' . $prefix . 'DEL_END###/siu';
+        $this->anyStartSplit = '/(###' . $prefix . '(?:INS|DEL)_START([^#]{0,20})###)/siu';
     }
 
     public function setFormatting(int $formatting): void
@@ -101,17 +155,24 @@ class DiffRenderer
         $node->setAttribute('class', $prevClass);
     }
 
+    public static function nodeReplaceClass(\DOMElement $node, string $oldClass, string $newClass): void
+    {
+        $classes = explode(' ', $node->getAttribute('class'));
+        $classes = array_map(fn (string $class) => ($class === $oldClass ? $newClass : $class), $classes);
+        $node->setAttribute('class', implode(' ', $classes));
+    }
+
     public static function nodeContainsText(\DOMNode $node, string $text): bool
     {
         return (str_contains($node->nodeValue, $text));
     }
 
-    public static function nodeStartInsDel(\DOMNode $node): bool
+    private function nodeStartInsDel(\DOMNode $node): bool
     {
-        if (preg_match(self::INS_START_MATCH, $node->nodeValue)) {
+        if (preg_match($this->insStartMatch, $node->nodeValue)) {
             return true;
         }
-        if (preg_match(self::DEL_START_MATCH, $node->nodeValue)) {
+        if (preg_match($this->delStartMatch, $node->nodeValue)) {
             return true;
         }
         return false;
@@ -121,6 +182,8 @@ class DiffRenderer
     {
         $text = $node->nodeValue;
         $text = str_replace('###LINENUMBER###', '', $text);
+        // Markers of the other layer(s) are still unrendered at this point and must not end up in aria-labels
+        $text = preg_replace(self::MARKER_MATCH_ALL, '', $text);
 
         return trim(preg_replace('/\s{2,}/siu', ' ', $text));
     }
@@ -222,7 +285,7 @@ class DiffRenderer
         $lastIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
         while ($text !== '') {
             if ($inIns !== null) {
-                $split = preg_split('/###INS_END###/siu', $text, 2);
+                $split = preg_split($this->insEndSplit, $text, 2);
                 if ($split === false) {
                     throw new \RuntimeException('Could not parse text: ' . $text);
                 }
@@ -243,7 +306,7 @@ class DiffRenderer
                     $text = '';
                 }
             } elseif ($inDel !== null) {
-                $split = preg_split('/###DEL_END###/siu', $text, 2);
+                $split = preg_split($this->delEndSplit, $text, 2);
                 if ($split === false) {
                     throw new \RuntimeException('Could not parse text: ' . $text);
                 }
@@ -264,7 +327,7 @@ class DiffRenderer
                     $text = '';
                 }
             } else {
-                $split = preg_split('/(###(?:INS|DEL)_START([^#]{0,20})###)/siu', $text, 2, PREG_SPLIT_DELIM_CAPTURE);
+                $split = preg_split($this->anyStartSplit, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
                 if ($split === false) {
                     throw new \RuntimeException('Could not parse text: ' . $text);
                 }
@@ -274,9 +337,9 @@ class DiffRenderer
                         $nodes[] = $newText;
                     }
                     $text = $split[3];
-                    if (preg_match(self::INS_START_MATCH, $split[1])) {
+                    if (preg_match($this->insStartMatch, $split[1])) {
                         $inIns = $split[2];
-                    } elseif (preg_match(self::DEL_START_MATCH, $split[1])) {
+                    } elseif (preg_match($this->delStartMatch, $split[1])) {
                         $inDel = $split[2];
                     }
                 } else {
@@ -293,10 +356,10 @@ class DiffRenderer
 
     protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, array &$newChildren, ?string &$inIns, ?string &$inDel): void
     {
-        if ($inIns !== null && self::nodeContainsText($child, self::INS_END)) {
+        if ($inIns !== null && self::nodeContainsText($child, $this->insEnd)) {
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child, $inIns);
             $newChildren = array_merge($newChildren, $currNewChildren);
-        } elseif ($inDel !== null && self::nodeContainsText($child, self::DEL_END)) {
+        } elseif ($inDel !== null && self::nodeContainsText($child, $this->delEnd)) {
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child, $inDel);
             $newChildren = array_merge($newChildren, $currNewChildren);
         } elseif ($inIns !== null) {
@@ -339,7 +402,7 @@ class DiffRenderer
 
     protected function renderHtmlWithPlaceholdersIntInIns(\DOMNode $dom, ?string $inIns): array
     {
-        if (!self::nodeContainsText($dom, self::INS_END)) {
+        if (!self::nodeContainsText($dom, $this->insEnd)) {
             return [[$this->cloneNode($dom)], $inIns, null];
         }
 
@@ -370,7 +433,7 @@ class DiffRenderer
 
     protected function renderHtmlWithPlaceholdersIntInDel(\DOMNode $dom, ?string $inDel): array
     {
-        if (!self::nodeContainsText($dom, self::DEL_END)) {
+        if (!self::nodeContainsText($dom, $this->delEnd)) {
             return [[$this->cloneNode($dom)], null, $inDel];
         }
 
@@ -397,7 +460,7 @@ class DiffRenderer
 
     protected function renderHtmlWithPlaceholdersIntNormal(\DOMElement $dom): array
     {
-        if (!self::nodeStartInsDel($dom)) {
+        if (!$this->nodeStartInsDel($dom)) {
             return [[$this->cloneNode($dom)], null, null];
         }
         $inIns = $inDel = null;
@@ -438,6 +501,49 @@ class DiffRenderer
         return $str;
     }
 
+    /**
+     * Renders a string containing both the regular markers and the ones of the outer layer
+     * (###OUTER_INS_START### etc., as produced by TwoLayerDiff).
+     *
+     * This is done in two passes: the outer markers are rendered first, the inner ones afterwards. As TwoLayerDiff
+     * guarantees that the inner markers never cross the boundaries of an outer one, the second pass only ever sees
+     * properly nested input and the regular, single-level state machine is sufficient for both passes.
+     */
+    public static function renderTwoLayerHtmlWithPlaceholders(string $html, int $formatting): string
+    {
+        $markAsOuter = function (\DOMElement $node, string $inlineTag, string $blockClass): void {
+            if ($node->nodeName === $inlineTag) {
+                self::nodeAddClass($node, self::CSS_CLASS_OUTER);
+            } else {
+                self::nodeReplaceClass($node, ($inlineTag === 'ins' ? 'inserted' : 'deleted'), $blockClass);
+            }
+        };
+
+        $outerRenderer = new DiffRenderer();
+        $outerRenderer->setMarkerPrefix(self::MARKER_PREFIX_OUTER);
+        $outerRenderer->setFormatting($formatting);
+        $outerRenderer->setInsCallback(function ($node, $params) use ($markAsOuter) {
+            $markAsOuter($node, 'ins', self::CSS_CLASS_INSERTED_OUTER);
+        });
+        $outerRenderer->setDelCallback(function ($node, $params) use ($markAsOuter) {
+            $markAsOuter($node, 'del', self::CSS_CLASS_DELETED_OUTER);
+        });
+
+        $innerRenderer = new DiffRenderer();
+        $innerRenderer->setFormatting($formatting);
+
+        $rendered = $innerRenderer->renderHtmlWithPlaceholders($outerRenderer->renderHtmlWithPlaceholders($html));
+
+        // Rendering the two layers separately can leave empty elements behind, e.g. when an insertion of the inner
+        // layer covers a whole block element that the outer layer marks as deleted.
+        do {
+            $prev     = $rendered;
+            $rendered = preg_replace('/<(ins|del)( [^>]*)?><\/\1>/siu', '', $rendered);
+        } while ($rendered !== $prev);
+
+        return $rendered;
+    }
+
     private static function paragraphContainsDiff_getPos(string $line, array $matches): int
     {
         // Workaround: PREG_OFFSET_CAPTURE ignores utf-8
@@ -446,13 +552,19 @@ class DiffRenderer
         return strlen($strBefore);
     }
 
+    /**
+     * Returns the position of the first change of this paragraph, or null if it does not contain any.
+     *
+     * Changes of the outer layer (see TwoLayerDiff) do not count: within a two-layered diff, they are the
+     * context the changes are shown in, not the changes themselves.
+     */
     public static function paragraphContainsDiff(string $line): ?int
     {
         $firstDiffs = [];
-        if (preg_match('/(<ins( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match('/(<ins(?![^>]*[ "\']' . self::CSS_CLASS_OUTER . '[ "\'])( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
             $firstDiffs[] = self::paragraphContainsDiff_getPos($line, $matches);
         }
-        if (preg_match('/(<del( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+        if (preg_match('/(<del(?![^>]*[ "\']' . self::CSS_CLASS_OUTER . '[ "\'])( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
             $firstDiffs[] = self::paragraphContainsDiff_getPos($line, $matches);
         }
         if (preg_match('/(<[^>]+[ "]inserted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {

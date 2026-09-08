@@ -109,6 +109,7 @@ class Consultation implements \JsonSerializable
     public bool $documentPage = false;
     public bool $votingPage = false;
     public bool $speechPage = false;
+    public bool $hasCurrentlyDebated = false;
 
 
     public function setOrganisations(?array $orgas): void

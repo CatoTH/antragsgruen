@@ -34,7 +34,7 @@ jobs:
       - name: Install PHPStan extras
         run: composer install --prefer-dist --no-progress --no-interaction --working-dir=.github/phpstan
       - name: Download artifact
-        uses: dawidd6/action-download-artifact@v21
+        uses: dawidd6/action-download-artifact@v24
         with:
           workflow: .github/workflows/phpstan-generate-baseline.yml
           workflow_conclusion: success

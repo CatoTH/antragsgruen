@@ -496,7 +496,7 @@ class ConsultationController extends Base
     private function getUnassignedQueueOrCreate(): SpeechQueue
     {
         foreach ($this->consultation->speechQueues as $queue) {
-            if ($queue->motionId === null && $queue->agendaItemId === null) {
+            if ($queue->motionId === null && $queue->amendmentId === null && $queue->agendaItemId === null) {
                 return $queue;
             }
         }

@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\AdminTodoItem;
+use app\models\api\voting\VotingItemType;
 use app\models\db\repostory\{ConsultationRepository, MotionRepository};
 use app\models\forms\MotionDeepCopy;
 use app\models\proposedProcedure\Agenda;
@@ -75,6 +76,7 @@ class Motion extends IMotion implements IRSSItem
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
         $this->on(static::EVENT_CREATED, [$this, 'setInitialCreated'], null, false);
         $this->on(static::EVENT_MERGED, [$this, 'onMerged'], null, false);
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'endDebateIfNotVisibleAnymore'], null, false);
     }
 
     public static function tableName(): string
@@ -1071,7 +1073,7 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+        foreach (LanguageTools::getContentLanguages($this->getMyConsultation()) as $language) {
             HashedStaticCache::getInstance($this->getPdfCacheKey($language), null)->setIsBulky(true)->flushCache();
         }
         foreach ($this->amendments as $amend) {
@@ -1082,7 +1084,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function flushViewCache(): void
     {
-        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+        foreach (LanguageTools::getContentLanguages($this->getMyConsultation()) as $language) {
             HashedStaticCache::getInstance(\app\views\motion\LayoutHelper::getViewCacheKey($this, $language), null)->setIsBulky(true)->flushCache();
             HashedStaticCache::getInstance($this->getPdfCacheKey($language), null)->setIsBulky(true)->flushCache();
         }
@@ -1479,6 +1481,11 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    public function getVotingItemType(): VotingItemType
+    {
+        return VotingItemType::MOTION;
     }
 
     public function getAgendaApiBaseObject(): array

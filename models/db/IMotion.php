@@ -4,7 +4,7 @@ namespace app\models\db;
 
 use app\models\exceptions\NotFound;
 use app\models\layoutHooks\Layout;
-use app\components\{HTMLTools, LanguageTools, MotionSectionLanguageFilter, Tools};
+use app\components\{DebateTools, HTMLTools, LanguageTools, MotionSectionLanguageFilter, Tools};
 use app\models\consultationLog\ProposedProcedureChange;
 use app\models\exceptions\FormError;
 use app\models\majorityType\IMajorityType;
@@ -14,7 +14,7 @@ use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp
 use app\models\supportTypes\SupportBase;
 use app\models\votings\VotingItemGroup;
 use yii\base\InvalidConfigException;
-use yii\db\{ActiveQueryInterface, ActiveRecord};
+use yii\db\{ActiveQueryInterface, ActiveRecord, AfterSaveEvent};
 
 /**
  * @property string $titlePrefix
@@ -280,6 +280,26 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
         return
             $this->isReadable() &&
             !in_array($this->status, $this->getMyConsultation()->getStatuses()->getStatusesInvisibleForAdmins());
+    }
+
+    /**
+     * A motion or amendment that becomes invisible - deleted, withdrawn from sight, or moved back to
+     * screening - cannot stay the consultation's currently debated item: the widget would keep showing
+     * it to everyone, including those who are not allowed to see it anymore.
+     */
+    public function endDebateIfNotVisibleAnymore(AfterSaveEvent $event): void
+    {
+        if (!array_key_exists('status', $event->changedAttributes)) {
+            return;
+        }
+        $consultation = $this->getMyConsultation();
+        if ($consultation === null || !$consultation->getSettings()->hasCurrentlyDebated || $this->isVisible()) {
+            return;
+        }
+
+        if ($this instanceof Motion || $this instanceof Amendment) {
+            DebateTools::endDebateForInvisibleItem($this);
+        }
     }
 
     public function isVisibleForProposalAdmins(): bool

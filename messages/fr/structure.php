@@ -337,4 +337,6 @@ return [
     'months_10' => 'Octobre',
     'months_11' => 'Novembre',
     'months_12' => 'Décembre',
+
+    'date_spoken' => '%DAY% %MONTHNAME% %YEAR%',
 ];

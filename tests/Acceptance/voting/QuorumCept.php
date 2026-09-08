@@ -10,7 +10,10 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('create a user group with voting rights and add three users to it');
-$I->loginAndGotoStdAdminPage()->gotoUserAdministration();
+$I->loginAndGotoStdAdminPage();
+// The fixture has the "Currently debated" module on, which would take the place of the voting widget
+$I->disableCurrentlyDebated();
+$I->gotoStdAdminPage()->gotoUserAdministration();
 $I->clickJS('.btnGroupCreate');
 $I->fillField('.addGroupName input', 'Voting rights');
 $I->clickJS('.addGroupForm .btnSave');

@@ -10,21 +10,18 @@ $layout = $controller->layoutParams;
 
 $layout->addJsTranslation('speech');
 
-$loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
-
-$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
-$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
-$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
+$loginUrl      = UrlHelper::createUrl(['/user/login', 'backUrl' => Yii::$app->request->url]);
+$registerUrl   = UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']);
+$unregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']);
 ?>
 
 <script type="module" crossorigin="anonymous">
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
-    import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
+    import { getSpeechCommonMixins, setSpeechActionUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import translateDirective from "/js/vue/Translate.vue.js";
     import userInlineWidget from "/js/vue/speech/UserInlineWidget.js";
 
-    setSpeechUrls(
-        <?= json_encode($pollUrl) ?>,
+    setSpeechActionUrls(
         <?= json_encode($registerUrl) ?>,
         <?= json_encode($unregisterUrl) ?>
     );

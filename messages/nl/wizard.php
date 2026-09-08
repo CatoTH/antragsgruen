@@ -22,6 +22,7 @@ return [
     'functionality_applications'   => 'Kandidaturen',
     'functionality_agenda'         => 'Een agenda',
     'functionality_speech'         => 'Sprekerslijsten',
+    'functionality_debate'         => 'Realtime debat ter plaatse',
     'functionality_statute_amendments' => 'Statuten-<br>wijzigingen',
     'functionality_votings'        => 'Stemmingen',
     'functionality_documents_desc' => '(Documenten)',

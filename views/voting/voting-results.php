@@ -13,6 +13,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
+// The voting endpoints authenticate by JWT, like the rest of the REST API
+$layout->provideJwt = true;
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/consultation/votings'));
 $layout->addBreadcrumb(Yii::t('voting', 'results_bc'));
 $this->title = html_entity_decode(Yii::t('voting', 'results_title'), ENT_COMPAT, 'UTF-8');
@@ -24,10 +26,9 @@ include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
 $apiData = [];
 foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockToRender) {
-    $apiData[] = $votingBlockToRender->getUserResultsApiObject(User::getCurrentUser());
+    $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
-$pollUrl   = UrlHelper::createUrl(['/voting/get-closed-voting-blocks']);
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
@@ -51,7 +52,7 @@ $fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscre
 </div>
 
 <section class="currentVotingWidget votingCommon"
-         data-voting="<?= Html::encode(json_encode($apiData)) ?>"
+         data-voting="<?= Html::encode(\app\components\Tools::getSerializer()->serialize($apiData, 'json')) ?>"
 >
     <div class="currentVoting"></div>
 </section>

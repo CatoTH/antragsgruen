@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\api\voting\VotingItemType;
 use app\models\exceptions\{Access, Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
@@ -66,6 +67,7 @@ class Amendment extends IMotion implements IRSSItem
         $this->on(static::EVENT_PUBLISHED, [$this, 'onPublish'], null, false);
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
         $this->on(static::EVENT_CREATED, [$this, 'setInitialCreated'], null, false);
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'endDebateIfNotVisibleAnymore'], null, false);
     }
 
     public static function tableName(): string
@@ -386,6 +388,19 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             return $this->getMyMotion()->getMyAgendaItem();
         }
+    }
+
+    /**
+     * Amendments with an explicit agenda item are listed at that agenda item instead of below the motion they amend.
+     *
+     * Amendments amending another amendment are the exception: they always belong below the amendment they amend,
+     * the same way they are shown on an agenda-less home page. Note that they can well carry an agendaItemId of
+     * their own - getMyAgendaItem() falls back to the agenda item of the motion, and editing an amendment persists
+     * that fallback (see AmendmentEditForm) - so the agendaItemId alone is not a reliable criterion.
+     */
+    public function isShownAtAgendaItemDirectly(): bool
+    {
+        return $this->agendaItemId !== null && $this->amendingAmendmentId === null;
     }
 
     public function getMyTags(): array
@@ -1068,7 +1083,7 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             $this->flushCache();
         }
-        foreach (LanguageTools::getLanguagesToFlush($this->getMyConsultation()) as $language) {
+        foreach (LanguageTools::getContentLanguages($this->getMyConsultation()) as $language) {
             \Yii::$app->cache->delete($this->getPdfCacheKey($language));
         }
     }
@@ -1396,6 +1411,11 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    public function getVotingItemType(): VotingItemType
+    {
+        return VotingItemType::AMENDMENT;
     }
 
     public function getAgendaApiBaseObject(): array

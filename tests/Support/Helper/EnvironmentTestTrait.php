@@ -31,6 +31,15 @@ trait EnvironmentTestTrait
             'JWT_PUBLIC_KEY', 'JWT_PRIVATE_KEY', 'BLOCKED_SUBDOMAINS',
         ];
 
+        // The polling intervals are not listed one by one: there is one per live-data channel, the
+        // loader finds them by their prefix rather than by name, and a list here would be one more
+        // place to forget when a channel is added
+        foreach (array_keys(array_merge(getenv(), $_ENV)) as $name) {
+            if (str_starts_with($name, 'POLLING_INTERVAL_')) {
+                $vars[] = $name;
+            }
+        }
+
         foreach ($vars as $var) {
             unset($_ENV[$var]);
             putenv($var);

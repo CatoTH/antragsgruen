@@ -12,6 +12,7 @@ class MotionTypePolicy
     public function __construct(
         public MotionTypePolicyId $id,
         public string $description,
+        public bool $currentUserPermitted,
         /** @var MotionTypeDeadlineEntry[] */
         public array $deadlines,
         /** @var int[]|null */
@@ -20,7 +21,7 @@ class MotionTypePolicy
     }
 
     /** @param MotionTypeDeadlineEntry[] $deadlines */
-    public static function fromPolicy(IPolicy $policy, array $deadlines): self
+    public static function fromPolicy(IPolicy $policy, array $deadlines, bool $currentUserPermitted): self
     {
         $userGroupIds = null;
         if ($policy instanceof UserGroups) {
@@ -33,6 +34,7 @@ class MotionTypePolicy
         return new self(
             id: MotionTypePolicyId::fromPolicyInt($policy::getPolicyID()),
             description: $policy::getPolicyName(),
+            currentUserPermitted: $currentUserPermitted,
             deadlines: $deadlines,
             userGroupIds: $userGroupIds,
         );

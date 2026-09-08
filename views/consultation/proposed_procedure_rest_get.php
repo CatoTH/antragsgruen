@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Tools;
 use app\models\proposedProcedure\Agenda;
 
 /**
@@ -25,6 +26,4 @@ foreach ($proposedAgenda as $proposedItem) {
     $json[] = $itemJson;
 }
 
-echo json_encode([
-    'proposed_procedure' => $json,
-]);
+echo Tools::getSerializer()->serialize(['proposed_procedure' => $json], 'json');

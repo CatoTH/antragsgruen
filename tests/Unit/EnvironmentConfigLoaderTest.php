@@ -385,4 +385,47 @@ class EnvironmentConfigLoaderTest extends TestBase
         $this->assertEquals('dsn.example.com', $config['host']);
         $this->assertEquals('dsn-user', $config['username']);
     }
+
+    public function testGetPollingConfigNotSet(): void
+    {
+        $this->assertNull(EnvironmentConfigLoader::getPollingConfig());
+    }
+
+    public function testGetPollingConfig(): void
+    {
+        $_ENV['POLLING_INTERVAL_USER_SPEECH'] = '5000';
+        $_ENV['POLLING_INTERVAL_ADMIN_SPEECH'] = ' 2000 ';
+        // Nothing here knows the channels; every one of them is configurable by the name it has in
+        // LiveDataChannels, which is what the documented variables rely on
+        $_ENV['POLLING_INTERVAL_USER_VOTING'] = '6000';
+        $_ENV['POLLING_INTERVAL_ADMIN_VOTING'] = '4000';
+
+        $this->assertEquals(
+            [
+                'user/speech' => 5000,
+                'admin/speech' => 2000,
+                'user/voting' => 6000,
+                'admin/voting' => 4000,
+            ],
+            EnvironmentConfigLoader::getPollingConfig()
+        );
+    }
+
+    public function testGetPollingConfigIgnoresInvalidEntries(): void
+    {
+        $_ENV['POLLING_INTERVAL_USER_SPEECH'] = '5000';
+        $_ENV['POLLING_INTERVAL_USER_DEBATE'] = 'fast';
+        $_ENV['POLLING_INTERVAL_ADMIN_SPEECH'] = '0';
+        $_ENV['POLLING_INTERVAL_USER'] = '1000';
+        $_ENV['POLLING_INTERVAL_'] = '1000';
+
+        $this->assertEquals(['user/speech' => 5000], EnvironmentConfigLoader::getPollingConfig());
+    }
+
+    public function testGetPollingConfigOnlyInvalidEntries(): void
+    {
+        $_ENV['POLLING_INTERVAL_USER_SPEECH'] = '';
+
+        $this->assertNull(EnvironmentConfigLoader::getPollingConfig());
+    }
 }

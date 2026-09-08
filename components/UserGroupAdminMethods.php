@@ -77,6 +77,19 @@ class UserGroupAdminMethods
         }
     }
 
+    /**
+     * Everything that changes who may vote, or what their vote weighs, ends up here.
+     *
+     * Two things follow from such a change: the read cache of the group memberships is stale, and
+     * the votings that are running have a new state to publish - who may vote, how much their vote
+     * weighs and how many members a group has are all part of their payload.
+     */
+    private function onVotersChanged(): void
+    {
+        ConsultationUserGroup::flushUserIdCache();
+        LiveTools::sendVotingStatesForUserGroupChange($this->consultation);
+    }
+
     private function logUserGroupAdd(User $user, ConsultationUserGroup $group): void
     {
         if (User::getCurrentUser()) {
@@ -136,6 +149,7 @@ class UserGroupAdminMethods
 
         $this->consultation->refresh();
         AdminTodoItem::flushUserTodoCount($this->consultation, $userId);
+        $this->onVotersChanged();
     }
 
     public function setUserData(int $userId, string $nameGiven, string $nameFamily, string $organization, string $ppReplyTo, ?string $newPassword, ?string $newEmail, bool $remove2Fa, bool $force2Fa, bool $preventPwdChange, bool $forcePwdChange, bool $allowPrivateComments): void
@@ -193,6 +207,8 @@ class UserGroupAdminMethods
         $settings->setVoteWeight($this->consultation, $voteWeight);
         $user->setSettingsObj($settings);
         $user->save();
+
+        $this->onVotersChanged();
     }
 
     private function getUserGroup(int $userGroupId): ?ConsultationUserGroup
@@ -243,6 +259,10 @@ class UserGroupAdminMethods
 
         $userGroup->refresh();
         $this->consultation->refresh();
+        ConsultationUserGroup::flushUserIdCache();
+        // Deliberately no live event here: the only caller of this holds the write lock of a voting,
+        // and publishing under that lock would make every voter wait for the broker. It publishes
+        // once the locks are released instead.
     }
 
     /**
@@ -269,6 +289,7 @@ class UserGroupAdminMethods
 
         $this->consultation->refresh();
         AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
+        $this->onVotersChanged();
     }
 
     public function deleteUser(int $userId): void
@@ -281,6 +302,7 @@ class UserGroupAdminMethods
         $user = User::findOne(['id' => $userId]);
         $user->deleteAccount();
         $this->consultation->refresh();
+        $this->onVotersChanged();
     }
 
     public function createUserGroup(string $groupName): void
@@ -344,6 +366,9 @@ class UserGroupAdminMethods
         }
         /** @noinspection PhpUnhandledExceptionInspection */
         $group->delete();
+
+        $this->consultation->refresh();
+        $this->onVotersChanged();
     }
 
     /**
@@ -423,6 +448,9 @@ class UserGroupAdminMethods
                 $msg = str_replace('%NUM%', (string)$created, \Yii::t('admin', 'siteacc_user_added_x'));
             }
             $this->session->setFlash('success', $msg);
+            // Once for the whole batch: the users were added one by one, but the votings only have
+            // one new state to tell about
+            $this->onVotersChanged();
         }
     }
 
@@ -600,6 +628,7 @@ class UserGroupAdminMethods
             $this->logUserGroupAdd($user, $userGroup);
         }
         $user->refresh();
+        $this->onVotersChanged();
 
         $this->sendWelcomeEmail($user, $emailText, null);
 
@@ -660,6 +689,8 @@ class UserGroupAdminMethods
                     $msg = str_replace('%NUM%', (string)$created, \Yii::t('admin', 'siteacc_user_added_x'));
                 }
                 $this->session->setFlash('success', $msg);
+                // Once for the whole batch, see addUsersBySamlWw()
+                $this->onVotersChanged();
             } else {
                 $this->session->setFlash('error', \Yii::t('admin', 'siteacc_user_added_0'));
             }
@@ -792,6 +823,12 @@ class UserGroupAdminMethods
             } catch (\Exception $e) {
                 $errors[] = $email . ': ' . $e->getMessage();
             }
+        }
+
+        if ($processedRows > 0) {
+            // Once per chunk - the chunk is what the caller drives the import in, and a row is far
+            // too small a unit to publish a whole voting state for
+            $this->onVotersChanged();
         }
 
         return [

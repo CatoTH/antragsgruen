@@ -7,21 +7,19 @@ $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
 
-$pollUrl       = UrlHelper::createUrl(['/speech/get-queue', 'queueIds' => 'QUEUEIDS']);
-$registerUrl   = UrlHelper::createUrl(['/speech/register', 'queueId' => 'QUEUEID']);
-$unregisterUrl = UrlHelper::createUrl(['/speech/unregister', 'queueId' => 'QUEUEID']);
+$registerUrl   = UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']);
+$unregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']);
 
 $layout->addJsTranslation('speech');
 ?>
 
 <script type="module" crossorigin="anonymous">
     import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
-    import { getSpeechCommonMixins, setSpeechUrls } from "/js/vue/speech/SpeechCommonMixins.js";
+    import { getSpeechCommonMixins, setSpeechActionUrls } from "/js/vue/speech/SpeechCommonMixins.js";
     import translateDirective from "/js/vue/Translate.vue.js";
     import userFooterWidget from "/js/vue/speech/UserFooterWidget.js";
 
-    setSpeechUrls(
-        <?= json_encode($pollUrl) ?>,
+    setSpeechActionUrls(
         <?= json_encode($registerUrl) ?>,
         <?= json_encode($unregisterUrl) ?>
     );

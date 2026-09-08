@@ -11,6 +11,8 @@ $I->gotoConsultationHome();
 $I->dontSeeElement('.currentSpeechInline');
 
 $I->loginAsStdAdmin();
+// The fixture has the "Currently debated" module on, which would take the place of this widget
+$I->disableCurrentlyDebated();
 $I->gotoStdAdminPage();
 $I->click('.speechAdminLink');
 $I->wait(0.3);

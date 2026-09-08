@@ -139,4 +139,5 @@ return [
     'discuss_sort_oldest'     => 'Más antiguas',
     'discuss_sort_amend'      => 'Número de enmiendas',
     'discuss_sort_comment'    => 'Número de comentarios',
+    'discuss_sort_aria'       => 'Ordenar las mociones por',
 ];

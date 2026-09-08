@@ -121,7 +121,7 @@ if (!str_starts_with($params->resourceBase, '/')) {
 
 if ($params->redis) {
     $components['redis']   = array_merge(['class' => 'yii\redis\Connection'], $params->redis);
-    $components['session'] = ['class' => 'yii\redis\Session'];
+    $components['session'] = ['class' => 'app\components\yii\RestRedisSessionTester'];
 } else {
     $components['session'] = ['class' => 'app\components\yii\RestSessionTester'];
 }

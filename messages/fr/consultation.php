@@ -135,4 +135,5 @@ return [
     'discuss_sort_oldest'      => 'Plus ancien',
     'discuss_sort_amend'       => 'Nombre d\'amendements',
     'discuss_sort_comment'     => 'Nombre de commentaires',
+    'discuss_sort_aria'        => 'Trier les motions par',
 ];

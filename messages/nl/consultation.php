@@ -131,4 +131,5 @@ return [
     'discuss_sort_oldest'     => 'Oudste',
     'discuss_sort_amend'      => 'Aantal amendementen',
     'discuss_sort_comment'    => 'Aantal reacties',
+    'discuss_sort_aria'       => 'Voorstellen sorteren op',
 ];

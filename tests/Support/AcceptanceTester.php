@@ -47,7 +47,7 @@ class AcceptanceTester extends Actor
     public const FIRST_FREE_VOTING_BLOCK_ID        = 3;
     public const FIRST_FREE_CONTENT_ID             = 4;
     public const FIRST_FREE_USER_ID                = 10;
-    public const FIRST_FREE_TAG_ID                 = 14;
+    public const FIRST_FREE_TAG_ID                 = 11;
     public const FIRST_FREE_USERGROUP_ID           = 40;
 
     public const ABSOLUTE_URL_DOMAIN = 'test.antragsgruen.test';
@@ -170,6 +170,23 @@ class AcceptanceTester extends Actor
         $this->gotoConsultationHome(false, $subdomain, $path);
         $this->loginAsStdAdmin();
         return $this->gotoMotionList();
+    }
+
+    /**
+     * The dbdata1 fixture ships std-parteitag with the "Currently debated" module switched on, and that
+     * module takes the place of the separate speaking list and voting sections on the home page. Tests
+     * covering those separate sections switch it off first. Requires an admin session.
+     */
+    public function disableCurrentlyDebated(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): self
+    {
+        // Reached by clicking through the admin index rather than by opening the URL directly: right
+        // after a login, a blind navigation can still race the login response and end up submitting
+        // the form with a CSRF token from the previous session.
+        $page = $this->gotoStdAdminPage($subdomain, $path)->gotoAppearance();
+        $this->uncheckOption('#hasCurrentlyDebated');
+        $page->saveForm();
+
+        return $this;
     }
 
     public function gotoStdAdminPage(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): AdminIndexPage
@@ -331,6 +348,22 @@ class AcceptanceTester extends Actor
     {
         $this->see('LOGOUT', '#logoutLink');
         $this->click('#logoutLink');
+    }
+
+    /**
+     * Calls a REST endpoint the way the widgets of the current page do: with the JWT that page was
+     * given (see $layout->provideJwt).
+     */
+    public function fetchApi(string $url): string
+    {
+        return $this->executeJS('
+            const meta = document.head.querySelector("meta[name=user-jwt-config]");
+            if (!meta) {
+                throw new Error("This page provides no JWT");
+            }
+            const config = JSON.parse(meta.getAttribute("content"));
+            return await fetch("' . $url . '", {headers: {"Authorization": "Bearer " + config.token}}).then(ret => ret.text());
+        ');
     }
 
     public function clickJS(string $selector): void

@@ -459,6 +459,7 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'siteacc_new_mail_send' => 'Pošaljite e-mail', // Original: Send an e-mail
     'siteacc_new_hint_accexists' => 'Ovaj korisnik već ima račun. Možete mu dati dopuštenja.', // Original: This user already has an account. You can grant him/her permissions.
     'siteacc_new_mail_hint' => '%LINK% bit će zamijenjen poveznicom na stranicu. <br>%ACCOUNT% bit će zamijenjen pristupnim podacima korisnika.', // Original: %LINK% will be replaced by a link to the site.<br>%ACCOUNT% will be replaced by the access data of the user.
+    'siteacc_customize_email_template' => 'Prilagodi zadani predložak',
     'siteacc_new_text' => 'Tekst e-pošte', // Original: E-mail text
     'siteacc_new_do' => 'Kreiraj', // Original: Create
     'siteacc_new_err_already' => 'Ovaj je korisnik već dodat u ovu konsultaciju.', // Original: This user was already added to this consultation.
@@ -781,4 +782,5 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'files_download_title' => 'Naslov', // Original: Title
     'files_download_del' => 'Izbriši ovu datoteku: %TITLE%', // Original: Delete this file: %TITLE%
     'files_download_del_c' => 'Želite li izbrisati ovu datoteku?', // Original: Do you want to delete this file?
+    'goto_update_mode_confirm' => 'Želite li aktivirati režim ažuriranja? Dok je režim ažuriranja aktivan, ova instalacija Antragsgrüna neće biti dostupna nijednom korisniku.', // Original: Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users.
 ];

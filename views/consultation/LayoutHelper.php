@@ -90,7 +90,7 @@ class LayoutHelper
         // These caches are keyed by the reader's language (see getHomePageCacheForType() etc.), so
         // every supported language's copy needs flushing, not just whichever language this request
         // happens to be in.
-        foreach (LanguageTools::getLanguagesToFlush($consultation) as $language) {
+        foreach (LanguageTools::getContentLanguages($consultation) as $language) {
             foreach (self::getAllHomePageCaches($consultation, $language) as $homePageCache) {
                 $homePageCache->flushCache();
             }
@@ -130,7 +130,7 @@ class LayoutHelper
 
         $return .= '<p class="date">';
         if ($motion->getMyConsultation()->getSettings()->showIMotionEditDate && $motion->wasContentEdited()) {
-            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit"
+            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit" role="img"
                 aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
             $return .= Tools::formatMysqlDateTime($motion->dateContentModification);
             $return .= '</span>';
@@ -173,7 +173,7 @@ class LayoutHelper
 
         $return .= '<p class="date">';
         if ($consultation->getSettings()->showIMotionEditDate && $amendment->wasContentEdited()) {
-            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit"
+            $return .= '<span class="edited"><span class="glyphicon glyphicon-edit" role="img"
                 aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
             $return .= Tools::formatMysqlDateTime($amendment->dateContentModification);
             $return .= '</span>';
@@ -271,12 +271,6 @@ class LayoutHelper
         $filter = IMotionStatusFilter::onlyUserVisible($consultation, true)
                                      ->noAmendmentsIfMotionIsMoved();
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getFilteredAmendments($filter));
-        if ($hasAgenda) {
-            $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
-                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
-                return $amendment->agendaItemId === null;
-            }));
-        }
         $return .= self::showMotionSubAmendments($amendments, $hideAmendmendsByDefault, $hasAgenda, $headingLevel);
         $return .= '</li>' . "\n";
 
@@ -288,8 +282,9 @@ class LayoutHelper
         $return = '';
         if ($hasAgenda) {
             $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
-                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
-                return $amendment->agendaItemId === null;
+                // Amendments with an explicit agendaItemId are shown directly at the agenda item, not as sub-item
+                // of the motion. Amendments amending another amendment are never shown there, see Amendment.
+                return !$amendment->isShownAtAgendaItemDirectly();
             }));
         }
         if (count($amendments) > 0) {
@@ -350,12 +345,6 @@ class LayoutHelper
         $filter = IMotionStatusFilter::onlyUserVisible($consultation, true)
                                      ->noAmendmentsIfMotionIsMoved();
         $amendments = MotionSorter::getSortedAmendments($consultation, $amendment->getFilteredAmendingAmendments($filter));
-        if ($hasAgenda) {
-            $amendments = array_values(array_filter($amendments, function (Amendment $amendment): bool {
-                // Amendments with an explicit agendaItemId will be shown directly at the agenda item, not as sub-item of the motion
-                return $amendment->agendaItemId === null;
-            }));
-        }
         $return .= self::showMotionSubAmendments($amendments, $hideAmendmendsByDefault, $hasAgenda, $headingLevel);
 
         $return .= '</li>' . "\n";
@@ -518,7 +507,7 @@ class LayoutHelper
         $tooltip = Html::encode(implode(" - ", $texts));
 
         $str = '<a href="' . Html::encode($link) . '" class="privateCommentsIndicator">';
-        $str .= '<span class="glyphicon glyphicon-pushpin" data-toggle="tooltip" data-placement="right" ' .
+        $str .= '<span class="glyphicon glyphicon-pushpin" role="img" data-toggle="tooltip" data-placement="right" ' .
             'aria-label="' . Html::encode(\Yii::t('base', 'aria_tooltip')) . ': ' . $tooltip . '" ' .
             'data-original-title="' . $tooltip . '"></span>';
         $str .= '</a>';

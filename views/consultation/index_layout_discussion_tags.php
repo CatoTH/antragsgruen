@@ -97,7 +97,8 @@ if (count($comments) > 0) {
                 ?>
             </div>
             <div class="searchBar clearfix">
-                <div class="btn-group btn-group-sm pull-right motionSort" role="group" aria-label="Sort motions by...">
+                <div class="btn-group btn-group-sm pull-right motionSort" role="group"
+                     aria-label="<?= Html::encode(Yii::t('con', 'discuss_sort_aria')) ?>">
                     <?php
                     if ($showPrefix) {
                         ?>
@@ -118,11 +119,11 @@ if (count($comments) > 0) {
                     </button>
                     <button type="button" class="btn btn-default" data-sort="amendments" data-order="desc"
                             title="<?= Yii::t('con', 'discuss_sort_amend') ?>">
-                        <span class="glyphicon glyphicon-flash" aria-label="<?= Yii::t('con', 'discuss_sort_amend') ?>"></span>
+                        <span class="glyphicon glyphicon-flash" role="img" aria-label="<?= Yii::t('con', 'discuss_sort_amend') ?>"></span>
                     </button>
                     <button type="button" class="btn btn-default" data-sort="comments" data-order="desc"
                             title="<?= Yii::t('con', 'discuss_sort_comment') ?>">
-                        <span class="glyphicon glyphicon-comment" aria-label="<?= Yii::t('con', 'discuss_sort_comment') ?>"></span>
+                        <span class="glyphicon glyphicon-comment" role="img" aria-label="<?= Yii::t('con', 'discuss_sort_comment') ?>"></span>
                     </button>
                 </div>
             </div>

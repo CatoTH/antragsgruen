@@ -152,4 +152,5 @@ return [
     'discuss_sort_oldest'     => 'Oldest',
     'discuss_sort_amend'      => 'Number of amendments',
     'discuss_sort_comment'    => 'Number of comments',
+    'discuss_sort_aria'       => 'Sort motions by',
 ];

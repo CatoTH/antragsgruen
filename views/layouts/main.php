@@ -101,10 +101,14 @@ if ($layout->provideJwt && $consultation) {
     $jwtConfig = \app\components\JwtCreator::getJwtConfigForCurrUser($consultation);
     echo '<meta name="user-jwt-config" content="' . Html::encode(json_encode($jwtConfig)) . '">' . "\n";
 }
-if (count($layout->connectLiveEvents) > 0 && $params->live && $consultation) {
-    $liveConfig = \app\components\LiveTools::getJsConfig($consultation, $layout->connectLiveEvents);
-    echo '<meta name="live-config" content="' . Html::encode(json_encode($liveConfig)) . '">' . "\n";
-    echo '<script src="' . Html::encode($params->live['stompJsUri']) . '"></script>';
+// The configuration is also rendered when no Live server is configured: the widgets then fall back
+// to polling the endpoints named in it. Only the websocket part of the config is missing in that case.
+if (count($layout->liveDataChannels) > 0 && $consultation) {
+    $liveConfig = \app\components\LiveTools::getJsConfig($consultation, array_values($layout->liveDataChannels));
+    echo '<meta name="live-data-config" content="' . Html::encode(json_encode($liveConfig)) . '">' . "\n";
+    if ($params->live) {
+        echo '<script src="' . Html::encode($params->live['stompJsUri']) . '"></script>';
+    }
 }
 echo \app\models\layoutHooks\Layout::favicons();
 
@@ -154,10 +158,6 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 </div></div>';
 
 echo \app\models\layoutHooks\Layout::endPage();
-
-if (count($layout->connectLiveEvents) && $params->live && $consultation) {
-    echo '<script src="' . StaticResourceTools::resourceUrl('js/antragsgruen-live-events.js') . '"></script>';
-}
 
 foreach ($layout->getJSFiles() as $jsFile) {
     echo '<script src="' . $jsFile . '" crossorigin="anonymous"></script>' . "\n";

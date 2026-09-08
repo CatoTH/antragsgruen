@@ -16,7 +16,7 @@
           <tr>
             <th v-t="['admin', 'siteacc_organs_orga']"></th>
             <th v-if="hasCustomGroups"><template v-t="['admin', 'siteacc_organs_autogroup']"></template>
-              <span class="glyphicon glyphicon-info-sign"
+              <span class="glyphicon glyphicon-info-sign" role="img"
                     v-t:aria-label="['admin', 'siteacc_organs_autogroup_tt']"
                     v-tooltip="['admin', 'siteacc_organs_autogroup_tt']"></span>
             </th>

@@ -1,7 +1,7 @@
 // @ts-check
 
 import { createApp, h, resolveComponent } from '/npm/vue.runtime.esm-browser.prod.js';
-import { getVotingCommonMixins } from "/js/vue/voting/VotingCommonMixins.js";
+import { getVotingCommonMixins, sortVotings } from "/js/vue/voting/VotingCommonMixins.js";
 import translateDirective from "/js/vue/Translate.vue.js";
 import votingAdmin from "/js/vue/voting/VotingAdmin.js";
 import votingSort from "/js/vue/voting/VotingAdminSort.js";
@@ -10,6 +10,8 @@ import policySelect from "/js/vue/PolicySelect.js";
 import selectize from "/js/vue/Selectize.js";
 import tooltipDirective from "/js/vue/Tooltip.vue.js";
 import vuedraggable from "/npm/vuedraggable.js";
+import { createVotingAdminActions } from "/js/vue/voting/VotingAdminActions.js";
+import { registerListener } from "/js/modules/shared/LiveData.js";
 
 export class VotingAdmin {
     /** @type {HTMLElement} */
@@ -37,11 +39,13 @@ export class VotingAdmin {
         const vueEl = this.element.querySelector(".votingAdmin");
         const voteDownloadUrl = this.element.getAttribute('data-url-vote-download');
         const addableMotions = JSON.parse(this.element.getAttribute('data-addable-motions'));
-        const pollUrl = this.element.getAttribute('data-url-poll');
         const initUserGroups = JSON.parse(this.element.getAttribute('data-user-groups'));
         const sortUrl = this.element.getAttribute('data-url-sort');
         const voteSettingsUrl = this.element.getAttribute('data-url-vote-settings');
         const voteCreateUrl = this.element.getAttribute('data-vote-create');
+
+        // Shared with the voting tab of the debate administration, which hosts the same widget
+        let actions = null;
 
         /** @type {import('vue').App} */
         const widget = createApp({
@@ -91,8 +95,7 @@ export class VotingAdmin {
                     userGroups: initUserGroups,
                     voteDownloadUrl,
                     addableMotions,
-                    csrf: document.querySelector('head meta[name=csrf-token]').getAttribute('content'),
-                    pollingId: null,
+                    liveDataHandle: null,
                     onReloadedCbs: []
                 };
             },
@@ -114,87 +117,45 @@ export class VotingAdmin {
                 }
             },
             methods: {
-                _performOperation: function (votingBlockId, additionalProps) {
-                    let postData = {
-                        _csrf: this.csrf,
-                    };
-                    if (additionalProps) {
-                        postData = Object.assign(postData, additionalProps);
-                    }
-                    const widget = this;
-                    const url = voteSettingsUrl.replace(/VOTINGBLOCKID/, votingBlockId);
-                    $.post(url, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
-                        }
-                        widget.votings = data;
-                    }).catch(function (err) {
-                        alert(err.responseText);
-                    });
-                },
                 setVotingFromJson(data) {
                     if (data === this.votingsJson) {
                         return;
                     }
-                    this.votings = JSON.parse(data);
+                    this.votings = sortVotings(JSON.parse(data));
                     this.votingsJson = data;
                 },
                 setVotingFromObject(data) {
-                    this.votings = data;
+                    // A live event describes one voting, so the order the administration gave them
+                    // is restored here rather than being taken from the order they arrived in
+                    this.votings = sortVotings(data);
                     this.votingsJson = null;
                 },
                 toggleSorting() {
                     this.isSorting = !this.isSorting;
                 },
                 setStatus(votingBlockId, newStatus) {
-                    this._performOperation(votingBlockId, {
-                        op: 'update-status',
-                        status: newStatus,
-                    });
+                    actions.setStatus(votingBlockId, newStatus);
                 },
                 saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames) {
-                    this._performOperation(votingBlockId, {
-                        op: 'save-settings',
-                        title,
-                        answerTemplate,
-                        majorityType,
-                        quorumType,
-                        hasGeneralAbstention: (hasGeneralAbstention ? 1 : 0),
-                        votePolicy,
-                        maxVotesByGroup,
-                        resultsPublic,
-                        votesPublic,
-                        votingTime,
-                        assignedMotion,
-                        votesNames,
-                    });
+                    actions.saveSettings(votingBlockId, title, answerTemplate, majorityType, quorumType, hasGeneralAbstention, votePolicy, maxVotesByGroup, resultsPublic, votesPublic, votingTime, assignedMotion, votesNames);
                 },
                 onSorted(sortedIds) {
-                    let postData = {
-                        _csrf: this.csrf,
-                        votingIds: sortedIds
-                    };
                     const widget = this;
-                    $.post(sortUrl, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
+
+                    return actions.sortVotings(sortedIds).then(votings => {
+                        if (votings !== null) {
+                            widget.isSorting = false;
                         }
-                        widget.votings = data;
-                        widget.isSorting = false;
-                    }).catch(function (err) {
-                        alert(err.responseText);
+                        return null;
                     });
                 },
                 deleteVoting(votingBlockId) {
-                    this._performOperation(votingBlockId, {
-                        op: 'delete-voting',
-                    });
+                    actions.deleteVoting(votingBlockId);
                 },
                 createVoting: function (type, answers, title, specificQuestion, assignedMotion, majorityType, votePolicy, userGroups, resultsPublic, votesPublic, votesNames) {
-                    let postData = {
-                        _csrf: this.csrf,
+                    const widget = this;
+
+                    return actions.createVoting({
                         type,
                         answers,
                         title,
@@ -206,15 +167,10 @@ export class VotingAdmin {
                         resultsPublic,
                         votesPublic,
                         votesNames
-                    };
-
-                    const widget = this;
-                    $.post(voteCreateUrl, postData, function (data) {
-                        if (data.success !== undefined && !data.success) {
-                            alert(data.message);
-                            return;
+                    }).then(data => {
+                        if (data === null) {
+                            return null;
                         }
-                        widget.votings = data['votings'];
                         widget.onReloadedCbs.forEach(cb => {
                             cb(widget.votings);
                         });
@@ -222,63 +178,58 @@ export class VotingAdmin {
                         window.setTimeout(() => {
                             $("#voting" + data['created_voting']).scrollintoview({top_offset: -100});
                         }, 200);
-                    }).catch(function (err) {
-                        alert(err.responseText);
+                        return null;
                     });
                 },
                 removeItem(votingBlockId, itemType, itemId) {
-                    this._performOperation(votingBlockId, {
-                        op: 'remove-item',
-                        itemType,
-                        itemId
-                    });
+                    actions.removeItem(votingBlockId, itemType, itemId);
                 },
                 addIMotion(votingBlockId, itemDefinition) {
-                    this._performOperation(votingBlockId, {
-                        op: 'add-imotion',
-                        itemDefinition
-                    });
+                    actions.addIMotion(votingBlockId, itemDefinition);
                 },
                 addQuestion(votingBlockId, question) {
-                    this._performOperation(votingBlockId, {
-                        op: 'add-question',
-                        question
-                    });
+                    actions.addQuestion(votingBlockId, question);
                 },
                 setVotersToUserGroup(votingBlockId, userIds, newUserGroup) {
-                    this._performOperation(votingBlockId, {
-                        op: 'set-voters-to-user-group',
-                        userIds,
-                        newUserGroup
-                    });
+                    actions.setVotersToUserGroup(votingBlockId, userIds, newUserGroup);
                 },
                 addReloadedCb: function (cb) {
                     this.onReloadedCbs.push(cb);
                 },
-                reloadData: function () {
-                    const widget = this;
-                    $.get(pollUrl, function (data) {
-                        widget.setVotingFromJson(data);
-                        widget.onReloadedCbs.forEach(cb => {
-                            cb(widget.votings);
-                        });
-                    }, 'text').catch(function (err) {
-                        console.error("Could not load voting data from backend", err);
-                    });
+                /** So that the widgets of other pages and tabs see what was just changed here */
+                refreshOthers: function () {
+                    if (this.liveDataHandle) {
+                        this.liveDataHandle.refreshNow();
+                    }
                 },
-                startPolling: function () {
-                    const widget = this;
-                    this.pollingId = window.setInterval(function () {
-                        widget.reloadData();
-                    }, 3000);
+                onLiveData: function (votings) {
+                    // Compared with what the widget already has, so that unsaved changes in a
+                    // settings form are not thrown away by an update that changed nothing
+                    this.setVotingFromJson(JSON.stringify(votings));
+                    this.onReloadedCbs.forEach(cb => {
+                        cb(this.votings);
+                    });
                 }
             },
             beforeUnmount() {
-                window.clearInterval(this.pollingId)
+                if (this.liveDataHandle) {
+                    this.liveDataHandle.unregister();
+                }
             },
             created() {
                 this.setVotingFromJson(votingInitJson);
-                this.startPolling()
+
+                actions = createVotingAdminActions(
+                    {voteSettings: voteSettingsUrl, voteCreate: voteCreateUrl, sort: sortUrl},
+                    votings => {
+                        this.setVotingFromObject(votings);
+                        this.refreshOthers();
+                    }
+                );
+
+                this.liveDataHandle = registerListener('admin', 'voting', {
+                    onData: votings => this.onLiveData(votings),
+                });
             }
         });
 

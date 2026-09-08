@@ -71,6 +71,7 @@ return [
     'privilege_speech'        => 'Manage speech queues',
     'privilege_voting'        => 'Manage votings',
     'privilege_agenda'        => 'Manage agenda',
+    'privilege_debate'        => 'Moderate debates',
     'privilege_screening'     => 'Review & Publish',
     'privilege_motionsee'     => 'See all (including unpublished)',
     'privilege_motionstruct'  => 'Manage metadata',
@@ -331,4 +332,6 @@ return [
     'months_10' => 'October',
     'months_11' => 'November',
     'months_12' => 'December',
+
+    'date_spoken' => '%MONTHNAME% %DAY%, %YEAR%',
 ];

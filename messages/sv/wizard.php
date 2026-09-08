@@ -18,6 +18,7 @@ return [
     'functionality_applications' => 'Kandidaturer',
     'functionality_agenda' => 'En dagordning',
     'functionality_speech' => 'Talarlistor',
+    'functionality_debate' => 'Realtidsdebatt på plats',
     'functionality_statute_amendments' => 'Stadge-<br>ändringar',
     'functionality_votings' => 'Röstningar',
     'functionality_documents_desc' => '(Dokument-)',

@@ -123,4 +123,5 @@ return [
     'discuss_sort_oldest' => 'Äldsta',
     'discuss_sort_amend' => 'Antal ändringsförslag',
     'discuss_sort_comment' => 'Antal kommentarer',
+    'discuss_sort_aria' => 'Sortera motioner efter',
 ];

@@ -1,16 +1,23 @@
 <?php
 
-namespace app\controllers;
+namespace app\controllers\rest;
 
-use app\components\CookieUser;
-use app\components\LiveTools;
+use app\components\{CookieUser, LiveTools, Tools};
 use app\models\api\{SpeechUser, SpeechQueue as SpeechQueueApi};
+use app\models\api\speech\{SpeechCreateItemRequest,
+    SpeechItemOperationRequest,
+    SpeechQueueAdmin,
+    SpeechQueueSettingsRequest,
+    SpeechQueueSettingsResponse,
+    SpeechQueueUser,
+    SpeechRegisterRequest};
 use app\models\http\{RestApiExceptionResponse, RestApiResponse};
 use app\models\settings\Privileges;
 use app\views\speech\LayoutHelper;
 use app\models\db\{SpeechQueue, SpeechQueueItem, User};
+use Symfony\Component\Serializer\Exception\ExceptionInterface as SerializerException;
 
-class SpeechController extends Base
+class SpeechController extends RestBase
 {
     public const VIEW_ID_GET_QUEUE = 'get-queue';
 
@@ -44,22 +51,29 @@ class SpeechController extends Base
             if (!$queue) {
                 return $this->returnRestResponseFromException(new \Exception('Queue not found'));
             }
-            $response[] = SpeechQueueApi::fromEntity($queue)->toUserApi($user, $cookieUser);
+            $response[] = SpeechQueueUser::fromEntity($queue, $user, $cookieUser);
         }
 
-        return new RestApiResponse(200, $response);
+        return new RestApiResponse(200, null, Tools::getSerializer()->serialize($response, 'json'));
     }
 
     public function actionRegister(string $queueId): RestApiResponse
     {
         $this->handleRestHeaders(['POST'], true);
 
+        try {
+            /** @var SpeechRegisterRequest $request */
+            $request = Tools::getSerializer()->deserialize($this->getPostBody(), SpeechRegisterRequest::class, 'json');
+        } catch (SerializerException $e) {
+            return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
+        }
+
         $user = User::getCurrentUser();
         if (!$user) {
             if ($this->consultation->getSettings()->speechRequiresLogin) {
                 return new RestApiExceptionResponse(401, 'Not logged in');
-            } elseif ($this->getHttpRequest()->post('username')) {
-                $cookieUser = CookieUser::getFromCookieOrCreate($this->getHttpRequest()->post('username'));
+            } elseif ($request->username) {
+                $cookieUser = CookieUser::getFromCookieOrCreate($request->username);
             } else {
                 return new RestApiExceptionResponse(400, 'No name provided');
             }
@@ -73,7 +87,7 @@ class SpeechController extends Base
         }
         if (count($queue->subqueues) > 0) {
             // Providing a subqueue is necessary if there are some; otherwise, it goes into the "default" subqueue
-            $subqueue = $queue->getSubqueueById(intval($this->getHttpRequest()->post('subqueue')));
+            $subqueue = ($request->subqueue !== null ? $queue->getSubqueueById($request->subqueue) : null);
             if (!$subqueue) {
                 return new RestApiExceptionResponse(400, 'No subqueue provided');
             }
@@ -83,13 +97,13 @@ class SpeechController extends Base
 
         if ($user && !$queue->getSettings()->allowCustomNames) {
             $name = SpeechUser::getFormattedUserName($user);
-        } elseif ($this->getHttpRequest()->post('username')) {
-            $name = trim($this->getHttpRequest()->post('username'));
+        } elseif ($request->username) {
+            $name = trim($request->username);
         } else {
             $name = SpeechUser::getFormattedUserName($user);
         }
 
-        $pointOfOrder = ($this->getHttpRequest()->post('pointOfOrder') > 0);
+        $pointOfOrder = ($request->pointOfOrder === true);
         if ($pointOfOrder) {
             if (!$queue->getSettings()->isOpenPoo) {
                 return new RestApiExceptionResponse(403, \Yii::t('speech', 'err_permission_apply'));
@@ -102,10 +116,9 @@ class SpeechController extends Base
 
         $queue->createItemOnAppliedList($name, $subqueue, $user, $cookieUser, $pointOfOrder);
 
-        $apiDto = SpeechQueueApi::fromEntity($queue);
-        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+        LiveTools::sendSpeechQueue($this->consultation, SpeechQueueApi::fromEntity($queue));
 
-        return new RestApiResponse(200, $apiDto->toUserApi($user, $cookieUser));
+        return $this->createResponse(200, SpeechQueueUser::fromEntity($queue, $user, $cookieUser));
     }
 
     public function actionUnregister(string $queueId): RestApiResponse
@@ -132,10 +145,9 @@ class SpeechController extends Base
         }
         $queue->refresh();
 
-        $apiDto = SpeechQueueApi::fromEntity($queue);
-        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+        LiveTools::sendSpeechQueue($this->consultation, SpeechQueueApi::fromEntity($queue));
 
-        return new RestApiResponse(200, $apiDto->toUserApi($user, $cookieUser));
+        return $this->createResponse(200, SpeechQueueUser::fromEntity($queue, $user, $cookieUser));
     }
 
     // *** Admin-facing methods ***
@@ -155,16 +167,21 @@ class SpeechController extends Base
         return $queue;
     }
 
-    public function actionGetQueueAdmin(string $queueId): RestApiResponse
+    public function actionGetQueueAdmin(string $queueIds): RestApiResponse
     {
         $this->handleRestHeaders(['GET'], true);
+
+        $response = [];
         try {
-            $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
+            foreach (explode(',', $queueIds) as $queueId) {
+                $queue = $this->getQueueAndCheckMethodAndPermission($queueId);
+                $response[] = SpeechQueueAdmin::fromEntity($queue);
+            }
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
         }
 
-        return new RestApiResponse(200, SpeechQueueApi::fromEntity($queue)->getAdminApiObject());
+        return new RestApiResponse(200, null, Tools::getSerializer()->serialize($response, 'json'));
     }
 
     public function actionPostQueueSettings(string $queueId): RestApiResponse
@@ -176,20 +193,23 @@ class SpeechController extends Base
             return $this->returnRestResponseFromException($e);
         }
 
-        $settings = $queue->getSettings();
-        $settings->isOpen = ($this->getHttpRequest()->post('is_open') > 0);
-        $settings->isOpenPoo = ($this->getHttpRequest()->post('is_open_poo') > 0);
-        $settings->allowCustomNames = ($this->getHttpRequest()->post('allow_custom_names') > 0);
-        $settings->preferNonspeaker = (intval($this->getHttpRequest()->post('prefer_nonspeaker')) > 0);
-        $settings->showNames = (intval($this->getHttpRequest()->post('show_names')) > 0);
-        if ($this->getHttpRequest()->post('speaking_time') > 0) {
-            $settings->speakingTime = intval($this->getHttpRequest()->post('speaking_time'));
-        } else {
-            $settings->speakingTime = null;
+        try {
+            /** @var SpeechQueueSettingsRequest $request */
+            $request = Tools::getSerializer()->deserialize($this->getPostBody(), SpeechQueueSettingsRequest::class, 'json');
+        } catch (SerializerException $e) {
+            return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
         }
+
+        $settings = $queue->getSettings();
+        $settings->isOpen = $request->isOpen;
+        $settings->isOpenPoo = $request->isOpenPoo;
+        $settings->allowCustomNames = $request->allowCustomNames;
+        $settings->preferNonspeaker = $request->preferNonspeaker;
+        $settings->showNames = $request->showNames;
+        $settings->speakingTime = (($request->speakingTime !== null && $request->speakingTime > 0) ? $request->speakingTime : null);
         $queue->setSettings($settings);
 
-        $queue->isActive = ($this->getHttpRequest()->post('is_active') > 0 ? 1 : 0);
+        $queue->isActive = ($request->isActive ? 1 : 0);
         $queue->save();
 
         if ($queue->isActive) {
@@ -209,14 +229,13 @@ class SpeechController extends Base
             }
         }
 
-        $apiDto = SpeechQueueApi::fromEntity($queue);
-        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+        LiveTools::sendSpeechQueue($this->consultation, SpeechQueueApi::fromEntity($queue));
 
-        $jsonResponse = [
-            'queue'   => $apiDto->getAdminApiObject(),
-            'sidebar' => LayoutHelper::getSidebars($this->consultation, $queue),
-        ];
-        return new RestApiResponse(200, $jsonResponse);
+        $response = new SpeechQueueSettingsResponse(
+            queue: SpeechQueueAdmin::fromEntity($queue),
+            sidebar: LayoutHelper::getSidebars($this->consultation, $queue),
+        );
+        return $this->createResponse(200, $response);
     }
 
     public function actionAdminQueueReset(string $queueId): RestApiResponse
@@ -234,10 +253,9 @@ class SpeechController extends Base
 
         $queue->refresh();
 
-        $apiDto = SpeechQueueApi::fromEntity($queue);
-        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+        LiveTools::sendSpeechQueue($this->consultation, SpeechQueueApi::fromEntity($queue));
 
-        return new RestApiResponse(200, $apiDto->getAdminApiObject());
+        return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
     }
 
     public function actionAdminQueueRandomize(string $queueId): RestApiResponse
@@ -252,10 +270,9 @@ class SpeechController extends Base
         $queue->randomizeWaitingList();
         $queue->refresh();
 
-        $apiDto = SpeechQueueApi::fromEntity($queue);
-        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+        LiveTools::sendSpeechQueue($this->consultation, SpeechQueueApi::fromEntity($queue));
 
-        return new RestApiResponse(200, $apiDto->getAdminApiObject());
+        return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
     }
 
     /**
@@ -332,9 +349,15 @@ class SpeechController extends Base
                 $item->save();
                 break;
             case "move":
-                $newPosition = $this->getHttpRequest()->post('position');
-                if ($this->getHttpRequest()->post('newSubqueueId') > 0) {
-                    $subqueue         = $queue->getSubqueueById(intval($this->getHttpRequest()->post('newSubqueueId')));
+                try {
+                    /** @var SpeechItemOperationRequest $request */
+                    $request = Tools::getSerializer()->deserialize($this->getPostBody() ?: '{}', SpeechItemOperationRequest::class, 'json');
+                } catch (SerializerException $e) {
+                    return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
+                }
+                $newPosition = (int)($request->position ?? 0);
+                if ($request->newSubqueueId !== null && $request->newSubqueueId > 0) {
+                    $subqueue         = $queue->getSubqueueById($request->newSubqueueId);
                     $item->subqueueId = $subqueue->id;
                 } else {
                     $subqueue = null;
@@ -352,10 +375,9 @@ class SpeechController extends Base
 
         $queue->refresh();
 
-        $apiDto = SpeechQueueApi::fromEntity($queue);
-        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+        LiveTools::sendSpeechQueue($this->consultation, SpeechQueueApi::fromEntity($queue));
 
-        return new RestApiResponse(200, $apiDto->getAdminApiObject());
+        return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
     }
 
     public function actionAdminCreateItem(string $queueId): RestApiResponse
@@ -367,8 +389,15 @@ class SpeechController extends Base
             return $this->returnRestResponseFromException($e);
         }
 
-        if ($this->getHttpRequest()->post('subqueue')) {
-            $subqueue = $queue->getSubqueueById(intval($this->getHttpRequest()->post('subqueue')));
+        try {
+            /** @var SpeechCreateItemRequest $request */
+            $request = Tools::getSerializer()->deserialize($this->getPostBody(), SpeechCreateItemRequest::class, 'json');
+        } catch (SerializerException $e) {
+            return new RestApiExceptionResponse(400, 'Invalid request body: ' . $e->getMessage());
+        }
+
+        if ($request->subqueue !== null && $request->subqueue > 0) {
+            $subqueue = $queue->getSubqueueById($request->subqueue);
         } else {
             $subqueue = null;
         }
@@ -376,16 +405,15 @@ class SpeechController extends Base
             return new RestApiExceptionResponse(400, 'No subqueue given');
         }
 
-        $name = trim($this->getHttpRequest()->post('name'));
+        $name = trim($request->name);
         if (!$name) {
             return new RestApiExceptionResponse(400, 'No name entered');
         }
 
         $queue->createItemOnAppliedList($name, $subqueue, null, null, false);
 
-        $apiDto = SpeechQueueApi::fromEntity($queue);
-        LiveTools::sendSpeechQueue($this->consultation, $apiDto);
+        LiveTools::sendSpeechQueue($this->consultation, SpeechQueueApi::fromEntity($queue));
 
-        return new RestApiResponse(200, $apiDto->getAdminApiObject());
+        return $this->createResponse(200, SpeechQueueAdmin::fromEntity($queue));
     }
 }

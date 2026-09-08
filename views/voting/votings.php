@@ -1,6 +1,6 @@
 <?php
 
-use app\components\UrlHelper;
+use app\components\{LiveDataChannels, UrlHelper};
 use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\layoutHooks\Layout;
@@ -15,21 +15,23 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
+// The voting endpoints authenticate by JWT, like the rest of the REST API
+$layout->provideJwt = true;
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'));
 $this->title = Yii::t('voting', 'page_title');
 
 $layout->addJsTranslation('voting');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_VOTING);
 
 $sidebarMode = 'open';
 include(__DIR__ . DIRECTORY_SEPARATOR . '_sidebar.php');
 
 $apiData = [];
 foreach (Factory::getOpenVotingBlocks($consultation, true, null) as $votingBlockToRender) {
-    $apiData[] = $votingBlockToRender->getUserVotingApiObject(User::getCurrentUser());
+    $apiData[] = $votingBlockToRender->getUserApiObject(User::getCurrentUser());
 }
 
-$pollUrl   = UrlHelper::createUrl(['/voting/get-open-voting-blocks', 'assignedToMotionId' => '', 'showAllOpen' => 1]);
-$voteUrl   = UrlHelper::createUrl(['/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '']);
+$voteUrl   = UrlHelper::createUrl(['/rest/voting/post-vote', 'votingBlockId' => 'VOTINGBLOCKID', 'assignedToMotionId' => '']);
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
 ?>
@@ -43,10 +45,10 @@ $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
     </div>
 </div>
 
-<section data-url-poll="<?= Html::encode($pollUrl) ?>"
+<section data-channel="<?= Html::encode(LiveDataChannels::CHANNEL_VOTING) ?>"
          data-url-vote="<?= Html::encode($voteUrl) ?>"
          class="currentVotingWidget votingCommon"
-         data-voting="<?= Html::encode(json_encode($apiData)) ?>"
+         data-voting="<?= Html::encode(\app\components\Tools::getSerializer()->serialize($apiData, 'json')) ?>"
 >
     <div class="currentVoting"></div>
 </section>

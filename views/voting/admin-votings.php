@@ -2,8 +2,8 @@
 
 use app\models\layoutHooks\Layout;
 use app\models\policies\IPolicy;
-use app\components\{HTMLTools, IMotionStatusFilter, UrlHelper};
-use app\models\db\{Amendment, Motion};
+use app\components\{HTMLTools, LiveDataChannels, UrlHelper, VotingAdminWidgetData};
+use app\models\db\User;
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use app\models\votings\AnswerTemplates;
@@ -17,6 +17,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $layout = $controller->layoutParams;
+// The voting endpoints authenticate by JWT, like the rest of the REST API
+$layout->provideJwt = true;
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_ADMIN, LiveDataChannels::CHANNEL_VOTING);
 $layout->addBreadcrumb(Yii::t('voting', 'votings_bc'), UrlHelper::createUrl('/consultation/votings'));
 $layout->addBreadcrumb(Yii::t('voting', 'admin_bc'));
 $this->title = Yii::t('voting', 'admin_title');
@@ -31,54 +34,18 @@ $layout->loadSortable();
 $apiData = [];
 foreach (Factory::getAllVotingBlocks($consultation) as $votingBlock) {
     /** @noinspection PhpUnhandledExceptionInspection */
-    $apiData[] = $votingBlock->getAdminApiObject();
+    $apiData[] = $votingBlock->getAdminApiObject(User::getCurrentUser());
 }
 
-$pollUrl = UrlHelper::createUrl(['/voting/get-admin-voting-blocks']);
-$sortUrl = UrlHelper::createUrl(['/voting/post-vote-order']);
-$voteCreateUrl = UrlHelper::createUrl(['/voting/create-voting-block']);
-$voteSettingsUrl = UrlHelper::createUrl(['/voting/post-vote-settings', 'votingBlockId' => 'VOTINGBLOCKID']);
-$voteDownloadUrl = UrlHelper::createUrl(['/voting/download-voting-results', 'votingBlockId' => 'VOTINGBLOCKID', 'format' => 'FORMAT']);
+$sortUrl = UrlHelper::createUrl(['/rest/voting/post-vote-order']);
+$voteCreateUrl = UrlHelper::createUrl(['/rest/voting/create-voting-block']);
+$voteSettingsUrl = VotingAdminWidgetData::getVoteSettingsUrl();
+$voteDownloadUrl = VotingAdminWidgetData::getVoteDownloadUrl();
 
-$addableMotionsData = [];
-$filter = IMotionStatusFilter::onlyUserVisible($consultation, false)
-                             ->noAmendmentsIfMotionIsMoved();
-foreach ($filter->getFilteredConsultationIMotionsSorted() as $IMotion) {
-    if (is_a($IMotion, Amendment::class)) {
-        $addableMotionsData[] = [
-            'type' => 'amendment',
-            'id' => $IMotion->id,
-            'title' => $IMotion->getTitleWithPrefix(),
-        ];
-    } else {
-        /** @var Motion $IMotion */
-        $amendments = [];
-        foreach ($IMotion->getFilteredAmendments($filter) as $amendment) {
-            $amendments[] = [
-                'type' => 'amendment',
-                'id' => $amendment->id,
-                'title' => $amendment->titlePrefix,
-            ];
-        }
-        $addableMotionsData[] = [
-            'type' => 'motion',
-            'id' => $IMotion->id,
-            'title' => $IMotion->getTitleWithPrefix(),
-            'amendments' => $amendments,
-        ];
-    }
-}
-
-$userGroups = array_map(function (\app\models\db\ConsultationUserGroup $group): array {
-    return $group->getUserAdminApiObject();
-}, $consultation->getAllAvailableUserGroups());
-
-
-$CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
-$CONSTANTS = array_merge($CONSTANTS, [
-    "motionEditUrl" => UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '00000000']),
-    "amendmentEditUrl" => UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '00000000']),
-]);
+// Shared with the voting tab of the debate administration, which hosts the same widget
+$addableMotionsData = VotingAdminWidgetData::getAddableMotions($consultation);
+$userGroups = VotingAdminWidgetData::getUserGroups($consultation);
+$CONSTANTS = VotingAdminWidgetData::getConstants();
 
 ?>
 <h1><?= Yii::t('voting', 'admin_title') ?></h1>
@@ -89,11 +56,10 @@ $CONSTANTS = array_merge($CONSTANTS, [
      data-url-vote-settings="<?= Html::encode($voteSettingsUrl) ?>"
      data-url-vote-download="<?= Html::encode($voteDownloadUrl) ?>"
      data-vote-create="<?= Html::encode($voteCreateUrl) ?>"
-     data-url-poll="<?= Html::encode($pollUrl) ?>"
      data-url-sort="<?= Html::encode($sortUrl) ?>"
      data-addable-motions="<?= Html::encode(json_encode($addableMotionsData)) ?>"
      data-user-groups="<?= Html::encode(json_encode($userGroups)) ?>"
-     data-voting="<?= Html::encode(json_encode($apiData)) ?>">
+     data-voting="<?= Html::encode(\app\components\Tools::getSerializer()->serialize($apiData, 'json')) ?>">
 
     <?php
     $alternativeHeader = Layout::getVotingAlternativeAdminHeader($consultation);

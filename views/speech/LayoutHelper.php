@@ -4,7 +4,7 @@ namespace app\views\speech;
 
 use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
-use app\models\db\{Consultation, IMotion, Motion, SpeechQueue};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, SpeechQueue};
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -39,15 +39,29 @@ class LayoutHelper
         $html .= '<li class="nav-header" id="sidebarOtherQueues">' . \Yii::t('speech', 'sidebar_title') . '</li>';
 
         foreach ($consultation->speechQueues as $speechQueue) {
-            if ($speechQueue->motionId === null) {
+            if ($speechQueue->motionId === null && $speechQueue->amendmentId === null) {
                 static::addQueueToSidebar($speechQueue, null, $html, $miniHtml, $currentQueue);
             }
         }
         $filter = IMotionStatusFilter::onlyUserVisible($consultation, true);
-        foreach ($filter->getFilteredConsultationIMotionsSorted() as $motion) {
+        foreach ($filter->getFilteredConsultationIMotionsSorted() as $imotion) {
             foreach ($consultation->speechQueues as $speechQueue) {
-                if ($speechQueue->motionId === $motion->id) {
-                    static::addQueueToSidebar($speechQueue, $motion, $html, $miniHtml, $currentQueue);
+                if ($imotion instanceof Motion && $speechQueue->motionId === $imotion->id) {
+                    static::addQueueToSidebar($speechQueue, $imotion, $html, $miniHtml, $currentQueue);
+                }
+                if ($imotion instanceof Amendment && $speechQueue->amendmentId === $imotion->id) {
+                    static::addQueueToSidebar($speechQueue, $imotion, $html, $miniHtml, $currentQueue);
+                }
+            }
+            if (!($imotion instanceof Motion)) {
+                continue;
+            }
+            // The speaking list of a debated amendment is listed below the motion it amends
+            foreach ($imotion->getVisibleAmendmentsSorted() as $amendment) {
+                foreach ($consultation->speechQueues as $speechQueue) {
+                    if ($speechQueue->amendmentId === $amendment->id) {
+                        static::addQueueToSidebar($speechQueue, $amendment, $html, $miniHtml, $currentQueue);
+                    }
                 }
             }
         }

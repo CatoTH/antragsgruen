@@ -55,25 +55,4 @@ class SpeechSubqueueItem
         return $this->position < 0;
     }
 
-    public function toUserApi(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'is_point_of_order' => $this->isPointOfOrder,
-            'applied_at' => $this->dateApplied->format('c'),
-        ];
-    }
-
-    public function toAdminApi(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'user_id' => $this->userId,
-            'user_token' => $this->userToken,
-            'is_point_of_order' => $this->isPointOfOrder,
-            'applied_at' => $this->dateApplied->format('c'),
-        ];
-    }
 }

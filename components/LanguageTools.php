@@ -112,26 +112,44 @@ class LanguageTools
         return $language;
     }
 
+    /**
+     * Three sources, in this order:
+     *
+     * 1. the language the user picked, kept in their session - browsing requests only, see below
+     * 2. what the request asks for in its Accept-Language header
+     * 3. the consultation's primary language
+     *
+     * This is a pure lookup: nothing is written back. The inference in step 2 is deterministic, so
+     * seeding the session with its result (as this used to do) would only produce the same answer
+     * again next request - while making a getter that half the codebase calls write to the session,
+     * which the API is not allowed to do at all, and pinning a language that a change to the site's
+     * supported languages should have re-evaluated.
+     *
+     * Step 1 is skipped for the API, which never touches the session. Its clients state the language
+     * they want in Accept-Language instead: the frontend sends the language its page was rendered in
+     * (see web/js/modules/shared/ApiClient.js), so a user's pick is honoured there just the same,
+     * per browser tab rather than per user - the very distinction docs/technical/live-data.md draws
+     * for live events, which are addressed by language for the same reason. Other API clients get
+     * their own Accept-Language honoured, which is the best answer available for them.
+     */
     private static function resolveCurrentLanguage(): string
     {
         $supportedLanguages = self::getSupportedLanguages();
-        if (count($supportedLanguages) < 2 || !self::hasSession()) {
+        if (count($supportedLanguages) < 2 || !self::isWebRequest()) {
             return self::getPrimaryLanguage();
         }
 
-        $session      = RequestContext::getSession();
-        $chosenByUser = $session->get(self::SESSION_KEY);
-        if (is_string($chosenByUser) && in_array($chosenByUser, $supportedLanguages, true)) {
-            return $chosenByUser;
+        if (!RequestContext::isRestApiRequest()) {
+            $chosenByUser = RequestContext::getSession()->get(self::SESSION_KEY);
+            if (is_string($chosenByUser) && in_array($chosenByUser, $supportedLanguages, true)) {
+                return $chosenByUser;
+            }
         }
 
-        // No language chosen yet: infer it from the browser and remember it for the rest of the session
         $acceptableLanguages = RequestContext::getWebRequest()->getAcceptableLanguages();
-        $language            = self::matchBrowserLanguage($acceptableLanguages, $supportedLanguages)
-                               ?? self::getPrimaryLanguage();
-        $session->set(self::SESSION_KEY, $language);
 
-        return $language;
+        return self::matchBrowserLanguage($acceptableLanguages, $supportedLanguages)
+               ?? self::getPrimaryLanguage();
     }
 
     /**
@@ -188,16 +206,15 @@ class LanguageTools
     }
 
     /**
-     * Rendered output that varies by reader language (view/PDF caches, ...) may have a cached copy
-     * under any of these languages, all of which need flushing together. On a single-language site
-     * there is only ever one variant, in which case this returns the consultation's primary
-     * language - not the ambient getCurrentLanguage(), since a flush can be triggered by anyone
-     * (an admin action, a console command, a background job) editing content that belongs to a
-     * consultation/site other than whichever one the current request happens to be about.
+     * Every language content of this consultation can be read in: the site's supported languages, or
+     * just the consultation's primary language on a single-language site. Deliberately not the
+     * ambient getCurrentLanguage(), as this is used by code that runs on behalf of all readers at
+     * once (live events, cache flushing) and can be triggered by anyone - an admin action, a console
+     * command, a background job - for a consultation other than the one the current request is about.
      *
      * @return string[]
      */
-    public static function getLanguagesToFlush(?Consultation $consultation): array
+    public static function getContentLanguages(?Consultation $consultation): array
     {
         $supported = self::getSupportedLanguages($consultation?->site);
 
@@ -205,9 +222,40 @@ class LanguageTools
     }
 
     /**
-     * Console commands and unit tests have no session to read the language from.
+     * Runs the given function as if the reader were browsing in the given language, restoring the
+     * ambient language afterwards. Needed wherever output is produced for someone other than the
+     * current user - most notably the live events, which are rendered once per language and pushed
+     * to all readers of a consultation, no matter which language the moderator triggering them
+     * happens to be using.
+     *
+     * The user's session is deliberately not touched (unlike setCurrentLanguage()): this only
+     * changes the language for the duration of the call.
+     *
+     * Hint: the consultation's wording variant ("de-parteitag") does not need to be resolved here.
+     * MessageSource reads it off the current consultation itself and applies it whenever the reader
+     * language matches the consultation's primary language.
      */
-    private static function hasSession(): bool
+    public static function renderInLanguage(?Consultation $consultation, string $language, callable $callback): mixed
+    {
+        $prevMemoized = self::$currentLanguage;
+        $prevYii = \Yii::$app->language;
+
+        self::$currentLanguage = $language;
+        \Yii::$app->language = $language;
+
+        try {
+            return $callback();
+        } finally {
+            self::$currentLanguage = $prevMemoized;
+            \Yii::$app->language = $prevYii;
+        }
+    }
+
+    /**
+     * Console commands and unit tests have neither a session nor an Accept-Language header to read
+     * the language from.
+     */
+    private static function isWebRequest(): bool
     {
         return \Yii::$app instanceof \yii\web\Application;
     }

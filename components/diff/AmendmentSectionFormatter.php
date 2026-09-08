@@ -14,6 +14,8 @@ class AmendmentSectionFormatter
     private array $paragraphsOriginal;
     /** @var SectionedParagraph[] */
     private array $paragraphsNew;
+    /** @var SectionedParagraph[]|null */
+    private ?array $paragraphsParent = null;
 
     private int $firstLine = 0;
     /** @phpstan-ignore-next-line */
@@ -27,6 +29,15 @@ class AmendmentSectionFormatter
     public function setTextNew(string $text): void
     {
         $this->paragraphsNew = HTMLTools::sectionSimpleHTML($text);
+    }
+
+    /**
+     * The text of the amendment that the amendment set by setTextNew() amends.
+     * Only relevant for the two-layered diff, see getTwoLayerDiff*().
+     */
+    public function setTextParent(string $text): void
+    {
+        $this->paragraphsParent = HTMLTools::sectionSimpleHTML($text);
     }
 
     public function setFirstLineNo(int $lineNo): void
@@ -134,26 +145,46 @@ class AmendmentSectionFormatter
         return $blocksOut;
     }
 
+    /**
+     * @param SectionedParagraph[] $paragraphs
+     * @return SectionedParagraph[]
+     */
+    private function prepareOriginalParagraphs(array $paragraphs, int $lineLength): array
+    {
+        $prepared = [];
+        foreach ($paragraphs as $section) {
+            $section = clone $section;
+            $section->html = static::addLineNumberPlaceholders($section->html, $lineLength);
+            $section->html = HTMLTools::explicitlySetLiValues($section->html);
+            $prepared[] = $section;
+        }
+        return $prepared;
+    }
+
+    /**
+     * @param SectionedParagraph[] $paragraphs
+     * @return SectionedParagraph[]
+     */
+    private function prepareAmendedParagraphs(array $paragraphs, int $lineLength): array
+    {
+        $prepared = [];
+        foreach ($paragraphs as $newParagraph) {
+            // Besides adding line numbers, addLineNumberPlaceholders also breaks overly long words into parts
+            // and addes a dash at the end of the first line. We need to do this on the amendments as well,
+            // even if we don't need the line number markers
+            $newParagraph = clone $newParagraph;
+            $newParagraph->html = static::addLineNumberPlaceholders($newParagraph->html, $lineLength);
+            $newParagraph->html = str_replace('###LINENUMBER###', '', $newParagraph->html);
+            $prepared[] = $newParagraph;
+        }
+        return $prepared;
+    }
+
     public function getDiffSectionsWithNumbers(int $lineLength, int $diffFormatting): array
     {
         try {
-            $originals     = [];
-            $newParagraphs = [];
-            foreach ($this->paragraphsOriginal as $section) {
-                $section = clone $section;
-                $section->html = static::addLineNumberPlaceholders($section->html, $lineLength);
-                $section->html = HTMLTools::explicitlySetLiValues($section->html);
-                $originals[] = $section;
-            }
-            foreach ($this->paragraphsNew as $newParagraph) {
-                // Besides adding line numbers, addLineNumberPlaceholders also breaks overly long words into parts
-                // and addes a dash at the end of the first line. We need to do this on the amendments as well,
-                // even if we don't need the line number markers
-                $newParagraph = clone $newParagraph;
-                $newParagraph->html = static::addLineNumberPlaceholders($newParagraph->html, $lineLength);
-                $newParagraph->html = str_replace('###LINENUMBER###', '', $newParagraph->html);
-                $newParagraphs[] = $newParagraph;
-            }
+            $originals     = $this->prepareOriginalParagraphs($this->paragraphsOriginal, $lineLength);
+            $newParagraphs = $this->prepareAmendedParagraphs($this->paragraphsNew, $lineLength);
 
             $diff         = new Diff();
             return $diff->compareHtmlParagraphs($originals, $newParagraphs, $diffFormatting);
@@ -161,6 +192,46 @@ class AmendmentSectionFormatter
             var_dump($e);
             die();
         }
+    }
+
+    /**
+     * The diff of this amendment against the original text, with the changes of the amendment it amends
+     * (set via setTextParent()) shown as an additional, outer layer. See TwoLayerDiff.
+     *
+     * Returns null if no consistent two-layered diff could be built; the caller is then expected to fall back
+     * to showing the two amendments' diffs separately.
+     *
+     * @return string[]|null
+     */
+    public function getTwoLayerDiffSectionsWithNumbers(int $lineLength, int $diffFormatting): ?array
+    {
+        if ($this->paragraphsParent === null) {
+            return null;
+        }
+
+        $toHtml = fn (SectionedParagraph $para) => $para->html;
+
+        return (new TwoLayerDiff())->computeAndRenderParagraphs(
+            array_map($toHtml, $this->prepareOriginalParagraphs($this->paragraphsOriginal, $lineLength)),
+            array_map($toHtml, $this->prepareAmendedParagraphs($this->paragraphsParent, $lineLength)),
+            array_map($toHtml, $this->prepareAmendedParagraphs($this->paragraphsNew, $lineLength)),
+            $diffFormatting
+        );
+    }
+
+    /**
+     * @return AffectedLineBlock[]|null
+     */
+    public function getTwoLayerDiffGroupsWithNumbers(int $lineLength, int $diffFormatting, ?int $context = null): ?array
+    {
+        $diffSections = $this->getTwoLayerDiffSectionsWithNumbers($lineLength, $diffFormatting);
+        if ($diffSections === null) {
+            return null;
+        }
+
+        $diffSections = static::groupConsecutiveChangeBlocks($diffSections);
+
+        return AffectedLinesFilter::splitToAffectedLines(implode("\n", $diffSections), $this->firstLine, $context ?? 1);
     }
 
     /**

@@ -5,7 +5,9 @@ declare(strict_types=1);
 /**
  * Generates PHP DTO classes from an OpenAPI 3 spec's component schemas,
  * using cebe/php-openapi to parse the spec.
- * Supports a custom `x-php-namespace` attribute in OpenAPI, to support sub-namespaces.
+ * Supports two custom OpenAPI attributes: `x-php-namespace` (to support sub-namespaces) and
+ * `x-php-type` (to use a different PHP type than the OpenAPI type implies, for values that are
+ * only rendered into their final representation at serialization time).
  *
  * Re-running this script against an *existing* output file will only
  * regenerate the property declarations (and, for enums, the case list).
@@ -237,13 +239,39 @@ function wrapConstructorClass(string $className, string $namespace, array $param
  */
 function getXPhpNamespace(Schema $schema): ?string
 {
+    return getXPhpExtension($schema, 'php-namespace');
+}
+
+/**
+ * Reads the `x-php-type` vendor extension off a schema, if present: the PHP type to use for a
+ * property instead of the one its OpenAPI type would imply, e.g.
+ *
+ *     title:
+ *       type: string
+ *       x-php-type: '\app\models\api\LocalizedString'
+ *
+ * The OpenAPI type stays authoritative for what API clients receive; the PHP type is what the
+ * payload object holds until it is serialized. Used for values that are only turned into their
+ * final representation at serialization time.
+ */
+function getXPhpType(Schema $schema): ?string
+{
+    return getXPhpExtension($schema, 'php-type');
+}
+
+/**
+ * Reads a vendor extension (any "x-*" key) off a schema. Depending on the version of
+ * cebe/php-openapi, the key may or may not retain the "x-" prefix, so both forms are checked.
+ */
+function getXPhpExtension(Schema $schema, string $name): ?string
+{
     if (!method_exists($schema, 'getExtensions')) {
         return null;
     }
 
     $extensions = $schema->getExtensions() ?? [];
 
-    foreach (['x-php-namespace', 'php-namespace'] as $key) {
+    foreach (['x-' . $name, $name] as $key) {
         if (isset($extensions[$key]) && is_string($extensions[$key]) && $extensions[$key] !== '') {
             return trim($extensions[$key], '\\');
         }
@@ -650,6 +678,11 @@ function resolvePhpType($schema, array $allSchemas, array $schemaFullNamespace =
 
     if (!$schema instanceof Schema) {
         return 'mixed';
+    }
+
+    $phpType = getXPhpType($schema);
+    if ($phpType !== null) {
+        return '\\' . $phpType;
     }
 
     $type = $schema->type;

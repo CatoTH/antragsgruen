@@ -4,29 +4,11 @@ declare(strict_types=1);
 
 namespace app\components\yii;
 
-use app\controllers\rest\RestBase;
-
+/**
+ * The default file-based session, guarded against being written to from the REST API.
+ * See RestSessionGuard; RestRedisSessionTester is the same thing for Redis-backed installations.
+ */
 class RestSessionTester extends \yii\web\Session
 {
-    public function set($key, $value): void
-    {
-        $controller = \Yii::$app->controller;
-        if (is_subclass_of($controller, RestBase::class)) {
-            //var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5));
-            die("Invalid session usage from within the API");
-        }
-
-        parent::set($key, $value);
-    }
-
-    protected function updateFlashCounters(): void
-    {
-        $controller = \Yii::$app->controller;
-        if (is_subclass_of($controller, RestBase::class)) {
-            //var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5));
-            die("Invalid session usage from within the API");
-        }
-
-        parent::updateFlashCounters();
-    }
+    use RestSessionGuard;
 }

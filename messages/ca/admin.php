@@ -448,6 +448,7 @@ Com que no hi ha <strong>entrega de correus electrònics configurada</strong>, �
     'siteacc_new_mail_send'       => 'Enviar un correu electrònic',
     'siteacc_new_hint_accexists'  => 'Aquest usuari ja té un compte. Pots concedir-li permisos.',
     'siteacc_new_mail_hint'       => '%LINK% serà substituït per un enllaç al lloc web.<br>%ACCOUNT% serà substituït per les dades d\'accés de l\'usuari.',
+    'siteacc_customize_email_template' => 'Personalitzar la plantilla predeterminada',
     'siteacc_new_text'            => 'Text del correu electrònic',
     'siteacc_new_do'              => 'Crear',
     'siteacc_new_err_already'     => 'Aquest usuari ja va ser afegit a aquesta consulta.',
@@ -767,4 +768,5 @@ Com que no hi ha <strong>entrega de correus electrònics configurada</strong>, �
     'files_download_title' => 'Títol',
     'files_download_del'   => 'Eliminar aquest arxiu: %TITLE%',
     'files_download_del_c' => 'Vols eliminar aquest arxiu?',
+    'goto_update_mode_confirm' => 'Vols activar el mode d\'actualització? Mentre el mode d\'actualització estigui actiu, aquesta instal·lació d\'Antragsgrün no estarà disponible per a cap usuari.',
 ];

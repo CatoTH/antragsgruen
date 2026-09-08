@@ -2,12 +2,14 @@
 
 ## Version 4.18.0 [not released yet]
 
+- A new module "Real-Time Debate on site" improves the use of Antragsgrün directly on site, combining the speaking list, the voting and the agenda to a "Currently Debated" view.
 - The REST API has been improved. It supports (on top of previous functionality):
    - Authenticated calls.
    - Retrieving and updating Motion Type Information.
    - Creating motions.
    - Supporting motions and amendments and withdrawing support.
    - Screening motions and amendments as admin.
+- The voting system has been integrated into the Live Proxy system, making the overall system more scalable for larger setups.
 - Antragsgrün supports now multilingual consultations, where documents are submitted in multiple languages in parallel and users can choose the language to view the page and motions in. Provisions for automatic tranlations of motions and amendments are there including one demo-plugin.
 - Spanish and Swedish are now supported rudimentarily.
 - Motion screening can now be configured on a per-motion-type basis.
@@ -15,6 +17,7 @@
 - More uploaded PDFs can be handled without having to install additional software or libraries.
 - Proposed procedure versions can now be retrospectively deleted.
 - It is now possible to set deadlines for amendments that amend other amendments.
+- Amendments to amendments have now a new view that shows the two layers of changes nested into each other (making it clearer which changes are new, and which ones from the original amendment).
 
 ### Version 4.17.2 [not released yet]
 

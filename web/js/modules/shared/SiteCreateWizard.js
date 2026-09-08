@@ -5,7 +5,7 @@ const FUNCTIONALITY_MOTIONS = 1;
 const FUNCTIONALITY_MANIFESTO = 2;
 const FUNCTIONALITY_APPLICATIONS = 3;
 const FUNCTIONALITY_AGENDA = 4;
-const FUNCTIONALITY_SPEECH_LISTS = 5;
+const FUNCTIONALITY_DEBATE = 5;
 const FUNCTIONALITY_STATUTE_AMENDMENTS = 6;
 
 /**
@@ -59,8 +59,8 @@ export class SiteCreateWizard {
         panelAmendScreening:(data)       => this.hasMotionlikeType(data) && data.hasAmendments === 1 && data.amendmentInitiatedBy !== 1,
         panelComments:      (data)       => this.hasMotionlikeType(data),
         panelApplicationType:(data)      => data.functionality.indexOf(FUNCTIONALITY_APPLICATIONS) !== -1,
-        panelSpeechLogin:   (data)       => data.functionality.indexOf(FUNCTIONALITY_SPEECH_LISTS) !== -1,
-        panelSpeechQuotas:  (data)       => data.functionality.indexOf(FUNCTIONALITY_SPEECH_LISTS) !== -1,
+        panelSpeechLogin:   (data)       => data.functionality.indexOf(FUNCTIONALITY_DEBATE) !== -1,
+        panelSpeechQuotas:  (data)       => data.functionality.indexOf(FUNCTIONALITY_DEBATE) !== -1,
         panelOpenNow:       ()           => true,
         panelSiteData:      ()           => true,
     };

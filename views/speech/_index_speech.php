@@ -1,5 +1,6 @@
 <?php
 
+use app\components\LiveDataChannels;
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\User;
@@ -24,12 +25,15 @@ $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
 $layout->provideJwt = true;
-$layout->addLiveEventSubscription('user', 'speech');
+$layout->addLiveDataChannel(LiveDataChannels::ROLE_USER, LiveDataChannels::CHANNEL_SPEECH);
 
-$initData = \app\models\api\SpeechQueue::fromEntity($queue)->toUserApi($user, $cookieUser);
+$initData = \app\components\Tools::getSerializer()->serialize(
+    \app\models\api\speech\SpeechQueueUser::fromEntity($queue, $user, $cookieUser),
+    'json'
+);
 $userData = new SpeechUser($user, $cookieUser);
 
-if ($queue->motionId || $queue->agendaItemId) {
+if ($queue->motionId || $queue->amendmentId || $queue->agendaItemId) {
     $title = $queue->getTitle();
 } else {
     $title = Yii::t('speech', 'user_section_title');
@@ -40,7 +44,7 @@ echo $this->render('@app/views/speech/user-inline-widget.vue.php');
 ?>
 <section class="currentSpeechInline currentSpeechPageWidth"
          aria-label="<?= Html::encode($title) ?>"
-         data-queue="<?= Html::encode(json_encode($initData)) ?>"
+         data-queue="<?= Html::encode($initData) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>"
          data-title="<?= Html::encode($queue->getTitle()) ?>"
 >

@@ -13,7 +13,8 @@ $I->dontSeeElementInDOM('.currentVotings');
 $I->dontSeeElementInDOM('.voting_amendment_3');
 $I->dontSeeElementInDOM('#votingResultsLink');
 
-$votingPage = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoVotingPage();
+// The fixture has the "Currently debated" module on, which would take the place of the voting widget
+$votingPage = $I->loginAsStdAdmin()->disableCurrentlyDebated()->gotoStdAdminPage()->gotoVotingPage();
 
 $I->see('Ä2 or Ä3', '.voting1 h2');
 $I->see('Ä2 zu A2', '.voting1 .voting_amendment_3');

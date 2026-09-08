@@ -1,5 +1,5 @@
 <template>
-  <article class="speechLists currentSpeechPageWidth">
+  <article class="speechLists currentSpeechPageWidth" :class="{'disabledSpeechQueue': queue && !queue.is_active }">
     <div class="content" v-if="queue">
       <div class="activeSpeaker">
         <span class="glyphicon glyphicon-comment leftIcon" aria-hidden="true"></span>
@@ -53,7 +53,7 @@
                     </span>
 
               <span class="number" v-t:title="['speech', 'persons_waiting']">
-                        <span class="glyphicon glyphicon-time" v-t:aria-label="['speech', 'persons_waiting']"></span>
+                        <span class="glyphicon glyphicon-time" role="img" v-t:aria-label="['speech', 'persons_waiting']"></span>
                         {{ subqueue.num_applied }}
                     </span>
             </div>
@@ -76,8 +76,14 @@ const MIXINS = getSpeechCommonMixins();
 export default {
   props: ['initQueue', 'csrf', 'user', 'title'],
   mixins: [MIXINS],
+  data() {
+    return {
+      // The projector shows the speaking list as the main content, so it is updated more frequently
+      // than the widgets embedded into a regular page.
+      pollIntervalMs: 1000,
+    };
+  },
   beforeMount() {
-    this.setHighFrequency(true);
     this.startPolling();
   },
   beforeUnmount() {

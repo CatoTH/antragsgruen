@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\models\exceptions\FormError;
 use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\votings\Answer;
-use yii\db\{ActiveQuery, ActiveRecord};
+use yii\db\{ActiveQuery, ActiveRecord, Query};
 
 /**
  * @property int $id
@@ -110,14 +110,18 @@ class Vote extends ActiveRecord
     }
 
     /**
-     * @param Vote[] $votes
+     * How one item of a voting was voted on, by answer.
      *
-     * @return array<int|string, array<string, int>>
+     * Counted by the database: this is asked for on every poll and after every cast vote, once per
+     * item group, and loading every vote of the voting as an object to add up its weight was the
+     * most expensive thing about a payload nobody may see the single votes in anyway.
+     *
+     * @return array<int|string, array<string, int>> organization (default: "0") => answer => weight
      */
-    public static function calculateVoteResultsForApi(VotingBlock $voting, array $votes): array
+    public static function calculateVoteResultsForApi(VotingBlock $voting, IVotingItem $item): array
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            $results = $pluginClass::calculateVoteResultsForApi($voting, $votes);
+            $results = $pluginClass::calculateVoteResultsForApi($voting, $item);
             if ($results) {
                 return $results;
             }
@@ -130,10 +134,40 @@ class Vote extends ActiveRecord
         foreach ($answers as $answer) {
             $results[VotingData::ORGANIZATION_DEFAULT][$answer->apiId] = 0;
         }
-        foreach ($votes as $vote) {
-            $voteType = $vote->getVoteForApi($answers);
-            $results[VotingData::ORGANIZATION_DEFAULT][$voteType] += $vote->weight;
+
+        $weightByVote = self::sumWeightsByAnswer($voting, $item);
+        foreach ($answers as $answer) {
+            if (isset($weightByVote[$answer->dbId])) {
+                $results[VotingData::ORGANIZATION_DEFAULT][$answer->apiId] = $weightByVote[$answer->dbId];
+            }
         }
+
         return $results;
+    }
+
+    /**
+     * @return array<int, int> the answer as it is stored => the summed weight of the votes for it
+     */
+    private static function sumWeightsByAnswer(VotingBlock $voting, IVotingItem $item): array
+    {
+        $column = match (true) {
+            is_a($item, Motion::class) => 'motionId',
+            is_a($item, Amendment::class) => 'amendmentId',
+            default => 'questionId',
+        };
+
+        $rows = (new Query())
+            ->select(['vote', 'weight' => 'SUM(weight)'])
+            ->from(self::tableName())
+            ->where(['votingBlockId' => $voting->id, $column => $item->getId()])
+            ->groupBy('vote')
+            ->all();
+
+        $weights = [];
+        foreach ($rows as $row) {
+            $weights[intval($row['vote'])] = intval($row['weight']);
+        }
+
+        return $weights;
     }
 }

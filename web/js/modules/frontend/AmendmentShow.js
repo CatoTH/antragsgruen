@@ -17,6 +17,7 @@ export class AmendmentShow {
         common.initContactShow();
         common.initAgreeToProposal();
         common.initAmendmentTextMode();
+        common.initAmendmentComparisonMode();
         common.initCmdEnterSubmit();
         common.initDelSubmit();
         common.initDataTableActions();

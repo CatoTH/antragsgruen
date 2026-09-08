@@ -94,6 +94,7 @@ $controller->layoutParams->addInlineCss('
             <li>Accepted amendments can be merged into the original document - creating a final resolution works even with many amendments and ad-hoc changes</li>
             <li>E-Mail-Notification on relevant events both for administrators and participants</li>
             <li>Defining responsibilities for motions and topics, internal admin tools for decision-finding</li>
+            <li>Support for multi-lingual consultations (e.g. by international organizations or in multilingual countries)</li>
             <li>... and much more.</li>
         </ul>
 
@@ -113,6 +114,10 @@ $controller->layoutParams->addInlineCss('
             <a href="/help/roberts-rules">
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 Concepts: Antragsgrün and Robert’s Rules of Order
+            </a><br>
+            <a href="/help/multi-language">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                Concepts: Multilingual motions
             </a><br>
         </p>
 

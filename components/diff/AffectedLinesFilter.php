@@ -41,14 +41,26 @@ class AffectedLinesFilter
         return $out;
     }
 
+    private static function tagIsOuterLayer(string $attributes): bool
+    {
+        if (!preg_match('/class *= *["\'](?<classes>[^"\']*)["\']/siu', $attributes, $matches)) {
+            return false;
+        }
+        return in_array(DiffRenderer::CSS_CLASS_OUTER, explode(' ', $matches['classes']), true);
+    }
+
     /**
      * @param AffectedLineBlock[] $blocks
      * @return AffectedLineBlock[]
      */
     public static function filterAffectedBlocks(array $blocks, int $context = 0): array
     {
-        $inIns          = $inDel = false;
         $affectedBlocks = [];
+
+        // <ins>/<del> can span multiple blocks, and in a two-layered diff (see TwoLayerDiff) they can be nested
+        // into each other. Therefore the currently open elements are tracked as a stack across all blocks.
+        /** @var array<int, array{tag: string, outer: bool}> $openTags */
+        $openTags = [];
 
         $unchangedBeforeNextSpool = [];
         $unchangedAfterLastSpool = [];
@@ -58,19 +70,32 @@ class AffectedLinesFilter
                 continue;
             }
             $hadDiff = false;
-            if (preg_match_all('/<(\/?)(ins|del)( [^>]*)?>/siu', $block->text, $matches)) {
-                $hadDiff = true;
-                for ($i = 0; $i < count($matches[0]); $i++) {
-                    if ($matches[1][$i] === '' && $matches[2][$i] === 'ins') {
-                        $inIns = true;
-                    } elseif ($matches[1][$i] === '/' && $matches[2][$i] === 'ins') {
-                        $inIns = false;
-                    } elseif ($matches[1][$i] === '' && $matches[2][$i] === 'del') {
-                        $inDel = true;
-                    } elseif ($matches[1][$i] === '/' && $matches[2][$i] === 'del') {
-                        $inDel = false;
+            if (preg_match_all('/<(?<close>\/?)(?<tag>ins|del)(?<attributes>[^>]*)>/siu', $block->text, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    if ($match['close'] === '') {
+                        $isOuter    = self::tagIsOuterLayer($match['attributes']);
+                        $openTags[] = ['tag' => $match['tag'], 'outer' => $isOuter];
+                        $hadDiff    = $hadDiff || !$isOuter;
+                    } else {
+                        for ($i = count($openTags) - 1; $i >= 0; $i--) {
+                            if ($openTags[$i]['tag'] === $match['tag']) {
+                                $hadDiff = $hadDiff || !$openTags[$i]['outer'];
+                                array_splice($openTags, $i, 1);
+                                break;
+                            }
+                        }
                     }
                 }
+            }
+
+            // Changes of the outer layer are only the context a two-layered diff is shown in, not a change itself
+            $inIns = $inDel = false;
+            foreach ($openTags as $openTag) {
+                if ($openTag['outer']) {
+                    continue;
+                }
+                $inIns = $inIns || $openTag['tag'] === 'ins';
+                $inDel = $inDel || $openTag['tag'] === 'del';
             }
 
             $addBlock = false;

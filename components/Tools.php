@@ -20,9 +20,9 @@ use Symfony\Component\Serializer\{Mapping\Loader\AttributeLoader, NameConverter\
 
 class Tools
 {
-    private static SerializerInterface $serializer;
+    private static Serializer $serializer;
 
-    public static function getSerializer(): SerializerInterface
+    public static function getSerializer(): Serializer
     {
         if (!isset(self::$serializer)) {
             $reflectionExtractor = new ReflectionExtractor();
@@ -41,6 +41,8 @@ class Tools
                 new ArrayDenormalizer(),
                 new DateTimeNormalizer(),
                 new BackedEnumNormalizer(),
+                new LocalizedStringNormalizer(), // needs to come before the ObjectNormalizer, which would match it, too
+                new VotingSingleVoteNormalizer(), // same, and by far the most frequent object in a large voting
                 new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter, null, $propertyTypeExtractor),
             ];
             self::$serializer = new Serializer($normalizers, $encoders);
@@ -354,23 +356,36 @@ class Tools
             return '-';
         }
 
-        $replaces = [
-            '%DAY%'       => sprintf('%02d', $date[2]),
-            '%MONTH%'     => sprintf('%02d', $date[1]),
-            '%YEAR%'      => sprintf('%04d', $date[0]),
-            '%MONTHNAME%' => \Yii::t('structure', 'months_' . intval($date[1])),
-        ];
+        $year        = sprintf('%04d', $date[0]);
+        $monthPadded = sprintf('%02d', $date[1]);
+        $dayPadded   = sprintf('%02d', $date[2]);
 
-        $pattern = match (self::getCurrentDateFormat()) {
-            ConsultationSettings::DATE_FORMAT_DMY_DOT => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%.%MONTH%.%YEAR%</span>',
-            ConsultationSettings::DATE_FORMAT_DMY_SLASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%/%MONTH%/%YEAR%</span>',
-            ConsultationSettings::DATE_FORMAT_MDY_SLASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%MONTH%/%DAY%/%YEAR%</span>',
-            ConsultationSettings::DATE_FORMAT_YMD_DASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%YEAR%-%MONTH%-%DAY%</span>',
-            ConsultationSettings::DATE_FORMAT_DMY_DASH => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%-%MONTH%-%YEAR%</span>',
+        $visiblePattern = match (self::getCurrentDateFormat()) {
+            ConsultationSettings::DATE_FORMAT_DMY_DOT => '%DAY%.%MONTH%.%YEAR%',
+            ConsultationSettings::DATE_FORMAT_DMY_SLASH => '%DAY%/%MONTH%/%YEAR%',
+            ConsultationSettings::DATE_FORMAT_MDY_SLASH => '%MONTH%/%DAY%/%YEAR%',
+            ConsultationSettings::DATE_FORMAT_YMD_DASH => '%YEAR%-%MONTH%-%DAY%',
+            ConsultationSettings::DATE_FORMAT_DMY_DASH => '%DAY%-%MONTH%-%YEAR%',
             default => throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat()),
         };
+        $visible = str_replace(['%DAY%', '%MONTH%', '%YEAR%'], [$dayPadded, $monthPadded, $year], $visiblePattern);
 
-        return str_replace(array_keys($replaces), array_values($replaces), $pattern);
+        // The word order of a spelled-out date differs per language ("March 29, 2015" vs. "29. März 2015"),
+        // hence the pattern itself is translatable. Unlike in the visible date, the day is not zero-padded,
+        // as screen readers tend to read a leading zero out loud.
+        $spoken = str_replace(
+            ['%DAY%', '%MONTHNAME%', '%YEAR%'],
+            [(string)intval($date[2]), \Yii::t('structure', 'months_' . intval($date[1])), $year],
+            \Yii::t('structure', 'date_spoken')
+        );
+
+        // The numeric date is hidden from assistive technology and replaced by the spelled-out variant:
+        // an aria-label would be ignored here, as a plain <span>/<time> has an implicit "generic" role,
+        // for which ARIA prohibits naming attributes.
+        return '<time datetime="' . $year . '-' . $monthPadded . '-' . $dayPadded . '">' .
+               '<span class="sr-only">' . $spoken . '</span>' .
+               '<span aria-hidden="true">' . $visible . '</span>' .
+               '</time>';
     }
 
     public static function formatMysqlDate(?string $mysqldate, bool $allowRelativeDates = true): string

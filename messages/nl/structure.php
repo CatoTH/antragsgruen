@@ -303,6 +303,8 @@ return [
     'months_10' => 'oktober',
     'months_11' => 'november',
     'months_12' => 'december',
+
+    'date_spoken' => '%DAY% %MONTHNAME% %YEAR%',
     'activity_MOTION_VOTE_REJECTED' => 'Het <strong>voorstel</strong> is <strong>afgewezen</strong>.',
     'activity_MOTION_VOTE_ACCEPTED' => 'Het <strong>voorstel</strong> is <strong>aangenomen</strong>.',
 ];

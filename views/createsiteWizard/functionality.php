@@ -77,14 +77,14 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label checkbox-label description-first value-speech">
+            <label class="radio-checkbox-label checkbox-label description-first value-debate">
                 <span class="description">&nbsp;</span>
-                <span class="title"><?=$t('functionality_speech')?></span>
+                <span class="title"><?=$t('functionality_debate')?></span>
                 <span class="input">
                     <?= Html::checkbox(
                         'SiteCreateForm[functionality][]',
-                        in_array(SiteCreateForm::FUNCTIONALITY_SPEECH_LISTS, $model->functionality),
-                        ['value' => SiteCreateForm::FUNCTIONALITY_SPEECH_LISTS]
+                        in_array(SiteCreateForm::FUNCTIONALITY_DEBATE, $model->functionality),
+                        ['value' => SiteCreateForm::FUNCTIONALITY_DEBATE]
                     ); ?>
                 </span>
             </label>

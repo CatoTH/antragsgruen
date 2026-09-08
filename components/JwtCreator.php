@@ -22,6 +22,7 @@ use app\models\settings\{Privileges, AntragsgruenApp};
 class JwtCreator
 {
     private const ROLE_SPEECH_ADMIN = 'ROLE_SPEECH_ADMIN';
+    private const ROLE_VOTING_ADMIN = 'ROLE_VOTING_ADMIN';
     private const JWT_VALIDITY = 60 * 10; // 10 minutes
 
     private const USER_PREFIX_REGULAR = 'login-';
@@ -173,11 +174,21 @@ class JwtCreator
         return $user;
     }
 
+    /**
+     * How a logged-in person is addressed in a token, and therefore in everything that is delivered
+     * to one person in particular - the destinations of the Live server, and the per-user section of
+     * the events it is given.
+     */
+    public static function getJwtUserIdForUser(User $user): string
+    {
+        return self::USER_PREFIX_REGULAR . $user->id;
+    }
+
     public static function getCurrJwtUserId(): string
     {
         if (!self::$currUserId) {
             if ($user = User::getCurrentUser()) {
-                self::$currUserId = self::USER_PREFIX_REGULAR . $user->id;
+                self::$currUserId = self::getJwtUserIdForUser($user);
             } elseif ($cookieUser = CookieUser::getFromCookieOrCache()) {
                 self::$currUserId = self::USER_PREFIX_ANONYMOUS . $cookieUser->userToken;
             } else {
@@ -195,6 +206,9 @@ class JwtCreator
         $roles = [];
         if (User::getCurrentUser()?->hasPrivilege($consultation, Privileges::PRIVILEGE_SPEECH_QUEUES, null)) {
             $roles[] = self::ROLE_SPEECH_ADMIN;
+        }
+        if (User::getCurrentUser()?->hasPrivilege($consultation, Privileges::PRIVILEGE_VOTINGS, null)) {
+            $roles[] = self::ROLE_VOTING_ADMIN;
         }
 
         return [

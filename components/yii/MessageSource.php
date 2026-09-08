@@ -55,6 +55,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'user'      => 'Account-Einstellungen',
                 'speech'    => 'Redelisten',
                 'voting'    => 'Abstimmungen',
+                'debate'    => 'Aktuelle Debatte',
                 'wizard'    => 'Wizard',
             ];
         } else {
@@ -74,6 +75,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'user'      => 'User accounts',
                 'speech'    => 'Speaking list',
                 'voting'    => 'Votings',
+                'debate'    => 'Current debate',
                 'wizard'    => 'Wizard',
             ];
         }

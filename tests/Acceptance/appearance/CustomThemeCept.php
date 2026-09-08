@@ -10,7 +10,7 @@ $I->loginAndGotoStdAdminPage()->gotoAppearance();
 $I->click('.editThemeLink');
 
 $I->wantTo('confirm the default settings');
-$I->assertEquals('rgb(75, 112, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
+$I->assertEquals('rgb(61, 94, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
 $I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('see that by default, the classic theme is activated');
@@ -37,7 +37,7 @@ $I->executeJS('$("input[value=layout-classic").parents("label").click()');
 $I->checkOption("//input[@name='siteSettings[siteLayout]'][@value='layout-classic']");
 $page->saveForm();
 
-$I->assertEquals('rgb(75, 112, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
+$I->assertEquals('rgb(61, 94, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
 $I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('reset custom theme to DBJR');

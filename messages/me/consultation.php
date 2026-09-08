@@ -118,4 +118,5 @@ return [
     'discuss_sort_oldest' => 'Najstariji', // Original: Oldest
     'discuss_sort_amend' => 'Broj amandmana', // Original: Number of amendments
     'discuss_sort_comment' => 'Broj komentara', // Original: Number of comments
+    'discuss_sort_aria' => 'Sortiraj predloge po', // Original: Sort motions by
 ];

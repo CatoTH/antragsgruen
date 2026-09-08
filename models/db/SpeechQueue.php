@@ -11,12 +11,14 @@ use yii\db\{ActiveQuery, ActiveRecord};
  * @property int $consultationId
  * @property int|null $agendaItemId
  * @property int|null $motionId
+ * @property int|null $amendmentId
  * @property int $isActive
  * @property string|null $settings
  *
  * @property Consultation $consultation
  * @property ConsultationAgendaItem|null $agendaItem
  * @property Motion|null $motion
+ * @property Amendment|null $amendment
  * @property SpeechSubqueue[] $subqueues
  * @property SpeechQueueItem[] $items
  */
@@ -61,6 +63,14 @@ class SpeechQueue extends ActiveRecord
     }
 
     /**
+     * @return ActiveQuery<Amendment>
+     */
+    public function getAmendment(): ActiveQuery
+    {
+        return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
+    }
+
+    /**
      * @return ActiveQuery<SpeechSubqueue>
      */
     public function getSubqueues(): ActiveQuery
@@ -81,7 +91,7 @@ class SpeechQueue extends ActiveRecord
         return [
             [['consultationId', 'isActive'], 'required'],
             [['isActive'], 'safe'],
-            [['id', 'consultationId', 'agendaItemId', 'isActive'], 'number'],
+            [['id', 'consultationId', 'agendaItemId', 'motionId', 'amendmentId', 'isActive'], 'number'],
         ];
     }
 
@@ -106,6 +116,9 @@ class SpeechQueue extends ActiveRecord
     {
         if ($this->motionId) {
             return UrlHelper::createMotionUrl($this->motion, 'admin-speech');
+        } elseif ($this->amendmentId) {
+            // Amendments have no dedicated admin-speech route, so the generic queue-scoped admin page is used
+            return UrlHelper::createUrl(['/consultation/admin-speech', 'queue' => $this->id]);
         } elseif ($this->agendaItemId) {
             return UrlHelper::createUrl(['/consultation/admin-speech', 'queue' => $this->id]);
         } else {
@@ -120,6 +133,10 @@ class SpeechQueue extends ActiveRecord
             $motion = $consultation->getMotion($this->motionId);
 
             return str_replace('%TITLE%', $motion->getFormattedTitlePrefix(), \Yii::t('speech', 'title_to'));
+        } elseif ($this->amendmentId && $consultation->getAmendment($this->amendmentId)) {
+            $amendment = $consultation->getAmendment($this->amendmentId);
+
+            return str_replace('%TITLE%', $amendment->getFormattedTitlePrefix(), \Yii::t('speech', 'title_to'));
         } elseif ($this->agendaItemId && $consultation->getAgendaItem($this->agendaItemId)) {
             $item = $consultation->getAgendaItem($this->agendaItemId);
             $title = $item->getShownCode(true) . ' ' . $item->title;
@@ -137,6 +154,10 @@ class SpeechQueue extends ActiveRecord
             $motion = $consultation->getMotion($this->motionId);
 
             return str_replace('%TITLE%', $motion->getFormattedTitlePrefix(), \Yii::t('speech', 'footer_title_to'));
+        } elseif ($this->amendmentId && $consultation->getAmendment($this->amendmentId)) {
+            $amendment = $consultation->getAmendment($this->amendmentId);
+
+            return str_replace('%TITLE%', $amendment->getFormattedTitlePrefix(), \Yii::t('speech', 'footer_title_to'));
         } elseif ($this->agendaItemId && $consultation->getAgendaItem($this->agendaItemId)) {
             $item = $consultation->getAgendaItem($this->agendaItemId);
 
@@ -181,6 +202,7 @@ class SpeechQueue extends ActiveRecord
         $queue                 = new SpeechQueue();
         $queue->consultationId = $consultation->id;
         $queue->motionId       = null;
+        $queue->amendmentId    = null;
         $queue->agendaItemId   = null;
         $queue->isActive       = ($activate ? 1 : 0);
         $queue->settings       = null;
@@ -199,7 +221,7 @@ class SpeechQueue extends ActiveRecord
 
     public function deleteWithSubqueues(): void
     {
-        if ($this->agendaItemId === null && $this->motionId === null) {
+        if ($this->agendaItemId === null && $this->motionId === null && $this->amendmentId === null) {
             // The default queue cannot be deleted
             return;
         }

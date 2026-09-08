@@ -178,6 +178,8 @@
     position: absolute;
     bottom: 0;
     padding: 0 5px;
+    // button.link pins the height to 1em in Blink; these controls size to their content instead
+    -webkit-logical-height: auto;
     background-color: rgba(255, 255, 255, 0.5);
     font-size: 12px;
     opacity: 0;
@@ -398,7 +400,7 @@
   }
 }
 
-// Used on index page, separate speech page and full screen
+// Used on index page, separate speech page, debate widget and full screen
 .currentSpeechPageWidth {
   .speechAdminLink {
     float: right;
@@ -607,12 +609,22 @@
   }
 }
 
-// Used on the home page
-.currentSpeechInline {
-  &:has(.disabledSpeechQueue) {
-    display: none;
+// Used on the home page & debate widget
+.currentSpeechInline:has(.disabledSpeechQueue) {
+  display: none;
+}
+// Covers both the inline widget and the fullscreen projector, whose speaking lists are rendered by
+// different components (UserInlineWidget / FullscreenSpeech) below the same .currentDebateContent root
+.currentDebateContent .disabledSpeechQueue {
+  display: none;
+}
+.currentDebateInline {
+  .speechUser {
+    margin-top: 30px;
   }
+}
 
+.currentSpeechInline, .currentDebateInline {
   .remainingTime {
     padding-left: 26px;
     margin-top: 10px;

@@ -36,6 +36,14 @@ $menuFont: "Open Sans", sans-serif;
 $menuLink: #3d5e00;
 $menuActive: rgb(80, 80, 80);
 
+// WCAG 2.1 AA contrast fixes: override Bootstrap 3 defaults that fall below 4.5:1
+$navbar-default-color: #595959;            // was #777 (4.22:1 on #f8f8f8)
+$navbar-default-link-color: #595959;
+$navbar-default-brand-color: #595959;      // .navbar-brand, was #777 (4.21:1)
+$navbar-default-brand-hover-color: #444;
+$breadcrumb-color: #595959;                // breadcrumb links, was #ccc (1.61:1)
+$breadcrumb-active-color: #595959;         // active breadcrumb item, was #ccc
+
 $sidebarBackground: $colorMagenta;
 $sidebarActionFont: "Open Sans", sans-serif;
 
@@ -63,6 +71,7 @@ $createMotionBtnColor: $colorMagenta;
 @import "contentpage";
 @import "consultation_motion_list";
 @import "speech_lists";
+@import "debate";
 @import "voting";
 @import "motions";
 @import "proposed_procedure";
@@ -91,4 +100,41 @@ body {
     height: 44px;
     background-size: 300px 44px;
   }
+}
+
+// The "fulltext" link inside the current-debate widget is a small inline link
+// (12px) next to the proposer text. It has a chevron icon, but axe flags it via
+// link-in-text-block. Give it a bold weight as a non-color cue (no underline).
+.fulltextLink {
+  font-weight: bold;
+}
+
+// Amendment bookmarks (the small "Ä1"… markers alongside the motion text) use
+// near-black text for sufficient contrast on the light green background.
+ul.bookmarks > li.amendment {
+  color: #1a1a1a;
+
+  > a {
+    color: #1a1a1a;
+    // The badge link is inline within surrounding text; a targeted underline is
+    // the reliable non-color cue. (This matches layout-dbjr, which already
+    // underlines these amendment links.) The global "underline all links" veto
+    // does not apply to this specific bookmark list.
+    text-decoration: underline;
+  }
+}
+
+// Breadcrumb links are inline within the breadcrumb trail text; underline them
+// (consistent with layout-dbjr) so they are distinguishable without color.
+.breadcrumb a {
+  text-decoration: underline;
+}
+
+// The per-motion list of amendments ("Ä1 (Tester, Eingereicht)") renders the
+// amendment reference as an inline link within prose. Underline these links so
+// they are distinguishable without relying on color (consistent with
+// layout-dbjr). This is a targeted list, not a global "underline all links".
+.motionList ul.amendments > li > a,
+.amendments > li > a {
+  text-decoration: underline;
 }

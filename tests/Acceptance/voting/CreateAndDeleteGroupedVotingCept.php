@@ -14,7 +14,10 @@ $I->dontSeeElementInDOM('.voting_amendment_3');
 $I->dontSeeElementInDOM('#votingResultsLink');
 
 $I->wantTo('Create a new voting block for the amendment');
-$page = $I->loginAndGotoMotionList()->gotoAmendmentEdit(1);
+$I->loginAsStdAdmin();
+// The fixture has the "Currently debated" module on, which would take the place of the voting widget
+$I->disableCurrentlyDebated();
+$page = $I->gotoMotionList()->gotoAmendmentEdit(1);
 $I->wait(0.3);
 $I->dontSeeElement('.votingDataHolder');
 $I->clickJS('.votingDataOpener');

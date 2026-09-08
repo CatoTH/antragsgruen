@@ -128,6 +128,19 @@ class UserGroups extends IPolicy
         return $groups;
     }
 
+    /**
+     * @return int[]
+     */
+    public function getAdmittedUserIds(): array
+    {
+        $userIds = [];
+        foreach ($this->groups as $group) {
+            $userIds = array_merge($userIds, $group->getUserIds());
+        }
+
+        return array_values(array_unique(array_map('intval', $userIds)));
+    }
+
     public function getApiObject(): array
     {
         $groupNames = array_map(function (ConsultationUserGroup $group): string {

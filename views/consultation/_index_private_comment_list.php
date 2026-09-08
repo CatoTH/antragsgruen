@@ -43,7 +43,7 @@ foreach ($motionComments as $motionId => $commentTexts) {
     $tooltip = Html::encode(implode(" - ", $commentTexts));
 
     echo '<a href="#" class="privateCommentsIndicator" data-target-type="motion" data-target-id="' . $motionId . '">';
-    echo '<span class="glyphicon glyphicon-pushpin" data-toggle="tooltip" data-placement="right" ' .
+    echo '<span class="glyphicon glyphicon-pushpin" role="img" data-toggle="tooltip" data-placement="right" ' .
             'aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip')) . ': ' . $tooltip . '" ' .
             'data-original-title="' . $tooltip . '"></span>';
     echo '</a>';
@@ -53,7 +53,7 @@ foreach ($amendmentComments as $amendmentId => $commentTexts) {
     $tooltip = Html::encode(implode(" - ", $commentTexts));
 
     echo '<a href="#" class="privateCommentsIndicator" data-target-type="amendment" data-target-id="' . $amendmentId . '">';
-    echo '<span class="glyphicon glyphicon-pushpin" data-toggle="tooltip" data-placement="right" ' .
+    echo '<span class="glyphicon glyphicon-pushpin" role="img" data-toggle="tooltip" data-placement="right" ' .
             'aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip')) . ': ' . $tooltip . '" ' .
             'data-original-title="' . $tooltip . '"></span>';
     echo '</a>';

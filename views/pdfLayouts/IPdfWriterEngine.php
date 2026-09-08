@@ -3,6 +3,7 @@
 namespace app\views\pdfLayouts;
 
 use app\components\HTMLTools;
+use Com\Tecnick\Pdf\CSS\ListStyle;
 
 /**
  * Extends the tc-lib-pdf rendering engine used by the TCPDF legacy facade to support
@@ -190,36 +191,48 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
     {
         $this->currentLiValue = null;
 
+        // The parent handles the regular counting, including numeric value attributes
+        $count = parent::getHTMLListItemCounter($hrc, $key);
+
         $depth = $this->getHTMLListDepth($hrc);
         if ($depth < 1) {
-            return 1;
+            return $count;
         }
 
         $idx = $depth - 1;
-        $listEntry = $hrc['liststack'][$idx] ?? null;
-        if ($listEntry === null || !$listEntry['ordered']) {
-            return 1;
+        if (!$this->isOrderedMarkerType($hrc['liststack'][$idx]['type'] ?? '')) {
+            return $count;
         }
-
-        $newCount = $listEntry['count'] + 1;
 
         $elm = $hrc['dom'][$key] ?? null;
         $value = ($elm !== null && isset($elm['attribute']['value']) && is_string($elm['attribute']['value'])) ? $elm['attribute']['value'] : '';
-        if ($value !== '') {
-            // Same semantics as HTMLTools::getNextLiCounter(): numbers and single letters
-            // set the counter, any other value (like "1b") leaves it unaffected
-            if (is_numeric($value)) {
-                $newCount = intval($value);
-            } elseif (preg_match('/^[a-zA-Z]$/', $value)) {
-                $newCount = ord(strtolower($value)) - ord('a') + 1;
-            }
-            // Explicitly set values are always rendered verbatim, as in HTMLTools::getLiValue()
-            $this->currentLiValue = $value;
+        if ($value === '') {
+            return $count;
         }
 
-        $hrc['liststack'][$idx]['count'] = $newCount;
+        // Same semantics as HTMLTools::getNextLiCounter(): numbers (handled by the parent)
+        // and single letters set the counter, any other value (like "1b") leaves it unaffected
+        if (!is_numeric($value) && preg_match('/^[a-zA-Z]$/', $value)) {
+            $count = ord(strtolower($value)) - ord('a') + 1;
+            $hrc['liststack'][$idx]['count'] = $count;
+        }
 
-        return $newCount;
+        // Explicitly set values are always rendered verbatim, as in HTMLTools::getLiValue()
+        $this->currentLiValue = $value;
+
+        return $count;
+    }
+
+    /**
+     * True for marker types rendering a counter, as opposed to bullets, images and no marker at all.
+     */
+    private function isOrderedMarkerType(string $type): bool
+    {
+        if ($type === '' || $type === '!' || $type === '^' || str_starts_with($type, 'img|')) {
+            return false;
+        }
+
+        return !ListStyle::isUnordered($type);
     }
 
     /**
@@ -232,14 +245,18 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
         float $posy = 0,
         string $type = '',
         array $markerStyles = [],
+        bool $inside = false,
+        float &$advance = 0.0,
     ): string {
         $explicitValue = $this->currentLiValue;
         $this->currentLiValue = null;
 
         $isCustomFormat = in_array($type, HTMLTools::KNOWN_OL_CLASSES, true);
         if ($explicitValue === null && !$isCustomFormat) {
-            return parent::getHTMLliBullet($depth, $count, $posx, $posy, $type, $markerStyles);
+            return parent::getHTMLliBullet($depth, $count, $posx, $posy, $type, $markerStyles, $inside, $advance);
         }
+
+        $advance = 0.0;
 
         $format = $isCustomFormat ? $type : HTMLTools::OL_DECIMAL_DOT;
         $text = HTMLTools::getLiValueFormatted($count, $explicitValue, $format);
@@ -252,10 +269,9 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
             $markerPrefix = $this->getStartMarkerStyle($markerStyles, $markerState);
         }
 
-        $lspace = $this->getStringWidth(' ') + $this->getStringWidth($text);
-        $posx += $this->rtl ? $lspace : -$lspace;
+        $markerx = $this->placeHTMLliMarker($posx, $this->getStringWidth(' '), $this->getStringWidth($text), $inside, $advance);
 
-        $out = $this->getTextLine($text, $posx, $posy);
+        $out = $this->getTextLine($text, $markerx, $posy);
 
         if ($markerPrefix !== '') {
             $out = $markerPrefix . $out;

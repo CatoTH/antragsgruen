@@ -22,6 +22,7 @@ return [
     'functionality_applications' => 'Candidatures',
     'functionality_agenda' => 'Agenda',
     'functionality_speech' => 'Llistes de parlaments',
+    'functionality_debate' => 'Debat presencial en temps real',
     'functionality_statute_amendments' => 'Esmenes<br>estatutàries',
     'functionality_votings' => 'Votacions',
     'functionality_documents_desc' => '(Document)',

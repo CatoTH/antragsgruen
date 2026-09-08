@@ -22,6 +22,7 @@ return [
     'functionality_applications'   => 'Bewerbungen',
     'functionality_agenda'         => 'Tagesordnung',
     'functionality_speech'         => 'Redelisten',
+    'functionality_debate'         => 'Echtzeit-Debatte vor Ort',
     'functionality_statute_amendments' => 'Satzungs-<br>änderungen',
     'functionality_votings'        => 'Abstimmungen',
     'functionality_documents_desc' => '(Dokumenten-)',
