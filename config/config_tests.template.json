@@ -21,7 +21,7 @@
   "domainPlain": "http://localhost:8080/index-test.php",
   "domainSubdomain": "http://localhost:8080/index-test.php",
   "prependWWWToSubdomain": false,
-  "randomSeed": "123456",
+  "randomSeed": "204fd52dbc9d34426eed354824ce4be5f93b4409fbaafa4b5e8474acfcfd246e",
   "mailFromName": "Antragsgrün Test",
   "mailFromEmail": "test@antragsgruen.de",
   "adminUserIds": [
