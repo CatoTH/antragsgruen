@@ -1,0 +1,151 @@
+---
+name: Accessibility (A11y) Checks
+
+"on":
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pa11y-scan:
+    name: Pa11y WCAG 2.1 AA Scans
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: yii
+          MYSQL_PASSWORD: yii
+          MYSQL_USER: yii
+          MYSQL_DATABASE: yii
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: >-
+            curl, dom, fileinfo, iconv, intl,
+            mbstring, mysql, pdo, zip
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+          cache: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install JS dependencies
+        run: pnpm install
+
+      - name: Build frontend assets
+        run: pnpm run build
+
+      - name: Generate static resource manifest
+        run: |
+          rm -Rf local/cdn/dev
+          php docs/create-static-resources.php dev
+
+      - name: Install PHP dependencies
+        run: >-
+          composer install --no-interaction
+          --prefer-dist --no-progress
+
+      - name: Prepare test configuration and database
+        run: |
+          cp config/config_tests.template.json config/config.json
+          cp config/config_tests.template.json config/config_tests.json
+          sed -i 's/32768/3306/g' config/config.json config/config_tests.json
+          sed -i 's|"domainPlain": *"http://localhost:8080/index-test.php"|"domainPlain": "http://test.antragsgruen.test"|' config/config_tests.json
+          sed -i 's|"domainSubdomain": *"http://localhost:8080/index-test.php"|"domainSubdomain": "http://test.antragsgruen.test/<subdomain:[\\\\w_-]+>/"|' config/config_tests.json
+          sed -i 's/"randomSeed": "[^"]*"/"randomSeed": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"/' config/config.json config/config_tests.json
+          grep -n -E '"(domainPlain|domainSubdomain|randomSeed)"' config/config_tests.json
+          echo "127.0.0.1 test.antragsgruen.test" | sudo tee -a /etc/hosts
+          touch config/DEBUG
+          php yii database/init
+          php yii database/insert-test-data std
+
+      - name: Start PHP built-in web server
+        run: |
+          cat > /tmp/a11y-router.php <<'PHP'
+          <?php
+          // Mirrors docker/nginx/default.conf: try_files $uri $uri/ /index.php?$args;
+          $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+          $file = $_SERVER['DOCUMENT_ROOT'] . $path;
+          if ($path !== '/' && is_file($file) && pathinfo($file, PATHINFO_EXTENSION) !== 'php') {
+              return false; // let the built-in server serve static assets as-is
+          }
+          $_SERVER['SCRIPT_NAME'] = '/index.php';
+          $_SERVER['SCRIPT_FILENAME'] = $_SERVER['DOCUMENT_ROOT'] . '/index.php';
+          $_SERVER['PHP_SELF'] = '/index.php';
+          require $_SERVER['DOCUMENT_ROOT'] . '/index.php';
+          PHP
+          sudo php -S 127.0.0.1:80 -t web/ /tmp/a11y-router.php &
+          url="http://test.antragsgruen.test/stdparteitag/std-parteitag"
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || true)
+            if [ "$code" = "200" ]; then
+              echo "Server is up after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server did not become ready within 30s (last HTTP status: ${code:-none})"
+          exit 1
+
+      - name: Diagnose app response
+        if: failure()
+        run: |
+          {
+            echo "### A11y probe diagnostics"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+          for u in "/" "/stdparteitag/std-parteitag" "/std-parteitag"; do
+            code=$(curl -s -o /tmp/a11y-probe.html -w "%{http_code}" "http://test.antragsgruen.test$u" || true)
+            echo "== GET $u -> HTTP ${code}"
+            echo "- \`GET $u\` -> HTTP ${code}" >> "$GITHUB_STEP_SUMMARY"
+            if [ "$code" != "200" ]; then
+              echo "----- Response body (first 2 KB) for $u -----"
+              head -c 2048 /tmp/a11y-probe.html 2>/dev/null || true
+              echo ""
+            fi
+          done
+          echo "----- Yii runtime log (last 150 lines) -----"
+          sudo tail -n 150 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
+          {
+            echo ""
+            echo "\`\`\`"
+            sudo tail -n 40 runtime/logs/app.log 2>/dev/null || echo "(no runtime log found)"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run automated A11y tests
+        run: >-
+          node bin/test-a11y.mjs
+          --url=http://test.antragsgruen.test/stdparteitag/std-parteitag
+          --url=http://test.antragsgruen.test/stdparteitag/std-parteitag/motion/321-o-zapft-is
+          --url=http://test.antragsgruen.test/stdparteitag/std-parteitag/motion/321-o-zapft-is/amendment/1
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome

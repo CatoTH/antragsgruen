@@ -10,6 +10,7 @@
     "scripts": {
         "test:acceptance": "vendor/bin/codecept run Acceptance",
         "test:unit": "vendor/bin/codecept run Unit",
+"test:a11y": "node bin/test-a11y.mjs",
         "watch": "vite build --watch",
         "build": "vite build",
         "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
