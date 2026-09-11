@@ -56,6 +56,8 @@ $typeUpdateData = [
         'contact_phone' => 'optional',
         'contact_gender' => 'none',
         'has_resolution_date' => 'required',
+        'supporter_can_be_person' => true,
+        'supporter_can_be_organization' => true,
     ],
 ];
 
@@ -63,6 +65,7 @@ $request = $client->patch('rest/std-parteitag/motion-types/1', [
     RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token],
     RequestOptions::JSON => $typeUpdateData,
 ]);
+
 $I->assertEquals(200, $request->getStatusCode());
 
 $updatedType = json_decode($request->getBody()->getContents(), true);

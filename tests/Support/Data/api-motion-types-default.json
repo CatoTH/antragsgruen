@@ -9,6 +9,7 @@
       },
       "settings": {
         "amendments_only": false,
+        "amendments_to_amendments_deadlines": [],
         "amendment_multiple_paragraphs": "multiple",
         "has_proposed_procedure": true,
         "has_responsibilities": false,
@@ -19,30 +20,35 @@
       },
       "policies": {
         "motions": {
+          "current_user_permitted": true,
           "id": "all",
           "description": "Alle",
           "deadlines": [],
           "user_group_ids": null
         },
         "amendments": {
+          "current_user_permitted": true,
           "id": "all",
           "description": "Alle",
           "deadlines": [],
           "user_group_ids": null
         },
         "comments": {
+          "current_user_permitted": true,
           "id": "all",
           "description": "Alle",
           "deadlines": [],
           "user_group_ids": null
         },
         "support_motions": {
+          "current_user_permitted": true,
           "id": "nobody",
           "description": "Niemand",
           "deadlines": [],
           "user_group_ids": null
         },
         "support_amendments": {
+          "current_user_permitted": true,
           "id": "nobody",
           "description": "Niemand",
           "deadlines": [],
