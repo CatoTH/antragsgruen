@@ -146,7 +146,7 @@ $switchLanguage('de');
 $I->see('My English Motion');
 $I->see('English motion text');
 $I->see('English reason');
-$I->seeNumberOfElements('.alertLanguageFallback', 3);
+$I->seeNumberOfElements('.alertLanguageFallback', 2); // Hint: title doesn't have this element
 $I->see('Dieser Inhalt wurde noch nicht in deine Sprache übersetzt.', '.alertLanguageFallback');
 
 

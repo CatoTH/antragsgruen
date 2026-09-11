@@ -163,6 +163,7 @@ return [
 
     'type_unavailable_language'  => 'Ceci n\'est pas disponible dans cette langue. Langues disponibles : %LANGUAGES%.',
     'section_lang_fallback_hint' => 'Ce contenu n\'a pas encore été traduit dans ta langue. La version %LANGUAGE% est affichée à la place.',
+    'section_lang_fallback_mini' => 'Pas encore traduit',
     'policy_deadline_over_comm'  => 'Aucun commentaire n\'est possible pour le moment.',
     'policy_deadline_over_merge' => 'L\'intégration n\'est pas possible pour le moment.',
     'policy_deadline_from'       => 'à partir de %from%',

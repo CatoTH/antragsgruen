@@ -117,7 +117,7 @@ class BackgroundJobSectionAutofillTest extends DBTestBase
         (new FillEmptyMotionSections($motion->getMyConsultation(), $motion->id))->execute();
 
         $motion->refresh();
-        $this->assertSame('dummy', $motion->getActiveSections()[0]->getData());
+        $this->assertSame('<p>dummy</p>', $motion->getActiveSections()[0]->getData());
     }
 
     public function testFillEmptyMotionSectionsJobNoOpsForAMissingMotion(): void
@@ -151,7 +151,7 @@ class BackgroundJobSectionAutofillTest extends DBTestBase
         (new FillEmptyAmendmentSections($amendment->getMyConsultation(), $amendment->id))->execute();
 
         $amendment->refresh();
-        $this->assertSame('dummy', $amendment->getActiveSections()[0]->getData());
+        $this->assertSame('<p>dummy</p>', $amendment->getActiveSections()[0]->getData());
     }
 
     public function testFillEmptyAmendmentSectionsJobNoOpsForAMissingAmendment(): void
@@ -185,7 +185,7 @@ class BackgroundJobSectionAutofillTest extends DBTestBase
         BackgroundJobScheduler::executeOrScheduleJob(new FillEmptyMotionSections($motion->getMyConsultation(), $motion->id));
 
         $motion->refresh();
-        $this->assertSame('dummy', $motion->getActiveSections()[0]->getData());
+        $this->assertSame('<p>dummy</p>', $motion->getActiveSections()[0]->getData());
         $this->assertSame('0', (string) \Yii::$app->db->createCommand('SELECT COUNT(*) FROM backgroundJob')->queryScalar());
     }
 
@@ -223,7 +223,7 @@ class BackgroundJobSectionAutofillTest extends DBTestBase
         $reconstructedJob->execute();
 
         $motion->refresh();
-        $this->assertSame('dummy', $motion->getActiveSections()[0]->getData());
+        $this->assertSame('<p>dummy</p>', $motion->getActiveSections()[0]->getData());
     }
 
     public function testExecuteOrScheduleJobStaysSynchronousWhenOnlyNotificationsIsEnabled(): void
@@ -239,7 +239,7 @@ class BackgroundJobSectionAutofillTest extends DBTestBase
         // sectionAutofill specifically isn't enabled here, so this must still run inline - proving the
         // two flags are independent, not aliases of each other.
         $motion->refresh();
-        $this->assertSame('dummy', $motion->getActiveSections()[0]->getData());
+        $this->assertSame('<p>dummy</p>', $motion->getActiveSections()[0]->getData());
         $this->assertSame('0', (string) \Yii::$app->db->createCommand('SELECT COUNT(*) FROM backgroundJob')->queryScalar());
     }
 }

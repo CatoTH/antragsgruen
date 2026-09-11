@@ -44,7 +44,7 @@ foreach ($sections as $section) {
     $langAttr = $section->needsLanguageLabel() ? ' lang="' . Html::encode((string) $section->getDisplayLanguage()) . '"' : '';
     echo '<section' . $langAttr . '>';
     echo '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-    echo HTMLTools::getSectionLanguageHint($section);
+    echo HTMLTools::getSectionLanguageHint($section, short: false);
     echo $section->getSectionType()->getMotionPlainHtml();
     echo '</section>';
 }

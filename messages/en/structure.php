@@ -18,6 +18,7 @@ return [
 
     'type_unavailable_language'  => 'This is not available in this language. Available languages: %LANGUAGES%.',
     'section_lang_fallback_hint' => 'This content has not been translated into your language yet. Showing the %LANGUAGE% version instead.',
+    'section_lang_fallback_mini' => 'Untranslated',
     'policy_deadline_over'       => 'The deadline is over',
     'policy_deadline_over_comm'  => 'No comments are possible at this point of time.',
     'policy_deadline_over_merge' => 'Merging is not possible at this point of time.',

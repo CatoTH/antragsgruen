@@ -16,6 +16,7 @@ return [
     'amend_number_perline' => 'M01-070 (Numeración por línea afectada)',
     'type_unavailable_language' => 'Esto no está disponible en este idioma. Idiomas disponibles: %LANGUAGES%.',
     'section_lang_fallback_hint' => 'Este contenido aún no se ha traducido a tu idioma. Se muestra la versión en %LANGUAGE% en su lugar.',
+    'section_lang_fallback_mini' => 'Todavía no traducido',
     'policy_deadline_over' => 'El plazo ha finalizado',
     'policy_deadline_over_comm' => 'No es posible comentar en este momento.',
     'policy_deadline_over_merge' => 'No es posible incorporar en este momento.',
