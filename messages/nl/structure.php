@@ -17,6 +17,7 @@ return [
     'amend_number_perline' => 'A01-070 (Nummering per betrokken regel)',
     'type_unavailable_language' => 'Dit is niet beschikbaar in deze taal. Beschikbare talen: %LANGUAGES%.',
     'section_lang_fallback_hint' => 'Deze inhoud is nog niet vertaald in jouw taal. In plaats daarvan wordt de %LANGUAGE%-versie getoond.',
+    'section_lang_fallback_mini' => 'Nog niet vertaald',
     'policy_deadline_over' => 'De deadline is verstreken',
     'policy_deadline_over_comm' => 'Het is nu niet meer mogelijk om commentaar te leveren.',
     'policy_deadline_over_merge' => 'Het is nu niet meer mogelijk om voorstellen samen te voegen.',

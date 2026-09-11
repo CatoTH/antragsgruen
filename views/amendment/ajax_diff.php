@@ -32,7 +32,7 @@ $sections = $amendment->getSortedSections(true);
 foreach ($sections as $section) {
     $langAttr = $section->needsLanguageLabel() ? ' lang="' . Html::encode((string) $section->getDisplayLanguage()) . '"' : '';
     echo '<div' . $langAttr . '>';
-    echo HTMLTools::getSectionLanguageHint($section);
+    echo HTMLTools::getSectionLanguageHint($section, short: false);
     echo $section->getSectionType()->getAmendmentPlainHtml();
     echo '</div>';
 }

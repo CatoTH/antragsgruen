@@ -105,7 +105,7 @@ class SectionAutofillTest extends DBTestBase
 
         $motion->refresh();
         $section = $motion->getActiveSections()[0];
-        $this->assertSame('dummy', $section->getData());
+        $this->assertSame('<p>dummy</p>', $section->getData());
         $this->assertSame('test_stub_autofill', $section->getAutofillPluginId());
     }
 
@@ -221,7 +221,7 @@ class SectionAutofillTest extends DBTestBase
 
         $amendment->refresh();
         $refilled = $amendment->getActiveSections()[0];
-        $this->assertSame('dummy', $refilled->getData());
+        $this->assertSame('<p>dummy</p>', $refilled->getData());
         $this->assertSame('test_stub_autofill', $refilled->getAutofillPluginId());
     }
 
@@ -292,9 +292,9 @@ class SectionAutofillTest extends DBTestBase
             $sections[$section->sectionId] = $section;
         }
 
-        $this->assertSame('dummy-even', $sections[2310]->getData());
+        $this->assertSame('<p>dummy-even</p>', $sections[2310]->getData());
         $this->assertSame('test_stub_autofill_even_only', $sections[2310]->getAutofillPluginId());
-        $this->assertSame('dummy', $sections[2311]->getData());
+        $this->assertSame('<p>dummy</p>', $sections[2311]->getData());
         $this->assertSame('test_stub_autofill', $sections[2311]->getAutofillPluginId());
     }
 }

@@ -16,6 +16,7 @@ return [
     'amend_number_perline' => 'M01-070 (Numrering per berörd rad)',
     'type_unavailable_language' => 'Detta är inte tillgängligt på detta språk. Tillgängliga språk: %LANGUAGES%.',
     'section_lang_fallback_hint' => 'Det här innehållet har ännu inte översatts till ditt språk. Visar istället %LANGUAGE%-versionen.',
+    'section_lang_fallback_mini' => 'Ännu inte översatt',
     'policy_deadline_over' => 'Tidsfristen har gått ut',
     'policy_deadline_over_comm' => 'Inga kommentarer är möjliga just nu.',
     'policy_deadline_over_merge' => 'Sammanfogning är inte möjlig just nu.',

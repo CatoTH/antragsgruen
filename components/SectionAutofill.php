@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace app\components;
 
-use app\models\db\{Amendment, AmendmentSection, IMotionSection, Motion, MotionSection};
+use app\models\db\{Amendment, IMotionSection, Motion};
+use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\Text;
 use app\models\settings\AntragsgruenApp;
 
 /**
@@ -22,7 +24,7 @@ class SectionAutofill
 {
     public static function fillEmptyMotionSections(Motion $motion): void
     {
-        $emptySections = self::findEmptySections($motion->getActiveSections());
+        $emptySections = self::findEmptyTextSections($motion->getActiveSections());
         if (count($emptySections) === 0) {
             return;
         }
@@ -38,7 +40,7 @@ class SectionAutofill
 
     public static function fillEmptyAmendmentSections(Amendment $amendment): void
     {
-        $emptySections = self::findEmptySections($amendment->getActiveSections());
+        $emptySections = self::findEmptyTextSections($amendment->getActiveSections());
         if (count($emptySections) === 0) {
             return;
         }
@@ -57,15 +59,24 @@ class SectionAutofill
      * @param T[] $sections
      * @return T[]
      */
-    private static function findEmptySections(array $sections): array
+    private static function findEmptyTextSections(array $sections): array
     {
+        $translatableTypes = [
+            ISectionType::TYPE_TITLE,
+            ISectionType::TYPE_TEXT_SIMPLE,
+            ISectionType::TYPE_TEXT_HTML,
+            ISectionType::TYPE_TEXT_EDITORIAL,
+            ISectionType::TYPE_TABULAR,
+        ];
+
         // An amendment section is always pre-filled with the motion's original text, even where the
         // amendment doesn't touch it - hasContentForFiltering() (does it actually differ from the
         // original?), not raw string emptiness, is what "nothing here yet" means for an amendment.
         // For a motion section, this is simply "not empty".
         return array_values(array_filter(
             $sections,
-            fn (IMotionSection $section): bool => !$section->hasContentForFiltering()
+            fn (IMotionSection $section): bool => in_Array($section->getSettings()->type, $translatableTypes) &&
+                                                  !$section->hasContentForFiltering()
         ));
     }
 
@@ -86,7 +97,15 @@ class SectionAutofill
                 $stillEmpty[] = $section;
                 continue;
             }
-            $section->setData($results[$section->sectionId]);
+
+            if ($section->getSectionType() instanceof Text) {
+                $content = HTMLTools::cleanSimpleHtml($results[$section->sectionId], []);
+            } else {
+                // Title, Tabular Data
+                $content = $results[$section->sectionId];
+            }
+
+            $section->setData($content);
             $section->markAsAutofilled($pluginId);
             $section->save();
         }

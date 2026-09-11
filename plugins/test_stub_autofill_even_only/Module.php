@@ -16,7 +16,7 @@ use app\plugins\ModuleBase;
  */
 class Module extends ModuleBase
 {
-    public const DUMMY_CONTENT = 'dummy-even';
+    public const DUMMY_CONTENT = '<p>dummy-even</p>';
 
     /**
      * @param MotionSection[] $sections

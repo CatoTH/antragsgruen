@@ -38,7 +38,7 @@ $sections = $amendment->getSortedSections(false);
 $parentAmendment = ($isAmendingOtherAmendment ? $amendment->amendedAmendment : null);
 
 $wrapLanguageHint = function (AmendmentSection $section, string $html): string {
-    $languageHint = HTMLTools::getSectionLanguageHint($section);
+    $languageHint = HTMLTools::getSectionLanguageHint($section, short: false);
     if ($languageHint === '') {
         return $html;
     }

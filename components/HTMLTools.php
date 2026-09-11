@@ -842,7 +842,7 @@ class HTMLTools
      * version exists), returns a disclaimer to render alongside it. Empty string if no disclaimer
      * is needed - most sections have a language-neutral or matching-language section.
      */
-    public static function getSectionLanguageHint(IMotionSection $section): string
+    public static function getSectionLanguageHint(IMotionSection $section, bool $short): string
     {
         $language = $section->getDisplayLanguage();
         if ($language === null || !$section->needsLanguageLabel()) {
@@ -850,9 +850,13 @@ class HTMLTools
         }
 
         $languageName = LanguageTools::getLanguageName($language);
-        $hint = str_replace('%LANGUAGE%', Html::encode($languageName), \Yii::t('structure', 'section_lang_fallback_hint'));
+        if ($short) {
+            return ' (' . \Yii::t('structure', 'section_lang_fallback_mini') . ')';
+        } else {
+            $hint = str_replace('%LANGUAGE%', Html::encode($languageName), \Yii::t('structure', 'section_lang_fallback_hint'));
 
-        return '<div class="alert alert-info alertLanguageFallback" lang="' . Html::encode($language) . '">' . $hint . '</div>';
+            return '<div class="alert alert-info alertLanguageFallback" lang="' . Html::encode($language) . '">' . $hint . '</div>';
+        }
     }
 
     /**

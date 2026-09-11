@@ -97,7 +97,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $propo
         if ($section->isLayoutRight() && $bottom === '') {
             $right .= '<section class="sectionType' . $sectionType . '" aria-label="' . Html::encode($section->getSectionTitle()) . '"' . $langAttr . '>';
             $right .= $nonPublicHint;
-            $right .= \app\components\HTMLTools::getSectionLanguageHint($section);
+            $right .= \app\components\HTMLTools::getSectionLanguageHint($section, short: false);
             $right .= $section->getSectionType()->getSimple(true);
             $right .= '</section>';
         } else {
@@ -126,7 +126,7 @@ echo $cache->getCached(function () use ($motion, $sections, $commentForm, $propo
                     $sectionText .= '<h2 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h2>';
                 }
                 $sectionText .= $nonPublicHint;
-                $sectionText .= \app\components\HTMLTools::getSectionLanguageHint($section);
+                $sectionText .= \app\components\HTMLTools::getSectionLanguageHint($section, short: false);
 
                 $commOp = $openedComments[$section->sectionId] ?? [];
 

@@ -90,15 +90,16 @@ $titleSection = $motion->getTitleSectionForDisplay($readerLanguage);
 $titleNeedsLabel = ($titleSection && $titleSection->needsLanguageLabel($readerLanguage));
 $titleLangAttr = $titleNeedsLabel ? ' lang="' . Html::encode((string) $titleSection->getDisplayLanguage()) . '"' : '';
 
-echo '<div class="primaryHeader">';
+echo '<div class="primaryHeader"><h1' . $titleLangAttr . '>';
 if ($motion->isResolution()) {
-    echo '<h1' . $titleLangAttr . '>' . Html::encode($motion->getTitleWithIntroForDisplay($readerLanguage)) . '</h1>';
+    echo Html::encode($motion->getTitleWithIntroForDisplay($readerLanguage));
 } else {
-    echo '<h1' . $titleLangAttr . '>' . $motion->getEncodedTitleWithPrefixForDisplay($readerLanguage) . '</h1>';
+    echo $motion->getEncodedTitleWithPrefixForDisplay($readerLanguage);
 }
 if ($titleNeedsLabel) {
-    echo \app\components\HTMLTools::getSectionLanguageHint($titleSection);
+    echo \app\components\HTMLTools::getSectionLanguageHint($titleSection, short: true);
 }
+echo '</h1>';
 echo $fullscreenButton;
 echo '</div>';
 
