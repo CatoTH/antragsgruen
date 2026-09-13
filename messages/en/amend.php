@@ -272,8 +272,14 @@ return [
     'confirmed_support_phase'           => "You created the amendment.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>%ADD_REQUIREMENT%.<br>\nSend the following link to gain support for your amendment:",
     'confirmed_support_phase_addfemale' => ', including %MIN% women',
     'confirmed_support_phase_ww'        => '', // Not relevant
-    'submitted_adminnoti_title'         => 'New amendment',
-    'submitted_adminnoti_body'          => "A new amendment was submitted.\nMotion: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
+    'submitted_adminnoti_title'         => [
+        'text' => 'New amendment',
+        'description' => 'Supported placeholders: %TITLE%, %INITIATOR%, %STATUS%',
+    ],
+    'submitted_adminnoti_body'          => [
+        'text' => "A new amendment was submitted.\nMotion: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
+        "description" => 'Supported placeholders: %TITLE%, %INITIATOR%, %LINK%, %STATUS%',
+    ],
     'submitted_screening_email'         => "Hi,\n\nYou just submitted an amendment. It will now be reviewed and then published. You will be notified separately, once this happens.\n\nYou can see the amendment here: %LINK%",
     'submitted_screening_email_subject' => 'Amendment submitted',
     'support_collect_explanation_title' => 'Find supporters',
