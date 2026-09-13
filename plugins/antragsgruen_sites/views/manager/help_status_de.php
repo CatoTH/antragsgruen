@@ -162,7 +162,7 @@ $controller->layoutParams->fullWidth = true;
             <td><em>Rein informativer Status</em></td>
         </tr>
         <tr>
-            <th>Antwort</th>
+            <th>Vertagt</th>
             <td>Ja</td>
             <td><em>Rein informativer Status</em></td>
         </tr>
@@ -170,6 +170,11 @@ $controller->layoutParams->fullWidth = true;
             <th>Verschoben</th>
             <td>Ja</td>
             <td>Ein Platzhalter-Antrag an der ursprünglichen Stelle, um die Verschiebung an eine andere Stelle (anderer Tagesordnungspunkt oder Veranstaltung) transparent zu machen.</td>
+        </tr>
+        <tr>
+            <th>Antwort</th>
+            <td>Nein</td>
+            <td>Interner Status, um eine nicht-sichtbare Antwort auf einen anderen Antrag zu markieren.</td>
         </tr>
         <tr>
             <th>Vorgeschlagene Verschiebung von anderem Antrag</th>

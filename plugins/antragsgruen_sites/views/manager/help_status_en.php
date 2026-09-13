@@ -162,7 +162,7 @@ $controller->layoutParams->fullWidth = true;
             <td><em>Purely informational status without special functionality/em></td>
         </tr>
         <tr>
-            <th>Response</th>
+            <th>Adjourned</th>
             <td>Yes</td>
             <td><em>Purely informational status without special functionality</em></td>
         </tr>
@@ -170,6 +170,11 @@ $controller->layoutParams->fullWidth = true;
             <th>Moved</th>
             <td>Yes</td>
             <td>A placeholder motion at its original position, to set a link to a different position after this motion has been moved to a different consultation or agenda item.</td>
+        </tr>
+        <tr>
+            <th>Response</th>
+            <td>No</td>
+            <td>Internal status to indicate that a motion is a non-visble response to another motion.</td>
         </tr>
         <tr>
             <th>Proposed move from other motion</th>
