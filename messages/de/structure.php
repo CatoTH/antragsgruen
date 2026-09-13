@@ -186,6 +186,7 @@ return [
     'STATUS_PAUSED'                       => 'Pausiert',
     'STATUS_MISSING_INFORMATION'          => 'Informationen fehlen',
     'STATUS_DISMISSED'                    => 'Nicht zugelassen',
+    'STATUS_ADJOURNED'                    => 'Vertagt',
     'STATUS_COLLECTING_SUPPORTERS'        => 'Unterstützer*innen sammeln',
     'STATUS_DRAFT_ADMIN'                  => 'Entwurf (Admin)',
     'STATUS_PROCESSED'                    => 'Behandelt',
@@ -213,6 +214,7 @@ return [
     'PROPOSED_OBSOLETED_BY_MOT'   => 'Erledigt durch anderen Antrag',
     'PROPOSED_CUSTOM_STRING'      => 'Sonstiger Status',
     'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Verschoben zu anderem Antrag',
+    'PROPOSED_ADJOURNED'          => 'Vertagt',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',

@@ -28,55 +28,43 @@ class IMotionStatusEngine
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_DRAFT,
             \Yii::t('structure', 'STATUS_DRAFT'),
-            null,
-            false,
-            true
+            userInvisible: true
         );
 
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_SUBMITTED_UNSCREENED,
             \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
-            null,
-            false,
-            !$this->consultation->getSettings()->screeningMotionsShown
+            userInvisible: !$this->consultation->getSettings()->screeningMotionsShown
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
             \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED_CHECKED'),
-            null,
-            false,
-            !$this->consultation->getSettings()->screeningMotionsShown
+            userInvisible: !$this->consultation->getSettings()->screeningMotionsShown
         );
         $statuses[] = new IMotionStatus(IMotion::STATUS_SUBMITTED_SCREENED, \Yii::t('structure', 'STATUS_SUBMITTED_SCREENED'));
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_ACCEPTED,
             \Yii::t('structure', 'STATUS_ACCEPTED'),
             \Yii::t('structure', 'STATUSV_ACCEPTED'),
-            false,
-            false,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND')
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_REJECTED,
             \Yii::t('structure', 'STATUS_REJECTED'),
             \Yii::t('structure', 'STATUSV_REJECTED'),
-            false,
-            false,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_REJECTED')
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_REJECTED')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MODIFIED_ACCEPTED,
             \Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
             \Yii::t('structure', 'STATUSV_MODIFIED_ACCEPTED'),
-            false,
-            false,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED')
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MODIFIED,
@@ -103,83 +91,71 @@ class IMotionStatusEngine
             IMotion::STATUS_REFERRED,
             \Yii::t('structure', 'STATUS_REFERRED'),
             \Yii::t('structure', 'STATUSV_REFERRED'),
-            false,
-            false,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_REFERRED')
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_REFERRED')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_VOTE,
             \Yii::t('structure', 'STATUS_VOTE'),
             \Yii::t('structure', 'STATUSV_VOTE'),
-            false,
-            false,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_VOTE')
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_VOTE')
         );
         $statuses[] = new IMotionStatus(IMotion::STATUS_PAUSED, \Yii::t('structure', 'STATUS_PAUSED'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_MISSING_INFORMATION, \Yii::t('structure', 'STATUS_MISSING_INFORMATION'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_DISMISSED, \Yii::t('structure', 'STATUS_DISMISSED'));
         $statuses[] = new IMotionStatus(
+            IMotion::STATUS_ADJOURNED,
+            \Yii::t('structure', 'STATUS_ADJOURNED'),
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_ADJOURNED')
+        );
+        $statuses[] = new IMotionStatus(
             IMotion::STATUS_COLLECTING_SUPPORTERS,
             \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
-            null,
-            false,
-            true
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_DRAFT_ADMIN,
             \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
-            null,
-            false,
-            true
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(IMotion::STATUS_PROCESSED, \Yii::t('structure', 'STATUS_PROCESSED'));
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_WITHDRAWN_INVISIBLE,
             \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
-            null,
-            false,
-            true
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_OBSOLETED_BY_MOTION,
             \Yii::t('structure', 'STATUS_OBSOLETED_BY_MOTION'),
-            null,
-            false,
-            !$this->consultation->getSettings()->obsoletedByMotionsShown,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT')
+            userInvisible: !$this->consultation->getSettings()->obsoletedByMotionsShown,
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_OBSOLETED_BY_AMENDMENT,
             \Yii::t('structure', 'STATUS_OBSOLETED_BY_AMEND'),
-            null,
-            false,
-            !$this->consultation->getSettings()->obsoletedByMotionsShown,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND')
+            userInvisible: !$this->consultation->getSettings()->obsoletedByMotionsShown,
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_CUSTOM_STRING,
             \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
-            null,
-            false,
-            false,
-            true,
-            true,
-            \Yii::t('structure', 'PROPOSED_CUSTOM_STRING')
+            motionProposedProcedureStatus: true,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_CUSTOM_STRING')
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_INLINE_REPLY,
             \Yii::t('structure', 'STATUS_INLINE_REPLY'),
-            null,
-            false,
-            true
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(IMotion::STATUS_RESOLUTION_PRELIMINARY, \Yii::t('structure', 'STATUS_RESOLUTION_PRELIMINARY'));
         $statuses[] = new IMotionStatus(IMotion::STATUS_RESOLUTION_FINAL, \Yii::t('structure', 'STATUS_RESOLUTION_FINAL'));
@@ -189,46 +165,44 @@ class IMotionStatusEngine
             IMotion::STATUS_DELETED,
             \Yii::t('structure', 'STATUS_DELETED'),
             \Yii::t('structure', 'STATUSV_DELETED'),
-            true,
-            true
+            adminInvisible: true,
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
             \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC'),
             null,
-            true,
-            true
+            adminInvisible: true,
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE'),
             null,
-            true,
-            true
+            adminInvisible: true,
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
             \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT'),
             null,
-            true,
-            true
+            adminInvisible: true,
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_PROPOSED_MODIFIED_MOTION,
             \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_MOTION'),
             null,
-            true,
-            true
+            adminInvisible: true,
+            userInvisible: true
         );
         $statuses[] = new IMotionStatus(
             IMotion::STATUS_PROPOSED_MOVE_TO_OTHER_MOTION,
             \Yii::t('structure', 'STATUS_STATUS_PROPOSED_MOVE_TO_OTHER_MOTION'),
-            null,
-            false,
-            true,
-            false,
-            true,
-            \Yii::t('structure', 'PROPOSED_MOVE_TO_OTHER_MOTION')
+            userInvisible: true,
+            motionProposedProcedureStatus: false,
+            amendmentProposedProcedureStatus: true,
+            proposedProcedureName: \Yii::t('structure', 'PROPOSED_MOVE_TO_OTHER_MOTION')
         );
 
         $this->allStatusesCache = $statuses;

@@ -72,7 +72,7 @@ return [
     'preset_bdk_name' => 'Njemačka savezna konvencija', // Original: German federal convention
     'preset_bdk_desc' => 'Unaprijed postavljene postavke slične saveznoj konvenciji njemačke Zelene stranke. Ova postavka nema smisla izvan Njemačke.', // Original: Presets similar to the federal convention of the German Green Party. This setting does not make sense outside of Germany.
     'preset_election_name' => 'Prijava / izbori', // Original: Application / elections
-    'preset_election_desc' => '', // Original: 
+    'preset_election_desc' => '', // Original:
     'preset_motions_name' => 'Predlozi', // Original: Motions
     'preset_motions_desc' => 'Svako može stvarati predloge i amandmane. Međutim, administratori ih moraju pregledati prije objavljivanja.', // Original: Everyone can create motions and amendments. They need to be reviewed by administrators before publication, though.
     'preset_party_name' => 'Politička konvencija', // Original: Political convention
@@ -102,7 +102,7 @@ return [
     'preset_app_age' => 'Starost', // Original: Age
     'preset_app_birthcity' => 'Mjesto rođenja', // Original: Place of birth
     'preset_app_intro' => 'Uvod', // Original: Introduction
-    'preset_app_title_int' => 'Aplikacija: ', // Original: Application: 
+    'preset_app_title_int' => 'Aplikacija: ', // Original: Application:
     'preset_motion_singular' => 'Predlog', // Original: Motion
     'preset_motion_plural' => 'Predlozi', // Original: Motions
     'preset_motion_call' => 'Pokreni predlog', // Original: Start a motion
@@ -164,6 +164,7 @@ return [
     'STATUS_PAUSED' => 'Pauziran', // Original: Paused
     'STATUS_MISSING_INFORMATION' => 'Informacije koje nedostaju', // Original: Missing information
     'STATUS_DISMISSED' => 'Odbačen', // Original: Dismissed
+    'STATUS_ADJOURNED' => 'Odgođeno',
     'STATUS_COLLECTING_SUPPORTERS' => 'Poziv za podržavaoce', // Original: Call for supporters
     'STATUS_DRAFT_ADMIN' => 'Nacrt (Admin)', // Original: Draft (Admin)
     'STATUS_PROCESSED' => 'Obrađen', // Original: Processed
@@ -190,6 +191,7 @@ return [
     'PROPOSED_OBSOLETED_BY_MOT' => 'Obrađeno drugim predlogom', // Original: Handled by another motion
     'PROPOSED_CUSTOM_STRING' => 'Prilagođeni status', // Original: Custom status
     'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Premješteno na drugi predlog', // Original: Moved to other motion
+    'PROPOSED_ADJOURNED' => 'Odgođeno',
     'section_comment_none' => 'Nema komentara', // Original: No comments
     'section_comment_motion' => 'Komentirajte cijeli predlog kao jedan', // Original: Comment the whole motion as one
     'section_comment_paragraph' => 'Komentiranje pojedinačnih paragrafa', // Original: Comment single paragraphs

@@ -19,6 +19,7 @@
 - It is now possible to set deadlines for amendments that amend other amendments.
 - Amendments to amendments have now a new view that shows the two layers of changes nested into each other (making it clearer which changes are new, and which ones from the original amendment).
 - Several improvements regarding accessibility - including more work on WCAG AA compliance.
+- A new status exists for motions, amdments and proposed procedures: "adjourned".
 
 ### Version 4.17.2 (2026-08-23)
 

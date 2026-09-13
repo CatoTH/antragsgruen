@@ -134,6 +134,7 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public const STATUS_PAUSED = 12;
     public const STATUS_MISSING_INFORMATION = 13;
     public const STATUS_DISMISSED = 14;
+    public const STATUS_ADJOURNED = 33;
 
     public function isInScreeningProcess(): bool
     {

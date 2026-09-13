@@ -186,6 +186,7 @@ return [
     'STATUS_PAUSED'                       => 'Paused',
     'STATUS_MISSING_INFORMATION'          => 'Missing information',
     'STATUS_DISMISSED'                    => 'Dismissed',
+    'STATUS_ADJOURNED'                    => 'Adjourned',
     'STATUS_COLLECTING_SUPPORTERS'        => 'Call for supporters',
     'STATUS_DRAFT_ADMIN'                  => 'Draft (Admin)',
     'STATUS_PROCESSED'                    => 'Processed',
@@ -213,6 +214,7 @@ return [
     'PROPOSED_OBSOLETED_BY_MOT'   => 'Handled by another motion',
     'PROPOSED_CUSTOM_STRING'      => 'Custom status',
     'PROPOSED_MOVE_TO_OTHER_MOTION' => 'Moved to other motion',
+    'PROPOSED_ADJOURNED'          => 'Adjourned',
 
     'section_comment_none'      => 'No comments',
     'section_comment_motion'    => 'Comment the whole motion as one',
