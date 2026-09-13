@@ -31,19 +31,25 @@ class AmendmentCreated extends Base implements IEmailAdmin
 
     public function getEmailAdminText(): string
     {
-        // @TODO Use different texts depending on the status
-
         $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
+        $statusNames = $this->amendment->getMyConsultation()->getStatuses()->getStatusNames();
+
         return str_replace(
-            ['%TITLE%', '%LINK%', '%INITIATOR%'],
-            [$this->amendment->getTitle(), $amendmentLink, $this->amendment->getInitiatorsStr()],
+            ['%TITLE%', '%LINK%', '%INITIATOR%', '%STATUS%'],
+            [$this->amendment->getTitle(), $amendmentLink, $this->amendment->getInitiatorsStr(), $statusNames[$this->amendment->status]],
             $this->amendment->getMyMotionType()->getConsultationTextWithFallback('amend', 'submitted_adminnoti_body')
         );
     }
 
     public function getEmailAdminSubject(): string
     {
-        return $this->amendment->getMyMotionType()->getConsultationTextWithFallback('amend', 'submitted_adminnoti_title');
+        $statusNames = $this->amendment->getMyConsultation()->getStatuses()->getStatusNames();
+
+        return str_replace(
+            ['%TITLE%', '%INITIATOR%', '%STATUS%'],
+            [$this->amendment->getTitle(), $this->amendment->getInitiatorsStr(), $statusNames[$this->amendment->status]],
+            $this->amendment->getMyMotionType()->getConsultationTextWithFallback('amend', 'submitted_adminnoti_title')
+        );
     }
 
     public function sendInitiatorConfirmation(): void

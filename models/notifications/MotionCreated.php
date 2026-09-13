@@ -26,12 +26,13 @@ class MotionCreated extends Base implements IEmailAdmin
 
     public function getEmailAdminText(): string
     {
-        // @TODO Use different texts depending on the status
         $motionType = $this->motion->getMyMotionType();
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
+        $statusNames = $this->motion->getMyConsultation()->getStatuses()->getStatusNames();
+
         return str_replace(
-            ['%TITLE%', '%LINK%', '%INITIATOR%'],
-            [$this->motion->getTitleWithIntro(), $motionLink, $this->motion->getInitiatorsStr()],
+            ['%TITLE%', '%LINK%', '%INITIATOR%', '%STATUS%'],
+            [$this->motion->getTitleWithIntro(), $motionLink, $this->motion->getInitiatorsStr(), $statusNames[$this->motion->status]],
             $motionType->getConsultationTextWithFallback('motion', 'submitted_adminnoti_body')
         );
     }
@@ -39,7 +40,13 @@ class MotionCreated extends Base implements IEmailAdmin
     public function getEmailAdminSubject(): string
     {
         $motionType = $this->motion->getMyMotionType();
-        return $motionType->getConsultationTextWithFallback('motion', 'submitted_adminnoti_title');
+        $statusNames = $this->motion->getMyConsultation()->getStatuses()->getStatusNames();
+
+        return str_replace(
+            ['%TITLE%', '%INITIATOR%', '%STATUS%'],
+            [$this->motion->getTitleWithIntro(), $this->motion->getInitiatorsStr(), $statusNames[$this->motion->status]],
+            $motionType->getConsultationTextWithFallback('motion', 'submitted_adminnoti_title')
+        );
     }
 
     public function sendInitiatorConfirmation(): void

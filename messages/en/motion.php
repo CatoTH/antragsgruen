@@ -274,8 +274,14 @@ return [
     'submitted_screening_email_subject'  => 'Motion submitted',
     'submitted_supp_phase_email'         => "Hi,\n\nyou have created the motion.\nTo officially submit it, it needs at least %MIN% supporters.\n\nSend the following link to gain support for your motion: \n\n%LINK%\n",
     'submitted_supp_phase_email_subject' => 'Motion created',
-    'submitted_adminnoti_title'          => 'New motion',
-    'submitted_adminnoti_body'           => "A new motion was created.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
+    'submitted_adminnoti_title'          => [
+        'text' => 'New motion',
+        'description' => 'Supported placeholders: %TITLE%, %INITIATOR%, %STATUS%',
+    ],
+    'submitted_adminnoti_body'           => [
+        'text' => "A new motion was created.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
+        'description' => 'Supported placeholders: %TITLE%, %INITIATOR%, %LINK%, %STATUS%',
+    ],
     'support_collect_explanation_title'  => 'Find supporters',
     'support_collect_explanation'        => 'Motions and amendments submissions by individuals require at least %MIN% supporters to proceed. Please follow this procedure:<br><ol>
         <li><strong>Create a draft:</strong> Enter the motion and your contact data on this page. Please confirm on the following page that you want to create this motion.</li>
