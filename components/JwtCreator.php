@@ -48,6 +48,9 @@ class JwtCreator
                 $privateKey = $signingUser->getJwtSigningKey();
             } else {
                 $privateKey = self::USER_PREFIX_ANONYMOUS . AntragsgruenApp::getInstance()->randomSeed;
+                // Older installations have short randomSeeds. As this here is just for creating a JWT for unauthenticated users,
+                // we can live with this otherwise not very secure approach of just padding the key with zeros.
+                $privateKey = str_pad($privateKey, 32, '0', STR_PAD_RIGHT);
             }
         }
 
