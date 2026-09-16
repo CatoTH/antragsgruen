@@ -19,7 +19,7 @@ class ClaudeClient
     private const API_BASE_URI = 'https://api.anthropic.com';
     private const MESSAGES_PATH = '/v1/messages';
     private const ANTHROPIC_VERSION = '2023-06-01';
-    private const MAX_TOKENS = 8192;
+    private const MAX_TOKENS = 128000;
     private const TIMEOUT_SECONDS = 120;
 
     private ?Client $client;
