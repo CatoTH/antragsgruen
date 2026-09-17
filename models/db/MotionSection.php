@@ -321,7 +321,7 @@ class MotionSection extends IMotionSection
      * @param MotionSectionParagraph[] $paragraphs
      * @return MotionSectionParagraph[]
      */
-    private function ensureAtLeastOneParagraph(array $paragraphs, bool $includeAmendment): array
+    private function ensureAtLeastOneParagraph(array $paragraphs, bool $includeComments, bool $includeAmendment): array
     {
         if (count($paragraphs) === 0) {
             $para = new MotionSectionParagraph();
@@ -329,6 +329,9 @@ class MotionSection extends IMotionSection
             $para->paragraphNoWithoutSplitLists = 0;
             $para->lines = [];
             $para->origStr = '';
+            if ($includeComments) {
+                $para->comments = [];
+            }
             if ($includeAmendment) {
                 $para->amendmentSections = [];
             }
@@ -411,7 +414,7 @@ class MotionSection extends IMotionSection
             $return[$para->paragraphWithLineSplit] = $paragraph;
         }
         if ($minOnePara) {
-            $return = $this->ensureAtLeastOneParagraph($return, $includeAmendment);
+            $return = $this->ensureAtLeastOneParagraph($return, $includeComments, $includeAmendment);
         }
         if ($includeAmendment) {
             $amendmentSections = $this->getAmendmentSectionsToBeShownInMotionView();
@@ -419,7 +422,7 @@ class MotionSection extends IMotionSection
                 $paragraphs   = HTMLTools::sectionSimpleHTML($this->getData());
                 $amParagraphs = $amSec->diffDataToOrigParagraphs($paragraphs);
                 foreach ($amParagraphs as $amParagraph) {
-                    $return = $this->ensureAtLeastOneParagraph($return, $includeAmendment);
+                    $return = $this->ensureAtLeastOneParagraph($return, $includeComments, $includeAmendment);
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
                 }
             }

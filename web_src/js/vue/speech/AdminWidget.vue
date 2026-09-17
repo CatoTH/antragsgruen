@@ -202,6 +202,7 @@
 <script>
 import { postJson } from "/js/modules/shared/ApiClient.js";
 import { registerListener } from "/js/modules/shared/LiveData.js";
+import translate from "/js/vue/Translate.vue.js";
 
 export default {
   props: ['initQueue', 'csrf', 'componentAdminLink', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
@@ -406,7 +407,8 @@ export default {
     },
     resetQueue: function () {
       const widget = this;
-      bootbox.confirm(resetConfirmation, function(result) {
+      const confirmStr = translate.getTranslation("speech", "admin_reset_dialog");
+      bootbox.confirm(confirmStr, function(result) {
         if (result) {
           postJson(widget.resetQueueUrl.replace(/QUEUEID/, widget.queue.id), {}).then(function (data) {
             widget.applyQueueUpdate(data);
