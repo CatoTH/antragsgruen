@@ -240,7 +240,10 @@ return [
         'text' => 'Reset / empty speaking list',
         'js' => true,
     ],
-    'admin_reset_dialog'     => 'Do you want to reset the whole speaking list, including the history of previous speakers?',
+    'admin_reset_dialog'     => [
+        'text' => 'Do you want to reset the whole speaking list, including the history of previous speakers?',
+        'js' => true,
+    ],
 
     'admin_subq_start' => [
         'text' => 'Start speaking',
