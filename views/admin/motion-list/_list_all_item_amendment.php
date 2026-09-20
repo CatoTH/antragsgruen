@@ -46,7 +46,7 @@ if ($colMark) {
 }
 if ($colType) {
     echo '<td class="typeCol">';
-    if ($motionType->amendmentsOnly && $entry->amendingAmendmentId) {
+    if ($motionType->amendmentsOnly && $entry->amendingAmendmentId === null) {
         if ($entry->getMyMotionType()->motionPrefix) {
             echo Html::encode(trim($entry->getMyMotionType()->motionPrefix, ":-. \t\n\r\0\x0B/"));
         } else {
