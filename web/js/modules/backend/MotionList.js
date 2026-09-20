@@ -97,7 +97,7 @@ export class MotionList {
                         link = link.replace("MOTIONTYPES", motionTypes.join(","));
                         const url = new URL(link, window.location.origin);
                         const path = url.pathname + url.search;
-                        if (/^\/[a-zA-Z0-9\-_/?=&.,]*$/.test(path)) {
+                        if (/^\/[a-zA-Z0-9\-_/?=&.,%]*$/.test(path)) {
                             $(this).attr("href", path);
                         } else {
                             console.error("Rejected unsafe redirect path:", path);
