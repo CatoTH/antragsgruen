@@ -179,7 +179,7 @@ class StdHooks extends Hooks
                 return 1;
             }
 
-            return strnatcasecmp($amend1->titlePrefix, $amend2->titlePrefix);
+            return strnatcasecmp($amend1->titlePrefix ?? '', $amend2->titlePrefix ?? '');
         });
 
         $before = '';

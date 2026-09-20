@@ -21,6 +21,7 @@
 - Several improvements regarding accessibility - including more work on WCAG AA compliance.
 - A new status exists for motions, amdments and proposed procedures: "adjourned".
 - The admin notification e-mail for new motion/amendment submission can now slighly better configured.
+- Bugfix: pasting text in amendments was broken.
 
 ### Version 4.17.2 (2026-08-23)
 

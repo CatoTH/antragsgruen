@@ -352,17 +352,20 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             $showMotionPrefix = false;
         }
+        $motionTitlePrefix = $this->getMyMotion()->getFormattedTitlePrefix() ?? '';
+        $amendmentTitlePrefix = $this->getFormattedTitlePrefix() ?? '';
+
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $this->getFormattedTitlePrefix() . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
+            return $amendmentTitlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
         } else {
-            if ($this->getMyMotion()->getFormattedTitlePrefix() !== '') {
+            if ($motionTitlePrefix !== '') {
                 if ($showMotionPrefix) {
-                    return $this->getFormattedTitlePrefix() . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->getFormattedTitlePrefix();
+                    return $amendmentTitlePrefix . \Yii::t('amend', 'amend_for') . $motionTitlePrefix;
                 } else {
-                    return $this->getFormattedTitlePrefix();
+                    return $amendmentTitlePrefix;
                 }
             } else {
-                return $this->getFormattedTitlePrefix() . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
+                return $amendmentTitlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
             }
         }
     }

@@ -94,7 +94,13 @@ echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 if ($params->jsErrorTracking) {
     echo $this->render('_error_tracking');
 }
-echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '" crossorigin="anonymous"></script>';
+
+echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-3.7.1.min.js') . '" crossorigin="anonymous"></script>';
+
+// With jQuery 4, there is one known but critical bug at the moment: when editing amendments,
+// that is, with CKEditor and the lite change tracking plugin being active, pasting text does not work.
+// Once we find a solution for that, we can update to jQuery 4 again.
+// echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '" crossorigin="anonymous"></script>';
 
 $consultation = $controller->consultation;
 if ($layout->provideJwt && $consultation) {
