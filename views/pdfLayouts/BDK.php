@@ -66,7 +66,7 @@ class BDK extends IPDFLayout
         $pdf->setDestination('motion' . $motion->id, 0, '');
         $pdf->Bookmark($motion->getTitleWithPrefix(), 0, 0, '', 'BI', [128,0,0], -1, '#motion' . $motion->id);
 
-        $pdf->setMotionTitle($motion->getFormattedTitlePrefix(), $motion->title);
+        $pdf->setMotionTitle($motion->getFormattedTitlePrefix() ?? '', $motion->title);
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
 
@@ -76,7 +76,7 @@ class BDK extends IPDFLayout
         }
 
         $motionData = '<span style="font-size: 20px; font-weight: bold">';
-        $motionData .= Html::encode($motion->getFormattedTitlePrefix()) . ' </span>';
+        $motionData .= Html::encode($motion->getFormattedTitlePrefix() ?? '') . ' </span>';
         $motionData .= '<span style="font-size: 16px; font-weight: bold;">';
         $motionData .= Html::encode($motion->title) . '</span>';
         $motionData .= '<br><br>';
@@ -105,7 +105,7 @@ class BDK extends IPDFLayout
         $pdf->setDestination('amendment' . $amendment->id, 0, '');
         $pdf->Bookmark($amendment->getTitleWithPrefix(), 0, 0, '', 'BI', [128,0,0], -1, '#amendment' . $amendment->id);
 
-        $pdf->setMotionTitle($amendment->getFormattedTitlePrefix(), '');
+        $pdf->setMotionTitle($amendment->getFormattedTitlePrefix() ?? '', '');
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
 
