@@ -13,6 +13,7 @@ enum MotionTypePolicyId: string
     case LOGGED_IN = 'logged_in';
     case ADMINS = 'admins';
     case USER_GROUPS = 'user_groups';
+    case GRUENES_NETZ = 'gruenes_netz';
 
     public static function fromPolicyInt(int $id): self
     {
@@ -22,6 +23,7 @@ enum MotionTypePolicyId: string
             IPolicy::POLICY_LOGGED_IN => self::LOGGED_IN,
             IPolicy::POLICY_ADMINS => self::ADMINS,
             IPolicy::POLICY_USER_GROUPS => self::USER_GROUPS,
+            IPolicy::POLICY_GRUENES_NETZ => self::GRUENES_NETZ,
             default => throw new \InvalidArgumentException('Unknown policy id: ' . $id),
         };
     }
@@ -34,6 +36,7 @@ enum MotionTypePolicyId: string
             self::LOGGED_IN => IPolicy::POLICY_LOGGED_IN,
             self::ADMINS => IPolicy::POLICY_ADMINS,
             self::USER_GROUPS => IPolicy::POLICY_USER_GROUPS,
+            self::GRUENES_NETZ => IPolicy::POLICY_GRUENES_NETZ,
         };
     }
 }
