@@ -158,7 +158,7 @@ echo '</div>';
 
 <?php
 
-if ($form->getAllowEditinginitiators()) {
+if ($form->getAllowEditingInitiators()) {
     $initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
     echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 }

@@ -17,10 +17,13 @@ export class MotionEditForm {
      */
     constructor(form) {
         this.$form = $(form);
-        $(".input-group.date").datetimepicker({
-            locale: $("html").attr('lang'),
-            format: 'L'
-        });
+
+        if ($(".input-group.date").length > 0) {
+            $(".input-group.date").datetimepicker({
+                locale: $("html").attr('lang'),
+                format: 'L'
+            });
+        }
 
         $(".wysiwyg-textarea").each(this.initWysiwyg.bind(this));
         $(".form-group.plain-text").each(this.initPlainTextFormGroup.bind(this));

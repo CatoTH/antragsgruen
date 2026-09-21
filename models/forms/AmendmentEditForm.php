@@ -129,7 +129,7 @@ class AmendmentEditForm
         return $form;
     }
 
-    public function getAllowEditinginitiators(): bool
+    public function getAllowEditingInitiators(): bool
     {
         return $this->allowEditingInitiators;
     }

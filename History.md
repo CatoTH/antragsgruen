@@ -22,6 +22,7 @@
 - A new status exists for motions, amdments and proposed procedures: "adjourned".
 - The admin notification e-mail for new motion/amendment submission can now slighly better configured.
 - Bugfix: pasting text in amendments was broken.
+- Bugfix: when "No Initiator" was selected for a motion type, the editing form was broken under some circumstances.
 
 ### Version 4.17.2 (2026-08-23)
 

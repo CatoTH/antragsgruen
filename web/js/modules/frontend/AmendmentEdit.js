@@ -35,10 +35,12 @@ export class AmendmentEdit {
         this.$form.find(".editorialChange input").on("change", this.editorialOpenerClicked.bind(this)).trigger("change");
         this.initGlobalAlternative();
 
-        $(".input-group.date").datetimepicker({
-            locale: this.lang,
-            format: 'L'
-        });
+        if ($(".input-group.date").length > 0) {
+            $(".input-group.date").datetimepicker({
+                locale: this.lang,
+                format: 'L'
+            });
+        }
 
         if (multiParagraphMode === AMEND_PARAGRAPHS_MULTIPLE) {
             this.initMultiParagraphMode();
