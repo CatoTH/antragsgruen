@@ -212,7 +212,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return MotionSection[]
      */
-    public function getActiveSections(?int $filterType = null, bool $showAdminSections = false): array
+    public function getActiveSections(?int $filterType = null, bool $showAdminSections = false, bool $autoCreateAll = false): array
     {
         $sections = [];
         $hadNonPublicSections = false;
@@ -237,7 +237,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         foreach ($this->getTypeSections() as $typeSection) {
-            if (!in_array($typeSection->id, $foundSectionTypes) && $typeSection->requiresAutoCreationWhenMissing()) {
+            if (!in_array($typeSection->id, $foundSectionTypes) && ($typeSection->requiresAutoCreationWhenMissing() || $autoCreateAll)) {
                 $emptySection = MotionSection::createEmpty($typeSection->id, $typeSection->getSettingsObj()->public, $this->id);
                 $emptySection->save();
 
