@@ -309,7 +309,7 @@ class MotionEditForm
 
         /** @var string[] $newHtmls */
         $newHtmls = [];
-        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE, autoCreateAll: true) as $section) {
             if (!isset($unsanitizedHtml[$section->sectionId])) {
                 // Not part of the submitted request - e.g. a section in a language the submitter
                 // doesn't edit. Leave it untouched.
