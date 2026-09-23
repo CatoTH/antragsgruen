@@ -14,5 +14,6 @@ class AdminAppearancePage extends BasePage
     public function saveForm(): void
     {
         $this->actor->submitForm('#consultationAppearanceForm', [], 'save');
+        $this->actor->waitForJS('return document.readyState === "complete"', 10);
     }
 }
