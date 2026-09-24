@@ -19,7 +19,9 @@ class AmendmentEditForm
     /** @var int[] */
     public array $tags = [];
 
+    /** @var AmendmentSection[] */
     public array $sections = [];
+
     public ?int $amendmentId = null;
     public string $reason = '';
     public string $editorial = '';

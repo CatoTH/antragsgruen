@@ -23,6 +23,7 @@
 - The admin notification e-mail for new motion/amendment submission can now slighly better configured.
 - Bugfix: pasting text in amendments was broken.
 - Bugfix: when "No Initiator" was selected for a motion type, the editing form was broken under some circumstances.
+- Bugfix: PDFs uploaded in non-public motion sections could not be viewed even by admins.
 
 ### Version 4.17.2 (2026-08-23)
 

@@ -121,10 +121,10 @@ foreach ($sections as $section) {
 
     // Both variants are rendered; the section's view mode dropdown switches between them
     echo '<div class="amendmentComparisonSection">';
-    echo '<div class="amendmentComparison" data-comparison-mode="' . ISectionType::AMENDMENT_COMPARISON_TO_ORIGINAL . '">';
+    echo '<div class="amendmentComparison hidden" data-comparison-mode="' . ISectionType::AMENDMENT_COMPARISON_TO_ORIGINAL . '">';
     echo $renderComparedToOriginal($section, true);
     echo '</div>';
-    echo '<div class="amendmentComparison hidden" data-comparison-mode="' . ISectionType::AMENDMENT_COMPARISON_TO_PARENT . '">';
+    echo '<div class="amendmentComparison" data-comparison-mode="' . ISectionType::AMENDMENT_COMPARISON_TO_PARENT . '">';
     echo $comparedToParent;
     echo '</div>';
     echo '</div>';
