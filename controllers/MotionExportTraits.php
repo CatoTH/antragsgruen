@@ -64,9 +64,10 @@ trait MotionExportTraits
      */
     public function actionViewpdf(string $motionSlug, int $sectionId, ?string $showAlways = null): ResponseInterface
     {
-        $motion    = $this->getMotionWithCheck($motionSlug);
+        $motion = $this->getMotionWithCheck($motionSlug);
+        $maySeeAdminSections = $this->consultation->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT, PrivilegeQueryContext::motion($motion));
 
-        foreach ($motion->getActiveSections() as $section) {
+        foreach ($motion->getActiveSections(showAdminSections: $maySeeAdminSections) as $section) {
             if ($section->sectionId === $sectionId) {
                 if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
                     !$this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))
