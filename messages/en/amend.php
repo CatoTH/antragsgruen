@@ -252,6 +252,7 @@ return [
     'err_edit_forbidden'                => 'Not allowed to edit this amendment.',
     'err_not_visible_title'             => 'Not accessible',
     'err_not_visible'                   => 'This amendment is not public.',
+    'err_no_three_level_amendment'      => 'It is not possible to create amendments to amendments to amendents.',
     'withdraw_done'                     => 'The amendment has been withdrawn.',
     'withdraw_bread'                    => 'Withdraw',
     'withdraw'                          => 'Withdraw',

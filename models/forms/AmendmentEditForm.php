@@ -263,6 +263,9 @@ class AmendmentEditForm
         if (!$this->motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendingAmendment)) {
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
+        if ($amendingAmendment?->amendingAmendmentId) {
+            throw new FormError(\Yii::t('amend', 'err_no_three_level_amendment'));
+        }
 
         $amendment = new Amendment();
         $supportForm = $this->motion->motionType->getAmendmentSupportTypeClass();
