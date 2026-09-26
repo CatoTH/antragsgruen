@@ -329,6 +329,8 @@ abstract class SupportBase
      */
     private function getEditableInitiator(array $supporters, Consultation $consultation): ?ISupporter
     {
+        $supporters = array_values(array_filter($supporters, fn ($supp) => $supp->role === ISupporter::ROLE_INITIATOR));
+
         $user = User::getCurrentUser();
         $initiatorAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, null);
 
