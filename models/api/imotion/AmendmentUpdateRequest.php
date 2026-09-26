@@ -64,6 +64,7 @@ class AmendmentUpdateRequest
                 continue;
             }
             $sectionId = $sectionDef->id;
+            assert($sectionId !== null);
 
             if (!empty($files['sections']['error'][$sectionId]) && $files['sections']['error'][$sectionId] > 0) {
                 $error = $files['sections']['error'][$sectionId];

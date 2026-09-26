@@ -856,6 +856,8 @@ class VotingPayloadBuilder
     private function getVoter(Vote $vote): VotingVoter
     {
         $user = $vote->getUser();
+        assert($user !== null);
+
         $consultation = $this->block->getMyConsultation();
 
         $name = match ($this->block->getSettings()->votesNames) {
