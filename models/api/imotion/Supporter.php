@@ -10,7 +10,7 @@ class Supporter
 {
     public function __construct(
         public int $id,
-        public string $name,
+        public ?string $name = null,
         public ?SupporterType $type = null,
         public ?string $organization = null,
         public ?string $gender = null,
