@@ -354,6 +354,10 @@ class AmendmentController extends Base
                 $amendingAmendment = $adoptAmend;
             }
         }
+        if ($amendingAmendment?->amendingAmendmentId) {
+            $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_no_three_level_amendment'));
+            return new RedirectResponse(UrlHelper::homeUrl());
+        }
 
         if (!$motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendingAmendment)) {
             if ($motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: true, throwExceptions: false, amendingAmendment: $amendingAmendment)) {

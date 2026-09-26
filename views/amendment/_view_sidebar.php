@@ -50,7 +50,7 @@ if ($amendment->canWithdraw()) {
     $sidebarRows++;
 }
 
-if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
+if ($amendment->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments && $amendment->amendingAmendmentId === null) {
     try {
         $amendment->getMyMotion()->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: true, throwExceptions: true, amendingAmendment: $amendment);
 
