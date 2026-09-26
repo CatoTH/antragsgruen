@@ -29,7 +29,7 @@ class SupportRequest
         if ($user && ($user->fixedData & User::FIXED_NAME)) {
             $name = $user->name;
         } else {
-            $name = (string)($post['motionSupportName'] ?? '');
+            $name = $post['motionSupportName'] ?? null;
         }
         if ($user && ($user->fixedData & User::FIXED_ORGA)) {
             $orga = $user->organization;
