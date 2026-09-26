@@ -24,6 +24,7 @@
 - Bugfix: pasting text in amendments was broken.
 - Bugfix: when "No Initiator" was selected for a motion type, the editing form was broken under some circumstances.
 - Bugfix: PDFs uploaded in non-public motion sections could not be viewed even by admins.
+- Bugfix: The collapsible menu navigation on small screens was broken.
 
 ### Version 4.17.2 (2026-08-23)
 

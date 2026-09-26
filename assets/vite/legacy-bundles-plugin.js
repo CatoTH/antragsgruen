@@ -15,6 +15,7 @@ const BUNDLES = {
         'node_modules/entreprise7pro-bootstrap/js/dropdown.js',
         'node_modules/entreprise7pro-bootstrap/js/modal.js',
         'node_modules/entreprise7pro-bootstrap/js/popover.js',
+        'node_modules/entreprise7pro-bootstrap/js/collapse.js',
         'node_modules/bootbox/dist/bootbox.all.js',
         'web_src/js/jquery.isonscreen.js',
         'web_src/js/antragsgruen.js',
