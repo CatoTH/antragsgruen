@@ -4,7 +4,7 @@
 #  - phpstan-baseline.neon
 
 parameters:
-    level: 7
+    level: 8
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false
     ignoreErrors:
