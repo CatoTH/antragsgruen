@@ -33,6 +33,8 @@ class MotionUpdateRequest
         $sections = [];
         foreach ($motionType->motionSections as $sectionDef) {
             $sectionId = $sectionDef->id;
+            assert($sectionId !== null);
+
             if ($sectionDef->type === ISectionType::TYPE_TITLE && isset($post['motion']['title'])) {
                 $sections[] = new MotionUpdateSection($sectionId, $post['motion']['title']);
             } elseif (isset($post['sectionDelete'][$sectionId])) {

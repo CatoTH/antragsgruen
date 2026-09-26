@@ -2635,7 +2635,6 @@ components:
       type: object
       required:
         - id
-        - name
       properties:
         id:
           type: integer
