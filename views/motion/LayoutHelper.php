@@ -663,7 +663,7 @@ class LayoutHelper
         $user = User::getCurrentUser();
         $currUserId = ($user ? $user->id : 0);
         $iAmSupporting = false;
-        $canSupport = $policy->checkCurrUser();
+        $canSupport = $policy->checkCurrUser(allowAdmins: false);
         $cantSupportMsg = ($canSupport ? '' : $policy->getPermissionDeniedSupportMsg());
         if ($cantSupportMsg === \Yii::t('structure', 'policy_nobody_supp_denied')) {
             $cantSupportMsg = '';

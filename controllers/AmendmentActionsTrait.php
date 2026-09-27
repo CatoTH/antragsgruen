@@ -209,7 +209,7 @@ trait AmendmentActionsTrait
     private function amendmentLikeDislike(Amendment $amendment, string $role, string $string, string $name, string $orga = '', string $gender = '', bool $nonPublic = false): void
     {
         $currentUser = User::getCurrentUser();
-        if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
+        if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser(allowAdmins: false)) {
             throw new FormError('Supporting this amendment is not possible');
         }
 

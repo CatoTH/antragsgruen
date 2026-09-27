@@ -172,7 +172,7 @@ class AmendmentSupporter extends ISupporter
                 }
             }
         }
-        if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
+        if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser(allowAdmins: false)) {
             throw new Access('Supporting this amendment is not possible', 403);
         }
 

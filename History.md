@@ -21,6 +21,7 @@
 - Several improvements regarding accessibility - including more work on WCAG AA compliance.
 - A new status exists for motions, amdments and proposed procedures: "adjourned".
 - The admin notification e-mail for new motion/amendment submission can now slighly better configured.
+- Admins can not support amendments / motions anymore if they are not allowed by the motion type's user group permissions.
 - Bugfix: pasting text in amendments was broken.
 - Bugfix: when "No Initiator" was selected for a motion type, the editing form was broken under some circumstances.
 - Bugfix: PDFs uploaded in non-public motion sections could not be viewed even by admins.

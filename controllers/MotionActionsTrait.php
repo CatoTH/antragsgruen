@@ -186,7 +186,7 @@ trait MotionActionsTrait
     private function motionLikeDislike(Motion $motion, string $role, string $string, string $name, string $orga = '', string $gender = '', bool $nonPublic = false): void
     {
         $currentUser = User::getCurrentUser();
-        if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
+        if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser(allowAdmins: false)) {
             throw new FormError('Supporting this motion is not possible');
         }
 
