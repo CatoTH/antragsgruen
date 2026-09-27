@@ -187,13 +187,14 @@ class Permissions
     public function isCurrentlyAmendable(Motion $motion, bool $allowAdmins = true, bool $assumeLoggedIn = false, bool $exceptions = false, ?Amendment $amendingAmendment = null): bool
     {
         $iAmAdmin = User::havePrivilege($motion->getMyConsultation(), Privileges::PRIVILEGE_ANY, PrivilegeQueryContext::motion($motion));
+        $motionType = $motion->getMyMotionType();
 
         if (!($allowAdmins && $iAmAdmin)) {
-            if (!$motion->getMyMotionType()->isAvailableInLanguage(LanguageTools::getCurrentLanguage())) {
+            if (!$motionType->isAvailableInLanguage(LanguageTools::getCurrentLanguage())) {
                 if ($exceptions) {
                     $languages = array_map(
                         fn (string $language): string => LanguageTools::getLanguageName($language),
-                        $motion->getMyMotionType()->getDefinedSectionLanguages()
+                        $motionType->getDefinedSectionLanguages()
                     );
                     $msg = str_replace('%LANGUAGES%', implode(', ', $languages), \Yii::t('structure', 'type_unavailable_language'));
                     throw new NotAmendable($msg, true);
@@ -214,14 +215,18 @@ class Permissions
                 Motion::STATUS_DELETED,
                 Motion::STATUS_DRAFT,
                 Motion::STATUS_COLLECTING_SUPPORTERS,
-                Motion::STATUS_SUBMITTED_UNSCREENED,
-                Motion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
                 Motion::STATUS_DRAFT_ADMIN,
                 Motion::STATUS_MODIFIED,
                 Motion::STATUS_RESOLUTION_PRELIMINARY,
                 Motion::STATUS_RESOLUTION_FINAL,
                 Motion::STATUS_MOVED,
             ];
+            if (!$motionType->amendmentsOnly) {
+                // For statute amendments, the statutes are often marked as unscreened, but still need to be amendable
+                $notAmendableStatuses[] = Motion::STATUS_SUBMITTED_UNSCREENED;
+                $notAmendableStatuses[] = Motion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
+            }
+
             if (in_array($motion->status, $notAmendableStatuses)) {
                 if ($exceptions) {
                     throw new NotAmendable('Not amendable in the current state', false);
@@ -229,7 +234,7 @@ class Permissions
                     return false;
                 }
             }
-            if (!$motion->motionType->isInAmendmentDeadline(isAmendmentToAmendment: $amendingAmendment !== null)) {
+            if (!$motionType->isInAmendmentDeadline(isAmendmentToAmendment: $amendingAmendment !== null)) {
                 if ($exceptions) {
                     throw new NotAmendable(\Yii::t('structure', 'policy_deadline_over'), true);
                 } else {
@@ -237,7 +242,7 @@ class Permissions
                 }
             }
         }
-        $policy  = $motion->getMyMotionType()->getAmendmentPolicy();
+        $policy  = $motionType->getAmendmentPolicy();
         $allowed = $policy->checkCurrUser($allowAdmins, $assumeLoggedIn);
 
         if (!$allowed) {
