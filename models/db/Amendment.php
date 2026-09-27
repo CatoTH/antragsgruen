@@ -306,7 +306,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getTitle(): string
     {
-        $motion = $this->getMyMotion();
+        $motion = $this->getMyExistingMotion();
         if ($motion->titlePrefix !== '') {
             $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix() ?: '', $motion->getFormattedTitlePrefix()) === false);
         } else {
@@ -316,7 +316,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $prefix . \Yii::t('amend', 'amend_for') . $motion->title;
         } else {
-            if ($this->getMyMotion()->getFormattedTitlePrefix()) {
+            if ($this->getMyExistingMotion()->getFormattedTitlePrefix()) {
                 if ($showMotionPrefix) {
                     $str = $prefix . \Yii::t('amend', 'amend_for');
                     $str .= $motion->getFormattedTitlePrefix() . ': ' . $motion->title;
@@ -347,16 +347,17 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getShortTitle(bool $includeMotionPrefix = true): string
     {
-        if ($this->getMyMotion()->titlePrefix !== '' && $includeMotionPrefix) {
-            $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix() ?? '', $this->getMyMotion()->titlePrefix) === false);
+        $motion = $this->getMyExistingMotion();
+        if ($motion->titlePrefix !== '' && $includeMotionPrefix) {
+            $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix() ?? '', $motion->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
         }
-        $motionTitlePrefix = $this->getMyMotion()->getFormattedTitlePrefix() ?? '';
+        $motionTitlePrefix = $motion->getFormattedTitlePrefix() ?? '';
         $amendmentTitlePrefix = $this->getFormattedTitlePrefix() ?? '';
 
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $amendmentTitlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
+            return $amendmentTitlePrefix . \Yii::t('amend', 'amend_for') . $motion->title;
         } else {
             if ($motionTitlePrefix !== '') {
                 if ($showMotionPrefix) {
@@ -365,7 +366,7 @@ class Amendment extends IMotion implements IRSSItem
                     return $amendmentTitlePrefix;
                 }
             } else {
-                return $amendmentTitlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
+                return $amendmentTitlePrefix . \Yii::t('amend', 'amend_for') . $motion->title;
             }
         }
     }
@@ -389,7 +390,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->agendaItemId && $this->agendaItem) {
             return $this->agendaItem;
         } else {
-            return $this->getMyMotion()->getMyAgendaItem();
+            return $this->getMyExistingMotion()->getMyAgendaItem();
         }
     }
 
@@ -408,7 +409,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getMyTags(): array
     {
-        return $this->getMyMotion()->tags;
+        return $this->getMyExistingMotion()->tags;
     }
 
     private ?Motion $myMotion = null;
@@ -429,6 +430,16 @@ class Amendment extends IMotion implements IRSSItem
             }
         }
         return $this->myMotion;
+    }
+
+    public function getMyExistingMotion(): Motion
+    {
+        $motion = $this->getMyMotion();
+        if (!$motion) {
+            throw new NotFound('Motion not found');
+        }
+
+        return $motion;
     }
 
     /**
@@ -782,7 +793,7 @@ class Amendment extends IMotion implements IRSSItem
         }
         if ($this->getMyConsultation()->havePrivilege(Privileges::PRIVILEGE_CONTENT_EDIT, null)) {
             return true;
-        } elseif ($this->getMyMotion()->iAmInitiator()) {
+        } elseif ($this->getMyExistingMotion()->iAmInitiator()) {
             return match ($this->getMyMotionType()->initiatorsCanMergeAmendments) {
                 ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION => true,
                 ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION => $ignoreCollisionProblems || count($this->getCollidingAmendments()) === 0,
@@ -838,7 +849,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $colliding = [];
-        foreach ($this->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$this]) as $amend) {
+        foreach ($this->getMyExistingMotion()->getAmendmentsRelevantForCollisionDetection([$this]) as $amend) {
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollisions($mySections[$section->sectionId], false, false);
                 if (count($coll) > 0) {
@@ -894,7 +905,8 @@ class Amendment extends IMotion implements IRSSItem
             }
         } else {
             $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
-            return $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion(), $amendment->getMyMotion()->amendments);
+            $motion = $amendment->getMyExistingMotion();
+            return $numbering->getAmendmentNumber($amendment, $motion, $motion->amendments);
         }
     }
 
@@ -953,7 +965,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $toSetPrefix = (mb_strlen($titlePrefix) > 45 ? mb_substr($titlePrefix, 0, 45) : $titlePrefix);
-        if ($this->getMyMotion()->findAmendmentWithPrefix($toSetPrefix, $this)) {
+        if ($this->getMyExistingMotion()->findAmendmentWithPrefix($toSetPrefix, $this)) {
             throw new FormError(\Yii::t('admin', 'amend_prefix_collision'));
         }
 
@@ -1098,8 +1110,8 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getFilenameBase(bool $noUmlaut): string
     {
-        $motionTitle  = $this->getMyMotion()->title;
-        $motionPrefix = $this->getMyMotion()->titlePrefix;
+        $motionTitle  = $this->getMyExistingMotion()->title;
+        $motionPrefix = $this->getMyExistingMotion()->titlePrefix;
         if ($motionPrefix !== '' && !str_contains($this->getFormattedTitlePrefix(), $motionPrefix)) {
             $title = $motionPrefix . '_' . $this->getFormattedTitlePrefix() . ' ' . $motionTitle;
         } else {
@@ -1115,7 +1127,7 @@ class Amendment extends IMotion implements IRSSItem
         // @TODO Inline styling
         $content = '';
 
-        $firstLine  = $this->getMyMotion()->getFirstLineNumber();
+        $firstLine  = $this->getMyExistingMotion()->getFirstLineNumber();
         $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
 
         foreach ($this->getActiveSections() as $section) {
@@ -1197,7 +1209,7 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getMyMotionType(): ConsultationMotionType
     {
-        return $this->getMyMotion()->getMyMotionType();
+        return $this->getMyExistingMotion()->getMyMotionType();
     }
 
     /**
@@ -1347,7 +1359,7 @@ class Amendment extends IMotion implements IRSSItem
         $data = [
             'title'            => $this->getTitle(),
             'title_prefix'     => $this->getFormattedTitlePrefix(),
-            'motion_url'       => $this->getMyMotion()->getLink(true),
+            'motion_url'       => $this->getMyExistingMotion()->getLink(true),
             'url'              => $this->getLink(true),
             'initiators'       => [],
             'changed_sections' => [],

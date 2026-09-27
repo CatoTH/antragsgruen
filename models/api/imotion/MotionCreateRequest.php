@@ -40,6 +40,7 @@ class MotionCreateRequest
         $sections = [];
         foreach ($motionType->motionSections as $sectionDef) {
             $sectionId = $sectionDef->id;
+            assert($sectionId !== null);
             if ($sectionDef->type === ISectionType::TYPE_TITLE && isset($post['motion']['title'])) {
                 $sections[] = new MotionUpdateSection($sectionId, $post['motion']['title']);
             } elseif (!empty($files['sections']['error'][$sectionId]) && $files['sections']['error'][$sectionId] > 0) {
