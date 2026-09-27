@@ -172,7 +172,7 @@ class MotionSupporter extends ISupporter
                 }
             }
         }
-        if (!$motion->getMyMotionType()->getMotionSupportPolicy()->checkCurrUser()) {
+        if (!$motion->getMyMotionType()->getMotionSupportPolicy()->checkCurrUser(allowAdmins: false)) {
             throw new Access('Supporting this motion is not possible', 403);
         }
 
