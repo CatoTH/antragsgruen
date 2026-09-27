@@ -359,11 +359,7 @@ class LayoutHelper
             ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND,
         ]);
 
-        echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '" ';
-        echo 'data-id="' . Html::encode($agendaItem->id) . '" ';
-        echo 'data-save-url="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '" ';
-        echo 'data-del-url="' . Html::encode(UrlHelper::createUrl(['/consultation/del-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '" ';
-        echo 'data-code="' . Html::encode($agendaItem->code) . '">';
+        echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '" data-code="' . Html::encode($agendaItem->code) . '">';
         echo '<div><h3>';
         if ($agendaItem->time) {
             echo '<span class="time">' . Html::encode($agendaItem->time) . '</span>';
