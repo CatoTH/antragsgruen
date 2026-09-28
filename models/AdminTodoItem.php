@@ -70,6 +70,9 @@ class AdminTodoItem
     {
         $motions = MotionRepository::getScreeningMotions($consultation);
         foreach ($motions as $motion) {
+            if ($motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
             if (!User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))) {
                 continue;
             }

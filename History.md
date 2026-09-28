@@ -27,6 +27,7 @@
 - Bugfix: PDFs uploaded in non-public motion sections could not be viewed even by admins.
 - Bugfix: The collapsible menu navigation on small screens was broken.
 - Bugfix: The system now actively prevents amendments to amendments to amendments.
+- Bugfix: The To Do list was often not working properly for statute amendments.
 
 ### Version 4.17.2 (2026-08-23)
 

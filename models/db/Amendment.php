@@ -638,9 +638,9 @@ class Amendment extends IMotion implements IRSSItem
         $query->joinWith(
             [
                 'motionJoin' => function ($query) use ($consultation) {
-                    $invisibleStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
+                    $nonReadableStatuses = array_map('intval', $consultation->getStatuses()->getUnreadableStatuses());
                     /** @var ActiveQuery<Amendment> $query */
-                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
+                    $query->andWhere('motion.status NOT IN (' . implode(', ', $nonReadableStatuses) . ')');
                     $query->andWhere('motion.consultationId = ' . intval($consultation->id));
                 }
             ]
@@ -649,7 +649,17 @@ class Amendment extends IMotion implements IRSSItem
         /** @var Amendment[] $amendments */
         $amendments = $query->all();
 
-        return $amendments;
+        // For statute amendments, amendments can be visible even if the base text is not.
+        $invisibleMotionStatuses = array_map('intval', $consultation->getStatuses()->getInvisibleMotionStatuses());
+        $filteredAmendments = [];
+        foreach ($amendments as $amend) {
+            $motionIsInvisible = in_array($amend->getMyExistingMotion()->status, $invisibleMotionStatuses);
+            if ($amend->getMyMotionType()->amendmentsOnly || !$motionIsInvisible) {
+                $filteredAmendments[] = $amend;
+            }
+        }
+
+        return $filteredAmendments;
     }
 
     /**
