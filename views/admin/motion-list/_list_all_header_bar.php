@@ -19,8 +19,8 @@ $consultationSettings = $consultation->getSettings();
 $layout = $controller->layoutParams;
 
 $getExportLinkLi = function ($title, $route, $motionTypeIds, $cssClass) use ($search) {
-    $params     = array_merge($route, ['motionTypeId' => $motionTypeIds, 'inactive' => '0', 'replaced' => '0']);
-    $paramsTmpl = array_merge($route, ['motionTypeId' => ($motionTypeIds ? 'MOTIONTYPES' : null), 'inactive' => 'INACTIVE', 'replaced' => 'REPLACED']);
+    $params     = array_merge($route, ['motionTypeId' => $motionTypeIds, 'inactive' => '0', 'replaced' => '0', 'admin' => '1']);
+    $paramsTmpl = array_merge($route, ['motionTypeId' => ($motionTypeIds ? 'MOTIONTYPES' : null), 'inactive' => 'INACTIVE', 'replaced' => 'REPLACED', 'admin' => '1']);
     if (!$search->isDefaultSettings()) {
         $params = array_merge($params, $search->getSearchUrlParams());
         $paramsTmpl = array_merge($paramsTmpl, $search->getSearchUrlParams());

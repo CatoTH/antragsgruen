@@ -15,7 +15,7 @@ use app\models\http\{BinaryFileResponse,
     ResponseInterface,
     RestApiResponse};
 use app\models\mergeAmendments\Init;
-use app\models\db\{Amendment, Consultation, IMotion, Motion, TexTemplate};
+use app\models\db\{Amendment, Consultation, IMotion, Motion, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\MotionSectionChanges;
 use app\views\motion\LayoutHelper;
@@ -166,10 +166,12 @@ trait MotionExportTraits
         );
     }
 
-    private function getMotionsAndTemplate(string $motionTypeId, bool $inactive, bool $resolutions): array
+    private function getMotionsAndTemplate(string $motionTypeId, bool $inactive, bool $resolutions, bool $admin): array
     {
         /** @var TexTemplate $texTemplate */
         $texTemplate = null;
+
+        $showAdminMotions = $admin && User::havePrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED, null);
 
         $search = AdminMotionFilterForm::getForConsultationFromRequest(
             $this->consultation,
@@ -185,6 +187,10 @@ trait MotionExportTraits
             if ($resolutions && !$imotion->isResolution()) {
                 continue;
             }
+
+            if (!$imotion->isVisible() && !$showAdminMotions) {
+                continue;
+            }
             if ($texTemplate === null) {
                 $texTemplate       = $imotion->getMyMotionType()->texTemplate;
                 $imotionsFiltered[] = $imotion;
@@ -196,10 +202,10 @@ trait MotionExportTraits
         return [$imotionsFiltered, $texTemplate];
     }
 
-    public function actionFullpdf(string $motionTypeId = '', int $inactive = 0, int $resolutions = 0): ResponseInterface
+    public function actionFullpdf(string $motionTypeId = '', bool $inactive = false, bool $resolutions = false, bool $admin = false): ResponseInterface
     {
         try {
-            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, ($inactive === 1), ($resolutions === 1));
+            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $inactive, $resolutions, $admin);
             /** @var IMotion[] $imotions */
             if (count($imotions) === 0) {
                 return new HtmlErrorResponse(404, \Yii::t('motion', 'none_yet'));
@@ -234,10 +240,10 @@ trait MotionExportTraits
         );
     }
 
-    public function actionPdfcollection(string $motionTypeId = '', int $inactive = 0, int $resolutions = 0): ResponseInterface
+    public function actionPdfcollection(string $motionTypeId = '', bool $inactive = false, bool $resolutions = false, bool $admin = false): ResponseInterface
     {
         try {
-            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, ($inactive === 1), ($resolutions === 1));
+            list($imotions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $inactive, $resolutions, $admin);
             if (count($imotions) === 0) {
                 return new HtmlErrorResponse(404, \Yii::t('motion', 'filter_none_found'));
             }
@@ -246,7 +252,7 @@ trait MotionExportTraits
             if ($motionType->amendmentsOnly) {
                 $imotions = [];
                 foreach ($motionType->motions as $motion) {
-                    $filter = IMotionStatusFilter::adminExport($this->consultation, ($inactive === 1));
+                    $filter = IMotionStatusFilter::adminExport($this->consultation, $inactive);
                     $imotions = array_merge($imotions, $motion->getFilteredAndSortedAmendments($filter));
                 }
                 if (count($imotions) === 0) {

@@ -64,11 +64,13 @@ class AmendmentController extends Base
         );
     }
 
-    public function actionPdfcollection(bool $inactive = false, bool $replaced = false): ResponseInterface
+    public function actionPdfcollection(bool $inactive = false, bool $replaced = false, bool $admin = false): ResponseInterface
     {
         $search = AdminMotionFilterForm::getForConsultationFromRequest($this->consultation, $this->consultation->motions, $this->getRequestValue('Search'), false);
         $search->showReplaced = $replaced;
         $amendments = $search->getAmendmentsForExport($this->consultation, $inactive);
+
+        $showAdminAmendments = $admin && User::havePrivilege($this->consultation, Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED, null);
 
         if (count($amendments) === 0) {
             return new HtmlErrorResponse(404, \Yii::t('amend', 'none_yet'));
@@ -94,6 +96,10 @@ class AmendmentController extends Base
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         if (!($hasLaTeX && $selectedPdfLayout->latexId !== null) && $selectedPdfLayout->id === null) {
             return new HtmlErrorResponse(404, \Yii::t('motion', 'err_no_pdf'));
+        }
+
+        if (!$showAdminAmendments) {
+            $toShowAmendments = array_values(array_filter($toShowAmendments, fn (Amendment $amendment) => $amendment->isVisible() && $amendment->getMyExistingMotion()->isVisible()));
         }
 
         if ($selectedPdfLayout->isHtmlToPdfLayout()) {
