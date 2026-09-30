@@ -67,7 +67,7 @@ final class IMotionStatusFilter
 
             return $filter;
         } else {
-            return self::onlyUserVisible($consultation, false);
+            return self::onlyUserVisible($consultation, showWithdrawnAndModified: false);
         }
     }
 

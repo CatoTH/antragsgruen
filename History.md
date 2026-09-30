@@ -22,6 +22,7 @@
 - A new status exists for motions, amdments and proposed procedures: "adjourned".
 - The admin notification e-mail for new motion/amendment submission can now slighly better configured.
 - Admins can not support amendments / motions anymore if they are not allowed by the motion type's user group permissions.
+- The PDF Collection of motions and amendments now behaves differently depending on where it's called from: from the admin list, it shows the same list as the admin list; from the regular home page, the list of user-visible motions/amendments.
 - Bugfix: pasting text in amendments was broken.
 - Bugfix: when "No Initiator" was selected for a motion type, the editing form was broken under some circumstances.
 - Bugfix: PDFs uploaded in non-public motion sections could not be viewed even by admins.
