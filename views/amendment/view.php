@@ -102,26 +102,26 @@ if ($supportCollectingStatus) {
     $supportType   = $amendment->getMyMotionType()->getAmendmentSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
     $curr          = count($amendment->getSupporters(true));
+    $minAll        = $min + 1;
+    $currAll       = $curr + count($motion->getInitiators());
+    $minFemale     = $supportType->getSettingsObj()->minSupportersFemale;
+    $currFemale  = $amendment->getSupporterCountByGender('female');
+
+    $searches = ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'];
+    $replaces = [$min, $curr, $minAll, $currAll, $minFemale, $currFemale];
+
     if ($amendment->hasEnoughSupporters($supportType)) {
         $textTmpl = $motion->getMyMotionType()->getConsultationTextWithFallback('amend', 'support_collection_reached_hint');
         if ($supportType->getSettingsObj()->allowMoreSupporters) {
             $textTmpl .= ' ' . $motion->getMyMotionType()->getConsultationTextWithFallback('amend', 'support_collection_reached_hint_m');
         }
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
+        echo str_replace($searches, $replaces, $textTmpl);
     } else {
-        $minAll        = $min + 1;
-        $currAll       = $curr + count($motion->getInitiators());
-        $minFemale = $supportType->getSettingsObj()->minSupportersFemale;
         if ($minFemale) {
-            $currFemale = $amendment->getSupporterCountByGender('female');
-            echo str_replace(
-                ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
-                [$min, $curr, $minAll, $currAll, $minFemale, $currFemale],
-                Yii::t('motion', 'support_collection_hint_female')
-            );
+            echo str_replace($searches, $replaces, Yii::t('motion', 'support_collection_hint_female'));
         } else {
             $textTmpl = $motion->getMyMotionType()->getConsultationTextWithFallback('amend', 'support_collection_hint');
-            echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], $textTmpl);
+            echo str_replace($searches, $replaces, $textTmpl);
         }
     }
     if (!is_a($motion->getMyMotionType()->getAmendmentSupportPolicy(), \app\models\policies\All::class) && !User::getCurrentUser()) {
