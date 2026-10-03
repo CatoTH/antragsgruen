@@ -138,6 +138,11 @@ if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLa
         ['class' => 'pdfEmbeddedAmendments']
     ) . '</li>';
 }
+echo '<li>' . HtmlTools::createExternalLink(
+    Yii::t('admin', 'list_export_amend_synopsis'),
+    UrlHelper::createMotionUrl($entry, 'amendment-synopsis-pdf'),
+    ['class' => 'pdfAmendmentSynopsis']
+) . '</li>';
 echo '</ul></div>';
 
 echo ' / ' . Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']);

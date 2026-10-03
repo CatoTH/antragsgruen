@@ -30,6 +30,7 @@ return [
     'list_head_title'             => 'Liste: Anträge, Änderungsvorschläge',
     'list_export_amend_attach'    => 'Mit Änderungsvorschlägen als Anhang',
     'list_export_amend_embed'     => 'Mit Änderungsvorschlägen im Text',
+    'list_export_amend_synopsis'  => 'Änderungsvorschläge daneben (Querformat)',
     'con_topic_del_warn'      => 'Es gibt Anträge oder Änderungsvorschläge, die diesem Thema zugeordnet sind. Wenn dieses Thema gelöscht wird, wird auch diese Themenzuordnung entfernt.',
     'con_title_amendments'    => 'Änderungsvorschläge',
     'con_amend_screening'     => '<strong>Freischaltung</strong> von Änderungsvorschlägen',

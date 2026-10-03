@@ -308,6 +308,36 @@ trait MotionExportTraits
         );
     }
 
+    /**
+     * Landscape PDF with the motion text on the left and the changes of all amendments on the right side.
+     * Users who may see unpublished motions also get unpublished amendments.
+     */
+    public function actionAmendmentSynopsisPdf(string $motionSlug): ResponseInterface
+    {
+        $motion = $this->getMotionWithCheck($motionSlug);
+        if (!$motion) {
+            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_not_found'));
+        }
+
+        $context = PrivilegeQueryContext::motion($motion);
+        $maySeeUnpublished = $this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED, $context);
+        if (!$motion->isReadable() && !$maySeeUnpublished) {
+            return new HtmlResponse($this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]));
+        }
+
+        $filter = IMotionStatusFilter::adminExport($this->consultation, inactive: true, context: $context)
+                                     ->noAmendmentsIfMotionIsMoved();
+        $amendments = $motion->getFilteredAndSortedAmendments($filter);
+
+        return new BinaryFileResponse(
+            BinaryFileResponse::TYPE_PDF,
+            LayoutHelper::createAmendmentSynopsisPdf($motion, $amendments),
+            false,
+            $motion->getFilenameBase(false) . '_synopsis',
+            false
+        );
+    }
+
     public function actionOdt(string $motionSlug): ResponseInterface
     {
         $motion = $this->getMotionWithCheck($motionSlug);

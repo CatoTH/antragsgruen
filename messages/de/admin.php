@@ -152,6 +152,7 @@ return [
     'list_export_motion_only'     => 'Nur %TITLE%',
     'list_export_amend_attach'    => 'Mit Änderungsanträgen als Anhang',
     'list_export_amend_embed'     => 'Mit Änderungsanträgen im Text',
+    'list_export_amend_synopsis'  => 'Änderungsanträge daneben (Querformat)',
     'list_tag'                    => 'Thema',
     'list_initiators'             => 'Initiator*innen',
     'list_status'                 => 'Status',

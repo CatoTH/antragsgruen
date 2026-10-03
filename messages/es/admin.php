@@ -156,6 +156,7 @@ return [
     'list_export_motion_only' => 'Solo %TITLE%',
     'list_export_amend_attach' => 'Enmiendas adjuntas',
     'list_export_amend_embed' => 'Enmiendas incrustadas en el texto',
+    'list_export_amend_synopsis' => 'Enmiendas en paralelo (formato horizontal)',
     'list_tag' => 'Etiqueta',
     'list_initiators' => 'Autores',
     'list_status' => 'Estado',

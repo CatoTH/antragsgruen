@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\components;
 
 use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, User};
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 final class IMotionStatusFilter
 {
@@ -57,9 +57,9 @@ final class IMotionStatusFilter
         return $filter;
     }
 
-    public static function adminExport(Consultation $consultation, bool $inactive): self
+    public static function adminExport(Consultation $consultation, bool $inactive, ?PrivilegeQueryContext $context = null): self
     {
-        if ($inactive && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED, null)) {
+        if ($inactive && User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED, $context)) {
             $filter = new self($consultation);
 
             $filter->addMotionStatuses($consultation->getStatuses()->getStatusesInvisibleForAdmins());

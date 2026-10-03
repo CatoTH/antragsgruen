@@ -254,4 +254,30 @@ class AmendmentSectionFormatter
         }
         return $affectedBlocks;
     }
+
+    /**
+     * Like getDiffGroupsWithNumbers(), but the affected lines are grouped by the paragraph of the original text
+     * they belong to. Paragraphs not changed by the amendment are omitted.
+     * Inserted paragraphs are attributed to the paragraph of the original text preceding them (or the first one).
+     *
+     * @param array<int, int> $paragraphFirstLines The line number of the first line of each original paragraph
+     * @return array<int, AffectedLineBlock[]>
+     */
+    public function getDiffGroupsWithNumbersByParagraph(int $lineLength, int $diffFormatting, array $paragraphFirstLines, ?int $context = null): array
+    {
+        $diffSections = $this->getDiffSectionsWithNumbers($lineLength, $diffFormatting);
+
+        $groupsByParagraph = [];
+        foreach ($diffSections as $paragraphNo => $diffSection) {
+            if (!isset($paragraphFirstLines[$paragraphNo])) {
+                continue;
+            }
+            $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($diffSection, $paragraphFirstLines[$paragraphNo], $context ?? 1);
+            if (count($affectedBlocks) > 0) {
+                $groupsByParagraph[$paragraphNo] = $affectedBlocks;
+            }
+        }
+
+        return $groupsByParagraph;
+    }
 }
