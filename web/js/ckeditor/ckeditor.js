@@ -1,4 +1,20 @@
-﻿/*
+﻿/* Antragsgrün: the bundled LoopIndex LITE change tracker (abandoned upstream, 2016)
+ * calls jQuery.isArray / jQuery.isFunction, both removed in jQuery 4.0.0.
+ * jQuery.isArray is used by InlineChangeEditor.insert(), whose try/catch has no
+ * logError handler unless config.lite.log is set -- so without this shim, pasting
+ * into a tracked-changes editor fails completely silently.
+ * Re-apply this block after updating CKEditor. Same pattern as in
+ * web/js/typeahead.bundle.min.js. */
+if (typeof jQuery !== "undefined" && !jQuery.isArray) {
+    jQuery.isArray = Array.isArray;
+}
+if (typeof jQuery !== "undefined" && !jQuery.isFunction) {
+    jQuery.isFunction = function (obj) {
+        return typeof obj === "function";
+    };
+}
+
+/*
 Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
 For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license/
 */
