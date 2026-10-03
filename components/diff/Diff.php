@@ -303,6 +303,13 @@ class Diff
         $computedStrs = [];
         $lineOld      = static::normalizeForDiff($lineOld);
         $lineNew      = static::normalizeForDiff($lineNew);
+
+        // Shortcut for unchanged paragraphs (the vast majority); the full diff would return $lineOld unchanged anyway
+        $ignoreStr = $this->engine->getIgnoreStr();
+        if ($lineOld === $lineNew || ($ignoreStr !== '' && str_replace($ignoreStr, '', $lineOld) === $lineNew)) {
+            return $lineOld;
+        }
+
         $lineOldArr   = static::tokenizeLine($lineOld);
         $lineNewArr   = static::tokenizeLine($lineNew);
 
