@@ -63,7 +63,7 @@ $I->click('#motionConfirmedForm .btn');
 $I->logout();
 
 
-$I->wantTo('see the original and modified changes next to each other by default');
+$I->wantTo('see the consolidated, two-layered comparison by default');
 $I->gotoConsultationHome();
 $I->click('.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1) . ' a');
 
@@ -73,22 +73,6 @@ $amendingHolder = '#section_' . $textSectionNum;
 $consolidatedHolder = '#consolidated_section_' . $textSectionNum;
 
 $I->seeElement('.amendmentComparisonSection');
-$I->seeElement('.amendmentComparison[data-comparison-mode="original"]');
-$I->dontSeeElement('.amendmentComparison[data-comparison-mode="parent"]');
-
-$I->see('Geänderter Antrag', $amendingHolder . ' h2');
-$I->see('Section', $amendingHolder);
-$I->see('Ursprünglicher Antrag', $originalHolder . ' h2');
-$I->see('Paragraph', $originalHolder);
-
-
-$I->wantTo('switch to the consolidated, two-layered comparison');
-$I->clickJS($amendingHolder . ' .dropdown-toggle');
-$I->wait(0.2);
-$I->see('Änderungen gegenüber', $amendingHolder . ' .dropdown-menu .showComparisonToParent');
-$I->clickJS($amendingHolder . ' .dropdown-menu .showComparisonToParent');
-$I->wait(0.2);
-
 $I->dontSeeElement('.amendmentComparison[data-comparison-mode="original"]');
 $I->seeElement('.amendmentComparison[data-comparison-mode="parent"]');
 
@@ -100,7 +84,7 @@ $I->seeElement($consolidatedHolder . ' .outer');
 $I->seeElement($consolidatedHolder . ' .amendmentComparisonLegend');
 
 
-$I->wantTo('switch back to the original and modified changes shown next to each other');
+$I->wantTo('switch to the original and modified changes shown next to each other');
 $I->clickJS($consolidatedHolder . ' .dropdown-toggle');
 $I->wait(0.2);
 $I->see('Ursprüngliche und geänderte Fassung nebeneinander', $consolidatedHolder . ' .dropdown-menu .showComparisonToOriginal');
@@ -110,4 +94,18 @@ $I->wait(0.2);
 $I->seeElement('.amendmentComparison[data-comparison-mode="original"]');
 $I->dontSeeElement('.amendmentComparison[data-comparison-mode="parent"]');
 $I->see('Geänderter Antrag', $amendingHolder . ' h2');
+$I->see('Section', $amendingHolder);
 $I->see('Ursprünglicher Antrag', $originalHolder . ' h2');
+$I->see('Paragraph', $originalHolder);
+
+
+$I->wantTo('switch back to the consolidated comparison');
+$I->clickJS($amendingHolder . ' .dropdown-toggle');
+$I->wait(0.2);
+$I->see('Änderungen gegenüber', $amendingHolder . ' .dropdown-menu .showComparisonToParent');
+$I->clickJS($amendingHolder . ' .dropdown-menu .showComparisonToParent');
+$I->wait(0.2);
+
+$I->dontSeeElement('.amendmentComparison[data-comparison-mode="original"]');
+$I->seeElement('.amendmentComparison[data-comparison-mode="parent"]');
+$I->see('Änderungen gegenüber', $consolidatedHolder . ' h2');

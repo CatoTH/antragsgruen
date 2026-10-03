@@ -87,6 +87,17 @@ $I->click('#motionConfirmedForm .btn');
 
 $I->gotoConsultationHome();
 $I->click('.amendmentRow' . (AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1) . ' a');
+
+$consolidatedHolder = '#consolidated_section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1);
+$I->seeElement('.amendmentComparison[data-comparison-mode="parent"]');
+$I->dontSeeElement('.amendmentComparison[data-comparison-mode="original"]');
+$I->see('Article', $consolidatedHolder);
+$I->see('Paragraph', $consolidatedHolder);
+$I->see('Section', $consolidatedHolder);
+$I->seeElement($consolidatedHolder . ' .outer');
+
+$I->clickJS($consolidatedHolder . ' .dropdown-menu .showComparisonToOriginal');
+$I->wait(0.2);
 $I->see('Paragraph', '#original_section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .inserted');
 $I->see('Article', '#original_section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .deleted');
 $I->see('Section', '#section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .inserted');
