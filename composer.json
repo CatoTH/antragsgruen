@@ -125,10 +125,6 @@
     {
       "type": "vcs",
       "url": "https://github.com/CatoTH/php-simple-captcha.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/CatoTH/htmlpurifier.git"
     }
   ]
 }
