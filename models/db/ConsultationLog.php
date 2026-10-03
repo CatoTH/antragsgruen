@@ -522,6 +522,33 @@ class ConsultationLog extends ActiveRecord
         }
     }
 
+    /**
+     * Names the initiators instead of the user who performed the action:
+     * the person's name for natural persons, the organization's name for organizations.
+     */
+    private function formatLogEntryInitiators(string $str, ?IMotion $imotion): string
+    {
+        $names = [];
+        foreach ($imotion?->getInitiators() ?? [] as $initiator) {
+            if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
+                $name = trim($initiator->organization ?? '');
+            } else {
+                $name = trim($initiator->name ?? '');
+                if ($name === '' && $initiator->getMyUser()) {
+                    $name = trim($initiator->getMyUser()->name ?? '');
+                }
+            }
+            if ($name !== '') {
+                $names[] = $name;
+            }
+        }
+        if (count($names) > 0) {
+            return str_replace('###USER###', Html::encode(implode(', ', $names)), $str);
+        }
+
+        return $this->formatLogEntryUser($str, '');
+    }
+
     private function formatLogEntryUserGroup(string $str): string
     {
         if ($this->user) {
@@ -614,9 +641,8 @@ class ConsultationLog extends ActiveRecord
         }
         switch ($this->actionType) {
             case self::MOTION_PUBLISH:
-                $str      = \Yii::t('structure', 'activity_MOTION_PUBLISH');
-                $fallback = ($this->motion ? $this->motion->getInitiatorsStr() : '-');
-                return $this->formatLogEntryUser($str, $fallback);
+                $str = \Yii::t('structure', 'activity_MOTION_PUBLISH');
+                return $this->formatLogEntryInitiators($str, $this->motion);
             case self::MOTION_DELETE:
                 $str    = \Yii::t('structure', 'activity_MOTION_DELETE');
                 $prefix = self::motionId2Prefix($this->actionReferenceId);
@@ -703,7 +729,7 @@ class ConsultationLog extends ActiveRecord
             case self::AMENDMENT_PUBLISH:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
-                return $this->formatLogEntryUser($str, ($this->amendment ? $this->amendment->getInitiatorsStr() : ''));
+                return $this->formatLogEntryInitiators($str, $this->amendment);
             case self::AMENDMENT_DELETE:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_DELETE');
                 $str = $this->formatLogEntryAmendment($str);
