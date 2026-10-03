@@ -152,11 +152,14 @@ class Engine
             $end2--;
         }
 
+        // map the tokens to integer IDs, so the O(n*m) table does not need to call strCmp for every cell
+        list($ids1, $ids2) = $this->getComparisonIds($strings1, $strings2, $start1, $start2, $end1, $end2, $relaxedTags);
+
         // compute the table of longest common subsequence lengths
-        $table = self::computeTable($strings1, $strings2, $start1, $start2, $end1, $end2, $relaxedTags);
+        $table = self::computeTable($ids1, $ids2);
 
         // generate the partial diff
-        $partialDiff = self::generatePartialDiff($table, $strings1, $strings2, $start1, $start2, $relaxedTags);
+        $partialDiff = self::generatePartialDiff($table, $ids1, $ids2, $strings1, $strings2, $start1, $start2);
 
         // generate the full diff
         $diff = [];
@@ -344,42 +347,86 @@ class Engine
     }
 
     /**
-     * Returns the table of longest common subsequence lengths for the specified
-     * sequences. The parameters are:
+     * Returns a key for each token such that two tokens get the same key if and only if strCmp() considers them equal.
+     */
+    private function getComparisonKey(string $str, bool $relaxedTags): string
+    {
+        if ($this->IGNORE_STR !== '') {
+            $str = str_replace($this->IGNORE_STR, '', $str);
+        }
+
+        if ($relaxedTags) {
+            $str = (string)preg_replace('/<li[^>]*>/siu', '<li>', $str);
+        }
+
+        // Same as in strCmp: all <ol...>, <ul...> and <li...> tags are considered equal to each other
+        if ($str !== '' && $str[0] === '<' && preg_match('/^<[^>]+>$/', $str)) {
+            $tagStart = strtolower(substr($str, 0, 3));
+            if ($tagStart === '<ol' || $tagStart === '<ul' || $tagStart === '<li') {
+                return "\0" . $tagStart; // \0 cannot occur in a regular token
+            }
+        }
+
+        return $str;
+    }
+
+    /**
+     * Maps the tokens between start and end of both sequences to integer IDs; equal IDs <=> strCmp() === true
      *
-     * @param string[] $sequence1 - the first sequence
-     * @param string[] $sequence2 - the second sequence
-     * @param int $start1         - the first starting index
-     * @param int $start2         - the second starting index
-     * @param int $end1         - the ending index for the first sequence
-     * @param int $end2         - the ending index for the second sequence
-     * @param bool $relaxedTags
+     * @param string[] $sequence1
+     * @param string[] $sequence2
+     * @return int[][]
+     */
+    private function getComparisonIds(array $sequence1, array $sequence2, int $start1, int $start2, int $end1, int $end2, bool $relaxedTags): array
+    {
+        $idsByKey = [];
+        $ids1     = [];
+        $ids2     = [];
+        for ($i = $start1; $i <= $end1; $i++) {
+            $ids1[] = $idsByKey[$this->getComparisonKey($sequence1[$i], $relaxedTags)] ??= count($idsByKey);
+        }
+        for ($i = $start2; $i <= $end2; $i++) {
+            $ids2[] = $idsByKey[$this->getComparisonKey($sequence2[$i], $relaxedTags)] ??= count($idsByKey);
+        }
+
+        return [$ids1, $ids2];
+    }
+
+    /**
+     * Returns the table of longest common subsequence lengths for the specified
+     * sequences (as returned by getComparisonIds).
+     *
+     * @param int[] $ids1 - the first sequence
+     * @param int[] $ids2 - the second sequence
      * @return array
      */
-    private function computeTable(array $sequence1, array $sequence2, int $start1, int $start2, int $end1, int $end2, bool $relaxedTags): array
+    private function computeTable(array $ids1, array $ids2): array
     {
         // determine the lengths to be compared
-        $length1 = $end1 - $start1 + 1;
-        $length2 = $end2 - $start2 + 1;
+        $length1 = count($ids1);
+        $length2 = count($ids2);
 
         // initialise the table
         $table = [array_fill(0, $length2 + 1, 0)];
 
         // loop over the rows
         for ($index1 = 1; $index1 <= $length1; $index1++) {
-            // create the new row
-            $table[$index1] = [0];
+            $prevRow = $table[$index1 - 1];
+            $id1     = $ids1[$index1 - 1];
+            $row     = [0];
+            $left    = 0;
 
             // loop over the columns
             for ($index2 = 1; $index2 <= $length2; $index2++) {
                 // store the longest common subsequence length
-                if ($this->strCmp($sequence1[$index1 + $start1 - 1], $sequence2[$index2 + $start2 - 1], $relaxedTags)) {
-                    $table[$index1][$index2] = $table[$index1 - 1][$index2 - 1] + 1;
-                } else {
-                    $table[$index1][$index2] = max($table[$index1 - 1][$index2], $table[$index1][$index2 - 1]);
+                if ($id1 === $ids2[$index2 - 1]) {
+                    $left = $prevRow[$index2 - 1] + 1;
+                } elseif ($prevRow[$index2] > $left) {
+                    $left = $prevRow[$index2];
                 }
-
+                $row[] = $left;
             }
+            $table[] = $row;
         }
         // return the table
         return $table;
@@ -390,12 +437,14 @@ class Engine
      * The parameters are:
      *
      * @param array $table     - the table returned by the computeTable function
+     * @param int[] $ids1      - the comparison IDs of the first sequence, starting at $start1
+     * @param int[] $ids2      - the comparison IDs of the second sequence, starting at $start2
      * @param array $sequence1 - the first sequence
      * @param array $sequence2 - the second sequence
      * @param int $start1      - the first starting index
      * @param int $start2      - the second starting index
      */
-    private function generatePartialDiff(array $table, array $sequence1, array $sequence2, int $start1, int $start2, bool $relaxedTags): array
+    private function generatePartialDiff(array $table, array $ids1, array $ids2, array $sequence1, array $sequence2, int $start1, int $start2): array
     {
         //  initialise the diff
         $diff = [];
@@ -407,9 +456,7 @@ class Engine
         // loop until there are no items remaining in either sequence
         while ($index1 > 0 || $index2 > 0) {
             // check what has happened to the items at these indices
-            if ($index1 > 0 && $index2 > 0
-                && $this->strCmp($sequence1[$index1 + $start1 - 1], $sequence2[$index2 + $start2 - 1], $relaxedTags)
-            ) {
+            if ($index1 > 0 && $index2 > 0 && $ids1[$index1 - 1] === $ids2[$index2 - 1]) {
                 // update the diff and the indices
                 $diff[] = [$sequence1[$index1 + $start1 - 1], self::UNMODIFIED];
                 $index1--;

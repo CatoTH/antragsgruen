@@ -198,6 +198,9 @@ replaced" — a suboptimal alignment rather than a hanging request.
 
 This is the heart. Input: two paragraphs. Output: one string with markers.
 
+Unchanged paragraphs (by far the most common case) short-circuit right at the start: if both sides are
+equal after removing `###LINENUMBER###`, the original paragraph is returned as it is.
+
 ### 6.1 Tokenization
 
 `Diff::tokenizeLine()` splits a paragraph into the units the LCS will compare:
@@ -222,6 +225,9 @@ Antragsgrün-specific additions:
 
 - **Common prefix/suffix trimming** before building the LCS table — the table is O(n·m), and most
   amendments change a small part of a long paragraph.
+- **Integer token IDs**: before the table is built, every token is mapped to an integer ID
+  (`getComparisonIds()`), such that two tokens share an ID exactly when `strCmp()` considers them
+  equal. The O(n·m) loop then only compares integers instead of calling `strCmp()` for every cell.
 - **`$IGNORE_STR`** so that `###LINENUMBER###` never counts as a difference.
 - **Relaxed tag comparison** (`strCmp()`): any two `<ol…>`, `<ul…>` or `<li…>` tags compare equal.
   Renumbering a list (`<ol start="2">` → `<ol start="3">`) would otherwise flood the diff with

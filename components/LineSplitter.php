@@ -17,6 +17,34 @@ class LineSplitter
 
 
     /**
+     * Splits the text into graphemes once up front: calling grapheme_substr / grapheme_strlen on the whole text
+     * for every character would make splitLines quadratic in the length of the paragraph.
+     *
+     * Hint: this deliberately uses ICU (intl) and not preg_split('/\X/u'): PCRE2 brings its own Unicode tables
+     * and grapheme rules, which differ between library versions (e.g. for emojis with skin tone modifiers).
+     *
+     * @return string[]
+     */
+    private static function splitIntoGraphemes(string $text): array
+    {
+        $graphemes = [];
+        $offset    = 0;
+        $length    = strlen($text);
+        while ($offset < $length) {
+            $grapheme = grapheme_extract($text, 1, GRAPHEME_EXTR_COUNT, $offset, $next);
+            if ($grapheme === false || $next <= $offset) {
+                // Invalid UTF-8; proceed byte by byte
+                $graphemes[] = $text[$offset];
+                $offset++;
+            } else {
+                $graphemes[] = $grapheme;
+                $offset      = $next;
+            }
+        }
+        return $graphemes;
+    }
+
+    /**
      * Forced line breaks are marked by a trailing ###FORCELINEBREAK###
      *
      * @static
@@ -24,34 +52,39 @@ class LineSplitter
      */
     public function splitLines(): array
     {
+        $chars    = self::splitIntoGraphemes($this->text);
+        $numChars = count($chars);
+
         $lines              = [];
         $lastSeparator      = -1;
         $lastSeparatorCount = 0;
         $inHtml             = false;
         $inEscaped          = false;
-        $currLine           = '';
+        /** @var string[] $currLine */
+        $currLine           = [];
         $currLineCount      = 0;
 
-        for ($i = 0; $i < grapheme_strlen($this->text); $i++) {
-            $currChar = (string)grapheme_substr($this->text, $i, 1);
-            $currLine .= $currChar;
+        for ($i = 0; $i < $numChars; $i++) {
+            $currChar = $chars[$i];
+            $currLine[] = $currChar;
             if ($inHtml) {
-                if ($currChar == '>') {
+                if ($currChar === '>') {
                     $inHtml = false;
                 }
             } elseif ($inEscaped) {
-                if ($currChar == ';') {
+                if ($currChar === ';') {
                     $inEscaped = false;
                 }
             } else {
-                if (grapheme_substr($this->text, $i, 4) === '<br>') {
-                    $lines[] = (string)grapheme_substr($currLine, 0, grapheme_strlen($currLine) - 1) . '<br>';
+                if ($currChar === '<' && ($chars[$i + 1] ?? '') === 'b' && ($chars[$i + 2] ?? '') === 'r' && ($chars[$i + 3] ?? '') === '>') {
+                    array_pop($currLine);
+                    $lines[] = implode('', $currLine) . '<br>';
                     $i += 3;
-                    if (grapheme_substr($this->text, $i + 1, 1) === "\n") {
+                    if (($chars[$i + 1] ?? '') === "\n") {
                         $i++;
                         $lines[count($lines) - 1] .= "\n";
                     }
-                    $currLine      = '';
+                    $currLine      = [];
                     $currLineCount = 0;
                     continue;
                 }
@@ -66,34 +99,35 @@ class LineSplitter
                 $currLineCount++;
                 if ($currLineCount > $this->lineLength) {
                     if ($lastSeparator == -1) {
-                        $lines[]       = grapheme_substr($currLine, 0, grapheme_strlen($currLine) - 1) . '-';
-                        $currLine      = $currChar;
+                        array_pop($currLine);
+                        $lines[]       = implode('', $currLine) . '-';
+                        $currLine      = [$currChar];
                         $currLineCount = 1;
                     } else {
-                        if (grapheme_substr($this->text, $i, 1) == ' ') {
-                            $lines[] = $currLine;
+                        if ($currChar === ' ') {
+                            $lines[] = implode('', $currLine);
 
-                            $currLine      = '';
+                            $currLine      = [];
                             $currLineCount = 0;
                         } else {
-                            $remainder = (string)grapheme_substr($currLine, $lastSeparator + 1);
-                            $lines[] = (string)grapheme_substr($currLine, 0, $lastSeparator + 1);
+                            $lines[]  = implode('', array_slice($currLine, 0, $lastSeparator + 1));
+                            $currLine = array_slice($currLine, $lastSeparator + 1);
 
-                            $currLine      = $remainder;
                             $currLineCount = $this->lineLength - $lastSeparatorCount + 1;
                         }
 
                         $lastSeparator      = -1;
                         $lastSeparatorCount = 0;
                     }
-                } elseif (in_array($currChar, [' ', '-'])) {
-                    $lastSeparator      = grapheme_strlen($currLine) - 1;
+                } elseif ($currChar === ' ' || $currChar === '-') {
+                    $lastSeparator      = count($currLine) - 1;
                     $lastSeparatorCount = $currLineCount;
                 }
             }
         }
-        if (grapheme_strlen(trim((string)$currLine)) > 0) {
-            $lines[] = (string)$currLine;
+        $currLine = implode('', $currLine);
+        if (grapheme_strlen(trim($currLine)) > 0) {
+            $lines[] = $currLine;
         }
         return $lines;
     }
