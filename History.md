@@ -23,6 +23,7 @@
 - The admin notification e-mail for new motion/amendment submission can now slighly better configured.
 - Admins can not support amendments / motions anymore if they are not allowed by the motion type's user group permissions.
 - The PDF Collection of motions and amendments now behaves differently depending on where it's called from: from the admin list, it shows the same list as the admin list; from the regular home page, the list of user-visible motions/amendments.
+- A new PDF export view exists in the admin list for motions: "Amendments side by side" shows amended sections next to the original motion text in a two-column view.
 - Bugfix: pasting text in amendments was broken.
 - Bugfix: when "No Initiator" was selected for a motion type, the editing form was broken under some circumstances.
 - Bugfix: PDFs uploaded in non-public motion sections could not be viewed even by admins.

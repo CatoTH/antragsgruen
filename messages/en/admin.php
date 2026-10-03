@@ -156,6 +156,7 @@ return [
     'list_export_motion_only'     => 'Only %TITLE%',
     'list_export_amend_attach'    => 'Amendments attached',
     'list_export_amend_embed'     => 'Amendments embedded in text',
+    'list_export_amend_synopsis'  => 'Amendments side by side (landscape)',
     'list_tag'                    => 'Tag',
     'list_initiators'             => 'Proposers',
     'list_status'                 => 'Status',

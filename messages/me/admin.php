@@ -151,6 +151,7 @@ return [
     'list_export_motion_only' => 'Samo %TITLE%', // Original: Only %TITLE%
     'list_export_amend_attach' => 'Priloženi amandmani', // Original: Amendments attached
     'list_export_amend_embed' => 'Amandmani ugrađeni u tekst', // Original: Amendments embedded in text
+    'list_export_amend_synopsis' => 'Amandmani uporedo (pejzažni format)', // Original: Amendments side by side (landscape)
     'list_tag' => 'Dan', // Original: Tag
     'list_initiators' => 'Predlagači', // Original: Proposers
     'list_status' => 'Status', // Original: Status

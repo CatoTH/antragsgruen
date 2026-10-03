@@ -156,6 +156,7 @@ return [
     'list_export_motion_only' => 'Endast %TITLE%',
     'list_export_amend_attach' => 'Ändringsförslag bifogade',
     'list_export_amend_embed' => 'Ändringsförslag infogade i texten',
+    'list_export_amend_synopsis' => 'Ändringsförslag bredvid (liggande format)',
     'list_tag' => 'Tagg',
     'list_initiators' => 'Motionärer',
     'list_status' => 'Status',

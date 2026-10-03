@@ -150,6 +150,7 @@ return [
     'list_export_motion_only'     => 'Només %TITLE%',
     'list_export_amend_attach'    => 'Esmenes adjuntes',
     'list_export_amend_embed'     => 'Esmenes incrustades en el text',
+    'list_export_amend_synopsis'  => 'Esmenes en paral·lel (format apaïsat)',
     'list_tag'                    => 'Etiqueta',
     'list_initiators'             => 'Proponents',
     'list_status'                 => 'Estat',

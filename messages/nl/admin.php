@@ -152,6 +152,7 @@ return [
     'list_export_motion_only' => 'Alleen %TITLE%',
     'list_export_amend_attach' => 'Met amendementen als bijlage',
     'list_export_amend_embed' => 'Met amendementen in de tekst',
+    'list_export_amend_synopsis' => 'Amendementen ernaast (liggend formaat)',
     'list_tag' => 'Onderwerp',
     'list_initiators' => 'Indieners',
     'list_status' => 'Status',

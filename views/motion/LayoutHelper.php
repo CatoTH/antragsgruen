@@ -7,7 +7,8 @@ namespace app\views\motion;
 use app\components\{HashedStaticCache, IMotionStatusFilter, LanguageTools, Tools, UrlHelper};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
-use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionProposal, User};
+use app\components\diff\{AmendmentSectionFormatter, DiffRenderer};
+use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionProposal, MotionSection, User};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\LimitedSupporterList;
 use app\models\mergeAmendments\Init;
@@ -15,7 +16,7 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\{ISectionType, TextSimple};
 use app\models\settings\{AntragsgruenApp, Consultation, PrivilegeQueryContext, Privileges, VotingData};
 use app\models\supportTypes\SupportBase;
-use app\views\pdfLayouts\{IHtmlToPdfLayout, IPDFLayout, IPdfWriter};
+use app\views\pdfLayouts\{AmendmentSynopsisPDF, IHtmlToPdfLayout, IPDFLayout, IPdfWriter};
 use Com\Tecnick\Pdf\Import\ImportException;
 use yii\helpers\Html;
 
@@ -1074,6 +1075,216 @@ class LayoutHelper
                 $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
             }
         }
+    }
+
+    /**
+     * Landscape PDF: the motion text on the left side, paragraph by paragraph,
+     * and the changes of all amendments affecting the respective paragraph on the right side.
+     * Only simple text sections are printed.
+     *
+     * @param Amendment[] $amendments
+     */
+    public static function createAmendmentSynopsisPdf(Motion $motion, array $amendments): string
+    {
+        $pdf = new AmendmentSynopsisPDF();
+
+        $title = $motion->getTitleWithPrefix();
+        $pdf->SetCreator(\Yii::t('export', 'default_creator'));
+        $pdf->SetAuthor(\Yii::t('export', 'default_creator'));
+        $pdf->SetTitle($title);
+        $pdf->SetSubject($title);
+        $pdf->setHeaderTitle($title);
+
+        // The title is printed on the first page anyway
+        $pdf->setPrintHeader(false);
+        $pdf->AddPage();
+        $pdf->setPrintHeader(true);
+
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->setCellHeightRatio(1.25);
+        $pdf->writeHTMLCell($pdf->getContentWidth(), 0, $pdf->getLeftColumnX(), null, Html::encode($title), 0, 1, false, true, '', true);
+
+        $initiators = $motion->getInitiators();
+        if (count($initiators) > 0 && $motion->getInitiatorsStr() !== '') {
+            $initiatorTitle = (count($initiators) === 1 ? \Yii::t('export', 'InitiatorSingle') : \Yii::t('export', 'InitiatorMulti'));
+            $pdf->SetFont('helvetica', '', 10);
+            $pdf->Ln(1);
+            $pdf->writeHTMLCell(
+                $pdf->getContentWidth(), 0, $pdf->getLeftColumnX(), null,
+                '<strong>' . Html::encode($initiatorTitle) . ':</strong> ' . Html::encode($motion->getInitiatorsStr()),
+                0, 1, false, true, '', true
+            );
+        }
+        $pdf->Ln(4);
+
+        foreach ($motion->getSortedSections(true) as $section) {
+            if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE || $section->getSectionType()->isEmpty()) {
+                continue;
+            }
+            self::printAmendmentSynopsisSection($pdf, $section, $amendments);
+        }
+
+        return $pdf->Output('', 'S');
+    }
+
+    /**
+     * @param Amendment[] $amendments
+     */
+    private static function printAmendmentSynopsisSection(AmendmentSynopsisPDF $pdf, MotionSection $section, array $amendments): void
+    {
+        $lineLength = $section->getConsultation()->getSettings()->lineLength;
+        $hasLineNumbers = (bool)$section->getSettings()->lineNumbers;
+        $fontName = $pdf->getMotionFont($section);
+        $fontSize = $pdf->getScaledFontSize($pdf->getMotionFontSize($section));
+        $columnWidth = $pdf->getColumnWidth();
+
+        // The paragraphs are always split into lines, as the line numbers of the amendments are based on them
+        $paragraphs = $section->getTextParagraphObjects(true);
+        $paragraphFirstLines = [];
+        $lineNo = $section->getFirstLineNumber();
+        foreach ($paragraphs as $paragraphNo => $paragraph) {
+            $paragraphFirstLines[$paragraphNo] = $lineNo;
+            $lineNo += count($paragraph->lines);
+        }
+
+        /** @var array<int, string[]> $changesByParagraph */
+        $changesByParagraph = [];
+        $globalAlternatives = [];
+        $globalAlternativeChangesSection = false;
+        foreach ($amendments as $amendment) {
+            $amendmentSection = $amendment->getSection($section->sectionId);
+            if (!$amendmentSection) {
+                continue;
+            }
+            if ($amendment->globalAlternative) {
+                if (trim($amendmentSection->data) !== trim($section->getData())) {
+                    $globalAlternativeChangesSection = true;
+                }
+                if (trim($amendmentSection->data) !== '') {
+                    $html = str_replace('</li>', '<br></li>', $amendmentSection->data);
+                    $html = str_replace(['<ol', '<ul'], ['<br><ol', '<br><ul'], $html);
+                    $globalAlternatives[] = self::formatAmendmentSynopsisBlock($amendment, $html);
+                }
+                continue;
+            }
+
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($section->getData());
+            $formatter->setTextNew($amendmentSection->data);
+            $formatter->setFirstLineNo($section->getFirstLineNumber());
+            $groupsByParagraph = $formatter->getDiffGroupsWithNumbersByParagraph($lineLength, DiffRenderer::FORMATTING_INLINE, $paragraphFirstLines);
+            foreach ($groupsByParagraph as $paragraphNo => $diffGroups) {
+                $html = TextSimple::formatDiffGroup($diffGroups, '', '', $section->getFirstLineNumber());
+                $html = TextSimple::fixTcpdfAmendmentIssues($html);
+                $html = preg_replace('/<h4 class="lineSummary">(.*)<\/h4>/siuU', '<div style="color: #555555;"><i>$1</i></div>', $html);
+                $changesByParagraph[$paragraphNo][] = self::formatAmendmentSynopsisBlock($amendment, $html);
+            }
+        }
+
+        // Sections that cannot be amended (like the reason) are only printed if amendments change them nevertheless,
+        // e.g. because amending was disabled after the amendments were submitted
+        if (!$section->getSettings()->hasAmendments && count($changesByParagraph) === 0 && !$globalAlternativeChangesSection) {
+            return;
+        }
+
+        if ($section->getSettings()->printTitle) {
+            $pdf->SetFont('helvetica', 'B', 11);
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->setCellHeightRatio(1.25);
+            $pdf->writeHTMLCell($pdf->getContentWidth(), 0, $pdf->getLeftColumnX(), null, Html::encode($section->getSectionTitle()), 0, 1, false, true, '', true);
+            $pdf->Ln(2);
+        }
+
+        foreach ($paragraphs as $paragraphNo => $paragraph) {
+            self::printAmendmentSynopsisRow(
+                $pdf,
+                function () use ($pdf, $paragraph, $hasLineNumbers, $paragraphFirstLines, $paragraphNo, $fontName, $fontSize, $columnWidth) {
+                    $pdf->printMotionParagraphLines(
+                        $paragraph->lines,
+                        ($hasLineNumbers ? $paragraphFirstLines[$paragraphNo] : null),
+                        $pdf->getLeftColumnX(),
+                        AmendmentSynopsisPDF::LINE_NUMBER_WIDTH,
+                        $columnWidth - AmendmentSynopsisPDF::LINE_NUMBER_WIDTH,
+                        $fontName,
+                        $fontSize
+                    );
+                },
+                $changesByParagraph[$paragraphNo] ?? [],
+                $fontName,
+                $fontSize
+            );
+        }
+
+        if (count($globalAlternatives) > 0) {
+            self::printAmendmentSynopsisRow(
+                $pdf,
+                function () use ($pdf, $columnWidth, $fontSize) {
+                    $pdf->SetFont('helvetica', '', $fontSize);
+                    $label = '<strong>' . Html::encode(\Yii::t('amend', 'global_alternative')) . '</strong>';
+                    $pdf->writeHTMLCell($columnWidth, 0, $pdf->getLeftColumnX(), null, $label, 0, 1, false, true, '', true);
+                },
+                $globalAlternatives,
+                $fontName,
+                $fontSize
+            );
+        }
+    }
+
+    /**
+     * Prints one row of the synopsis: $printLeft prints the left side, the amendment blocks are printed on the right side.
+     * Both sides may span several pages; afterwards, the cursor is placed below the longer one.
+     *
+     * @param string[] $amendmentBlocks
+     */
+    private static function printAmendmentSynopsisRow(AmendmentSynopsisPDF $pdf, callable $printLeft, array $amendmentBlocks, string $fontName, float $fontSize): void
+    {
+        $startPage = $pdf->getPage();
+        $startY = $pdf->GetY();
+
+        $printLeft();
+        $endPage = $pdf->getPage();
+        $endY = $pdf->GetY();
+
+        if (count($amendmentBlocks) > 0) {
+            $pdf->setPage($startPage);
+            $pdf->SetFont($fontName, '', $fontSize);
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->setCellHeightRatio(1.5);
+            $html = implode('<br>', $amendmentBlocks);
+            $pdf->writeHTMLCell($pdf->getColumnWidth(), 0, $pdf->getRightColumnX(), $startY, $html, 0, 1, false, true, '', true);
+
+            if ($pdf->getPage() > $endPage || ($pdf->getPage() === $endPage && $pdf->GetY() > $endY)) {
+                $endPage = $pdf->getPage();
+                $endY = $pdf->GetY();
+            }
+        }
+
+        $pdf->setPage($endPage);
+        $pdf->SetY($endY + 2);
+        $y = $pdf->GetY();
+        $pdf->Line(
+            $pdf->getLeftColumnX(),
+            $y,
+            $pdf->getLeftColumnX() + $pdf->getContentWidth(),
+            $y,
+            ['width' => 0.1, 'color' => [180, 180, 180]]
+        );
+        $pdf->SetY($y + 2);
+    }
+
+    private static function formatAmendmentSynopsisBlock(Amendment $amendment, string $html): string
+    {
+        $statuses = $amendment->getMyConsultation()->getStatuses();
+        $header = '<strong>' . Html::encode($amendment->getFormattedTitlePrefix() ?? '') . '</strong>';
+        $initiators = $amendment->getInitiatorsStr();
+        if ($initiators !== '') {
+            $header .= ' (' . Html::encode($initiators) . ')';
+        }
+        if (in_array($amendment->status, $statuses->getInvisibleAmendmentStatuses(withdrawnAreVisible: false))) {
+            $header .= ' <span style="color: #555555;">– ' . Html::encode($statuses->getStatusName($amendment->status)) . '</span>';
+        }
+
+        return '<div>' . $header . '</div>' . $html;
     }
 
     public static function printMotionToOdt(Motion $motion, \CatoTH\HTML2OpenDocument\Text $doc): void

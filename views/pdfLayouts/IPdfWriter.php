@@ -143,6 +143,69 @@ class IPdfWriter extends \TCPDF
         }
     }
 
+    /**
+     * Prints the lines of one paragraph of a motion text section, optionally with line numbers on the left.
+     * The line number column has a width of $lineNumberWidth (starting at $x), the text is printed right next to it.
+     * If $firstLineNumber is null, no line numbers are printed.
+     *
+     * @param string[] $lines
+     * @return int|null The line number following the last line of this paragraph
+     */
+    public function printMotionParagraphLines(array $lines, ?int $firstLineNumber, float $x, float $lineNumberWidth, float $textWidth, string $fontName, float $textSize): ?int
+    {
+        $linesArr = [];
+        foreach ($lines as $line) {
+            $line       = str_replace('###LINENUMBER###', '', $line);
+            $line       = preg_replace('/<br>\s*$/siu', '', $line);
+            $linesArr[] = $line . '';
+        }
+
+        // Hint about <li>s: The spacing between list items is created by </li><br><li>-markup.
+        // This obviously is incorrect according to HTML, but is rendered correctly neverless.
+        // We just have to take care about additional spacing for the line numbers in these cases.
+
+        $linenr = $firstLineNumber;
+        if ($linenr !== null) {
+            $lineNos = [];
+            for ($i = 0; $i < count($lines); $i++) {
+                if (preg_match('/^<(ul|ol|li)/siu', $linesArr[$i])) {
+                    $lineNos[] = ''; // Just for having an additional <br>
+                }
+                $lineNos[] = $linenr++;
+            }
+            $text2 = implode('<br>', $lineNos);
+        } else {
+            $text2 = '';
+        }
+
+        $page = $this->getPage();
+        $y = $this->getY();
+        $this->SetFont($fontName, '', $textSize * 2 / 3);
+        $this->SetTextColor(100, 100, 100);
+        $this->setCellHeightRatio(2.23);
+        $this->writeHTMLCell($lineNumberWidth, 0, $x, $y, $text2, 0, 0, false, true, '', true);
+        $this->setPage($page);
+
+        $this->SetFont($fontName, '', $textSize);
+        $this->SetTextColor(0, 0, 0);
+        $this->setCellHeightRatio(1.5);
+        $linesArr = $this->printMotionToPDFAddLinebreaks($linesArr);
+        $text1    = implode('<br>', $linesArr);
+        $text1    = str_replace('</li><br><br><li', '</li><br><li', $text1);
+
+        // instead of <span class="strike"></span> TCPDF can only handle <s></s>
+        // for striking through text
+        $text1 = preg_replace('/<span class="strike">(.*)<\/span>/iUs', '<s>${1}</s>', $text1);
+
+        // instead of <span class="underline"></span> TCPDF can only handle <u></u>
+        // for underlined text
+        $text1 = preg_replace('/<span class="underline">(.*)<\/span>/iUs', '<u>${1}</u>', $text1);
+
+        $this->writeHTMLCell($textWidth, 0, $x + $lineNumberWidth, $y, $text1, 0, 1, false, true, '', true);
+
+        return $linenr;
+    }
+
     public function printMotionSection(MotionSection $section): void
     {
         $linenr   = $section->getFirstLineNumber();
@@ -156,52 +219,7 @@ class IPdfWriter extends \TCPDF
         if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
             $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
             foreach ($paragraphs as $paragraph) {
-                $linesArr = [];
-                foreach ($paragraph->lines as $line) {
-                    $line       = str_replace('###LINENUMBER###', '', $line);
-                    $line       = preg_replace('/<br>\s*$/siu', '', $line);
-                    $linesArr[] = $line . '';
-                }
-
-                // Hint about <li>s: The spacing between list items is created by </li><br><li>-markup.
-                // This obviously is incorrect according to HTML, but is rendered correctly neverless.
-                // We just have to take care about additional spacing for the line numbers in these cases.
-
-                if ($hasLineNumbers) {
-                    $lineNos = [];
-                    for ($i = 0; $i < count($paragraph->lines); $i++) {
-                        if (preg_match('/^<(ul|ol|li)/siu', $linesArr[$i])) {
-                            $lineNos[] = ''; // Just for having an additional <br>
-                        }
-                        $lineNos[] = $linenr++;
-                    }
-                    $text2 = implode('<br>', $lineNos);
-                } else {
-                    $text2 = '';
-                }
-
-                $y = $this->getY();
-                $this->SetFont($fontName, '', $textSize * 2 / 3);
-                $this->SetTextColor(100, 100, 100);
-                $this->setCellHeightRatio(2.23);
-                $this->writeHTMLCell(12, 0, 12, $y, $text2, 0, 0, false, true, '', true);
-
-                $this->SetFont($fontName, '', $textSize);
-                $this->SetTextColor(0, 0, 0);
-                $this->setCellHeightRatio(1.5);
-                $linesArr = $this->printMotionToPDFAddLinebreaks($linesArr);
-                $text1    = implode('<br>', $linesArr);
-                $text1    = str_replace('</li><br><br><li', '</li><br><li', $text1);
-
-                // instead of <span class="strike"></span> TCPDF can only handle <s></s>
-                // for striking through text
-                $text1 = preg_replace('/<span class="strike">(.*)<\/span>/iUs', '<s>${1}</s>', $text1);
-
-                // instead of <span class="underline"></span> TCPDF can only handle <u></u>
-                // for underlined text
-                $text1 = preg_replace('/<span class="underline">(.*)<\/span>/iUs', '<u>${1}</u>', $text1);
-
-                $this->writeHTMLCell(173, 0, 24, $y, $text1, 0, 1, false, true, '', true);
+                $linenr = $this->printMotionParagraphLines($paragraph->lines, $hasLineNumbers ? $linenr : null, 12, 12, 173, $fontName, $textSize);
 
                 $this->Ln(7);
             }

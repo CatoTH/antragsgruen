@@ -515,7 +515,7 @@ abstract class TextSimpleCommon extends Text {
         return (grapheme_stripos($data, $text) !== false);
     }
 
-    private function fixTcpdfAmendmentIssues(string $html): string
+    public static function fixTcpdfAmendmentIssues(string $html): string
     {
         $replaces = [];
         $replaces['<ins '] = '<span ';
