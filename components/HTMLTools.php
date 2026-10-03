@@ -23,7 +23,16 @@ class HTMLTools
         return strlen($str) > 1000;
     }
 
-    public static function purify(\HTMLPurifier_Config $config, string $html): string {
+    /**
+     * Setting up an HTMLPurifier instance (the HTML definition) is far more expensive than the actual purifying.
+     * Therefore, one instance per distinct configuration is created once and reused for the rest of the request.
+     *
+     * @var array<string, \HTMLPurifier>
+     */
+    private static array $purifiers = [];
+
+    private static function createPurifier(\HTMLPurifier_Config $config): \HTMLPurifier
+    {
         /** @var \HTMLPurifier_HTMLDefinition $def */
         $def = $config->getHTMLDefinition(true);
 
@@ -43,7 +52,28 @@ class HTMLTools
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $purifier->config->set('Cache.SerializerPermissions', 0775);
 
-        return $purifier->purify($html);
+        // With autoFinalize = false and no explicit finalization, every single $config->get() during purifying
+        // would merge the whole property list again (HTMLPurifier_Config::autoFinalize() => squash()).
+        $purifier->config->finalize();
+
+        return $purifier;
+    }
+
+    /**
+     * @param callable(): \HTMLPurifier_Config $createConfig Only called if no purifier for $configKey exists yet
+     */
+    private static function getPurifier(string $configKey, callable $createConfig): \HTMLPurifier
+    {
+        if (!isset(self::$purifiers[$configKey])) {
+            self::$purifiers[$configKey] = self::createPurifier($createConfig());
+        }
+
+        return self::$purifiers[$configKey];
+    }
+
+    public static function purify(\HTMLPurifier_Config $config, string $html): string
+    {
+        return self::createPurifier($config)->purify($html);
     }
 
     public static function cleanMessedUpHtmlCharacters(string $html): string
@@ -89,28 +119,31 @@ class HTMLTools
             return \Yii::$app->getCache()->get($cacheKey);
         }
 
-        $configInstance = \HTMLPurifier_Config::create([
-            'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-            'HTML.AllowedElements'                    => null,
-            'Attr.AllowedClasses'                     => null,
-            'CSS.AllowedProperties'                   => null,
-            'AutoFormat.Linkify'                      => $linkify,
-            'AutoFormat.AutoParagraph'                => false,
-            'AutoFormat.RemoveSpansWithoutAttributes' => false,
-            'AutoFormat.RemoveEmpty'                  => false,
-            'Core.NormalizeNewlines'                  => false,
-            'Core.AllowHostnameUnderscore'            => true,
-            'Core.EnableIDNA'                         => true,
-            'Output.SortAttr'                         => true,
-            'Output.Newline'                          => "\n"
-        ]);
-        $configInstance->autoFinalize = false;
+        $purifier = self::getPurifier('correctHtmlErrors_' . ($linkify ? '1' : '0'), function () use ($linkify): \HTMLPurifier_Config {
+            $configInstance = \HTMLPurifier_Config::create([
+                'HTML.Doctype'                            => 'HTML 4.01 Transitional',
+                'HTML.AllowedElements'                    => null,
+                'Attr.AllowedClasses'                     => null,
+                'CSS.AllowedProperties'                   => null,
+                'AutoFormat.Linkify'                      => $linkify,
+                'AutoFormat.AutoParagraph'                => false,
+                'AutoFormat.RemoveSpansWithoutAttributes' => false,
+                'AutoFormat.RemoveEmpty'                  => false,
+                'Core.NormalizeNewlines'                  => false,
+                'Core.AllowHostnameUnderscore'            => true,
+                'Core.EnableIDNA'                         => true,
+                'Output.SortAttr'                         => true,
+                'Output.Newline'                          => "\n"
+            ]);
+            $configInstance->autoFinalize = false;
 
-        $def                                                    = $configInstance->getHTMLDefinition(true);
-        $def->info_global_attr['data-moving-partner-id']        = new \HTMLPurifier_AttrDef_Text();
-        $def->info_global_attr['data-moving-partner-paragraph'] = new \HTMLPurifier_AttrDef_Text();
+            $def                                                    = $configInstance->getHTMLDefinition(true);
+            $def->info_global_attr['data-moving-partner-id']        = new \HTMLPurifier_AttrDef_Text();
+            $def->info_global_attr['data-moving-partner-paragraph'] = new \HTMLPurifier_AttrDef_Text();
 
-        $str = self::purify($configInstance, $htmlIn);
+            return $configInstance;
+        });
+        $str = $purifier->purify($htmlIn);
 
         $str = self::cleanMessedUpHtmlCharacters($str);
         if (self::isStringCachable($htmlIn)) {
@@ -219,39 +252,44 @@ class HTMLTools
         // When editing amendments, list items are split into <ol start="2" class="upperAlpha"> items.
         // After editing, it should be merged into one list again.
         $html = preg_replace('/<\/ol>\s*<ol( [^>]*)?>/siu', '', $html);
-        $html = preg_replace('/<\/ol>\s*<\/div>\s*<div[^>]*>\s*<ol( [^>]*)?>/siu', '', $html);
+        $html = (string) preg_replace('/<\/ol>\s*<\/div>\s*<div[^>]*>\s*<ol( [^>]*)?>/siu', '', $html);
 
-        $allowedTags = [
-            'p', 'strong', 'em', 'ul', 'ol', 'li', 'span', 'a', 'br', 'blockquote',
-            'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
-        ];
+        $allowStrike = !in_array('strike', $forbiddenFormattings);
+        $purifier = self::getPurifier('cleanSimpleHtml_' . ($allowStrike ? '1' : '0'), function () use ($allowStrike): \HTMLPurifier_Config {
+            $allowedTags = [
+                'p', 'strong', 'em', 'ul', 'ol', 'li', 'span', 'a', 'br', 'blockquote',
+                'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
+            ];
 
-        $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], self::KNOWN_OL_CLASSES);
+            $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], self::KNOWN_OL_CLASSES);
 
-        if (!in_array('strike', $forbiddenFormattings)) {
-            $allowedClasses[] = 'strike';
-        }
+            if ($allowStrike) {
+                $allowedClasses[] = 'strike';
+            }
 
-        $allowedAttributes = ['style', 'href', 'class', 'li.value', 'ol.start'];
+            $allowedAttributes = ['style', 'href', 'class', 'li.value', 'ol.start'];
 
-        $configInstance = \HTMLPurifier_Config::create([
-            'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-            'HTML.AllowedElements'                    => implode(',', $allowedTags),
-            'HTML.AllowedAttributes'                  => implode(',', $allowedAttributes),
-            'Attr.AllowedClasses'                     => implode(',', $allowedClasses),
-            'CSS.AllowedProperties'                   => '',
-            'AutoFormat.Linkify'                      => true,
-            'AutoFormat.AutoParagraph'                => false,
-            'AutoFormat.RemoveSpansWithoutAttributes' => true,
-            'AutoFormat.RemoveEmpty'                  => true,
-            'Core.NormalizeNewlines'                  => true,
-            'Core.AllowHostnameUnderscore'            => true,
-            'Core.EnableIDNA'                         => true,
-            'Output.SortAttr'                         => true,
-            'Output.Newline'                          => "\n"
-        ]);
-        $configInstance->autoFinalize = false;
-        $html = self::purify($configInstance, $html);
+            $configInstance = \HTMLPurifier_Config::create([
+                'HTML.Doctype'                            => 'HTML 4.01 Transitional',
+                'HTML.AllowedElements'                    => implode(',', $allowedTags),
+                'HTML.AllowedAttributes'                  => implode(',', $allowedAttributes),
+                'Attr.AllowedClasses'                     => implode(',', $allowedClasses),
+                'CSS.AllowedProperties'                   => '',
+                'AutoFormat.Linkify'                      => true,
+                'AutoFormat.AutoParagraph'                => false,
+                'AutoFormat.RemoveSpansWithoutAttributes' => true,
+                'AutoFormat.RemoveEmpty'                  => true,
+                'Core.NormalizeNewlines'                  => true,
+                'Core.AllowHostnameUnderscore'            => true,
+                'Core.EnableIDNA'                         => true,
+                'Output.SortAttr'                         => true,
+                'Output.Newline'                          => "\n"
+            ]);
+            $configInstance->autoFinalize = false;
+
+            return $configInstance;
+        });
+        $html = $purifier->purify($html);
 
         // Text always needs to be in a block container. This is the normal case anyway,
         // however sometimes CKEditor + Lite Change Tracking produces messed up HTML that we need to fix here
