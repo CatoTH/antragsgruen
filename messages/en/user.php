@@ -58,9 +58,12 @@ return [
     'err_2fa_incorrect'         => 'Incorrect code provided',
     'err_2fa_nocode'            => 'No second factor registered',
     'recover_mail_title'        => 'Antragsgrün: Password recovery',
-    'recover_mail_body'         => "Hi!\n\nYou requested a password recovery. " .
+    'recover_mail_body'         => [
+        'text' => "Hi!\n\nYou requested a password recovery. " .
         "To proceed, please open the following page and enter the new password:\n\n%URL%\n\n" .
         "Or enter the following code on the recovery page: %CODE%",
+        'description' => 'Supported placeholders: %URL%, %CODE%, %NAME_GIVEN%, %NAME_FAMILY%',
+    ],
     'err_recover_mail_sent'     => 'There already has been a recovery e-mail sent within the last 24 hours.',
     'err_emailchange_mail_sent' => 'You already requested an e-mail change within the last 24 hours.',
     'err_emailchange_notfound'  => 'No e-mail change was requested or it is already being implemented.',

@@ -162,6 +162,24 @@ Each plugin lives in `plugins/<id>/` and extends `plugins/ModuleBase.php`. Activ
 
 Key plugins in this repo: `gruen_ci` (Green Party CI theme), `antragsgruen_sites` (multisite home page manager), `generic_sso` (OAuth2/SAML SSO).
 
+### Internationalization (i18n)
+All user-facing strings are translated through Yii's i18n, backed by the custom `components/yii/MessageSource.php`.
+
+- **Message files**: `messages/<lang>/<category>.php`, each returning a `key => text` array. Base languages: `en` (canonical base), `de`, `fr`, `nl`, `ca`, `me`, `es`, `sv`. Categories are the file names (`base`, `admin`, `motion`, `amend`, `voting`, ...), except that the category `con` lives in `consultation.php` (`con` is a reserved filename on Windows). New categories must be registered in `MessageSource::getTranslatableCategories()`.
+- **Usage in PHP/views**: `Yii::t('category', 'key')`. Placeholders are plain-text tokens (mostly `%LINK%` / `%NAME%`, some JS strings use `{name}`) that the caller replaces via `str_replace` / `String.replace` — not ICU syntax.
+- **Always add every new string to all base languages** (`messages/en`, `de`, `fr`, `nl`, `ca`, `me`, `es`, `sv`), with a real translation — not an English copy. Keep the same key and position in each file. When renaming or removing a key, do it in all languages. Plugin categories live in `plugins/<id>/messages/<lang>/<pluginId>.php`; add them for every language that plugin provides.
+- **Wording variants** (`messages/de-parteitag/`, `de-bewerbung`, `de-bdk`, `en-gb`, ...) only contain overrides of selected keys; they are selected via `Consultation::$wordingBase` and merged on top of the base language. Don't add new keys there unless a variant genuinely needs different wording. Plugins can provide additional variants via `getProvidedTranslations()` (stored under `plugins/<id>/messages/<lang>/`).
+- **Merge order**: `en` → base language → wording variant → consultation-specific overrides (`ConsultationText` DB rows, editable by admins in the "Edit texts" UI). Missing keys therefore fall back to English. With `config/DEBUG` present, missing translations are logged to `missing-translations.log` in the tmp dir.
+- **Structured entries**: instead of a plain string, an entry can be an array `['text' => '...', 'description' => '...', 'js' => true]`. `description` is a hint for translators / the admin text-editing UI (add one when a short string is ambiguous). **If the code supports placeholders that the default text doesn't use**, list all supported placeholders in the `description`, e.g. `'description' => 'Supported placeholders: %TITLE%, %LINK%, %STATUS%'`, so admins customizing the text know what's available. Don't add this when the text already contains exactly the supported placeholders. This structure only needs to exist in the **English** file — other languages just provide the plain string; `MessageSource::mergeWithStructure()` keeps the English metadata and swaps in the translated `text`.
+- **Strings used in JavaScript / Vue**: mark them with `'js' => true` in the English base file only, e.g.
+  ```php
+  'save' => [
+      'text' => 'Save',
+      'js' => true,
+  ],
+  ```
+  Only `js`-flagged strings are exported to the browser (`MessageSource::loadJsMessages()`). The view must register the category via `$layout->addJsTranslation('voting')`; `views/layouts/main.php` then calls `translate.registerTranslation()` for it. In Vue/JS, read strings with `translate.getTranslation('category', 'key')` (`import translate from "/js/vue/Translate.vue.js"`) or register the default export as a directive (e.g. `app.directive('t', translate)`, then `v-t="['category', 'key']"`; full form `[category, key, html, replacements, suffix]`, and `v-t:title=...` sets an attribute). Legacy jQuery code typically receives translated strings through `data-*` attributes rendered with `Yii::t()` in the view.
+
 ### REST API
 Disabled by default; enabled per site (`apiEnabled` in the site settings, see `Base::handleRestHeaders()`); authenticated users can use the API even when public API access is disabled. Authentication via JWT bearer tokens (`OptionalHttpBearerAuth`). All endpoints under `/rest`. OpenAPI spec at `docs/openapi.yaml`. API response models live in `models/api/`. The controllers are implemented in `controllers/rest/` and extend from `RestBase.php`. Countroller methods also need to be registered in config/urls.php.
 The correct approach to make modifications to the API and DTOs is:
