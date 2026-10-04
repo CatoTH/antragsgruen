@@ -28,7 +28,7 @@ $controller->layoutParams->addBreadcrumb('Robert’s Rules of Order');
 
     <p>Robert’s Rules of Order (RRO) is the most widely used parliamentary authority for conventions, associations, and nonprofit boards. While Antragsgrün was not built for one specific rulebook, its core concepts - motions, amendments, seconding, speaking lists, and votings - map naturally onto the procedures described by Robert’s Rules. This page explains how the terminology matches and how to set up and run a meeting accordingly.</p>
 
-    <p><em>Note: some features described on this page (the &ldquo;Currently debated&rdquo; section and secondary motions raised from the floor) are part of a new module that is currently under development and will be released as part of Antragsgrün 4.18.</em></p>
+    <p><em>Note: a few features described on this page (like secondary motions raised from the floor) are currently under development and will be released as part of Antragsgrün 4.19.</em></p>
 
     <h2>How Robert’s Rules concepts map to Antragsgrün</h2>
 

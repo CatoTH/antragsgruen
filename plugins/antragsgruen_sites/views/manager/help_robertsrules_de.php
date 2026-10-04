@@ -28,7 +28,7 @@ $controller->layoutParams->addBreadcrumb('Robert’s Rules of Order');
 
     <p>Robert’s Rules of Order (RRO) ist das vor allem im Englischsprachigen Raum verbreitete Regelwerk für die Durchführung von Versammlungen von Vereinen, Verbänden und Gremien. Im Deutschsprachigen Raum kommen zwar weniger standardisierte Verfahren zum Einsatz, das meiste im Folgenden Beschriebene lässt sich aber dennoch gut anwenden.</p>
 
-    <p><em>Hinweis: Einige der hier beschriebenen Funktionen (der Bereich „Aktuell debattiert“ sowie aus der Versammlung heraus gestellte Verfahrensanträge) sind Teil eines neuen Moduls, das sich derzeit in Entwicklung befindet und für Antragsgrün 4.18 geplant ist.</em></p>
+    <p><em>Hinweis: Einige wenige der hier beschriebenen Funktionen (insb. aus der Versammlung heraus gestellte Verfahrensanträge) sind derzeit noch in Entwicklung und für Antragsgrün 4.19 geplant.</em></p>
 
     <h2>Wie die Konzepte von Robert’s Rules auf Antragsgrün abbilden</h2>
 
