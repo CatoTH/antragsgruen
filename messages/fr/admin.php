@@ -153,6 +153,8 @@ return [
     'con_line_len'            => 'Longueur de ligne',
     'con_title_motions'       => 'Motions',
     'con_feeds_sidebar'       => 'Montrer les flux dans la barre latérale',
+    'con_show_phases_wizard' => 'Afficher les <strong>phases de la consultation</strong> sur la page d\'accueil',
+    'con_show_phases_wizard_tt' => 'Pertinent uniquement si des échéances complexes avec des phases nommées sont configurées pour les types de motion.',
     'con_single_motion_mode'  => 'Une <strong>seule motion</strong> est débattue, aucun page d\'aperçu des motions ne sera montrée.',
     'con_force_motion'        => 'La motion suivante',
     'con_line_number_global'  => '<strong>Numérotation des lignes globale</strong> à travers l\'ensemble de la consultation',

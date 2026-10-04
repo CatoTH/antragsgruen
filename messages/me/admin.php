@@ -271,6 +271,8 @@ return [
     'con_feeds_sidebar' => 'Prikaz sažetaka sadržaja u bočnoj traci', // Original: Show feeds in the sidebar
     'con_show_ad' => 'Prikažite &quot;Korištenje Antragsgrüna&quot; na bočnoj traci', // Original: Show &quot;Using Antragsgrün&quot; in the sidebar
     'con_show_breadcrumbs' => 'Prikaz Breadcrumbs-a iznad web sadržaja', // Original: Show Breadcrumbs above the site content
+    'con_show_phases_wizard' => 'Prikaži <strong>faze konsultacija</strong> na početnoj stranici', // Original: Show the <strong>phases of the consultation</strong> on the homepage
+    'con_show_phases_wizard_tt' => 'Relevantno samo ako su za vrste predloga podešeni složeni rokovi sa imenovanim fazama.', // Original: Only relevant if complex deadlines with named phases are set up for the motion types.
     'con_single_motion_mode' => 'Raspravlja se samo <strong>o jednom predlogu</strong>, neće se prikazati stranica s pregledom predloga.', // Original: Only a <strong>single motion</strong> is being discussed, no motion overview page will be shown.
     'con_force_motion' => 'Sledeći predlog', // Original: The following motion
     'con_line_number_global' => '<strong>Globalno numerisanje linija</strong> tokom cijelog konsultacija', // Original: <strong>Global line numbering</strong> throughout the whole consultation

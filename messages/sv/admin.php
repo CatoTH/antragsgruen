@@ -286,6 +286,8 @@ return [
     'con_show_ad' => 'Visa &quot;Drivs med Antragsgrün&quot; i sidopanelen',
     'con_show_breadcrumbs' => 'Visa brödsmulor ovanför sidans innehåll',
     'con_show_deadline_circle' => 'Visa <strong>kommande tidsfrister</strong> tydligt på startsidan (rosa cirkel)',
+    'con_show_phases_wizard' => 'Visa <strong>konsultationens faser</strong> på startsidan',
+    'con_show_phases_wizard_tt' => 'Endast relevant om komplexa tidsfrister med namngivna faser har konfigurerats för motionstyperna.',
     'con_single_motion_mode' => 'Endast <strong>en enda motion</strong> diskuteras, ingen översiktssida för motioner visas.',
     'con_force_motion' => 'Följande motion',
     'con_line_number_global' => '<strong>Global radnumrering</strong> för hela evenemanget',

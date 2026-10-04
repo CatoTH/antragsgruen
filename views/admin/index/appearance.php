@@ -300,6 +300,10 @@ $handledSiteSettings = [];
             $propTitle = Yii::t('admin', 'con_show_deadline_circle');
             $boolSettingRow($settings, 'homepageDeadlineCircle', $handledSettings, $propTitle);
 
+            $propTitle = Yii::t('admin', 'con_show_phases_wizard');
+            $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_show_phases_wizard_tt'));
+            $boolSettingRow($settings, 'homepagePhasesWizard', $handledSettings, $propTitle . ' ' . $tooltip);
+
             $propTitle = Yii::t('admin', 'con_show_private_notes');
             $boolSettingRow($settings, 'showPrivateNotes', $handledSettings, $propTitle);
 
