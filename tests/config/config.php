@@ -23,9 +23,20 @@ if (str_starts_with($requestUri ?? '', '/std/yfj-test')) {
 }
 $params = new AntragsgruenApp($config);
 
+// Pin PHP and MySQL to UTC, so that the TIMESTAMP values of the test fixtures and the dates rendered
+// from them do not depend on the time zone of the machine running the tests.
+// Both the web server and the test runner (which loads the fixtures) use this configuration.
+$dbConnection = $params->dbConnection;
+$dbConnection['on afterOpen'] = function (\yii\base\Event $event): void {
+    /** @var \yii\db\Connection $connection */
+    $connection = $event->sender;
+    $connection->pdo->exec("SET time_zone = '+00:00'");
+};
+
 return [
+    'timeZone'   => 'UTC',
     'components' => [
-        'db'         => $params->dbConnection,
+        'db'         => $dbConnection,
         'mailer'     => [
             'useFileTransport' => true,
         ],

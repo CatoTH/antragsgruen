@@ -58,7 +58,8 @@ class AcceptanceTester extends Actor
         'Bad value “popup” for attribute “rel”',
         'Attribute “value” not allowed on element “li” at this point',
         'CKEDITOR',
-        'autocomplete'
+        'autocomplete',
+        'type=importmap',
     ];
 
     public function initializeAndGoHome(string $subdomain = 'stdparteitag', string $path = 'std-parteitag'): ConsultationHomePage

@@ -15,7 +15,6 @@ modules:
         - Tests\Support\Helper\Download
         - Tests\Support\Helper\Bootbox
         - Tests\Support\Helper\BackendRequests
-        - Tests\Support\Helper\AccessibilityValidator
         - Tests\Support\Helper\ConfigurationChanger
         - Tests\Support\Helper\TestApi
     config:
@@ -29,8 +28,6 @@ modules:
             #http_proxy: direct
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
-        Tests\Support\Helper\AccessibilityValidator:
-            pa11yPath: node_modules/.bin/pa11y
         Tests\Support\Helper\HTMLValidator:
             javaPath: java
             vnuPath: /usr/local/bin/vnu.jar
