@@ -286,6 +286,8 @@ return [
     'con_show_ad' => 'Mostrar &quot;Creado con Antragsgrün&quot; en la barra lateral',
     'con_show_breadcrumbs' => 'Mostrar migas de pan encima del contenido del sitio',
     'con_show_deadline_circle' => 'Mostrar los <strong>plazos próximos</strong> de forma destacada en la página de inicio (círculo rosa)',
+    'con_show_phases_wizard' => 'Mostrar las <strong>fases de la consulta</strong> en la página de inicio',
+    'con_show_phases_wizard_tt' => 'Solo es relevante si se han configurado plazos complejos con fases con nombre para los tipos de moción.',
     'con_single_motion_mode' => 'Solo se está debatiendo <strong>una única moción</strong>, no se mostrará ninguna página de resumen de mociones.',
     'con_force_motion' => 'La siguiente moción',
     'con_line_number_global' => '<strong>Numeración de línea global</strong> en todo el evento',

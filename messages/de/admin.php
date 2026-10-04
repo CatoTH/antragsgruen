@@ -285,6 +285,8 @@ return [
     'con_show_ad'             => '„Dein Antragsgrün“ in der Sidebar anzeigen',
     'con_show_breadcrumbs'    => 'Breadcrumbs über dem Seiteninhalt anzeigen',
     'con_show_deadline_circle' => '<strong>Anstehende Fristen</strong> groß auf der Startseite anzeigen (Störer-Kreis)',
+    'con_show_phases_wizard' => 'Die <strong>Phasen der Veranstaltung</strong> auf der Startseite anzeigen',
+    'con_show_phases_wizard_tt' => 'Nur relevant, wenn bei den Antragstypen komplexe Fristen mit benannten Phasen eingerichtet sind.',
     'con_single_motion_mode'  => 'Es wird nur <strong>ein einziger Antrag</strong> diskutiert, auf eine einleitende Übersichts-Startseite wird verzichtet',
     'con_force_motion'        => 'Dieser Antrag ist',
     'con_line_number_global'  => '<strong>Zeilennummerierung</strong> durchgehend für die ganze Veranstaltung',

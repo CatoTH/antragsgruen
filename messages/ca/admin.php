@@ -269,6 +269,8 @@ return [
     'con_feeds_sidebar'       => 'Mostrar fonts a la barra lateral',
     'con_show_ad'             => 'Mostrar "Usant Antragsgrün" a la barra lateral',
     'con_show_breadcrumbs'    => 'Mostrar Rutes de navegació sobre el contingut del lloc',
+    'con_show_phases_wizard' => 'Mostrar les <strong>fases de la consulta</strong> a la pàgina d\'inici',
+    'con_show_phases_wizard_tt' => 'Només és rellevant si s\'han configurat terminis complexos amb fases amb nom per als tipus de resolució.',
     'con_single_motion_mode'  => 'Només es discuteix una <strong>única resolució</strong>, no es mostrarà la pàgina de visió general de resolucions.',
     'con_force_motion'        => 'La següent resolució',
     'con_line_number_global'  => '<strong>Numeració de línies global</strong> en tota la consulta',

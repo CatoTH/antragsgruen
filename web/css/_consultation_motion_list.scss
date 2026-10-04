@@ -749,6 +749,15 @@ $agendaMarginPerLevel: 50px;
     @include wizardHeight(70px);
   }
 
+  .wizardWidget ul.steps li {
+    &, &.complete {
+      color: #555;
+    }
+    &.active {
+      color: #333;
+    }
+  }
+
   .title {
     line-height: 20px;
     font-weight: bold;

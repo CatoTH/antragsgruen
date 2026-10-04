@@ -37,7 +37,9 @@ echo $layout->getMiniMenu('sidebarSmall');
 echo $controller->showErrors();
 
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
-echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
+if ($consultation->getSettings()->homepagePhasesWizard) {
+    echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
+}
 
 if ($consultation->getSettings()->hasCurrentlyDebated) {
     $debateModerator = User::havePrivilege($consultation, Privileges::PRIVILEGE_DEBATE_MODERATION, null);

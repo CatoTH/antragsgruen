@@ -18,8 +18,8 @@ foreach ($consultation->motionTypes as $motionType) {
             }
             $namedPhases[$deadline['title']] = [
                 'title'       => $deadline['title'],
-                'start'       => $deadline['start'],
-                'end'         => $deadline['end'],
+                'start'       => $deadline['start'] ?? '',
+                'end'         => $deadline['end'] ?? '',
                 'permissions' => [],
             ];
         }
@@ -49,22 +49,14 @@ usort($namedPhases, function ($phase1, $phase2) {
 
 foreach ($consultation->motionTypes as $motionType) {
     foreach (ConsultationMotionType::DEADLINE_TYPES as $deadlineType) {
-        switch ($deadlineType) {
-            case ConsultationMotionType::DEADLINE_MOTIONS:
-                $deadlineName = $motionType->getCreateTitleForDisplay();
-                break;
-            case ConsultationMotionType::DEADLINE_AMENDMENTS:
-                $deadlineName = Yii::t('admin', 'motion_type_perm_amend');
-                break;
-            case ConsultationMotionType::DEADLINE_COMMENTS:
-                $deadlineName = Yii::t('admin', 'motion_type_perm_comment');
-                break;
-            case ConsultationMotionType::DEADLINE_MERGING:
-                $deadlineName = Yii::t('admin', 'motion_type_perm_merge');
-                break;
-            default:
-                $deadlineName = '';
-        }
+        $deadlineName = match ($deadlineType) {
+            ConsultationMotionType::DEADLINE_MOTIONS => $motionType->getCreateTitleForDisplay(),
+            ConsultationMotionType::DEADLINE_AMENDMENTS => Yii::t('admin', 'motion_type_perm_amend'),
+            ConsultationMotionType::DEADLINE_COMMENTS => Yii::t('admin', 'motion_type_perm_comment'),
+            ConsultationMotionType::DEADLINE_MERGING => Yii::t('admin', 'motion_type_perm_merge'),
+            ConsultationMotionType::DEADLINE_AMENDMENTS_TO_AMENDMENTS => Yii::t('admin', 'motion_type_allow_amend_amend'),
+            default => '',
+        };
         foreach ($motionType->getDeadlinesByType($deadlineType) as $deadline) {
             foreach ($namedPhases as $title => $namedPhase) {
                 if ($namedPhase['start'] === $deadline['start'] && $namedPhase['end'] === $deadline['end']) {

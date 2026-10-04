@@ -282,6 +282,8 @@ return [
     'con_show_ad' => '„Antragsgrün gebruiken” in de zijbalk tonen',
     'con_show_breadcrumbs' => 'Kruimelpad boven de pagina-inhoud tonen',
     'con_show_deadline_circle' => '<strong>Aankomende deadlines</strong> prominent op de startpagina tonen (deadline-cirkel)',
+    'con_show_phases_wizard' => 'De <strong>fasen van de consultatie</strong> op de startpagina tonen',
+    'con_show_phases_wizard_tt' => 'Alleen relevant als er voor de voorsteltypes complexe deadlines met benoemde fasen zijn ingesteld.',
     'con_single_motion_mode' => 'Er wordt slechts <strong>één enkel voorstel</strong> behandeld; de overzichtspagina vervalt.',
     'con_force_motion' => 'Dit voorstel is',
     'con_line_number_global' => '<strong>Doorlopende regelnummering</strong> voor de gehele raadpleging',
