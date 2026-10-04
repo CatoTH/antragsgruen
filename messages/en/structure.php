@@ -243,7 +243,10 @@ return [
     'activity_MOTION_DELETE_PUBLISHED'    => '###USER### <strong>deleted the motion ###MOTION###</strong>',
     'activity_MOTION_PUBLISH'             => '###USER### <strong>published the motion</strong>',
     'activity_MOTION_CHANGE'              => '###USER###  <strong>edited the motion ###MOTION###</strong>',
-    'activity_MOTION_WITHDRAW'            => 'The motion was <strong>withdrawn</strong>.',
+    'activity_MOTION_WITHDRAW'            => [
+        'text' => 'The motion was <strong>withdrawn</strong>.',
+        'description' => 'Supported placeholders: ###USER###',
+    ],
     'activity_MOTION_COMMENT'             => '###USER### <strong>commented on the motion</strong>',
     'activity_MOTION_SCREEN'              => 'The <strong>motion was published</strong>',
     'activity_MOTION_PUBLISH_PROPOSAL'    => '###USER### <strong>published the proposed procedure</strong>',
@@ -278,9 +281,18 @@ return [
     'activity_AMENDMENT_ACCEPT_PROPOSAL_admin' => '###USER### set that initiator <strong>accepted the proposed procedure (version %VERSION%)</strong>',
     'activity_AMENDMENT_REJECT_PROPOSAL'  => '###USER### <strong>rejected</strong> the proposed procedure (version %VERSION%)</strong>',
     'activity_AMENDMENT_REJECT_PROPOSAL_admin' => '###USER### set that initiator <strong>rejected the proposed procedure (version %VERSION%)</strong>',
-    'activity_AMENDMENT_NEW_PROPOSAL'     => '###USER### <strong>created the proposed procedure of ###AMENDMENT###</strong>',
-    'activity_AMENDMENT_SET_PROPOSAL'     => '###USER### <strong>edited the proposed procedure of ###AMENDMENT###</strong>',
-    'activity_AMENDMENT_SET_PROPOSAL_TEXT'  => '###USER### <strong>edited the proposed procedure text of ###AMENDMENT###</strong>',
+    'activity_AMENDMENT_NEW_PROPOSAL'     => [
+        'text' => '###USER### <strong>created the proposed procedure of ###AMENDMENT###</strong>',
+        'description' => 'Supported placeholders: ###USER###, ###AMENDMENT###, %VERSION%',
+    ],
+    'activity_AMENDMENT_SET_PROPOSAL'     => [
+        'text' => '###USER### <strong>edited the proposed procedure of ###AMENDMENT###</strong>',
+        'description' => 'Supported placeholders: ###USER###, ###AMENDMENT###, %VERSION%',
+    ],
+    'activity_AMENDMENT_SET_PROPOSAL_TEXT'  => [
+        'text' => '###USER### <strong>edited the proposed procedure text of ###AMENDMENT###</strong>',
+        'description' => 'Supported placeholders: ###USER###, ###AMENDMENT###, %VERSION%',
+    ],
     'activity_AMENDMENT_VOTE_REJECTED'    => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>rejected</strong>.',
     'activity_AMENDMENT_VOTE_ACCEPTED'    => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>accepted</strong>.',
     'activity_VOTING_OPEN'                => 'The voting was <strong>opened</strong>',

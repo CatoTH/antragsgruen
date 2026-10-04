@@ -607,7 +607,8 @@ If this site should only be <em>visible</em> to users included below, select the
         'text' => 'Agenda item',
         'js' => true,
     ],
-    'siteacc_email_text_pre'     => 'Hi,
+    'siteacc_email_text_pre'     => [
+        'text' => 'Hi,
 
 we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.
 Here is your login data:
@@ -617,6 +618,8 @@ Here is your login data:
 
 Good-bye,
   Team Antragsgrün',
+        'description' => 'Supported placeholders: %LINK%, %ACCOUNT%, %NAME_GIVEN%, %NAME_FAMILY%',
+    ],
     'siteacc_acc_expl_mail'     => '<h3>Explanation:</h3>
 To grant access to persons, enter their e-mail-addresses in the text field below.
 By submitting the form ("Create"), an invitation e-mail will be sent to the given addresses.<br>
