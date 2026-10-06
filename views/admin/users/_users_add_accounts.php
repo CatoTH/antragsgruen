@@ -111,7 +111,7 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
             <div class="leftColumn"><?= Yii::t('admin', 'siteacc_new_name_pass') ?>:</div>
             <div class="rightColumn pwdRow">
                 <label>
-                    <input type="checkbox" name="generatePassword" checked id="addSingleGeneratePassword">
+                    <input type="checkbox" name="generatePassword" id="addSingleGeneratePassword">
                     <?= Yii::t('admin', 'siteacc_new_name_pass_auto') ?>
                 </label>
                 <input type="password" name="password" class="form-control" id="addUserPassword" title="<?= Yii::t('admin', 'siteacc_new_name_pass') ?>">
@@ -146,11 +146,11 @@ foreach (AntragsgruenApp::getActivePlugins() as $plugins) {
         </div>
 
         <?php if ($hasEmail) { ?>
-        <div class="stdTwoCols welcomeEmail">
+        <div class="stdTwoCols welcomeEmail hidden">
             <div class="leftColumn"><?= Yii::t('admin', 'siteacc_new_mail') ?>:</div>
             <div class="rightColumn">
                 <label>
-                    <input type="checkbox" name="sendEmail" checked id="addSingleSendEmail">
+                    <input type="checkbox" name="sendEmail" id="addSingleSendEmail">
                     <?= Yii::t('admin', 'siteacc_new_mail_send') ?>
                 </label><br>
                 <textarea id="addSingleEmailText" name="emailText" rows="11" cols="80"

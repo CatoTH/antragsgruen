@@ -39,6 +39,10 @@ trait VotingItemTrait
 
     public function setVotingData(VotingData $data): void
     {
+        if (!is_a($data, \app\plugins\european_youth_forum\VotingData::class)) {
+            file_put_contents('/tmp/yfj-voting.log', print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true), FILE_APPEND);
+            die("");
+        }
         $this->votingDataObject = $data;
         $this->votingData = json_encode($data, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
     }
