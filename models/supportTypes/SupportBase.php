@@ -403,23 +403,37 @@ abstract class SupportBase
         }
 
         foreach ($supporters as $sup) {
-            if (in_array($sup->role, $affectedRoles)) {
-                if (isset($sup->id) && $sup->id > 0 && isset($previousById[$sup->id])) {
-                    $previousById[$sup->id]->setAttributes($sup->getAttributes(), false);
-                    $sup = $previousById[$sup->id];
-                    unset($previousById[$sup->id]);
-                } else {
-                    $sup->id = null;
-                }
-                $sup->motionId = $motion->id;
-                if (isset($sup->userId) && isset($preCreatedByAdmin[$sup->userId])) {
-                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
-                }
-                if (isset($sup->userId) && isset($preNonPublic[$sup->userId])) {
-                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
-                }
-                $sup->save();
+            if (!in_array($sup->role, $affectedRoles)) {
+                continue;
             }
+
+            if (isset($sup->id) && $sup->id > 0 && isset($previousById[$sup->id])) {
+                $previous = $previousById[$sup->id];
+                if ($this->adminMode && $sup->role === ISupporter::ROLE_SUPPORTER && $previous->role === ISupporter::ROLE_SUPPORTER) {
+                    // The edit form does not transmit user assignments, creation dates or extraData besides the gender; keep them.
+                    // Only in admin mode, so initiators cannot attribute modified supports to other users' accounts.
+                    $gender = $sup->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER);
+                    $sup->userId = $previous->userId;
+                    $sup->dateCreation = $previous->dateCreation;
+                    $sup->extraData = $previous->extraData;
+                    if ($gender !== null) { // Not transmitted if gender is not collected
+                        $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_GENDER, $gender);
+                    }
+                }
+                $previous->setAttributes($sup->getAttributes(), false);
+                $sup = $previous;
+                unset($previousById[$sup->id]);
+            } else {
+                $sup->id = null;
+            }
+            $sup->motionId = $motion->id;
+            if (isset($sup->userId) && isset($preCreatedByAdmin[$sup->userId])) {
+                $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
+            }
+            if (isset($sup->userId) && isset($preNonPublic[$sup->userId])) {
+                $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
+            }
+            $sup->save();
         }
 
         foreach ($previousById as $sup) {
