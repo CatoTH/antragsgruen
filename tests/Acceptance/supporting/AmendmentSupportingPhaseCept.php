@@ -190,8 +190,21 @@ $I->see('Eingereicht (ungeprüft)', '.motionData');
 $I->logout();
 
 
-$I->wantTo('ensure I can\'t revoke my support once the amendment has been submitted');
+$I->wantTo('save the amendment in the admin form without losing the user assignment of the supporter');
 $I->loginAsStdAdmin();
 $I->amOnPage($amendmentUrl);
+$I->click('#sidebar .adminEdit a');
+$I->seeInField('#motionSupporterHolder .supporterName', 'Testadmin');
+$I->seeInField('#motionSupporterHolder .supporterOrga', 'My organisation');
+$I->seeElement('#motionSupporterHolder .userCol .userName');
+$I->submitForm('#amendmentUpdateForm', [], 'save');
+$I->seeInField('#motionSupporterHolder .supporterName', 'Testadmin');
+$I->seeElement('#motionSupporterHolder .userCol .userName');
+
+
+$I->wantTo('ensure I can\'t revoke my support once the amendment has been submitted');
+$I->amOnPage($amendmentUrl);
+$I->see('Testadmin', 'section.supporters');
+$I->see('My organisation', 'section.supporters');
 $I->see('Du!', 'section.supporters');
 $I->dontSeeElement('button[name=motionSupportRevoke]');

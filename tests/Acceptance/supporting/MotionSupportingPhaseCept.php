@@ -137,6 +137,19 @@ $I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value=
 $I->submitForm('.adminTypeForm', [], 'save');
 
 
+$I->wantTo('save the motion in the admin form without losing the user assignment of the supporter');
+$I->amOnPage($motionUrl);
+$I->click('#sidebar .adminEdit a');
+$I->seeInField('#motionSupporterHolder .supporterName', 'Testuser');
+$I->seeInField('#motionSupporterHolder .supporterOrga', 'My organisation');
+$I->seeElement('#motionSupporterHolder .userCol .userName');
+$I->submitForm('#motionUpdateForm', [], 'save');
+$I->seeInField('#motionSupporterHolder .supporterName', 'Testuser');
+$I->seeElement('#motionSupporterHolder .userCol .userName');
+$I->amOnPage($motionUrl);
+$I->see('Testuser', 'section.supporters');
+$I->see('My organisation', 'section.supporters');
+
 
 $I->logout();
 
