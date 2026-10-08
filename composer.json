@@ -116,6 +116,13 @@
     }
   },
   "scripts": {
+    "setup-hooks": "git config core.hooksPath .githooks || true",
+    "post-install-cmd": [
+      "@setup-hooks"
+    ],
+    "post-update-cmd": [
+      "@setup-hooks"
+    ]
   },
   "repositories": [
     {
