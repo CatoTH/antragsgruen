@@ -28,8 +28,27 @@ class Engine
     const DELETED    = 1;
     const INSERTED   = 2;
 
+    // The API version of the optional native extension (see native/README.md) this code is written against
+    private const NATIVE_API_VERSION = 1;
+
+    /**
+     * Allows to switch off the optional native extension, e.g. to compare both implementations in tests.
+     */
+    public static bool $useNativeExtension = true;
+
+    private static ?bool $nativeLcsAvailable = null;
+
     private string $IGNORE_STR = '';
 
+    public static function nativeLcsAvailable(): bool
+    {
+        if (self::$nativeLcsAvailable === null) {
+            self::$nativeLcsAvailable = function_exists('antragsgruen_native_version') &&
+                                        antragsgruen_native_version() >= self::NATIVE_API_VERSION;
+        }
+
+        return self::$useNativeExtension && self::$nativeLcsAvailable;
+    }
 
     public function setIgnoreStr(string $str): void
     {
@@ -155,19 +174,34 @@ class Engine
         // map the tokens to integer IDs, so the O(n*m) table does not need to call strCmp for every cell
         list($ids1, $ids2) = $this->getComparisonIds($strings1, $strings2, $start1, $start2, $end1, $end2, $relaxedTags);
 
-        // compute the table of longest common subsequence lengths
-        $table = self::computeTable($ids1, $ids2);
-
-        // generate the partial diff
-        $partialDiff = self::generatePartialDiff($table, $ids1, $ids2, $strings1, $strings2, $start1, $start2);
-
         // generate the full diff
         $diff = [];
         for ($index = 0; $index < $start1; $index++) {
             $diff[] = [$strings1[$index], self::UNMODIFIED];
         }
-        while (count($partialDiff) > 0) {
-            $diff[] = array_pop($partialDiff);
+        if (self::nativeLcsAvailable()) {
+            // Optional native extension: same algorithm as computeTable() / generatePartialDiff(), in forward order
+            $index1 = $start1;
+            $index2 = $start2;
+            foreach (antragsgruen_lcs_ops($ids1, $ids2) as $operation) {
+                if ($operation === self::UNMODIFIED) {
+                    $diff[] = [$strings1[$index1++], self::UNMODIFIED];
+                    $index2++;
+                } elseif ($operation === self::INSERTED) {
+                    $diff[] = [$strings2[$index2++], self::INSERTED];
+                } else {
+                    $diff[] = [$strings1[$index1++], self::DELETED];
+                }
+            }
+        } else {
+            // compute the table of longest common subsequence lengths
+            $table = self::computeTable($ids1, $ids2);
+
+            // generate the partial diff
+            $partialDiff = self::generatePartialDiff($table, $ids1, $ids2, $strings1, $strings2, $start1, $start2);
+            while (count($partialDiff) > 0) {
+                $diff[] = array_pop($partialDiff);
+            }
         }
         for ($index = $end1 + 1;
              $index < count($strings1);

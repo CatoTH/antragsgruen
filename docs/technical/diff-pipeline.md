@@ -228,6 +228,10 @@ Antragsgrün-specific additions:
 - **Integer token IDs**: before the table is built, every token is mapped to an integer ID
   (`getComparisonIds()`), such that two tokens share an ID exactly when `strCmp()` considers them
   equal. The O(n·m) loop then only compares integers instead of calling `strCmp()` for every cell.
+  If the optional native extension is loaded (see [native/README.md](../../native/README.md)), the table
+  and the backtracking are computed by `antragsgruen_lcs_ops()` instead of `computeTable()` /
+  `generatePartialDiff()` — with identical results, including the tie-breaks between equally long
+  subsequences. `Engine::$useNativeExtension = false` forces the PHP implementation.
 - **`$IGNORE_STR`** so that `###LINENUMBER###` never counts as a difference.
 - **Relaxed tag comparison** (`strCmp()`): any two `<ol…>`, `<ul…>` or `<li…>` tags compare equal.
   Renumbering a list (`<ol start="2">` → `<ol start="3">`) would otherwise flood the diff with
