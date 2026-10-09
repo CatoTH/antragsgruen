@@ -955,4 +955,24 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertSame(['<ol start="1"><li><ol class="lowerAlpha"><li>Point 1</li><li value="2b"><ins>Point 2</ins></li><li value="3">Point 3</li></ol></li></ol>'], $out);
     }
+
+    public function testReusedInstanceDoesNotLeakIntoUnchangedParagraphs(): void
+    {
+        // Word arrays of unchanged paragraphs are cached per Diff instance; modifications by one amendment
+        // (here: an inserted paragraph prepended to the first word) must not show up for the next one.
+        $orig = ['<p>Erster Absatz bleibt.</p>', '<p>Zweiter Absatz bleibt auch.</p>'];
+        $diff = new Diff();
+
+        $withInsert = $diff->compareHtmlParagraphsToWordArray($orig, ['<p>Neu davor.</p>', $orig[0], $orig[1]], 1);
+        $this->assertStringContainsString('###INS_START###<p>Neu davor.</p>###INS_END###', $withInsert[0][0]->diff);
+        $this->assertSame(1, $withInsert[0][0]->amendmentId);
+        $withInsert[1][0]->diff = 'modified by the caller';
+
+        $unchanged = $diff->compareHtmlParagraphsToWordArray($orig, $orig, 2);
+        $fresh     = (new Diff())->compareHtmlParagraphsToWordArray($orig, $orig, 2);
+        $this->assertEquals($fresh, $unchanged);
+        $this->assertSame('<p>', $unchanged[0][0]->diff);
+        $this->assertNull($unchanged[0][0]->amendmentId);
+        $this->assertSame('<p>', $unchanged[1][0]->diff);
+    }
 }

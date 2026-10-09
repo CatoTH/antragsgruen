@@ -24,6 +24,13 @@ class Diff
 
     private Engine $engine;
 
+    /**
+     * Word arrays of unchanged paragraphs, indexed by the original paragraph; see getUnchangedWordArray()
+     *
+     * @var array<string, DiffWord[]>
+     */
+    private array $unchangedWordArrays = [];
+
     public function __construct()
     {
         $this->engine = new Engine();
@@ -298,6 +305,16 @@ class Diff
         return ($nodeType1 !== $nodeType2);
     }
 
+    /**
+     * Both lines need to be normalized (normalizeForDiff) already.
+     */
+    private function isUnchangedLine(string $lineOld, string $lineNew): bool
+    {
+        $ignoreStr = $this->engine->getIgnoreStr();
+
+        return $lineOld === $lineNew || ($ignoreStr !== '' && str_replace($ignoreStr, '', $lineOld) === $lineNew);
+    }
+
     public function computeLineDiff(string $lineOld, string $lineNew): string
     {
         $computedStrs = [];
@@ -305,8 +322,7 @@ class Diff
         $lineNew      = static::normalizeForDiff($lineNew);
 
         // Shortcut for unchanged paragraphs (the vast majority); the full diff would return $lineOld unchanged anyway
-        $ignoreStr = $this->engine->getIgnoreStr();
-        if ($lineOld === $lineNew || ($ignoreStr !== '' && str_replace($ignoreStr, '', $lineOld) === $lineNew)) {
+        if ($this->isUnchangedLine($lineOld, $lineNew)) {
             return $lineOld;
         }
 
@@ -715,6 +731,32 @@ class Diff
     }
 
     /**
+     * The word array of a paragraph that is not changed by an amendment only depends on the original paragraph.
+     * As most paragraphs of a section are left unchanged by most amendments, it is built only once per
+     * original paragraph and Diff instance. Callers modify the returned word arrays, so copies are returned.
+     *
+     * @return DiffWord[]
+     * @throws Internal
+     */
+    private function getUnchangedWordArray(string $origLine, string $matchingRow, ?int $amendmentId): array
+    {
+        if (stripos($origLine, '###INS_') !== false || stripos($origLine, '###DEL_') !== false) {
+            // Diff markers within the original text would be interpreted by convertToWordArray, depending on the amendment
+            $wordArray = $this->convertToWordArray($this->computeLineDiff($origLine, $matchingRow), $amendmentId);
+            $this->checkWordArrayConsistency($origLine, $wordArray);
+            return $wordArray;
+        }
+
+        if (!isset($this->unchangedWordArrays[$origLine])) {
+            $wordArray = $this->convertToWordArray($this->computeLineDiff($origLine, $matchingRow), $amendmentId);
+            $this->checkWordArrayConsistency($origLine, $wordArray);
+            $this->unchangedWordArrays[$origLine] = $wordArray;
+        }
+
+        return array_map(fn (DiffWord $word) => clone $word, $this->unchangedWordArrays[$origLine]);
+    }
+
+    /**
      * @param string[] $referenceParas
      * @param string[] $newParas
      * @throws Internal
@@ -750,10 +792,13 @@ class Diff
             } else {
                 $origLine    = $adjustedRef[$i];
                 $matchingRow = str_replace('###EMPTYINSERTED###', '', $adjustedMatching[$i]);
-                $diffLine    = $this->computeLineDiff($origLine, $matchingRow);
-                $wordArray   = $this->convertToWordArray($diffLine, $amendmentId);
-
-                $this->checkWordArrayConsistency($origLine, $wordArray);
+                if ($this->isUnchangedLine(static::normalizeForDiff($origLine), static::normalizeForDiff($matchingRow))) {
+                    $wordArray = $this->getUnchangedWordArray($origLine, $matchingRow, $amendmentId);
+                } else {
+                    $diffLine  = $this->computeLineDiff($origLine, $matchingRow);
+                    $wordArray = $this->convertToWordArray($diffLine, $amendmentId);
+                    $this->checkWordArrayConsistency($origLine, $wordArray);
+                }
                 if ($pendingInsert !== '') {
                     $wordArray[0]->diff = $pendingInsert . $wordArray[0]->diff;
                     $wordArray[0]->amendmentId = $amendmentId;
