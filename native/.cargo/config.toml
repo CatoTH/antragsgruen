@@ -1,0 +1,3 @@
+# PHP extensions are loaded into the PHP process, which provides the Zend symbols at runtime.
+[target.'cfg(target_os = "macos")']
+rustflags = ["-C", "link-arg=-undefined", "-C", "link-arg=dynamic_lookup"]

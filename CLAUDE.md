@@ -190,6 +190,9 @@ The correct approach to make modifications to the API and DTOs is:
 ### PDF generation
 Two backends: TCPDF (default, PHP-only) and Weasyprint (external binary, nicer output). Configured via `weasyprintPath`/`qpdfPath` in `config.json`.
 
+### Optional native extension
+`native/` contains an optional PHP extension written in Rust (ext-php-rs), currently computing the LCS table of the diff engine (`Engine::compareArrays()`). The PHP code falls back to its own implementation if it is not loaded; results must be identical. Build instructions: `native/README.md`. Build with `cd native && cargo build --release`, Rust tests with `cargo test --lib`, comparison against PHP with `php -d extension=native/target/release/libantragsgruen_native.dylib vendor/bin/codecept run Unit NativeExtensionTest`.
+
 ### Caching
 - Default: Yii2 file cache.
 - Redis: enabled via `redis` key in `config.json`.
