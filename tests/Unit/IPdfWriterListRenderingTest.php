@@ -42,7 +42,7 @@ class IPdfWriterListRenderingTest extends TestBase
     {
         preg_match_all('/\((?:[^()\\\\]|\\\\.)*\)/', $this->renderToContentStream($html), $matches);
 
-        return array_map(fn (string $str): string => stripcslashes(substr($str, 1, -1)), $matches[0]);
+        return array_map(fn (string $str): string => trim(stripcslashes(substr($str, 1, -1))), $matches[0]);
     }
 
     /**
@@ -57,7 +57,7 @@ class IPdfWriterListRenderingTest extends TestBase
 
         $positions = [];
         foreach ($ops as $op) {
-            $positions[stripcslashes($op[3])] = [floatval($op[1]), floatval($op[2])];
+            $positions[trim(stripcslashes($op[3]))] = [floatval($op[1]), floatval($op[2])];
         }
 
         return $positions;
@@ -171,7 +171,7 @@ class IPdfWriterListRenderingTest extends TestBase
         preg_match_all('/([0-9.]+) ([0-9.]+) Td \(((?:[^()\\\\]|\\\\.)*)\) Tj/s', $content, $ops, PREG_SET_ORDER);
         $positions = [];
         foreach ($ops as $op) {
-            $positions[stripcslashes($op[3])] = floatval($op[2]);
+            $positions[trim(stripcslashes($op[3]))] = floatval($op[2]);
         }
 
         return $positions;

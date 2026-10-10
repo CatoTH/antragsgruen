@@ -42,4 +42,5 @@ jobs:
           name: phpstan-baseline.neon
       - name: phpstan
         run: |
-          php vendor/bin/phpstan analyse --configuration=phpstan.use-baseline.neon --error-format=github
+          php vendor/bin/phpstan analyse --configuration=phpstan.use-baseline.neon --error-format=github \
+            || (php vendor/bin/phpstan analyse --configuration=phpstan.use-baseline.neon --error-format=table --no-progress; exit 1)
