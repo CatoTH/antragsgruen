@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\components\UrlHelper;
-use app\models\policies\IPolicy;
+use app\models\policies\{All, IPolicy};
 use app\models\settings\AntragsgruenApp;
 use yii\db\{ActiveQuery, ActiveRecord};
 
@@ -96,6 +96,12 @@ class ConsultationText extends ActiveRecord implements IHasPolicies
 
     public function getReadPolicy(): IPolicy
     {
+        if ($this->consultationId === null && $this->site?->currentConsultation) {
+            // Using the first consultation is not entirely correct, but good enough: "All" really is the relevant information here;
+            // the consultation only carries deadlines etc., which are not relevant for consultation texts.
+            return new All($this->site->currentConsultation, $this, null);
+        }
+
         if ($this->policyRead === null) {
             $policy = (string)IPolicy::POLICY_ALL;
         } else {
