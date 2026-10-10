@@ -236,7 +236,7 @@ class SiteController extends Controller
         }
 
         $superuserPersisted = false;
-        if ($this->superuser && $configFile !== null) {
+        if ($this->superuser) {
             try {
                 $this->appendAdminUserId($configFile, (int)$user->id);
                 $superuserPersisted = true;

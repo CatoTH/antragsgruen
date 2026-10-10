@@ -715,22 +715,22 @@ class UserGroupAdminMethods
 
             $processedRows++;
 
+            $email = isset($headerMap['email'], $row[$headerMap['email']]) ? mb_strtolower(trim($row[$headerMap['email']])) : '';
+            if ($email === '') {
+                $errors[] = 'Missing email on row.';
+                continue;
+            }
+
+            $firstName = isset($headerMap['first_name'], $row[$headerMap['first_name']]) ? trim($row[$headerMap['first_name']]) : '';
+            $lastName = isset($headerMap['last_name'], $row[$headerMap['last_name']]) ? trim($row[$headerMap['last_name']]) : '';
+            $organization = isset($headerMap['organization'], $row[$headerMap['organization']]) ? trim($row[$headerMap['organization']]) : '';
+
+            $name = trim($firstName . ' ' . $lastName);
+            if ($name === '') {
+                $name = $email;
+            }
+
             try {
-                $email = isset($headerMap['email'], $row[$headerMap['email']]) ? mb_strtolower(trim($row[$headerMap['email']])) : '';
-                if ($email === '') {
-                    $errors[] = 'Missing email on row.';
-                    continue;
-                }
-
-                $firstName = isset($headerMap['first_name'], $row[$headerMap['first_name']]) ? trim($row[$headerMap['first_name']]) : '';
-                $lastName = isset($headerMap['last_name'], $row[$headerMap['last_name']]) ? trim($row[$headerMap['last_name']]) : '';
-                $organization = isset($headerMap['organization'], $row[$headerMap['organization']]) ? trim($row[$headerMap['organization']]) : '';
-
-                $name = trim($firstName . ' ' . $lastName);
-                if ($name === '') {
-                    $name = $email;
-                }
-
                 /** @var ConsultationUserGroup[] $userGroups */
                 $userGroups = [];
                 if (isset($headerMap['groups']) && !empty($row[$headerMap['groups']])) {
