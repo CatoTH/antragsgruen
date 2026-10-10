@@ -19,9 +19,13 @@ class SectionMerger
     // If set to true, then collisions will be merged into the text, preferring ease of editing over consistency
     private bool $mergeCollisions;
 
+    // Shared by all amendments, so the word arrays of unchanged paragraphs are only computed once
+    private Diff $diff;
+
     public function __construct(bool $mergeCollisions = true)
     {
         $this->mergeCollisions = $mergeCollisions;
+        $this->diff = new Diff();
     }
 
     /**
@@ -62,8 +66,7 @@ class SectionMerger
     {
         $amendingParas = array_map(fn(SectionedParagraph $par) => $par->html, $amendingParas);
 
-        $diff     = new Diff();
-        $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, intval($amendmentId));
+        $paraArr  = $this->diff->compareHtmlParagraphsToWordArray($this->paragraphStrings, $amendingParas, intval($amendmentId));
         $paraArr  = MovingParagraphDetector::markupWordArrays($paraArr);
 
         foreach ($paraArr as $paraNo => $wordArr) {

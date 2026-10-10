@@ -418,9 +418,11 @@ class MotionSection extends IMotionSection
         }
         if ($includeAmendment) {
             $amendmentSections = $this->getAmendmentSectionsToBeShownInMotionView();
+            $paragraphs = (count($amendmentSections) > 0 ? HTMLTools::sectionSimpleHTML($this->getData()) : []);
+            // The same for every amendment; $paras are the same paragraphs, already split into lines
+            $paragraphLineCounts = array_map(fn(SectionedParagraph $para) => count($para->lines), $paras);
             foreach ($amendmentSections as $amSec) {
-                $paragraphs   = HTMLTools::sectionSimpleHTML($this->getData());
-                $amParagraphs = $amSec->diffDataToOrigParagraphs($paragraphs);
+                $amParagraphs = $amSec->diffDataToOrigParagraphs($paragraphs, origParagraphLineCounts: $paragraphLineCounts);
                 foreach ($amParagraphs as $amParagraph) {
                     $return = $this->ensureAtLeastOneParagraph($return, $includeComments, $includeAmendment);
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;

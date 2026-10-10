@@ -166,9 +166,11 @@ class AmendmentSection extends IMotionSection
      *
      * @param SectionedParagraph[] $origParagraphs
      * @param bool $splitListItems
+     * @param int[]|null $origParagraphLineCounts The number of lines of each of $origParagraphs, if already known.
+     *                                            Avoids counting them again for every amendment.
      * @return MotionSectionParagraphAmendment[]
      */
-    public function diffDataToOrigParagraphs(array $origParagraphs, bool $splitListItems = true): array
+    public function diffDataToOrigParagraphs(array $origParagraphs, bool $splitListItems = true, ?array $origParagraphLineCounts = null): array
     {
         /*
         $cached = $this->getCacheItem('diffDataToOrigParagraphs');
@@ -202,7 +204,7 @@ class AmendmentSection extends IMotionSection
             }
             if (count($origParagraphs) > 0) {
                 // $origParagraphs can be empty if the original motion is completely empty
-                $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo]->html, $lineLength);
+                $firstLine += $origParagraphLineCounts[$paraNo] ?? LineSplitter::countMotionParaLines($origParagraphs[$paraNo]->html, $lineLength);
             }
         }
         /*
