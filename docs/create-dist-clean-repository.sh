@@ -8,6 +8,7 @@ rm config/TEST_DOMAIN
 rm assets/phpstan-helper.php
 rm pa11y.json vite.config.js CLAUDE.md
 rm -Rf docs/technical
+rm -Rf bin/
 rm -R assets/OpenOffice-Template-ods
 rm -R assets/OpenOffice-Template-odt
 mv web/index-production.php web/index.php
