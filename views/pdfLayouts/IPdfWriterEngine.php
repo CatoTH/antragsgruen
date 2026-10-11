@@ -20,7 +20,7 @@ use Com\Tecnick\Pdf\CSS\ListStyle;
  * and the PDF layouts rely on are restored.
  *
  * @phpstan-import-type THTMLRenderContext from \Com\Tecnick\Pdf\HTML
- * @phpstan-import-type THTMLAttrib from \Com\Tecnick\Pdf\HTML
+ * @phpstan-import-type THTMLDOMNode from \Com\Tecnick\Pdf\HTML
  */
 class IPdfWriterEngine extends \TCPDF_ENGINE
 {
@@ -52,7 +52,7 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
      */
     private function isBrOnlyPrecededByOpeningTags(array &$hrc, int $key): bool
     {
-        // Read into a plain local variable first: PHPStan cannot keep the precise THTMLAttrib
+        // Read into a plain local variable first: PHPStan cannot keep the precise THTMLDOMNode
         // shape for a chained access like $hrc['dom'][$k] inside a loop, since $hrc is by-ref
         // and could in theory be mutated through another alias between iterations.
         $dom = $hrc['dom'];
@@ -95,7 +95,7 @@ class IPdfWriterEngine extends \TCPDF_ENGINE
      * rely on: for tags explicitly configured through setHtmlVSpace(), that configuration defines
      * the full vertical spacing - no default margins are added on top.
      *
-     * @param array<int, THTMLAttrib> $dom
+     * @param array<int, THTMLDOMNode> $dom
      */
     protected function parseHTMLAttributesBlockMargins(array &$dom, int $key): void
     {
