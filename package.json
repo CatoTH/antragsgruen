@@ -38,7 +38,7 @@
         "postcss": "^8.5.29",
         "sass": "^1.105.1",
         "terser": "^5.51.2",
-        "vite": "^8.3.3"
+        "vite": "^8.3.4"
     },
     "directories": {
         "bin": "./bin/"
