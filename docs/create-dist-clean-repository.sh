@@ -6,6 +6,8 @@ rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml 
 rm package-lock.json composer.json pnpm-lock.yaml pnpm-workspace.yaml
 rm config/TEST_DOMAIN
 rm assets/phpstan-helper.php
+rm pa11y.json vite.config.js CLAUDE.md
+rm -Rf docs/technical
 rm -R assets/OpenOffice-Template-ods
 rm -R assets/OpenOffice-Template-odt
 mv web/index-production.php web/index.php
@@ -31,10 +33,14 @@ rm -R vendor/yiisoft/yii2/log/migrations
 rm -R vendor/bower-asset
 rm -Rf vendor/s1syphos/php-simple-captcha/demo/
 rm -Rf vendor/s1syphos/php-simple-captcha/tests/
+rm -Rf vendor/tecnickcom/tc-lib-pdf/doc
 find vendor/ -name "README.md" -exec rm {} \;
+find vendor/ -name "README" -exec rm {} \;
 find vendor/ -name "CHANGELOG.md" -exec rm {} \;
 find vendor/ -name "UPGRADING.md" -exec rm {} \;
 find vendor/ -name "VERSION" -exec rm {} \;
+find vendor/ -name "CLAUDE.md" -exec rm {} \;
+find vendor/ -name "AGENTS.md" -exec rm {} \;
 rm ./vendor/s1syphos/php-simple-captcha/fonts/LinLibertine_Rah.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Hack-Regular.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Bitter-Bold.ttf
