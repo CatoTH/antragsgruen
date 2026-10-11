@@ -463,12 +463,14 @@ Every channel that is not listed uses its default (see [Live Data](./docs/techni
 Developing
 ----------
 
-### Technical considerations
+### Technical considerations & Long-Term Plans
 
 - PHP version support: Antragsgrün supports PHP versions until its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.2 is supported until end 2026, the first major version of Antragsgrün of 2027 will drop support for PHP 8.2).
-- PHP Framework: [Yii2](https://www.yiiframework.com/) is used. While it would not be the framework of choice for a fresh start anymore, it works sufficiently well since its introduction in 2015 and is still supported, so there is no plan to migrate to Symfony of Laravel yet.
+- PHP Framework: [Yii2](https://www.yiiframework.com/) is used. Long term, most parts should be step by step [migrated to Symfony](docs/technical/symfony-migration.md).
+- Testing Framework: The Codeception/Selenium based acceptance tests should be replaced by Playwright.
 - JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though gradually replaced by standard JavaScript. ECMAScript Modules are used as module system. For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
-- REST API: The API is documented below. There will be more development regarding the REST API, including authorized endpoints using JWT based authentication.
+- CSS: The current SASS/SCSS compilation will stay for at least through 2027 without bigger changes. Afterwards, once browser compatibility in particular for CSS Nesting is good enough (>95%), we might switch to native CSS.
+- REST API: All major operations should become available using the REST API.
 
 ### Developing with Docker Compose
 
