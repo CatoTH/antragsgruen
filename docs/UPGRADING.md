@@ -1,5 +1,26 @@
 # Upgrading Antragsgrün
 
+## Upgrading to v4.18.0
+
+The web updater in Antragsgrün 4.17.2 had a bug that prevented the updater to start - the "Update" button just does not react due to a JavaScript error. If you encounter this error, you can circumvent this in two ways:
+
+### Alternative 1
+
+In the admin page with the non-reactive Update button, open the developer console and execute the following JavaScript command:
+```
+$('.adminCardUpdates .updateForm').trigger('submit', {'confirmed': true});
+```
+
+### Alternative 2
+
+Add the following lines at the end (before the last `];` statement on the last line):
+```
+    'goto_update_mode_confirm' => [
+        'text' => 'Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users.',
+        'js' => true,
+    ],
+```
+
 ## New in v4.17.0: Environment Variable Configuration
 
 Antragsgrün now supports configuration via environment variables, following the 12-factor app methodology. This is particularly useful for containerized deployments.
