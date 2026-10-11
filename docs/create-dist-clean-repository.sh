@@ -34,6 +34,7 @@ rm -R vendor/bower-asset
 rm -Rf vendor/s1syphos/php-simple-captcha/demo/
 rm -Rf vendor/s1syphos/php-simple-captcha/tests/
 rm -Rf vendor/tecnickcom/tc-lib-pdf/doc
+rm -Rf vendor/guzzlehttp/promises/docs
 find vendor/ -name "README.md" -exec rm {} \;
 find vendor/ -name "README" -exec rm {} \;
 find vendor/ -name "CHANGELOG.md" -exec rm {} \;
@@ -41,6 +42,8 @@ find vendor/ -name "UPGRADING.md" -exec rm {} \;
 find vendor/ -name "VERSION" -exec rm {} \;
 find vendor/ -name "CLAUDE.md" -exec rm {} \;
 find vendor/ -name "AGENTS.md" -exec rm {} \;
+find vendor/ -name "SECURITY.md" -exec rm {} \;
+find vendor/ -name "phpunit.xml.dist" -exec rm {} \;
 rm ./vendor/s1syphos/php-simple-captcha/fonts/LinLibertine_Rah.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Hack-Regular.ttf
 rm ./vendor/s1syphos/php-simple-captcha/fonts/Bitter-Bold.ttf
