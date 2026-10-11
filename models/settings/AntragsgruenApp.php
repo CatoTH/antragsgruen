@@ -43,7 +43,7 @@ class AntragsgruenApp implements \JsonSerializable
     public array $adminUserIds = [];
     /** @var string[] */
     public array $authClientCollection = [];
-    public const DEFAULT_BLOCKED_SUBDOMAINS = ['www', 'rest', 'ftp', 'smtp', 'imap', 'admin', 'api', 'auth', 'login', 'std', 'system', 'mail'];
+    public const DEFAULT_BLOCKED_SUBDOMAINS = ['www', 'rest', 'ftp', 'smtp', 'imap', 'admin', 'api', 'auth', 'login', 'system', 'mail'];
     /** @var string[] */
     public array $blockedSubdomains = self::DEFAULT_BLOCKED_SUBDOMAINS;
     public int $autoLoginDuration = 31536000; // 1 Year
