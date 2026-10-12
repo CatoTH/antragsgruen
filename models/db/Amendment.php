@@ -306,6 +306,20 @@ class Amendment extends IMotion implements IRSSItem
 
     public function getTitle(): string
     {
+        return $this->buildTitle($this->getMyExistingMotion()->title);
+    }
+
+    /**
+     * Like getTitle(), but using the motion title in the given (or, by default, the reader's
+     * current) language - see Motion::getTitleForDisplay() for the fallback rules.
+     */
+    public function getTitleWithPrefixForDisplay(?string $language = null): string
+    {
+        return $this->buildTitle($this->getMyExistingMotion()->getTitleForDisplay($language));
+    }
+
+    private function buildTitle(string $motionTitle): string
+    {
         $motion = $this->getMyExistingMotion();
         if ($motion->titlePrefix !== '') {
             $showMotionPrefix = (mb_stripos($this->getFormattedTitlePrefix() ?: '', $motion->getFormattedTitlePrefix()) === false);
@@ -314,18 +328,18 @@ class Amendment extends IMotion implements IRSSItem
         }
         $prefix = $this->getFormattedTitlePrefix() ?: \Yii::t('amend', 'amendment');
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $prefix . \Yii::t('amend', 'amend_for') . $motion->title;
+            return $prefix . \Yii::t('amend', 'amend_for') . $motionTitle;
         } else {
             if ($this->getMyExistingMotion()->getFormattedTitlePrefix()) {
                 if ($showMotionPrefix) {
                     $str = $prefix . \Yii::t('amend', 'amend_for');
-                    $str .= $motion->getFormattedTitlePrefix() . ': ' . $motion->title;
+                    $str .= $motion->getFormattedTitlePrefix() . ': ' . $motionTitle;
                     return $str;
                 } else {
-                    return $prefix . ': ' . $motion->title;
+                    return $prefix . ': ' . $motionTitle;
                 }
             } else {
-                return $prefix . \Yii::t('amend', 'amend_for') . $motion->title;
+                return $prefix . \Yii::t('amend', 'amend_for') . $motionTitle;
             }
         }
     }
