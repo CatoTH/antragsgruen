@@ -27,7 +27,7 @@ class ClaudeLogger
 
     /**
      * @param array<string, mixed> $request the JSON body sent to the API (system prompt, user
-     *        message, tool schema, ...)
+     *        message, output schema, ...)
      * @param array<string, mixed>|string|null $response the parsed JSON body received back, or a
      *        plain-text summary (e.g. an exception message) when there was nothing to parse
      */

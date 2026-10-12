@@ -17,7 +17,7 @@ multi-language motions work fine with sections simply staying empty until a huma
   plugin - including this one - whether it can fill them.
 - This plugin collects the still-empty sections of a single motion/amendment and sends **one batched
   request** to Claude for all of them (not one request per section/language), using
-  [tool use](https://docs.anthropic.com/en/docs/build-with-claude/tool-use) to get back a reliably
+  [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) to get back a reliably
   structured `sectionId => translated text` response.
 - The source text is the same section's content in whichever other language of that motion/amendment
   is already filled in (preferring the motion/amendment's primary language).
@@ -65,6 +65,12 @@ Edit `plugins/translation_claude/credentials.json`:
 - `apiKey` (required) - your Anthropic API key. Get one at
   [console.anthropic.com](https://console.anthropic.com/).
 - `model` (optional) - defaults to `claude-sonnet-5` if omitted or empty.
+- `effort` (optional) - how much thinking and how many output tokens Claude spends per request:
+  `low`, `medium`, `high`, `xhigh` or `max`. Lower is faster and cheaper, higher is more thorough.
+  If omitted, nothing is sent and the model's own default applies (`high` on `claude-sonnet-5` and
+  `claude-sonnet-5-5`). Not every model supports every level; an unsupported level makes the API
+  reject the request, and translation then silently does nothing (check `runtime/logs/claude.log`).
+  An unknown value is ignored. Can also be set via the `TRANSLATION_CLAUDE_EFFORT` environment variable.
 
 `credentials.json` is gitignored (see `plugins/translation_claude/.gitignore`) and must never be
 committed. Without it (or with an empty `apiKey`), the plugin stays inactive.

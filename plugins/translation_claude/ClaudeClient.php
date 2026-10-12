@@ -7,11 +7,12 @@ namespace app\plugins\translation_claude;
 use GuzzleHttp\{Client, RequestOptions};
 
 /**
- * Thin wrapper around Anthropic's Messages API, using a single, non-streaming, tool-use request per
- * call to get a reliably structured (rather than free-form-text) response back - see
- * Prompts::translationsToolSchema(). Translation is an optional enhancement (see
- * SectionTranslator/Module), so any failure here - a network error, a non-2xx response, an unexpected
- * response shape - is swallowed and reported as null, never thrown: it must never break the
+ * Thin wrapper around Anthropic's Messages API, using a single, non-streaming request with structured
+ * outputs (output_config.format) per call to get a reliably structured (rather than free-form-text)
+ * response back - see Prompts::translationsOutputSchema(). Structured outputs are used instead of a
+ * forced tool call because newer models (e.g. claude-sonnet-5-5) reject a forced tool_choice.
+ * Translation is an optional enhancement (see SectionTranslator/Module), so any failure here - a network error, a non-2xx response, an unexpected
+ * response shape, a refusal - is swallowed and reported as null, never thrown: it must never break the
  * motion/amendment save it's attached to. Every call is logged via ClaudeLogger regardless of outcome.
  */
 class ClaudeClient
@@ -42,15 +43,15 @@ class ClaudeClient
     }
 
     /**
-     * Sends $userMessage to Claude, forcing a response structured according to $toolSchema (an
-     * Anthropic tool/"function calling" definition, see Prompts::translationsToolSchema()) instead of
-     * free-form text - reliable to parse regardless of how many translations are batched into one
-     * call. Returns the tool call's already-JSON-decoded "input", or null on any failure.
+     * Sends $userMessage to Claude, constraining the response to the JSON schema $outputSchema (see
+     * Prompts::translationsOutputSchema()) instead of free-form text - reliable to parse regardless of
+     * how many translations are batched into one call. Returns the already-JSON-decoded response, or
+     * null on any failure.
      *
-     * @param array<string, mixed> $toolSchema
+     * @param array<string, mixed> $outputSchema
      * @return array<string, mixed>|null
      */
-    public function sendStructuredMessage(string $systemPrompt, string $userMessage, array $toolSchema): ?array
+    public function sendStructuredMessage(string $systemPrompt, string $userMessage, array $outputSchema): ?array
     {
         $requestBody = [
             'model' => $this->credentials->model,
@@ -59,9 +60,14 @@ class ClaudeClient
             'messages' => [
                 ['role' => 'user', 'content' => $userMessage],
             ],
-            'tools' => [$toolSchema],
-            'tool_choice' => ['type' => 'tool', 'name' => $toolSchema['name']],
+            'output_config' => [
+                'format' => ['type' => 'json_schema', 'schema' => $outputSchema],
+            ],
         ];
+        // Only sent when configured, so the model's own default applies otherwise (see Credentials::EFFORT_LEVELS)
+        if ($this->credentials->effort !== null) {
+            $requestBody['output_config']['effort'] = $this->credentials->effort;
+        }
 
         $start = microtime(true);
         $status = 'exception';
@@ -95,22 +101,31 @@ class ClaudeClient
             $inputTokens = $data['usage']['input_tokens'] ?? null;
             $outputTokens = $data['usage']['output_tokens'] ?? null;
 
-            $toolInput = null;
+            // A refusal or a truncated response may not match the schema - don't try to parse it.
+            $stopReason = is_array($data) ? ($data['stop_reason'] ?? null) : null;
+            if ($stopReason === 'refusal' || $stopReason === 'max_tokens') {
+                $status = $stopReason;
+                \Yii::error('Claude API response stopped with stop_reason ' . $stopReason, 'translation_claude');
+                return null;
+            }
+
+            // Thinking blocks may precede the answer; the JSON itself is in the text block(s).
+            $text = '';
             foreach ((is_array($data) ? ($data['content'] ?? []) : []) as $block) {
-                if (is_array($block) && ($block['type'] ?? null) === 'tool_use') {
-                    $toolInput = $block['input'] ?? null;
-                    break;
+                if (is_array($block) && ($block['type'] ?? null) === 'text' && is_string($block['text'] ?? null)) {
+                    $text .= $block['text'];
                 }
             }
 
-            if (!is_array($toolInput)) {
-                $status = 'no_tool_use';
-                \Yii::error('Claude API response had no usable tool_use content', 'translation_claude');
+            $output = json_decode($text, true);
+            if (!is_array($output)) {
+                $status = 'no_structured_output';
+                \Yii::error('Claude API response had no usable structured output', 'translation_claude');
                 return null;
             }
 
             $status = 'success';
-            return $toolInput;
+            return $output;
         } catch (\Throwable $e) {
             $response = $e->getMessage();
             \Yii::error('Claude API request threw: ' . $e->getMessage(), 'translation_claude');

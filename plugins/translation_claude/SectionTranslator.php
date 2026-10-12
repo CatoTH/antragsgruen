@@ -61,7 +61,7 @@ class SectionTranslator
         $result = $this->client->sendStructuredMessage(
             Prompts::motionSectionsBatchSystemPrompt(),
             Prompts::motionSectionsBatchUserMessage($tasks),
-            Prompts::translationsToolSchema()
+            Prompts::translationsOutputSchema()
         );
 
         return self::parseBatchResult($result);
@@ -116,21 +116,21 @@ class SectionTranslator
         $result = $this->client->sendStructuredMessage(
             Prompts::amendmentSectionsBatchSystemPrompt(),
             Prompts::amendmentSectionsBatchUserMessage($tasks),
-            Prompts::translationsToolSchema()
+            Prompts::translationsOutputSchema()
         );
 
         return self::parseBatchResult($result);
     }
 
     /**
-     * @param array<string, mixed>|null $toolResult the already-decoded tool_use "input", or null on
+     * @param array<string, mixed>|null $output the already-decoded structured output, or null on
      *        any request failure (see ClaudeClient::sendStructuredMessage())
      * @return array<int, string>
      */
-    private static function parseBatchResult(?array $toolResult): array
+    private static function parseBatchResult(?array $output): array
     {
         $result = [];
-        foreach (($toolResult['translations'] ?? []) as $entry) {
+        foreach (($output['translations'] ?? []) as $entry) {
             if (!is_array($entry)) {
                 continue;
             }

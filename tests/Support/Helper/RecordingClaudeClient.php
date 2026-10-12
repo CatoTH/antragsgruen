@@ -17,7 +17,7 @@ class RecordingClaudeClient extends ClaudeClient
     public ?string $lastSystemPrompt = null;
     public ?string $lastUserMessage = null;
     /** @var array<string, mixed>|null */
-    public ?array $lastToolSchema = null;
+    public ?array $lastOutputSchema = null;
     /** @var array<int, array<string, mixed>>|null the decoded "tasks" from the last request */
     public ?array $lastTasks = null;
 
@@ -30,11 +30,11 @@ class RecordingClaudeClient extends ClaudeClient
     {
     }
 
-    public function sendStructuredMessage(string $systemPrompt, string $userMessage, array $toolSchema): ?array
+    public function sendStructuredMessage(string $systemPrompt, string $userMessage, array $outputSchema): ?array
     {
         $this->lastSystemPrompt = $systemPrompt;
         $this->lastUserMessage = $userMessage;
-        $this->lastToolSchema = $toolSchema;
+        $this->lastOutputSchema = $outputSchema;
 
         $decoded = json_decode($userMessage, true);
         $this->lastTasks = is_array($decoded) ? ($decoded['tasks'] ?? []) : [];

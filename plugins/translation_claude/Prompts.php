@@ -17,13 +17,11 @@ namespace app\plugins\translation_claude;
  * Both motion and amendment sections are translated in a single batched request per motion/amendment
  * (see SectionTranslator), covering every section/language pair that needs filling - not one request
  * per section - so every prompt here describes a *list* of independent translation tasks and asks for
- * a matching list back, via the same tool schema (translationsToolSchema()) regardless of whether the
+ * a matching list back, via the same output schema (translationsOutputSchema()) regardless of whether the
  * tasks are for motion or amendment sections.
  */
 class Prompts
 {
-    public const TOOL_NAME = 'provide_translations';
-
     private const HTML_RULES = <<<'TEXT'
         The text in each task is an HTML fragment from a motion/amendment management system. Follow
         these rules strictly for every task:
@@ -36,41 +34,40 @@ class Prompts
         TEXT;
 
     /**
-     * The Anthropic tool ("function calling") definition used to force a structured, reliably
-     * parseable response for a batch of translation tasks, regardless of how many sections/languages
-     * are involved or whether they're motion or amendment sections.
+     * The JSON schema (for structured outputs, see ClaudeClient) used to get a reliably parseable
+     * response for a batch of translation tasks, regardless of how many sections/languages are
+     * involved or whether they're motion or amendment sections. Structured outputs require
+     * "additionalProperties: false" on every object.
      *
      * @return array<string, mixed>
      */
-    public static function translationsToolSchema(): array
+    public static function translationsOutputSchema(): array
     {
         return [
-            'name' => self::TOOL_NAME,
-            'description' => 'Returns the translated HTML fragment for each requested translation task.',
-            'input_schema' => [
-                'type' => 'object',
-                'properties' => [
-                    'translations' => [
-                        'type' => 'array',
-                        'description' => 'One entry per input task, in any order.',
-                        'items' => [
-                            'type' => 'object',
-                            'properties' => [
-                                'sectionId' => [
-                                    'type' => 'integer',
-                                    'description' => 'The "sectionId" of the input task this translation belongs to.',
-                                ],
-                                'translatedHtml' => [
-                                    'type' => 'string',
-                                    'description' => 'The translated HTML fragment for this task.',
-                                ],
+            'type' => 'object',
+            'properties' => [
+                'translations' => [
+                    'type' => 'array',
+                    'description' => 'One entry per input task, in any order.',
+                    'items' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'sectionId' => [
+                                'type' => 'integer',
+                                'description' => 'The "sectionId" of the input task this translation belongs to.',
                             ],
-                            'required' => ['sectionId', 'translatedHtml'],
+                            'translatedHtml' => [
+                                'type' => 'string',
+                                'description' => 'The translated HTML fragment for this task.',
+                            ],
                         ],
+                        'required' => ['sectionId', 'translatedHtml'],
+                        'additionalProperties' => false,
                     ],
                 ],
-                'required' => ['translations'],
             ],
+            'required' => ['translations'],
+            'additionalProperties' => false,
         ];
     }
 
@@ -85,12 +82,11 @@ class Prompts
 
             %HTML_RULES%
 
-            Use the %TOOL% tool to return your result.
+            Return one entry in "translations" per task.
             TEXT;
 
         return strtr($template, [
             '%HTML_RULES%' => self::HTML_RULES,
-            '%TOOL%' => self::TOOL_NAME,
         ]);
     }
 
@@ -143,13 +139,12 @@ class Prompts
 
             %HTML_RULES%
 
-            Use the %TOOL% tool to return your result, with "translatedHtml" being the translation of
-            each task's "amendedHtml".
+            Return one entry in "translations" per task, with "translatedHtml" being the translation
+            of that task's "amendedHtml".
             TEXT;
 
         return strtr($template, [
             '%HTML_RULES%' => self::HTML_RULES,
-            '%TOOL%' => self::TOOL_NAME,
         ]);
     }
 
