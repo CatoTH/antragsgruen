@@ -2,6 +2,7 @@
 
 ### Version 4.18.1 [not released yet]
 
+- In multilingual consultations, the welcome text and other content pages can now also be translated.
 - Bugfix: Changing additional supporters for amendments was not possible in the admin view.
 
 ## Version 4.18.0 (2026-10-11)

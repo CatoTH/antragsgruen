@@ -111,10 +111,13 @@ class PagesController extends Base
     /**
      * @throws Access
      */
-    protected function getPageForEdit(string $pageSlug): ?ConsultationText
+    protected function getPageForEdit(string $pageSlug): ConsultationText
     {
         if ($this->getHttpRequest()->get('pageId')) {
             $page = ConsultationText::findOne($this->getHttpRequest()->get('pageId'));
+            if (!$page) {
+                throw new Access('Page not found');
+            }
         } else {
             $page = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
         }
@@ -147,6 +150,8 @@ class PagesController extends Base
     public function actionSavePage(string $pageSlug): JsonResponse
     {
         $page = $this->getPageForEdit($pageSlug);
+        $page = $page->getVariantForLanguage(ConsultationText::getContentLanguage($this->site));
+        $otherVariants = $page->getOtherLanguageVariants();
 
         $needsReload = false;
         $message     = '';
@@ -225,6 +230,7 @@ class PagesController extends Base
         ];
 
         $page->save();
+        $page->syncSharedSettingsToVariants($otherVariants);
 
         $downloadableResult = $this->handleDownloadableFiles($page, $this->getPostValues());
         $result             = array_merge($result, $downloadableResult);
@@ -290,6 +296,9 @@ class PagesController extends Base
         $page = $this->getPageForEdit($pageSlug);
 
         if ($this->getHttpRequest()->post('delete')) {
+            foreach ($page->getOtherLanguageVariants() as $variant) {
+                $variant->delete();
+            }
             $page->delete();
         }
 
