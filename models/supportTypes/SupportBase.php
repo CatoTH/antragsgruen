@@ -253,12 +253,13 @@ abstract class SupportBase
      * @param IMotionUpdateSupporter[] $supporterDtos
      * @return MotionSupporter[]
      */
-    public function getMotionSupportersFromDto(ConsultationMotionType $motionType, array $supporterDtos): array
+    public function getMotionSupportersFromDto(array $supporterDtos): array
     {
-        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
-            return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
+        if (!$this->hasInitiatorGivenSupporters() && !$this->adminMode) {
+            return [];
         }
-        return [];
+
+        return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
     }
 
     /**
@@ -275,16 +276,13 @@ abstract class SupportBase
      * @param IMotionUpdateSupporter[] $supporterDtos
      * @return AmendmentSupporter[]
      */
-    public function getAmendmentSupportersFromDto(Amendment $amendment, array $supporterDtos): array
+    public function getAmendmentSupportersFromDto(array $supporterDtos): array
     {
         if (!$this->hasInitiatorGivenSupporters() && !$this->adminMode) {
             return [];
         }
-        $supporters = $this->buildSupportersFromDto(AmendmentSupporter::class, $supporterDtos);
-        foreach ($supporters as $sup) {
-            $sup->amendmentId = $amendment->id;
-        }
-        return $supporters;
+
+        return $this->buildSupportersFromDto(AmendmentSupporter::class, $supporterDtos);
     }
 
     /**

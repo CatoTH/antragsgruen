@@ -411,7 +411,7 @@ class MotionEditForm
         // 1. Set data, but don't validate yet
         $this->initializeSectionsAndTags(null);
         $initiators = $supportForm->getMotionInitiatorsFromDto($this->motionType, $dto->initiators);
-        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters ?? []);
+        $supporters = $supportForm->getMotionSupportersFromDto($dto->supporters ?? []);
         $this->supporters = array_merge($initiators, $supporters); // Used by edit form in case validation fails
 
         if ($dto->agendaItemId !== null) {
@@ -490,7 +490,7 @@ class MotionEditForm
 
         // 1. Set data, but don't validate yet
         $initiators = $supportForm->getMotionInitiatorsFromDto($this->motionType, $dto->initiators);
-        $supporters = $supportForm->getMotionSupportersFromDto($this->motionType, $dto->supporters ?? []);
+        $supporters = $supportForm->getMotionSupportersFromDto($dto->supporters ?? []);
         $this->supporters = array_merge($initiators, $supporters); // Used by edit form in case validation fails
 
         if ($dto->agendaItemId !== null) {
