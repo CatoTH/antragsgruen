@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.18.1 [not released yet]
+
+- Bugfix: Changing additional supporters for amendments was not possible in the admin view.
+
 ## Version 4.18.0 (2026-10-11)
 
 - A new module "Real-Time Debate on site" improves the use of Antragsgrün directly on site, combining the speaking list, the voting and the agenda to a "Currently Debated" view.

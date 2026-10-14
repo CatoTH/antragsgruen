@@ -281,7 +281,7 @@ class AmendmentEditForm
         }
 
         $initiators = $supportForm->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
-        $supporters = $supportForm->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
+        $supporters = $supportForm->getAmendmentSupportersFromDto($dto->supporters ?? []);
         $this->supporters = array_merge($initiators, $supporters);
 
         // 2. Validate
@@ -359,7 +359,7 @@ class AmendmentEditForm
         }
 
         $initiators = $supportForm->getAmendmentInitiatorsFromDto($amendment, $dto->initiators);
-        $supporters = $supportForm->getAmendmentSupportersFromDto($amendment, $dto->supporters ?? []);
+        $supporters = $supportForm->getAmendmentSupportersFromDto($dto->supporters ?? []);
         $this->supporters = array_merge($initiators, $supporters);
 
         if ($this->allowSetTags) {

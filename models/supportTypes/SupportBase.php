@@ -253,12 +253,13 @@ abstract class SupportBase
      * @param IMotionUpdateSupporter[] $supporterDtos
      * @return MotionSupporter[]
      */
-    public function getMotionSupportersFromDto(ConsultationMotionType $motionType, array $supporterDtos): array
+    public function getMotionSupportersFromDto(array $supporterDtos): array
     {
-        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
-            return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
+        if (!$this->hasInitiatorGivenSupporters() && !$this->adminMode) {
+            return [];
         }
-        return [];
+
+        return $this->buildSupportersFromDto(MotionSupporter::class, $supporterDtos);
     }
 
     /**
@@ -275,16 +276,13 @@ abstract class SupportBase
      * @param IMotionUpdateSupporter[] $supporterDtos
      * @return AmendmentSupporter[]
      */
-    public function getAmendmentSupportersFromDto(Amendment $amendment, array $supporterDtos): array
+    public function getAmendmentSupportersFromDto(array $supporterDtos): array
     {
-        if (!$this->hasInitiatorGivenSupporters() || $this->adminMode) {
+        if (!$this->hasInitiatorGivenSupporters() && !$this->adminMode) {
             return [];
         }
-        $supporters = $this->buildSupportersFromDto(AmendmentSupporter::class, $supporterDtos);
-        foreach ($supporters as $sup) {
-            $sup->amendmentId = $amendment->id;
-        }
-        return $supporters;
+
+        return $this->buildSupportersFromDto(AmendmentSupporter::class, $supporterDtos);
     }
 
     /**
@@ -378,20 +376,35 @@ abstract class SupportBase
     }
 
     /**
-     * @param MotionSupporter[] $supporters
+     * @return string[]
+     */
+    private function getSubmittedSupporterRoles(): array
+    {
+        $affectedRoles = [ISupporter::ROLE_INITIATOR];
+        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
+            $affectedRoles[] = ISupporter::ROLE_SUPPORTER;
+        }
+        return $affectedRoles;
+    }
+
+    /**
+     * Replaces the existing initiators / supporters of a motion or amendment by the submitted ones.
+     * Existing rows are updated in place if the submitted row references them by ID.
+     *
+     * @template T of MotionSupporter|AmendmentSupporter
+     * @param T[] $existing
+     * @param T[] $supporters
+     * @param callable(T): void $assignToParent
      * @throws \Throwable
      */
-    public function submitMotion(Motion $motion, array $supporters): void
+    private function saveSubmittedSupporters(array $existing, array $supporters, callable $assignToParent): void
     {
-        $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
-        if ($this->hasInitiatorGivenSupporters() || $this->adminMode) {
-            $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
-        }
+        $affectedRoles = $this->getSubmittedSupporterRoles();
 
         $preCreatedByAdmin = [];
         $preNonPublic = [];
         $previousById = [];
-        foreach ($motion->motionSupporters as $supp) {
+        foreach ($existing as $supp) {
             if (in_array($supp->role, $affectedRoles)) {
                 $previousById[$supp->id] = $supp;
                 if ($supp->userId) {
@@ -426,7 +439,7 @@ abstract class SupportBase
             } else {
                 $sup->id = null;
             }
-            $sup->motionId = $motion->id;
+            $assignToParent($sup);
             if (isset($sup->userId) && isset($preCreatedByAdmin[$sup->userId])) {
                 $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
             }
@@ -441,6 +454,16 @@ abstract class SupportBase
         }
     }
 
+    /**
+     * @param MotionSupporter[] $supporters
+     * @throws \Throwable
+     */
+    public function submitMotion(Motion $motion, array $supporters): void
+    {
+        $this->saveSubmittedSupporters($motion->motionSupporters, $supporters, function (MotionSupporter $sup) use ($motion): void {
+            $sup->motionId = $motion->id;
+        });
+    }
 
     /**
      * @param AmendmentSupporter[] $supporters
@@ -448,42 +471,14 @@ abstract class SupportBase
      */
     public function submitAmendment(Amendment $amendment, array $supporters): void
     {
-        $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
-        if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
-            $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
-        }
+        $initiatorsFormattedPre = $amendment->getInitiatorsStr();
 
-        $preCreatedByAdmin = [];
-        $preNonPublic = [];
-        foreach ($amendment->amendmentSupporters as $supp) {
-            if (in_array($supp->role, $affectedRoles)) {
-                if ($supp->userId) {
-                    $preCreatedByAdmin[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, false);
-                    $preNonPublic[$supp->userId] = $supp->getExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, false);
-                }
-                $supp->delete();
-            }
-        }
-
-        $initiators = [];
-        foreach ($supporters as $sup) {
-            if (in_array($sup->role, $affectedRoles)) {
-                $sup->amendmentId = $amendment->id;
-                if ($sup->userId !== null && isset($preCreatedByAdmin[$sup->userId])) {
-                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_CREATED_BY_ADMIN, $preCreatedByAdmin[$sup->userId]);
-                }
-                if ($sup->userId !== null && isset($preNonPublic[$sup->userId])) {
-                    $sup->setExtraDataEntry(ISupporter::EXTRA_DATA_FIELD_NON_PUBLIC, $preNonPublic[$sup->userId]);
-                }
-                $sup->save();
-            }
-            if ($sup->role === ISupporter::ROLE_INITIATOR) {
-                $initiators[] = $sup;
-            }
-        }
+        $this->saveSubmittedSupporters($amendment->amendmentSupporters, $supporters, function (AmendmentSupporter $sup) use ($amendment): void {
+            $sup->amendmentId = $amendment->id;
+        });
         $amendment->refresh();
 
-        $initiatorsFormattedPre = $amendment->getInitiatorsStr();
+        $initiators = array_values(array_filter($supporters, fn(AmendmentSupporter $sup) => $sup->role === ISupporter::ROLE_INITIATOR));
         $initiatorsFormattedPost = $amendment->getInitiatorsStrFromArray($initiators);
         if ($initiatorsFormattedPre !== $initiatorsFormattedPost) {
             $amendment->getMyMotion()->flushViewCache();
