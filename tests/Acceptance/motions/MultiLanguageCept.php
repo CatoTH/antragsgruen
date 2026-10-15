@@ -257,3 +257,69 @@ $I->see('amendement', '#section_' . $sTextFr . ' ins');
 $switchLanguage('en');
 $I->see('My English Amendment Title');
 $I->see('amended', '#section_' . $sTextEn . ' ins');
+
+
+$I->wantTo('override the "Settings" menu item in German and English, leaving French untouched');
+$I->gotoConsultationHome();
+$I->loginAsStdAdmin();
+$switchLanguage('de');
+$I->see('Einstellungen', '#adminLink');
+$I->click('#adminLink');
+$I->click('#translationLink');
+$I->seeInField('textarea[name="string[menu_admin]"]', '');
+$I->fillField('textarea[name="string[menu_admin]"]', 'Verwaltung');
+$I->submitForm('#translationForm', [], 'save');
+$I->see('Verwaltung', '#adminLink');
+$I->seeInField('textarea[name="string[menu_admin]"]', 'Verwaltung');
+
+// Overrides are stored per language, so the German one must not show up in other languages
+$switchLanguage('en');
+$I->see('Settings', '#adminLink');
+$I->seeInField('textarea[name="string[menu_admin]"]', '');
+$I->fillField('textarea[name="string[menu_admin]"]', 'Administration');
+$I->submitForm('#translationForm', [], 'save');
+$I->see('Administration', '#adminLink');
+$I->seeInField('textarea[name="string[menu_admin]"]', 'Administration');
+
+$switchLanguage('fr');
+$I->see('Paramètres', '#adminLink');
+$I->seeInField('textarea[name="string[menu_admin]"]', '');
+
+$switchLanguage('de');
+$I->see('Verwaltung', '#adminLink');
+$I->seeInField('textarea[name="string[menu_admin]"]', 'Verwaltung');
+
+
+$I->wantTo('edit the welcome message in German and English, leaving French untouched');
+$I->gotoConsultationHome();
+$switchLanguage('de');
+$I->see('Hallo auf Antragsgrün', '#stdTextHolder');
+$I->executeJS('$(".contentPageWelcome").find(".editCaller").click();');
+$I->wait(1);
+$I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<p>Willkommen auf der mehrsprachigen Seite</p>");');
+$I->executeJS('$(".contentPageWelcome").find(".textSaver button").click();');
+$I->wait(1);
+
+$switchLanguage('en');
+$I->see('Welcome to Antragsgrün', '#stdTextHolder');
+$I->executeJS('$(".contentPageWelcome").find(".editCaller").click();');
+$I->wait(1);
+$I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<p>Welcome to the multilingual site</p>");');
+$I->executeJS('$(".contentPageWelcome").find(".textSaver button").click();');
+$I->wait(1);
+
+$I->logout();
+
+
+$I->wantTo('see the translated welcome message in every language as a regular visitor');
+$I->gotoConsultationHome();
+
+$switchLanguage('de');
+$I->see('Willkommen auf der mehrsprachigen Seite', '#stdTextHolder');
+
+$switchLanguage('en');
+$I->see('Welcome to the multilingual site', '#stdTextHolder');
+
+$switchLanguage('fr');
+$I->see('Bienvenue sur Antragsgrün', '#stdTextHolder');
+$I->dontSee('Willkommen auf der mehrsprachigen Seite');
