@@ -6,10 +6,10 @@ use app\components\updater\UpdateChecker;
 use app\models\api\{SpeechQueue as SpeechQueueApi};
 use app\models\settings\{Privileges, AntragsgruenApp, Stylesheet, Consultation as ConsultationSettings};
 use app\models\http\{BinaryFileResponse, HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
-use app\components\{ConsultationAccessPassword, HTMLTools, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
-use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, SpeechQueue, User};
+use app\components\{ConsultationAccessPassword, IMotionStatusFilter, LiveTools, Tools, UrlHelper};
+use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ISupporter, Site, SpeechQueue, User};
 use app\models\exceptions\FormError;
-use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
+use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm, WordingOverridesForm};
 
 class IndexController extends AdminBase
 {
@@ -282,9 +282,12 @@ class IndexController extends AdminBase
         $consultation->refresh();
     }
 
-    public function actionTranslation(string $category = 'base'): HtmlResponse
+    public function actionTranslation(string $category = 'base'): ResponseInterface
     {
         $consultation = $this->consultation;
+        if (!$consultation) {
+            return new HtmlErrorResponse(404, 'Consultation not found');
+        }
 
         if ($this->isPostSet('save') && $this->isPostSet('wordingBase')) {
             $consultation->wordingBase = $this->getHttpRequest()->post('wordingBase');
@@ -293,77 +296,44 @@ class IndexController extends AdminBase
         }
 
         if ($this->isPostSet('save') && $this->isPostSet('string')) {
+            $form = new WordingOverridesForm($consultation, $consultation->texts, ['consultationId' => $consultation->id]);
             foreach ($this->getHttpRequest()->post('string') as $key => $val) {
-                $key   = urldecode($key);
-                $found = false;
-                foreach ($consultation->texts as $text) {
-                    if ($text->category === $category && $text->textId === $key) {
-                        if ($val === '') {
-                            $text->delete();
-                        } else {
-                            $text->text = HTMLTools::cleanHtmlTranslationString($val);
-                            $text->save();
-                        }
-                        $found = true;
-                    }
-                }
-                if (!$found && $val !== '') {
-                    $text                 = new ConsultationText();
-                    $text->consultationId = $consultation->id;
-                    $text->category       = $category;
-                    $text->textId         = $key;
-                    $text->text           = HTMLTools::cleanHtmlTranslationString($val);
-                    $text->editDate       = date('Y-m-d H:i:s');
-                    $text->save();
-                }
+                $form->save($category, urldecode($key), $val);
             }
             $consultation->refresh();
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        return new HtmlResponse($this->render('translation', ['consultation' => $consultation, 'category' => $category]));
+        $form = new WordingOverridesForm($consultation, $consultation->texts, ['consultationId' => $consultation->id]);
+
+        return new HtmlResponse($this->render('translation', ['consultation' => $consultation, 'category' => $category, 'form' => $form]));
     }
 
     /**
      * @throws \Throwable
      */
-    public function actionTranslationMotionType(string $motionTypeId): HtmlResponse
+    public function actionTranslationMotionType(string $motionTypeId): ResponseInterface
     {
         $consultation = $this->consultation;
+        if (!$consultation) {
+            return new HtmlErrorResponse(404, 'Consultation not found');
+        }
         $motionType = $consultation->getMotionType(intval($motionTypeId));
 
         if ($this->isPostSet('save')) {
+            $form = new WordingOverridesForm($consultation, $motionType->consultationTexts, ['motionTypeId' => $motionType->id]);
             foreach ($this->getHttpRequest()->post('categories', []) as $categoryId => $strings) {
                 foreach ($strings as $key => $val) {
-                    $key = urldecode($key);
-                    $found = false;
-                    foreach ($motionType->consultationTexts as $text) {
-                        if ($text->category === $categoryId && $text->textId === $key) {
-                            if ($val === '') {
-                                $text->delete();
-                            } else {
-                                $text->text = HTMLTools::cleanHtmlTranslationString($val);
-                                $text->save();
-                            }
-                            $found = true;
-                        }
-                    }
-                    if (!$found && $val !== '') {
-                        $text = new ConsultationText();
-                        $text->motionTypeId = intval($motionTypeId);
-                        $text->category = $categoryId;
-                        $text->textId = $key;
-                        $text->text = HTMLTools::cleanHtmlTranslationString($val);
-                        $text->editDate = date('Y-m-d H:i:s');
-                        $text->save();
-                    }
+                    $form->save((string)$categoryId, urldecode((string)$key), $val);
                 }
             }
             $motionType->refresh();
             $this->getHttpSession()->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        return new HtmlResponse($this->render('translation_motion_type', ['motionType' => $motionType]));
+        $form = new WordingOverridesForm($consultation, $motionType->consultationTexts, ['motionTypeId' => $motionType->id]);
+
+        return new HtmlResponse($this->render('translation_motion_type', ['motionType' => $motionType, 'form' => $form]));
     }
 
     public function actionSiteconsultations(): ResponseInterface

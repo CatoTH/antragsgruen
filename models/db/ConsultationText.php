@@ -211,6 +211,44 @@ class ConsultationText extends ActiveRecord implements IHasPolicies
     }
 
     /**
+     * Which stored UI wording overrides (all categories except page data) apply to the given language:
+     * - Single-language sites only use language-independent rows.
+     * - On multi-language sites, a row in the given language wins. Language-independent rows serve as
+     *   fallback only for the consultation's primary language, as they are written in that language.
+     *   An empty language-specific row blocks that fallback, restoring the built-in text.
+     *
+     * @param ConsultationText[] $texts
+     * @return array<string, string> textId => text, only non-empty overrides
+     */
+    public static function getWordingOverrides(array $texts, Consultation $consultation, string $language, string $category): array
+    {
+        $language = explode('-', $language)[0];
+        if (LanguageTools::isMultiLanguageSite($consultation->site)) {
+            $specificLanguage = $language;
+            $useLanguageIndependent = ($language === LanguageTools::getPrimaryLanguage($consultation));
+        } else {
+            $specificLanguage = null;
+            $useLanguageIndependent = true;
+        }
+
+        $overrides = [];
+        $hasSpecific = [];
+        foreach ($texts as $text) {
+            if ($text->category !== $category) {
+                continue;
+            }
+            if ($specificLanguage !== null && $text->language === $specificLanguage) {
+                $overrides[$text->textId] = (string)$text->text;
+                $hasSpecific[$text->textId] = true;
+            } elseif ($text->language === null && $useLanguageIndependent && !isset($hasSpecific[$text->textId])) {
+                $overrides[$text->textId] = (string)$text->text;
+            }
+        }
+
+        return array_filter($overrides, fn (string $text): bool => $text !== '');
+    }
+
+    /**
      * Reduces a list of texts to one entry per page, picking the variant in the given language
      * and falling back to the language-independent one. Pages only existing in other languages are dropped.
      *
