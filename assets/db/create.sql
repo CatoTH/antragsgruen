@@ -359,6 +359,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationText` (
   `siteId`         int(11)           DEFAULT NULL,
   `category`       varchar(128)  NOT NULL,
   `textId`         varchar(100) NOT NULL,
+  `language`       varchar(20)       DEFAULT NULL,
   `menuPosition`   int(11)           DEFAULT NULL,
   `policyRead`     text              DEFAULT NULL,
   `title`          text              DEFAULT NULL,
@@ -1036,7 +1037,7 @@ ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationText`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`),
+  ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`, `language`),
   ADD KEY `fk_texts_consultationIdx` (`consultationId`),
   ADD KEY `consultation_text_site` (`siteId`),
   ADD KEY `fk_text_motion_type` (`motionTypeId`);

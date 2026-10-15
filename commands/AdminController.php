@@ -215,6 +215,9 @@ class AdminController extends Controller
 
         $categories = [];
         foreach ($con->texts as $text) {
+            if ($text->language !== null) {
+                continue;
+            }
             if (!isset($categories[$text->category])) {
                 $categories[$text->category] = '<?php' . "\n\n" . 'return [' . "\n";
             }

@@ -3,6 +3,7 @@
 namespace app\components\yii;
 
 use app\components\{LanguageTools, UrlHelper};
+use app\models\db\ConsultationText;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 
@@ -315,14 +316,21 @@ class MessageSource extends \yii\i18n\MessageSource
             }
         }
 
+        $conSpecific = [];
+        if ($withConsultationStrings) {
+            $conSpecific = ConsultationText::getWordingOverrides($consultation->texts, $consultation, $language, $category);
+        }
+
         if (explode('-', $language)[0] !== LanguageTools::getPrimaryLanguage($consultation)) {
             // The user is browsing the site in a language other than the one this consultation is held in.
-            // Wording variants and consultation-specific wording only exist for the primary language,
-            // so applying them here would mix the primary language into the translated UI.
+            // Wording variants only exist for the primary language, so applying them here would mix the
+            // primary language into the translated UI. Consultation-specific wording only applies
+            // if it was written for this language, see ConsultationText::getWordingOverrides().
             $transFile     = $this->getMessageFilePath($categoryFilename, explode('-', $language)[0]);
             $transMessages = $this->loadMessagesFromFile($transFile);
+            $messages      = $this->mergeWithStructure($origMessages, $transMessages ?? []);
 
-            return $this->mergeWithStructure($origMessages, $transMessages ?? []);
+            return $this->mergeWithStructure($messages, $conSpecific);
         }
 
         $languages    = explode(',', $consultation->wordingBase);
@@ -340,15 +348,6 @@ class MessageSource extends \yii\i18n\MessageSource
             $messages = $this->loadMessagesFromFile($extFile);
             if ($messages) {
                 $extMessages = $this->mergeWithStructure($extMessages, $messages);
-            }
-        }
-
-        $conSpecific = [];
-        if ($withConsultationStrings) {
-            foreach ($consultation->texts as $text) {
-                if ($text->text !== '' && $text->category === $category) {
-                    $conSpecific[$text->textId] = $text->text;
-                }
             }
         }
 

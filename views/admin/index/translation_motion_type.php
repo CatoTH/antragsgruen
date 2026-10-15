@@ -3,10 +3,11 @@
 /**
  * @var $this yii\web\View
  * @var ConsultationMotionType $motionType
- * @var string $category
+ * @var WordingOverridesForm $form
  */
 
 use app\models\db\ConsultationMotionType;
+use app\models\forms\WordingOverridesForm;
 use app\components\{HTMLTools, yii\MessageSource, UrlHelper};
 use yii\helpers\Html;
 
@@ -20,14 +21,6 @@ $this->title = Yii::t('admin', 'translating_motion_type') . ': ' . $motionType->
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(Yii::t('admin', 'bread_language'));
 $layout->bodyCssClasses[] = 'adminTranslationForm';
-
-$existingTranslations = [];
-foreach ($motionType->consultationTexts as $consultationText) {
-    if (!isset($existingTranslations[$consultationText->category])) {
-        $existingTranslations[$consultationText->category] = [];
-    }
-    $existingTranslations[$consultationText->category][$consultationText->textId] = $consultationText;
-}
 
 echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminForm']);
 
@@ -47,10 +40,9 @@ echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminFo
 foreach (MessageSource::getMotionTypeChangableTexts() as $categoryId => $textIds) {
     echo '<h2 class="green">' . Html::encode(MessageSource::getTranslatableCategories()[$categoryId]) . '</h2><div class="content">';
 
+    $existingTranslations = $form->getDisplayValues($categoryId);
     foreach ($textIds as $textId) {
-        /** @var \app\models\db\ConsultationText|null $existingText */
-        $existingText = $existingTranslations[$categoryId][$textId] ?? null;
-        $value = ($existingText ? $existingText->text : '');
+        $value = $existingTranslations[$textId] ?? '';
         $htmlId = 'string_' . $categoryId . '_' . $textId;
         ?>
         <div class="stdTwoCols">

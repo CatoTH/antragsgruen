@@ -786,12 +786,8 @@ class ConsultationMotionType extends ActiveRecord implements IHasPolicies
     }
 
     public function getConsultationTextWithFallback(string $category, string $key): ?string {
-        foreach ($this->consultationTexts as $consultationText) {
-            if ($consultationText->category === $category && $consultationText->textId === $key) {
-                return $consultationText->text;
-            }
-        }
+        $overrides = ConsultationText::getWordingOverrides($this->consultationTexts, $this->getConsultation(), LanguageTools::getCurrentLanguage(), $category);
 
-        return \Yii::t($category, $key);
+        return $overrides[$key] ?? \Yii::t($category, $key);
     }
 }

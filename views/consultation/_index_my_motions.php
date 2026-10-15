@@ -64,7 +64,7 @@ if (count($myMotions)) {
         } else {
             $motionLink = UrlHelper::createMotionUrl($motion);
         }
-        echo Html::a(Html::encode($motion->getTitleWithPrefix()), $motionLink, ['class' => 'motion' . $motion->id]);
+        echo Html::a(Html::encode($motion->getTitleWithPrefixForDisplay()), $motionLink, ['class' => 'motion' . $motion->id]);
         echo ' (' . Html::encode($title) . ')';
         echo ': ' . Html::encode($motion->getMyConsultation()->getStatuses()->getStatusName($motion->status));
         echo '</div>';
@@ -95,7 +95,7 @@ if (count($myAmendments) > 0) {
         } else {
             $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
         }
-        echo Html::a(Html::encode($amendment->getTitle()), $amendmentUrl, ['class' => 'amendment' . $amendment->id]);
+        echo Html::a(Html::encode($amendment->getTitleWithPrefixForDisplay()), $amendmentUrl, ['class' => 'amendment' . $amendment->id]);
         echo ' (' . Html::encode($title) . ')';
         echo ': ' . Html::encode($amendment->getMyConsultation()->getStatuses()->getStatusName($amendment->status));
         echo '</div>';

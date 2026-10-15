@@ -94,15 +94,6 @@ class ConsultationFileGroup extends ActiveRecord
 
     public static function getGroupForText(ConsultationText $text): ?ConsultationFileGroup
     {
-        if (!$text->getMyConsultation()) {
-            return null;
-        }
-        foreach ($text->getMyConsultation()->fileGroups as $fileGroup) {
-            if ($fileGroup->consultationTextId === $text->id) {
-                return $fileGroup;
-            }
-        }
-
-        return null;
+        return $text->getMyFileGroup();
     }
 }

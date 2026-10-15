@@ -78,7 +78,7 @@ echo '<h2 class="green">' . Yii::t('base', 'legal_base_title') . '</h2>
     <div class="content contentPage">';
 echo Yii::t('base', 'legal_base_intro') . '<br><br>';
 /** @var ConsultationText $text */
-$text = ConsultationText::findOne(['consultationId' => null, 'textId' => 'legal']);
+$text = ConsultationText::findOne(['consultationId' => null, 'textId' => 'legal', 'language' => null]);
 if ($text) {
     echo $text->text;
 }
