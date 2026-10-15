@@ -236,6 +236,10 @@ class AmendmentController extends Base
     public function actionCreateconfirm(string $motionSlug, int $amendmentId, string $fromMode): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return new RedirectResponse(UrlHelper::homeUrl());
+        }
         /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne(
             [
@@ -254,8 +258,7 @@ class AmendmentController extends Base
             return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
         }
 
-        $policy = $motion->getMyMotionType()->getAmendmentPolicy();
-        if (!$policy->checkCurrUserAmendment()) {
+        if (!$motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendment->amendedAmendment)) {
             // Could be past the deadline of submission by now, or an admin changing the permissions
             return new HtmlErrorResponse(403, \Yii::t('amend', 'err_create_permission'));
         }
