@@ -10,7 +10,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\{Motion, MotionProposal};
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\MotionController $controller */
 $controller = $this->context;

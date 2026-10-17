@@ -2,11 +2,10 @@
 
 namespace app\models\notifications;
 
-use app\components\{HTMLTools, UrlHelper, mail\Tools};
+use app\components\{Html, HTMLTools, UrlHelper, mail\Tools};
 use app\models\db\{EMailLog, ISupporter, Motion};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
 
 class MotionCreated extends Base implements IEmailAdmin
 {

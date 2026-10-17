@@ -6,7 +6,6 @@ use app\components\mail\Tools as MailTools;
 use app\models\db\{Amendment, EMailLog, Motion};
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
-use yii\helpers\Html;
 
 class EmailNotifications
 {

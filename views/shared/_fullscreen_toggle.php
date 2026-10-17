@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{DebateTools, LiveDataChannels, StaticResourceTools, UrlHelper};
+use app\components\{Html, DebateTools, LiveDataChannels, StaticResourceTools, UrlHelper};
 use app\models\db\User;
-use yii\helpers\Html;
 
 /**
  * @var \app\models\db\Consultation $consultation

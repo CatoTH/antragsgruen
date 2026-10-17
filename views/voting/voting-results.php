@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\{Consultation, User};
 use app\models\proposedProcedure\Factory;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this

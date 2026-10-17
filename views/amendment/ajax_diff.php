@@ -2,7 +2,7 @@
 use app\components\HTMLTools;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this

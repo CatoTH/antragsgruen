@@ -8,7 +8,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\{IMotion, IProposal};
-use yii\helpers\Html;
+use app\components\Html;
 
 if (count($imotion->proposals) > 1) {
     ?>

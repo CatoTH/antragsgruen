@@ -83,6 +83,34 @@ final class RequestContext
     }
 
     /**
+     * The URL of the current request, relative to the host, including the query string.
+     */
+    public static function getCurrentUrl(): string
+    {
+        return self::getWebRequest()->getUrl();
+    }
+
+    /**
+     * The name and value of the hidden field that POST forms need to pass the CSRF check,
+     * or null if no CSRF protection applies (console commands, or CSRF validation disabled).
+     *
+     * @return array{param: string, token: string}|null
+     */
+    public static function getCsrfFormField(): ?array
+    {
+        $request = \Yii::$app?->getRequest();
+        if (!($request instanceof Request) || !$request->enableCsrfValidation) {
+            return null;
+        }
+        $token = $request->getCsrfToken();
+        if ($token === null) {
+            return null;
+        }
+
+        return ['param' => $request->csrfParam, 'token' => $token];
+    }
+
+    /**
      * True if the request currently being handled is served by the REST API.
      *
      * The API is stateless: it authenticates by JWT alone (see RestBase::beforeAction()) and must

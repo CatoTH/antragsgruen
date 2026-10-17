@@ -12,7 +12,7 @@ use app\models\http\{BinaryFileResponse,
     RedirectResponse,
     ResponseInterface,
     RestApiExceptionResponse};
-use app\components\{diff\AmendmentCollissionDetector, HTMLTools, Tools, UrlHelper};
+use app\components\{Html, diff\AmendmentCollissionDetector, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentAdminComment, AmendmentProposal, AmendmentSupporter, ConsultationLog, IMotion, IProposal, ISupporter, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\{FormError, MailNotSent, ResponseException};
@@ -20,7 +20,6 @@ use app\models\api\imotion\{AmendmentCreateRequest, AmendmentUpdateRequest};
 use app\models\forms\{AdminMotionFilterForm, AmendmentEditForm, ProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\views\amendment\LayoutHelper;
-use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
 
 class AmendmentController extends Base

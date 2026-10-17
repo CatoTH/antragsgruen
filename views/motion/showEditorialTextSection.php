@@ -6,7 +6,7 @@
 
 use app\models\db\User;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
-use yii\helpers\Html;
+use app\components\Html;
 
 $consultation = $section->getConsultation();
 $motion = $section->getMotion();

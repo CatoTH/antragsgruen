@@ -2,7 +2,7 @@
 
 namespace app\views\amendment;
 
-use app\components\{HashedStaticCache, HTMLTools, Tools};
+use app\components\{Html, HashedStaticCache, HTMLTools, Tools};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout};
 use app\models\sectionTypes\ISectionType;
@@ -10,7 +10,6 @@ use app\views\pdfLayouts\{IHtmlToPdfLayout, IPdfWriter, IPDFLayout};
 use app\models\db\{Amendment, AmendmentProposal, AmendmentSection, ISupporter, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Html;
 
 class LayoutHelper
 {

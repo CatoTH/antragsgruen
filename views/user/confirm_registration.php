@@ -2,8 +2,7 @@
 
 declare(strict_types=1);
 
-use app\components\{Captcha, UrlHelper};
-use yii\helpers\Html;
+use app\components\{Html, Captcha, UrlHelper};
 
 /**
  * @var $this yii\web\View

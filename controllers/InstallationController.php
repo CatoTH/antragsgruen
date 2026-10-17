@@ -3,11 +3,11 @@
 namespace app\controllers;
 
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, ResponseInterface};
-use app\components\{yii\MessageSource, RequestContext, UrlHelper};
+use app\components\{Html, yii\MessageSource, RequestContext, UrlHelper};
 use app\models\db\User;
 use app\models\exceptions\Internal;
 use app\models\forms\{AntragsgruenInitDb, AntragsgruenInitSite};
-use yii\helpers\{Html, Url};
+use yii\helpers\Url;
 
 class InstallationController extends Base
 {

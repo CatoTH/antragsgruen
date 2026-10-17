@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\models\settings\Privileges;
 use app\models\db\User;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\db\Consultation $consultation

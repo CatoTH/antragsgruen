@@ -4,7 +4,7 @@ namespace app\plugins\gruen_ci;
 
 use app\components\UrlHelper;
 use app\models\layoutHooks\{Hooks, Layout};
-use yii\helpers\Html;
+use app\components\Html;
 
 class LayoutHooks3 extends Hooks
 {

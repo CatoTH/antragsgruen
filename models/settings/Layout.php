@@ -2,13 +2,12 @@
 
 namespace app\models\settings;
 
-use app\components\{LanguageTools, RequestContext, StaticResourceTools, yii\MessageSource, UrlHelper};
+use app\components\{Html, LanguageTools, RequestContext, StaticResourceTools, yii\MessageSource, UrlHelper};
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\{Hooks, StdHooks};
 use yii\base\Action;
-use yii\helpers\Html;
 use yii\web\{AssetBundle, Controller, View};
 
 class Layout

@@ -7,7 +7,7 @@ use app\components\HTMLTools;
 use app\components\latex\Content as LatexContent;
 use app\models\db\{AmendmentSection, Consultation};
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\helpers\Html;
+use app\components\Html;
 use \CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class TextHTML extends Text

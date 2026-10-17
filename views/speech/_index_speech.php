@@ -4,7 +4,7 @@ use app\components\LiveDataChannels;
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\User;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this

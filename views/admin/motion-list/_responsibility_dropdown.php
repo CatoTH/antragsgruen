@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
 use app\models\db\{IMotion, User};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

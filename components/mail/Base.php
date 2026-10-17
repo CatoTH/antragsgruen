@@ -11,7 +11,7 @@ use app\models\exceptions\ServerConfiguration;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\{Address, Email};
-use yii\helpers\Html;
+use app\components\Html;
 
 abstract class Base
 {

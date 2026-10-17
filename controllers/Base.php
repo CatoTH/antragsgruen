@@ -5,11 +5,10 @@ namespace app\controllers;
 use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseException};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
-use app\components\{ConsultationAccess, HTMLTools, JwtCreator, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
+use app\components\{Html, ConsultationAccess, HTMLTools, JwtCreator, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, repostory\MotionRepository, Site, User};
 use Yii;
-use yii\helpers\Html;
 use yii\web\{Controller, Request, Response, Session};
 
 /**

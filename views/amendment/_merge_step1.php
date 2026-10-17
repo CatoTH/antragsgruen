@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{HTMLTools, MotionNumbering, UrlHelper};
+use app\components\{Html, HTMLTools, MotionNumbering, UrlHelper};
 use app\models\db\Amendment;
-use yii\helpers\Html;
 
 /**
  * @var Amendment $amendment

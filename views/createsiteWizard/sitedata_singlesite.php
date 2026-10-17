@@ -1,5 +1,5 @@
 <?php
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\forms\AntragsgruenInitSite $model

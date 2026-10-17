@@ -7,7 +7,7 @@ use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{AmendmentSection, Consultation};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\helpers\Html;
+use app\components\Html;
 use CatoTH\HTML2OpenDocument\Text;
 use yii\web\View;
 

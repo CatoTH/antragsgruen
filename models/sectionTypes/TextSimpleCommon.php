@@ -3,11 +3,10 @@
 namespace app\models\sectionTypes;
 
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use app\components\{HashedStaticCache, HTMLTools, LanguageTools, LineSplitter, UrlHelper};
+use app\components\{Html, HashedStaticCache, HTMLTools, LanguageTools, LineSplitter, UrlHelper};
 use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, Motion, MotionSection};
-use yii\helpers\Html;
 
 abstract class TextSimpleCommon extends Text {
     public function isEmpty(): bool

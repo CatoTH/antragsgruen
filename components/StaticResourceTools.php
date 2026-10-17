@@ -7,7 +7,6 @@ namespace app\components;
 use app\components\yii\MessageSource;
 use app\models\db\Consultation;
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Html;
 use yii\i18n\I18N;
 
 class StaticResourceTools

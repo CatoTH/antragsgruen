@@ -2,7 +2,7 @@
 
 use app\models\db\{Amendment, Motion};
 use app\views\pdfLayouts\BDK;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this

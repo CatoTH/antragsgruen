@@ -6,7 +6,7 @@ use app\models\api\voting\VotingItemType;
 use app\models\exceptions\{Access, Internal, NotFound, FormError};
 use app\models\proposedProcedure\Agenda;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges, MotionSection as MotionSectionSettings};
-use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, LanguageTools, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{Html, diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, IMotionStatusFilter, LanguageTools, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
@@ -15,7 +15,6 @@ use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotificati
 use app\models\sectionTypes\{Image, ISectionType, PDF, SectionLanguageMode, TextSimple};
 use app\models\supportTypes\SupportBase;
 use yii\db\ActiveQuery;
-use yii\helpers\Html;
 
 /**
  * @property int|null $id

@@ -9,7 +9,6 @@ use app\models\consultationLog\UserGroupChange;
 use app\models\settings\{AntragsgruenApp, Privileges, UserGroupPermissions};
 use app\models\db\{Consultation, ConsultationLog, ConsultationUserGroup, EMailLog, User};
 use yii\web\{Request, Session};
-use yii\helpers\Html;
 
 class UserGroupAdminMethods
 {

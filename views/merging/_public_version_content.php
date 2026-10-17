@@ -5,7 +5,7 @@ use app\models\mergeAmendments\Draft;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\SectionLanguageMode;
 use app\models\sectionTypes\TextSimple;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Motion $motion

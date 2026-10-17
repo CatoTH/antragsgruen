@@ -1,10 +1,9 @@
 <?php
 
 use app\models\sectionTypes\ISectionType;
-use app\components\{IMotionStatusFilter, MotionSorter, UrlHelper};
+use app\components\{Html, IMotionStatusFilter, MotionSorter, UrlHelper};
 use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\db\{Amendment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion};
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this

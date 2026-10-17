@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, IMotion, Motion};
 use app\models\proposedProcedure\{Agenda, AgendaVoting};
 use app\views\motion\LayoutHelper;
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this

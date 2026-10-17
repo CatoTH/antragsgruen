@@ -4,7 +4,7 @@ namespace app\plugins\green_layout;
 
 use app\components\UrlHelper;
 use app\models\layoutHooks\{Hooks, Layout};
-use yii\helpers\Html;
+use app\components\Html;
 
 class LayoutHooks extends Hooks
 {

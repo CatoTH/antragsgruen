@@ -2,7 +2,6 @@
 
 namespace app\components;
 
-use yii\helpers\Html;
 
 class RSSExporter
 {

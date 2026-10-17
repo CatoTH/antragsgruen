@@ -2,7 +2,7 @@
 
 use app\models\db\{Consultation, ConsultationUserGroup};
 use app\models\policies\IPolicy;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var string $id

@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\Draft;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this

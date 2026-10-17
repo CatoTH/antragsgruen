@@ -2,7 +2,7 @@
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Consultation $consultation

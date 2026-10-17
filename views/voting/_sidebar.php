@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\settings\{Layout, Privileges};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var string $sidebarMode

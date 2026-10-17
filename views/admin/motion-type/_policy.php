@@ -4,7 +4,7 @@ use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this

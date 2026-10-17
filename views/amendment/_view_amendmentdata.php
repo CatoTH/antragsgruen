@@ -1,9 +1,8 @@
 <?php
 
 use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, ConsultationSettingsTag, User};
-use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 /**

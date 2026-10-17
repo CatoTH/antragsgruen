@@ -1,7 +1,7 @@
 <?php
 
 use app\models\db\User;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\forms\SiteCreateForm $model

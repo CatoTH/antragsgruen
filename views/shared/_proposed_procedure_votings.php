@@ -8,7 +8,7 @@
 use app\components\UrlHelper;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{IMotion, User};
-use yii\helpers\Html;
+use app\components\Html;
 
 $consultation = $imotion->getMyConsultation();
 $votingBlocks = $consultation->votingBlocks;

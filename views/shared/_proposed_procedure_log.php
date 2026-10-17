@@ -6,9 +6,8 @@
  * @var IProposal $proposal
  */
 
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, Tools, UrlHelper};
 use app\models\db\{IAdminComment, IMotion, IProposal, User};
-use yii\helpers\Html;
 
 $activities = \app\models\proposedProcedure\IActivity::getListFromIMotion($imotion);
 

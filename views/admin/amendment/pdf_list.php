@@ -7,7 +7,7 @@
 
 use app\models\db\{Amendment, Motion};
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\admin\AmendmentController $controller */
 $controller = $this->context;

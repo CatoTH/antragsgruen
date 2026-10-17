@@ -7,7 +7,7 @@ namespace app\components\html2pdf;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\Image;
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Html;
+use app\components\Html;
 
 class Html2PdfConverter
 {

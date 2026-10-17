@@ -1,6 +1,7 @@
 <?php
 
-use yii\helpers\{Html, Url};
+use app\components\Html;
+use yii\helpers\Url;
 
 /**
  * @var yii\web\View $this

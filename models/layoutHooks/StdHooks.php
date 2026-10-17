@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace app\models\layoutHooks;
 
 use app\models\settings\{PrivilegeQueryContext, Privileges, AntragsgruenApp};
-use app\components\{HTMLTools, LanguageTools, RequestContext, StaticResourceTools, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, LanguageTools, RequestContext, StaticResourceTools, Tools, UrlHelper};
 use app\controllers\{admin\IndexController, admin\MotionListController, UserController};
 use app\models\AdminTodoItem;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
-use yii\helpers\Html;
 
 class StdHooks extends Hooks
 {

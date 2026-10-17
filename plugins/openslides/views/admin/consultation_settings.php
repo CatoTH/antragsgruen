@@ -2,7 +2,7 @@
 
 use app\plugins\openslides\{ConsultationSettings, SiteSettings};
 use app\models\db\Consultation;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this

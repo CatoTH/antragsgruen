@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\{ConsultationAgendaItem, ConsultationMotionType};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this

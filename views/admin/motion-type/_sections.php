@@ -4,7 +4,7 @@ use app\components\LanguageTools;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\settings\MotionSection;
 use app\models\sectionTypes\{ISectionType, TabularDataType};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this

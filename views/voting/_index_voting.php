@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{LiveDataChannels, UrlHelper};
+use app\components\{Html, LiveDataChannels, UrlHelper};
 use app\models\settings\Privileges;
 use app\models\db\{Consultation, DebateItem, Motion, User};
 use app\models\proposedProcedure\Factory;
-use yii\helpers\Html;
 
 /**
  * @var \app\controllers\Base $controller

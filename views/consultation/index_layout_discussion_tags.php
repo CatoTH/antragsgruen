@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{MotionSorter, Tools, UrlHelper};
+use app\components\{Html, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationSettingsTag, IMotion, Motion};
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this

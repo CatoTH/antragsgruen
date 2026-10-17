@@ -1,5 +1,5 @@
 <?php
-use yii\helpers\Html;
+use app\components\Html;
 use yii\helpers\Url;
 
 /**

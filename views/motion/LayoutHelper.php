@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\motion;
 
-use app\components\{HashedStaticCache, IMotionStatusFilter, LanguageTools, Tools, UrlHelper};
+use app\components\{Html, HashedStaticCache, IMotionStatusFilter, LanguageTools, Tools, UrlHelper};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
 use app\components\diff\{AmendmentSectionFormatter, DiffRenderer};
@@ -18,7 +18,6 @@ use app\models\settings\{AntragsgruenApp, Consultation, PrivilegeQueryContext, P
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\{AmendmentSynopsisPDF, IHtmlToPdfLayout, IPDFLayout, IPdfWriter};
 use Com\Tecnick\Pdf\Import\ImportException;
-use yii\helpers\Html;
 
 class LayoutHelper
 {

@@ -4,9 +4,8 @@ namespace app\models\db;
 
 use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureChange, ProposedProcedureUserNotification};
 use app\models\settings\AntragsgruenApp;
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, Tools, UrlHelper};
 use yii\db\{ActiveQuery, ActiveRecord};
-use yii\helpers\Html;
 
 /**
  * @property int $id

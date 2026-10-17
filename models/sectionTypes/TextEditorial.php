@@ -6,12 +6,11 @@ namespace app\models\sectionTypes;
 
 use app\models\settings\PrivilegeQueryContext;
 use app\models\settings\Privileges;
-use app\components\{HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LineSplitter, RequestContext, UrlHelper};
+use app\components\{Html, HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LineSplitter, RequestContext, UrlHelper};
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection, User};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\helpers\Html;
 use yii\web\View;
 use CatoTH\HTML2OpenDocument\Text as ODTText;
 

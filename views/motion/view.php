@@ -1,13 +1,12 @@
 <?php
 
-use app\components\{StaticResourceTools, UrlHelper};
+use app\components\{Html, StaticResourceTools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{Consultation as ConsultationSettings, PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper;
-use yii\helpers\Html;
 
 /**
  * @var bool $reducedNavigation

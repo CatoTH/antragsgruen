@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\views\motion\LayoutHelper;
 use app\models\db\{Motion};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Motion $motion

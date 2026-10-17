@@ -1,9 +1,8 @@
 <?php
 
 use app\models\sectionTypes\ISectionType;
-use app\components\{Tools, UrlHelper};
+use app\components\{Html, Tools, UrlHelper};
 use app\models\db\Motion;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this

@@ -3,7 +3,7 @@
 use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\controllers\Base $controller

@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{Diff\SingleAmendmentMergeViewParagraphData, MotionNumbering, UrlHelper};
+use app\components\{Html, Diff\SingleAmendmentMergeViewParagraphData, MotionNumbering, UrlHelper};
 use app\models\db\Amendment;
-use Yii\helpers\Html;
 
 /**
  * @var \Yii\web\View $this

@@ -4,7 +4,7 @@ use app\components\HTMLTools;
 use app\models\db\ISupporter;
 use app\models\sectionTypes\{ISectionType, TextSimple};
 use CatoTH\HTML2OpenDocument\Text;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\db\Motion $oldMotion

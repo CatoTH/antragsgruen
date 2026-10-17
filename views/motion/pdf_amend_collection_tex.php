@@ -3,7 +3,7 @@
 use app\components\latex\{Exporter, Layout};
 use app\models\db\{Amendment, Motion, TexTemplate};
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var TexTemplate $texTemplate

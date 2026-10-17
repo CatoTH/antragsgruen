@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 echo Html::beginForm(UrlHelper::createUrl('/admin/users/add-multiple-ww'), 'post', [
     'class' => 'addUsersByLogin multiuser samlWW hidden',

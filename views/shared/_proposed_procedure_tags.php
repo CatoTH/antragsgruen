@@ -6,7 +6,7 @@
  */
 
 use app\models\db\IMotion;
-use yii\helpers\Html;
+use app\components\Html;
 
 $consultation = $imotion->getMyConsultation();
 $allTags = $consultation->getSortedTags(\app\models\db\ConsultationSettingsTag::TYPE_PROPOSED_PROCEDURE);

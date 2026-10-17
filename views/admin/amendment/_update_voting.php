@@ -1,8 +1,7 @@
 <?php
 
 use app\models\db\{Amendment, IMotion};
-use app\components\{HTMLTools, UrlHelper};
-use yii\helpers\Html;
+use app\components\{Html, HTMLTools, UrlHelper};
 
 
 /**

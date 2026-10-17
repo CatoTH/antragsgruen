@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\settings\Stylesheet;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this

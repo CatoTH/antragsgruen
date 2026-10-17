@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var bool $loginActive

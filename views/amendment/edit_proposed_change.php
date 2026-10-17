@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{diff\Diff, diff\DiffRenderer, HTMLTools, UrlHelper};
+use app\components\{Html, diff\Diff, diff\DiffRenderer, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, AmendmentProposal};
 use app\models\sectionTypes\ISectionType;
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this

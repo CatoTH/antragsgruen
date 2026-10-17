@@ -9,7 +9,7 @@ use app\components\UrlHelper;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection, MotionComment, User};
 use app\models\forms\CommentForm;
-use yii\helpers\Html;
+use app\components\Html;
 
 $consultation   = $section->getConsultation();
 $motion         = $section->getMotion();

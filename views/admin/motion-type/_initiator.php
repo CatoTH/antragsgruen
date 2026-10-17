@@ -5,7 +5,7 @@ use app\models\db\ConsultationMotionType;
 use app\models\policies\IPolicy;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\{CollectBeforePublish, SupportBase};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var ConsultationMotionType $motionType

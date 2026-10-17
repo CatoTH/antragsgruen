@@ -3,7 +3,6 @@
 namespace app\components;
 
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Html;
 
 class AntiSpam
 {

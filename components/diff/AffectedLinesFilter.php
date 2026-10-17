@@ -4,7 +4,7 @@ namespace app\components\diff;
 
 use app\components\diff\DataTypes\AffectedLineBlock;
 use app\components\HTMLTools;
-use yii\helpers\Html;
+use app\components\Html;
 
 class AffectedLinesFilter
 {

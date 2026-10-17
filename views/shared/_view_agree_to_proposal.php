@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{HTMLTools, Tools};
+use app\components\{Html, HTMLTools, Tools};
 use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureUserNotification};
 use app\models\db\{ConsultationLog, IMotion, IProposal};
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this

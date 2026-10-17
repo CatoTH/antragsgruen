@@ -1,10 +1,9 @@
 <?php
 
 use app\models\settings\Privileges;
-use app\components\{Tools, HTMLTools};
+use app\components\{Html, Tools, HTMLTools};
 use app\models\db\{IComment, MotionComment, User};
 use app\models\forms\CommentForm;
-use yii\helpers\Html;
 
 /**
  * @var IComment $comment

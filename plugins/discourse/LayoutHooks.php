@@ -5,7 +5,7 @@ namespace app\plugins\discourse;
 use app\models\db\{Amendment, IMotion, Motion};
 use app\components\UrlHelper;
 use app\models\layoutHooks\Hooks;
-use yii\helpers\Html;
+use app\components\Html;
 
 class LayoutHooks extends Hooks
 {
