@@ -227,7 +227,7 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::homeUrl());
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
         return new HtmlResponse($this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]));
@@ -236,6 +236,10 @@ class AmendmentController extends Base
     public function actionCreateconfirm(string $motionSlug, int $amendmentId, string $fromMode): ResponseInterface
     {
         $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
+        }
         /** @var Amendment|null $amendment */
         $amendment = Amendment::findOne(
             [
@@ -246,16 +250,15 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::homeUrl());
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
         if (!$amendment->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
-        $policy = $motion->getMyMotionType()->getAmendmentPolicy();
-        if (!$policy->checkCurrUserAmendment()) {
+        if (!$motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendment->amendedAmendment)) {
             // Could be past the deadline of submission by now, or an admin changing the permissions
             return new HtmlErrorResponse(403, \Yii::t('amend', 'err_create_permission'));
         }
@@ -294,12 +297,12 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
         if (!$amendment->canEditText()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_edit_forbidden'));
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
         $fromMode = ($amendment->status === Amendment::STATUS_DRAFT ? 'create' : 'edit');
@@ -350,7 +353,7 @@ class AmendmentController extends Base
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             $this->getHttpSession()->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::homeUrl());
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
         $amendingAmendment = null;
@@ -362,7 +365,7 @@ class AmendmentController extends Base
         }
         if ($amendingAmendment?->amendingAmendmentId) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_no_three_level_amendment'));
-            return new RedirectResponse(UrlHelper::homeUrl());
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
         if (!$motion->isCurrentlyAmendable(allowAdmins: true, assumeLoggedIn: false, throwExceptions: false, amendingAmendment: $amendingAmendment)) {
@@ -445,12 +448,12 @@ class AmendmentController extends Base
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_not_found'));
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
         if (!$amendment->canWithdraw()) {
             $this->getHttpSession()->setFlash('error', \Yii::t('amend', 'err_withdraw_forbidden'));
-            return new RedirectResponse(UrlHelper::createUrl('consultation/index'));
+            return new RedirectResponse(UrlHelper::homeUrl() ?? '/');
         }
 
         if ($this->isPostSet('cancel')) {

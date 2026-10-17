@@ -4,6 +4,7 @@
 
 - In multilingual consultations, the welcome text, other content pages and UI text fragments can now also be translated.
 - Bugfix: Changing additional supporters for amendments was not possible in the admin view.
+- Bugfix: The separate deadline for amendments to amendments was not properly checked on the submission confirmation page.
 
 ## Version 4.18.0 (2026-10-11)
 

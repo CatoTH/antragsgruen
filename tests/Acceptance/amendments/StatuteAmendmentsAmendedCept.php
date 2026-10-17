@@ -41,17 +41,30 @@ $I->click('#motionConfirmedForm .btn');
 $I->logout();
 
 
-$I->wantTo('enable amendments to amendments for the statute type');
+$I->wantTo('enable amendments to amendments for the statute type, with the regular amendment deadline being over');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 $I->checkOption('#allowAmendmentsToAmendments');
+$I->checkOption('#deadlineFormTypeComplex');
+$I->clickJS('.amendmentDeadlines .deadlineAdder');
+$I->executeJS('$(".amendmentDeadlines .deadlineEntry:nth-child(1) .datetimepickerFrom input").val("01.01.2020 00:00");');
+$I->executeJS('$(".amendmentDeadlines .deadlineEntry:nth-child(1) .datetimepickerTo input").val("01.01.2021 00:00");');
+$I->clickJS('.amendmentsToAmendmentsDeadlines .deadlineAdder');
+$I->executeJS('$(".amendmentsToAmendmentsDeadlines .deadlineEntry:nth-child(1) .datetimepickerFrom input").val("01.01.2020 00:00");');
+$I->executeJS('$(".amendmentsToAmendmentsDeadlines .deadlineEntry:nth-child(1) .datetimepickerTo input").val("' . date('d.m.Y', strtotime('+1 year')) . ' 00:00");');
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->logout();
 
 
-$I->wantTo('create an amendment to the statute amendment');
+$I->wantTo('not be able to create a regular statute amendment anymore');
 $I->loginAsStdUser();
 $I->gotoConsultationHome();
+$I->dontSeeElement('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+
+
+$I->wantTo('create an amendment to the statute amendment, as its deadline is still running');
 $I->click('.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' a');
+$I->seeElement('#sidebar .amendmentCreate');
+$I->dontSeeElement('#sidebar .amendmentCreate .onlyAdmins');
 $I->click('#sidebar .amendmentCreate');
 $I->wait(0.5);
 $I->executeJS('CKEDITOR.instances.' . $textSectionId . '.setData("<ol><li>Section 1</li></ol>");');
