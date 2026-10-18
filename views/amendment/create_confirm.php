@@ -24,7 +24,7 @@ if (!$motion->getMyMotionType()->amendmentsOnly) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
     if ($amendment->amendingAmendmentId) {
         $amendedAmendment = $amendment->amendedAmendment;
-        $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendedAmendment));
+        $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix() ?? '', UrlHelper::createAmendmentUrl($amendedAmendment));
     }
     $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 } else {

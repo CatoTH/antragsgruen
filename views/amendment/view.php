@@ -41,7 +41,7 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
     }
     if ($amendment->amendingAmendmentId) {
         $amendedAmendment = $amendment->amendedAmendment;
-        $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendedAmendment));
+        $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix() ?? '', UrlHelper::createAmendmentUrl($amendedAmendment));
     }
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->getFormattedTitlePrefix() != '') {
         $layout->addBreadcrumb($amendment->getFormattedTitlePrefix());

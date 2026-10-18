@@ -20,7 +20,9 @@ $metadataView .= '</div>';
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
     /** @var \app\controllers\Base $controller */
     $controller = $this->context;
-    $controller->layoutParams->loadCKEditor();
+    /** @var \app\models\settings\Layout $layout */
+    $layout = $controller->layoutParams;
+    $layout->loadCKEditor();
     $metadata = $sectionType->getSectionMetadata();
 
     $saveUrl = \app\components\UrlHelper::createMotionUrl($motion, 'save-editorial', ['sectionId' => $section->sectionId]);

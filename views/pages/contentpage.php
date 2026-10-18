@@ -23,7 +23,7 @@ $this->title = $pageData->title ?: $pageData->textId;
 
 /** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
-if (!in_array($controller->action->id, ['home', 'index'])) {
+if (!in_array($controller->action?->id, ['home', 'index'])) {
     $layout->addBreadcrumb($pageData->breadcrumb ?: $pageData->textId);
 } else {
     $layout->breadcrumbs = [];

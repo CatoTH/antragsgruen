@@ -30,7 +30,7 @@ if ($amendment) {
     $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);
 
     $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
-    $layout->addBreadcrumb($amendment->getFormattedTitlePrefix(), $amendmentUrl);
+    $layout->addBreadcrumb($amendment->getFormattedTitlePrefix() ?? '', $amendmentUrl);
 }
 if ($user || $userGroup) {
     $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));

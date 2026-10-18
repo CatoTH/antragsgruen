@@ -24,7 +24,7 @@ $currHost = $url['host'];
 
 /** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb($pageData->breadcrumb);
+$layout->addBreadcrumb($pageData->breadcrumb ?? '');
 
 if ($admin) {
     $layout->loadCKEditor();

@@ -36,7 +36,7 @@ $layout->loadCKEditor();
 $layout->addBreadcrumb($motionType->getTitleSingularForDisplay(), UrlHelper::createMotionUrl($form->motion));
 if ($form->toAnotherAmendment) {
     $amendingAmendment = $consultation->getAmendment($form->toAnotherAmendment);
-    $layout->addBreadcrumb($amendingAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendingAmendment));
+    $layout->addBreadcrumb($amendingAmendment->getFormattedTitlePrefix() ?? '', UrlHelper::createAmendmentUrl($amendingAmendment));
 }
 $layout->addBreadcrumb(Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit'));
 

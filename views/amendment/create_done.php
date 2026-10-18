@@ -24,7 +24,7 @@ if (!$motion->getMyMotionType()->amendmentsOnly) {
 }
 if ($amendment->amendingAmendmentId) {
     $amendedAmendment = $amendment->amendedAmendment;
-    $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendedAmendment));
+    $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix() ?? '', UrlHelper::createAmendmentUrl($amendedAmendment));
 }
 $layout->addBreadcrumb($amendment->getFormattedTitlePrefix() ?? Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 
