@@ -6,7 +6,7 @@ use yii\helpers\Html;
 
 /**
  * @var \app\models\db\Amendment $amendment
- * @var bool $adminEdit
+ * @var string|null $adminEdit
  * @var Layout $layout
  */
 

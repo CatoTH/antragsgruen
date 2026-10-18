@@ -194,7 +194,7 @@ if ($adminMode) {
                 echo HTML::dropDownList('Initiator[primaryOrgaName]', $prePrimaryName, $selectOrganisations, [
                     'id' => 'initiatorPrimaryOrgaName',
                     'class' => 'stdDropdown',
-                ], true);
+                ]);
             }
             ?>
         </div>

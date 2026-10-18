@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /**
  * @var bool $reducedNavigation
  * @var Motion $motion
- * @var bool $adminEdit
+ * @var string|null $adminEdit
  * @var Layout $layout
  */
 

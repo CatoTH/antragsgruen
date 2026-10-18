@@ -123,7 +123,7 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                         $statuses[$amendment->status] = $statusesAll[$amendment->status];
                         $statusPre = $mergingDraft->amendmentStatuses[$amendment->id] ?? Amendment::STATUS_PROCESSED;
                         $opts = ['id' => 'amendmentStatus' . $amendment->id, 'class' => 'stdDropdown'];
-                        echo Html::dropDownList('amendStatus[' . $amendment->id . ']', $statusPre, $statuses, $opts, true);
+                        echo Html::dropDownList('amendStatus[' . $amendment->id . ']', $statusPre, $statuses, $opts);
                         ?>
                     </div>
                     <div class="commentHolder">
