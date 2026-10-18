@@ -25,10 +25,6 @@ parameters:
     bootstrapFiles:
       - .github/phpstan/bootstrap.php
     scanFiles:
-      - views/motion/LayoutHelper.php
-      - views/amendment/LayoutHelper.php
-      - views/speech/LayoutHelper.php
-      - views/consultation/LayoutHelper.php
       - config/defines.php
       - assets/phpstan-helper.php
     paths:
@@ -37,7 +33,7 @@ parameters:
       - components
       - commands
       - plugins
-      - views/pdfLayouts
+      - views
 
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
