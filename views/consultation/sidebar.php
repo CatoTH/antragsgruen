@@ -13,8 +13,9 @@ use yii\helpers\Html;
  * @var \app\models\db\IComment[] $newestComments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller   = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
 $settings = $consultation->getSettings();

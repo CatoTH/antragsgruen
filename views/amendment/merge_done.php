@@ -12,9 +12,10 @@ use yii\helpers\Html;
 
 $this->title = Yii::t('amend', 'merge1_done_title');
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\AmendmentController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));

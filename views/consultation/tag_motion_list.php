@@ -14,8 +14,9 @@ use app\models\settings\{Consultation as ConsultationSettings};
  * @var AmendmentComment[] $myAmendmentComments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 $consultation = UrlHelper::getCurrentConsultation();
 

@@ -19,6 +19,7 @@ $controller = $this->context;
 $consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'activity_bc');
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 if ($motion) {
     $motionUrl = UrlHelper::createMotionUrl($motion);
@@ -29,7 +30,7 @@ if ($amendment) {
     $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);
 
     $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
-    $layout->addBreadcrumb($amendment->getFormattedTitlePrefix(), $amendmentUrl);
+    $layout->addBreadcrumb($amendment->getFormattedTitlePrefix() ?? '', $amendmentUrl);
 }
 if ($user || $userGroup) {
     $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));

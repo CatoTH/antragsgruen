@@ -10,6 +10,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\UserController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'no_noti_title');

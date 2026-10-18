@@ -26,8 +26,9 @@ $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestProposal()->canEditLimitedProposedProcedure());
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();

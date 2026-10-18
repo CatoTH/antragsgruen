@@ -9,13 +9,14 @@ use yii\helpers\Html;
  * @var Yii\web\View $this
  * @var Amendment $amendment
  * @var string $mode
- * @var \app\controllers\Base $controller
+ * @var \app\controllers\AmendmentController $controller
  */
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 $controller  = $this->context;
 $motion      = $amendment->getMyMotion();
 $motionType  = $amendment->getMyMotionType();
+/** @var \app\models\settings\Layout $layout */
 $layout      = $controller->layoutParams;
 
 if (!$motion->getMyMotionType()->amendmentsOnly) {
@@ -23,7 +24,7 @@ if (!$motion->getMyMotionType()->amendmentsOnly) {
 }
 if ($amendment->amendingAmendmentId) {
     $amendedAmendment = $amendment->amendedAmendment;
-    $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendedAmendment));
+    $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix() ?? '', UrlHelper::createAmendmentUrl($amendedAmendment));
 }
 $layout->addBreadcrumb($amendment->getFormattedTitlePrefix() ?? Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 

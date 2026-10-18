@@ -10,7 +10,7 @@ use app\models\db\{Amendment, ConsultationAgendaItem, Motion};
  * @var IMotionStatusFilter $filter
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 const agendaColor = '#fff2cc';
 const motionColor = '#38761d';
 $controller   = $this->context;

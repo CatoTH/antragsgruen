@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var \app\controllers\Base $controller
+ * @var \app\controllers\admin\MotionListController $controller
  * @var Yii\web\View $this
  * @var AdminMotionFilterForm $search
  * @var bool $hasProposedProcedures
@@ -16,6 +16,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $consultationSettings = $consultation->getSettings();
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $getExportLinkLi = function ($title, $route, $motionTypeIds, $cssClass) use ($search) {

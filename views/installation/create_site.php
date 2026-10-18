@@ -7,11 +7,12 @@ use yii\helpers\Html;
  * @var \app\models\forms\AntragsgruenInitSite $form
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
+/** @var \app\controllers\InstallationController $controller */
 $controller = $this->context;
 
 $this->title = Yii::t('manager', 'title_install');
 
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $layout->robotsNoindex = true;
 $layout->addCSS('css/formwizard.css');

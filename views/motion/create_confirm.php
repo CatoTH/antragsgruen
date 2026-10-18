@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var string $mode
- * @var \app\controllers\Base $controller
+ * @var \app\controllers\MotionController $controller
  * @var string|null $deleteDraftId
  */
 

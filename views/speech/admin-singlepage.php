@@ -13,6 +13,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manageSpeechPage';
 if ($queue->motion) {

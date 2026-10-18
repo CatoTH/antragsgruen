@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  * @var Motion[] $imotions
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

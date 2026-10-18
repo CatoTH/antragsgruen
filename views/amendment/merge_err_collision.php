@@ -11,8 +11,9 @@ use yii\helpers\Html;
  * @var Amendment[] $collidingAmendments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\AmendmentController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('amend', 'merge1_err_collision');

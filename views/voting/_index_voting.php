@@ -17,6 +17,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $consultation = $controller->consultation;
 $user = User::getCurrentUser();
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 // The voting endpoints authenticate by JWT, like the rest of the REST API
 $layout->provideJwt = true;

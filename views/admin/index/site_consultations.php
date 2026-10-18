@@ -12,8 +12,9 @@ use yii\helpers\{Html, Url};
  * @var SiteCreateForm $wizardModel
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = 'Veranstaltungen verwalten';

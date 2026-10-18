@@ -10,6 +10,7 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = str_replace('%QUERY%', $query, Yii::t('con', 'search_results_title'));

@@ -6,8 +6,9 @@
  * @var bool $policyWarning
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\UserController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'deleted_title');

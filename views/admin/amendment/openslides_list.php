@@ -8,7 +8,7 @@ use app\models\sectionTypes\SectionLanguageMode;
  * @var Amendment[] $amendments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\AmendmentController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

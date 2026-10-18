@@ -19,7 +19,7 @@ use yii\helpers\Html;
  * @var boolean $colDate
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
 $motionType = $entry->getMyMotionType();

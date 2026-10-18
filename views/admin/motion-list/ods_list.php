@@ -12,7 +12,7 @@ use CatoTH\HTML2OpenDocument\Spreadsheet;
  * @var bool $textCombined
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

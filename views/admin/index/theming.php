@@ -13,6 +13,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\admin\IndexController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $layout->addCSS('css/backend.css');
 $layout->addJS('js/jscolor.js');

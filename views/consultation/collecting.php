@@ -15,6 +15,7 @@ $controller = $this->context;
 $consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'collecting_bc');
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('con', 'collecting_bc'));
 

@@ -4,8 +4,9 @@
  * @var yii\web\View $this
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'cons_delete_done');

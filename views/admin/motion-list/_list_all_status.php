@@ -10,7 +10,7 @@ use yii\helpers\Html;
  * @var IMotion $entry
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
 $motionStatuses = $consultation->getStatuses()->getStatusNames();

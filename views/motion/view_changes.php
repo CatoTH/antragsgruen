@@ -12,8 +12,9 @@ use yii\helpers\Html;
  * @var \app\models\MotionSectionChanges[] $changes
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 if (!$newMotion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));

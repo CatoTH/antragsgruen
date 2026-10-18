@@ -9,8 +9,9 @@ use yii\helpers\Html;
  * @var Amendment $amendment
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\AmendmentController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $motion     = $amendment->getMyMotion();
 

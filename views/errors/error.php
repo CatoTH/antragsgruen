@@ -9,8 +9,9 @@ use yii\helpers\Html;
  * @var int $httpStatus
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
+/** @var \app\controllers\Base $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $layout->robotsNoindex = true;
 

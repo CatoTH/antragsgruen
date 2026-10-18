@@ -10,7 +10,7 @@
 use app\models\db\ConsultationText;
 use yii\helpers\Html;
 
-/** @var \app\controllers\ConsultationController $controller */
+/** @var \app\controllers\PagesController $controller */
 $controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
@@ -22,8 +22,9 @@ $params   = Yii::$app->params;
 $url      = parse_url(str_replace('<subdomain:[\w_-]+>', $consultation->site->subdomain, $params->domainSubdomain));
 $currHost = $url['host'];
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb($pageData->breadcrumb);
+$layout->addBreadcrumb($pageData->breadcrumb ?? '');
 
 if ($admin) {
     $layout->loadCKEditor();

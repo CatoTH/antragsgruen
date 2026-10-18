@@ -8,11 +8,12 @@ use yii\helpers\Html;
  * @var Yii\web\View $this
  * @var Amendment $amendment
  * @var string $mode
- * @var \app\controllers\Base $controller
+ * @var \app\controllers\AmendmentController $controller
  * @var string|null $deleteDraftId
  */
 
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $motion     = $amendment->getMyMotion();
 
@@ -23,7 +24,7 @@ if (!$motion->getMyMotionType()->amendmentsOnly) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
     if ($amendment->amendingAmendmentId) {
         $amendedAmendment = $amendment->amendedAmendment;
-        $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix(), UrlHelper::createAmendmentUrl($amendedAmendment));
+        $layout->addBreadcrumb($amendedAmendment->getFormattedTitlePrefix() ?? '', UrlHelper::createAmendmentUrl($amendedAmendment));
     }
     $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 } else {
