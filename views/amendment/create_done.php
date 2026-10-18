@@ -66,7 +66,7 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
 echo '</div>';
 
 if ($motionType->amendmentsOnly) {
-    $backUrl = UrlHelper::homeUrl();
+    $backUrl = UrlHelper::consultationHomeUrl();
 } else {
     $backUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
     if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED &&

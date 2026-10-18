@@ -27,7 +27,7 @@ foreach ($amendments as $data) {
     foreach ($data['amendments'] as $amendment) {
         echo '<li>';
         $url = UrlHelper::createAmendmentUrl($amendment, 'pdf');
-        echo Html::a($amendment->titlePrefix, $url, ['class' => 'amendment' . $amendment->id]);
+        echo Html::a($amendment->titlePrefix ?? '-', $url, ['class' => 'amendment' . $amendment->id]);
         echo '</li>';
     }
     echo '</ul>';
