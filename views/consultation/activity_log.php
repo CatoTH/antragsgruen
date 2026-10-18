@@ -19,6 +19,7 @@ $controller = $this->context;
 $consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'activity_bc');
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 if ($motion) {
     $motionUrl = UrlHelper::createMotionUrl($motion);

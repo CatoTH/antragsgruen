@@ -10,7 +10,7 @@
 use app\models\db\ConsultationText;
 use yii\helpers\Html;
 
-/** @var \app\controllers\ConsultationController $controller */
+/** @var \app\controllers\PagesController $controller */
 $controller = $this->context;
 
 $this->title = Yii::t('pages', 'list_title');

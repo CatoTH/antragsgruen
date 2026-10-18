@@ -12,8 +12,9 @@ use yii\helpers\Html;
  * @var AdminMotionFilterForm $search
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $consultation = $controller->consultation;
 

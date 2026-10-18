@@ -12,7 +12,7 @@ use yii\helpers\Html;
  * @var string $type
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\AdminBase $controller */
 $controller = $this->context;
 
 $idBase = $type . $imotion->id;

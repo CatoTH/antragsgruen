@@ -21,10 +21,11 @@ use yii\helpers\Html;
  * @var ConsultationMotionType $motionType
  */
 
-/** @var app\controllers\Base $controller */
+/** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
 
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 $layout->loadDatepicker();
 

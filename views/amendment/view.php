@@ -23,8 +23,9 @@ $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedProposedProcedure());
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\AmendmentController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();

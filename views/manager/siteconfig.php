@@ -13,6 +13,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\ManagerController $controller */
 $controller  = $this->context;
 $this->title = Yii::t('manager', 'title_install');
+/** @var \app\models\settings\Layout $layout */
 $layout      = $controller->layoutParams;
 
 ?>

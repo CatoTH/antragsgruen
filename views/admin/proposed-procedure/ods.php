@@ -14,7 +14,7 @@ use yii\helpers\Html;
  * @var bool $onlyPublic
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\ProposedProcedureController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

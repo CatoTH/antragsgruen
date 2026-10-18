@@ -13,8 +13,9 @@ use yii\helpers\Html;
  * @var Consultation $consultation
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
+/** @var \app\controllers\admin\AgendaController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');

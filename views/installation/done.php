@@ -14,8 +14,9 @@ use yii\helpers\Html;
 $controller  = $this->context;
 $this->title = Yii::t('manager', 'done_title');
 
-/** @var \app\controllers\admin\IndexController $controller */
+/** @var \app\controllers\InstallationController $controller */
 $controller            = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout                = $controller->layoutParams;
 $layout->robotsNoindex = true;
 

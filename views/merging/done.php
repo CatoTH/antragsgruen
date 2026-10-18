@@ -9,8 +9,9 @@ use yii\helpers\Html;
  * @var Motion $newMotion
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $layout->robotsNoindex = true;

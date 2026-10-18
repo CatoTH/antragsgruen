@@ -7,7 +7,7 @@ use app\models\db\ISupporter;
  * @var ISupporter[] $users
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 
 

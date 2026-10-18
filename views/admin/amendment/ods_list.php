@@ -11,7 +11,7 @@ use yii\helpers\Html;
  * @var array<array{motion: Motion, amendments: Amendment[]}> $amendments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\AmendmentController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

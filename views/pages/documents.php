@@ -4,7 +4,7 @@
  * @var yii\web\View $this
  */
 
-/** @var \app\controllers\ConsultationController $controller */
+/** @var \app\controllers\PagesController $controller */
 
 use app\components\HTMLTools;
 use app\components\UrlHelper;
@@ -13,6 +13,7 @@ use app\models\db\{ConsultationFileGroup, ConsultationText, User};
 use yii\helpers\Html;
 
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 $consultation = $controller->consultation;
 $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);

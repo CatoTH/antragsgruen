@@ -13,9 +13,10 @@ use yii\helpers\Html;
  * @var bool $globalUserAdmin
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\UsersController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'users_head');

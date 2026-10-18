@@ -7,8 +7,9 @@ use yii\helpers\Html;
  * @var \app\models\AdminTodoItem[] $todo
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'todo_title');

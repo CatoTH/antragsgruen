@@ -11,9 +11,10 @@ use yii\helpers\Html;
  * @var Draft $draft
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->robotsNoindex = true;

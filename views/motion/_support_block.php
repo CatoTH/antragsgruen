@@ -10,9 +10,10 @@ use yii\helpers\Html;
 /**
  * @var User|null $user
  * @var SupportBase $supportType
- * @var \app\controllers\UserController $controller
+ * @var \app\controllers\Base $controller
  */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $nameReadOnly  = ($user && ($user->fixedData & User::FIXED_NAME) ? 'readonly' : '');

@@ -11,9 +11,10 @@ use yii\helpers\Html;
  * @var SpeechQueue $queue
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('speech', 'speaking_bc'));
 $user = User::getCurrentUser();

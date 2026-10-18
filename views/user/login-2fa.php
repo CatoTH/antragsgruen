@@ -11,6 +11,7 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\UserController $controller */
 $controller = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout     = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'login_title');

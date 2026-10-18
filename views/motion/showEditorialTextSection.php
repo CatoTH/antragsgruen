@@ -18,7 +18,7 @@ $metadataView .= $sectionType->getFormattedSectionMetadata(true);
 $metadataView .= '</div>';
 
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_EDITORIAL, PrivilegeQueryContext::motion($motion))) {
-    /** @var \app\controllers\MotionController $controller */
+    /** @var \app\controllers\Base $controller */
     $controller = $this->context;
     $controller->layoutParams->loadCKEditor();
     $metadata = $sectionType->getSectionMetadata();

@@ -8,7 +8,7 @@ use app\models\sectionTypes\SectionLanguageMode;
  * @var Motion[] $motions
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\MotionListController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

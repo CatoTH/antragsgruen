@@ -11,7 +11,7 @@ use app\models\policies\IPolicy;
 use app\models\db\{ConsultationText, User};
 use yii\helpers\Html;
 
-/** @var \app\controllers\ConsultationController $controller */
+/** @var \app\controllers\Base $controller */
 $controller = $this->context;
 
 $consultation = UrlHelper::getCurrentConsultation();
@@ -21,6 +21,7 @@ $saveUrl      = $pageData->getSaveUrl();
 
 $this->title = $pageData->title ?: $pageData->textId;
 
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 if (!in_array($controller->action->id, ['home', 'index'])) {
     $layout->addBreadcrumb($pageData->breadcrumb ?: $pageData->textId);

@@ -13,8 +13,9 @@ use yii\helpers\Html;
  * @var Amendment[] $amendments
  */
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller  = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout      = $controller->layoutParams;
 
 $this->title           = str_replace('%NAME%', $motion->getTitleWithPrefix(), Yii::t('amend', 'merge_init_title'));

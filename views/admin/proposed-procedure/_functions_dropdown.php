@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use app\models\settings\Privileges;
 use yii\helpers\Html;
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\admin\ProposedProcedureController $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
 

@@ -13,8 +13,9 @@ use yii\helpers\Html;
  * @var bool $minimal
  */
 
-/** @var \app\controllers\ConsultationController $controller */
+/** @var \app\controllers\admin\ProposedProcedureController $controller */
 $controller         = $this->context;
+/** @var \app\models\settings\Layout $layout */
 $layout             = $controller->layoutParams;
 $layout->fullWidth  = true;
 $layout->fullScreen = true;

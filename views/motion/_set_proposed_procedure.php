@@ -12,9 +12,10 @@ use app\components\UrlHelper;
 use app\models\db\{Motion, MotionProposal};
 use yii\helpers\Html;
 
-/** @var \app\controllers\Base $controller */
+/** @var \app\controllers\MotionController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
+/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $isLatestVersion = ($proposal->id === $motion->getLatestProposal()->id);
