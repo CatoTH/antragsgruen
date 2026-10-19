@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Amendment, AmendmentSection, Consultation, IMotion, ISupporter, IVotingItem, Motion, MotionSection, Site, User, VotingBlock};
+use app\models\db\{Amendment, AmendmentSection, Consultation, IMotion, ISupporter, IVotingItem, Motion, MotionSection, Site, SpeechQueue, User, VotingBlock};
 use app\components\LoginProviderInterface;
 use app\controllers\Base;
 use app\models\AdminTodoItem;
@@ -198,6 +198,14 @@ class ModuleBase extends Module
      * @return class-string<\app\models\settings\Site>|null
      */
     public static function getSiteSettingsClass(Site $site): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @return class-string<\app\models\settings\SpeechQueue>|null
+     */
+    public static function getSpeechQueueSettingsClass(SpeechQueue $queue): ?string
     {
         return null;
     }

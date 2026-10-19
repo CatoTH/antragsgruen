@@ -100,7 +100,14 @@ class SpeechQueue extends ActiveRecord
     public function getSettings(): SpeechQueueSettings
     {
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new SpeechQueueSettings($this->settings);
+            $settingsClass = SpeechQueueSettings::class;
+            foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
+                if ($pluginClass::getSpeechQueueSettingsClass($this)) {
+                    $settingsClass = $pluginClass::getSpeechQueueSettingsClass($this);
+                }
+            }
+
+            $this->settingsObject = new $settingsClass($this->settings);
         }
 
         return $this->settingsObject;
