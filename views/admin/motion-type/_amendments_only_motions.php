@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var ConsultationMotionType $motionType

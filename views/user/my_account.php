@@ -4,7 +4,7 @@ use app\components\ConsultationAccess;
 use app\components\UrlHelper;
 use app\models\db\User;
 use OTPHP\TOTP;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

@@ -9,7 +9,7 @@
 use app\components\UrlHelper;
 use app\models\policies\IPolicy;
 use app\models\db\{ConsultationText, User};
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;

@@ -3,7 +3,7 @@
 namespace app\components;
 
 use app\models\db\{Amendment, AmendmentComment, Consultation, IComment, IMotion, Motion, MotionComment, Site};
-use app\models\exceptions\{FormError, Internal};
+use app\models\exceptions\{FormError, Internal, Login};
 use app\models\settings\AntragsgruenApp;
 use Yii;
 use yii\helpers\Url;
@@ -143,39 +143,48 @@ class UrlHelper
         }
     }
 
-    public static function homeUrl(): ?string
+    public static function consultationHomeUrl(): string
     {
-        if (self::$currentConsultation) {
-            $consultation = self::$currentConsultation;
-            $homeOverride = false;
-            $preferConsultation = false;
-            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-                if ($plugin::hasSiteHomePage()) {
-                    $homeOverride = true;
-                }
-                if ($plugin::preferConsultationSpecificHomeLink()) {
-                    $preferConsultation = true;
-                }
-            }
-            if ($preferConsultation) {
-                $homeUrl = self::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
-            } elseif ($consultation->site->currentConsultationId === $consultation->id || $homeOverride) {
-                $homeUrl = self::createUrl('/consultation/home');
-            } else {
-                $homeUrl = self::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
-            }
+        $consultation = self::$currentConsultation;
+        if (!$consultation) {
+            throw new Internal('consultationHomeUrl called without consultation');
+        }
 
-            if (self::$currentConsultation->getSettings()->forceMotion) {
-                $forceMotion = self::$currentConsultation->getSettings()->forceMotion;
-                $motion      = self::$currentConsultation->getMotion($forceMotion);
-                if ($motion) {
-                    return self::createMotionUrl($motion);
-                } else {
-                    return $homeUrl;
-                }
+        $homeOverride = false;
+        $preferConsultation = false;
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            if ($plugin::hasSiteHomePage()) {
+                $homeOverride = true;
+            }
+            if ($plugin::preferConsultationSpecificHomeLink()) {
+                $preferConsultation = true;
+            }
+        }
+        if ($preferConsultation) {
+            $homeUrl = self::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
+        } elseif ($consultation->site->currentConsultationId === $consultation->id || $homeOverride) {
+            $homeUrl = self::createUrl('/consultation/home');
+        } else {
+            $homeUrl = self::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
+        }
+
+        if ($consultation->getSettings()->forceMotion) {
+            $forceMotion = $consultation->getSettings()->forceMotion;
+            $motion      = $consultation->getMotion($forceMotion);
+            if ($motion) {
+                return self::createMotionUrl($motion);
             } else {
                 return $homeUrl;
             }
+        } else {
+            return $homeUrl;
+        }
+    }
+
+    public static function homeUrl(): ?string
+    {
+        if (self::$currentConsultation) {
+            return static::consultationHomeUrl();
         } else {
             foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
                 if ($pluginClass::getDefaultRouteOverride()) {

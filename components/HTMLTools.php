@@ -5,7 +5,6 @@ namespace app\components;
 use app\models\db\{Amendment, IMotionSection};
 use app\models\SectionedParagraph;
 use app\models\exceptions\{FormError, Internal};
-use yii\helpers\Html;
 
 class HTMLTools
 {

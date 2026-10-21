@@ -1,9 +1,8 @@
     <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\Motion;
 use app\models\settings\Layout;
-use yii\helpers\Html;
 
 /**
  * @var bool $reducedNavigation

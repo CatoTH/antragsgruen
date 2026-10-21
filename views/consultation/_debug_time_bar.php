@@ -1,7 +1,6 @@
 <?php
 
-use app\components\{DateTools, Tools, UrlHelper};
-use Yii\helpers\Html;
+use app\components\{Html, DateTools, Tools, UrlHelper};
 
 /**
  * @var \app\models\db\Consultation $consultation

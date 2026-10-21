@@ -2,7 +2,7 @@
 
 use app\models\db\{Amendment, IMotion, Motion};
 use app\models\proposedProcedure\Agenda;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Agenda[] $proposedAgenda

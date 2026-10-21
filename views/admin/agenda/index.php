@@ -6,7 +6,7 @@ use app\components\Tools;
 use app\models\db\{ConsultationMotionType, Consultation};
 use app\models\settings\Consultation as ConsultationSettings;
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this

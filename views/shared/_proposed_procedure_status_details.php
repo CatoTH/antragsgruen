@@ -2,7 +2,7 @@
 
 use app\components\IMotionStatusFilter;
 use app\models\db\{Amendment, IMotion, IProposal, Motion};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var IMotion $imotion

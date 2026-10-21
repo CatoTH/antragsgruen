@@ -5,11 +5,10 @@ namespace app\models\notifications;
 use app\components\mail\Tools as MailTools;
 use app\models\exceptions\ServerConfiguration;
 use app\models\layoutHooks\Layout;
-use app\components\{HTMLTools, RequestContext, UrlHelper};
+use app\components\{Html, HTMLTools, RequestContext, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, EMailLog, ISupporter, UserNotification};
 use app\models\exceptions\MailNotSent;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
 
 class AmendmentPublished
 {

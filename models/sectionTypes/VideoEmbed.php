@@ -2,11 +2,10 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\{html2pdf\Content as HtmlToPdfContent, HTMLTools, latex\Content as LatexContent, latex\Exporter};
+use app\components\{Html, html2pdf\Content as HtmlToPdfContent, HTMLTools, latex\Content as LatexContent, latex\Exporter};
 use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class VideoEmbed extends ISectionType

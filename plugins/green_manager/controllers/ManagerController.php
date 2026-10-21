@@ -13,7 +13,7 @@ use app\models\db\{Consultation, ConsultationText, Site, User};
 use app\models\exceptions\{FormError, LoginInvalidUser};
 use app\models\forms\{LoginUsernamePasswordForm, SiteCreateForm};
 use app\plugins\green_manager\Module;
-use yii\helpers\Html;
+use app\components\Html;
 use yii\web\Response;
 
 class ManagerController extends Base

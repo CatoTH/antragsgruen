@@ -1,7 +1,6 @@
 <?php
 
-use app\components\{DebateTools, LiveDataChannels};
-use yii\helpers\Html;
+use app\components\{Html, DebateTools, LiveDataChannels};
 
 /**
  * @var \yii\web\View $this

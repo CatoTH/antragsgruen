@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{LiveDataChannels, Tools, UrlHelper};
+use app\components\{Html, LiveDataChannels, Tools, UrlHelper};
 use app\models\api\speech\SpeechQueueAdmin;
 use app\models\db\SpeechQueue;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this

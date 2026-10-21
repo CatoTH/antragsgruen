@@ -1,7 +1,7 @@
 <?php
 
 use app\models\db\{AmendmentComment, MotionComment};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var MotionComment[] $myMotionComments

@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\views\pdfLayouts\IPDFLayout;
-use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View

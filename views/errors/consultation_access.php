@@ -1,5 +1,7 @@
 <?php
 
+use app\components\Html;
+
 /**
  * @var yii\web\View $this
  * @var bool $askForPermission
@@ -12,9 +14,7 @@ $controller            = $this->context;
 $layout                = $controller->layoutParams;
 $layout->robotsNoindex = true;
 $this->title           = Yii::t('user', 'access_denied_title');
-
-
-use yii\helpers\Html; ?>
+?>
 <h1><?= Yii::t('user', 'access_denied_title') ?></h1>
 
 <div class="content">

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\views\pdfLayouts;
 
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * Landscape PDF showing the motion text on the left and the changes of all amendments on the right side.

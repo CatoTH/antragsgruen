@@ -8,7 +8,7 @@ use app\components\html2pdf\Content as HtmlToPdfContent;
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{ConsultationSettingsMotionSection, Consultation};
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\helpers\Html;
+use app\components\Html;
 use \CatoTH\HTML2OpenDocument\Text;
 
 class Choice extends ISectionType

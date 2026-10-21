@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\{Draft, Init};
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this

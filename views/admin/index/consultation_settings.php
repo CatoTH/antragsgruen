@@ -7,9 +7,8 @@
  */
 
 use app\models\settings\{AntragsgruenApp, Privileges, Site as SiteSettings, Consultation as ConsultationSettings};
-use app\components\{HTMLTools, UrlHelper, yii\MessageSource};
+use app\components\{Html, HTMLTools, UrlHelper, yii\MessageSource};
 use app\models\db\{Consultation, Motion, User};
-use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;

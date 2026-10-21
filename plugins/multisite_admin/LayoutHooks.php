@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace app\plugins\multisite_admin;
 
-use app\components\{RequestContext, UrlHelper};
+use app\components\{Html, RequestContext, UrlHelper};
 use app\controllers\Base;
 use app\models\db\{User};
 use app\models\layoutHooks\Hooks;
-use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {

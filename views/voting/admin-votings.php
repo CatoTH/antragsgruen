@@ -2,12 +2,11 @@
 
 use app\models\layoutHooks\Layout;
 use app\models\policies\IPolicy;
-use app\components\{HTMLTools, LiveDataChannels, UrlHelper, VotingAdminWidgetData};
+use app\components\{Html, HTMLTools, LiveDataChannels, UrlHelper, VotingAdminWidgetData};
 use app\models\db\User;
 use app\models\majorityType\IMajorityType;
 use app\models\proposedProcedure\Factory;
 use app\models\votings\AnswerTemplates;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this

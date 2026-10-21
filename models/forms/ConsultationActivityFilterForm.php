@@ -4,7 +4,7 @@ namespace app\models\forms;
 
 use app\components\UrlHelper;
 use app\models\db\{Consultation, ConsultationLog};
-use yii\helpers\Html;
+use app\components\Html;
 
 class ConsultationActivityFilterForm
 {

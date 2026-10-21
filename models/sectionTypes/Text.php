@@ -4,7 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\models\db\AmendmentSection;
-use yii\helpers\Html;
+use app\components\Html;
 
 abstract class Text extends ISectionType
 {

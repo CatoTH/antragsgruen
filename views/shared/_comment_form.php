@@ -3,7 +3,7 @@
 use app\components\AntiSpam;
 use app\models\db\{Consultation, IComment, User, UserNotification};
 use app\models\forms\CommentForm;
-use Yii\Helpers\Html;
+use app\components\Html;
 
 /**
  * @var int $paragraphNo

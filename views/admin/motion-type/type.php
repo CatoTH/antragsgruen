@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{HTMLTools, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, Tools, UrlHelper};
 use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection};
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this

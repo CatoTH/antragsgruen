@@ -3,13 +3,12 @@
 namespace app\models\sectionTypes;
 
 use app\models\exceptions\Internal;
-use app\components\{latex\Content as LatexContent, html2pdf\Content as HtmlToPdfContent, Tools, UrlHelper};
+use app\components\{Html, latex\Content as LatexContent, html2pdf\Content as HtmlToPdfContent, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationSettingsMotionSection, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use Com\Tecnick\Pdf\Import\ImportException;
-use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 
 class PDF extends ISectionType

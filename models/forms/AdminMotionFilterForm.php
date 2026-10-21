@@ -8,9 +8,8 @@ use app\models\AdminTodoItem;
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
 use app\models\exceptions\{ExceptionBase, ResponseException};
 use app\models\http\HtmlErrorResponse;
-use app\components\{IMotionSorter, IMotionStatusFilter, RequestContext, UrlHelper};
+use app\components\{Html, IMotionSorter, IMotionStatusFilter, RequestContext, UrlHelper};
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionSupporter, User};
-use yii\helpers\Html;
 
 class AdminMotionFilterForm
 {

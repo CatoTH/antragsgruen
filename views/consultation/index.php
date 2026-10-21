@@ -1,9 +1,8 @@
 <?php
 
 use app\models\db\{Amendment, AmendmentComment, AmendmentSupporter, Consultation, Motion, MotionComment, MotionSupporter, User};
-use app\components\{HashedStaticCache, MotionSorter, UrlHelper};
+use app\components\{Html, HashedStaticCache, MotionSorter, UrlHelper};
 use app\models\settings\{Privileges, Consultation as ConsultationSettings};
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this

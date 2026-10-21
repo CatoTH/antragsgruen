@@ -5,10 +5,9 @@ namespace app\models\notifications;
 use app\models\exceptions\ServerConfiguration;
 use app\models\layoutHooks\Layout;
 use app\models\db\{Consultation, EMailLog, ISupporter, Motion};
-use app\components\{mail\Tools as MailTools, HTMLTools, RequestContext, UrlHelper};
+use app\components\{Html, mail\Tools as MailTools, HTMLTools, RequestContext, UrlHelper};
 use app\models\exceptions\MailNotSent;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
 
 class MotionPublished
 {

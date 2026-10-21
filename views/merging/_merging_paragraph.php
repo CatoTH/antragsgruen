@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var MotionSection $section

@@ -5,9 +5,8 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
-use app\components\{IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
+use app\components\{Html, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Motion};
-use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;

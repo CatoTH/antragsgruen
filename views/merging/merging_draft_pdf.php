@@ -9,7 +9,7 @@ use app\models\db\Motion;
 use app\models\mergeAmendments\Draft;
 use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\BDK;
-use yii\helpers\Html;
+use app\components\Html;
 
 $pdfLayout = new BDK($motion->getMyMotionType());
 /** @var \app\views\pdfLayouts\BDKPDF $pdf */

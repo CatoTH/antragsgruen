@@ -13,7 +13,7 @@ use app\models\notifications\{MotionPublished,
     MotionCreated as MotionCreatedNotification,
     MotionWithdrawn as MotionWithdrawnNotification,
     MotionEdited as MotionEditedNotification};
-use app\components\{HashedStaticCache, IMotionStatusFilter, LanguageTools, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
+use app\components\{Html, HashedStaticCache, IMotionStatusFilter, LanguageTools, MotionSorter, RequestContext, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{Access, FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
@@ -22,7 +22,6 @@ use app\models\sectionTypes\{Image, ISectionType, PDF, SectionLanguageMode};
 use app\models\supportTypes\SupportBase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use yii\db\ActiveQuery;
-use yii\helpers\Html;
 
 /**
  * @property int|null $id

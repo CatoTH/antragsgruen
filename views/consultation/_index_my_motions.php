@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\{Amendment, Consultation, IMotion, AmendmentSupporter, Motion, MotionSupporter, User};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var User $myself

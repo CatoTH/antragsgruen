@@ -3,13 +3,12 @@
 namespace app\controllers;
 
 use app\models\http\{HtmlErrorResponse, HtmlResponse, JsonResponse, RedirectResponse, ResponseInterface};
-use app\components\{Captcha, ConsultationAccessPassword, JwtCreator, LanguageTools, RequestContext, SecondFactorAuthentication, Tools, UrlHelper};
+use app\components\{Html, Captcha, ConsultationAccessPassword, JwtCreator, LanguageTools, RequestContext, SecondFactorAuthentication, Tools, UrlHelper};
 use app\models\db\{AmendmentSupporter, EMailBlocklist, FailedLoginAttempt, MotionSupporter, User, UserConsultationScreening, UserNotification};
 use app\models\events\UserEvent;
 use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent, ServerConfiguration};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Html;
 use yii\web\Response;
 
 class UserController extends Base

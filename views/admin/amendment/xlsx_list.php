@@ -6,7 +6,7 @@ use app\models\sectionTypes\{ISectionType, SectionLanguageMode, TextSimpleCommon
 use app\models\supportTypes\SupportBase;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

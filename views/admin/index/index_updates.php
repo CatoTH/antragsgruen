@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 try {
     $updates = \app\components\updater\UpdateChecker::getAvailableUpdates();

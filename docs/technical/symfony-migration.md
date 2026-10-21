@@ -41,7 +41,7 @@ The A steps are independent of each other and can be done in any order, alongsid
 |---|---|---|
 | A0 | Remove the `conflict` caps on `symfony/*` <7, `psr/cache` <3 and `webmozart/assert` <2 in `composer.json`, then move to 7.4 | simple–medium |
 | A1 | Move console commands (`commands/`, 12 files) to `symfony/console`. Migrations stay on `./yii migrate` | simple |
-| A2 | Replace `yii\helpers\Html` / `Url` with `app\components\Html`, a copied subset with configurable CSRF handling | simple, touches many files |
+| A2 | Replace `yii\helpers\Html` with `app\components\Html`, our own implementation of the methods we use. CSRF token and current URL come from `RequestContext`. **Done.** `yii\helpers\Url` (5 uses) and `ArrayHelper` (5 uses) are still left | simple, touches many files |
 | A3 | Replace the remaining direct `Yii::$app` calls with `RequestContext` or services. `Yii::$app->end()` becomes a thrown response | simple–medium |
 | A4 | `models/http/*` builds `Symfony\Component\HttpFoundation\Response` objects; the Yii adapter only passes them through. Convert the remaining `void`/`string` actions | medium |
 | A5 | Free views from `yii\web\View`: explicit `$controller` / `$layout` variables and our own `ViewRenderer` (D4) | medium–large |

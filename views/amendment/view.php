@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use app\models\db\{Amendment, User};
 use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this

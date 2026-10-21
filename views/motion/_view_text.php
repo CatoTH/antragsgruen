@@ -5,7 +5,7 @@ use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\views\motion\LayoutHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Motion $motion

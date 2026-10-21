@@ -11,7 +11,7 @@ use app\models\db\ISupporter;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
+use app\components\Html;
 
 class AmendmentCreated extends Base implements IEmailAdmin
 {

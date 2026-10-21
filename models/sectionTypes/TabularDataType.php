@@ -5,7 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\Tools;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\exceptions\Internal;
-use yii\helpers\Html;
+use app\components\Html;
 
 class TabularDataType implements \JsonSerializable
 {

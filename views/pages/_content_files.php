@@ -1,7 +1,7 @@
 <?php
 
 use app\models\db\ConsultationFile;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var ConsultationFile[] $files

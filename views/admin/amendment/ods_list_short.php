@@ -4,7 +4,7 @@ use app\components\HTMLTools;
 use app\models\db\{Amendment, Motion};
 use app\models\sectionTypes\SectionLanguageMode;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{IMotionStatusFilter, MotionSorter, UrlHelper};
+use app\components\{Html, IMotionStatusFilter, MotionSorter, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, User};
 use app\models\settings\{Layout, Consultation as ConsultationSettings, Privileges};
 use app\views\consultation\LayoutHelper;
-use yii\helpers\Html;
 
 /**
  * @var Consultation $consultation

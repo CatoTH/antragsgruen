@@ -10,8 +10,7 @@
  * @var bool $showInvisible
  */
 
-use app\components\{Tools, UrlHelper};
-use yii\helpers\Html;
+use app\components\{Html, Tools, UrlHelper};
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;

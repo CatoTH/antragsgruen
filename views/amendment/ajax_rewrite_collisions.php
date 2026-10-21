@@ -8,7 +8,7 @@
 
 use app\components\HTMLTools;
 use app\components\Tools;
-use yii\helpers\Html;
+use app\components\Html;
 
 if (count($collisions) == 0) {
     echo '<div class="content">';

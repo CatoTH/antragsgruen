@@ -5,7 +5,7 @@ use app\components\UrlHelper;
 use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \yii\web\View $this

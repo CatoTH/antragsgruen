@@ -1,7 +1,8 @@
 <?php
 
 use app\models\forms\SiteCreateForm;
-use yii\helpers\{Html, Url};
+use app\components\Html;
+use yii\helpers\Url;
 
 /**
  * @var Yii\web\View $this

@@ -1,8 +1,7 @@
 <?php
 
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\ConsultationMotionType;
-use yii\helpers\Html;
 
 /**
  * @var ConsultationMotionType $motionType

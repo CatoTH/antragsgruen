@@ -8,7 +8,7 @@
 
 use app\components\Tools;
 use app\models\db\{IMotion, IProposal};
-use yii\helpers\Html;
+use app\components\Html;
 
 $consultation = $imotion->getMyConsultation();
 ?>

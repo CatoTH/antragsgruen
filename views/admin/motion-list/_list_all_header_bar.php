@@ -10,8 +10,7 @@
 
 use app\models\forms\AdminMotionFilterForm;
 use app\models\settings\{Privileges, Consultation as ConsultationSettings};
-use app\components\{HTMLTools, UrlHelper};
-use yii\helpers\Html;
+use app\components\{Html, HTMLTools, UrlHelper};
 
 $controller = $this->context;
 $consultation = $controller->consultation;

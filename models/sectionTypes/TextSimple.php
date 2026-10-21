@@ -6,10 +6,9 @@ use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
 use app\models\SectionedParagraph;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use CatoTH\HTML2OpenDocument\Text as ODTText;
-use app\components\{HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LanguageTools, LineSplitter, RequestContext};
+use app\components\{Html, HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LanguageTools, LineSplitter, RequestContext};
 use app\models\db\{AmendmentSection, Consultation, ConsultationMotionType, MotionSection};
 use app\models\forms\CommentForm;
-use yii\helpers\Html;
 use yii\web\View;
 
 class TextSimple extends TextSimpleCommon

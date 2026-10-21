@@ -7,7 +7,7 @@ use app\models\db\MotionSection;
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\Consultation;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\helpers\Html;
+use app\components\Html;
 use \CatoTH\HTML2OpenDocument\Text;
 
 class TabularData extends ISectionType

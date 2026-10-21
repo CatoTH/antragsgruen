@@ -1,7 +1,7 @@
 <?php
 
 use app\models\sectionTypes\{ISectionType, TextSimple};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\MotionSectionChanges $change

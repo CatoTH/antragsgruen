@@ -7,7 +7,7 @@ namespace app\plugins\discourse;
 use app\models\db\{Amendment, Consultation, IMotion, Motion};
 use app\components\HTMLTools;
 use app\models\sectionTypes\SectionLanguageMode;
-use yii\helpers\Html;
+use app\components\Html;
 
 class Tools
 {

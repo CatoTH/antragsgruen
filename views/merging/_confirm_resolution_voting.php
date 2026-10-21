@@ -3,7 +3,7 @@
 use app\components\Tools;
 use app\models\db\Motion;
 use app\models\forms\MotionDeepCopy;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Motion $motion

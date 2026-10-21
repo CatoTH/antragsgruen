@@ -5,7 +5,7 @@ namespace app\components\diff\amendmentMerger;
 use app\components\diff\{DataTypes\DiffWord, DataTypes\GroupedParagraphData, DataTypes\ParagraphMergerWord, Diff, DiffRenderer};
 use app\components\UrlHelper;
 use app\models\db\Amendment;
-use yii\helpers\Html;
+use app\components\Html;
 
 class ParagraphMerger
 {

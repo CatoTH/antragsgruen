@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use app\models\db\UserConsultationScreening;
 use app\models\layoutHooks\Layout;
 use app\models\settings\Privilege;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

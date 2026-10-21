@@ -10,7 +10,7 @@ use app\components\HTMLTools;
 use app\models\db\{Amendment, AmendmentProposal, AmendmentSection};
 use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
-use yii\helpers\Html;
+use app\components\Html;
 
 $consultation = $amendment->getMyConsultation();
 $isAmendingOtherAmendment = ($amendment->getMyMotionType()->amendmentsOnly && $amendment->amendedAmendment);

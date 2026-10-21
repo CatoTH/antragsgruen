@@ -1,7 +1,7 @@
 <?php
 
 use app\components\HTMLTools;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var \app\models\db\Motion $motion

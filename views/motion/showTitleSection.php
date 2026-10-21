@@ -7,7 +7,7 @@
 
 use app\components\UrlHelper;
 use app\models\forms\CommentForm;
-use yii\helpers\Html;
+use app\components\Html;
 
 $motion         = $section->getMotion();
 $hasLineNumbers = $section->getSettings()->lineNumbers; // @TODO

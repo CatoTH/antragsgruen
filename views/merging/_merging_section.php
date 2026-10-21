@@ -8,7 +8,7 @@
  */
 
 use app\models\db\MotionSection;
-use yii\helpers\Html;
+use app\components\Html;
 
 $amendmentsById = [];
 foreach ($section->getMergingAmendingSections(false, true) as $sect) {

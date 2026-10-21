@@ -8,7 +8,7 @@
  */
 
 use app\models\db\MotionSection;
-use yii\helpers\Html;
+use app\components\Html;
 
 $type = $section->getSettings();
 

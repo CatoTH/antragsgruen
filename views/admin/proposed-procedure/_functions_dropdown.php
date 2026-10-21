@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\settings\Privileges;
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\admin\ProposedProcedureController $controller */
 $controller   = $this->context;

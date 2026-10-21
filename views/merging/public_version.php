@@ -3,7 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\mergeAmendments\Draft;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Yii\web\View $this

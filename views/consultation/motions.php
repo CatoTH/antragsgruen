@@ -1,7 +1,7 @@
 <?php
 
 use app\components\MotionSorter;
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;

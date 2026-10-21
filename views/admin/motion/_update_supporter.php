@@ -3,7 +3,7 @@
 use app\models\db\ISupporter;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var ISupporter[] $supporters

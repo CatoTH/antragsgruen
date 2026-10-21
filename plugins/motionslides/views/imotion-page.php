@@ -8,7 +8,7 @@
  */
 
 use app\components\Tools;
-use yii\helpers\Html;
+use app\components\Html;
 
 ?>
 <br>

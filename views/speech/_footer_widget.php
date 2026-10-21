@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{LiveDataChannels, UrlHelper};
+use app\components\{Html, LiveDataChannels, UrlHelper};
 use app\models\api\SpeechUser;
 use app\models\settings\Privileges;
 use app\models\db\User;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this

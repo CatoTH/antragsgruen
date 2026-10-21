@@ -7,7 +7,7 @@ use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\{Consultation, Site, User};
 use app\models\layoutHooks\Hooks;
-use yii\helpers\Html;
+use app\components\Html;
 
 class LayoutHooks extends Hooks
 {

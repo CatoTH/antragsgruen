@@ -3,7 +3,7 @@
 use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
 use app\views\pdfLayouts\IPDFLayout;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var ConsultationMotionType $motionType

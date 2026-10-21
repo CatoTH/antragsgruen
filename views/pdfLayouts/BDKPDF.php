@@ -2,7 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
-use yii\helpers\Html;
+use app\components\Html;
 
 class BDKPDF extends IPdfWriter
 {

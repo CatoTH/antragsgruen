@@ -1,7 +1,7 @@
 <?php
 
 use app\models\db\{Consultation, UserConsultationScreening};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

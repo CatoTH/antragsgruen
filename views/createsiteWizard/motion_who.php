@@ -1,6 +1,6 @@
 <?php
 use app\models\forms\SiteCreateForm;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var SiteCreateForm $model

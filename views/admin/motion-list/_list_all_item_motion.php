@@ -5,7 +5,7 @@ use app\components\UrlHelper;
 use app\models\AdminTodoItem;
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\db\{Motion, User};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

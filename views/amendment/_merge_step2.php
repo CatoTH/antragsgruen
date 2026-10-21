@@ -3,7 +3,7 @@
 use app\components\Diff\SingleAmendmentMergeViewParagraphData;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Amendment $amendment

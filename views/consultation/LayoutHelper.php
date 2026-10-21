@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace app\views\consultation;
 
-use app\components\{HashedStaticCache, HTMLTools, IMotionStatusFilter, LanguageTools, MotionSorter, Tools, UrlHelper};
+use app\components\{Html, HashedStaticCache, HTMLTools, IMotionStatusFilter, LanguageTools, MotionSorter, Tools, UrlHelper};
 use app\models\IMotionList;
 use app\models\settings\{AntragsgruenApp, Consultation as ConsultationSettings, Privileges};
 use app\models\db\{Amendment, AmendmentComment, Consultation, ConsultationAgendaItem, ConsultationSettingsTag, IComment, IMotion, Motion, MotionComment, User};
-use yii\helpers\Html;
 
 class LayoutHelper
 {

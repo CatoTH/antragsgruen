@@ -3,11 +3,10 @@
 namespace app\models\proposedProcedure;
 
 use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, IMotion, IProposal, VotingBlock};
-use app\components\{HashedStaticCache, LanguageTools};
+use app\components\{Html, HashedStaticCache, LanguageTools};
 use app\models\exceptions\Internal;
 use app\models\IMotionList;
 use app\models\sectionTypes\TextSimpleCommon;
-use yii\helpers\Html;
 
 class Agenda
 {

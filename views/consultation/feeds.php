@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\policies\Nobody;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

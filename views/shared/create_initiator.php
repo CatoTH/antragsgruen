@@ -1,10 +1,9 @@
 <?php
 
-use app\components\{RequestContext, Tools};
+use app\components\{Html, RequestContext, Tools};
 use app\models\db\{ConsultationMotionType, ISupporter};
 use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, InitiatorForm};
 use app\models\supportTypes\SupportBase;
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this

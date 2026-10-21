@@ -8,8 +8,7 @@
 
 use app\models\db\ConsultationMotionType;
 use app\models\forms\WordingOverridesForm;
-use app\components\{HTMLTools, yii\MessageSource, UrlHelper};
-use yii\helpers\Html;
+use app\components\{Html, HTMLTools, yii\MessageSource, UrlHelper};
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;

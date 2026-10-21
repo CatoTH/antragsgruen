@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace app\models\db;
 
-use app\components\{Tools, UrlHelper};
+use app\components\{Html, Tools, UrlHelper};
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\views\consultation\LayoutHelper;
 use yii\db\ActiveRecord;
-use yii\helpers\Html;
 
 /**
  * @property int|null $id

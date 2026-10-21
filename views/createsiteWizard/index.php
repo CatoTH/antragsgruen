@@ -6,7 +6,7 @@
  * @var \app\models\forms\SiteCreateForm $model
  */
 
-use yii\helpers\Html;
+use app\components\Html;
 
 $t = function ($string) {
     return Yii::t('wizard', $string);

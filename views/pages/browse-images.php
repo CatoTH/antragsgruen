@@ -4,7 +4,7 @@
  * @var string|null $msgError
  * @var string|null $msgSuccess
  */
-use yii\helpers\Html;
+use app\components\Html;
 ?><!DOCTYPE html>
 <html lang="en">
 <head>

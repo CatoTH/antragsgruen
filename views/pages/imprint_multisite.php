@@ -8,7 +8,7 @@
  */
 
 use app\models\db\ConsultationText;
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\PagesController $controller */
 $controller = $this->context;

@@ -1,7 +1,7 @@
 <?php
 
 use app\models\db\{Consultation, ConsultationSettingsTag};
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var int[] $tagIds

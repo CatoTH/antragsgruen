@@ -4,7 +4,7 @@ use app\components\updater\UpdateChecker;
 use app\components\UrlHelper;
 use app\models\db\User;
 use app\models\settings\Privileges;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var yii\web\View $this

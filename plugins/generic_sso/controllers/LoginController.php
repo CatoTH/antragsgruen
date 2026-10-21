@@ -8,7 +8,7 @@ use app\plugins\generic_sso\Module;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\settings\Site as SiteSettings;
-use yii\helpers\Html;
+use app\components\Html;
 
 class LoginController extends Base
 {

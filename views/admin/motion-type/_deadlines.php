@@ -1,9 +1,8 @@
 <?php
 
-use app\components\{DateTools, Tools, HTMLTools};
+use app\components\{Html, DateTools, Tools, HTMLTools};
 use app\models\db\ConsultationMotionType;
 use app\models\forms\DeadlineForm;
-use yii\helpers\Html;
 
 /**
  * @var ConsultationMotionType $motionType

@@ -11,7 +11,7 @@
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsTag;
 use app\models\policies\IPolicy;
-use yii\helpers\Html;
+use app\components\Html;
 
 /** @var \app\controllers\MotionController $controller */
 $controller = $this->context;

@@ -5,7 +5,7 @@ namespace app\plugins\gruene_ch_saml\controllers;
 use app\plugins\gruene_ch_saml\Module;
 use app\components\UrlHelper;
 use app\controllers\Base;
-use yii\helpers\Html;
+use app\components\Html;
 
 class LoginController extends Base
 {

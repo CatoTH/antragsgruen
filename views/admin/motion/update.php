@@ -1,9 +1,8 @@
 <?php
 
 use app\models\settings\{AntragsgruenApp, PrivilegeQueryContext, Privileges};
-use app\components\{HTMLTools, MotionSorter, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, MotionSorter, Tools, UrlHelper};
 use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter, User};
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this

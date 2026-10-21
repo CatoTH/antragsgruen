@@ -11,7 +11,7 @@ use app\models\exceptions\FormError;
 use app\models\settings\{AntragsgruenApp, InitiatorForm};
 use app\models\supportTypes\SupportBase;
 use yii\base\Model;
-use yii\helpers\Html;
+use app\components\Html;
 
 class SiteCreateForm extends Model
 {

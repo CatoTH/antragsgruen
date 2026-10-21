@@ -5,7 +5,7 @@ namespace app\views\speech;
 use app\components\IMotionStatusFilter;
 use app\components\UrlHelper;
 use app\models\db\{Amendment, Consultation, IMotion, Motion, SpeechQueue};
-use yii\helpers\Html;
+use app\components\Html;
 
 class LayoutHelper
 {

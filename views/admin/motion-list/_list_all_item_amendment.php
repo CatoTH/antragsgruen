@@ -1,9 +1,8 @@
 <?php
 
 use app\models\settings\{PrivilegeQueryContext, Privileges};
-use app\components\{HTMLTools, UrlHelper};
+use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, IMotion, Motion, User};
-use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this

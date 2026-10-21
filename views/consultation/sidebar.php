@@ -1,9 +1,8 @@
 <?php
 
 use app\models\policies\Nobody;
-use app\components\{HTMLTools, LanguageTools, Tools, UrlHelper};
+use app\components\{Html, HTMLTools, LanguageTools, Tools, UrlHelper};
 use app\models\db\{Amendment, ConsultationMotionType, Motion, VotingBlock};
-use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this

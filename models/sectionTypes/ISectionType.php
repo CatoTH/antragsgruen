@@ -10,7 +10,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use CatoTH\HTML2OpenDocument\Text;
-use yii\helpers\Html;
+use app\components\Html;
 
 abstract class ISectionType
 {

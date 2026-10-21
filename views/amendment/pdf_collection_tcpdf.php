@@ -1,7 +1,7 @@
 <?php
 
 use app\models\db\Amendment;
-use yii\helpers\Html;
+use app\components\Html;
 
 /**
  * @var Amendment[] $amendments
