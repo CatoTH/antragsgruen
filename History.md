@@ -6,6 +6,7 @@
 - Bugfix: Changing additional supporters for amendments was not possible in the admin view.
 - Bugfix: The separate deadline for amendments to amendments was not properly checked on the submission confirmation page.
 - Bugfix: Under rare circumstances, saving a modified proposed procedure failed.
+- Bugfix: On Apache (including the Docker image), URLs with a trailing slash like "/site/" were not found. They now redirect to the URL without the slash, as the nginx sample configuration already did.
 
 ## Version 4.18.0 (2026-10-11)
 

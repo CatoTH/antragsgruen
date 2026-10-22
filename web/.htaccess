@@ -1,4 +1,15 @@
 RewriteEngine on
+
+# Strip trailing slashes, as docs/nginx.sample.conf does: URL rules never end in "/",
+# so e.g. "/site/" would otherwise be a 404. Real directories keep their slash
+# (DirectorySlash would loop). Behind a TLS-terminating proxy, keep the redirect on https.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{HTTPS} =on [OR]
+RewriteCond %{HTTP:X-Forwarded-Proto} =https
+RewriteRule ^(.+)/$ https://%{HTTP_HOST}/$1 [R=301,L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
 # If a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
