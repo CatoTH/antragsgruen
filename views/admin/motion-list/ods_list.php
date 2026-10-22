@@ -7,14 +7,12 @@ use app\models\settings\Privileges;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var IMotion[] $imotions
  * @var bool $textCombined
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 $DEBUG = false;
 

@@ -5,7 +5,8 @@ use app\components\{Html, HashedStaticCache, MotionSorter, UrlHelper};
 use app\models\settings\{Privileges, Consultation as ConsultationSettings};
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Consultation $consultation
  * @var Motion[] $motions
  * @var User|null $myself
@@ -14,10 +15,6 @@ use app\models\settings\{Privileges, Consultation as ConsultationSettings};
  * @var HashedStaticCache $cache
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller               = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'consultationIndex';
 $this->title              = $consultation->title;
 
@@ -34,7 +31,7 @@ echo '<h1>' . Html::encode($consultation->title) . '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 if ($consultation->getSettings()->homepagePhasesWizard) {

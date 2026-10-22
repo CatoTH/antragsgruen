@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion $motion
  * @var MotionProposal $proposal
  * @var string $context
@@ -12,11 +14,6 @@ use app\components\UrlHelper;
 use app\models\db\{Motion, MotionProposal};
 use app\components\Html;
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $isLatestVersion = ($proposal->id === $motion->getLatestProposal()->id);
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');

@@ -6,14 +6,12 @@ use app\models\db\Site;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
- * @var \app\controllers\Base $controller
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $sites
  * @var bool $showAll
  */
 
-$controller = $this->context;
-$layout = $controller->layoutParams;
 
 $sitesCurrent = [];
 foreach ($sites as $site) {

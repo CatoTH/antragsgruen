@@ -5,7 +5,7 @@ declare(strict_types=1);
 use app\components\{Html, Captcha, UrlHelper};
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
  * @var string $errors
  * @var string $prefillCode
  * @var string $backUrl

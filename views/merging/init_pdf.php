@@ -5,7 +5,7 @@ use app\views\pdfLayouts\BDK;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var Motion $motion
  * @var Amendment[] $amendments
  * @var int[] $activated

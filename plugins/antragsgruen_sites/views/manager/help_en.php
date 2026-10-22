@@ -2,18 +2,17 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün - The Online Motion Administration';
-/** @var \app\controllers\Base $controller */
-$controller  = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://motion.tools/help';
-$controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
-$controller->layoutParams->addBreadcrumb('Home', '/');
-$controller->layoutParams->addBreadcrumb('Help');
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl      = 'https://motion.tools/help';
+$layout->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
+$layout->addBreadcrumb('Home', '/');
+$layout->addBreadcrumb('Help');
 
 ?>
 <h1>Antragsgrün / Motion.Tools<br>

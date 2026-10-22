@@ -5,7 +5,8 @@ use app\components\UrlHelper;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\forms\AntragsgruenInitDb $form
  * @var string $delInstallFileCmd
  * @var bool $installFileDeletable
@@ -15,13 +16,8 @@ use app\components\Html;
  */
 
 
-$controller  = $this->context;
 $this->title = Yii::t('manager', 'title_install');
 
-/** @var \app\controllers\InstallationController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $layout->robotsNoindex = true;
 $layout->addCSS('css/manager.css');
 
@@ -35,7 +31,7 @@ Yii::$app->urlManager->enablePrettyUrl = $prettyBefore;
 echo '<h1>' . Yii::t('manager', 'title_install') . '</h1>';
 
 echo '<div class="content">';
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 if (!$editable) {
     echo '<div class="alert alert-danger">';

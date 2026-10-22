@@ -5,7 +5,9 @@ use app\models\db\{Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion $motion
  * @var \app\models\db\MotionProposal $proposal
  * @var \app\models\forms\ProposedChangeForm $form
@@ -13,11 +15,6 @@ use app\models\sectionTypes\ISectionType;
  * @var null|string $msgAlert
  */
 
-/** @var \app\controllers\MotionController $controller */
-$controller   = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
-$consultation = $controller->consultation;
 
 $this->title        = Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;

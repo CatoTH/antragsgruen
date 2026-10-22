@@ -5,17 +5,16 @@ use app\models\db\{Site, User};
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün - die grüne Online-Antragsverwaltung';
-/** @var \app\controllers\Base $controller */
-$controller  = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/';
-$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/'];
-$controller->layoutParams->addInlineCss('
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl      = 'https://antragsgruen.de/';
+$layout->alternateLanuages = ['en' => 'https://motion.tools/'];
+$layout->addInlineCss('
     .homeFigure { text-align: center; }
     .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; color: #4a4a4a; }
     .homeFigureAmendment img { max-width: 100%; }
@@ -43,7 +42,7 @@ $controller->layoutParams->addInlineCss('
 ?>
 <h1 id="antragsgruenTitle">Antragsgrün - das grüne Antragstool</h1>
 
-<?= $controller->layoutParams->getMiniMenu('sidebarSmall'); ?>
+<?= $layout->getMiniMenu('sidebarSmall'); ?>
 
 <section class="content infoSite" aria-labelledby="antragsgruenTitle">
     <p>

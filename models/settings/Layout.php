@@ -3,12 +3,11 @@
 namespace app\models\settings;
 
 use app\components\{Html, LanguageTools, RequestContext, StaticResourceTools, yii\MessageSource, UrlHelper};
-use app\controllers\Base;
 use app\models\db\Consultation;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\{Hooks, StdHooks};
-use yii\base\Action;
-use yii\web\{AssetBundle, Controller, View};
+use app\components\view\View;
+use app\controllers\Base;
 
 class Layout
 {
@@ -49,16 +48,19 @@ class Layout
      */
     public array $liveDataChannels = [];
 
+    /** The route of the page being rendered, e.g. "consultation/home"; set right before the layout is rendered */
+    public ?string $route = null;
+
     protected ?Consultation $consultation = null;
 
     /**
      * @return string[][]
      */
-    public static function getCssLayouts(?View $view = null): array
+    public static function getCssLayouts(): array
     {
         $pluginLayouts = [];
         foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $pluginClass) {
-            foreach ($pluginClass::getProvidedLayouts($view) as $layoutId => $layout) {
+            foreach ($pluginClass::getProvidedLayouts() as $layoutId => $layout) {
                 $pluginLayouts['layout-plugin-' . $pluginId . '-' . $layoutId] = [
                     'id'      => 'layout-plugin-' . $pluginId . '-' . $layoutId,
                     'title'   => $layout['title'],
@@ -82,12 +84,12 @@ class Layout
     }
 
     /**
-     * @return array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}|null
+     * @return array{title: string, preview: string|null, bundle: class-string<\app\components\view\AssetBundle>, hooks?: class-string<Hooks>, odtTemplate?: string}|null
      */
     public static function getLayoutPluginDef(string $layout): ?array
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $plugin) {
-            foreach ($plugin::getProvidedLayouts(null) as $layoutId => $layoutDef) {
+            foreach ($plugin::getProvidedLayouts() as $layoutId => $layoutDef) {
                 if ($layout === 'layout-plugin-' . $pluginId . '-' . $layoutId) {
                     return $layoutDef;
                 }
@@ -147,9 +149,7 @@ class Layout
             throw new Internal('Plugin layout not found');
         }
 
-        /** @var AssetBundle $bundle */
-        $bundle = $layouts[$parts[3]]['bundle'];
-        $bundle::register($view);
+        $view->registerAssetBundle($layouts[$parts[3]]['bundle']);
     }
 
     public function setConsultation(Consultation $consultation): void
@@ -321,15 +321,16 @@ class Layout
         $this->addCSS('css/selectize.bootstrap3.css');
     }
 
-    /**
-     * @param View $view
-     * @param Controller<\app\components\yii\Application> $controller
-     */
-    public function registerPluginAssets(View $view, Controller $controller): void
+    public function setRoute(string $route): void
+    {
+        $this->route = $route;
+    }
+
+    public function registerPluginAssets(View $view): void
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            foreach ($pluginClass::getActiveAssetBundles($controller) as $assetBundle) {
-                $assetBundle::register($view);
+            foreach ($pluginClass::getActiveAssetBundles($this->route ?? '') as $assetBundle) {
+                $view->registerAssetBundle($assetBundle);
             }
         }
     }
@@ -395,10 +396,7 @@ class Layout
         }
     }
 
-    /**
-     * @param Action<Base> $action
-     */
-    protected function isRobotsIndexDefault(Action $action): bool
+    protected function isRobotsIndexDefault(string $route): bool
     {
         if (AntragsgruenApp::getInstance()->mode === 'sandbox') {
             return false;
@@ -422,7 +420,7 @@ class Layout
                 return false;
             case \app\models\settings\Consultation::ROBOTS_ONLY_HOME:
             default:
-                if ($action->controller->id === 'consultation' && $action->id === 'home') {
+                if ($route === 'consultation/home') {
                     return true;
                 } else {
                     return false;
@@ -430,14 +428,17 @@ class Layout
         }
     }
 
-    public function isRobotsIndex(?Action $action): bool
+    /**
+     * @param string|null $route The route of the page, e.g. "consultation/home"
+     */
+    public function isRobotsIndex(?string $route): bool
     {
-        if (!$action) {
+        if ($route === null) {
             return false;
         }
-        $visible = $this->isRobotsIndexDefault($action);
+        $visible = $this->isRobotsIndexDefault($route);
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
-            $override = $plugin::getRobotsIndexOverride($this->consultation, $action, $visible);
+            $override = $plugin::getRobotsIndexOverride($this->consultation, $route, $visible);
             if ($override !== null) {
                 $visible = $override;
             }

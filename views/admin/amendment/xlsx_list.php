@@ -9,13 +9,11 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var array<array{motion: Motion, amendments: Amendment[]}> $amendments
  */
 
-/** @var \app\controllers\admin\AmendmentController $controller */
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 $spreadsheet = new Spreadsheet();
 

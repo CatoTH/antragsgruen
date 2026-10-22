@@ -3,19 +3,18 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün: Änderungsanträge einreichen';
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://antragsgruen.de/help/amendments';
-$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help/amendments'];
-$controller->layoutParams->addBreadcrumb('Start', '/');
-$controller->layoutParams->addBreadcrumb('Hilfe', '/help');
-$controller->layoutParams->addBreadcrumb('Änderungsanträge');
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl = 'https://antragsgruen.de/help/amendments';
+$layout->alternateLanuages = ['en' => 'https://motion.tools/help/amendments'];
+$layout->addBreadcrumb('Start', '/');
+$layout->addBreadcrumb('Hilfe', '/help');
+$layout->addBreadcrumb('Änderungsanträge');
 
 $params = \app\models\settings\AntragsgruenApp::getInstance();
 

@@ -3,18 +3,15 @@
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\settings\AntragsgruenApp $config
  * @var bool $editable
  * @var string $makeEditabeCommand
  */
 
 
-/** @var \app\controllers\ManagerController $controller */
-$controller  = $this->context;
 $this->title = Yii::t('manager', 'title_install');
-/** @var \app\models\settings\Layout $layout */
-$layout      = $controller->layoutParams;
 
 ?>
     <h1><?= Yii::t('manager', 'title_install') ?></h1>
@@ -29,7 +26,7 @@ echo Html::beginForm('', 'post', [
 
 
 echo '<div class="content">';
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 if (!$editable) {
     echo '<div class="alert alert-danger">';

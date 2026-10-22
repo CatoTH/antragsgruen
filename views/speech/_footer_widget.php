@@ -6,7 +6,9 @@ use app\models\settings\Privileges;
 use app\models\db\User;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var \app\models\db\SpeechQueue $queue
  */
 
@@ -14,11 +16,6 @@ if (!$queue) {
     return;
 }
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 

@@ -4,20 +4,16 @@ use app\components\UrlHelper;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $consultationUrl
  * @var string $delInstallFileCmd
  * @var bool $installFileDeletable
  */
 
 
-$controller  = $this->context;
 $this->title = Yii::t('manager', 'done_title');
 
-/** @var \app\controllers\InstallationController $controller */
-$controller            = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout                = $controller->layoutParams;
 $layout->robotsNoindex = true;
 
 
@@ -26,7 +22,7 @@ $settingsUrl = UrlHelper::createUrl('manager/siteconfig');
 echo Html::beginForm($consultationUrl, 'get', ['class' => 'antragsgruenInitForm form-horizontal']);
 
 echo '<div class="content">';
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 $link = '<br>' . Html::a(Html::encode($consultationUrl), $consultationUrl) . '<br><br>';
 

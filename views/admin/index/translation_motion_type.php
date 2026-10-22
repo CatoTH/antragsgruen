@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var ConsultationMotionType $motionType
  * @var WordingOverridesForm $form
  */
@@ -10,10 +11,6 @@ use app\models\db\ConsultationMotionType;
 use app\models\forms\WordingOverridesForm;
 use app\components\{Html, HTMLTools, yii\MessageSource, UrlHelper};
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 
@@ -30,7 +27,7 @@ echo Html::beginForm('', 'post', ['id' => 'translationForm', 'class' => 'adminFo
     <div class="content">
         <div class="alert alert-info"><?= Yii::t('admin', 'translating_motion_hint') ?></div>
         <?php
-        echo $controller->showErrors();
+        echo \app\components\FlashMessages::render();
         ?>
     </div>
 

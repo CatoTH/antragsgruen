@@ -5,15 +5,12 @@ use app\models\db\{User, UserNotification};
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var User $user
  * @var UserNotification[] $notifications
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('con', 'noti_title');
 $layout->addBreadcrumb(Yii::t('con', 'noti_title'));
@@ -68,7 +65,7 @@ foreach ($notifications as $noti) {
 $action = UrlHelper::createUrl('consultation/notifications');
 echo Html::beginForm($action, 'post', ['class' => 'notificationForm content']);
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 
 ?>

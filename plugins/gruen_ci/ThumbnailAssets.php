@@ -2,9 +2,12 @@
 
 namespace app\plugins\gruen_ci;
 
-use yii\web\AssetBundle;
+use app\components\view\AssetBundle;
 
 class ThumbnailAssets extends AssetBundle
 {
-    public $sourcePath = '@app/plugins/gruen_ci/assets/';
+    public function getSourcePath(): string
+    {
+        return __DIR__ . '/assets';
+    }
 }

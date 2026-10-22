@@ -3,19 +3,18 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün: Sachstandsberichte';
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://antragsgruen.de/help/progress-reports';
-$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help/progress-reports'];
-$controller->layoutParams->addBreadcrumb('Start', '/');
-$controller->layoutParams->addBreadcrumb('Hilfe', '/help');
-$controller->layoutParams->addBreadcrumb('Sachstandsberichte');
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl = 'https://antragsgruen.de/help/progress-reports';
+$layout->alternateLanuages = ['en' => 'https://motion.tools/help/progress-reports'];
+$layout->addBreadcrumb('Start', '/');
+$layout->addBreadcrumb('Hilfe', '/help');
+$layout->addBreadcrumb('Sachstandsberichte');
 
 $params = \app\models\settings\AntragsgruenApp::getInstance();
 

@@ -6,17 +6,14 @@ use app\components\Html;
 use yii\helpers\Url;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\db\Site $site
  * @var \app\models\db\Consultation[] $consultations
  * @var ConsultationCreateForm $createForm
  * @var SiteCreateForm $wizardModel
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = 'Veranstaltungen verwalten';
 $layout->addCSS('css/formwizard.css');
@@ -30,7 +27,7 @@ $settings = $site->getSettings();
 
 echo '<h1>' . Yii::t('admin', 'cons_title') . '</h1>';
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 echo Html::beginForm('', 'post', ['class' => 'consultationEditForm']);
 echo '<h2 class="green">' . Yii::t('admin', 'cons_created_list') . '</h2>';
@@ -38,7 +35,7 @@ echo '<div class="content"><ul id="consultationsList">';
 foreach ($consultations as $consultation) {
     $isStandard = ($consultation->id == $site->currentConsultationId);
     $params     = ['consultationPath' => $consultation->urlPath];
-    if ($controller->getParams()->multisiteMode) {
+    if (\app\models\settings\AntragsgruenApp::getInstance()->multisiteMode) {
         $params['subdomain'] = $site->subdomain;
     }
 
@@ -135,7 +132,7 @@ $layout->addJsTranslation("admin");
                 'consultation/index',
                 'consultationPath' => '--CON--'
             ];
-            if ($controller->getParams()->multisiteMode) {
+            if (\app\models\settings\AntragsgruenApp::getInstance()->multisiteMode) {
                 $routeParams['subdomain'] = $site->subdomain;
             }
             $url   = UrlHelper::absolutizeLink(Url::toRoute($routeParams));

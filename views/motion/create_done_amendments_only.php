@@ -5,10 +5,10 @@ use app\models\db\Motion;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Motion $motion
  * @var string $mode
- * @var \app\controllers\MotionController $controller
  */
 
 $typeName = $motion->getMyMotionType()->getTitleSingularForDisplay();
@@ -18,11 +18,10 @@ if ($mode === 'create') {
     $this->title = str_replace('%TYPE%', $typeName, Yii::t('motion', 'motion_edit'));
 }
 
-$controller = $this->context;
-$controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
+$layout->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
 
 echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'created_statutes')) . '</h1>';
-$controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_statutes'));
+$layout->addBreadcrumb(Yii::t('motion', 'created_statutes'));
 
 $backUrl = UrlHelper::createUrl(['/admin/motion-type/type', 'motionTypeId' => $motion->getMyMotionType()->id])
 ?>

@@ -3,15 +3,12 @@
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var bool $askForPermission
  * @var bool $askedForPermission
  */
 
-/** @var \app\controllers\UserController $controller */
-$controller            = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout                = $controller->layoutParams;
 $layout->robotsNoindex = true;
 $this->title           = Yii::t('user', 'access_denied_title');
 ?>

@@ -6,12 +6,10 @@ use app\models\db\ConsultationAgendaItem;
 use app\components\Html;
 
 /**
- * @var \app\controllers\Base $controller
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  */
 
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 ?>
 <div class="dropdown dropdown-menu-left exportProcedureDd">

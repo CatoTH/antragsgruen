@@ -3,20 +3,19 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün: Antragsstatus-Referenz';
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://antragsgruen.de/help/status';
-$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help/status'];
-$controller->layoutParams->addBreadcrumb('Start', '/');
-$controller->layoutParams->addBreadcrumb('Hilfe', '/help');
-$controller->layoutParams->addBreadcrumb('Status');
-$controller->layoutParams->fullWidth = true;
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl = 'https://antragsgruen.de/help/status';
+$layout->alternateLanuages = ['en' => 'https://motion.tools/help/status'];
+$layout->addBreadcrumb('Start', '/');
+$layout->addBreadcrumb('Hilfe', '/help');
+$layout->addBreadcrumb('Status');
+$layout->fullWidth = true;
 
 ?>
 <h1>Referenz: Antragsstatus</h1>

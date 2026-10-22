@@ -3,17 +3,14 @@
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\forms\AntragsgruenInitSite $form
  */
 
-/** @var \app\controllers\InstallationController $controller */
-$controller = $this->context;
 
 $this->title = Yii::t('manager', 'title_install');
 
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $layout->robotsNoindex = true;
 $layout->addCSS('css/formwizard.css');
 $layout->addCSS('css/manager.css');
@@ -32,7 +29,7 @@ $layout->loadDatepicker();
 echo Html::beginForm('', 'post', ['class' => 'siteCreate antragsgruenInitForm form-horizontal']);
 
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 echo $this->render('../createsiteWizard/index', ['model' => $form, 'errors' => [], 'mode' => 'singlesite']);
 

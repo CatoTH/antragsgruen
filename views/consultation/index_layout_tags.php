@@ -6,7 +6,7 @@ use app\models\layoutHooks\Layout as LayoutHooks;
 use app\models\db\{Amendment, Consultation, ConsultationSettingsTag, IMotion, ISupporter, Motion};
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
  * @var IMotion[] $imotions

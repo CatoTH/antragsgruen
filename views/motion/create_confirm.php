@@ -6,14 +6,13 @@ use app\models\settings\MotionSection;
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Motion $motion
  * @var string $mode
- * @var \app\controllers\MotionController $controller
  * @var string|null $deleteDraftId
  */
 
-$controller = $this->context;
 
 $typeName = $motion->getMyMotionType()->getTitleSingularForDisplay();
 if ($mode === 'create') {
@@ -22,10 +21,10 @@ if ($mode === 'create') {
     $this->title = str_replace('%TYPE%', $typeName, Yii::t('motion', 'motion_edit'));
 }
 
-$controller->layoutParams->robotsNoindex = true;
-$controller->layoutParams->addBreadcrumb($this->title);
-$controller->layoutParams->addBreadcrumb(Yii::t('motion', 'confirm_bread'));
-$controller->layoutParams->bodyCssClasses[] = 'createConfirmPage';
+$layout->robotsNoindex = true;
+$layout->addBreadcrumb($this->title);
+$layout->addBreadcrumb(Yii::t('motion', 'confirm_bread'));
+$layout->bodyCssClasses[] = 'createConfirmPage';
 
 echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
 
@@ -168,5 +167,5 @@ echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
 echo Html::endForm();
 
 if ($deleteDraftId) {
-    $controller->layoutParams->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
+    $layout->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
 }

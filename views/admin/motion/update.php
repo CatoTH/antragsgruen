@@ -5,16 +5,13 @@ use app\components\{Html, HTMLTools, MotionSorter, Tools, UrlHelper};
 use app\models\db\{ConsultationAgendaItem, ConsultationSettingsTag, Motion, MotionSupporter, User};
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion $motion
  * @var \app\models\forms\MotionEditForm $form
  */
 
-/** @var \app\controllers\admin\MotionController $controller */
-$controller   = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
-$consultation = $controller->consultation;
 
 $this->title = Yii::t('admin', 'motion_edit_title') . ': ' . $motion->getTitleWithPrefix();
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));
@@ -64,7 +61,7 @@ $layout->menusHtml[] = $html;
 
 echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 
 if ($motion->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion))) {
@@ -447,7 +444,7 @@ echo $this->render('_update_protocol', ['motion' => $motion]);
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::motion($motion))) {
     $initiatorClass = $form->motionType->getMotionSupportTypeClass();
     $initiatorClass->setAdminMode(true);
-    echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
+    echo $initiatorClass->getMotionForm($form->motionType, $form);
 
     echo $this->render('_update_supporter', [
         'supporters' => $motion->getSupporters(true),

@@ -7,7 +7,8 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Amendment $amendment
  * @var int[] $openedComments
  * @var string|null $adminEdit
@@ -23,16 +24,12 @@ $motionType   = $motion->getMyMotionType();
 $hasPp = $amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && $amendment->getLatestProposal()->canEditLimitedProposedProcedure());
 
-/** @var \app\controllers\AmendmentController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }
 
-if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
-    $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
+if (\app\components\RequestContext::getRequestValue('backUrl') !== null && \app\components\RequestContext::getRequestValue('backTitle') !== null) {
+    $layout->addBreadcrumb(\app\components\RequestContext::getRequestValue('backTitle'), \app\components\RequestContext::getRequestValue('backUrl'));
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
     if (!$motionType->amendmentsOnly) {
@@ -95,7 +92,7 @@ echo $this->render('_view_amendmentdata', [
     'amendment' => $amendment,
 ]);
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 
 if ($supportCollectingStatus) {

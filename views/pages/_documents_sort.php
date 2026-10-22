@@ -3,14 +3,12 @@
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var \app\models\db\ConsultationFileGroup[] $fileGroups
  */
 
-/** @var \app\controllers\PagesController $controller */
 
-$controller = $this->context;
-$consultation = $controller->consultation;
 
 $documentsJs = array_map(function (\app\models\db\ConsultationFileGroup $fileGroup): array {
     return [

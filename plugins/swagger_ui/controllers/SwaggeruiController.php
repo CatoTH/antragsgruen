@@ -8,20 +8,17 @@ use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\http\{BinaryFileResponse, HtmlResponse};
 use app\plugins\swagger_ui\Assets;
-use yii\web\View;
 
 class SwaggeruiController extends Base
 {
     public function actionIndex(): HtmlResponse
     {
-        /** @var View $view */
-        $view = $this->view;
-        $assets = Assets::register($view);
+        $assets = new Assets();
         $openapiUrl = UrlHelper::createUrl('/swagger_ui/swaggerui/openapi');
         $openapiUrl = preg_replace('/\?consultationPath=[\w\-]+$/siu', '', $openapiUrl);
 
         return new HtmlResponse($this->renderPartial('@app/plugins/swagger_ui/views/index', [
-            'baseUrl' => $assets->baseUrl,
+            'baseUrl' => $assets->getBaseUrl(),
             'openapiUrl' => $openapiUrl,
         ]));
     }

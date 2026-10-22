@@ -6,6 +6,7 @@ use app\models\exceptions\{ApiResponseException, NotFound, Internal, ResponseExc
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\http\{HtmlResponse, RedirectResponse, ResponseInterface, RestApiExceptionResponse, RestApiResponse};
 use app\components\{Html, ConsultationAccess, HTMLTools, JwtCreator, RequestContext, SecondFactorAuthentication, UrlHelper, yii\Application};
+use app\components\view\View;
 use app\models\settings\{AntragsgruenApp, Layout, Privileges};
 use app\models\db\{Amendment, Consultation, Motion, repostory\MotionRepository, Site, User};
 use Yii;
@@ -29,6 +30,8 @@ class Base extends Controller
     public ?bool $allowNotLoggedIn = null;
 
     public bool $limitedAccessBecauseOfOverride = false;
+
+    private ?View $templateView = null;
 
     /**
      * @param string $cid the ID of this controller.
@@ -276,27 +279,82 @@ class Base extends Controller
         return new HtmlResponse($this->render(
             '@app/views/pages/contentpage',
             [
-                'pageKey' => $pageKey,
-                'admin'   => $admin,
+                'pageKey'    => $pageKey,
+                'admin'      => $admin,
+                'isHomePage' => in_array($this->action?->id, ['home', 'index'], true),
             ]
         ));
     }
 
     /**
-     * @param string $view
-     * @param array $params
-     * @return string
+     * The view used for all templates rendered during this request. Templates get the current layout settings,
+     * consultation and site as the variables $layout, $consultation and $site.
      */
-    public function render($view, $params = array())
+    public function getTemplateView(): View
     {
-        $params = array_merge(
-            [
-                'consultation' => $this->consultation,
-                'reducedNavigation' => $this->limitedAccessBecauseOfOverride,
-            ],
-            $params
-        );
-        return parent::render($view, $params);
+        if ($this->templateView === null) {
+            $this->templateView = new View(
+                fn (): array => [
+                    'layout' => $this->layoutParams,
+                    'consultation' => $this->consultation,
+                    'site' => $this->site,
+                ],
+                $this->getViewPath()
+            );
+        }
+
+        return $this->templateView;
+    }
+
+    /**
+     * Renders a view and wraps it in the layout ($this->layout)
+     *
+     * @param string $view
+     * @param array<string, mixed> $params
+     */
+    public function render($view, $params = []): string
+    {
+        $params = array_merge(['reducedNavigation' => $this->limitedAccessBecauseOfOverride], $params);
+
+        return $this->renderContent($this->getTemplateView()->render($view, $params));
+    }
+
+    /**
+     * Renders a view without layout
+     *
+     * @param string $view
+     * @param array<string, mixed> $params
+     */
+    public function renderPartial($view, $params = []): string
+    {
+        return $this->getTemplateView()->render($view, $params);
+    }
+
+    /**
+     * Wraps the given content in the layout ($this->layout)
+     *
+     * @param string $content
+     */
+    public function renderContent($content): string
+    {
+        $this->layoutParams?->setRoute($this->getRoute());
+
+        return $this->getTemplateView()->renderFile($this->getLayoutFile(), ['content' => $content]);
+    }
+
+    /**
+     * "column2" is looked up in the layout directory of the controller's module (views/layouts/ for the core),
+     * "@app/..." relative to the application root.
+     */
+    private function getLayoutFile(): string
+    {
+        if (str_starts_with($this->layout, '@app/')) {
+            $file = View::getAppPath() . DIRECTORY_SEPARATOR . substr($this->layout, 5);
+        } else {
+            $file = $this->module->getLayoutPath() . DIRECTORY_SEPARATOR . $this->layout;
+        }
+
+        return (pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file);
     }
 
     /**
@@ -359,57 +417,6 @@ class Base extends Controller
             $this->redirect($loginUrl);
             Yii::$app->end();
         }
-    }
-
-    public function showErrors(bool $addBorder = false): string
-    {
-        $session = $this->getHttpSession();
-        if (!$session->isActive) {
-            return '';
-        }
-        $str = '';
-
-        $error = $session->getFlash('error', null, true);
-        if ($error) {
-            $str .= '<div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">' . Yii::t('base', 'aria_error') . ':</span>
-                ' . nl2br(Html::encode($error)) . '
-            </div>';
-        }
-
-        $success = $session->getFlash('success', null, true);
-        if ($success) {
-            $str .= '<div class="alert alert-success" role="alert">
-                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                <span class="sr-only">' . Yii::t('base', 'aria_success') . ':</span>
-                ' . Html::encode($success) . '
-            </div>';
-        }
-
-        $info = $session->getFlash('info', null, true);
-        if ($info) {
-            $str .= '<div class="alert alert-info" role="alert">
-                <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                <span class="sr-only">' . Yii::t('base', 'aria_info') . ':</span>
-                ' . Html::encode($info) . '
-            </div>';
-        }
-
-        $email = $session->getFlash('email', null, true);
-        if ($email && YII_ENV === 'test') {
-            $str .= '<div class="alert alert-info" role="alert">
-                <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                <span class="sr-only">' . Yii::t('base', 'aria_info') . ':</span>
-                ' . Html::encode($email) . '
-            </div>';
-        }
-
-        if ($str !== '' && $addBorder) {
-            $str = '<div class="content">' . $str . '</div>';
-        }
-
-        return $str;
     }
 
     /**

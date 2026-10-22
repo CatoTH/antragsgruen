@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Consultation $consultation
  * @var string $locale
  */
@@ -10,10 +11,6 @@ use app\models\settings\{AntragsgruenApp, Privileges, Site as SiteSettings, Cons
 use app\components\{Html, HTMLTools, UrlHelper, yii\MessageSource};
 use app\models\db\{Consultation, Motion, User};
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
@@ -38,7 +35,7 @@ echo Html::beginForm('', 'post', [
     'enctype'                  => 'multipart/form-data',
 ]);
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 $settings            = $consultation->getSettings();
 $siteSettings        = $consultation->site->getSettings();

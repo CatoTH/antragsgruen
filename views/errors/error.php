@@ -3,16 +3,13 @@
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $name
  * @var string $message
  * @var int $httpStatus
  */
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $layout->robotsNoindex = true;
 
 if (!isset($httpStatus)) {

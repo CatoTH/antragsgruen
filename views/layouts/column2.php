@@ -1,22 +1,19 @@
 <?php
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $content
  */
 
 $this->beginContent('@app/views/layouts/main.php');
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$params     = $controller->layoutParams;
-
 $rowClasses = ['antragsgruen-content'];
 
 $menus = [];
-if ($params->menu) {
-    $menus[] = ['name' => 'Actions', 'items' => $controller->layoutParams->menu];
+if ($layout->menu) {
+    $menus[] = ['name' => 'Actions', 'items' => $layout->menu];
 }
-foreach ($params->multimenu as $m) {
+foreach ($layout->multimenu as $m) {
     $menus[] = $m;
 }
 

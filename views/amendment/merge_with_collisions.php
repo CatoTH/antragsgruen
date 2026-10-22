@@ -4,17 +4,14 @@ use app\models\db\Amendment;
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Amendment $amendment
  * @var \app\models\db\Consultation $consultation
  * @var string[][] $paragraphSections
  * @var bool $allowStatusChanging
  */
 
-/** @var \app\controllers\AmendmentController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $layout->loadCKEditor();
 $layout->addCSS('css/formwizard.css');
 

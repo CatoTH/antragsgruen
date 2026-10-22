@@ -1,9 +1,11 @@
 <?php
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $pageKey
  * @var bool $admin
+ * @var bool $isHomePage
  */
 
 use app\components\UrlHelper;
@@ -11,8 +13,6 @@ use app\models\policies\IPolicy;
 use app\models\db\{ConsultationText, User};
 use app\components\Html;
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
 
 $consultation = UrlHelper::getCurrentConsultation();
 $site         = $consultation?->site;
@@ -21,9 +21,7 @@ $saveUrl      = $pageData->getSaveUrl();
 
 $this->title = $pageData->title ?: $pageData->textId;
 
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
-if (!in_array($controller->action?->id, ['home', 'index'])) {
+if (!$isHomePage) {
     $layout->addBreadcrumb($pageData->breadcrumb ?: $pageData->textId);
 } else {
     $layout->breadcrumbs = [];

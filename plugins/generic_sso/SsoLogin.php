@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\plugins\generic_sso;
 
+use app\components\view\View;
 use app\components\{LoginProviderInterface, RequestContext, UrlHelper};
 use app\models\db\{ConsultationUserGroup, User};
 use app\models\settings\{AntragsgruenApp, Site as SiteSettings};
@@ -77,7 +78,7 @@ class SsoLogin implements LoginProviderInterface
             return '';
         }
 
-        return \Yii::$app->controller->renderPartial('@app/plugins/generic_sso/views/login', [
+        return View::getCurrent()->render('@app/plugins/generic_sso/views/login', [
             'backUrl' => $backUrl,
             'providerName' => $this->getName(),
             'buttonText' => \Yii::t('generic_sso', 'login_button'),

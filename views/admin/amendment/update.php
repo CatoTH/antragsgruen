@@ -6,15 +6,12 @@ use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, Consulta
 use app\models\sectionTypes\SectionLanguageMode;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Amendment $amendment
  * @var \app\models\forms\AmendmentEditForm $form
  */
 
-/** @var \app\controllers\admin\AmendmentController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $consultation = $amendment->getMyConsultation();
 
 $this->title = Yii::t('admin', 'amend_edit_title') . ': ' . $amendment->getTitle();
@@ -59,7 +56,7 @@ $layout->menusHtml[] = $html;
 
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 
 if ($amendment->isInScreeningProcess() && User::havePrivilege($consultation, Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($amendment))) {
@@ -419,7 +416,7 @@ if (!$amendment->textFixed && User::havePrivilege($consultation, Privileges::PRI
 if (User::havePrivilege($consultation, Privileges::PRIVILEGE_MOTION_INITIATORS, PrivilegeQueryContext::amendment($amendment))) {
     $initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
     $initiatorClass->setAdminMode(true);
-    echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
+    echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form);
 
     echo $this->render('../motion/_update_supporter', [
         'supporters' => $amendment->getSupporters(true),

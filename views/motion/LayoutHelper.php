@@ -6,6 +6,7 @@ namespace app\views\motion;
 
 use app\components\{Html, HashedStaticCache, IMotionStatusFilter, LanguageTools, Tools, UrlHelper};
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
+use app\components\view\View;
 use app\components\latex\{Content as LatexContent, Exporter, Layout as LatexLayout};
 use app\components\diff\{AmendmentSectionFormatter, DiffRenderer};
 use app\models\db\{Amendment, AmendmentSection, ConsultationSettingsTag, IMotion, ISupporter, Motion, MotionProposal, MotionSection, User};
@@ -714,7 +715,7 @@ class LayoutHelper
                 $str .= '</div>';
                 $str .= Html::endForm();
             } else {
-                $str .= \Yii::$app->controller->renderPartial('@app/views/motion/_support_block', [
+                $str .= View::getCurrent()->render('@app/views/motion/_support_block', [
                     'user'        => $user,
                     'supportType' => $supportType,
                 ]);

@@ -5,17 +5,14 @@ use app\models\db\{Amendment, Motion};
 use app\models\mergeAmendments\{Draft, Init};
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Motion $motion
  * @var Draft|null $draft
  * @var Motion|null $unconfirmed
  * @var Amendment[] $amendments
  */
 
-/** @var \app\controllers\MotionController $controller */
-$controller  = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout      = $controller->layoutParams;
 
 $this->title           = str_replace('%NAME%', $motion->getTitleWithPrefix(), Yii::t('amend', 'merge_init_title'));
 $layout->robotsNoindex = true;

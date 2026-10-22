@@ -7,7 +7,6 @@ use app\models\events\UserEvent;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 use yii\base\Event;
-use yii\web\Controller;
 
 class Module extends ModuleBase
 {
@@ -32,12 +31,9 @@ class Module extends ModuleBase
         return '/green_manager/manager/index';
     }
 
-    /**
-     * @return \yii\web\AssetBundle[]|string[]
-     */
-    public static function getActiveAssetBundles(Controller $controller): array
+    public static function getActiveAssetBundles(string $route): array
     {
-        if (str_starts_with($controller->route, 'green_manager')) {
+        if (str_starts_with($route, 'green_manager')) {
             return [
                 Assets::class,
             ];

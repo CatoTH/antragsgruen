@@ -5,7 +5,9 @@ use app\models\db\{Amendment, AmendmentProposal};
 use app\models\sectionTypes\ISectionType;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Amendment $amendment
  * @var AmendmentProposal $proposal
  * @var \app\models\forms\ProposedChangeForm $form
@@ -13,11 +15,6 @@ use app\models\sectionTypes\ISectionType;
  * @var null|string $msgAlert
  */
 
-/** @var \app\controllers\AmendmentController $controller */
-$controller   = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
-$consultation = $controller->consultation;
 
 $this->title        = Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;

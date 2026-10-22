@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Consultation $consultation
  * @var string $category
  * @var WordingOverridesForm $form
@@ -13,10 +14,6 @@ use app\components\LanguageTools;
 use app\models\forms\WordingOverridesForm;
 use yii\i18n\I18N;
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 
@@ -33,7 +30,7 @@ echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
 
 echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm']);
 echo '<input type="hidden" name="category" value="' . Html::encode($category) . '">';
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 
 echo '<div class="stdTwoCols">

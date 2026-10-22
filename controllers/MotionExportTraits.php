@@ -51,7 +51,7 @@ trait MotionExportTraits
                     $section->getData(),
                     false,
                     null,
-                    $this->layoutParams->isRobotsIndex($this->action)
+                    $this->layoutParams->isRobotsIndex($this->getRoute())
                 );
             }
         }
@@ -80,7 +80,7 @@ trait MotionExportTraits
                     $section->getData(),
                     false,
                     null,
-                    $this->layoutParams->isRobotsIndex($this->action)
+                    $this->layoutParams->isRobotsIndex($this->getRoute())
                 );
             }
         }
@@ -122,7 +122,7 @@ trait MotionExportTraits
             $pdfData,
             false,
             $motion->getFilenameBase(false),
-            $this->layoutParams->isRobotsIndex($this->action),
+            $this->layoutParams->isRobotsIndex($this->getRoute()),
             null
         );
     }
@@ -162,7 +162,7 @@ trait MotionExportTraits
             $pdfData,
             false,
             $motion->getFilenameBase(false) . '.collection',
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -236,7 +236,7 @@ trait MotionExportTraits
             $pdfData,
             false,
             null,
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -285,7 +285,7 @@ trait MotionExportTraits
             $pdfData,
             false,
             Tools::sanitizeFilename($motionType->getTitlePluralForDisplay(), false),
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -372,7 +372,7 @@ trait MotionExportTraits
             $this->renderPartial('plain_html', ['motion' => $motion]),
             false,
             null,
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 

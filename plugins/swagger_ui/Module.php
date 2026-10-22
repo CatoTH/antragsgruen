@@ -8,16 +8,6 @@ use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
 {
-    /**
-     * @return \yii\web\AssetBundle[]|string[]
-     */
-    public static function getActiveAssetBundles(\yii\web\Controller $controller): array
-    {
-        return [
-            Assets::class,
-        ];
-    }
-
     public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
         return array_merge(

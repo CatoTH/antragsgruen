@@ -7,7 +7,7 @@ use app\models\supportTypes\SupportBase;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var ConsultationMotionType $motionType
  */
 

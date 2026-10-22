@@ -5,16 +5,13 @@ use app\models\db\{Amendment, AmendmentSection};
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Amendment $amendment
  * @var string $mode
- * @var \app\controllers\AmendmentController $controller
  * @var string|null $deleteDraftId
  */
 
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $motion     = $amendment->getMyMotion();
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
@@ -127,5 +124,5 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentConfirmForm']);
 echo Html::endForm();
 
 if ($deleteDraftId) {
-    $controller->layoutParams->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
+    $layout->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
 }

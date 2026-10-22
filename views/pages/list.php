@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
+ * @var \app\models\db\Site|null $site
  * @var string $pageKey
  * @var string $saveUrl
  * @var bool $admin
@@ -10,20 +12,18 @@
 use app\models\db\ConsultationText;
 use app\components\Html;
 
-/** @var \app\controllers\PagesController $controller */
-$controller = $this->context;
 
 $this->title = Yii::t('pages', 'list_title');
 
 $defaultPages = ConsultationText::getDefaultPages();
-$pages        = ConsultationText::getAllPages($controller->site, $controller->consultation);
+$pages        = ConsultationText::getAllPages($site, $consultation);
 $foundPageIds = [];
 ?>
 <h1><?= $this->title = Yii::t('pages', 'list_title'); ?></h1>
 
 <div class="content">
     <?php
-    echo $controller->showErrors();
+    echo \app\components\FlashMessages::render();
 
     if (count($pages) > 0) {
         ?>
@@ -58,7 +58,7 @@ $foundPageIds = [];
                 } else {
                     $params = ['pages/show-page', 'pageSlug' => $textId];
                     if (!in_array($textId, ConsultationText::getSitewidePages())) {
-                        $params['consultationPath'] = $controller->consultation->urlPath;
+                        $params['consultationPath'] = $consultation->urlPath;
                     }
                     $options = ['class' => 'createPage ' . $textId];
                     $url     = \app\components\UrlHelper::createUrl($params);

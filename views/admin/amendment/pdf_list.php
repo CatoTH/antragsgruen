@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var array<array{motion: Motion, amendments: Amendment[]}> $amendments
  */
 
@@ -9,9 +10,7 @@ use app\models\db\{Amendment, Motion};
 use app\components\UrlHelper;
 use app\components\Html;
 
-/** @var \app\controllers\admin\AmendmentController $controller */
-$controller = $this->context;
-$params     = $controller->layoutParams;
+$params     = $layout;
 
 $this->title = Yii::t('admin', 'amend_pdf_list');
 $params->addCSS('css/backend.css');

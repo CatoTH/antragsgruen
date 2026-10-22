@@ -7,7 +7,9 @@ use app\models\db\User;
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var \app\models\db\SpeechQueue $queue
  * @var boolean $showHeader
  * @var int $headingLevel
@@ -17,11 +19,6 @@ if (!$queue) {
     return;
 }
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 

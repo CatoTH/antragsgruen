@@ -6,18 +6,15 @@ use app\models\db\{Consultation, DebateItem, Motion, User};
 use app\models\proposedProcedure\Factory;
 
 /**
- * @var \app\controllers\Base $controller
  * @var Motion|null $assignedToMotion
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var bool $excludeDebatedVoting Optional. Set where the debate is shown next to this widget: the
  *                                 voting of the item being debated is presented there, so this
  *                                 widget shows every open voting except that one.
  */
 
-$controller = $this->context;
-$consultation = $controller->consultation;
 $user = User::getCurrentUser();
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 // The voting endpoints authenticate by JWT, like the rest of the REST API
 $layout->provideJwt = true;
 $excludeDebatedVoting = ($excludeDebatedVoting ?? false);

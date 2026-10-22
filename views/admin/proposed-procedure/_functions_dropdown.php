@@ -4,9 +4,9 @@ use app\components\UrlHelper;
 use app\models\settings\Privileges;
 use app\components\Html;
 
-/** @var \app\controllers\admin\ProposedProcedureController $controller */
-$controller   = $this->context;
-$consultation = $controller->consultation;
+/**
+ * @var \app\models\db\Consultation|null $consultation
+ */
 
 $hasResponsibilities   = false;
 $hasProposedProcedures = false;
