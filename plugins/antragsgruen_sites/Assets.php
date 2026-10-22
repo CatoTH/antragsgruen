@@ -2,17 +2,16 @@
 
 namespace app\plugins\antragsgruen_sites;
 
-use yii\web\AssetBundle;
+use app\components\view\AssetBundle;
 
 class Assets extends AssetBundle
 {
-    public $sourcePath = '@app/plugins/antragsgruen_sites/assets/';
-
-    public $css = [
+    public array $css = [
         'sites.css',
     ];
-    public $js = [
-    ];
-    public $depends = [
-    ];
+
+    public function getSourcePath(): string
+    {
+        return __DIR__ . '/assets';
+    }
 }

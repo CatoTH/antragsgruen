@@ -5,18 +5,15 @@ use app\components\{Html, HTMLTools, LanguageTools, Tools, UrlHelper};
 use app\models\db\{Amendment, ConsultationMotionType, Motion, VotingBlock};
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion[] $newestMotions
  * @var \app\models\db\User|null $myself
  * @var Amendment[] $newestAmendments
  * @var \app\models\db\IComment[] $newestComments
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller   = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
-$consultation = $controller->consultation;
 $settings = $consultation->getSettings();
 
 $hasComments   = false;

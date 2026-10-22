@@ -5,7 +5,8 @@ use app\components\{Html, HTMLTools, UrlHelper};
 use app\models\db\{Amendment, IMotion, Motion, User};
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var Amendment $entry
  * @var IMotion $lastMainMotion
  * @var \app\models\forms\AdminMotionFilterForm $search
@@ -18,9 +19,6 @@ use app\models\db\{Amendment, IMotion, Motion, User};
  * @var boolean $colDate
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
 $motionType = $entry->getMyMotionType();
 
 $showSubentryIndicator = false;

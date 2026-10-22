@@ -3,7 +3,7 @@
 namespace app\components\yii;
 
 use app\models\settings\AntragsgruenApp;
-use yii\web\View;
+use app\controllers\Base;
 
 class DBConnection extends \yii\db\Connection
 {
@@ -25,19 +25,17 @@ class DBConnection extends \yii\db\Connection
                 echo '<h1>Could not open database - and an endless loop occurred.</h1>';
                 echo 'This should not happen under any circumstance. You might consider opening a ';
                 echo '<a href="https://github.com/CatoTH/antragsgruen">bugreport</a>.';
-            } else {
-                $view = new View();
-                echo \Yii::$app->controller->renderContent(
-                    $view->render(
-                        '@app/views/errors/error',
-                        [
-                            'name'       => 'Database connection error',
-                            'message'    => 'An error ocurred when connecting to the database.',
-                            'httpStatus' => 500,
-                        ],
-                        \Yii::$app->controller
-                    )
+            } elseif (\Yii::$app->controller instanceof Base) {
+                echo \Yii::$app->controller->render(
+                    '@app/views/errors/error',
+                    [
+                        'name'       => 'Database connection error',
+                        'message'    => 'An error ocurred when connecting to the database.',
+                        'httpStatus' => 500,
+                    ]
                 );
+            } else {
+                echo '<h1>Could not open database</h1>';
             }
             \Yii::$app->end(500);
         }

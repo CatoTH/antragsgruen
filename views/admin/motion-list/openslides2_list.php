@@ -4,13 +4,11 @@ use app\models\db\Motion;
 use app\models\sectionTypes\SectionLanguageMode;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion[] $motions
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 
 $data = [];

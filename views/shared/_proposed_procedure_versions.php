@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var IMotion $imotion
  * @var IProposal $proposal
  */

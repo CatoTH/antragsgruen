@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models\http;
 
+use app\components\RequestContext;
 use app\models\settings\Layout;
 use yii\web\Response;
 
@@ -23,7 +24,7 @@ class HtmlErrorResponse implements ResponseInterface
         $layoutParams->setFallbackLayoutIfNotInitializedYet();
         $layoutParams->robotsNoindex = true;
         $response->statusCode = $this->statusCode;
-        $response->content = \Yii::$app->controller->render(
+        $response->content = RequestContext::getController()->render(
             '@app/views/errors/error',
             [
                 'httpStatus' => $this->statusCode,

@@ -5,14 +5,12 @@ use app\components\Html;
 use yii\helpers\Url;
 
 /**
- * @var \Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var SiteCreateForm $form
  * @var string $loginId
  * @var string $loginCode
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
 
 $this->title = Yii::t('wizard', 'created_title');
 

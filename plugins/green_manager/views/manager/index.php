@@ -5,19 +5,18 @@ use app\models\db\Site;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
-$assets = \app\plugins\green_manager\Assets::register($this);
+$assets = $this->registerAssetBundle(\app\plugins\green_manager\Assets::class);
 
 $this->title = 'Discuss.green - Managing resolutions, motions and amendments online';
-/** @var \app\controllers\Base $controller */
-$controller  = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://discuss.green/';
-$controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
-$controller->layoutParams->addInlineCss('
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl      = 'https://discuss.green/';
+$layout->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
+$layout->addInlineCss('
     .homeFigure { text-align: center; }
     .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; }
     .homeFigureAmendment img { max-width: 100%; }
@@ -42,7 +41,6 @@ $controller->layoutParams->addInlineCss('
     .homeFigureSpeech figcaption { margin-top: -10px; }
 ');
 
-$layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manager_index';
 $layout->fullWidth        = true;
 
@@ -74,12 +72,12 @@ $params = \app\models\settings\AntragsgruenApp::getInstance();
     <div class="content contentWhoUsesIt">
         <div class="list">
             <a href="https://motiontool.europeangreens.eu/" target="_blank">
-                <img src="<?= $assets->baseUrl ?>/logo-egp.svg" alt="European Greens">
+                <img src="<?= $assets->getBaseUrl() ?>/logo-egp.svg" alt="European Greens">
                 <div class="name">European Greens</div>
                 <div class="hint">EGP Online Congress</div>
             </a>
             <a href="https://antraege.gruene.de/" target="_blank">
-                <img src="<?= $assets->baseUrl ?>/logo-b90.svg" alt="Bündnis 90 / Die GRÜNEN">
+                <img src="<?= $assets->getBaseUrl() ?>/logo-b90.svg" alt="Bündnis 90 / Die GRÜNEN">
                 <div class="name">Bündnis 90 / Die GRÜNEN</div>
                 <div class="hint">Federal Convention</div>
             </a>

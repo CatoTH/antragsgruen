@@ -6,16 +6,13 @@ use OTPHP\TOTP;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var User $user
  * @var int $pwMinLen
  * @var string|null $error
  */
 
-/** @var \app\controllers\UserController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'login_title');
 $layout->addBreadcrumb(Yii::t('user', 'login_title'));

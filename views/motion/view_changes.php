@@ -5,16 +5,13 @@ use app\components\{Html, Tools, UrlHelper};
 use app\models\db\Motion;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Motion $newMotion
  * @var Motion $oldMotion
  * @var \app\models\MotionSectionChanges[] $changes
  */
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 if (!$newMotion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 }
@@ -29,7 +26,7 @@ $this->title = str_replace(
     <h1><?= Html::encode($this->title) ?></h1>
     <div class="motionChangeView content">
         <?php
-        echo $controller->showErrors();
+        echo \app\components\FlashMessages::render();
         $oldLink = UrlHelper::createMotionUrl($oldMotion);
         $newLink = UrlHelper::createMotionUrl($newMotion);
         $oldTitle = $oldMotion->getFormattedTitlePrefix();

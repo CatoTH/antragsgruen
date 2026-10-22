@@ -10,7 +10,8 @@ use app\views\motion\LayoutHelper;
 
 /**
  * @var bool $reducedNavigation
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Motion $motion
  * @var int[] $openedComments
  * @var string|null $adminEdit
@@ -25,10 +26,6 @@ $consultation = $motion->getMyConsultation();
 $hasPp = $motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure;
 $hasPpAdminbox = ($hasPp && !$motion->isResolution() && $motion->getLatestProposal()->canEditLimitedProposedProcedure());
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 if ($hasPp && $hasPpAdminbox) {
     $layout->loadSelectize();
 }
@@ -49,8 +46,8 @@ if (
         $layout->addBreadcrumb(Yii::t('admin', 'bread_tag'), UrlHelper::createUrl(['/consultation/tags-motions', 'tagId' => $motion->tags[0]->id]));
     }
 }
-if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
-    $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
+if (\app\components\RequestContext::getRequestValue('backUrl') !== null && \app\components\RequestContext::getRequestValue('backTitle') !== null) {
+    $layout->addBreadcrumb(\app\components\RequestContext::getRequestValue('backTitle'), \app\components\RequestContext::getRequestValue('backUrl'));
 }
 if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle());
@@ -125,7 +122,7 @@ echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 
 include(__DIR__ . DIRECTORY_SEPARATOR . '_view_motiondata.php');
 
-echo $controller->showErrors(true);
+echo \app\components\FlashMessages::render(true);
 
 if ($supportCollectingStatus) {
     echo '<div class="content" style="margin-top: 0;">';

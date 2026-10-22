@@ -6,16 +6,13 @@ use app\models\mergeAmendments\Draft;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion $motion
  * @var Draft $draft
  */
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));

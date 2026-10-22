@@ -2,6 +2,7 @@
 
 namespace app\plugins\discourse;
 
+use app\components\view\View;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 use app\models\db\{Consultation, Amendment, Motion};
@@ -99,7 +100,7 @@ class Module extends ModuleBase
 
     public static function getConsultationExtraSettingsForm(Consultation $consultation): string
     {
-        return \Yii::$app->controller->renderPartial(
+        return View::getCurrent()->render(
             '@app/plugins/discourse/views/admin/consultation_settings', ['consultation' => $consultation]
         );
     }

@@ -5,15 +5,12 @@ use app\models\db\Consultation;
 use app\models\settings\Consultation as ConsultationSettings;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Consultation $consultation
  * @var string $locale
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
@@ -42,7 +39,7 @@ echo Html::beginForm('', 'post', [
     'enctype'                  => 'multipart/form-data',
 ]);
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 $settings            = $consultation->getSettings();
 $siteSettings        = $consultation->site->getSettings();
@@ -113,7 +110,7 @@ $handledSiteSettings = [];
                     <?php
                     $layoutId              = $consultation->site->getSettings()->siteLayout;
                     $handledSiteSettings[] = 'siteLayout';
-                    foreach (\app\models\settings\Layout::getCssLayouts($this) as $lId => $cssLayout) {
+                    foreach (\app\models\settings\Layout::getCssLayouts() as $lId => $cssLayout) {
                         ?>
                         <label class="layout <?= $lId ?>">
                             <?= Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]) ?>

@@ -3,19 +3,18 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün: Robert’s Rules of Order';
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://antragsgruen.de/help/roberts-rules';
-$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help/roberts-rules'];
-$controller->layoutParams->addBreadcrumb('Start', '/');
-$controller->layoutParams->addBreadcrumb('Hilfe', '/help');
-$controller->layoutParams->addBreadcrumb('Robert’s Rules of Order');
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl = 'https://antragsgruen.de/help/roberts-rules';
+$layout->alternateLanuages = ['en' => 'https://motion.tools/help/roberts-rules'];
+$layout->addBreadcrumb('Start', '/');
+$layout->addBreadcrumb('Hilfe', '/help');
+$layout->addBreadcrumb('Robert’s Rules of Order');
 
 ?>
 <h1>Antragsgrün mit Robert’s Rules of Order verwenden</h1>

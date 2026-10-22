@@ -5,10 +5,10 @@ use app\models\db\Motion;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Motion $motion
  * @var string $mode
- * @var \app\controllers\MotionController $controller
  */
 
 $typeName = $motion->getMyMotionType()->getTitleSingularForDisplay();
@@ -18,18 +18,17 @@ if ($mode === 'create') {
     $this->title = str_replace('%TYPE%', $typeName, Yii::t('motion', 'motion_edit'));
 }
 
-$controller = $this->context;
-$controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
+$layout->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
 
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'submitted_create')) . '</h1>';
-    $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_create'));
+    $layout->addBreadcrumb(Yii::t('motion', 'created_bread_create'));
 } elseif ($motion->isInScreeningProcess()) {
     echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'submitted_submit')) . '</h1>';
-    $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_submit'));
+    $layout->addBreadcrumb(Yii::t('motion', 'created_bread_submit'));
 } else {
     echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'submitted_publish')) . '</h1>';
-    $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_publish'));
+    $layout->addBreadcrumb(Yii::t('motion', 'created_bread_publish'));
 }
 
 echo '<div class="content">';
@@ -61,7 +60,7 @@ echo '</div>';
 echo Html::beginForm(UrlHelper::consultationHomeUrl(), 'post', ['id' => 'motionConfirmedForm']);
 
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-    $controller->layoutParams->addJS('npm/clipboard.min.js');
+    $layout->addJS('npm/clipboard.min.js');
     $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)));
     ?><br>
     <script type="module" crossorigin="anonymous">

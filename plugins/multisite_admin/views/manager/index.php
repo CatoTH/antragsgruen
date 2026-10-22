@@ -5,14 +5,13 @@ use app\models\db\{Site, User};
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $sites
  */
 
 $this->title = 'Antragsgrün: Subdomain-Verwaltung';
-/** @var \app\controllers\Base $controller */
-$controller  = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
+$layout->addCSS('css/manager.css');
 
 ?>
 <h1 id="antragsgruenTitle">Antragsgrün: Subdomain-Verwaltung</h1>

@@ -9,14 +9,11 @@ use app\components\UrlHelper;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Consultation $consultation
  */
 
-/** @var \app\controllers\admin\AgendaController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 $layout->loadDatepicker();

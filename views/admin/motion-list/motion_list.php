@@ -7,20 +7,17 @@ use app\views\motion\LayoutHelper;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion[] $motions
  * @var AdminMotionFilterForm $search
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
-$consultation = $controller->consultation;
 
 $hasResponsibilities   = false;
-$hasProposedProcedures = $controller->consultation->hasProposedProcedures();
-foreach ($controller->consultation->motionTypes as $motionType) {
+$hasProposedProcedures = $consultation->hasProposedProcedures();
+foreach ($consultation->motionTypes as $motionType) {
     if ($motionType->getSettingsObj()->hasResponsibilities) {
         $hasResponsibilities = true;
     }

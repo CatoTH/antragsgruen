@@ -4,16 +4,13 @@ use app\components\{Html, Diff\SingleAmendmentMergeViewParagraphData, MotionNumb
 use app\models\db\Amendment;
 
 /**
- * @var \Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Amendment $amendment
  * @var \app\models\db\Consultation $consultation
  * @var SingleAmendmentMergeViewParagraphData[][] $paragraphSections
  */
 
-/** @var \app\controllers\AmendmentController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $layout->loadCKEditor();
 $layout->addCSS('css/formwizard.css');
 

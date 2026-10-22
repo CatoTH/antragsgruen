@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
  * @var bool $needsAdminScreening
  */
 

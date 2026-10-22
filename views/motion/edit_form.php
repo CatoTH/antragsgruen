@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $mode
  * @var \app\models\forms\MotionEditForm $form
  * @var \app\models\db\Consultation $consultation
@@ -13,10 +14,6 @@ use app\models\db\ConsultationSettingsTag;
 use app\models\policies\IPolicy;
 use app\components\Html;
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $isAmendmentsOnly = !!$form->motionType->amendmentsOnly;
 
@@ -40,7 +37,7 @@ if ($form->agendaItem) {
     echo '<h1>' . Html::encode($this->title) . '</h1>';
 }
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 echo '<div class="form content hideIfEmpty motionEditPreface">';
 
@@ -137,7 +134,7 @@ echo '</div>';
 
 if ($form->getAllowEditinginitiators()) {
     $initiatorClass = $form->motionType->getMotionSupportTypeClass();
-    echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
+    echo $initiatorClass->getMotionForm($form->motionType, $form);
 }
 
 if ($isAmendmentsOnly) {

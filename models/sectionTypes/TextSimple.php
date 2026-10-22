@@ -9,7 +9,7 @@ use CatoTH\HTML2OpenDocument\Text as ODTText;
 use app\components\{Html, HashedStaticCache, html2pdf\Content as HtmlToPdfContent, HTMLTools, LanguageTools, LineSplitter, RequestContext};
 use app\models\db\{AmendmentSection, Consultation, ConsultationMotionType, MotionSection};
 use app\models\forms\CommentForm;
-use yii\web\View;
+use app\components\view\View;
 
 class TextSimple extends TextSimpleCommon
 {
@@ -418,14 +418,13 @@ class TextSimple extends TextSimpleCommon
      */
     public function showMotionView(?CommentForm  $commentForm, array $openedComments): string
     {
-        return (new View())->render(
+        return View::getCurrent()->render(
             '@app/views/motion/showSimpleTextSection',
             [
                 'section'        => $this->section,
                 'openedComments' => $openedComments,
                 'commentForm'    => $commentForm,
-            ],
-            \Yii::$app->controller
+            ]
         );
     }
 

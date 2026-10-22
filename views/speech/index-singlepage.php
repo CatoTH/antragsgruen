@@ -6,15 +6,12 @@ use app\models\settings\Privileges;
 use app\models\db\{SpeechQueue, User};
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var SpeechQueue $queue
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('speech', 'speaking_bc'));
 $user = User::getCurrentUser();
 $cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());

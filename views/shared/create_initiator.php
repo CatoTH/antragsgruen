@@ -6,7 +6,9 @@ use app\models\settings\{AntragsgruenApp, ConsultationUserOrganisation, Initiato
 use app\models\supportTypes\SupportBase;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var ISupporter $initiator
  * @var ISupporter[] $moreInitiators
  * @var ISupporter[] $supporters
@@ -20,12 +22,7 @@ use app\models\supportTypes\SupportBase;
  * @var ConsultationMotionType $motionType
  */
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
 
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $layout->loadDatepicker();
 
 $locale = Tools::getCurrentDateLocale();

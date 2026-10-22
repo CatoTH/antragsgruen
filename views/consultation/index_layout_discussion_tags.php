@@ -4,7 +4,7 @@ use app\components\{Html, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationSettingsTag, IMotion, Motion};
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
  * @var IMotion[] $imotions

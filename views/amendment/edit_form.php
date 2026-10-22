@@ -6,16 +6,13 @@ use app\models\policies\IPolicy;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $mode
  * @var \app\models\forms\AmendmentEditForm $form
  * @var \app\models\db\Consultation $consultation
  */
 
-/** @var \app\controllers\AmendmentController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $motionType = $form->motion->getMyMotionType();
 $multipleParagraphs = ($motionType->amendmentMultipleParagraphs === \app\models\db\ConsultationMotionType::AMEND_PARAGRAPHS_MULTIPLE);
@@ -56,7 +53,7 @@ if ($form->toAnotherAmendment) {
 echo '</div><br style="clear: both;">';
 
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 if ($motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
@@ -161,7 +158,7 @@ echo '</div>';
 
 if ($form->getAllowEditingInitiators()) {
     $initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
-    echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
+    echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form);
 }
 
 if (!$multipleParagraphs) {

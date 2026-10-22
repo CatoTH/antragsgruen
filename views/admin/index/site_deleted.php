@@ -1,13 +1,10 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'cons_delete_done');
 $layout->addCSS('css/backend.css');

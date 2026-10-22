@@ -4,7 +4,7 @@ use app\components\{Html, MotionSorter, UrlHelper};
 use app\models\db\Motion;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
  * @var \app\models\db\Consultation $consultation
  * @var Motion[] $resolutions
  */

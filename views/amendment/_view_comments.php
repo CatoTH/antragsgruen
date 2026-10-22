@@ -4,7 +4,7 @@ use app\models\db\{Amendment, AmendmentComment, User};
 use app\models\settings\{PrivilegeQueryContext, Privileges};
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
  * @var Amendment $amendment
  * @var \app\models\forms\CommentForm $commentForm
  */

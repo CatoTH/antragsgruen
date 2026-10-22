@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\models\supportTypes;
 
-use app\controllers\Base;
 use app\models\db\{Amendment, ConsultationMotionType, ISupporter, Motion};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
 
@@ -31,12 +30,12 @@ class NoInitiator extends SupportBase
         $this->settingsObject->allowMoreSupporters = false;
     }
 
-    public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller): string
+    public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm): string
     {
         return '';
     }
 
-    public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller): string
+    public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm): string
     {
         return '';
     }

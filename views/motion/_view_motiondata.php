@@ -7,7 +7,7 @@ use app\models\db\{ConsultationSettingsTag, Motion, MotionSupporter, User, Consu
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var bool $reducedNavigation
  * @var Motion $motion
  * @var Consultation $consultation
@@ -15,7 +15,6 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  * @var null|string $supportStatus
  * @var bool $consolidatedAmendments
  * @var bool $hasPrivateComments
- * @var \app\controllers\Base $controller
  */
 
 $motionDataMode = $motion->getMyConsultation()->getSettings()->motiondataMode;

@@ -3,11 +3,10 @@
 use app\components\UrlHelper;
 use app\components\Html;
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
+/**
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
+ */
 
 $layout->addJsTranslation('speech');
 

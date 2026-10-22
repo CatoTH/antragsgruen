@@ -5,15 +5,12 @@ use app\models\api\speech\SpeechQueueAdmin;
 use app\models\db\SpeechQueue;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var SpeechQueue $queue
  */
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manageSpeechPage';
 if ($queue->motion) {
     $layout->addBreadcrumb($queue->motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($queue->motion));

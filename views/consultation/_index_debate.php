@@ -3,14 +3,11 @@
 use app\components\{Html, DebateTools, LiveDataChannels};
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\db\Consultation $consultation
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $layout->addJsTranslation('debate');
 $layout->addJsTranslation('motion');

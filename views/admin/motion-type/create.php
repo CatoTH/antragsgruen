@@ -4,13 +4,11 @@ use app\components\{Html, HTMLTools, UrlHelper};
 use app\views\pdfLayouts\IPDFLayout;
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  */
 
-/** @var \app\controllers\admin\MotionTypeController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'motion_type_create_head');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
@@ -33,7 +31,7 @@ echo Html::beginForm('', 'post', [
     </label>
     <div class="rightColumn typePresetList">
         <?php
-        foreach ($controller->consultation->motionTypes as $motionType) {
+        foreach ($consultation->motionTypes as $motionType) {
             ?>
             <label class="typePreset">
                 <input type="radio" name="type[preset]" value="<?= $motionType->id ?>"

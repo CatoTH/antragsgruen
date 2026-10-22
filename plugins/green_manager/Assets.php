@@ -2,17 +2,16 @@
 
 namespace app\plugins\green_manager;
 
-use yii\web\AssetBundle;
+use app\components\view\AssetBundle;
 
 class Assets extends AssetBundle
 {
-    public $sourcePath = '@app/plugins/green_manager/assets/';
-
-    public $css = [
+    public array $css = [
         'sites.css',
     ];
-    public $js = [
-    ];
-    public $depends = [
-    ];
+
+    public function getSourcePath(): string
+    {
+        return __DIR__ . '/assets';
+    }
 }

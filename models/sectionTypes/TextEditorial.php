@@ -11,7 +11,7 @@ use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, ConsultationMotionType, Motion, MotionSection, User};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
-use yii\web\View;
+use app\components\view\View;
 use CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class TextEditorial extends TextSimpleCommon
@@ -63,12 +63,11 @@ class TextEditorial extends TextSimpleCommon
 
     public function showMotionView(?CommentForm $commentForm, array $openedComments): string
     {
-        return (new View())->render(
+        return View::getCurrent()->render(
             '@app/views/motion/showEditorialTextSection',
             [
                 'section'        => $this->section,
-            ],
-            \Yii::$app->controller
+            ]
         );
     }
 

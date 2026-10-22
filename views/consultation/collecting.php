@@ -1,21 +1,18 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
 use app\components\{Html, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Motion};
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
 
 $consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'collecting_bc');
 
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('con', 'collecting_bc'));
 
 $motions = [];

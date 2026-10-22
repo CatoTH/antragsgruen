@@ -3,12 +3,10 @@
 use app\models\db\ISupporter;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
  * @var ISupporter[] $users
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
 
 
 $data          = [];

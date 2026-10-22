@@ -1,8 +1,9 @@
 <?php
 
 /**
- * @var \app\controllers\admin\MotionListController $controller
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var AdminMotionFilterForm $search
  * @var bool $hasProposedProcedures
  * @var bool $hasResponsibilities
@@ -12,11 +13,7 @@ use app\models\forms\AdminMotionFilterForm;
 use app\models\settings\{Privileges, Consultation as ConsultationSettings};
 use app\components\{Html, HTMLTools, UrlHelper};
 
-$controller = $this->context;
-$consultation = $controller->consultation;
 $consultationSettings = $consultation->getSettings();
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $getExportLinkLi = function ($title, $route, $motionTypeIds, $cssClass) use ($search) {
     $params     = array_merge($route, ['motionTypeId' => $motionTypeIds, 'inactive' => '0', 'replaced' => '0', 'admin' => '1']);
@@ -184,12 +181,12 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                 $title .= HTMLTools::getTooltipIcon(Yii::t('admin', 'index_export_ods_tt'));
                 echo $getExportLinkLi($title, ['admin/motion-list/motion-odslist'], $motionTypeIds, 'motionODS');
 
-                if ($controller->getParams()->weasyprintPath) {
+                if (\app\models\settings\AntragsgruenApp::getInstance()->weasyprintPath) {
                     $title = Yii::t('admin', 'index_pdf_collection');
                     echo $getExportLinkLi($title, ['motion/pdfcollection'], $motionTypeIds, 'motionPDF');
                 }
 
-                if ($controller->getParams()->weasyprintPath) {
+                if (\app\models\settings\AntragsgruenApp::getInstance()->weasyprintPath) {
                     $title = Yii::t('admin', 'index_pdf_zip_list');
                     $path  = ['admin/motion-list/motion-pdfziplist'];
                     echo $getExportLinkLi($title, $path, $motionTypeIds, 'motionZIP');
@@ -250,7 +247,7 @@ $btnFunctions = $consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_
                 $title = Yii::t('admin', 'index_pdf_list');
                 echo $getExportLinkLi($title, ['admin/amendment/pdflist'], null, 'amendmentPdfList');
 
-                if ($controller->getParams()->weasyprintPath) {
+                if (\app\models\settings\AntragsgruenApp::getInstance()->weasyprintPath) {
                     $title = Yii::t('admin', 'index_pdf_zip_list');
                     echo $getExportLinkLi($title, ['admin/amendment/pdfziplist'], null, 'amendmentPdfZipList');
                 }

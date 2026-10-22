@@ -6,17 +6,14 @@ use app\models\mergeAmendments\Draft;
 use app\models\sectionTypes\SectionLanguageMode;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Motion $oldMotion
  * @var Motion $newMotion
  * @var Draft $mergingDraft
  * @var \app\models\MotionSectionChanges[] $changes
  */
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));

@@ -5,7 +5,7 @@ use app\models\db\AmendmentSection;
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
  * @var Amendment $amendment
  */
 

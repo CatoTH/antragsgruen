@@ -2,13 +2,12 @@
 
 namespace app\plugins\swagger_ui;
 
-use yii\web\AssetBundle;
+use app\components\view\AssetBundle;
 
 class Assets extends AssetBundle
 {
-    public $sourcePath = '@app/plugins/swagger_ui/assets/';
-
-    public $css = [];
-    public $js = [];
-    public $depends = [];
+    public function getSourcePath(): string
+    {
+        return __DIR__ . '/assets';
+    }
 }

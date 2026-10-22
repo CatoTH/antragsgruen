@@ -2,6 +2,7 @@
 
 namespace app\plugins\gruene_ch_saml;
 
+use app\components\view\View;
 use app\components\{LoginProviderInterface, RequestContext};
 use app\models\db\User;
 use app\models\settings\AntragsgruenApp;
@@ -29,7 +30,7 @@ class SamlLogin implements LoginProviderInterface
         if (!$active) {
             return '';
         }
-        return \Yii::$app->controller->renderPartial('@app/plugins/gruene_ch_saml/views/login', [
+        return View::getCurrent()->render('@app/plugins/gruene_ch_saml/views/login', [
             'backUrl' => $backUrl
         ]);
     }

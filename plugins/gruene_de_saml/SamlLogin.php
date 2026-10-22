@@ -2,6 +2,7 @@
 
 namespace app\plugins\gruene_de_saml;
 
+use app\components\view\View;
 use app\models\db\ConsultationUserGroup;
 use app\components\{LoginProviderInterface, RequestContext, UrlHelper};
 use app\models\db\User;
@@ -40,7 +41,7 @@ class SamlLogin implements LoginProviderInterface
 
     public function renderLoginForm(string $backUrl, bool $active): string
     {
-        return \Yii::$app->controller->renderPartial('@app/plugins/gruene_de_saml/views/login', [
+        return View::getCurrent()->render('@app/plugins/gruene_de_saml/views/login', [
             'loginActive' => $active,
             'backUrl' => $backUrl,
         ]);
@@ -263,6 +264,6 @@ class SamlLogin implements LoginProviderInterface
 
     public function renderAddMultipleUsersForm(): ?string
     {
-        return \Yii::$app->controller->renderPartial('@app/plugins/gruene_de_saml/views/users_add_multiple', []);
+        return View::getCurrent()->render('@app/plugins/gruene_de_saml/views/users_add_multiple', []);
     }
 }

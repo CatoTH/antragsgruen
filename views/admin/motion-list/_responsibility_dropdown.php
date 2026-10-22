@@ -7,21 +7,20 @@ use app\models\db\{IMotion, User};
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var IMotion $imotion
  * @var string $type
  */
 
-/** @var \app\controllers\admin\AdminBase $controller */
-$controller = $this->context;
 
 $idBase = $type . $imotion->id;
 
 $users = [];
 $foundUsers = [];
-foreach ($controller->consultation->getUsersInAnyGroup() as $user) {
+foreach ($consultation->getUsersInAnyGroup() as $user) {
     $pctx = PrivilegeQueryContext::imotion($imotion);
-    if ($user->hasPrivilege($controller->consultation, Privileges::PRIVILEGE_ANY, $pctx)) {
+    if ($user->hasPrivilege($consultation, Privileges::PRIVILEGE_ANY, $pctx)) {
         $users[]      = $user;
         $foundUsers[] = $user->id;
     }

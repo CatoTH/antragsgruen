@@ -5,15 +5,12 @@ use app\components\UrlHelper;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $preEmail
  * @var string $preCode
  */
 
-/** @var \app\controllers\UserController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'recover_title');
 $layout->addBreadcrumb('Passwort');
@@ -21,7 +18,7 @@ $layout->robotsNoindex = true;
 
 echo '<h1>' . Yii::t('user', 'recover_title') . '</h1>';
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 $url = UrlHelper::createUrl('user/recovery');
 

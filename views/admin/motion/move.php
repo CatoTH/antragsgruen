@@ -5,17 +5,14 @@ use app\models\db\ConsultationAgendaItem;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var \app\models\forms\MotionMover $form
  */
 
 $motion = $form->getMotion();
 
-/** @var \app\controllers\admin\MotionController $controller */
-$controller   = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
-$consultation = $controller->consultation;
 
 $this->title = Yii::t('admin', 'motion_edit_title') . ': ' . $motion->getTitleWithPrefix();
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));

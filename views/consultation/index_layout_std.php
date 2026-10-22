@@ -5,7 +5,7 @@ use app\models\db\{Amendment, Consultation, Motion, IMotion};
 use app\views\consultation\LayoutHelper;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
  * @var Consultation $consultation
  * @var IMotion[] $imotions
  * @var bool $isResolutionList
