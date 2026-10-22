@@ -38,6 +38,11 @@ class ProposedChangeForm
                 $originalSection = $section->getOriginalMotionSection();
             }
 
+            if (!$originalSection) {
+                // Might be a section that was added later; motion does not yet have it, but amendment has an empty section.
+                continue;
+            }
+
             $newSection = new AmendmentSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->setOriginalMotionSection($originalSection);
