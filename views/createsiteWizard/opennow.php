@@ -12,7 +12,7 @@ use app\components\Html;
         <legend><?= $t('opennow_title') ?></legend>
         <div class="description"><?= $t('opennow_desc') ?></div>
         <div class="options">
-            <label class="radio-checkbox-label radio-label two-lines value-0">
+            <label class="radio-checkbox-label radio-label value-0">
                 <span class="title long"><?= $t('opennow_no') ?></span>
                 <span class="description"></span>
                 <span class="input">

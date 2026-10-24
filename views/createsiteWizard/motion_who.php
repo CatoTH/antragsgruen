@@ -27,7 +27,7 @@ use app\components\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label radio-label two-lines value-2">
+            <label class="radio-checkbox-label radio-label value-2">
                 <span class="title long"><?= $t('motwho_loggedin') ?></span>
                 <span class="description"></span>
                 <span class="input">
