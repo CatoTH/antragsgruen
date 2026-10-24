@@ -12,14 +12,14 @@ use app\components\Html;
         <legend><?= $t('applicationtype_title') ?></legend>
         <div class="description"><?= $t('applicationtype_desc') ?></div>
         <div class="options">
-            <label class="radio-checkbox-label radio-label two-lines value-1">
+            <label class="radio-checkbox-label radio-label value-1">
                 <span class="title long"><?= $t('applicationtype_text') ?></span>
                 <span class="description"><?= $t('applicationtype_text_desc') ?></span>
                 <span class="input">
                     <?= Html::radio('SiteCreateForm[applicationType]', $model->applicationType == 1, ['value' => 1]); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label radio-label two-lines value-2">
+            <label class="radio-checkbox-label radio-label value-2">
                 <span class="title long"><?= $t('applicationtype_pdf') ?></span>
                 <span class="description"><?= $t('applicationtype_pdf_desc') ?></span>
                 <span class="input">
