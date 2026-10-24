@@ -8,9 +8,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class UserList
 {
-    /**
-     * @SerializedName("listName")
-     */
+    #[SerializedName('listName')]
     private string $listName;
 
     /** @var User[] */

@@ -29,7 +29,7 @@
     "endroid/qr-code": "^5.0",
     "ezyang/htmlpurifier": "^4.19.1",
     "firebase/php-jwt": "^7.0",
-    "guzzlehttp/guzzle": "^8.0",
+    "guzzlehttp/guzzle": "^7.9",
     "league/oauth2-client": "dev-master#f16649fb5c4d2e97d3d8bcbaf54a2d2f57efdd04 as 2.9.0",
     "paragonie/sodium_compat": "^2.0",
     "phpdocumentor/reflection-docblock": "^6.0",

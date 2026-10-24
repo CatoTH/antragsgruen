@@ -10,9 +10,7 @@ class User
 {
     private string $name;
 
-    /**
-     * @SerializedName("listName")
-     */
+    #[SerializedName('lastName')]
     private string $lastName;
 
     private ?string $party = null;

@@ -119,7 +119,7 @@ class User
     /**
      * @var string
      */
-    #[SerializedName('auth_level')]
+    #[SerializedName('auth_type')]
     private $authType;
 
     public function getId(): int
