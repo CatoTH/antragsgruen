@@ -45,7 +45,7 @@ use yii\helpers\Html;
                 </span>
             </label>
             <label class="radio-checkbox-label checkbox-label description-first value-applications">
-                <span class="description">&nbsp;</span>
+                <span class="description"></span>
                 <span class="title"><?=$t('functionality_applications')?></span>
                 <span class="input">
                     <?= Html::checkbox(
@@ -56,7 +56,7 @@ use yii\helpers\Html;
                 </span>
             </label>
             <label class="radio-checkbox-label checkbox-label description-first value-agenda">
-                <span class="description">&nbsp;</span>
+                <span class="description"></span>
                 <span class="title"><?=$t('functionality_agenda')?></span>
                 <span class="input">
                     <?= Html::checkbox(
@@ -66,8 +66,8 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label checkbox-label two-lines value-statute">
-                <span class="description">&nbsp;</span>
+            <label class="radio-checkbox-label checkbox-label value-statute">
+                <span class="description"></span>
                 <span class="title"><?=$t('functionality_statute_amendments')?></span>
                 <span class="input">
                     <?= Html::checkbox(
@@ -78,7 +78,7 @@ use yii\helpers\Html;
                 </span>
             </label>
             <label class="radio-checkbox-label checkbox-label description-first value-debate">
-                <span class="description">&nbsp;</span>
+                <span class="description"></span>
                 <span class="title"><?=$t('functionality_debate')?></span>
                 <span class="input">
                     <?= Html::checkbox(
@@ -89,7 +89,7 @@ use yii\helpers\Html;
                 </span>
             </label>
             <label class="radio-checkbox-label checkbox-label description-first value-votings">
-                <span class="description">&nbsp;</span>
+                <span class="description"></span>
                 <span class="title"><?=$t('functionality_votings')?></span>
                 <span class="input">
                     <?= Html::checkbox(

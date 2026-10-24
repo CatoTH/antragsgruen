@@ -27,7 +27,7 @@ $date   = Tools::date2bootstraptime($model->amendmentDeadline);
                     ); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label radio-label broad date-label value-1">
+            <label class="radio-checkbox-label radio-label broad value-1">
                 <span class="title long"><?= $t('amenddead_yes') ?></span>
                 <span class="description">
                     <span class="input-group date amendmentDeadline">

@@ -19,7 +19,7 @@ use yii\helpers\Html;
                     <?= Html::radio('SiteCreateForm[needsSupporters]', !$model->needsSupporters, ['value' => 0]); ?>
                 </span>
             </label>
-            <label class="radio-checkbox-label radio-label date-label value-1">
+            <label class="radio-checkbox-label radio-label value-1">
                 <span class="title long"><?= $t('supporters_yes') ?></span>
                 <span class="description">
                     <input type="number" name="SiteCreateForm[minSupporters]" value="<?= $model->minSupporters ?>"
