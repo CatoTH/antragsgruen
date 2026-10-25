@@ -247,11 +247,22 @@ class SsoLogin implements LoginProviderInterface
     }
 
     /**
+     * Get effective attribute mapping by merging custom overrides onto provider defaults.
+     */
+    public function getEffectiveAttributeMapping(string $source): array
+    {
+        return array_merge(
+            $this->getDefaultAttributeMapping($source),
+            $this->config['attributeMapping'] ?? []
+        );
+    }
+
+    /**
      * Get or create user with JIT provisioning
      */
     private function getOrCreateUser(array $attributes, string $source): User
     {
-        $attributeMapping = $this->config['attributeMapping'] ?? $this->getDefaultAttributeMapping($source);
+        $attributeMapping = $this->getEffectiveAttributeMapping($source);
 
         // Extract user data based on attribute mapping
         $userData = $this->extractUserData($attributes, $attributeMapping);
