@@ -20,6 +20,7 @@ use app\models\sectionTypes\{ISectionType, SectionLanguageMode};
 class AmendmentSection extends IMotionSection
 {
     private ?MotionSection $originalMotionSection = null;
+    private ?AmendmentSection $amendedAmendmentSection = null;
 
     public static function tableName(): string
     {
@@ -118,6 +119,37 @@ class AmendmentSection extends IMotionSection
     public function setOriginalMotionSection(MotionSection $motionSection): void
     {
         $this->originalMotionSection = $motionSection;
+    }
+
+    /**
+     * Only needed while creating an amendment to another amendment, as there is no saved amendment yet
+     * to derive the amended amendment from.
+     */
+    public function setAmendedAmendmentSection(?AmendmentSection $amendmentSection): void
+    {
+        $this->amendedAmendmentSection = $amendmentSection;
+    }
+
+    /**
+     * The text this amendment section is written against when editing single paragraphs:
+     * for an amendment to another amendment, that amendment's text (so its changes are kept),
+     * otherwise the original motion text.
+     */
+    public function getBaseTextForEditing(): ?string
+    {
+        $amendedSection = $this->amendedAmendmentSection;
+        $amendedAmendment = $this->getAmendment()?->amendedAmendment;
+        if ($amendedSection === null && $amendedAmendment) {
+            foreach ($amendedAmendment->getActiveSections() as $section) {
+                if ($section->sectionId === $this->sectionId) {
+                    $amendedSection = $section;
+                }
+            }
+        }
+        if ($amendedSection && $amendedSection->data !== '') {
+            return $amendedSection->data;
+        }
+        return $this->getOriginalMotionSection()?->getData();
     }
 
     public function getFirstLineNumber(): int

@@ -426,7 +426,7 @@ class AmendmentController extends Base
             $form->cloneAmendmentText($adoptAmend, true);
         } elseif ($amendingAmendment !== null) {
             $form->cloneAmendmentText($amendingAmendment, false);
-            $form->toAnotherAmendment = $amendingAmendment->id;
+            $form->setAmendedAmendment($amendingAmendment);
         }
 
         if (count($form->supporters) == 0) {
