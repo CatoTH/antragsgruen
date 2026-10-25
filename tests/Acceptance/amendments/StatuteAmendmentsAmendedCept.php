@@ -71,6 +71,21 @@ $I->executeJS('CKEDITOR.instances.' . $textSectionId . '.setData("<ol><li>Sectio
 $I->fillField(['name' => 'Initiator[primaryName]'], 'Another Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
+
+$I->wantTo('see the consolidated comparison on the confirmation page as well');
+$confirmConsolidatedHolder = '#consolidated_section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1);
+$I->seeElement('.amendmentComparison[data-comparison-mode="parent"]');
+$I->dontSeeElement('.amendmentComparison[data-comparison-mode="original"]');
+$I->see('Section', $confirmConsolidatedHolder . ' .onlyChangedText .inserted');
+$I->dontSee('Article', $confirmConsolidatedHolder);
+$I->clickJS($confirmConsolidatedHolder . ' .dropdown-menu .showFullText');
+$I->wait(0.2);
+$I->see('Article', $confirmConsolidatedHolder . ' .fullMotionText .deletedOuter');
+$I->clickJS($confirmConsolidatedHolder . ' .dropdown-menu .showComparisonToOriginal');
+$I->wait(0.2);
+$I->seeElement('.amendmentComparison[data-comparison-mode="original"]');
+$I->dontSeeElement('.amendmentComparison[data-comparison-mode="parent"]');
+
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 $I->click('#motionConfirmedForm .btn');
 $I->logout();
