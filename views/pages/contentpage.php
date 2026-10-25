@@ -36,7 +36,7 @@ if ($pageData->textId === ConsultationText::DEFAULT_PAGE_WELCOME) {
     $files = ($fileGroup ? $consultation->getDownloadableFiles($fileGroup->id) : []);
 }
 
-if (User::getCurrentUser() && $pageData->isCustomPage()) {
+if (User::getCurrentUser() && $pageData->isCustomPage() && $consultation) {
     $fullscreenButton = $this->render('@app/views/shared/_fullscreen_toggle.php', [
         'init_page' => 'page-' . $pageData->id,
         'init_content_url' => UrlHelper::absolutizeLink($pageData->getJsonUrl()),
