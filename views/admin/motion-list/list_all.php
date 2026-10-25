@@ -6,7 +6,9 @@ use app\models\db\{Amendment, IMotion, Motion};
 use app\models\forms\AdminMotionFilterForm;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var IMotion $entries
  * @var AdminMotionFilterForm $search
  * @var boolean $privilegeScreening
@@ -15,11 +17,6 @@ use app\models\forms\AdminMotionFilterForm;
  * @var string|null $motionId
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
-$consultation = $controller->consultation;
 
 $this->title = Yii::t('admin', 'list_head_title');
 if ($consultation->getSettings()->adminListFilerByMotion) {
@@ -73,7 +70,7 @@ $layout->addJsTranslation("motion");
 <?php
 echo '<div class="content">';
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
 if ($motionId !== null) {

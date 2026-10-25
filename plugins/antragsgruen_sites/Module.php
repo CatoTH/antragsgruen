@@ -25,13 +25,9 @@ class Module extends ModuleBase
         return '/antragsgruen_sites/manager/index';
     }
 
-    /**
-     * @param \yii\web\Controller<\app\components\yii\Application> $controller
-     * @return \yii\web\AssetBundle[]|string[]
-     */
-    public static function getActiveAssetBundles(\yii\web\Controller $controller): array
+    public static function getActiveAssetBundles(string $route): array
     {
-        if (str_starts_with($controller->route, 'antragsgruen_sites')) {
+        if (str_starts_with($route, 'antragsgruen_sites')) {
             return [
                 Assets::class,
             ];

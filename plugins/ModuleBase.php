@@ -15,8 +15,8 @@ use app\models\policies\IPolicy;
 use app\models\quorumType\IQuorumType;
 use app\models\supportTypes\SupportBase;
 use app\models\settings\{IMotionStatus, Layout, Privilege, VotingData};
-use yii\base\{Action, Module};
-use yii\web\{AssetBundle, Controller, View};
+use app\components\view\AssetBundle;
+use yii\base\Module;
 
 class ModuleBase extends Module
 {
@@ -31,10 +31,12 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Controller<\app\components\yii\Application> $controller
-     * @return AssetBundle[]
+     * Asset bundles to include on the page; their CSS / JavaScript is added to the page's head / body end.
+     *
+     * @param string $route The route of the current page, e.g. "consultation/home" or "<pluginId>/<controller>/<action>"
+     * @return array<class-string<AssetBundle>>
      */
-    public static function getActiveAssetBundles(Controller $controller): array
+    public static function getActiveAssetBundles(string $route): array
     {
         return [];
     }
@@ -203,9 +205,9 @@ class ModuleBase extends Module
     }
 
     /**
-     * @return array<string, array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}>
+     * @return array<string, array{title: string, preview: string|null, bundle: class-string<AssetBundle>, hooks?: class-string<Hooks>, odtTemplate?: string}>
      */
-    public static function getProvidedLayouts(?View $view = null): array
+    public static function getProvidedLayouts(): array
     {
         return [];
     }
@@ -244,9 +246,9 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param Action<Base> $action
+     * @param string $route The route of the current page, e.g. "consultation/home"
      */
-    public static function getRobotsIndexOverride(?Consultation $consultation, Action $action, bool $default): ?bool
+    public static function getRobotsIndexOverride(?Consultation $consultation, string $route, bool $default): ?bool
     {
         return null;
     }

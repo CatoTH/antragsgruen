@@ -5,7 +5,7 @@ use app\models\consultationLog\{ProposedProcedureAgreement, ProposedProcedureUse
 use app\models\db\{ConsultationLog, IMotion, IProposal};
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var IMotion $imotion
  * @var IProposal $proposal
  * @var string|null $procedureToken

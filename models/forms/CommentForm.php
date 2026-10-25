@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\models\forms;
 
 use app\components\{AntiSpam, RequestContext};
+use app\components\view\View;
 use app\models\db\{Amendment, AmendmentComment, ConsultationMotionType, IComment, IMotion, Motion, MotionComment, User, UserNotification};
 use app\models\exceptions\{Access, DB, FormError, Internal};
 
@@ -229,7 +230,7 @@ class CommentForm
         }
 
         if ($this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
-            return \Yii::$app->controller->renderPartial('@app/views/shared/_comment_form', [
+            return View::getCurrent()->render('@app/views/shared/_comment_form', [
                 'form'         => $this,
                 'consultation' => $this->motionType->getConsultation(),
                 'paragraphNo'  => $this->paragraphNo,

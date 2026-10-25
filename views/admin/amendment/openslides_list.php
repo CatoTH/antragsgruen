@@ -4,13 +4,11 @@ use app\models\db\Amendment;
 use app\models\sectionTypes\SectionLanguageMode;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var Amendment[] $amendments
  */
 
-/** @var \app\controllers\admin\AmendmentController $controller */
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 
 $data = [];

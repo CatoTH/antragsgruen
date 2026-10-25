@@ -3,15 +3,12 @@
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $query
  * @var \app\models\SearchResult[] $results
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = str_replace('%QUERY%', $query, Yii::t('con', 'search_results_title'));
 $layout->addBreadcrumb(Yii::t('con', 'search_results_bc'));

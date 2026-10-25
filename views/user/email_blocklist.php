@@ -3,15 +3,12 @@
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var bool $isBlocked
  */
 
-/** @var \app\controllers\UserController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'no_noti_title');
 $layout->addBreadcrumb(Yii::t('user', 'no_noti_bc'));
@@ -22,7 +19,7 @@ echo '<h1>' . Yii::t('user', 'no_noti_title') . '</h1>';
 
 echo Html::beginForm('', 'post', ['class' => 'emailBlocklistForm content']);
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 ?>
 <div class="radio">

@@ -4,12 +4,10 @@ use app\components\HTMLTools;
 use app\components\Html;
 
 /**
- * @var \Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var array $sites
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
 
 $this->title = Yii::t('antragsgruen_sites', 'allsites_title');
 

@@ -6,13 +6,11 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion[] $imotions
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 $spreadsheet = new Spreadsheet();
 

@@ -7,7 +7,7 @@ $t = function (string $string): string {
 /**
  * @var string[] $errors
  * @var \app\models\forms\SiteCreateForm $model
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
  */
 
 ?>

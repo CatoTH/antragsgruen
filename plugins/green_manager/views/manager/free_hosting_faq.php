@@ -3,17 +3,15 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Discuss.green - The Green Online Motion Administration';
-/** @var \app\controllers\Base $controller $controller */
-$controller = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://discuss.green/free-hosting';
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl = 'https://discuss.green/free-hosting';
 
-$layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'manager_faq';
 $layout->fullWidth        = true;
 

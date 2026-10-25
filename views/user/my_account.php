@@ -7,7 +7,10 @@ use OTPHP\TOTP;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
+ * @var \app\models\db\Site|null $site
  * @var User $user
  * @var bool $emailBlocked
  * @var int $pwMinLen
@@ -16,11 +19,6 @@ use app\components\Html;
  * @var TOTP|null $addSecondFactorKey
  */
 
-/** @var \app\controllers\UserController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
-$consultation = $controller->consultation;
 
 $this->title = Yii::t('user', 'my_acc_title');
 $layout->addBreadcrumb(Yii::t('user', 'my_acc_bread'));
@@ -44,7 +42,7 @@ if ($externalAuthenticator === null) {
     $hasChangeableFields = false;
     echo Html::beginForm($formUrl, 'post', ['class' => 'userAccountForm content']);
 
-    echo $controller->showErrors();
+    echo \app\components\FlashMessages::render();
 
     $nameEditable = (($user->fixedData & User::FIXED_NAME) === 0);
     if ($nameEditable) {
@@ -330,7 +328,7 @@ if ($externalAuthenticator === null) {
 }
 
 
-if ($controller->site) {
+if ($site) {
     ?>
     <section aria-labelledby="notificationsTitle" id="notificationsSection">
         <h2 class="green" id="notificationsTitle"><?= Yii::t('user', 'notification_title') ?></h2>
@@ -338,7 +336,7 @@ if ($controller->site) {
             <?= Yii::t('user', 'notification_intro') ?>
             <ul class="notificationLinks">
                 <?php
-                foreach ($controller->site->consultations as $consultation) {
+                foreach ($site->consultations as $consultation) {
                     $accessCheck = (new ConsultationAccess($consultation))->testForDenyReason(null, null);
                     if ($accessCheck['denied']) {
                         continue;

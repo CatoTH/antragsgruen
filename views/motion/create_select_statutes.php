@@ -5,15 +5,12 @@ use app\models\db\{ConsultationAgendaItem, ConsultationMotionType};
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var ConsultationMotionType $motionType
  * @var ConsultationAgendaItem|null $agendaItem
  */
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 if ($agendaItem) {
     $this->title = $agendaItem->title . ': ' . $motionType->getTitleSingularForDisplay();

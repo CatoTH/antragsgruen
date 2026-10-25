@@ -83,6 +83,14 @@ final class RequestContext
     }
 
     /**
+     * A parameter of the current request, taken from the POST body or, if not set there, from the query string.
+     */
+    public static function getRequestValue(string $name): mixed
+    {
+        return self::getWebRequest()->post($name) ?? self::getWebRequest()->get($name);
+    }
+
+    /**
      * The URL of the current request, relative to the host, including the query string.
      */
     public static function getCurrentUrl(): string

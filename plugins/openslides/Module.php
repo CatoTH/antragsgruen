@@ -2,7 +2,8 @@
 
 namespace app\plugins\openslides;
 
-use app\components\{ExternalPasswordAuthenticatorInterface, RequestContext, UrlHelper};
+use app\components\view\View;
+use app\components\{ExternalPasswordAuthenticatorInterface, UrlHelper};
 use app\models\db\{Consultation, Site};
 use app\plugins\ModuleBase;
 
@@ -40,7 +41,7 @@ class Module extends ModuleBase
 
     public static function getConsultationExtraSettingsForm(Consultation $consultation): string
     {
-        return RequestContext::getController()->renderPartial(
+        return View::getCurrent()->render(
             '@app/plugins/openslides/views/admin/consultation_settings', ['consultation' => $consultation]
         );
     }

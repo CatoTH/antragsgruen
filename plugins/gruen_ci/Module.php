@@ -6,21 +6,15 @@ namespace app\plugins\gruen_ci;
 
 use app\models\layoutHooks\Hooks;
 use app\plugins\ModuleBase;
-use yii\web\View;
 
 class Module extends ModuleBase
 {
     /**
-     * @return array<string, array{title: string, preview: string|null, bundle: class-string, hooks?: class-string<Hooks>, odtTemplate?: string}>
+     * @return array<string, array{title: string, preview: string|null, bundle: class-string<\app\components\view\AssetBundle>, hooks?: class-string<Hooks>, odtTemplate?: string}>
      */
-    public static function getProvidedLayouts(?View $view = null): array
+    public static function getProvidedLayouts(): array
     {
-        if ($view) {
-            $asset = ThumbnailAssets::register($view);
-            $thumbBase = $asset->baseUrl;
-        } else {
-            $thumbBase = '/';
-        }
+        $thumbBase = (new ThumbnailAssets())->getBaseUrl();
 
         return [
             'std' => [

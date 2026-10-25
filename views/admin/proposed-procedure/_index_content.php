@@ -6,7 +6,8 @@ use app\models\proposedProcedure\{Agenda, AgendaVoting};
 use app\views\motion\LayoutHelper;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var Agenda[] $proposedAgenda
  * @var bool $expandAll
  * @var null|string $expandId
@@ -14,12 +15,9 @@ use app\views\motion\LayoutHelper;
  * @var bool $minimal
  */
 
-/** @var \app\controllers\admin\ProposedProcedureController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
 
 $hasResponsibilities = false;
-foreach ($controller->consultation->motionTypes as $motionType) {
+foreach ($consultation->motionTypes as $motionType) {
     if ($motionType->getSettingsObj()->hasResponsibilities) {
         $hasResponsibilities = true;
     }

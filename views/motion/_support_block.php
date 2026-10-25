@@ -9,12 +9,9 @@ use app\components\Html;
 
 /**
  * @var User|null $user
+ * @var \app\models\settings\Layout $layout
  * @var SupportBase $supportType
- * @var \app\controllers\Base $controller
  */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $nameReadOnly  = ($user && ($user->fixedData & User::FIXED_NAME) ? 'readonly' : '');
 $orgaReadOnly  = ($user && ($user->fixedData & User::FIXED_ORGA) ? 'readonly' : '');

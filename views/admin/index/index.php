@@ -7,16 +7,13 @@ use app\models\settings\Privileges;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\AdminTodoItem[] $todo
  * @var \app\models\db\Site $site
  * @var \app\models\db\Consultation $consultation
  */
 
-/** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'index_title');
 $layout->addCSS('css/backend.css');
@@ -34,7 +31,7 @@ $layout->addJsTranslation("admin");
 
 
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 echo '<div class="content adminIndex"><div class="adminIndexHolder"><div>';
 
@@ -131,7 +128,7 @@ if (User::havePrivilege($consultation, Privileges::PRIVILEGE_SITE_ADMIN, null)) 
     echo '</li>';
 }
 
-if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) {
+if (User::currentUserIsSuperuser() && !\app\models\settings\AntragsgruenApp::getInstance()->multisiteMode) {
     echo '<li>';
     echo Html::a(
         Yii::t('admin', 'index_site_config'),

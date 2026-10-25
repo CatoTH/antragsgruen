@@ -6,18 +6,15 @@ use app\models\db\ConsultationMotionType;
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Amendment $amendment
  * @var string $mode
- * @var \app\controllers\AmendmentController $controller
  */
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
-$controller  = $this->context;
 $motion      = $amendment->getMyMotion();
 $motionType  = $amendment->getMyMotionType();
-/** @var \app\models\settings\Layout $layout */
-$layout      = $controller->layoutParams;
 
 if (!$motion->getMyMotionType()->amendmentsOnly) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
@@ -30,13 +27,13 @@ $layout->addBreadcrumb($amendment->getFormattedTitlePrefix() ?? Yii::t('amend', 
 
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('amend', 'submitted_create') . '</h1>';
-    $controller->layoutParams->addBreadcrumb(Yii::t('amend', 'created_bread_create'));
+    $layout->addBreadcrumb(Yii::t('amend', 'created_bread_create'));
 } elseif ($amendment->isInScreeningProcess()) {
     echo '<h1>' . Yii::t('amend', 'submitted_submit') . '</h1>';
-    $controller->layoutParams->addBreadcrumb(Yii::t('amend', 'created_bread_submit'));
+    $layout->addBreadcrumb(Yii::t('amend', 'created_bread_submit'));
 } else {
     echo '<h1>' . Yii::t('amend', 'submitted_publish') . '</h1>';
-    $controller->layoutParams->addBreadcrumb(Yii::t('amend', 'created_bread_publish'));
+    $layout->addBreadcrumb(Yii::t('amend', 'created_bread_publish'));
 }
 
 echo '<div class="content">';
@@ -77,7 +74,7 @@ if ($motionType->amendmentsOnly) {
 echo Html::beginForm($backUrl, 'post', ['id' => 'motionConfirmedForm']);
 
 if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
-    $controller->layoutParams->addJS('npm/clipboard.min.js');
+    $layout->addJS('npm/clipboard.min.js');
     $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)));
     ?><br>
     <script type="module" crossorigin="anonymous">

@@ -8,15 +8,12 @@ use app\models\sectionTypes\SectionLanguageMode;
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Init $form
  * @var bool $twoCols
  */
 
-/** @var \app\controllers\MotionController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 $motion     = $form->motion;
 $consultation = $motion->getMyConsultation();
 
@@ -65,7 +62,7 @@ if (count($amendments) > 0) {
     echo '<div class="alert alert-info alert-dismissible">' . $explanation . '</div>';
 }
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 echo '</div>';
 

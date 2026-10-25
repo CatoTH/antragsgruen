@@ -112,7 +112,7 @@ class ConsultationController extends Base
             $feed->getFeed(),
             false,
             'feed.xml',
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -138,7 +138,7 @@ class ConsultationController extends Base
             $feed->getFeed(),
             false,
             'feed.xml',
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -164,7 +164,7 @@ class ConsultationController extends Base
             $feed->getFeed(),
             false,
             'feed.xml',
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -201,7 +201,7 @@ class ConsultationController extends Base
             $feed->getFeed(),
             false,
             'feed.xml',
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -255,8 +255,12 @@ class ConsultationController extends Base
         $newestMotions    = MotionRepository::getNewestByConsultation($consultation, 3);
         $newestComments   = IComment::getNewestByConsultation($consultation, 3);
 
+        $sidebarView = $consultation->getSettings()->getConsultationSidebar();
+        if ($sidebarView === null) {
+            return;
+        }
         $this->renderPartial(
-            $consultation->getSettings()->getConsultationSidebar(),
+            $sidebarView,
             [
                 'newestMotions'    => $newestMotions,
                 'newestAmendments' => $newestAmendments,

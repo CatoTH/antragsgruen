@@ -6,7 +6,7 @@ use app\models\db\{Amendment, ConsultationSettingsTag, User};
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
  * @var Amendment $amendment
  */
 

@@ -5,18 +5,15 @@ use app\models\db\{Amendment, Motion};
 use app\components\Html;
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Amendment $amendment
  * @var Motion $newMotion
  */
 
 $this->title = Yii::t('amend', 'merge1_done_title');
 
-/** @var \app\controllers\AmendmentController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->getFormattedTitlePrefix() != '') {

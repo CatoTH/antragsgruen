@@ -7,7 +7,7 @@ use app\models\sectionTypes\{ISectionType, TabularDataType};
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
  * @var ConsultationSettingsMotionSection $section
  */
 

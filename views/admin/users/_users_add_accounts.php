@@ -6,20 +6,17 @@ use app\models\settings\{AntragsgruenApp, Privileges};
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Consultation $consultation
  */
 
-/** @var \app\controllers\admin\UsersController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $preEmails = '';
 $preNames = '';
 $prePasswords = '';
 $preText = Yii::t('admin', 'siteacc_email_text_pre');
-$hasEmail = ($controller->getParams()->mailService['transport'] !== 'none');
+$hasEmail = (\app\models\settings\AntragsgruenApp::getInstance()->mailService['transport'] !== 'none');
 
 $authTypes = [
     'email' => Yii::t('admin', 'siteacc_add_email'),

@@ -3,13 +3,10 @@
 use app\components\UrlHelper;
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  */
 
-/** @var \app\controllers\admin\MotionTypeController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'motion_type_deleted_head');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));

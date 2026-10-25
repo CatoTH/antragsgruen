@@ -2,11 +2,10 @@
 
 use app\components\UrlHelper;
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout       = $controller->layoutParams;
+/**
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
+ */
 
 $registerUrl   = UrlHelper::createUrl(['/rest/speech/register', 'queueId' => 'QUEUEID']);
 $unregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => 'QUEUEID']);

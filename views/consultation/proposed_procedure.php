@@ -6,21 +6,19 @@ use app\models\proposedProcedure\Agenda;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Agenda[] $proposedAgenda
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller        = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout            = $controller->layoutParams;
 $layout->fullWidth = true;
 $layout->loadBootstrapToggle();
 
 $this->title = Yii::t('con', 'proposal_title');
 $layout->addBreadcrumb(Yii::t('con', 'proposal_bc'));
 
-$iAmAdmin  = User::havePrivilege($controller->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
+$iAmAdmin  = User::havePrivilege($consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, null);
 $reloadUrl = \app\components\UrlHelper::createUrl('consultation/proposed-procedure-ajax');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';

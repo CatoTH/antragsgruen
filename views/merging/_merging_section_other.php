@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
  * @var \app\models\mergeAmendments\Init $form
  * @var MotionSection $section
  * @var bool $twoCols

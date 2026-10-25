@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
  */
 
 $this->title = Yii::t('user', 'recovered_title');

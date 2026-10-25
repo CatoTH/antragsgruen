@@ -5,17 +5,16 @@ use app\models\db\Site;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün - Motion.Tools - Managing resolutions, motions and amendments online';
-/** @var \app\controllers\Base $controller */
-$controller  = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://motion.tools/';
-$controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
-$controller->layoutParams->addInlineCss('
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl      = 'https://motion.tools/';
+$layout->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
+$layout->addInlineCss('
     .homeFigure { text-align: center; }
     .homeFigure figcaption { margin-top: -20px; margin-bottom: 20px; font-size: 0.8em; font-style: italic; color: #4a4a4a; }
     .homeFigureAmendment img { max-width: 100%; }

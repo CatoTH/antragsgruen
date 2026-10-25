@@ -3,14 +3,11 @@
 use app\components\UrlHelper;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\db\Motion $newMotion
  */
 
-/** @var \app\controllers\admin\MotionController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'motion_moved_title');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));

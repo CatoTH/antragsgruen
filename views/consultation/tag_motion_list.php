@@ -5,7 +5,8 @@ use app\components\{Html, MotionSorter, UrlHelper};
 use app\models\settings\{Consultation as ConsultationSettings};
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var ConsultationSettingsTag $tag
  * @var \app\components\HashedStaticCache $cache
  * @var bool $isResolutionList
@@ -13,10 +14,6 @@ use app\models\settings\{Consultation as ConsultationSettings};
  * @var AmendmentComment[] $myAmendmentComments
  */
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 $consultation = UrlHelper::getCurrentConsultation();
 
 $this->title = Html::encode($tag->title);

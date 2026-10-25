@@ -6,13 +6,11 @@ use app\views\motion\LayoutHelper;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var IMotion $entry
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
 $motionStatuses = $consultation->getStatuses()->getStatusNames();
 
 echo Html::encode($motionStatuses[$entry->status]);

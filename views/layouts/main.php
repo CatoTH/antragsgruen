@@ -4,17 +4,15 @@ use app\components\StaticResourceTools;
 use app\components\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var string $content
  */
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 $params = \app\models\settings\AntragsgruenApp::getInstance();
 
-$layout->registerPluginAssets($this, $controller);
+$layout->registerPluginAssets($this);
 if ($layout->mainCssFile === null) {
     $mainCssFile = StaticResourceTools::resourceUrl('css/layout-classic.css');
 } elseif (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
@@ -31,7 +29,7 @@ if ($layout->mainCssFile === null) {
     $mainCssFile = StaticResourceTools::resourceUrl('css/' . $layout->mainCssFile . '.css');
 }
 
-if (\app\components\DateTools::isDeadlineDebugModeActive($controller->consultation)) {
+if (\app\components\DateTools::isDeadlineDebugModeActive($consultation)) {
     $layout->loadDatepicker();
 }
 
@@ -39,8 +37,8 @@ $bodyClasses = $layout->bodyCssClasses;
 if ($layout->fullScreen) {
     $bodyClasses[] = 'fullscreen';
 }
-if ($controller->consultation) {
-    $bodyClasses[] = 'consultation-' . $controller->consultation->urlPath;
+if ($consultation) {
+    $bodyClasses[] = 'consultation-' . $consultation->urlPath;
 }
 
 $title = $layout->formatTitle($this->title ?? '');
@@ -52,8 +50,8 @@ $this->beginPage();
 
 echo '<!DOCTYPE HTML>
 <html lang="' . Html::encode($layout->getHTMLLanguageCode()) . '"';
-if ($controller->consultation) {
-    echo ' data-lang-variant="' . Html::encode($controller->consultation->wordingBase) . '"';
+if ($consultation) {
+    echo ' data-lang-variant="' . Html::encode($consultation->wordingBase) . '"';
 }
 echo '>
 <head>
@@ -63,7 +61,7 @@ echo '>
 echo '<title>' . Html::encode($title) . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
-if ($layout->isRobotsIndex($controller->action)) {
+if ($layout->isRobotsIndex($layout->route)) {
     echo '<meta name="robots" content="index, follow">' . "\n";
 } else {
     echo '<meta name="robots" content="noindex, nofollow">' . "\n";
@@ -85,7 +83,7 @@ foreach ($layout->extraCss as $file) {
 foreach ($layout->inlineCss as $inlineCss) {
     echo '<style>' . $inlineCss . '</style>' . "\n";
 }
-$forbidRobots = ($controller->consultation && $controller->consultation->getSettings()->robotsPolicy === \app\models\settings\Consultation::ROBOTS_NONE);
+$forbidRobots = ($consultation && $consultation->getSettings()->robotsPolicy === \app\models\settings\Consultation::ROBOTS_NONE);
 if ($layout->ogImage !== null && $layout->ogImage !== '' && !$forbidRobots) {
     echo '<meta property="og:image" content="' . Html::encode($layout->ogImage) . '">' . "\n";
 }
@@ -98,7 +96,6 @@ if ($params->jsErrorTracking) {
 
 echo '<script src="' . StaticResourceTools::resourceUrl('js/jquery-4.0.0.min.js') . '" crossorigin="anonymous"></script>';
 
-$consultation = $controller->consultation;
 if ($layout->provideJwt && $consultation) {
     $jwtConfig = \app\components\JwtCreator::getJwtConfigForCurrUser($consultation);
     echo '<meta name="user-jwt-config" content="' . Html::encode(json_encode($jwtConfig)) . '">' . "\n";
@@ -116,7 +113,7 @@ echo \app\models\layoutHooks\Layout::favicons();
 
 $this->head();
 
-echo \app\models\layoutHooks\Layout::endOfHead($controller->consultation);
+echo \app\models\layoutHooks\Layout::endOfHead($consultation);
 echo StaticResourceTools::getJsModulesImportMap();
 echo '</head>';
 
@@ -135,8 +132,6 @@ if (count($layout->getJsTranslations()) > 0) {
     echo '</script>';
 }
 
-$this->beginBody();
-
 echo '<a href="#mainContent" id="gotoMainContent">' . Yii::t('base', 'goto_main_content') . '</a>';
 
 echo '<div class="over_footer_wrapper">';
@@ -146,13 +141,13 @@ echo '<div id="page">';
 echo \app\models\layoutHooks\Layout::beginPage();
 
 echo \app\models\layoutHooks\Layout::logoRow();
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 echo \app\models\layoutHooks\Layout::beforeContent();
 
 echo $content;
 
-if (\app\components\DateTools::isDeadlineDebugModeActive($controller->consultation)) {
-    echo $this->render('@app/views/consultation/_debug_time_bar', ['consultation' => $controller->consultation]);
+if (\app\components\DateTools::isDeadlineDebugModeActive($consultation)) {
+    echo $this->render('@app/views/consultation/_debug_time_bar', ['consultation' => $consultation]);
 }
 
 echo '<div style="clear: both; padding-top: 15px;"></div>

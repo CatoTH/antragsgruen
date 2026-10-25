@@ -1,10 +1,11 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  */
 
-/** @var \app\controllers\PagesController $controller */
 
 use app\components\HTMLTools;
 use app\components\UrlHelper;
@@ -12,10 +13,6 @@ use app\models\settings\Privileges;
 use app\models\db\{ConsultationFileGroup, ConsultationText, User};
 use app\components\Html;
 
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
-$consultation = $controller->consultation;
 $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
 
 $this->title = Yii::t('pages', 'documents_title');
@@ -65,7 +62,7 @@ echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 if ($contentAdmin) {
     echo '<div class="textSaver hidden">';

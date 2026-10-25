@@ -5,16 +5,14 @@ use app\components\{IMotionStatusFilter, StringSplitter, UrlHelper};
 use app\models\db\{Amendment, ConsultationAgendaItem, Motion};
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var array $items
  * @var IMotionStatusFilter $filter
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
 const agendaColor = '#fff2cc';
 const motionColor = '#38761d';
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 $DEBUG = false;
 

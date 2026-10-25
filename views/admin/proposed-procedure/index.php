@@ -5,7 +5,9 @@ use app\models\proposedProcedure\Agenda;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var Agenda[] $proposedAgenda
  * @var bool $expandAll
  * @var null|string $expandId
@@ -13,13 +15,8 @@ use app\components\Html;
  * @var bool $minimal
  */
 
-/** @var \app\controllers\admin\ProposedProcedureController $controller */
-$controller         = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout             = $controller->layoutParams;
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
-$consultation = $controller->consultation;
 
 $this->title = Yii::t('con', 'proposal_title_internal');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl(['/admin/motion-list/index', 'minimal' => ($minimal ? 1 : 0)]));
@@ -111,7 +108,7 @@ if (!$minimal) {
 ?>
 
     <div class="reloadContent">
-        <?= $controller->showErrors() ?>
+        <?= \app\components\FlashMessages::render() ?>
         <?= $this->render('_index_content', [
             'proposedAgenda' => $proposedAgenda,
             'expandAll'      => $expandAll,

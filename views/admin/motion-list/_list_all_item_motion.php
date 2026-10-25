@@ -8,7 +8,8 @@ use app\models\db\{Motion, User};
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\db\Consultation|null $consultation
  * @var Motion $entry
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
@@ -20,9 +21,6 @@ use app\components\Html;
  * @var boolean $colDate
  */
 
-/** @var \app\controllers\admin\MotionListController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
 
 $isReplaced     = (count($entry->getReadableReplacedByMotions()) > 0);
 $viewUrl        = UrlHelper::createMotionUrl($entry);
@@ -148,7 +146,7 @@ echo '</ul></div>';
 echo ' / ' . Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']);
 echo ' / ' . Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);
 
-foreach ($controller->getParams()->getPluginClasses() as $pluginClass) {
+foreach (\app\models\settings\AntragsgruenApp::getInstance()->getPluginClasses() as $pluginClass) {
     foreach ($pluginClass::getCustomMotionExports($entry) as $title => $url) {
         echo ' / ' . Html::a(Html::encode($title), $url);
     }

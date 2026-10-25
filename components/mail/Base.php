@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\components\mail;
 
 use app\components\HTMLTools;
+use app\components\view\View;
 use app\models\settings\AntragsgruenApp;
 use app\models\db\{Consultation, EMailBlocklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
@@ -52,12 +53,13 @@ abstract class Base
 
         $template = '@app/views/layouts/email';
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            if ($pluginClass::getCustomEmailTemplate()) {
-                $template = $pluginClass::getCustomEmailTemplate();
+            $customTemplate = $pluginClass::getCustomEmailTemplate();
+            if ($customTemplate) {
+                $template = $customTemplate;
             }
         }
 
-        return \Yii::$app->controller->renderPartial($template, [
+        return View::getCurrent()->render($template, [
             'title'  => $subject,
             'html'   => $html,
             'styles' => $consultation?->site->getSettings()->getStylesheet(),

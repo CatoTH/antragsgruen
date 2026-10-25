@@ -5,15 +5,11 @@ use app\models\db\User;
 
 /**
  * @var \app\models\db\Consultation $consultation
+ * @var \app\models\settings\Layout $layout
  * @var string $init_page
  * @var string|null $init_content_url
  */
 
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 // When the "Currently debated" feature is enabled, the projector offers it as a dropdown option
 // (site-wide, next to motions and speaking lists) and renders the read-only user widget for it.

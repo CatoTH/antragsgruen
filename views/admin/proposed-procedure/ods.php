@@ -7,16 +7,13 @@ use CatoTH\HTML2OpenDocument\Spreadsheet;
 use app\components\Html;
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
  * @var Agenda[] $proposedAgenda
  * @var Consultation $consultation
  * @var bool $comments
  * @var bool $onlyPublic
  */
 
-/** @var \app\controllers\admin\ProposedProcedureController $controller */
-$controller   = $this->context;
-$consultation = $controller->consultation;
 
 $DEBUG = false;
 

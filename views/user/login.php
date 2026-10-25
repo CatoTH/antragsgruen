@@ -8,24 +8,23 @@ use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\Site as SiteSettings;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
+ * @var \app\models\db\Site|null $site
  * @var LoginUsernamePasswordForm $usernamePasswordForm
  * @var string $backUrl
  * @var string|null $conPwdErr
  * @var \app\models\db\Consultation $conPwdConsultation
  */
 
-/** @var \app\controllers\UserController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('user', 'login_title');
 $layout->addBreadcrumb(Yii::t('user', 'login_title'));
 $layout->robotsNoindex = true;
 
-if ($controller->site) {
-    $loginMethods = $controller->site->getSettings()->loginMethods;
+if ($site) {
+    $loginMethods = $site->getSettings()->loginMethods;
 } else {
     $loginMethods = SiteSettings::SITE_MANAGER_LOGIN_METHODS;
 }
@@ -43,7 +42,7 @@ $layout->addJsTranslation("user");
     </script>
 <?php
 
-$loginText = ConsultationText::getPageData($controller->site, $controller->consultation, ConsultationText::DEFAULT_PAGE_LOGIN_PRE);
+$loginText = ConsultationText::getPageData($site, $consultation, ConsultationText::DEFAULT_PAGE_LOGIN_PRE);
 if (trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';
     echo $loginText->text;
@@ -51,9 +50,9 @@ if (trim($loginText->text) !== '') {
 }
 
 $shownAccessPwdForm = false;
-if ($controller->consultation && $controller->consultation->getSettings()->accessPwd) {
+if ($consultation && $consultation->getSettings()->accessPwd) {
     $hasNonUsernamePwdLogin = true;
-    $conPwd = new \app\components\ConsultationAccessPassword($controller->consultation);
+    $conPwd = new \app\components\ConsultationAccessPassword($consultation);
     if (!$conPwd->isCookieLoggedIn()) {
         $shownAccessPwdForm = true;
         ?>
@@ -148,7 +147,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         <?php
     }
 
-    if ($controller->consultation && $controller->consultation->getSettings()->managedUserAccounts) {
+    if ($consultation && $consultation->getSettings()->managedUserAccounts) {
         echo '<div class="alert alert-info managedAccountHint hidden"><p>';
         echo Yii::t('user', 'login_managed_hint');
         echo '</p></div>';
@@ -180,7 +179,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
             <input type="text" value="<?= Html::encode($preName ?: '') ?>" name="name" id="name" class="form-control">
         </div>
         <?php
-        if ($controller->getParams()->dataPrivacyCheckbox) {
+        if (\app\models\settings\AntragsgruenApp::getInstance()->dataPrivacyCheckbox) {
             ?>
             <div class="form-group hidden checkbox" id="regConfirmation">
                 <label>
@@ -249,7 +248,7 @@ if ($hide_ww_login) {
     </div>';
 }
 
-$loginText = ConsultationText::getPageData($controller->site, $controller->consultation, ConsultationText::DEFAULT_PAGE_LOGIN_POST);
+$loginText = ConsultationText::getPageData($site, $consultation, ConsultationText::DEFAULT_PAGE_LOGIN_POST);
 if (trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';
     echo $loginText->text;

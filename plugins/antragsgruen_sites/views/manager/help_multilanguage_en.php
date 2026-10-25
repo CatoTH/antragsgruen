@@ -3,19 +3,18 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün: Motions in multiple languages';
-/** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://motion.tools/help/multi-language';
-$controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help/multi-language'];
-$controller->layoutParams->addBreadcrumb('Home', '/');
-$controller->layoutParams->addBreadcrumb('Help', '/help');
-$controller->layoutParams->addBreadcrumb('Multi-language support');
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl = 'https://motion.tools/help/multi-language';
+$layout->alternateLanuages = ['de' => 'https://antragsgruen.de/help/multi-language'];
+$layout->addBreadcrumb('Home', '/');
+$layout->addBreadcrumb('Help', '/help');
+$layout->addBreadcrumb('Multi-language support');
 
 ?>
 <h1>Motions in multiple languages</h1>

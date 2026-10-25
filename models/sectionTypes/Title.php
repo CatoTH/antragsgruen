@@ -9,7 +9,7 @@ use app\models\forms\CommentForm;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use app\components\Html;
 use CatoTH\HTML2OpenDocument\Text;
-use yii\web\View;
+use app\components\view\View;
 
 class Title extends ISectionType
 {
@@ -142,14 +142,13 @@ class Title extends ISectionType
 
     public function showMotionView(?CommentForm $commentForm, array $openedComments): string
     {
-        return (new View())->render(
+        return View::getCurrent()->render(
             '@app/views/motion/showTitleSection',
             [
                 'section'        => $this->section,
                 'openedComments' => $openedComments,
                 'commentForm'    => $commentForm,
-            ],
-            \Yii::$app->controller
+            ]
         );
     }
 

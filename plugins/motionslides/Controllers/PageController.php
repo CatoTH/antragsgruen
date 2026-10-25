@@ -55,7 +55,7 @@ class PageController extends Base
         } elseif (count($imotions) > 0) {
             $this->getHttpSession()->setFlash('success', 'Success.');
 
-            $html = \Yii::$app->controller->renderPartial(
+            $html = $this->renderPartial(
                 '@app/plugins/motionslides/views/imotion-page', ['imotions' => $imotions]
             );
 

@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @var $this yii\web\View
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var string $pageKey
  * @var string $saveUrl
  * @var bool $admin
@@ -10,8 +11,6 @@
 use app\models\db\ConsultationText;
 use app\components\Html;
 
-/** @var \app\controllers\PagesController $controller */
-$controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
 $pageData     = ConsultationText::getPageData(null, null, $pageKey);
@@ -22,8 +21,6 @@ $params   = Yii::$app->params;
 $url      = parse_url(str_replace('<subdomain:[\w_-]+>', $consultation->site->subdomain, $params->domainSubdomain));
 $currHost = $url['host'];
 
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 $layout->addBreadcrumb($pageData->breadcrumb ?? '');
 
 if ($admin) {

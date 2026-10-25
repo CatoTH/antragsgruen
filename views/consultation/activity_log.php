@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  * @var \app\models\db\Motion|null $motion
  * @var \app\models\db\Amendment|null $amendment
@@ -12,14 +13,10 @@
 
 use app\components\{Html, Tools, UrlHelper};
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
 
 $consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'activity_bc');
 
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 if ($motion) {
     $motionUrl = UrlHelper::createMotionUrl($motion);
     $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);

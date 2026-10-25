@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace app\models\supportTypes;
 
-use app\controllers\Base;
 use app\models\db\{Amendment, AmendmentSupporter, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSupporter, User};
 use app\models\api\imotion\{IMotionUpdateInitiator, IMotionUpdateSupporter, Supporter, SupporterType};
 use app\models\settings\{PrivilegeQueryContext, Privileges, InitiatorForm};
 use app\models\exceptions\{FormError, Internal};
 use app\models\forms\{AmendmentEditForm, MotionEditForm};
-use yii\web\View;
+use app\components\view\View;
 
 abstract class SupportBase
 {
@@ -515,11 +514,11 @@ abstract class SupportBase
     /**
      * @throws \Exception
      */
-    public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller): string
+    public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm): string
     {
         $initiatorAdmin = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, null);
 
-        $view           = new View();
+        $view           = View::getCurrent();
         $initiator      = $this->getEditableInitiator($editForm->supporters, $motionType->getConsultation());
         $moreInitiators = [];
         $supporters     = [];
@@ -555,19 +554,18 @@ abstract class SupportBase
                 'adminMode'         => $this->adminMode,
                 'isAmendment'       => false,
                 'motionType'        => $motionType,
-            ],
-            $controller
+            ]
         );
     }
 
     /**
      * @throws \Exception
      */
-    public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller): string
+    public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm): string
     {
         $initiatorAdmin = User::havePrivilege($motionType->getConsultation(), Privileges::PRIVILEGE_MOTION_INITIATORS, null);
 
-        $view           = new View();
+        $view           = View::getCurrent();
         $initiator      = $this->getEditableInitiator($editForm->supporters, $motionType->getConsultation());
         $supporters     = [];
         $moreInitiators = [];
@@ -603,8 +601,7 @@ abstract class SupportBase
                 'adminMode'         => $this->adminMode,
                 'isAmendment'       => true,
                 'motionType'        => $motionType,
-            ],
-            $controller
+            ]
         );
     }
 }

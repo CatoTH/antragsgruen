@@ -4,12 +4,10 @@ use app\components\UrlHelper;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
- * @var \app\controllers\Base $controller
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  */
 
-$controller = $this->context;
-$layout = $controller->layoutParams;
 
 $backUrl = \app\components\RequestContext::getWebRequest()->url;
 $loginUrl = UrlHelper::createUrl(['/user/login', 'backUrl' => $backUrl]);

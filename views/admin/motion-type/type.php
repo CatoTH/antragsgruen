@@ -4,16 +4,13 @@ use app\components\{Html, HTMLTools, Tools, UrlHelper};
 use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection};
 
 /**
- * @var Yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var ConsultationMotionType $motionType
  * @var string $supportCollPolicyWarning
  * @var string[] $languageSetupWarnings
  */
 
-/** @var \app\controllers\admin\MotionTypeController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'motion_type_edit');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
@@ -60,7 +57,7 @@ if ($motionType->amendmentsOnly) {
 }
 echo Html::beginForm($myUrl, 'post', ['class' => implode(' ', $formClasses)]);
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 if ($motionType->amendmentsOnly) {
     echo $this->render('_amendments_only_motions', ['motionType' => $motionType]);

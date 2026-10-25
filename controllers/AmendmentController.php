@@ -59,7 +59,7 @@ class AmendmentController extends Base
             $pdf,
             false,
             $amendment->getFilenameBase(false),
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -117,7 +117,7 @@ class AmendmentController extends Base
             $pdf,
             false,
             null,
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 
@@ -141,7 +141,7 @@ class AmendmentController extends Base
             $doc->finishAndGetDocument(),
             false,
             $amendment->getFilenameBase(false),
-            $this->layoutParams->isRobotsIndex($this->action)
+            $this->layoutParams->isRobotsIndex($this->getRoute())
         );
     }
 

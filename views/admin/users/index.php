@@ -7,17 +7,14 @@ use app\models\settings\Privilege;
 use app\components\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
+ * @var \app\models\db\Consultation|null $consultation
  * @var array $widgetData
  * @var UserConsultationScreening[] $screening
  * @var bool $globalUserAdmin
  */
 
-/** @var \app\controllers\admin\UsersController $controller */
-$controller = $this->context;
-$consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
-$layout = $controller->layoutParams;
 
 $this->title = Yii::t('admin', 'users_head');
 $layout->addCSS('css/backend.css');
@@ -32,7 +29,7 @@ $userGroupLogUrl = UrlHelper::createUrl(['/consultation/activitylog', 'userGroup
 
 echo '<h1>' . Yii::t('admin', 'siteacc_accounts_title') . '</h1>';
 
-echo $controller->showErrors();
+echo \app\components\FlashMessages::render();
 
 $success = \app\components\RequestContext::getSession()->getFlash('success_login', null, true);
 if ($success) {

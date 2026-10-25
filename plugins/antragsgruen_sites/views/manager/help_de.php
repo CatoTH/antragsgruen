@@ -2,18 +2,17 @@
 use app\models\db\Site;
 
 /**
- * @var yii\web\View $this
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  * @var Site[] $site
  */
 
 $this->title = 'Antragsgrün - die grüne Online-Antragsverwaltung';
-/** @var \app\controllers\Base $controller */
-$controller  = $this->context;
-$controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/help';
-$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help'];
-$controller->layoutParams->addBreadcrumb('Start', '/');
-$controller->layoutParams->addBreadcrumb('Hilfe');
+$layout->addCSS('css/manager.css');
+$layout->canonicalUrl      = 'https://antragsgruen.de/help';
+$layout->alternateLanuages = ['en' => 'https://motion.tools/help'];
+$layout->addBreadcrumb('Start', '/');
+$layout->addBreadcrumb('Hilfe');
 
 ?>
 <h1>Antragsgrün - das grüne Antragstool</h1>

@@ -7,6 +7,8 @@ use app\components\Html;
 
 /**
  * @var \app\models\db\Consultation $consultation
+ * @var \app\components\view\View $this
+ * @var \app\models\settings\Layout $layout
  */
 
 $welcomeReplace = \app\models\layoutHooks\Layout::getConsultationWelcomeReplacer();
@@ -15,10 +17,6 @@ if ($welcomeReplace !== null) {
     return;
 }
 
-/** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-/** @var \app\models\settings\Layout $layout */
-$layout     = $controller->layoutParams;
 
 
 $contentAdmin = User::havePrivilege($consultation, Privileges::PRIVILEGE_CONTENT_EDIT, null);
