@@ -4,7 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use app\components\{HashedStaticCache, HTMLTools, LanguageTools, LineSplitter, UrlHelper};
-use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
+use app\components\diff\{AffectedLinesFilter, AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, Motion, MotionSection};
 use yii\helpers\Html;
@@ -556,6 +556,17 @@ abstract class TextSimpleCommon extends Text {
         }, $text);
     }
 
+    private static function containsInnerLayerDiffTag(string $html, string $tag): bool
+    {
+        preg_match_all('/<' . $tag . '(?<attributes> [^>]*)?>/siu', $html, $matches);
+        foreach ($matches['attributes'] as $attributes) {
+            if (!AffectedLinesFilter::tagIsOuterLayer($attributes)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @param AffectedLineBlock[] $diffGroups
      */
@@ -572,10 +583,11 @@ abstract class TextSimpleCommon extends Text {
             if (grapheme_strpos($text, 'class="deleted"') !== false) {
                 $hasDelete = true;
             }
-            if (preg_match('/<ins( [^>]*)?>/siu', $text)) {
+            // In a two-layered diff, the changes of the outer layer are only context and do not count as changes
+            if (self::containsInnerLayerDiffTag($text, 'ins')) {
                 $hasInsert = true;
             }
-            if (preg_match('/<del( [^>]*)?>/siu', $text)) {
+            if (self::containsInnerLayerDiffTag($text, 'del')) {
                 $hasDelete = true;
             }
             $out            .= $wrapStart;

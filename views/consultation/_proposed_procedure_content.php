@@ -33,8 +33,7 @@ foreach ($proposedAgenda as $proposedItem) {
                     ?>
                     <thead>
                     <tr>
-                        <th class="prefix"><?= Yii::t('con', 'proposal_table_motion') ?></th>
-                        <th class="initiator"><?= Yii::t('con', 'proposal_table_initiator') ?></th>
+                        <th class="title"><?= Yii::t('con', 'proposal_table_motion') ?></th>
                         <th class="procedure"><?= Yii::t('con', 'proposal_table_proposal') ?></th>
                     </tr>
                     </thead>
@@ -42,6 +41,7 @@ foreach ($proposedAgenda as $proposedItem) {
                     <?php
                     $currentMotion = null;
                     foreach ($votingBlock->items as $item) {
+                        /** @var IMotion $item */
                         if (is_a($item, Motion::class) && $item->getMyMotionType()->amendmentsOnly) {
                             continue;
                         }
@@ -64,12 +64,13 @@ foreach ($proposedAgenda as $proposedItem) {
                         }
                         ?>
                         <tr class="<?= implode(' ', $classes) ?>">
-                            <td class="prefix">
+                            <td class="title">
                                 <?php
-                                echo Html::a(Html::encode($titlePre . $item->getFormattedTitlePrefix()), $item->getLink())
+                                echo Html::a(Html::encode($titlePre . $item->getTitleWithPrefixForDisplay()), $item->getLink());
+                                echo '<br>';
+                                echo Html::encode($item->getInitiatorsStr());
                                 ?>
                             </td>
-                            <td class="initiator"><?= $item->getInitiatorsStr() ?></td>
                             <td class="procedure">
                                 <?php
                                 $proposal = $item->getLatestProposal();

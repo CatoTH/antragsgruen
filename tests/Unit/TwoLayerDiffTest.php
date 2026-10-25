@@ -6,6 +6,7 @@ use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
 use app\components\diff\TwoLayerDiff;
 use app\components\HTMLTools;
+use app\models\sectionTypes\TextSimple;
 use Tests\Support\Helper\TestBase;
 
 class TwoLayerDiffTest extends TestBase
@@ -262,6 +263,30 @@ Der Finanzausschuss beteiligt Vertreter*innen der Mitglieder aller betroffenen E
             '<p>###LINENUMBER###Sed diam nonumy eirmod <del>tempor</del><ins>incididunt</ins></p>',
             $groups[0]->text
         );
+    }
+
+    public function testLineSummaryIgnoresTheOuterLayer(): void
+    {
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal('<p>Lorem ipsum dolor sit amet</p>');
+        $formatter->setTextParent('<p>Lorem ipsum sit amet</p>');
+        $formatter->setTextNew('<p>Lorem sed ipsum sit amet</p>');
+        $formatter->setFirstLineNo(1);
+
+        $groups = $formatter->getTwoLayerDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, 0);
+        $this->assertNotNull($groups);
+        $this->assertCount(1, $groups);
+
+        // The deletion of the amended amendment is only context: this amendment itself only inserts
+        $formatted = TextSimple::formatDiffGroup($groups, '', '', 1);
+        $expected  = str_replace('#LINETO#', '1', \Yii::t('diff', 'in_line_ins'));
+        $this->assertStringContainsString('<h4 class="lineSummary">' . $expected . ':</h4>', $formatted);
+    }
+
+    public function testHtml2DomToleratesUncorrectedHtml(): void
+    {
+        $dom = HTMLTools::html2DOM('<section><p>Lorem & ipsum <x-foo>dolor</x-foo></p></section>', false);
+        $this->assertSame('Lorem & ipsum dolor', $dom->textContent);
     }
 
     public function testWholeParagraphDeletedByParentAndRestoredByChild(): void
