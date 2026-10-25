@@ -200,7 +200,7 @@
             "version": "5.0.10",
             "source": {
                 "type": "git",
-                "url": "git@github.com:RobinHerbots/Inputmask.git",
+                "url": "https://github.com/RobinHerbots/Inputmask.git",
                 "reference": "325dde43365b7638393e5dc1a2b6463114ef14dd"
             },
             "dist": {
@@ -254,7 +254,7 @@
             "version": "2.0.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/yiisoft/jquery-pjax.git",
+                "url": "git@github.com:yiisoft/jquery-pjax.git",
                 "reference": "452b56b7124326487fd0d3be6b205fcaa66598a0"
             },
             "dist": {
@@ -5779,16 +5779,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-pdf",
-            "version": "8.81.1",
+            "version": "8.82.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-pdf.git",
-                "reference": "a0626686715391dd4210c5622aee849d033b8baf"
+                "reference": "81d1ed0dd17f16fbfc3746d5cd2b2711ac1afbda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf/zipball/a0626686715391dd4210c5622aee849d033b8baf",
-                "reference": "a0626686715391dd4210c5622aee849d033b8baf",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf/zipball/81d1ed0dd17f16fbfc3746d5cd2b2711ac1afbda",
+                "reference": "81d1ed0dd17f16fbfc3746d5cd2b2711ac1afbda",
                 "shasum": ""
             },
             "require": {
@@ -5809,7 +5809,7 @@
                 "tecnickcom/tc-lib-pdf-font": "^4.6",
                 "tecnickcom/tc-lib-pdf-graph": "^2.18",
                 "tecnickcom/tc-lib-pdf-image": "^3.15",
-                "tecnickcom/tc-lib-pdf-page": "^4.17",
+                "tecnickcom/tc-lib-pdf-page": "^4.18",
                 "tecnickcom/tc-lib-pdf-parser": "^3.16",
                 "tecnickcom/tc-lib-pdf-sign": "^2.0",
                 "tecnickcom/tc-lib-unicode": "^3.2",
@@ -5861,7 +5861,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-17T10:55:55+00:00"
+            "time": "2026-10-24T09:59:28+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-pdf-encrypt",
@@ -6200,16 +6200,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-pdf-page",
-            "version": "4.17.2",
+            "version": "4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-pdf-page.git",
-                "reference": "5fbe02e4b3fdbfd84f87d8a2f048da608e6ae8d3"
+                "reference": "49b70ca9b909454ad7f83a8df1150be65fe1b5ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-page/zipball/5fbe02e4b3fdbfd84f87d8a2f048da608e6ae8d3",
-                "reference": "5fbe02e4b3fdbfd84f87d8a2f048da608e6ae8d3",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-pdf-page/zipball/49b70ca9b909454ad7f83a8df1150be65fe1b5ef",
+                "reference": "49b70ca9b909454ad7f83a8df1150be65fe1b5ef",
                 "shasum": ""
             },
             "require": {
@@ -6258,7 +6258,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-17T10:52:35+00:00"
+            "time": "2026-10-24T08:38:58+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-pdf-parser",
@@ -6515,22 +6515,22 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "7.0.19",
+            "version": "7.0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "c60c7bd8ed0923a09424b2a8d9e9d17a2401c785"
+                "reference": "c8834161b905b21bd8dcc0df6284e0132c5efa05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/c60c7bd8ed0923a09424b2a8d9e9d17a2401c785",
-                "reference": "c60c7bd8ed0923a09424b2a8d9e9d17a2401c785",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/c8834161b905b21bd8dcc0df6284e0132c5efa05",
+                "reference": "c8834161b905b21bd8dcc0df6284e0132c5efa05",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "php": ">=8.2",
-                "tecnickcom/tc-lib-pdf": "^8.81"
+                "tecnickcom/tc-lib-pdf": "^8.82"
             },
             "require-dev": {
                 "carthage-software/mago": "1.57.0",
@@ -6582,7 +6582,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-17T11:01:32+00:00"
+            "time": "2026-10-24T10:08:31+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -7882,20 +7882,21 @@
         },
         {
             "name": "masterminds/html5",
-            "version": "2.11.0",
+            "version": "2.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Masterminds/html5-php.git",
-                "reference": "a1e7a2f88ee13635d86fc61cfbdf2306a76ddfc7"
+                "reference": "15e16663bd6f512352209d0e3a789c0a691c0d9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/a1e7a2f88ee13635d86fc61cfbdf2306a76ddfc7",
-                "reference": "a1e7a2f88ee13635d86fc61cfbdf2306a76ddfc7",
+                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/15e16663bd6f512352209d0e3a789c0a691c0d9b",
+                "reference": "15e16663bd6f512352209d0e3a789c0a691c0d9b",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
+                "ext-mbstring": "*",
                 "php": ">=7.4"
             },
             "require-dev": {
@@ -7943,9 +7944,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Masterminds/html5-php/issues",
-                "source": "https://github.com/Masterminds/html5-php/tree/2.11.0"
+                "source": "https://github.com/Masterminds/html5-php/tree/2.12.0"
             },
-            "time": "2026-08-18T06:18:41+00:00"
+            "time": "2026-10-25T08:57:58+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -8396,11 +8397,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6155239b488e95d26d1ebd95c6b4bb294d7f09db",
-                "reference": "6155239b488e95d26d1ebd95c6b4bb294d7f09db",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/18bc23a0682f08591529377d271b5c4dfe9ed1dd",
+                "reference": "18bc23a0682f08591529377d271b5c4dfe9ed1dd",
                 "shasum": ""
             },
             "require": {
@@ -8456,7 +8457,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-08T21:09:11+00:00"
+            "time": "2026-10-24T11:36:00+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
