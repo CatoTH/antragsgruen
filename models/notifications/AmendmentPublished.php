@@ -8,7 +8,7 @@ use app\models\layoutHooks\Layout;
 use app\components\{HTMLTools, RequestContext, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, EMailLog, ISupporter, UserNotification};
 use app\models\exceptions\MailNotSent;
-use app\models\sectionTypes\SectionLanguageMode;
+use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
 
 class AmendmentPublished
@@ -63,14 +63,7 @@ class AmendmentPublished
             );
 
             $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
-
-            // All languages: published by an admin action, not necessarily by the recipient.
-            $sections = $this->amendment->getSortedSections(true, false, SectionLanguageMode::AllLanguages);
-            foreach ($sections as $section) {
-                $amendmentHtml .= '<div>';
-                $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-                $amendmentHtml .= '</div>';
-            }
+            $amendmentHtml .= LayoutHelper::renderEmailSectionsHtml($this->amendment);
 
             $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
             $plain = HTMLTools::toPlainText($html);

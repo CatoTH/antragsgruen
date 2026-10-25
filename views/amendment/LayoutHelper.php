@@ -3,9 +3,10 @@
 namespace app\views\amendment;
 
 use app\components\{HashedStaticCache, HTMLTools, Tools};
+use app\components\diff\DiffRenderer;
 use app\components\html2pdf\{Content as HtmlToPdfContent, Html2PdfConverter};
 use app\components\latex\{Content as LatexContent, Exporter, Layout};
-use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\{ISectionType, SectionLanguageMode, TextSimpleCommon};
 use app\views\pdfLayouts\{IHtmlToPdfLayout, IPdfWriter, IPDFLayout};
 use app\models\db\{Amendment, AmendmentProposal, AmendmentSection, ISupporter, TexTemplate};
 use app\models\LimitedSupporterList;
@@ -53,6 +54,37 @@ class LayoutHelper
         }
 
         return $out;
+    }
+
+    /**
+     * The amendment's text as included in e-mails: only the changed lines, with inline styles. Like on the
+     * amendment's page, an amendment amending another statute amendment is shown as the consolidated diff against it.
+     */
+    public static function renderEmailSectionsHtml(Amendment $amendment): string
+    {
+        $parentAmendment = ($amendment->getMyMotionType()->amendmentsOnly ? $amendment->amendedAmendment : null);
+        $parentName = $parentAmendment?->getFormattedTitlePrefix() ?? '';
+        $hasConsolidatedSection = false;
+
+        // All languages: these e-mails may be triggered by someone other than the recipient (e.g. an admin),
+        // so there's no reliably "correct" single language to pick.
+        $html = '';
+        foreach ($amendment->getSortedSections(true, false, SectionLanguageMode::AllLanguages) as $section) {
+            $parentSection = $parentAmendment?->getSection($section->sectionId);
+            $sectionHtml = ($parentSection ? $section->getSectionType()->getAmendmentPlainHtmlAgainstParentAmendment($parentSection, $parentName) : null);
+            if ($sectionHtml === null) {
+                $sectionHtml = $section->getSectionType()->getAmendmentPlainHtml();
+            } elseif ($sectionHtml !== '') {
+                $hasConsolidatedSection = true;
+            }
+            $html .= '<div>' . $sectionHtml . '</div>';
+        }
+
+        if ($hasConsolidatedSection) {
+            $html = DiffRenderer::addOuterLayerLabel(TextSimpleCommon::getComparisonLegendHtml($parentName, true), $parentName) . $html;
+        }
+
+        return $html;
     }
 
     public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate): LatexContent

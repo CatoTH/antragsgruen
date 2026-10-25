@@ -246,6 +246,19 @@ abstract class ISectionType
         return null;
     }
 
+    /**
+     * The counterpart of getAmendmentPlainHtml() to getAmendmentFormattedAgainstParentAmendment(), for e-mails:
+     * only the lines changed by this amendment itself, with inline styles. The elements of the outer layer are
+     * labelled with $parentName (see DiffRenderer::addOuterLayerLabel()).
+     *
+     * Returns null under the same conditions as getAmendmentFormattedAgainstParentAmendment(), and an empty string
+     * if this amendment does not change anything in this section.
+     */
+    public function getAmendmentPlainHtmlAgainstParentAmendment(AmendmentSection $parentSection, string $parentName): ?string
+    {
+        return null;
+    }
+
     abstract public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;
 
     abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;

@@ -15,6 +15,8 @@ return [
     'newline'        => 'Zeilenumbruch',
     'plain_text_del' => 'LÖSCHUNG',
     'plain_text_ins' => 'EINFÜGUNG',
+    'plain_text_del_outer' => 'LÖSCHUNG %PREFIX%',
+    'plain_text_ins_outer' => 'EINFÜGUNG %PREFIX%',
     'aria_ins'       => 'Einfügen: „%INS%”',
     'aria_del'       => 'Streichen: „%DEL%”',
     'modu_prefix'    => 'modÜ',

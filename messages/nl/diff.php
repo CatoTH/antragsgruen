@@ -15,6 +15,8 @@ return [
     'newline' => 'Nieuwe regel',
     'plain_text_del' => 'VERWIJDEREN',
     'plain_text_ins' => 'TOEVOEGEN',
+    'plain_text_del_outer' => 'VERWIJDEREN %PREFIX%',
+    'plain_text_ins_outer' => 'TOEVOEGEN %PREFIX%',
     'aria_ins' => 'Toevoegen: "%INS%"',
     'aria_del' => 'Verwijderen: "%DEL%"',
     'modu_prefix' => 'Mod.',

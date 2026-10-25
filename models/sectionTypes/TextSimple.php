@@ -410,6 +410,37 @@ class TextSimple extends TextSimpleCommon
         }
     }
 
+    public function getAmendmentPlainHtmlAgainstParentAmendment(AmendmentSection $parentSection, string $parentName): ?string
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $consultation = $section->getCachedConsultation();
+        if (!$consultation || $section->getAmendment()?->globalAlternative) {
+            return null;
+        }
+
+        $firstLine = $section->getFirstLineNumber();
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()?->getData() ?? '');
+        $formatter->setTextParent($parentSection->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getTwoLayerDiffGroupsWithNumbers(
+            $consultation->getSettings()->lineLength,
+            DiffRenderer::FORMATTING_INLINE
+        );
+        if ($diffGroups === null) {
+            return null;
+        }
+        if (count($diffGroups) === 0) {
+            return '';
+        }
+
+        $text = DiffRenderer::addOuterLayerLabel(TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine), $parentName);
+
+        return '<h2>' . Html::encode($this->getTitle()) . '</h2>' . $text;
+    }
+
     /**
      * @param int[] $openedComments
      */

@@ -15,6 +15,8 @@ return [
     'newline' => 'Novi red', // Original: Newline
     'plain_text_del' => 'IZBRISATI', // Original: DELETE
     'plain_text_ins' => 'UMETNUTI', // Original: INSERT
+    'plain_text_del_outer' => 'IZBRISATI %PREFIX%',
+    'plain_text_ins_outer' => 'UMETNUTI %PREFIX%',
     'aria_ins' => 'Umetnuti: "%INS%"', // Original: Insert: "%INS%"
     'aria_del' => 'Izbriši: "%DEL%"', // Original: Delete: "%DEL%"
     'modu_prefix' => 'Mod.', // Original: Mod.

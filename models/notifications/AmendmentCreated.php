@@ -10,7 +10,7 @@ use app\models\db\EMailLog;
 use app\models\db\ISupporter;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
-use app\models\sectionTypes\SectionLanguageMode;
+use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
 
 class AmendmentCreated extends Base implements IEmailAdmin
@@ -83,15 +83,7 @@ class AmendmentCreated extends Base implements IEmailAdmin
         $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
         $plain         = $emailText;
         $amendmentHtml = '<h1>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h1>';
-
-        // All languages: this notification may be triggered by someone other than the recipient
-        // (e.g. an admin), so there's no reliably "correct" single language to pick.
-        $sections = $this->amendment->getSortedSections(true, false, SectionLanguageMode::AllLanguages);
-        foreach ($sections as $section) {
-            $amendmentHtml .= '<div>';
-            $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-            $amendmentHtml .= '</div>';
-        }
+        $amendmentHtml .= LayoutHelper::renderEmailSectionsHtml($this->amendment);
 
         if (str_contains($emailText, '<br>') || str_contains($emailText, '<p>')) {
             $html = $plain . '<br><br>' . $amendmentHtml;
