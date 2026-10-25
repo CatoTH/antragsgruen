@@ -692,6 +692,10 @@
     }
   }
 
+  .commentText {
+    overflow-wrap: anywhere; // long URLs must not overflow the comment box
+  }
+
   .commentWriteHeader {
     border-bottom: solid 1px $commentBackground;
     font-size: 1.2em;
