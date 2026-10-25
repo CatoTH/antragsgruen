@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment, AmendmentSection};
+use app\models\db\Amendment;
 use yii\helpers\Html;
 
 /**
@@ -35,6 +35,12 @@ $layout->addBreadcrumb(Yii::t('amend', 'confirm'));
 echo '<h1>' . Yii::t('amend', 'confirm_amendment') . '</h1>';
 
 ?>
+    <script type="module" crossorigin="anonymous">
+        import { IMotionShow } from '/js/modules/shared/IMotionShow.js';
+        const common = new IMotionShow();
+        common.initAmendmentTextMode();
+        common.initAmendmentComparisonMode();
+    </script>
     <div class="content">
         <div class="alert alert-info">
             <p><?= Yii::t('amend', 'confirm_hint') ?></p>
@@ -50,11 +56,10 @@ if ($amendment->changeEditorial !== '') {
     echo '</div></div></section>';
 }
 
-/** @var AmendmentSection[] $sections */
-$sections = $amendment->getSortedSections(false);
-foreach ($sections as $section) {
-    echo $section->getSectionType()->getAmendmentFormatted();
-}
+echo $this->render('_view_sections', [
+    'amendment' => $amendment,
+    'hasProposedChange' => false,
+]);
 
 
 if ($amendment->changeExplanation !== '') {
