@@ -182,6 +182,25 @@ class AntragsgruenAppEnvironmentTest extends TestBase
         $this->assertEquals('ssl', $app->mailService['encryption']);
     }
 
+    public function testMailerDisabledOverridesConfigJson(): void
+    {
+        $json = json_encode([
+            'mailService' => [
+                'transport' => 'smtp',
+                'host' => 'smtp.example.com',
+                'port' => 587,
+                'username' => 'smtpuser',
+                'password' => 'smtppass',
+            ],
+        ]);
+
+        $_ENV['MAILER_DISABLED'] = 'true';
+
+        $app = new AntragsgruenApp($json);
+
+        $this->assertEquals(['transport' => 'none'], $app->mailService);
+    }
+
     public function testEnvironmentVariablesForApplicationSettings(): void
     {
         $_ENV['DB_HOST'] = 'localhost';
