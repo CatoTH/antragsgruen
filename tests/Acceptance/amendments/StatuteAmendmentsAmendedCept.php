@@ -90,10 +90,17 @@ $I->dontSeeElement('.amendmentComparison[data-comparison-mode="original"]');
 $I->seeElement('.amendmentComparison[data-comparison-mode="parent"]');
 
 $I->see('Änderungen gegenüber', $consolidatedHolder . ' h2');
-$I->see('Article', $consolidatedHolder);
-$I->see('Paragraph', $consolidatedHolder);
-$I->see('Section', $consolidatedHolder);
-$I->seeElement($consolidatedHolder . ' .outer');
+// Only the lines changed by this amendment itself are shown by default...
+$I->see('Paragraph', $consolidatedHolder . ' .onlyChangedText .insertedOuter.deleted');
+$I->see('Section', $consolidatedHolder . ' .onlyChangedText .inserted');
+$I->dontSee('Article', $consolidatedHolder);
+// ...the full text also shows the changes of the amended amendment that this amendment does not touch
+$I->clickJS($consolidatedHolder . ' .dropdown-menu .showFullText');
+$I->wait(0.2);
+$I->dontSeeElement($consolidatedHolder . ' .onlyChangedText');
+$I->see('Article', $consolidatedHolder . ' .fullMotionText .deletedOuter');
+$I->see('Paragraph', $consolidatedHolder . ' .fullMotionText');
+$I->see('Section', $consolidatedHolder . ' .fullMotionText');
 $I->seeElement($consolidatedHolder . ' .amendmentComparisonLegend');
 
 

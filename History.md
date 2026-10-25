@@ -8,6 +8,7 @@
 - Bugfix: Under rare circumstances, saving a modified proposed procedure failed.
 - Bugfix: Amendments amending another amendment did not properly work if amendments were restricted to only one paragraph.
 - In the proposed procedure list, the title of the motion / amendment is now shown as well.
+- Several smaller layout improvements.
 
 ## Version 4.18.0 (2026-10-11)
 

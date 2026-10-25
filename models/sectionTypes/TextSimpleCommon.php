@@ -237,26 +237,22 @@ abstract class TextSimpleCommon extends Text {
      * - a regular amendment: "only changed paragraphs" / "full text"
      * - an amendment amending another one, shown as a diff against the original text: the same two,
      *   plus a third entry switching over to the consolidated two-layered diff
-     * - the same amendment shown as the consolidated diff: only the two entries switching between the
-     *   two comparisons, as that view has no "only changed paragraphs" mode
+     * - the same amendment shown as the consolidated diff: the same two, plus a third entry switching back
+     *   to the diff against the original text
      */
     private function getViewModeDropdown(bool $viewFullMode): string
     {
-        $items = '';
+        $items = '<li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' .
+                 \Yii::t('amend', 'textmode_only_changed') . '</a></li>';
+        $items .= '<li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' .
+                  \Yii::t('amend', 'textmode_full_text') . '</a></li>';
+        if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_ORIGINAL) {
+            $items .= '<li><a href="#" class="showComparisonToParent">' .
+                      $this->getComparisonToParentLabel() . '</a></li>';
+        }
         if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_PARENT) {
             $items .= '<li><a href="#" class="showComparisonToOriginal">' .
                       \Yii::t('amend', 'statute_textmode_vs_original') . '</a></li>';
-            $items .= '<li class="selected"><a href="#" class="showComparisonToParent">' .
-                      $this->getComparisonToParentLabel() . '</a></li>';
-        } else {
-            $items .= '<li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' .
-                      \Yii::t('amend', 'textmode_only_changed') . '</a></li>';
-            $items .= '<li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' .
-                      \Yii::t('amend', 'textmode_full_text') . '</a></li>';
-            if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_ORIGINAL) {
-                $items .= '<li><a href="#" class="showComparisonToParent">' .
-                          $this->getComparisonToParentLabel() . '</a></li>';
-            }
         }
 
         return '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
@@ -277,12 +273,12 @@ abstract class TextSimpleCommon extends Text {
         $amendment = $section->getAmendment();
         $firstLine = $section->getFirstLineNumber();
 
-        // The consolidated diff always shows the full text: "only changed paragraphs" would hide the proposal
-        // of the amended amendment, which is the very context this view exists to provide.
+        // In the consolidated diff, the groups only contain the lines changed by this amendment itself. If it changes
+        // nothing in this section, the section is only shown for the changes of the amended amendment, i.e. in full.
         $isComparisonToParent = ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_PARENT);
-        $viewFullMode = $isComparisonToParent ||
-                        $amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true ||
-                        !$this->defaultOnlyDiff;
+        $viewFullMode = $amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true ||
+                        !$this->defaultOnlyDiff ||
+                        count($diffGroupsAndSections['groups']) === 0;
 
         $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
@@ -307,11 +303,9 @@ abstract class TextSimpleCommon extends Text {
         } else {
             $linkMotion = null;
         }
-        if (!$isComparisonToParent) {
-            $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
-            $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, $linkMotion);
-            $str .= '</div>';
-        }
+        $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
+        $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, $linkMotion);
+        $str .= '</div>';
 
         $str .= '<div class="fullMotionText text motionTextFormattings textOrig ';
         if ($section->getSettings()->fixedWidth) {
