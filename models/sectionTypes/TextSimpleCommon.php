@@ -194,31 +194,46 @@ abstract class TextSimpleCommon extends Text {
 
     /**
      * Explains the markings of the consolidated view. The samples are marked up with the very styles they
-     * describe, so the legend stays correct whatever the current layout renders them like.
+     * describe, so the legend stays correct whatever the current layout renders them like - or, with
+     * $inlineStyles, with the inline styles used in e-mails (see DiffRenderer::FORMATTING_INLINE).
      *
      * The last two entries are the ones readers cannot guess: a marking of the inner layer nested into one of the
      * outer layer, i.e. this amendment changing what the amended amendment proposes rather than changing the
      * original text - undoing one of its deletions, or dropping one of its insertions.
      */
-    private function getComparisonLegend(): string
+    public static function getComparisonLegendHtml(string $parentName, bool $inlineStyles): string
     {
-        $parentName = Html::encode((string) $this->amendmentComparisonParentName);
+        $parentName = Html::encode($parentName);
         $sample     = Html::encode(\Yii::t('amend', 'statute_legend_sample'));
 
-        $item = function (string $markup, string $messageKey) use ($parentName, $sample): string {
+        $mark = function (string $tag, bool $outer, string $content) use ($inlineStyles): string {
+            if ($inlineStyles) {
+                $style = match ([$tag, $outer]) {
+                    ['ins', true]  => DiffRenderer::STYLE_INLINE_INSERTED_OUTER,
+                    ['del', true]  => DiffRenderer::STYLE_INLINE_DELETED_OUTER,
+                    ['ins', false] => DiffRenderer::STYLE_INLINE_INSERTED,
+                    default        => DiffRenderer::STYLE_INLINE_DELETED,
+                };
+                $attributes = ($outer ? ' class="' . DiffRenderer::CSS_CLASS_OUTER . '"' : '') . ' style="' . $style . '"';
+            } else {
+                $attributes = ($outer ? ' class="' . DiffRenderer::CSS_CLASS_OUTER . '"' : '');
+            }
+            return '<' . $tag . $attributes . '>' . $content . '</' . $tag . '>';
+        };
+        $item = function (string $markup, string $messageKey) use ($parentName): string {
             $label = str_replace('%PREFIX%', $parentName, \Yii::t('amend', $messageKey));
-            return '<li>' . str_replace('%SAMPLE%', $sample, $markup) . ' – ' . $label . '</li>';
+            return '<li>' . $markup . ' – ' . $label . '</li>';
         };
 
-        return '<div class="alert alert-info amendmentComparisonLegend">' .
+        return '<div' . ($inlineStyles ? '' : ' class="alert alert-info amendmentComparisonLegend"') . '>' .
                '<p>' . str_replace('%PREFIX%', $parentName, \Yii::t('amend', 'statute_legend_intro')) . '</p>' .
                '<ul>' .
-               $item('<ins class="outer">%SAMPLE%</ins>', 'statute_legend_parent_ins') .
-               $item('<del class="outer">%SAMPLE%</del>', 'statute_legend_parent_del') .
-               $item('<ins>%SAMPLE%</ins>', 'statute_legend_own_ins') .
-               $item('<del>%SAMPLE%</del>', 'statute_legend_own_del') .
-               $item('<del class="outer"><ins>%SAMPLE%</ins></del>', 'statute_legend_parent_del_own_ins') .
-               $item('<ins class="outer"><del>%SAMPLE%</del></ins>', 'statute_legend_parent_ins_own_del') .
+               $item($mark('ins', true, $sample), 'statute_legend_parent_ins') .
+               $item($mark('del', true, $sample), 'statute_legend_parent_del') .
+               $item($mark('ins', false, $sample), 'statute_legend_own_ins') .
+               $item($mark('del', false, $sample), 'statute_legend_own_del') .
+               $item($mark('del', true, $mark('ins', false, $sample)), 'statute_legend_parent_del_own_ins') .
+               $item($mark('ins', true, $mark('del', false, $sample)), 'statute_legend_parent_ins_own_del') .
                '</ul>' .
                '</div>';
     }
@@ -286,7 +301,7 @@ abstract class TextSimpleCommon extends Text {
         $str .= $this->getViewModeDropdown($viewFullMode);
         $str .= '</div>';
         if ($isComparisonToParent) {
-            $str .= $this->getComparisonLegend();
+            $str .= self::getComparisonLegendHtml((string) $this->amendmentComparisonParentName, false);
         }
         $str       .= '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';

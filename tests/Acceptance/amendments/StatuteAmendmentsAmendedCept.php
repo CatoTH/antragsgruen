@@ -1,6 +1,7 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\EMailLog;
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
@@ -52,6 +53,11 @@ $I->clickJS('.amendmentsToAmendmentsDeadlines .deadlineAdder');
 $I->executeJS('$(".amendmentsToAmendmentsDeadlines .deadlineEntry:nth-child(1) .datetimepickerFrom input").val("01.01.2020 00:00");');
 $I->executeJS('$(".amendmentsToAmendmentsDeadlines .deadlineEntry:nth-child(1) .datetimepickerTo input").val("' . date('d.m.Y', strtotime('+1 year')) . ' 00:00");');
 $I->submitForm('.adminTypeForm', [], 'save');
+
+$I->wantTo('activate confirmation e-mails');
+$I->gotoStdAdminPage()->gotoConsultation();
+$I->checkOption('#initiatorConfirmEmails');
+$I->submitForm('#consultationSettingsForm', [], 'save');
 $I->logout();
 
 
@@ -87,6 +93,7 @@ $I->seeElement('.amendmentComparison[data-comparison-mode="original"]');
 $I->dontSeeElement('.amendmentComparison[data-comparison-mode="parent"]');
 
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
+$I->see('E-Mail sent to: test2@example.org (Type ' . EMailLog::TYPE_MOTION_SUBMIT_CONFIRM . ')');
 $I->click('#motionConfirmedForm .btn');
 $I->logout();
 

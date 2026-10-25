@@ -15,6 +15,8 @@ return [
     'newline' => 'Radbrytning',
     'plain_text_del' => 'BORTTAGNING',
     'plain_text_ins' => 'INFOGNING',
+    'plain_text_del_outer' => 'BORTTAGNING %PREFIX%',
+    'plain_text_ins_outer' => 'INFOGNING %PREFIX%',
     'aria_ins' => 'Infoga: "%INS%"',
     'aria_del' => 'Ta bort: "%DEL%"',
     'modu_prefix' => 'Mod.',

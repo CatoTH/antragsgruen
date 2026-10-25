@@ -15,6 +15,8 @@ return [
     'newline'        => 'Nouvelle ligne',
     'plain_text_del' => 'Supprimer',
     'plain_text_ins' => 'Insérer',
+    'plain_text_del_outer' => 'Supprimer %PREFIX%',
+    'plain_text_ins_outer' => 'Insérer %PREFIX%',
 
     'aria_ins'    => 'Insérer : « %INS% »',
     'aria_del'    => 'Supprimer : « %DEL% »',
