@@ -344,6 +344,8 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
 
     abstract public function getTitleWithPrefix(): string;
 
+    abstract public function getTitleWithPrefixForDisplay(?string $language = null): string;
+
     public function isInitiatedByOrganization(): bool
     {
         $cached = $this->getCacheItem('supporters.initiatedByOrga');
