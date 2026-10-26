@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\UrlHelper;
+use app\components\{StaticResourceTools, UrlHelper};
 use app\models\exceptions\FormError;
 use app\models\settings\{AntragsgruenApp, Stylesheet};
 use yii\db\ActiveQuery;
@@ -121,6 +121,15 @@ class ConsultationFile extends ActiveRecord
             'consultationId' => $consultation->id,
             'dataHash'       => sha1($content),
         ]);
+    }
+
+    /**
+     * Identifies what a cached stylesheet depends on besides the site's stylesheet settings:
+     * the version and the resource base its font and image URLs point to.
+     */
+    public static function getStylesheetCacheTag(): string
+    {
+        return ANTRAGSGRUEN_VERSION . ' ' . substr(sha1(StaticResourceTools::getResolvedResourceBase()), 0, 10);
     }
 
     public static function findStylesheetCache(Site $site, Stylesheet $stylesheet): ?ConsultationFile

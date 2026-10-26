@@ -4,20 +4,25 @@
  * @var \app\models\settings\Stylesheet $stylesheetSettings
  */
 
-use app\components\CssCompiler;
+use app\components\{CssCompiler, StaticResourceTools};
+
+// Font and image URLs are absolute, as this stylesheet is not served from the web root
+// (e.g. /<site>/styles-<hash>.css in multisite mode)
+$resourceBase = rtrim(StaticResourceTools::getResolvedResourceBase(), '/') . '/';
 
 $css = '
 @charset "UTF-8";
 
 @import "variables";
 
-$OpenSansPath: "./fonts/OpenSans/fonts";
+$resourceBase: ' . json_encode($resourceBase, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ';
+$OpenSansPath: $resourceBase + "fonts/OpenSans/fonts";
 @import "../fonts/OpenSans/open-sans.scss";
-$veraSansPath: "./fonts/BitstreamVeraSansMono";
+$veraSansPath: $resourceBase + "fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
-$firaSansFontPath: "./fonts/firasans/";
+$firaSansFontPath: $resourceBase + "fonts/firasans/";
 @import "../fonts/firasans/firasans";
-$veraSansPath: "./fonts/BitstreamVeraSansMono";
+$veraSansPath: $resourceBase + "fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
 
 ' . $stylesheetSettings->toScssVariables(\app\models\settings\Stylesheet::DEFAULTS_LAYOUT_CLASSIC) . '
@@ -36,7 +41,7 @@ $deadlineCircleFont: "Open Sans", sans-serif;
 $motionFixedWidth: 740px;
 $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: rgb(226, 0, 122);
-$icon-font-path: "./fonts/";
+$icon-font-path: $resourceBase + "fonts/";
 
 @import "bootstrap";
 @import "fontello";
@@ -71,11 +76,11 @@ body {
 } else {
     $css .= '
 html {
-  background: url("./img/wallpaper.jpg") repeat scroll 0 0 transparent;
+  background: url($resourceBase + "img/wallpaper.jpg") repeat scroll 0 0 transparent;
 }
 
 body {
-  background: url("./img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
+  background: url($resourceBase + "img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
 }
     ';
 }
@@ -84,7 +89,7 @@ $css .= '.logoImg {
   display: block;
   width: 377px;
   height: 55px;
-  background-image: url("./img/logo.png");
+  background-image: url($resourceBase + "img/logo.png");
   @media screen and (max-width: 479px) {
     width: 300px;
     height: 44px;
