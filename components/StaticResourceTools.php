@@ -36,10 +36,12 @@ class StaticResourceTools
 
     public static function getResolvedResourceBase(): string
     {
-        $dependencies = static::getJsDependencies();
         $baseTemplate = AntragsgruenApp::getInstance()->resourceBase;
+        if (!str_contains($baseTemplate, '{CDN_TAG}')) {
+            return $baseTemplate;
+        }
 
-        return str_replace('{CDN_TAG}', $dependencies['cdn_tag'], $baseTemplate);
+        return str_replace('{CDN_TAG}', static::getJsDependencies()['cdn_tag'], $baseTemplate);
     }
 
     public static function detectAndRegisterModules(string $content): string
