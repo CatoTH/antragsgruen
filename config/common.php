@@ -92,6 +92,7 @@ $components = [
         'class'           => 'app\components\yii\UrlManager',
         'showScriptName'  => false,
         'enablePrettyUrl' => ($params->prettyUrl && !(isset($_POST['disablePrettyUrl']) && $_POST['disablePrettyUrl'])),
+        'normalizer'      => 'app\components\yii\UrlNormalizer',
         'rules'           => $urls
     ],
     'i18n'         => [

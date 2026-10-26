@@ -10,6 +10,7 @@
 - In the proposed procedure list, the title of the motion / amendment is now shown as well.
 - The new two-layer-diff view for amendments amending amendments is now used more consistently.
 - Several smaller layout improvements.
+- Bugfix: URLs with a trailing slash like "/site/" were not found unless the web server stripped the slash (as the nginx sample configuration does). The application now redirects them itself, so this also works on Apache, including the Docker image, and in subdirectory installations.
 
 ## Version 4.18.0 (2026-10-11)
 
