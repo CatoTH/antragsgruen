@@ -10,6 +10,7 @@
 - In the proposed procedure list, the title of the motion / amendment is now shown as well.
 - The new two-layer-diff view for amendments amending amendments is now used more consistently.
 - Several smaller layout improvements.
+- Bugfix: Custom themes referenced their fonts and images with relative URLs, so icons and fonts were missing when the stylesheet was not served from the web root (e.g. in multisite installations with a site path like "/site/"). Existing stylesheets are regenerated automatically.
 
 ## Version 4.18.0 (2026-10-11)
 
