@@ -14,7 +14,7 @@ class Module extends ModuleBase
     /** @var string[] */
     public static array $webhookAllowedIps;
 
-    /** @var array<string, string> */
+    /** @var array<string, string[]> */
     public static array $consultationListMapping = [];
 
     public function init(): void
@@ -30,7 +30,37 @@ class Module extends ModuleBase
         }
         self::$webhookApiToken = $json['apiToken'];
         self::$webhookAllowedIps = $json['allowedIps'];
-        self::$consultationListMapping = $json['consultationMapping'];
+        self::$consultationListMapping = self::normalizeConsultationMapping($json['consultationMapping']);
+    }
+
+    /**
+     * Each list name can be mapped to a single consultation URL or to an array of them.
+     *
+     * @return array<string, string[]>
+     */
+    private static function normalizeConsultationMapping(mixed $mapping): array
+    {
+        if (!is_array($mapping)) {
+            throw new ConfigurationError('consultationMapping needs to be an object');
+        }
+
+        $normalized = [];
+        foreach ($mapping as $listName => $consultationUrls) {
+            if (is_string($consultationUrls)) {
+                $consultationUrls = [$consultationUrls];
+            }
+            if (!is_array($consultationUrls) || count($consultationUrls) === 0) {
+                throw new ConfigurationError('consultationMapping for ' . $listName . ' needs to be a string or a non-empty array of strings');
+            }
+            foreach ($consultationUrls as $consultationUrl) {
+                if (!is_string($consultationUrl)) {
+                    throw new ConfigurationError('consultationMapping for ' . $listName . ' needs to be a string or a non-empty array of strings');
+                }
+            }
+            $normalized[(string)$listName] = array_values($consultationUrls);
+        }
+
+        return $normalized;
     }
 
     public static function getAllUrlRoutes(array $urls, string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
