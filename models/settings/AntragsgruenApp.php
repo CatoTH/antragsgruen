@@ -170,8 +170,9 @@ class AntragsgruenApp implements \JsonSerializable
         }
 
         // Mail service configuration
-        // Check if still at default value
-        if ($this->mailService === ['transport' => 'sendmail']) {
+        if (EnvironmentConfigLoader::getBoolEnv('MAILER_DISABLED', false)) {
+            $this->mailService = ['transport' => 'none'];
+        } elseif ($this->mailService === ['transport' => 'sendmail']) {
             $mailConfig = EnvironmentConfigLoader::getMailServiceConfig();
             if ($mailConfig !== null) {
                 $this->mailService = $mailConfig;
