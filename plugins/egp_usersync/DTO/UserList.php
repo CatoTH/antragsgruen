@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace app\plugins\egp_usersync\DTO;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class UserList
 {
-    /**
-     * @SerializedName("listName")
-     */
+    #[SerializedName('listName')]
     private string $listName;
 
     /** @var User[] */
