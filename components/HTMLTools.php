@@ -2,6 +2,7 @@
 
 namespace app\components;
 
+use app\components\diff\DiffRenderer;
 use app\models\db\{Amendment, IMotionSection};
 use app\models\SectionedParagraph;
 use app\models\exceptions\{FormError, Internal};
@@ -771,8 +772,70 @@ class HTMLTools
     /** @var string[] */
     private static array $LINK_CACHE;
 
+    /**
+     * The outer layer of a two-layered diff, as labelled by DiffRenderer::addOuterLayerLabel(), becomes bracket
+     * markers naming the amendment it belongs to, e.g. "[INSERT A1]...[/INSERT A1]". The inner layer is nested
+     * into it, so this has to happen before the regular <ins>/<del>-handling of toPlainText().
+     */
+    private static function outerDiffLayerToPlainTextMarkers(string $html): string
+    {
+        if (!str_contains($html, DiffRenderer::ATTRIBUTE_OUTER_LAYER_LABEL)) {
+            return $html;
+        }
+
+        // Not corrected beforehand, as that would remove the label attributes
+        $dom = self::html2DOM($html, false);
+        /** @var \DOMDocument $doc */
+        $doc = $dom->ownerDocument;
+        $xpath = new \DOMXPath($doc);
+        $nodes = iterator_to_array($xpath->query('//*[@' . DiffRenderer::ATTRIBUTE_OUTER_LAYER_LABEL . ']', $dom) ?: []);
+        foreach ($nodes as $node) {
+            /** @var \DOMElement $node */
+            $classes = explode(' ', $node->getAttribute('class'));
+            $isInsertion = ($node->nodeName === 'ins' || in_array(DiffRenderer::CSS_CLASS_INSERTED_OUTER, $classes, true));
+            $label = str_replace(
+                '%PREFIX%',
+                $node->getAttribute(DiffRenderer::ATTRIBUTE_OUTER_LAYER_LABEL),
+                \Yii::t('diff', $isInsertion ? 'plain_text_ins_outer' : 'plain_text_del_outer')
+            );
+            $open  = '[' . $label . ']';
+            $close = '[/' . $label . ']';
+
+            // A block element can be changed by both layers at once, and does not have nested <ins>/<del>-elements then
+            foreach (['inserted' => 'plain_text_ins', 'deleted' => 'plain_text_del'] as $innerClass => $innerKey) {
+                if (in_array($innerClass, $classes, true)) {
+                    $open  .= '[' . \Yii::t('diff', $innerKey) . ']';
+                    $close = '[/' . \Yii::t('diff', $innerKey) . ']' . $close;
+                }
+            }
+
+            // In lists, the markers go into the list items, so they end up behind the bullet points
+            $markedNodes = [$node];
+            if (in_array($node->nodeName, ['ol', 'ul'], true)) {
+                $markedNodes = array_filter(iterator_to_array($node->childNodes), fn (\DOMNode $child) => $child->nodeName === 'li');
+            }
+            foreach ($markedNodes as $markedNode) {
+                $markedNode->insertBefore($doc->createTextNode($open), $markedNode->firstChild);
+                $markedNode->appendChild($doc->createTextNode($close));
+            }
+            $node->removeAttribute(DiffRenderer::ATTRIBUTE_OUTER_LAYER_LABEL);
+
+            // Inline elements of the outer layer are replaced by their content, so they are not taken for regular changes
+            $parent = $node->parentNode;
+            if ($parent && in_array($node->nodeName, ['ins', 'del'], true)) {
+                while ($node->firstChild) {
+                    $parent->insertBefore($node->firstChild, $node);
+                }
+                $parent->removeChild($node);
+            }
+        }
+
+        return self::renderDomToHtml($dom, true);
+    }
+
     public static function toPlainText(string $html, bool $linksAtEnd = false): string
     {
+        $html = self::outerDiffLayerToPlainTextMarkers($html);
         $html = str_replace("\n", "", $html);
         $html = str_replace("\r", "", $html);
         $html = str_replace(" />", ">", $html);

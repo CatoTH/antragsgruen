@@ -43,6 +43,20 @@ class DiffRenderer
     public const CSS_CLASS_INSERTED_OUTER = 'insertedOuter';
     public const CSS_CLASS_DELETED_OUTER  = 'deletedOuter';
 
+    /**
+     * Styles for FORMATTING_INLINE, used where no stylesheet is available (e-mails). The ones of the outer layer
+     * correspond to the styles in _elements.scss: a background tint, leaving the regular colors to the inner layer.
+     */
+    public const STYLE_INLINE_INSERTED       = 'color: green; text-decoration: underline;';
+    public const STYLE_INLINE_DELETED        = 'color: red; text-decoration: line-through;';
+    public const STYLE_INLINE_INSERTED_OUTER = 'color: #2b6e2b; background-color: #e3f1e3; text-decoration: none;';
+    public const STYLE_INLINE_DELETED_OUTER  = 'color: #7a2b2b; background-color: #f4e3e3; text-decoration: none;';
+
+    /**
+     * Set by addOuterLayerLabel(): names the amendment the outer layer belongs to, for HTMLTools::toPlainText().
+     */
+    public const ATTRIBUTE_OUTER_LAYER_LABEL = 'data-diff-layer';
+
     private const MARKER_MATCH_ALL = '/###(?:OUTER_)?(?:INS|DEL)_(?:START|END)([^#]{0,20})###/siu';
 
     private \DOMDocument $nodeCreator;
@@ -155,6 +169,15 @@ class DiffRenderer
         $node->setAttribute('class', $prevClass);
     }
 
+    /**
+     * Appends to an existing style attribute: a block element changed by both layers of a two-layered diff
+     * keeps the background of the outer layer, while the colors of the inner one take precedence.
+     */
+    private static function nodeAddInlineStyle(\DOMElement $node, string $style): void
+    {
+        $node->setAttribute('style', trim($node->getAttribute('style') . ' ' . $style));
+    }
+
     public static function nodeReplaceClass(\DOMElement $node, string $oldClass, string $newClass): void
     {
         $classes = explode(' ', $node->getAttribute('class'));
@@ -192,7 +215,7 @@ class DiffRenderer
     {
         $ins = $this->nodeCreator->createElement('ins');
         if ($this->formatting === self::FORMATTING_INLINE) {
-            $ins->setAttribute('style', 'color: green; text-decoration: underline;');
+            $ins->setAttribute('style', self::STYLE_INLINE_INSERTED);
         }
         if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
             $childText = self::nodeToPlainText($childNode);
@@ -209,7 +232,7 @@ class DiffRenderer
     {
         $ins = $this->nodeCreator->createElement('del');
         if ($this->formatting === self::FORMATTING_INLINE) {
-            $ins->setAttribute('style', 'color: red; text-decoration: line-through;');
+            $ins->setAttribute('style', self::STYLE_INLINE_DELETED);
         }
         if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
             $childText = self::nodeToPlainText($childNode);
@@ -226,7 +249,7 @@ class DiffRenderer
     {
         self::nodeAddClass($element, 'inserted');
         if ($this->formatting === self::FORMATTING_INLINE) {
-            $element->setAttribute('style', 'color: green; text-decoration: underline;');
+            self::nodeAddInlineStyle($element, self::STYLE_INLINE_INSERTED);
         }
         if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
             $childText = self::nodeToPlainText($element);
@@ -242,7 +265,7 @@ class DiffRenderer
     {
         self::nodeAddClass($element, 'deleted');
         if ($this->formatting === self::FORMATTING_INLINE) {
-            $element->setAttribute('style', 'color: red; text-decoration: line-through;');
+            self::nodeAddInlineStyle($element, self::STYLE_INLINE_DELETED);
         }
         if ($this->formatting === self::FORMATTING_CLASSES_ARIA) {
             $childText = self::nodeToPlainText($element);
@@ -511,11 +534,14 @@ class DiffRenderer
      */
     public static function renderTwoLayerHtmlWithPlaceholders(string $html, int $formatting): string
     {
-        $markAsOuter = function (\DOMElement $node, string $inlineTag, string $blockClass): void {
+        $markAsOuter = function (\DOMElement $node, string $inlineTag, string $blockClass) use ($formatting): void {
             if ($node->nodeName === $inlineTag) {
                 self::nodeAddClass($node, self::CSS_CLASS_OUTER);
             } else {
                 self::nodeReplaceClass($node, ($inlineTag === 'ins' ? 'inserted' : 'deleted'), $blockClass);
+            }
+            if ($formatting === self::FORMATTING_INLINE) {
+                $node->setAttribute('style', $inlineTag === 'ins' ? self::STYLE_INLINE_INSERTED_OUTER : self::STYLE_INLINE_DELETED_OUTER);
             }
         };
 
@@ -542,6 +568,28 @@ class DiffRenderer
         } while ($rendered !== $prev);
 
         return $rendered;
+    }
+
+    /**
+     * Marks all elements of the outer layer of a rendered two-layered diff with the name of the amendment they
+     * belong to (usually its title prefix), so HTMLTools::toPlainText() can tell the two layers apart.
+     */
+    public static function addOuterLayerLabel(string $html, string $label): string
+    {
+        $dom = HTMLTools::html2DOM($html, false);
+        /** @var \DOMDocument $doc */
+        $doc = $dom->ownerDocument;
+        $xpath = new \DOMXPath($doc);
+        $query = '//*[' . implode(' or ', array_map(
+            fn (string $cssClass) => 'contains(concat(" ", normalize-space(@class), " "), " ' . $cssClass . ' ")',
+            [self::CSS_CLASS_OUTER, self::CSS_CLASS_INSERTED_OUTER, self::CSS_CLASS_DELETED_OUTER]
+        )) . ']';
+        foreach ($xpath->query($query, $dom) ?: [] as $node) {
+            /** @var \DOMElement $node */
+            $node->setAttribute(self::ATTRIBUTE_OUTER_LAYER_LABEL, $label);
+        }
+
+        return HTMLTools::renderDomToHtml($dom, true);
     }
 
     private static function paragraphContainsDiff_getPos(string $line, array $matches): int

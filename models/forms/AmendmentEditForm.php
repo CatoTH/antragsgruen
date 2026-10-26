@@ -185,6 +185,19 @@ class AmendmentEditForm
         }
     }
 
+    public function setAmendedAmendment(Amendment $amendedAmendment): void
+    {
+        $this->toAnotherAmendment = $amendedAmendment->id;
+        /** @var AmendmentSection[] $byId */
+        $byId = [];
+        foreach ($amendedAmendment->getActiveSections() as $section) {
+            $byId[$section->sectionId] = $section;
+        }
+        foreach ($this->sections as $section) {
+            $section->setAmendedAmendmentSection($byId[$section->sectionId] ?? null);
+        }
+    }
+
     /**
      * @param AmendmentUpdateSection[] $requestSections
      * @throws FormError
@@ -274,7 +287,10 @@ class AmendmentEditForm
         $this->reason = $dto->reason !== null ? HTMLTools::cleanSimpleHtml($dto->reason) : '';
         $this->editorial = $dto->editorial !== null ? HTMLTools::cleanSimpleHtml($dto->editorial) : '';
         $this->globalAlternative = ($dto->globalAlternative ?? false) && $consultation->getSettings()->globalAlternatives;
-        $this->toAnotherAmendment = $dto->amendingAmendmentId;
+        $this->toAnotherAmendment = null;
+        if ($amendingAmendment) {
+            $this->setAmendedAmendment($amendingAmendment);
+        }
 
         if ($this->allowSetTags) {
             $this->tags = $dto->tags ?? [];

@@ -65,11 +65,8 @@ class TextSimple extends TextSimpleCommon
     {
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
-        if ($amSection->getOriginalMotionSection()) {
-            $origParas = HTMLTools::sectionSimpleHTML($amSection->getOriginalMotionSection()->getData());
-        } else {
-            $origParas = [];
-        }
+        $baseText = $amSection->getBaseTextForEditing();
+        $origParas = ($baseText !== null ? HTMLTools::sectionSimpleHTML($baseText) : []);
         $amParas = array_map(fn(SectionedParagraph $par) => $par->html, $origParas);
 
         $changedParagraph = -1;
@@ -292,8 +289,7 @@ class TextSimple extends TextSimpleCommon
             $section->dataRaw = $data['raw'];
         } else {
             // On server side, we do not make a difference between single paragraph and single change mode, as this is enforced on client-side only
-            $moSection = $section->getOriginalMotionSection();
-            $paras = HTMLTools::sectionSimpleHTML($moSection->getData(), true);
+            $paras = HTMLTools::sectionSimpleHTML($section->getBaseTextForEditing() ?? '', true);
             $paras = array_map(fn(SectionedParagraph $par) => $par->html, $paras);
 
             $parasRaw  = $paras;
@@ -411,6 +407,37 @@ class TextSimple extends TextSimpleCommon
                 return $text;
             });
         }
+    }
+
+    public function getAmendmentPlainHtmlAgainstParentAmendment(AmendmentSection $parentSection, string $parentName): ?string
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $consultation = $section->getCachedConsultation();
+        if (!$consultation || $section->getAmendment()?->globalAlternative) {
+            return null;
+        }
+
+        $firstLine = $section->getFirstLineNumber();
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()?->getData() ?? '');
+        $formatter->setTextParent($parentSection->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getTwoLayerDiffGroupsWithNumbers(
+            $consultation->getSettings()->lineLength,
+            DiffRenderer::FORMATTING_INLINE
+        );
+        if ($diffGroups === null) {
+            return null;
+        }
+        if (count($diffGroups) === 0) {
+            return '';
+        }
+
+        $text = DiffRenderer::addOuterLayerLabel(TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine), $parentName);
+
+        return '<h2>' . Html::encode($this->getTitle()) . '</h2>' . $text;
     }
 
     /**

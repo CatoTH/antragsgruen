@@ -41,7 +41,7 @@ class AffectedLinesFilter
         return $out;
     }
 
-    private static function tagIsOuterLayer(string $attributes): bool
+    public static function tagIsOuterLayer(string $attributes): bool
     {
         if (!preg_match('/class *= *["\'](?<classes>[^"\']*)["\']/siu', $attributes, $matches)) {
             return false;

@@ -4,7 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use app\components\{Html, HashedStaticCache, HTMLTools, LanguageTools, LineSplitter, UrlHelper};
-use app\components\diff\{AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
+use app\components\diff\{AffectedLinesFilter, AmendmentSectionFormatter, DataTypes\AffectedLineBlock, DiffRenderer};
 use app\components\latex\{Content as LatexContent, Exporter};
 use app\models\db\{Amendment, AmendmentSection, Consultation, Motion, MotionSection};
 
@@ -194,31 +194,46 @@ abstract class TextSimpleCommon extends Text {
 
     /**
      * Explains the markings of the consolidated view. The samples are marked up with the very styles they
-     * describe, so the legend stays correct whatever the current layout renders them like.
+     * describe, so the legend stays correct whatever the current layout renders them like - or, with
+     * $inlineStyles, with the inline styles used in e-mails (see DiffRenderer::FORMATTING_INLINE).
      *
      * The last two entries are the ones readers cannot guess: a marking of the inner layer nested into one of the
      * outer layer, i.e. this amendment changing what the amended amendment proposes rather than changing the
      * original text - undoing one of its deletions, or dropping one of its insertions.
      */
-    private function getComparisonLegend(): string
+    public static function getComparisonLegendHtml(string $parentName, bool $inlineStyles): string
     {
-        $parentName = Html::encode((string) $this->amendmentComparisonParentName);
+        $parentName = Html::encode($parentName);
         $sample     = Html::encode(\Yii::t('amend', 'statute_legend_sample'));
 
-        $item = function (string $markup, string $messageKey) use ($parentName, $sample): string {
+        $mark = function (string $tag, bool $outer, string $content) use ($inlineStyles): string {
+            if ($inlineStyles) {
+                $style = match ([$tag, $outer]) {
+                    ['ins', true]  => DiffRenderer::STYLE_INLINE_INSERTED_OUTER,
+                    ['del', true]  => DiffRenderer::STYLE_INLINE_DELETED_OUTER,
+                    ['ins', false] => DiffRenderer::STYLE_INLINE_INSERTED,
+                    default        => DiffRenderer::STYLE_INLINE_DELETED,
+                };
+                $attributes = ($outer ? ' class="' . DiffRenderer::CSS_CLASS_OUTER . '"' : '') . ' style="' . $style . '"';
+            } else {
+                $attributes = ($outer ? ' class="' . DiffRenderer::CSS_CLASS_OUTER . '"' : '');
+            }
+            return '<' . $tag . $attributes . '>' . $content . '</' . $tag . '>';
+        };
+        $item = function (string $markup, string $messageKey) use ($parentName): string {
             $label = str_replace('%PREFIX%', $parentName, \Yii::t('amend', $messageKey));
-            return '<li>' . str_replace('%SAMPLE%', $sample, $markup) . ' – ' . $label . '</li>';
+            return '<li>' . $markup . ' – ' . $label . '</li>';
         };
 
-        return '<div class="alert alert-info amendmentComparisonLegend">' .
+        return '<div' . ($inlineStyles ? '' : ' class="alert alert-info amendmentComparisonLegend"') . '>' .
                '<p>' . str_replace('%PREFIX%', $parentName, \Yii::t('amend', 'statute_legend_intro')) . '</p>' .
                '<ul>' .
-               $item('<ins class="outer">%SAMPLE%</ins>', 'statute_legend_parent_ins') .
-               $item('<del class="outer">%SAMPLE%</del>', 'statute_legend_parent_del') .
-               $item('<ins>%SAMPLE%</ins>', 'statute_legend_own_ins') .
-               $item('<del>%SAMPLE%</del>', 'statute_legend_own_del') .
-               $item('<del class="outer"><ins>%SAMPLE%</ins></del>', 'statute_legend_parent_del_own_ins') .
-               $item('<ins class="outer"><del>%SAMPLE%</del></ins>', 'statute_legend_parent_ins_own_del') .
+               $item($mark('ins', true, $sample), 'statute_legend_parent_ins') .
+               $item($mark('del', true, $sample), 'statute_legend_parent_del') .
+               $item($mark('ins', false, $sample), 'statute_legend_own_ins') .
+               $item($mark('del', false, $sample), 'statute_legend_own_del') .
+               $item($mark('del', true, $mark('ins', false, $sample)), 'statute_legend_parent_del_own_ins') .
+               $item($mark('ins', true, $mark('del', false, $sample)), 'statute_legend_parent_ins_own_del') .
                '</ul>' .
                '</div>';
     }
@@ -237,26 +252,22 @@ abstract class TextSimpleCommon extends Text {
      * - a regular amendment: "only changed paragraphs" / "full text"
      * - an amendment amending another one, shown as a diff against the original text: the same two,
      *   plus a third entry switching over to the consolidated two-layered diff
-     * - the same amendment shown as the consolidated diff: only the two entries switching between the
-     *   two comparisons, as that view has no "only changed paragraphs" mode
+     * - the same amendment shown as the consolidated diff: the same two, plus a third entry switching back
+     *   to the diff against the original text
      */
     private function getViewModeDropdown(bool $viewFullMode): string
     {
-        $items = '';
+        $items = '<li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' .
+                 \Yii::t('amend', 'textmode_only_changed') . '</a></li>';
+        $items .= '<li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' .
+                  \Yii::t('amend', 'textmode_full_text') . '</a></li>';
+        if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_ORIGINAL) {
+            $items .= '<li><a href="#" class="showComparisonToParent">' .
+                      $this->getComparisonToParentLabel() . '</a></li>';
+        }
         if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_PARENT) {
             $items .= '<li><a href="#" class="showComparisonToOriginal">' .
                       \Yii::t('amend', 'statute_textmode_vs_original') . '</a></li>';
-            $items .= '<li class="selected"><a href="#" class="showComparisonToParent">' .
-                      $this->getComparisonToParentLabel() . '</a></li>';
-        } else {
-            $items .= '<li' . (!$viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showOnlyChanges">' .
-                      \Yii::t('amend', 'textmode_only_changed') . '</a></li>';
-            $items .= '<li' . ($viewFullMode ? ' class="selected"' : '') . '><a href="#" class="showFullText">' .
-                      \Yii::t('amend', 'textmode_full_text') . '</a></li>';
-            if ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_ORIGINAL) {
-                $items .= '<li><a href="#" class="showComparisonToParent">' .
-                          $this->getComparisonToParentLabel() . '</a></li>';
-            }
         }
 
         return '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
@@ -277,12 +288,12 @@ abstract class TextSimpleCommon extends Text {
         $amendment = $section->getAmendment();
         $firstLine = $section->getFirstLineNumber();
 
-        // The consolidated diff always shows the full text: "only changed paragraphs" would hide the proposal
-        // of the amended amendment, which is the very context this view exists to provide.
+        // In the consolidated diff, the groups only contain the lines changed by this amendment itself. If it changes
+        // nothing in this section, the section is only shown for the changes of the amended amendment, i.e. in full.
         $isComparisonToParent = ($this->amendmentComparisonMode === ISectionType::AMENDMENT_COMPARISON_TO_PARENT);
-        $viewFullMode = $isComparisonToParent ||
-                        $amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true ||
-                        !$this->defaultOnlyDiff;
+        $viewFullMode = $amendment->getExtraDataKey(Amendment::EXTRA_DATA_VIEW_MODE_FULL) === true ||
+                        !$this->defaultOnlyDiff ||
+                        count($diffGroupsAndSections['groups']) === 0;
 
         $title = $this->getTitle();
         $str = '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '" class="motionTextHolder">';
@@ -290,7 +301,7 @@ abstract class TextSimpleCommon extends Text {
         $str .= $this->getViewModeDropdown($viewFullMode);
         $str .= '</div>';
         if ($isComparisonToParent) {
-            $str .= $this->getComparisonLegend();
+            $str .= self::getComparisonLegendHtml((string) $this->amendmentComparisonParentName, false);
         }
         $str       .= '<div id="' . $htmlIdPrefix . 'section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
@@ -307,11 +318,9 @@ abstract class TextSimpleCommon extends Text {
         } else {
             $linkMotion = null;
         }
-        if (!$isComparisonToParent) {
-            $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
-            $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, $linkMotion);
-            $str .= '</div>';
-        }
+        $str .= '<div class="onlyChangedText' . ($viewFullMode ? ' hidden' : '') . '">';
+        $str .= TextSimple::formatDiffGroup($diffGroupsAndSections['groups'], $wrapStart, $wrapEnd, $firstLine, $linkMotion);
+        $str .= '</div>';
 
         $str .= '<div class="fullMotionText text motionTextFormattings textOrig ';
         if ($section->getSettings()->fixedWidth) {
@@ -546,6 +555,17 @@ abstract class TextSimpleCommon extends Text {
         }, $text);
     }
 
+    private static function containsInnerLayerDiffTag(string $html, string $tag): bool
+    {
+        preg_match_all('/<' . $tag . '(?<attributes> [^>]*)?>/siu', $html, $matches);
+        foreach ($matches['attributes'] as $attributes) {
+            if (!AffectedLinesFilter::tagIsOuterLayer($attributes)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @param AffectedLineBlock[] $diffGroups
      */
@@ -562,10 +582,11 @@ abstract class TextSimpleCommon extends Text {
             if (grapheme_strpos($text, 'class="deleted"') !== false) {
                 $hasDelete = true;
             }
-            if (preg_match('/<ins( [^>]*)?>/siu', $text)) {
+            // In a two-layered diff, the changes of the outer layer are only context and do not count as changes
+            if (self::containsInnerLayerDiffTag($text, 'ins')) {
                 $hasInsert = true;
             }
-            if (preg_match('/<del( [^>]*)?>/siu', $text)) {
+            if (self::containsInnerLayerDiffTag($text, 'del')) {
                 $hasDelete = true;
             }
             $out            .= $wrapStart;

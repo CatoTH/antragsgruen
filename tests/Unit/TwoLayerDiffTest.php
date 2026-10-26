@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
 use app\components\diff\TwoLayerDiff;
+use app\components\HTMLTools;
+use app\models\sectionTypes\TextSimple;
 use Tests\Support\Helper\TestBase;
 
 class TwoLayerDiffTest extends TestBase
@@ -263,6 +265,30 @@ Der Finanzausschuss beteiligt Vertreter*innen der Mitglieder aller betroffenen E
         );
     }
 
+    public function testLineSummaryIgnoresTheOuterLayer(): void
+    {
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal('<p>Lorem ipsum dolor sit amet</p>');
+        $formatter->setTextParent('<p>Lorem ipsum sit amet</p>');
+        $formatter->setTextNew('<p>Lorem sed ipsum sit amet</p>');
+        $formatter->setFirstLineNo(1);
+
+        $groups = $formatter->getTwoLayerDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, 0);
+        $this->assertNotNull($groups);
+        $this->assertCount(1, $groups);
+
+        // The deletion of the amended amendment is only context: this amendment itself only inserts
+        $formatted = TextSimple::formatDiffGroup($groups, '', '', 1);
+        $expected  = str_replace('#LINETO#', '1', \Yii::t('diff', 'in_line_ins'));
+        $this->assertStringContainsString('<h4 class="lineSummary">' . $expected . ':</h4>', $formatted);
+    }
+
+    public function testHtml2DomToleratesUncorrectedHtml(): void
+    {
+        $dom = HTMLTools::html2DOM('<section><p>Lorem & ipsum <x-foo>dolor</x-foo></p></section>', false);
+        $this->assertSame('Lorem & ipsum dolor', $dom->textContent);
+    }
+
     public function testWholeParagraphDeletedByParentAndRestoredByChild(): void
     {
         $rendered = $this->combineAndRender(
@@ -275,5 +301,53 @@ Der Finanzausschuss beteiligt Vertreter*innen der Mitglieder aller betroffenen E
         $this->assertCount(2, $rendered);
         $this->assertSame('<p>Lorem ipsum dolor sit amet</p>', $rendered[0]);
         $this->assertSame('<p class="deletedOuter inserted">Consetetur sadipscing elitr</p>', $rendered[1]);
+    }
+
+    public function testInlineFormatting(): void
+    {
+        // As used in e-mails: the outer layer gets its own inline styles, and a block element changed by both
+        // layers keeps the background of the outer one while showing the colors of the inner one
+        $twoLayer = new TwoLayerDiff();
+        $rendered = $twoLayer->computeAndRenderParagraphs(
+            ['<p>Lorem ipsum dolor sit amet</p>', '<p>Consetetur sadipscing elitr</p>'],
+            ['<p>Lorem ipsum dolor sit amet consetetur</p>'],
+            ['<p>Lorem sed ipsum dolor sit amet</p>', '<p>Consetetur sadipscing elitr</p>'],
+            DiffRenderer::FORMATTING_INLINE
+        );
+        $this->assertNotNull($rendered);
+
+        // (The final HTML correction normalizes the whitespace of the style attributes of the outer layer)
+        $this->assertSame(
+            '<p>Lorem <ins style="color: green; text-decoration: underline;">sed </ins>ipsum dolor sit amet' .
+            '<ins class="outer" style="color:#2b6e2b;background-color:#e3f1e3;text-decoration:none;">' .
+            '<del style="color: red; text-decoration: line-through;"> consetetur</del></ins></p>',
+            $rendered[0]
+        );
+        $this->assertSame(
+            // The declarations of the inner layer come last and take precedence, the background of the outer one remains
+            '<p class="deletedOuter inserted" style="color:#7a2b2b;background-color:#f4e3e3;text-decoration:none; ' .
+            DiffRenderer::STYLE_INLINE_INSERTED . '">' .
+            'Consetetur sadipscing elitr</p>',
+            $rendered[1]
+        );
+    }
+
+    public function testPlainTextWithLabelledOuterLayer(): void
+    {
+        $twoLayer = new TwoLayerDiff();
+        $rendered = $twoLayer->computeAndRenderParagraphs(
+            ['<p>Lorem ipsum dolor sit amet</p>', '<p>Consetetur sadipscing elitr</p>'],
+            ['<p>Lorem ipsum dolor sit amet consetetur</p>'],
+            ['<p>Lorem sed ipsum dolor sit amet</p>', '<p>Consetetur sadipscing elitr</p>'],
+            DiffRenderer::FORMATTING_INLINE
+        );
+        $this->assertNotNull($rendered);
+
+        $plain = HTMLTools::toPlainText(DiffRenderer::addOuterLayerLabel(implode('', $rendered), 'Ä1'));
+        $this->assertSame(
+            "Lorem [EINFÜGUNG]sed [/EINFÜGUNG]ipsum dolor sit amet[EINFÜGUNG Ä1][LÖSCHUNG] consetetur[/LÖSCHUNG][/EINFÜGUNG Ä1]\n" .
+            "[LÖSCHUNG Ä1][EINFÜGUNG]Consetetur sadipscing elitr[/EINFÜGUNG][/LÖSCHUNG Ä1]",
+            $plain
+        );
     }
 }

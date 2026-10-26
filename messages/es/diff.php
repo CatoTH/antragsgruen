@@ -15,6 +15,8 @@ return [
     'newline' => 'Salto de línea',
     'plain_text_del' => 'ELIMINAR',
     'plain_text_ins' => 'INSERTAR',
+    'plain_text_del_outer' => 'ELIMINAR %PREFIX%',
+    'plain_text_ins_outer' => 'INSERTAR %PREFIX%',
     'aria_ins' => 'Insertar: "%INS%"',
     'aria_del' => 'Eliminar: "%DEL%"',
     'modu_prefix' => 'Mod.',

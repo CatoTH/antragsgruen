@@ -15,6 +15,8 @@ return [
 	'newline' => 'Nova línia',
 	'plain_text_del' => 'ESBORRA',
 	'plain_text_ins' => 'AFEGEIX',
+	'plain_text_del_outer' => 'ESBORRA %PREFIX%',
+	'plain_text_ins_outer' => 'AFEGEIX %PREFIX%',
 	'aria_ins' => 'Afegeix: \"%INS%\"',
 	'aria_del' => 'Esborra: \"%DEL%\"',
 	'modu_prefix' => 'Mod.',

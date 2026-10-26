@@ -15,6 +15,8 @@ return [
     'newline'        => 'Newline',
     'plain_text_del' => ['text' => 'DELETE', 'description' => 'Used as a bracket tag name in plain-text diff export, e.g. "[DELETE]removed text[/DELETE]" — a markup tag label, not an imperative delete command or button.'],
     'plain_text_ins' => ['text' => 'INSERT', 'description' => 'Used as a bracket tag name in plain-text diff export, e.g. "[INSERT]added text[/INSERT]" — a markup tag label, not an imperative insert command or button.'],
+    'plain_text_del_outer' => ['text' => 'DELETE %PREFIX%', 'description' => 'Like plain_text_del, for the changes of the amendment being amended when showing an amendment to an amendment in plain text, e.g. "[DELETE A1]removed text[/DELETE A1]". Supported placeholders: %PREFIX%'],
+    'plain_text_ins_outer' => ['text' => 'INSERT %PREFIX%', 'description' => 'Like plain_text_ins, for the changes of the amendment being amended when showing an amendment to an amendment in plain text, e.g. "[INSERT A1]added text[/INSERT A1]". Supported placeholders: %PREFIX%'],
     'aria_ins'       => 'Insert: "%INS%"',
     'aria_del'       => 'Delete: "%DEL%"',
     'modu_prefix'    => ['text' => 'Mod.', 'description' => 'Abbreviation appended as "[Mod.]" to a changed passage that resulted from a modified/amended adoption (short for "modified"), not an abbreviation of "Moderator".'],

@@ -1,6 +1,7 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\EMailLog;
 use Tests\Support\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
@@ -52,6 +53,11 @@ $I->clickJS('.amendmentsToAmendmentsDeadlines .deadlineAdder');
 $I->executeJS('$(".amendmentsToAmendmentsDeadlines .deadlineEntry:nth-child(1) .datetimepickerFrom input").val("01.01.2020 00:00");');
 $I->executeJS('$(".amendmentsToAmendmentsDeadlines .deadlineEntry:nth-child(1) .datetimepickerTo input").val("' . date('d.m.Y', strtotime('+1 year')) . ' 00:00");');
 $I->submitForm('.adminTypeForm', [], 'save');
+
+$I->wantTo('activate confirmation e-mails');
+$I->gotoStdAdminPage()->gotoConsultation();
+$I->checkOption('#initiatorConfirmEmails');
+$I->submitForm('#consultationSettingsForm', [], 'save');
 $I->logout();
 
 
@@ -71,7 +77,23 @@ $I->executeJS('CKEDITOR.instances.' . $textSectionId . '.setData("<ol><li>Sectio
 $I->fillField(['name' => 'Initiator[primaryName]'], 'Another Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
+
+$I->wantTo('see the consolidated comparison on the confirmation page as well');
+$confirmConsolidatedHolder = '#consolidated_section_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1);
+$I->seeElement('.amendmentComparison[data-comparison-mode="parent"]');
+$I->dontSeeElement('.amendmentComparison[data-comparison-mode="original"]');
+$I->see('Section', $confirmConsolidatedHolder . ' .onlyChangedText .inserted');
+$I->dontSee('Article', $confirmConsolidatedHolder);
+$I->clickJS($confirmConsolidatedHolder . ' .dropdown-menu .showFullText');
+$I->wait(0.2);
+$I->see('Article', $confirmConsolidatedHolder . ' .fullMotionText .deletedOuter');
+$I->clickJS($confirmConsolidatedHolder . ' .dropdown-menu .showComparisonToOriginal');
+$I->wait(0.2);
+$I->seeElement('.amendmentComparison[data-comparison-mode="original"]');
+$I->dontSeeElement('.amendmentComparison[data-comparison-mode="parent"]');
+
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
+$I->see('E-Mail sent to: test2@example.org (Type ' . EMailLog::TYPE_MOTION_SUBMIT_CONFIRM . ')');
 $I->click('#motionConfirmedForm .btn');
 $I->logout();
 
@@ -90,10 +112,17 @@ $I->dontSeeElement('.amendmentComparison[data-comparison-mode="original"]');
 $I->seeElement('.amendmentComparison[data-comparison-mode="parent"]');
 
 $I->see('Änderungen gegenüber', $consolidatedHolder . ' h2');
-$I->see('Article', $consolidatedHolder);
-$I->see('Paragraph', $consolidatedHolder);
-$I->see('Section', $consolidatedHolder);
-$I->seeElement($consolidatedHolder . ' .outer');
+// Only the lines changed by this amendment itself are shown by default...
+$I->see('Paragraph', $consolidatedHolder . ' .onlyChangedText .insertedOuter.deleted');
+$I->see('Section', $consolidatedHolder . ' .onlyChangedText .inserted');
+$I->dontSee('Article', $consolidatedHolder);
+// ...the full text also shows the changes of the amended amendment that this amendment does not touch
+$I->clickJS($consolidatedHolder . ' .dropdown-menu .showFullText');
+$I->wait(0.2);
+$I->dontSeeElement($consolidatedHolder . ' .onlyChangedText');
+$I->see('Article', $consolidatedHolder . ' .fullMotionText .deletedOuter');
+$I->see('Paragraph', $consolidatedHolder . ' .fullMotionText');
+$I->see('Section', $consolidatedHolder . ' .fullMotionText');
 $I->seeElement($consolidatedHolder . ' .amendmentComparisonLegend');
 
 

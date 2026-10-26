@@ -445,18 +445,15 @@
     width: 5%;
     text-align: center;
   }
-  .prefix {
+  .title {
     .amendmentAjaxTooltip {
       float: right;
       opacity: 0.5;
     }
   }
   @media screen and (min-width: 700px) {
-    .prefix {
-      width: 125px;
-    }
-    .initiator {
-      width: 270px;
+    .title {
+      width: 400px;
     }
   }
   @media screen and (min-width: 1400px) {
@@ -469,19 +466,9 @@
     tr, td, th, tbody, thead, caption {
       display: block;
     }
-    .prefix {
+    .title {
       display: inline-block;
       border-top: none;
-    }
-    .initiator {
-      display: inline-block;
-      border-top: none;
-      &:before {
-        content: '(';
-      }
-      &:after {
-        content: ')';
-      }
     }
     .procedure {
       border-top: none;
