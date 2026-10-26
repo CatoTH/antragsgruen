@@ -3,6 +3,8 @@
 ### Version 4.18.2 [not released yet]
 
 - Support multiple speaking lists on the home page in parallel.
+- Bugfix: URLs with a trailing slash like "/site/" were not found. The application now normalizes them, redirecting to the canonical URL.
+
 
 ### Version 4.18.1 (2026-11-02)
 
