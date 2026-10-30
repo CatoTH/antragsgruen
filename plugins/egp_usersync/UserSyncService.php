@@ -14,7 +14,7 @@ class UserSyncService
     /**
      * @param UserList[] $userLists
      *
-     * @return array<string, array{added: integer, removed: integer, unchanged: integer}>
+     * @return array<string, array<string, array{invited: integer, added: integer, removed: integer, unchanged: integer}>>
      */
     public function syncLists(array $userLists): array
     {
@@ -25,47 +25,83 @@ class UserSyncService
         return $results;
     }
 
-    private function getUserGroupForList(string $listName): ConsultationUserGroup
+    /**
+     * @return string[]
+     */
+    private function getConsultationUrlsForList(string $listName): array
     {
-        if (isset(Module::$consultationListMapping[$listName])) {
-            $consultationUrl = Module::$consultationListMapping[$listName];
-        } else {
-            $consultationUrl = $listName;
-        }
+        return Module::$consultationListMapping[$listName] ?? [$listName];
+    }
 
-        $foundConsultation = null;
-        $knownConsultationUrls = [];
-        foreach (UrlHelper::getCurrentSite()->consultations as $consultation) {
-            $knownConsultationUrls[] = $consultation->urlPath;
-            if (mb_strtolower($consultation->urlPath) === mb_strtolower($consultationUrl)) {
-                $foundConsultation = $consultation;
+    /**
+     * All consultations are resolved before any changes are made, so a misconfigured URL does not lead to a partial sync.
+     *
+     * @return array<string, ConsultationUserGroup> consultation URL => participant group
+     */
+    private function getUserGroupsForList(string $listName): array
+    {
+        $consultations = UrlHelper::getCurrentSite()->consultations;
+        $knownConsultationUrls = array_map(fn(Consultation $consultation) => $consultation->urlPath, $consultations);
+
+        $userGroups = [];
+        foreach ($this->getConsultationUrlsForList($listName) as $consultationUrl) {
+            $foundConsultation = null;
+            foreach ($consultations as $consultation) {
+                if (mb_strtolower($consultation->urlPath) === mb_strtolower($consultationUrl)) {
+                    $foundConsultation = $consultation;
+                }
             }
+
+            if (!$foundConsultation) {
+                throw new ApiResponseException('consultation not found: ' . $consultationUrl . '. only known values: ' . implode(', ', $knownConsultationUrls), 400);
+            }
+
+            $userGroups[$foundConsultation->urlPath] = $this->getParticipantGroup($foundConsultation);
         }
 
-        if (!$foundConsultation) {
-            throw new ApiResponseException('consultation not found. only known values: ' . implode(', ', $knownConsultationUrls), 400);
-        }
+        return $userGroups;
+    }
 
-        foreach ($foundConsultation->getAllAvailableUserGroups() as $userGroup) {
+    private function getParticipantGroup(Consultation $consultation): ConsultationUserGroup
+    {
+        foreach ($consultation->getAllAvailableUserGroups() as $userGroup) {
             if ($userGroup->templateId === ConsultationUserGroup::TEMPLATE_PARTICIPANT) {
                 return $userGroup;
             }
         }
 
-        throw new ApiResponseException('consultation found, but no participant group', 500);
+        throw new ApiResponseException('consultation ' . $consultation->urlPath . ' found, but no participant group', 500);
     }
 
     /**
-     * @return array{invited: integer, added: integer, removed: integer, unchanged: integer}
+     * @return array<string, array{invited: integer, added: integer, removed: integer, unchanged: integer}>
      */
     private function syncUserList(UserList $userList): array
+    {
+        $userGroups = $this->getUserGroupsForList($userList->getListName());
+
+        // Users receive at most one e-mail per list, even if they are added to multiple consultations
+        $notifiedUserIds = [];
+
+        $results = [];
+        foreach ($userGroups as $consultationUrl => $userGroup) {
+            $results[$consultationUrl] = $this->syncUserListIntoGroup($userList, $userGroup, $notifiedUserIds);
+        }
+        return $results;
+    }
+
+    /**
+     * @param int[] $notifiedUserIds
+     *
+     * @return array{invited: integer, added: integer, removed: integer, unchanged: integer}
+     */
+    private function syncUserListIntoGroup(UserList $userList, ConsultationUserGroup $userGroup, array &$notifiedUserIds): array
     {
         $invited = 0;
         $added = 0;
         $removed = 0;
         $unchanged = 0;
 
-        $userGroup = $this->getUserGroupForList($userList->getListName());
         $currentUserIdsInGroup = $userGroup->getUserIds();
 
         $newUserIds = [];
@@ -86,8 +122,9 @@ class UserSyncService
                     $this->getUserGroupAdminMethods($userGroup->consultation)->addSingleDetailedUser(
                         $dbUser,
                         [$userGroup],
-                        \Yii::t('admin', 'siteacc_email_text_pre')
+                        (in_array($dbUser->id, $notifiedUserIds) ? null : \Yii::t('admin', 'siteacc_email_text_pre'))
                     );
+                    $notifiedUserIds[] = $dbUser->id;
                     $added++;
                 }
             } else {
@@ -105,6 +142,7 @@ class UserSyncService
 
                 $dbUser->fixedData = User::FIXED_NAME | User::FIXED_ORGA;
                 $dbUser->save();
+                $notifiedUserIds[] = $dbUser->id;
 
                 $invited++;
             }
