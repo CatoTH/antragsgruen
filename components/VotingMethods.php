@@ -256,6 +256,9 @@ class VotingMethods
      * @throws FormError
      */
     private function voteForSingleItem(User $user, VotingBlock $votingBlock, IVotingItem $item, string $voteChoice): Vote {
+        // Called while the item is locked: the votes have to be read now, not taken from what was cached
+        // before the lock or before an earlier vote of the same request was saved.
+        $votingBlock->forgetVotesOfUser($user);
         $vote = $votingBlock->getUserSingleItemVote($user, $item);
         if (!$votingBlock->userIsCurrentlyAllowedToVoteFor($user, $item, $vote)) {
             throw new FormError('Not possible to vote for this item');
