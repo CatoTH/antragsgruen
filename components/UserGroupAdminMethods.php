@@ -221,6 +221,9 @@ class UserGroupAdminMethods
         return null;
     }
 
+    /**
+     * @throws UserEditFailed
+     */
     public function setUserGroupUsers(int $groupId, array $userIds): void
     {
         $userGroup = $this->getUserGroup($groupId);
@@ -228,11 +231,24 @@ class UserGroupAdminMethods
             return;
         }
 
+        // This is reachable with the voting privilege alone, so it must not be a way to grant admin privileges.
+        // Groups without any privileges (participants, voter groups, synced groups) stay editable as before.
+        $groupHasPrivileges = $userGroup->getGroupPermissions()->containsPrivilege(Privileges::PRIVILEGE_ANY, null);
+        if ($groupHasPrivileges) {
+            if (!$this->consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null)) {
+                throw new UserEditFailed('Only administrators can change the members of a group with privileges');
+            }
+            $this->preventInvalidSiteAdminEdit($this->consultation, $userGroup);
+        }
+
         // Remove all users that should not be in the group anymore
         $existingUserIds = [];
         $defaultGroup = $this->getDefaultUserGroup();
         foreach ($userGroup->users as $user) {
             if (!in_array($user->id, $userIds)) {
+                if ($groupHasPrivileges) {
+                    $this->preventRemovingMyself($this->consultation, $userGroup, $user);
+                }
                 $user->unlink('userGroups', $userGroup, true);
                 $this->logUserGroupRemove($user, $userGroup);
 
@@ -252,6 +268,9 @@ class UserGroupAdminMethods
                 continue;
             }
             $user = User::findOne(['id' => $userId]);
+            if (!$user) {
+                continue;
+            }
             $user->link('userGroups', $userGroup);
             $this->logUserGroupAdd($user, $userGroup);
             AdminTodoItem::flushUserTodoCount($this->consultation, $user->id);
