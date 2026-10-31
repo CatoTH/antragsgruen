@@ -19,9 +19,6 @@ trait AmendmentMergingTrait
     public function actionGetMergeCollisions(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
         if (!$amendment->canMergeIntoMotion()) {
             $this->getHttpSession()->setFlash('error', 'Not allowed to use this function');
             return new RedirectResponse(UrlHelper::createUrl('/consultation/index'));
@@ -75,9 +72,6 @@ trait AmendmentMergingTrait
     public function actionMergeDone(string $motionSlug, int $amendmentId, string $newMotionId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
         $motion = $this->consultation->getMotion($newMotionId);
         if (!$motion) {
             return new HtmlErrorResponse(404, 'Motion not found');
@@ -88,9 +82,6 @@ trait AmendmentMergingTrait
     public function actionMerge(string $motionSlug, int $amendmentId): ResponseInterface
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
         if (!$amendment->canMergeIntoMotion()) {
             if ($amendment->canMergeIntoMotion(true)) {
                 return new HtmlResponse($this->render('merge_err_collision', [

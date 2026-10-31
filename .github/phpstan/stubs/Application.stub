@@ -1,0 +1,15 @@
+<?php
+
+namespace yii\base;
+
+abstract class Application
+{
+    /**
+     * Yii's Application::end() always calls exit() or throws an ExitException (in test mode)
+     *
+     * @param int $status
+     * @param mixed $response
+     * @return never
+     */
+    public function end($status = 0, $response = null) {}
+}

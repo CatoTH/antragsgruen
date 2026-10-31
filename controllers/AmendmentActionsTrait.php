@@ -387,9 +387,6 @@ trait AmendmentActionsTrait
     public function actionDelProposalComment(string $motionSlug, int $amendmentId): JsonResponse
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
-        if (!$amendment) {
-            return new JsonResponse(['success' => false, 'error' => 'Amendment not found']);
-        }
 
         $commentId = (int)$this->getPostValue('id');
         $comment   = AmendmentAdminComment::findOne(['id' => $commentId, 'amendmentId' => $amendment->id]);

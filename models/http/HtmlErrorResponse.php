@@ -32,7 +32,5 @@ class HtmlErrorResponse implements ResponseInterface
             ]
         );
         \Yii::$app->end();
-
-        return null;
     }
 }

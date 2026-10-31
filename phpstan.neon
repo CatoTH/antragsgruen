@@ -7,9 +7,8 @@ parameters:
     level: 8
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false
-    earlyTerminatingMethodCalls:
-      yii\base\Application:
-        - end
+    stubFiles:
+      - .github/phpstan/stubs/Application.stub
     ignoreErrors:
       - identifier: missingType.iterableValue # Issues because Yii's ActiveRecords are recognized as Iterables
       # Generic SSO plugin uses the optional dependency simplesamlphp/simplesamlphp

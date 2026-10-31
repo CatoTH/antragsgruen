@@ -18,7 +18,7 @@ class AmendmentController extends RestBase
         $this->handleRestHeaders(['GET']);
 
         try {
-            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
+            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, throwExceptions: true);
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
         }
@@ -35,9 +35,13 @@ class AmendmentController extends RestBase
         $this->handleRestHeaders(['POST', 'DELETE']);
 
         try {
-            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
+            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, throwExceptions: true);
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
+        }
+
+        if (!$amendment->isReadable()) {
+            return $this->returnRestResponseFromException(new NotFound('Amendment is not readable', 404));
         }
 
         if ($this->getHttpMethod() === 'DELETE') {
@@ -77,7 +81,7 @@ class AmendmentController extends RestBase
         $this->handleRestHeaders(['POST']);
 
         try {
-            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);
+            $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, throwExceptions: true);
         } catch (\Exception $e) {
             return $this->returnRestResponseFromException($e);
         }
