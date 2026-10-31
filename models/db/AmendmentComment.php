@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
-use app\components\{RSSExporter, Tools, UrlHelper};
+use app\components\{HTMLTools, RSSExporter, Tools, UrlHelper};
 use yii\db\ActiveQuery;
 
 /**
@@ -176,7 +176,7 @@ class AmendmentComment extends IComment
             UrlHelper::createAmendmentCommentUrl($this),
             \Yii::t('motion', 'comment_for') . ': ' . $this->getMotionTitle(),
             $this->name,
-            $this->text,
+            HTMLTools::textToHtmlWithLink($this->text),
             Tools::dateSql2timestamp($this->dateCreation)
         );
     }

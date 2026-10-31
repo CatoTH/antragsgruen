@@ -74,7 +74,8 @@ class RSSExporter
                         <author>' . Html::encode($dat['author']) . '</author>
                         <guid>' . Html::encode(UrlHelper::absolutizeLink($dat['link'])) . '</guid>
                         <description><![CDATA[';
-            $return .= $dat['description'];
+            // A "]]>" in the content would end the CDATA section and allow injecting markup into the XML document
+            $return .= str_replace(']]>', ']]]]><![CDATA[>', $dat['description']);
             $return .= ']]></description>
                         <pubDate>' . date(str_replace("y", "Y", DATE_RFC822), $dat['date']) . '</pubDate>
                     </item>';
