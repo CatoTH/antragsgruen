@@ -499,6 +499,8 @@ class UserController extends Base
                     $this->getHttpSession()->setFlash('error', str_replace('%MINLEN%', (string)$pwMinLen, $msg));
                 } else {
                     $user->changePassword($post['pwd']);
+                    // Changing the password logs out all other sessions, but this one should stay logged in
+                    RequestContext::getYiiUser()->switchIdentity($user, $this->getParams()->autoLoginDuration);
                 }
             }
 

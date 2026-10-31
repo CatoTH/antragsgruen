@@ -69,6 +69,22 @@ class User extends \yii\web\User
     }
 
     /**
+     * Yii only validates the auth key of a session if one is stored in it.
+     * Sessions started before the auth key was stored are therefore treated as logged out;
+     * users with a valid "remember me"-cookie are transparently logged in again, receiving a session with an auth key.
+     */
+    protected function renewAuthStatus(): void
+    {
+        $session = RequestContext::getSession();
+        if (($session->getHasSessionId() || $session->getIsActive()) && $session->get($this->idParam) !== null && $session->get($this->authKeyParam) === null) {
+            $session->remove($this->idParam);
+            $session->remove($this->authTimeoutParam);
+        }
+
+        parent::renewAuthStatus();
+    }
+
+    /**
      * Switches to a new identity for the current user.
      *
      * When [[enableSession]] is true, this method may use session and/or cookie to store the user identity information,
@@ -107,9 +123,12 @@ class User extends \yii\web\User
         }
         $session->remove($this->idParam);
         $session->remove($this->authTimeoutParam);
+        $session->remove($this->authKeyParam);
 
         if ($identity) {
             $session->set($this->idParam, $identity->getId());
+            // Lets renewAuthStatus() invalidate this session once the auth key is rotated (e.g. by a password change)
+            $session->set($this->authKeyParam, $identity->getAuthKey());
             if ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }

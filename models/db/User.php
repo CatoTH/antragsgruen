@@ -601,14 +601,25 @@ class User extends ActiveRecord implements IdentityInterface
         return $correctPassword;
     }
 
+    /**
+     * This also logs the user out of all sessions and devices.
+     * To keep the current session of the user logged in, it needs to be renewed after calling this method.
+     */
     public function changePassword(string $newPassword): void
     {
+        $security = \Yii::$app->getSecurity();
         $this->pwdEnc        = password_hash($newPassword, PASSWORD_DEFAULT);
         // Rotating the secret key invalidates all previously issued JWTs and other secret-derived codes
-        $this->secretKey     = \Yii::$app->getSecurity()->generateRandomString(32);
+        $this->secretKey     = $security->generateRandomString(32);
+        // Rotating the auth key invalidates all sessions and "remember me"-cookies
+        $this->authKey       = $security->generateRandomString();
         $this->recoveryToken = null;
         $this->recoveryAt    = null;
         $this->save();
+
+        // authKey is BINARY(100), so the database returns it NUL-padded; the in-memory value has to match
+        // that before it ends up in a session or cookie.
+        $this->refresh();
     }
 
     /**
