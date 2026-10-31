@@ -107,11 +107,35 @@ class UserGroupAdminMethods
     }
 
     /**
+     * Only users listed in the user administration of this consultation may be edited through it,
+     * i.e. members of one of its available user groups. Otherwise, any account of the installation
+     * could be pulled into the consultation by its ID.
+     *
+     * @throws UserEditFailed
+     */
+    private function getEditableUser(int $userId): User
+    {
+        $user = User::findOne(['id' => $userId]);
+        if ($user) {
+            $availableGroupIds = array_map(
+                fn (ConsultationUserGroup $group): int => $group->id,
+                $this->consultation->getAllAvailableUserGroups()
+            );
+            foreach ($user->userGroups as $userGroup) {
+                if (in_array($userGroup->id, $availableGroupIds, true)) {
+                    return $user;
+                }
+            }
+        }
+        throw new UserEditFailed('User not found');
+    }
+
+    /**
      * @throws UserEditFailed
      */
     public function setUserGroupsToUser(int $userId, array $groupIds): void
     {
-        $user = User::findOne(['id' => $userId]);
+        $user = $this->getEditableUser($userId);
         $userHasGroups = [];
 
         $selectableUserGroups = $user->getSelectableUserGroups($this->consultation);
@@ -199,9 +223,12 @@ class UserGroupAdminMethods
         }
     }
 
+    /**
+     * @throws UserEditFailed
+     */
     public function setUserVoteWeight(int $userId, int $voteWeight): void
     {
-        $user = User::findOne(['id' => $userId]);
+        $user = $this->getEditableUser($userId);
 
         $settings = $user->getSettingsObj();
         $settings->setVoteWeight($this->consultation, $voteWeight);
