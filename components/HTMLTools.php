@@ -584,7 +584,7 @@ class HTMLTools
                             $value = $child->getAttribute('value');
                             $newPre  = str_replace('#LINO#', (string)$lino, $pre);
                             if ($value) {
-                                $newPre .= '<' . $child->nodeName . ' value="' . $value . '">';
+                                $newPre .= '<' . $child->nodeName . ' value="' . Html::encode($value) . '">';
                             } else {
                                 $newPre .= '<' . $child->nodeName . '>';
                             }
