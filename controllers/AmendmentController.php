@@ -211,8 +211,40 @@ class AmendmentController extends Base
         if (!$amendment) {
             return new HtmlErrorResponse(404, 'Amendment not found');
         }
+        if (!$this->mayViewAjaxDiff($amendment)) {
+            return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
+        }
 
         return new HtmlResponse($this->renderPartial('ajax_diff', ['amendment' => $amendment]));
+    }
+
+    /**
+     * Besides readable amendments, the tooltips are also shown on admin pages and in the merging tool,
+     * for drafts and for not yet published modifications of proposed procedures.
+     */
+    private function mayViewAjaxDiff(Amendment $amendment): bool
+    {
+        if ($amendment->isReadable()) {
+            return true;
+        }
+
+        // The modified text of a published proposed procedure (shown e.g. in public merging drafts)
+        $referencingProposal = $amendment->proposalReferencedByAmendment ?? $amendment->proposalReferencedByMotion;
+        if ($referencingProposal && $referencingProposal->isProposalPublic()) {
+            return true;
+        }
+
+        if (User::haveOneOfPrivileges($this->consultation, [
+            Privileges::PRIVILEGE_SCREENING,
+            Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED,
+            Privileges::PRIVILEGE_MOTION_STATUS_EDIT,
+            Privileges::PRIVILEGE_CHANGE_PROPOSALS,
+        ], PrivilegeQueryContext::amendment($amendment))) {
+            return true;
+        }
+
+        $motion = $amendment->getMyMotion();
+        return $motion !== null && $motion->canMergeAmendments();
     }
 
     public function actionCreatedone(string $motionSlug, int $amendmentId, string $fromMode): ResponseInterface
