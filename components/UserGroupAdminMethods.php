@@ -364,7 +364,7 @@ class UserGroupAdminMethods
      */
     public function removeUserGroup(int $groupId): void
     {
-        $group = ConsultationUserGroup::findOne(['id' => $groupId]);
+        $group = $this->consultation->getUserGroupById($groupId);
         if (!$group) {
             throw new UserEditFailed('Group does not exist');
         }
