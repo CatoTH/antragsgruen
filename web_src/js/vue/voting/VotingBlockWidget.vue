@@ -30,7 +30,7 @@
                             <a v-if="item.url_html && !projector" :href="item.url_html" v-t:title="['voting', 'voting_show_amend']"><span
                                 class="glyphicon glyphicon-new-window" role="img"
                                 v-t:aria-label="['voting', 'voting_show_amend']"></span></a><br>
-                            <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', true, {'%BY%': item.initiators_html}]"></span>
+                            <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', false, {'%BY%': item.initiators_html}]"></span>
                         </div>
                         <div v-if="votingHasQuorum" class="quorumCounter">
                             {{ quorumCounter(group) }}
