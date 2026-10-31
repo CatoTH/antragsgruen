@@ -139,7 +139,5 @@ class BinaryFileResponse implements ResponseInterface
         $response->data = $this->content;
 
         \Yii::$app->end();
-
-        return null;
     }
 }

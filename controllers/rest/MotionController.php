@@ -83,6 +83,10 @@ class MotionController extends RestBase
             return $this->returnRestResponseFromException($e);
         }
 
+        if (!$motion->isReadable()) {
+            return $this->returnRestResponseFromException(new NotFound('Motion is not readable', 404));
+        }
+
         if ($this->getHttpMethod() === 'DELETE') {
             try {
                 MotionSupporter::revokeSupportFromRequest($motion, User::getCurrentUser());

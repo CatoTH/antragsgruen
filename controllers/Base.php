@@ -179,14 +179,12 @@ class Base extends Controller
     /**
      * @param array|string $url
      * @param int $statusCode
-     * @return mixed
      * @throws \yii\base\ExitException
      */
-    public function redirect($url, $statusCode = 302)
+    public function redirect($url, $statusCode = 302): never
     {
-        $response = parent::redirect($url, $statusCode);
+        parent::redirect($url, $statusCode);
         Yii::$app->end();
-        return $response;
     }
 
     protected function getHttpRequest(): Request
@@ -358,7 +356,6 @@ class Base extends Controller
         if (RequestContext::getYiiUser()->getIsGuest()) {
             $loginUrl = UrlHelper::createUrl(['/user/login', 'backUrl' => $this->getHttpRequest()->url]);
             $this->redirect($loginUrl);
-            Yii::$app->end();
         }
     }
 
@@ -583,7 +580,7 @@ class Base extends Controller
         return null;
     }
 
-    protected function getMotionWithCheck(string $motionSlug, bool $throwExceptions = false): ?Motion
+    protected function getMotionWithCheck(string $motionSlug, bool $throwExceptions = false): Motion
     {
         $motion = MotionRepository::getMotionByIdOrSlug($this->consultation, $motionSlug);
 
@@ -598,9 +595,6 @@ class Base extends Controller
                 $this->getHttpSession()->setFlash('error', Yii::t('motion', 'err_not_found'));
                 $this->redirect(UrlHelper::createUrl('/consultation/index'));
             }
-            Yii::$app->end();
-
-            return null;
         }
 
         $this->checkConsistency($motion, null, $throwExceptions);
@@ -608,7 +602,7 @@ class Base extends Controller
         return $motion;
     }
 
-    protected function getAmendmentWithCheck(string $motionSlug, int $amendmentId, ?string $redirectView = null, bool $throwExceptions = false): ?Amendment
+    protected function getAmendmentWithCheck(string $motionSlug, int $amendmentId, ?string $redirectView = null, bool $throwExceptions = false): Amendment
     {
         $motion    = $this->consultation->getMotion($motionSlug);
         $amendment = $this->consultation->getAmendment($amendmentId);
@@ -617,7 +611,6 @@ class Base extends Controller
                 throw new Internal(Yii::t('amend', 'err_not_found'), 404);
             }
             $this->redirect(UrlHelper::createUrl('/consultation/index'));
-            return null;
         }
         if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {
             if ($throwExceptions) {
@@ -625,7 +618,6 @@ class Base extends Controller
             }
             if ($redirectView) {
                 $this->redirect(UrlHelper::createAmendmentUrl($amendment, $redirectView));
-                return null;
             }
         }
         $this->checkConsistency($motion, $amendment, $throwExceptions);
