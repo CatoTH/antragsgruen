@@ -17,6 +17,7 @@ class BinaryFileResponse implements ResponseInterface
     public const TYPE_PNG = 'png';
     public const TYPE_JPEG = 'jpeg';
     public const TYPE_GIF = 'gif';
+    public const TYPE_SVG = 'svg';
     public const TYPE_XML = 'xml';
     public const TYPE_ZIP = 'zip';
     public const TYPE_CSV = 'csv';
@@ -50,6 +51,8 @@ class BinaryFileResponse implements ResponseInterface
             return self::TYPE_JPEG;
             case 'image/gif':
                 return self::TYPE_GIF;
+            case 'image/svg+xml':
+                return self::TYPE_SVG;
             default:
                 return $mime;
         }
@@ -105,6 +108,13 @@ class BinaryFileResponse implements ResponseInterface
             case self::TYPE_PNG:
                 $response->headers->add('Content-Type', 'application/png');
                 $fileEnding = 'png';
+                break;
+            case self::TYPE_SVG:
+                $response->headers->add('Content-Type', 'image/svg+xml');
+                // SVGs may contain scripts. This does not affect embedding them via <img>, but prevents scripts
+                // from running when the file is opened directly.
+                $response->headers->set('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox");
+                $fileEnding = 'svg';
                 break;
             case self::TYPE_XML:
                 $response->headers->add('Content-Type', 'application/xml');
