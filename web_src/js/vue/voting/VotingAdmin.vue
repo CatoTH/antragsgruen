@@ -117,7 +117,7 @@
                 <a v-if="itemAdminUrl(item)" :href="itemAdminUrl(item)" v-t:title="['voting', 'voting_edit_amend']"
                    :class="'adminUrl' + item.id"><span class="glyphicon glyphicon-wrench" role="img" v-t:aria-label="['voting', 'voting_edit_amend']"></span></a>
                 <br>
-                <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', true, {'%BY%': item.initiators_html}]"></span>
+                <span class="amendmentBy" v-if="item.initiators_html" v-t="['voting', 'voting_by', false, {'%BY%': item.initiators_html}]"></span>
               </div>
               <div v-if="votingHasQuorum" class="quorumCounter">
                 {{ quorumCounter(group) }}
