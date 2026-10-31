@@ -819,15 +819,19 @@ class UserGroupAdminMethods
                         continue;
                     }
 
-                    if ($firstName !== '' || $lastName !== '') {
-                        $user->nameGiven = $firstName;
-                        $user->nameFamily = $lastName;
-                        $user->name = $name;
+                    // Accounts are global (shared by all sites), so only those who may edit account data
+                    // may change the profile of an existing account. Otherwise, only the groups are changed.
+                    if (User::havePrivilege($this->consultation, Privileges::PRIVILEGE_GLOBAL_USER_ADMIN, null)) {
+                        if ($firstName !== '' || $lastName !== '') {
+                            $user->nameGiven = $firstName;
+                            $user->nameFamily = $lastName;
+                            $user->name = $name;
+                        }
+                        if ($organization !== '') {
+                            $user->organization = $organization;
+                        }
+                        $user->save(false);
                     }
-                    if ($organization !== '') {
-                        $user->organization = $organization;
-                    }
-                    $user->save(false);
 
                     if ($collisionBehavior === 'replace') {
                         $newGroupIds = array_map(
