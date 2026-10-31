@@ -117,7 +117,7 @@ class UserGroupAdminMethods
         $user = User::findOne(['id' => $userId]);
         if ($user) {
             $availableGroupIds = array_map(
-                fn (ConsultationUserGroup $group): int => $group->id,
+                fn (ConsultationUserGroup $group): int => $group->id ?? throw new \RuntimeException('User group without ID'),
                 $this->consultation->getAllAvailableUserGroups()
             );
             foreach ($user->userGroups as $userGroup) {
