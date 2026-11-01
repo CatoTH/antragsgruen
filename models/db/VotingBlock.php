@@ -236,6 +236,18 @@ class VotingBlock extends ActiveRecord implements IHasPolicies
     }
 
     /**
+     * Drops what is cached about the votes of one person, so the next check reads the database again.
+     * Needed before deciding whether someone may still vote: a request casting several votes, or a
+     * concurrent one, would otherwise be checked against the votes as they were before.
+     */
+    public function forgetVotesOfUser(User $user): void
+    {
+        unset($this->votesByUserCache[$user->id]);
+        $this->allVotesOfUsersLoaded = false;
+        $this->votesSortedByItemCache = null;
+    }
+
+    /**
      * Loads the votes of everyone at once, for the one caller that needs the state of many people:
      * the live event, which describes the voting for every person it is delivered to. Asking per
      * person would be one query each.
