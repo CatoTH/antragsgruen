@@ -136,7 +136,6 @@ class ManagerController extends Base
         $user = $this->eligibleToCreateUser();
         if (!$user) {
             $this->redirect(UrlHelper::createUrl('/antragsgruen_sites/manager/index'));
-            \Yii::$app->end();
         }
     }
 

@@ -315,9 +315,6 @@ trait MotionExportTraits
     public function actionAmendmentSynopsisPdf(string $motionSlug): ResponseInterface
     {
         $motion = $this->getMotionWithCheck($motionSlug);
-        if (!$motion) {
-            return new HtmlErrorResponse(404, \Yii::t('motion', 'err_not_found'));
-        }
 
         $context = PrivilegeQueryContext::motion($motion);
         $maySeeUnpublished = $this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_SEE_UNPUBLISHED, $context);

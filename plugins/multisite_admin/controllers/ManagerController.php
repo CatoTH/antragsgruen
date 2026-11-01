@@ -28,7 +28,6 @@ class ManagerController extends Base
         $user = $this->eligibleToCreateUser();
         if (!$user) {
             $this->redirect(UrlHelper::createUrl('/multisite_admin/manager/index'));
-            \Yii::$app->end();
         }
     }
 

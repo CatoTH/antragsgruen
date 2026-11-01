@@ -419,9 +419,6 @@ trait MotionActionsTrait
     public function actionDelProposalComment(string $motionSlug): ResponseInterface
     {
         $motion = $this->getMotionWithCheck($motionSlug);
-        if (!$motion) {
-            return new RestApiExceptionResponse(404, 'Motion not found');
-        }
 
         $commentId = $this->getHttpRequest()->post('id');
         $comment   = MotionAdminComment::findOne(['id' => $commentId, 'motionId' => $motion->id]);

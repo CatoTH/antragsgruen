@@ -31,9 +31,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         $selectedPdfLayout = IPDFLayout::getPdfLayoutForMotionType($amendment->getMyMotionType());
 
@@ -125,9 +122,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         if (!$amendment->isReadable()) {
             return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
@@ -151,9 +145,6 @@ class AmendmentController extends Base
 
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, 'view');
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         if ($this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, null)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
@@ -207,9 +198,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
         if (!$this->mayViewAjaxDiff($amendment)) {
             return new HtmlErrorResponse(404, \Yii::t('amend', 'err_not_visible'));
         }
@@ -510,9 +498,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new RestApiExceptionResponse(404, 'Amendment not found');
-        }
 
         $post = $this->getPostValues();
         if (!in_array('version', array_keys($post))) {
@@ -714,9 +699,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new HtmlErrorResponse(404, 'Amendment not found');
-        }
 
         if ($this->getHttpRequest()->post('newVersion', null) === 'new') {
             $oldProposal = $amendment->getProposalByVersion($proposalVersion);
@@ -788,9 +770,6 @@ class AmendmentController extends Base
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         $this->amendment = $amendment;
-        if (!$amendment) {
-            return new RestApiExceptionResponse(404, 'Amendment not found');
-        }
         if (!User::havePrivilege($this->consultation, Privileges::PRIVILEGE_CHANGE_PROPOSALS, PrivilegeQueryContext::amendment($amendment))) {
             return new RestApiExceptionResponse(403, 'Not permitted to change the status');
         }

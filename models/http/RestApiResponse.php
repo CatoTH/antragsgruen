@@ -43,7 +43,5 @@ class RestApiResponse implements ResponseInterface
         $response->statusCode = $this->statusCode;
         $response->content = $this->getJson();
         \Yii::$app->end();
-
-        return null;
     }
 }
