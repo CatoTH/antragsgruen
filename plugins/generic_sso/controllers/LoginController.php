@@ -49,7 +49,6 @@ class LoginController extends Base
     {
         /** @var \yii\web\Application $app */
         $app = \Yii::$app;
-        /** @var \yii\web\Request $request */
         $request = $app->request;
 
         if ($error) {
@@ -67,7 +66,6 @@ class LoginController extends Base
                 403,
                 'SSO Authentication Error: ' . Html::encode($errorDescription)
             );
-            return;
         }
 
         // Retrieve the stored backUrl
