@@ -450,7 +450,7 @@ class PagesController extends Base
         if ($file) {
             $lines     = explode("\n", $file->data);
             $firstLine = array_shift($lines);
-            if ($firstLine === ANTRAGSGRUEN_VERSION) {
+            if ($firstLine === ConsultationFile::getStylesheetCacheTag()) {
                 return new BinaryFileResponse(BinaryFileResponse::TYPE_CSS, implode("\n", $lines), false, null, false, 3600 * 24 * 7);
             } else {
                 $file->delete();
@@ -460,10 +460,10 @@ class PagesController extends Base
         $data       = $this->renderPartial('css', [
             'stylesheetSettings' => $stylesheetSettings,
         ]);
-        $toSaveData = ANTRAGSGRUEN_VERSION . "\n" . $data;
+        $toSaveData = ConsultationFile::getStylesheetCacheTag() . "\n" . $data;
         ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $toSaveData);
 
-        return new BinaryFileResponse(BinaryFileResponse::TYPE_CSS, $toSaveData, false, null, false, 3600 * 24 * 7);
+        return new BinaryFileResponse(BinaryFileResponse::TYPE_CSS, $data, false, null, false, 3600 * 24 * 7);
     }
 
     public function actionDocuments(): ResponseInterface

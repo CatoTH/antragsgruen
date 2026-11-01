@@ -19,7 +19,12 @@ if ($layout->mainCssFile === null) {
     $mainCssFile = StaticResourceTools::resourceUrl('css/layout-classic.css');
 } elseif (str_starts_with($layout->mainCssFile, 'layout-custom-')) {
     $mainCssHash = str_replace('layout-custom', '', $layout->mainCssFile);
-    $mainCssFile = \app\components\UrlHelper::createUrl(['/pages/css', 'hash' => $mainCssHash]);
+    // "v" makes browsers reload the stylesheet when the cached version would be regenerated
+    $mainCssFile = \app\components\UrlHelper::createUrl([
+        '/pages/css',
+        'hash' => $mainCssHash,
+        'v'    => substr(sha1(\app\models\db\ConsultationFile::getStylesheetCacheTag()), 0, 8),
+    ]);
 } elseif (str_starts_with($layout->mainCssFile, 'layout-plugin-')) {
     try {
         $mainCssFile = null;
