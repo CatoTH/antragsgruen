@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.18.1 [not released yet]
+### Version 4.18.1 (2026-11-02)
 
 - Several security-related issues found during an automated security-scan were resolved.
 - In multilingual consultations, the welcome text, other content pages and UI text fragments can now also be translated.
