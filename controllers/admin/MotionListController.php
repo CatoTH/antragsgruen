@@ -14,10 +14,10 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 class MotionListController extends AdminBase
 {
-    public static function haveAccessToList(Consultation $consultation): bool
+    public static function haveAccessToList(?Consultation $consultation): bool
     {
         $user = User::getCurrentUser();
-        if (!$user) {
+        if (!$user || !$consultation) {
             return false;
         }
 
@@ -37,6 +37,24 @@ class MotionListController extends AdminBase
         }
 
         return $privilege;
+    }
+
+    /**
+     * The controller is accessible with any privilege, but the list and its exports (unpublished motions,
+     * contact data of initiators) only to those who have access to the list.
+     */
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        // Guests only get here for the downloads in the test environment, see AdminBase
+        if (!RequestContext::getYiiUser()->isGuest && !self::haveAccessToList($this->consultation)) {
+            throw new ResponseException(new HtmlErrorResponse(403, \Yii::t('admin', 'no_access')));
+        }
+
+        return true;
     }
 
     /**
