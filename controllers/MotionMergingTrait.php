@@ -69,6 +69,10 @@ trait MotionMergingTrait
         if (!$motion) {
             return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
+        // Only used by the merging editor; returns unpublished texts of the motion and of proposed procedures
+        if (!$motion->canMergeAmendments()) {
+            return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_edit_permission')]);
+        }
 
 
         $section = null;
@@ -118,6 +122,10 @@ trait MotionMergingTrait
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+        }
+        // Only used by the merging editor; returns unpublished texts of the motion and of proposed procedures
+        if (!$motion->canMergeAmendments()) {
+            return new JsonResponse(['success' => false, 'error' => \Yii::t('motion', 'err_edit_permission')]);
         }
 
         $amendmentsById = [];
