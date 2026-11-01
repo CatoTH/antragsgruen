@@ -219,6 +219,10 @@ class UserGroupAdminMethods
 
         if ($newPassword !== null && trim($newPassword) !== '') {
             $user->changePassword(trim($newPassword));
+            if ($userId === User::getCurrentUser()?->id) {
+                // Changing the password logs out all sessions, but the admin's own one should stay logged in
+                RequestContext::getYiiUser()->switchIdentity($user, AntragsgruenApp::getInstance()->autoLoginDuration);
+            }
         }
     }
 
