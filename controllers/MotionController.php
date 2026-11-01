@@ -16,7 +16,7 @@ use app\models\db\{Amendment,
     UserNotification};
 use app\models\api\imotion\MotionUpdateRequest;
 use app\models\http\{HtmlErrorResponse, HtmlResponse, RedirectResponse, ResponseInterface};
-use app\models\settings\Privileges;
+use app\models\settings\{PrivilegeQueryContext, Privileges};
 use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal, ResponseException};
 use app\models\api\imotion\MotionCreateRequest;
 use app\models\forms\MotionEditForm;
@@ -352,9 +352,15 @@ class MotionController extends Base
         }
 
         if ($cloneFrom > 0) {
+            // Using an existing motion as template is an admin function, and also exposes unpublished motions and contact data
             $motion = $this->consultation->getMotion($cloneFrom);
-            $form->cloneSupporters($motion);
-            $form->cloneMotionText($motion);
+            if ($motion && (
+                $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::motion($motion)) ||
+                $this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::motion($motion))
+            )) {
+                $form->cloneSupporters($motion);
+                $form->cloneMotionText($motion);
+            }
         }
 
         if (count($form->supporters) === 0) {

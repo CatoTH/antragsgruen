@@ -390,7 +390,7 @@ class AmendmentController extends Base
         $amendingAmendment = null;
         if ($createFromAmendment > 0 && $motion->getMyMotionType()->getSettingsObj()->allowAmendmentsToAmendments) {
             $adoptAmend = $this->consultation->getAmendment($createFromAmendment);
-            if ($adoptAmend && $adoptAmend->motionId === $motion->id) {
+            if ($adoptAmend && $adoptAmend->motionId === $motion->id && $adoptAmend->isReadable()) {
                 $amendingAmendment = $adoptAmend;
             }
         }
@@ -452,9 +452,15 @@ class AmendmentController extends Base
                 $this->getHttpSession()->setFlash('error', $e->getMessage());
             }
         } elseif ($cloneFrom > 0) {
+            // Using an existing amendment as template is an admin function, and also exposes unpublished amendments and contact data
             $adoptAmend = $this->consultation->getAmendment($cloneFrom);
-            $form->cloneSupporters($adoptAmend);
-            $form->cloneAmendmentText($adoptAmend, true);
+            if ($adoptAmend && (
+                $this->consultation->havePrivilege(Privileges::PRIVILEGE_SCREENING, PrivilegeQueryContext::amendment($adoptAmend)) ||
+                $this->consultation->havePrivilege(Privileges::PRIVILEGE_MOTION_STATUS_EDIT, PrivilegeQueryContext::amendment($adoptAmend))
+            )) {
+                $form->cloneSupporters($adoptAmend);
+                $form->cloneAmendmentText($adoptAmend, true);
+            }
         } elseif ($amendingAmendment !== null) {
             $form->cloneAmendmentText($amendingAmendment, false);
             $form->setAmendedAmendment($amendingAmendment);
