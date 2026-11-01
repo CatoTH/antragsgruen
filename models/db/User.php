@@ -408,7 +408,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        // authKey is BINARY(100), so the database returns it NUL-padded, while a freshly generated one is not
+        return rtrim($this->authKey, "\0");
     }
 
     /**
@@ -421,7 +422,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey): bool
     {
-        return hash_equals($this->authKey, $authKey);
+        return hash_equals($this->getAuthKey(), rtrim($authKey, "\0"));
     }
 
     /**
