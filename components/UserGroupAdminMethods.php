@@ -797,6 +797,7 @@ class UserGroupAdminMethods
                             }
                         }
                         if ($group) {
+                            $this->preventInvalidSiteAdminEdit($this->consultation, $group);
                             $userGroups[] = $group;
                         } else {
                             $errors[] = "$email: Warning: Group '$groupName' not found.";
@@ -828,12 +829,31 @@ class UserGroupAdminMethods
                     $user->save(false);
 
                     if ($collisionBehavior === 'replace') {
+                        $newGroupIds = array_map(
+                            fn (ConsultationUserGroup $g): int => $g->id ?? throw new \RuntimeException('User group without ID'),
+                            $userGroups
+                        );
                         $consultationGroups = $user->getUserGroupsForConsultation($this->consultation);
+                        $keptGroupIds = [];
+                        $removedGroups = [];
                         foreach ($consultationGroups as $oldGroup) {
+                            if (in_array($oldGroup->id, $newGroupIds, true)) {
+                                $keptGroupIds[] = $oldGroup->id;
+                            } else {
+                                // Check all removals before changing anything
+                                $this->preventInvalidSiteAdminEdit($this->consultation, $oldGroup);
+                                $this->preventRemovingMyself($this->consultation, $oldGroup, $user);
+                                $removedGroups[] = $oldGroup;
+                            }
+                        }
+                        foreach ($removedGroups as $oldGroup) {
                             $user->unlink('userGroups', $oldGroup, true);
                             $this->logUserGroupRemove($user, $oldGroup);
                         }
                         foreach ($userGroups as $group) {
+                            if (in_array($group->id, $keptGroupIds, true)) {
+                                continue;
+                            }
                             $user->link('userGroups', $group);
                             $this->logUserGroupAdd($user, $group);
                         }
