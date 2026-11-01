@@ -17,7 +17,7 @@ use yii\web\{Controller, Request, Response, Session};
  */
 class Base extends Controller
 {
-    public ?Layout $layoutParams = null;
+    public Layout $layoutParams;
     public ?Consultation $consultation = null;
     public ?Motion $motion = null;
     public ?Amendment $amendment = null;
@@ -38,10 +38,10 @@ class Base extends Controller
      */
     public function __construct($cid, $module, $config = [])
     {
-        parent::__construct($cid, $module, $config);
-
         // Hint: can be overwritten in loadConsultation
         $this->layoutParams = new Layout();
+
+        parent::__construct($cid, $module, $config);
     }
 
     protected function beforeActionAuthorizationHandling(\yii\base\Action $action): void
@@ -417,7 +417,7 @@ class Base extends Controller
      * @throws ApiResponseException
      * @throws \yii\base\ExitException
      */
-    protected function showErrorpage(int $status, ?string $message): void
+    protected function showErrorpage(int $status, ?string $message): never
     {
         if (RequestContext::isRestApiRequest()) {
             // The API answers in JSON, and an API client can do nothing with an HTML page anyway.
@@ -428,8 +428,9 @@ class Base extends Controller
             throw new ApiResponseException(trim(HTMLTools::toPlainText($message ?? '')), $status);
         }
 
-        /** @var Response $response */
-        $response = Yii::$app->response;
+        /** @var \yii\web\Application $app */
+        $app = Yii::$app;
+        $response = $app->response;
 
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
@@ -442,10 +443,10 @@ class Base extends Controller
                 'name'       => 'Error',
             ]
         );
-        Yii::$app->end();
+        $app->end();
     }
 
-    protected function consultationNotFound(): void
+    protected function consultationNotFound(): never
     {
         $url     = Html::encode($this->getParams()->domainPlain);
         $message = str_replace('%URL%', $url, Yii::t('base', 'err_cons_404'));
