@@ -90,7 +90,8 @@ return [
     'submitted_publish'             => 'Published %TITLE%',
     'created_statutes'              => [
         'text' => 'Created statutes',
-        'description' => 'Supported placeholders: %TITLE% (only in the page heading, not in the breadcrumb)',
+        'description' => '%TITLE% is only replaced in the page heading, not in the breadcrumb.',
+        'placeholders' => ['%TITLE%'],
     ],
     'created_statutes_done'         => 'The statutes have been saved. Users can now create amendments for them (if the permissions have been granted).',
     'created_bread_create'          => 'Created',
@@ -182,7 +183,7 @@ return [
                                    "You can see it here: %LINK%\n\n" .
                                    "Greetings,\n" .
                                    "  The Antragsgrün Team",
-        'description' => 'Supported placeholders: %TITLE%, %LINK%, %NAME_GIVEN%',
+        'placeholders' => ['%TITLE%', '%LINK%', '%NAME_GIVEN%'],
     ],
     'published_email_title'     => 'Your motion has been published',
     'back_to_motion'            => 'Back',
@@ -256,7 +257,7 @@ return [
         'text' => '<div style="font-weight: bold; text-decoration: underline;">Motion or amendment?</div>
                                    Here you can create a motion with no reference to another motion.
                                    If you want to amend an existing motion instead, please open that motion first and choose "Create amendment" on the sidebar to the right',
-        'description' => 'Supported placeholders: %HOME%',
+        'placeholders' => ['%HOME%'],
     ],
 
     'support_collect_status' => 'Currently',
@@ -281,21 +282,21 @@ return [
     'confirmed_support_phase_ww'         => '', // Not relevant
     'submitted_screening_email'          => [
         'text' => "Hi,\n\nYou just submitted a motion. It will now be reviewed and then published. You will be notified separately, once this happens.\n\nYou can see the motion here: %LINK%",
-        'description' => 'Supported placeholders: %LINK%, %NAME_GIVEN%',
+        'placeholders' => ['%LINK%', '%NAME_GIVEN%'],
     ],
     'submitted_screening_email_subject'  => 'Motion submitted',
     'submitted_supp_phase_email'         => [
         'text' => "Hi,\n\nyou have created the motion.\nTo officially submit it, it needs at least %MIN% supporters.\n\nSend the following link to gain support for your motion: \n\n%LINK%\n",
-        'description' => 'Supported placeholders: %MIN%, %LINK%, %NAME_GIVEN%',
+        'placeholders' => ['%MIN%', '%LINK%', '%NAME_GIVEN%'],
     ],
     'submitted_supp_phase_email_subject' => 'Motion created',
     'submitted_adminnoti_title'          => [
         'text' => 'New motion',
-        'description' => 'Supported placeholders: %TITLE%, %INITIATOR%, %STATUS%',
+        'placeholders' => ['%TITLE%', '%INITIATOR%', '%STATUS%'],
     ],
     'submitted_adminnoti_body'           => [
         'text' => "A new motion was created.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
-        'description' => 'Supported placeholders: %TITLE%, %INITIATOR%, %LINK%, %STATUS%',
+        'placeholders' => ['%TITLE%', '%INITIATOR%', '%LINK%', '%STATUS%'],
     ],
     'support_collect_explanation_title'  => 'Find supporters',
     'support_collect_explanation'        => [
@@ -304,7 +305,7 @@ return [
         <li><strong>Finding supporters:</strong> Send the link to potential supporters. Everyone can access this page given this link. Everyone with the necessary privileges can support this motion on this page.</li>
         <li><strong>Submit the motion:</strong> Once %MIN% people are supporting this motion, you will receive a notification by e-mail. Now you can officially submit the motion. After submitting, the support list is closed.</li>
         </ol>',
-        'description' => 'Supported placeholders: %MIN%, %MIN+1%',
+        'placeholders' => ['%MIN%', '%MIN+1%'],
     ],
     'copy_to_clipboard'                  => 'Copy to clipboard',
     'copy_to_clipboard_done'             => 'The URL has been copied to the clipboard.',
@@ -312,24 +313,24 @@ return [
     'support_done'                       => 'You are now supporting this motion.',
     'support_collection_hint'            => [
         'text' => 'This motion is not yet officially submitted. <strong>At least %MIN% supporters (currently: %CURR%)</strong> need to support it. You can support this motion on this page.',
-        'description' => 'Supported placeholders: %MIN%, %CURR%, %MIN_ALL%, %CURR_ALL%, %MIN_F%, %CURR_F%',
+        'placeholders' => ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
     ],
     'support_collection_hint_female'     => [
         'text' => 'This motion is not yet officially submitted. <strong>At least %MIN% supporters, including %MIN_F% women (currently: %CURR% / %CURR_F%)</strong> need to support it. You can support this amendment on this page.',
-        'description' => 'Supported placeholders: %MIN%, %CURR%, %MIN_ALL%, %CURR_ALL%, %MIN_F%, %CURR_F%',
+        'placeholders' => ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
     ],
     'support_collection_reached_hint'    => [
         'text' => 'This motion has the necessary number of supporters, but is not yet officially submitted. This is up to the motion proposer.',
-        'description' => 'Supported placeholders: %MIN%, %CURR%, %MIN_ALL%, %CURR_ALL%, %MIN_F%, %CURR_F%',
+        'placeholders' => ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
     ],
     'support_collection_reached_hint_m'  => [
         'text' => 'It is still possible to support the motion.',
-        'description' => 'Supported placeholders: %MIN%, %CURR%, %MIN_ALL%, %CURR_ALL%, %MIN_F%, %CURR_F%',
+        'placeholders' => ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
     ],
     'support_reached_email_subject'      => 'Your motion has enough supporters',
     'support_reached_email_body'         => [
         'text' => "Hi,<br><br>Your motion \"%TITLE%\" has the necessary number of supporters. You can officially submit it here now:<br><br><strong>%LINK%</strong><br><br>Please note that this step is mandatory to submit the motion.",
-        'description' => 'Supported placeholders: %TITLE%, %LINK%, %NAME_GIVEN%',
+        'placeholders' => ['%TITLE%', '%LINK%', '%NAME_GIVEN%'],
     ],
     'support_finish_btn'                 => 'Officially submit the motion',
     'support_finish_err'                 => 'This is not (yet) possible.',
@@ -365,7 +366,7 @@ return [
                                  "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
                                  "Greetings,\n" .
                                  "  The Antragsgrün-Team",
-        'description' => 'Supported placeholders: %NAME_GIVEN%, %NAME%, %LINK%',
+        'placeholders' => ['%NAME_GIVEN%', '%NAME%', '%LINK%'],
     ],
     'proposal_email_accepted' => [
         'text' => "Hi %NAME_GIVEN%,\n\n" .
@@ -373,7 +374,7 @@ return [
                                  "You can see the motion at the following link: %LINK%\n\n" .
                                  "Greetings,\n" .
                                  "  The Antragsgrün-Team",
-        'description' => 'Supported placeholders: %NAME_GIVEN%, %NAME%, %LINK%',
+        'placeholders' => ['%NAME_GIVEN%', '%NAME%', '%LINK%'],
     ],
     'proposal_email_other'    => [
         'text' => "Hi %NAME_GIVEN%,\n\n" .
@@ -382,7 +383,7 @@ return [
                                  "Hint: if you forward the link mentioned just now, the receiving person will be able to see and accept the proposal.\n\n" .
                                  "Greetings,\n" .
                                  "  The Antragsgrün-Team",
-        'description' => 'Supported placeholders: %NAME_GIVEN%, %NAME%, %LINK%',
+        'placeholders' => ['%NAME_GIVEN%', '%NAME%', '%LINK%'],
     ],
 
     'goto_line'     => 'Go to line',

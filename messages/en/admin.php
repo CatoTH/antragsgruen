@@ -618,7 +618,7 @@ Here is your login data:
 
 Good-bye,
   Team Antragsgrün',
-        'description' => 'Supported placeholders: %LINK%, %ACCOUNT%, %NAME_GIVEN%, %NAME_FAMILY%',
+        'placeholders' => ['%LINK%', '%ACCOUNT%', '%NAME_GIVEN%', '%NAME_FAMILY%'],
     ],
     'siteacc_acc_expl_mail'     => '<h3>Explanation:</h3>
 To grant access to persons, enter their e-mail-addresses in the text field below.
@@ -701,6 +701,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'translating_hint'            => 'Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.<br>' .
                                      '<strong>Hint:</strong> Changes here only affect this one consultation.',
     'translating_none'            => 'No strings to translate',
+    'translating_placeholders'    => 'Supported placeholders:',
     'translating_base'            => 'Base language',
     'translation_motion_types'    => 'Texts of motion types',
     'translating_motion_types'    => 'Motion type specific texts',
