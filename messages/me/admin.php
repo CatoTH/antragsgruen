@@ -493,6 +493,7 @@ Budući da <strong>nije konfigurirana dostava e-pošte</strong>, ovdje je potreb
     'Translation / Wording' => 'Uređivanje jezika', // Original: Edit the language
     'translating_hint' => 'Ovdje možete promijeniti sve tekstove korisničkog sučelja Antragsgrüna. Ako želite u potpunosti prevesti Antragsgrün na drugi jezik, <a href="https://github.com/CatoTH">kontaktirajte nas</a> kako bismo mogli usvojiti prijevod u službeni projekt. <br>', // Original: Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.<br>
     'translating_none' => 'Nema obaveza za prevođenje', // Original: No strings to translate
+    'translating_placeholders' => 'Podržani čuvari mjesta:',
     'translating_base' => 'Osnovni jezik', // Original: Base language
     'translation_motion_types' => 'Tekstovi vrsta predloga', // Original: Texts of motion types
     'translating_motion_types' => 'Tekstovi specifični za vrstu predloga', // Original: Motion type specific texts

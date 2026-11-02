@@ -245,7 +245,7 @@ return [
     'activity_MOTION_CHANGE'              => '###USER###  <strong>edited the motion ###MOTION###</strong>',
     'activity_MOTION_WITHDRAW'            => [
         'text' => 'The motion was <strong>withdrawn</strong>.',
-        'description' => 'Supported placeholders: ###USER###',
+        'placeholders' => ['###USER###'],
     ],
     'activity_MOTION_COMMENT'             => '###USER### <strong>commented on the motion</strong>',
     'activity_MOTION_SCREEN'              => 'The <strong>motion was published</strong>',
@@ -283,15 +283,15 @@ return [
     'activity_AMENDMENT_REJECT_PROPOSAL_admin' => '###USER### set that initiator <strong>rejected the proposed procedure (version %VERSION%)</strong>',
     'activity_AMENDMENT_NEW_PROPOSAL'     => [
         'text' => '###USER### <strong>created the proposed procedure of ###AMENDMENT###</strong>',
-        'description' => 'Supported placeholders: ###USER###, ###AMENDMENT###, %VERSION%',
+        'placeholders' => ['###USER###', '###AMENDMENT###', '%VERSION%'],
     ],
     'activity_AMENDMENT_SET_PROPOSAL'     => [
         'text' => '###USER### <strong>edited the proposed procedure of ###AMENDMENT###</strong>',
-        'description' => 'Supported placeholders: ###USER###, ###AMENDMENT###, %VERSION%',
+        'placeholders' => ['###USER###', '###AMENDMENT###', '%VERSION%'],
     ],
     'activity_AMENDMENT_SET_PROPOSAL_TEXT'  => [
         'text' => '###USER### <strong>edited the proposed procedure text of ###AMENDMENT###</strong>',
-        'description' => 'Supported placeholders: ###USER###, ###AMENDMENT###, %VERSION%',
+        'placeholders' => ['###USER###', '###AMENDMENT###', '%VERSION%'],
     ],
     'activity_AMENDMENT_VOTE_REJECTED'    => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>rejected</strong>.',
     'activity_AMENDMENT_VOTE_ACCEPTED'    => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>accepted</strong>.',

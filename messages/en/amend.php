@@ -46,18 +46,18 @@ return [
     'statute_textmode_vs_parent' => 'Changes to %PREFIX%',
     'statute_legend_intro'   => [
         'text' => 'This view shows two layers of changes on top of each other:',
-        'description' => 'Supported placeholders: %PREFIX%',
+        'placeholders' => ['%PREFIX%'],
     ],
     'statute_legend_sample'  => 'text',
     'statute_legend_parent_ins' => 'inserted by %PREFIX%',
     'statute_legend_parent_del' => 'deleted by %PREFIX%',
     'statute_legend_own_ins' => [
         'text' => 'inserted by this amendment',
-        'description' => 'Supported placeholders: %PREFIX%',
+        'placeholders' => ['%PREFIX%'],
     ],
     'statute_legend_own_del' => [
         'text' => 'deleted by this amendment',
-        'description' => 'Supported placeholders: %PREFIX%',
+        'placeholders' => ['%PREFIX%'],
     ],
     'statute_legend_parent_del_own_ins' => 'deleted by %PREFIX%, restored by this amendment',
     'statute_legend_parent_ins_own_del' => 'inserted by %PREFIX%, deleted again by this amendment',
@@ -240,7 +240,7 @@ return [
                                            "You can see it here: %LINK%\n\n" .
                                            "Greetings,\n" .
                                            "  The Antragsgrün-Team",
-        'description' => 'Supported placeholders: %MOTION%, %LINK%, %NAME_GIVEN%',
+        'placeholders' => ['%MOTION%', '%LINK%', '%NAME_GIVEN%'],
     ],
     'published_email_title'             => 'Your amendment has been published',
     'sidebar_adminedit'                 => 'Admin: edit',
@@ -287,15 +287,15 @@ return [
     'confirmed_support_phase_ww'        => '', // Not relevant
     'submitted_adminnoti_title'         => [
         'text' => 'New amendment',
-        'description' => 'Supported placeholders: %TITLE%, %INITIATOR%, %STATUS%',
+        'placeholders' => ['%TITLE%', '%INITIATOR%', '%STATUS%'],
     ],
     'submitted_adminnoti_body'          => [
         'text' => "A new amendment was submitted.\nMotion: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
-        "description" => 'Supported placeholders: %TITLE%, %INITIATOR%, %LINK%, %STATUS%',
+        'placeholders' => ['%TITLE%', '%INITIATOR%', '%LINK%', '%STATUS%'],
     ],
     'submitted_screening_email'         => [
         'text' => "Hi,\n\nYou just submitted an amendment. It will now be reviewed and then published. You will be notified separately, once this happens.\n\nYou can see the amendment here: %LINK%",
-        'description' => 'Supported placeholders: %LINK%, %NAME_GIVEN%',
+        'placeholders' => ['%LINK%', '%NAME_GIVEN%'],
     ],
     'submitted_screening_email_subject' => 'Amendment submitted',
     'support_collect_explanation_title' => 'Find supporters',
@@ -305,7 +305,7 @@ return [
         <li><strong>Finding supporters:</strong> You will find a link that you can send to interested persons. Everyone can access this page given this link. Everyone having the necessary privileges can support this amendment here.</li>
         <li><strong>Submit the motion:</strong> Once %MIN% people support the amendment, you will receive a notification by e-mail. Now you can officially submit it. Once submitted, the amendment can still receive support from people.</li>
         </ol>',
-        'description' => 'Supported placeholders: %MIN%, %MIN+1%',
+        'placeholders' => ['%MIN%', '%MIN+1%'],
     ],
     'merge_explanation'                 => 'The text, including all amendments within the text, is shown here. ' .
                                            'For each change, you can specify whether you <strong>accept or reject</strong> it - simply by moving the mouse over it and then choosing either "Accept" or “Reject".<br><br>' .
@@ -328,21 +328,21 @@ return [
     'support_already'                   => 'You are already supporting this amendment',
     'support_collection_hint'           => [
         'text' => 'This amendment is not yet officially submitted. <strong>At least %MIN% supporters (currently: %CURR%)</strong> need to support it. You can support this amendment on this page.',
-        'description' => 'Supported placeholders: %MIN%, %CURR%, %MIN_ALL%, %CURR_ALL%, %MIN_F%, %CURR_F%',
+        'placeholders' => ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
     ],
     'support_collection_hint_female'    => 'This amendment is not yet officially submitted. <strong>At least %MIN% supporters, including %MIN_F% women (currently: %CURR% / %CURR_F%)</strong> need to support it. You can support this amendment on this page.',
     'support_collection_reached_hint'   => [
         'text' => 'This amendment has the necessary number of supporters, but is not yet officially submitted. This is up to the amendment proposer.',
-        'description' => 'Supported placeholders: %MIN%, %CURR%, %MIN_ALL%, %CURR_ALL%, %MIN_F%, %CURR_F%',
+        'placeholders' => ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
     ],
     'support_collection_reached_hint_m' => [
         'text' => 'It is still possible to support this amendment.',
-        'description' => 'Supported placeholders: %MIN%, %CURR%, %MIN_ALL%, %CURR_ALL%, %MIN_F%, %CURR_F%',
+        'placeholders' => ['%MIN%', '%CURR%', '%MIN_ALL%', '%CURR_ALL%', '%MIN_F%', '%CURR_F%'],
     ],
     'support_reached_email_subject'     => 'Your amendment has enough supporters',
     'support_reached_email_body'        => [
         'text' => "Hi,<br><br>your amendment to \"%TITLE%\" has the necessary number of supporters. You can officially submit it here:<br><br><strong>%LINK%</strong><br><br>Please note that this step is mandatory to submit the amendment.",
-        'description' => 'Supported placeholders: %TITLE%, %LINK%, %NAME_GIVEN%',
+        'placeholders' => ['%TITLE%', '%LINK%', '%NAME_GIVEN%'],
     ],
     'support_finish_btn'                => 'Officially submit the amendment',
     'support_finish_err'                => 'This is not (yet) possible.',
@@ -365,7 +365,7 @@ return [
     'merge1_changein_x'         => 'Change from %LINEFROM% to %LINETO%',
     'merge1_changein_1'         => [
         'text' => 'Change in line %LINEFROM%',
-        'description' => 'Supported placeholders: %LINEFROM%, %LINETO%',
+        'placeholders' => ['%LINEFROM%', '%LINETO%'],
     ],
     'merge1_use_original'       => 'Original amendment',
     'merge1_use_modified'       => 'Modified adoption',
@@ -389,7 +389,7 @@ return [
     'merge1_manual_changes'     => 'Your current changes',
     'merge1_manual_amend'       => [
         'text' => 'Changes made by the colliding amendment',
-        'description' => 'Supported placeholders: %AMEND%',
+        'placeholders' => ['%AMEND%'],
     ],
     'merge1_manual_new'         => 'New version of the colliding amendment %AMEND%',
     'merge1_err_collision'      => 'Cannot be merged automatically',
@@ -469,7 +469,7 @@ return [
                                     "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
                                     "Greetings,\n" .
                                     "  The Antragsgrün-Team",
-        'description' => 'Supported placeholders: %NAME_GIVEN%, %NAME%, %LINK%',
+        'placeholders' => ['%NAME_GIVEN%', '%NAME%', '%LINK%'],
     ],
     'proposal_email_accepted'    => [
         'text' => "Hi %NAME_GIVEN%,\n\n" .
@@ -477,7 +477,7 @@ return [
                                     "You can see the amendment at the following link: %LINK%\n\n" .
                                     "Greetings,\n" .
                                     "  The Antragsgrün-Team",
-        'description' => 'Supported placeholders: %NAME_GIVEN%, %NAME%, %LINK%',
+        'placeholders' => ['%NAME_GIVEN%', '%NAME%', '%LINK%'],
     ],
     'proposal_email_other'       => [
         'text' => "Hi %NAME_GIVEN%,\n\n" .
@@ -486,7 +486,7 @@ return [
                                     "Hint: if you forward the link mentioned just now, the receiving person will be able to see and accept the proposal.\n\n" .
                                     "Greetings,\n" .
                                     "  The Antragsgrün-Team",
-        'description' => 'Supported placeholders: %NAME_GIVEN%, %NAME%, %LINK%',
+        'placeholders' => ['%NAME_GIVEN%', '%NAME%', '%LINK%'],
     ],
     'proposal_user_comment'      => 'Comment',
     'proposal_user_agree'        => 'I agree with the proposal',
