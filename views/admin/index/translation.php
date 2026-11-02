@@ -104,6 +104,10 @@ foreach ($strings as $i => $string) {
     if (isset($string['description']) && $string['description'] !== '') {
         echo '<br><span class="description">' . Html::encode($string['description']) . '</span>';
     }
+    if (!empty($string['placeholders'])) {
+        echo '<br><span class="description">' . Yii::t('admin', 'translating_placeholders') . ' ' .
+            Html::encode(implode(', ', $string['placeholders'])) . '</span>';
+    }
     echo '<span class="identifier">' . Html::encode($string['id']) . '</span>';
     echo '</label><div class="halfColumn">';
 

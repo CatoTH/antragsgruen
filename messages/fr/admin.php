@@ -648,6 +648,7 @@ Comme <strong>aucun envoi d\'email n\'est configuré</strong>, tu dois saisir to
     'siteacc_noscreen_users_btn' => 'Ne pas accorder l\'accès',
     'translating_hint' => 'Ici, tu peux modifier tous les textes de l\'interface utilisateur d\'Antragsgrün. Si tu veux traduire Antragsgrün entièrement dans une autre langue, merci de <a href="https://github.com/CatoTH">nous contacter</a> afin que nous puissions intégrer la traduction dans le projet officiel.<br><strong>Remarque :</strong> les changements effectués ici n\'affectent que cette consultation.',
     'translating_none' => 'Aucun texte à traduire',
+    'translating_placeholders' => 'Variables prises en charge :',
     'translating_base' => 'Langue de base',
     'translation_motion_types' => 'Textes des types de motion',
     'translating_motion_types' => 'Textes spécifiques au type de motion',

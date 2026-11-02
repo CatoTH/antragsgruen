@@ -481,6 +481,7 @@ Com que no hi ha <strong>entrega de correus electrònics configurada</strong>, �
     'translating_hint' => 'Aquí pots canviar tots els textos de la interfície d\'usuari d\'Antragsgrün. Si vols traduir completament Antragsgrün a una altra llengua, si us plau <a href="https://github.com/CatoTH">contacta\'ns</a> perquè puguem incorporar la traducció al projecte oficial.<br>' .
         '<strong>Consell:</strong> Els canvis aquí només afecten aquesta única consulta.',
     'translating_none'            => 'Cap cadena per traduir',
+    'translating_placeholders'    => 'Marcadors de posició admesos:',
     'translating_base'            => 'Idioma base',
     'translation_motion_types'    => 'Textos de tipus de resolució',
     'translating_motion_types'    => 'Textos específics del tipus de resolució',
