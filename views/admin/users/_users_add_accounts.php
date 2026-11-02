@@ -120,7 +120,7 @@ $layout->addJsTranslation("admin");
                     <input type="checkbox" name="generatePassword" checked id="addSingleGeneratePassword">
                     <?= Yii::t('admin', 'siteacc_new_name_pass_auto') ?>
                 </label>
-                <input type="password" name="password" class="form-control" id="addUserPassword" title="<?= Yii::t('admin', 'siteacc_new_name_pass') ?>">
+                <input type="password" name="password" class="form-control" id="addUserPassword" title="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'siteacc_new_name_pass')) ?>">
 
                 <label>
                     <input type="checkbox" name="forcePasswordChange" id="forcePasswordChange">
@@ -160,7 +160,7 @@ $layout->addJsTranslation("admin");
                     <?= Yii::t('admin', 'siteacc_new_mail_send') ?>
                 </label><br>
                 <textarea id="addSingleEmailText" name="emailText" rows="11" cols="80"
-                          title="<?= Yii::t('admin', 'siteacc_new_text') ?>"><?= Html::encode($preText) ?></textarea>
+                          title="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'siteacc_new_text')) ?>"><?= Html::encode($preText) ?></textarea>
                 <small><?= Yii::t('admin', 'siteacc_new_mail_hint') ?>
                     <?php if ($consultation->havePrivilege(Privileges::PRIVILEGE_CONSULTATION_SETTINGS, null) || $consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) { ?>
                         &middot; <?= Html::a(Yii::t('admin', 'siteacc_customize_email_template'), UrlHelper::createUrl(['admin/index/translation', 'category' => 'admin'])) ?>

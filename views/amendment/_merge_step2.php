@@ -90,7 +90,7 @@ foreach ($amendment->getActiveSections() as $section) {
                         <div class="originalVersion modifyText">
                             <div id="new_paragraphs_original_<?= $formSecPar ?>"
                                  class="<?= $parForm ?> texteditor motionTextFormattings texteditorBox"
-                                 title="<?= Yii::t('amend', 'merge1_modify_title') ?>" data-track-changed="1">
+                                 title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'merge1_modify_title')) ?>" data-track-changed="1">
                                 <?= $parDat->plain ?>
                             </div>
                         </div>
@@ -100,7 +100,7 @@ foreach ($amendment->getActiveSections() as $section) {
                             <div class="modifiedVersion modifyText">
                                 <div id="new_paragraphs_modified_<?= $formSecPar ?>"
                                      class="<?= $parForm ?> texteditor motionTextFormattings texteditorBox"
-                                     title="<?= Yii::t('amend', 'merge1_modify_title') ?>" data-track-changed="1">
+                                     title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'merge1_modify_title')) ?>" data-track-changed="1">
                                     <?= $parDat->modPlain ?>
                                 </div>
                             </div>

@@ -32,7 +32,7 @@ foreach (Factory::getPublishedClosedVotingBlocks($consultation) as $votingBlockT
 
 $CONSTANTS = include(__DIR__ . DIRECTORY_SEPARATOR . '_constants.php');
 
-$fullscreenButton = '<button type="button" title="' . Yii::t('motion', 'fullscreen') . '" class="btn btn-link btnFullscreen"
+$fullscreenButton = '<button type="button" title="' . Html::encodeTranslationForAttribute(Yii::t('motion', 'fullscreen')) . '" class="btn btn-link btnFullscreen"
         data-antragsgruen-widget="frontend/FullscreenToggle">
         <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
         <span class="sr-only">' . Yii::t('motion', 'fullscreen') . '</span>

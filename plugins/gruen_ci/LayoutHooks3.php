@@ -20,7 +20,7 @@ class LayoutHooks3 extends Hooks
         $str .= '</div>';
 
         $str .= '<div class="mainMenu">';
-        $str .= '<nav class="navbar" aria-label="' . \Yii::t('base', 'aria_mainmenu') . '">
+        $str .= '<nav class="navbar" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('base', 'aria_mainmenu')) . '">
         <div class="navbar-inner">';
         $str .= Layout::getStdNavbarHeader();
         $str .= '</div>

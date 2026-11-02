@@ -16,7 +16,7 @@ $activities = \app\models\proposedProcedure\IActivity::getListFromIMotion($imoti
     <div class="proposalCommentFormHeader">
         <h3 id="proposalCommentFormTitle"><?= Yii::t('amend', 'proposal_activities_title') ?></h3>
 
-        <button type="button" title="<?= Yii::t('motion', 'fullscreen') ?>" class="btn btn-link btnMaximizeComments">
+        <button type="button" title="<?= Html::encodeTranslationForAttribute(Yii::t('motion', 'fullscreen')) ?>" class="btn btn-link btnMaximizeComments">
             <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
             <span class="sr-only"><?= Yii::t('motion', 'fullscreen') ?></span>
         </button>

@@ -67,7 +67,7 @@ $getSupporterRow = function (ISupporter $supporter, string $index) use ($setting
     if ($supporter->user) {
         $str .= '<span class="userName">' . Html::encode($supporter->user->getAuthName()) . '</span>';
     }
-    $str .= '<button type="button" class="btn btn-link delSupporter" aria-label="' . Yii::t('base', 'aria_remove') . '">' .
+    $str .= '<button type="button" class="btn btn-link delSupporter" aria-label="' . Html::encodeTranslationForAttribute(Yii::t('base', 'aria_remove')) . '">' .
             '<span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button>';
     $str .= '</div>';
 

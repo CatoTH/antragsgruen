@@ -70,7 +70,7 @@ $responsibilityUser = ($imotion->responsibilityId !== null ? $imotion->responsib
             <div class="input-group">
                 <input class="form-control" type="text" id="respComm<?= $idBase ?>"
                        value="<?= Html::encode($imotion->responsibilityComment ?: '') ?>"
-                       placeholder="<?= Yii::t('admin', 'list_responsible_comment') ?>"><span
+                       placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'list_responsible_comment')) ?>"><span
                     class="input-group-btn"><button class="btn btn-default" type="button"><span class="glyphicon glyphicon-edit"></span></button></span>
             </div>
         </li>

@@ -186,7 +186,7 @@ $CONSTANTS = VotingAdminWidgetData::getConstants();
                 ?>
                 <div class="userGroupSelect" data-load-url="<?= Html::encode($groupLoadUrl) ?>">
                     <select name="votePolicyGroupsNew[]" class="userGroupSelectList" multiple autocomplete="off"
-                            placeholder="<?= Yii::t('admin', 'motion_type_group_ph') ?>" title="<?= Yii::t('admin', 'motion_type_group_title') ?>">
+                            placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_type_group_ph')) ?>" title="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_type_group_title')) ?>">
                         <?php
                         foreach ($consultation->getAllAvailableUserGroups() as $group) {
                             echo '<option value="' . $group->id . '">' . Html::encode($group->getNormalizedTitle()) . '</option>';

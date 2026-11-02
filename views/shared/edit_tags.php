@@ -31,7 +31,7 @@ if ($consultation->getSettings()->allowMultipleTags) {
         if (in_array($id, $tagIds)) {
             echo ' checked';
         }
-        echo ' title="' . Yii::t('motion', 'tag_tags') . '"> ' . Html::encode($tag->title) . '</label>';
+        echo ' title="' . Html::encodeTranslationForAttribute(Yii::t('motion', 'tag_tags')) . '"> ' . Html::encode($tag->title) . '</label>';
     }
     echo '</fieldset>';
 } elseif (count($tags) === 1) {

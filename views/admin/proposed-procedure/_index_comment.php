@@ -20,7 +20,7 @@ if (is_a($item, Amendment::class)) {
     $currentComments = $item->getAdminComments($types, IAdminComment::SORT_ASC);
     ?>
     <div class="notWriting">
-        <button class="btn btn-sm btn-link pull-left writingOpener" type="button" title="<?= Yii::t('amend', 'proposal_comment_open') ?>">
+        <button class="btn btn-sm btn-link pull-left writingOpener" type="button" title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'proposal_comment_open')) ?>">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
             <span class="sr-only"><?= Yii::t('amend', 'proposal_comment_open') ?></span>
         </button>
@@ -54,7 +54,7 @@ if (is_a($item, Amendment::class)) {
         <button class="btn btn-default submitComment" type="button">
             <?= Yii::t('amend', 'proposal_comment_write') ?>
         </button>
-        <button class="pull-right btn btn-white cancelWriting" type="button" title="<?= Yii::t('amend', 'proposal_comment_cancel') ?>">
+        <button class="pull-right btn btn-white cancelWriting" type="button" title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'proposal_comment_cancel')) ?>">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             <span class="sr-only"><?= Yii::t('amend', 'proposal_comment_cancel') ?></span>
         </button>

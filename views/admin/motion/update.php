@@ -143,9 +143,15 @@ echo '<div class="content form-horizontal">';
                 <?= Yii::t('admin', 'motion_status') ?>:
             </label>
             <div class="statusHelpLink">
-                <a href="<?= Yii::t('admin', 'motion_status_help_link') ?>" target="_blank">
-                    ▸ <?= Yii::t('admin', 'motion_status_help') ?>
-                </a>
+                <?php
+                // The link can be overridden by admins; only allow web links, no javascript: / data: URLs
+                $statusHelpLink = Yii::t('admin', 'motion_status_help_link');
+                if (preg_match('/^(https?:\/\/|\/)/i', $statusHelpLink)) {
+                    ?>
+                    <a href="<?= Html::encodeTranslationForAttribute($statusHelpLink) ?>" target="_blank">
+                        ▸ <?= Yii::t('admin', 'motion_status_help') ?>
+                    </a>
+                <?php } ?>
             </div>
         </div>
         <div class="middleColumn">

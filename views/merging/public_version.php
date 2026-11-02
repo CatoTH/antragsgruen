@@ -62,13 +62,13 @@ if ($consultation->getSettings()->hasSpeechLists) {
                 </div>
                 <div class="motionUpdateWidget">
                     <div>
-                        <button class="btn btn-sm btn-default" type="button" title="<?= Yii::t('amend', 'merge_draft_fullscreen') ?>"
+                        <button class="btn btn-sm btn-default" type="button" title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'merge_draft_fullscreen')) ?>"
                                 data-antragsgruen-widget="frontend/FullscreenToggle">
                             <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
                             <span class="sr-only"><?= Yii::t('amend', 'merge_draft_fullscreen') ?></span>
                         </button>
 
-                        <button id="updateBtn" class="btn btn-sm btn-default" type="button" title="<?= Yii::t('amend', 'merge_draft_reload') ?>">
+                        <button id="updateBtn" class="btn btn-sm btn-default" type="button" title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'merge_draft_reload')) ?>">
                             <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                             <span class="sr-only"><?= Yii::t('amend', 'merge_draft_reload') ?></span>
                         </button>

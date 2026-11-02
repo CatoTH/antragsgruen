@@ -271,7 +271,7 @@ abstract class TextSimpleCommon extends Text {
         }
 
         return '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
-          <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
+          <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . Html::encodeTranslationForAttribute(\Yii::t('amend', 'textmode_set')) . '">
             <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
           </button>
@@ -638,16 +638,16 @@ abstract class TextSimpleCommon extends Text {
         }
 
         $aria        = str_replace('%DEL%', \Yii::t('diff', 'space'), \Yii::t('diff', 'aria_del'));
-        $strSpaceDel = '<del class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'space') . ']</del>';
+        $strSpaceDel = '<del class="space" aria-label="' . Html::encodeTranslationForAttribute($aria) . '">[' . \Yii::t('diff', 'space') . ']</del>';
 
         $aria          = str_replace('%DEL%', \Yii::t('diff', 'space'), \Yii::t('diff', 'aria_del'));
-        $strNewlineDel = '<del class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'newline') . ']</del>';
+        $strNewlineDel = '<del class="space" aria-label="' . Html::encodeTranslationForAttribute($aria) . '">[' . \Yii::t('diff', 'newline') . ']</del>';
 
         $aria        = str_replace('%INS%', \Yii::t('diff', 'space'), \Yii::t('diff', 'aria_ins'));
-        $strSpaceIns = '<ins class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'space') . ']</ins>';
+        $strSpaceIns = '<ins class="space" aria-label="' . Html::encodeTranslationForAttribute($aria) . '">[' . \Yii::t('diff', 'space') . ']</ins>';
 
         $aria          = str_replace('%INS%', \Yii::t('diff', 'newline'), \Yii::t('diff', 'aria_ins'));
-        $strNewlineIns = '<ins class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'newline') . ']</ins>';
+        $strNewlineIns = '<ins class="space" aria-label="' . Html::encodeTranslationForAttribute($aria) . '">[' . \Yii::t('diff', 'newline') . ']</ins>';
 
         $out  = preg_replace('/<del[^>]*> <\/del>/siu', $strSpaceDel, $out);
         $out  = preg_replace('/<ins[^>]*> <\/ins>/siu', $strSpaceIns, $out);

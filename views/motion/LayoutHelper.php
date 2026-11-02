@@ -82,10 +82,10 @@ class LayoutHelper
                     $user = $supp->getMyUser();
                     if ($user && $user->email === $supp->contactEmail && $user->emailConfirmed) {
                         $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: grey;" ' .
-                            'title="' . \Yii::t('initiator', 'email_confirmed') . '"></span>';
+                            'title="' . Html::encodeTranslationForAttribute(\Yii::t('initiator', 'email_confirmed')) . '"></span>';
                     } else {
                         $name .= ' <span class="glyphicon glyphicon-question-sign" style="color: grey;" ' .
-                            'title="' . \Yii::t('initiator', 'email_not_confirmed') . '"></span>';
+                            'title="' . Html::encodeTranslationForAttribute(\Yii::t('initiator', 'email_not_confirmed')) . '"></span>';
                     }
                 }
                 if ($supp->contactEmail && $supp->contactPhone) {
@@ -240,7 +240,7 @@ class LayoutHelper
 
             $content .= '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">' . \Yii::t('motion', 'tag_new') . '</a>';
             $content .= Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
-            $content .= '<select name="tagId" title="' . \Yii::t('motion', 'tag_select') . '" class="form-control">
+            $content .= '<select name="tagId" title="' . Html::encodeTranslationForAttribute(\Yii::t('motion', 'tag_select')) . '" class="form-control">
         <option>-</option>';
 
             foreach ($consultation->getSortedTags($tagType) as $tag) {

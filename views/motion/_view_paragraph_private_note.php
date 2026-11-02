@@ -18,7 +18,7 @@ foreach ($motion->getActiveSections() as $section) {
     }
 }
 $noteSrc = ['%NO%', '%TITLE%'];
-$noteRepl = [($paragraphNo + 1), $sectionTitle];
+$noteRepl = [(string)($paragraphNo + 1), Html::encode($sectionTitle ?? '')];
 ?>
 <section class="privateParagraphNoteHolder">
     <?php
@@ -47,7 +47,7 @@ $noteRepl = [($paragraphNo + 1), $sectionTitle];
     <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
     <label>
         <span class="sr-only"><?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?></span>
-        <textarea class="form-control" name="noteText" placeholder="<?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?>"
+        <textarea class="form-control" name="noteText" placeholder="<?= Html::encodeTranslationForAttribute(str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write'))) ?>"
         ><?= Html::encode($comment ? $comment->text : '') ?></textarea>
     </label>
     <input type="hidden" name="paragraphNo" value="<?= $paragraphNo ?>">

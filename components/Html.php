@@ -33,6 +33,23 @@ final class Html
         return htmlspecialchars((string)$content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', $doubleEncode);
     }
 
+    /**
+     * Encodes a translated string (Yii::t) for use in an HTML attribute value.
+     * Not for text content: there, translations are intentionally rendered as HTML.
+     * Translations may contain admin-defined HTML with existing entities, so these are not encoded twice.
+     *
+     * Encoded:     Say "hi" & <b>bye</b>  =>  Say &quot;hi&quot; &amp; &lt;b&gt;bye&lt;/b&gt;
+     * Not encoded: R&amp;D                =>  R&amp;D  (existing entities are kept, not turned into &amp;amp;)
+     *
+     * Not for attributes that JavaScript renders as HTML (bootbox messages, popovers with html: true, .html()):
+     * the browser decodes &lt;script&gt; back into a tag there. Use encode() for these, which keeps the
+     * sanitized translation intact.
+     */
+    public static function encodeTranslationForAttribute(string $translation): string
+    {
+        return self::encode($translation, doubleEncode: false);
+    }
+
     public static function tag(string $name, string $content = '', array $options = []): string
     {
         $html = '<' . $name . self::renderTagAttributes($options) . '>';

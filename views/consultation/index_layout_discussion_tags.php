@@ -117,12 +117,12 @@ if (count($comments) > 0) {
                         <?= Yii::t('con', 'discuss_sort_oldest') ?>
                     </button>
                     <button type="button" class="btn btn-default" data-sort="amendments" data-order="desc"
-                            title="<?= Yii::t('con', 'discuss_sort_amend') ?>">
-                        <span class="glyphicon glyphicon-flash" role="img" aria-label="<?= Yii::t('con', 'discuss_sort_amend') ?>"></span>
+                            title="<?= Html::encodeTranslationForAttribute(Yii::t('con', 'discuss_sort_amend')) ?>">
+                        <span class="glyphicon glyphicon-flash" role="img" aria-label="<?= Html::encodeTranslationForAttribute(Yii::t('con', 'discuss_sort_amend')) ?>"></span>
                     </button>
                     <button type="button" class="btn btn-default" data-sort="comments" data-order="desc"
-                            title="<?= Yii::t('con', 'discuss_sort_comment') ?>">
-                        <span class="glyphicon glyphicon-comment" role="img" aria-label="<?= Yii::t('con', 'discuss_sort_comment') ?>"></span>
+                            title="<?= Html::encodeTranslationForAttribute(Yii::t('con', 'discuss_sort_comment')) ?>">
+                        <span class="glyphicon glyphicon-comment" role="img" aria-label="<?= Html::encodeTranslationForAttribute(Yii::t('con', 'discuss_sort_comment')) ?>"></span>
                     </button>
                 </div>
             </div>

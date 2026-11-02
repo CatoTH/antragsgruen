@@ -210,8 +210,7 @@ foreach ($proposedAgenda as $proposedItem) {
                                         }
                                         echo '<div class="tagNames">';
                                         echo implode(', ', $tags);
-                                        echo '<button class="btn btn-sm btn-link tagEditOpener" type="button" title="' . Yii::t('amend',
-                                                'proposal_edit_tags') . '">';
+                                        echo '<button class="btn btn-sm btn-link tagEditOpener" type="button" title="' . Html::encodeTranslationForAttribute(Yii::t('amend', 'proposal_edit_tags')) . '">';
                                         echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
                                         echo '</button>';
                                         echo '</div>';
@@ -251,7 +250,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             ?>
                             <td class="visible">
                                 <input type="checkbox" name="visible"
-                                       title="<?= Yii::t('con', 'proposal_table_visible') ?>"
+                                       title="<?= Html::encodeTranslationForAttribute(Yii::t('con', 'proposal_table_visible')) ?>"
                                        data-save-url="<?= Html::encode($setVisibleUrl) ?>"
                                     <?= ($proposal->visibleFrom ? 'checked' : '') ?>>
                             </td>

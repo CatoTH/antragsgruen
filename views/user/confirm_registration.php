@@ -67,7 +67,7 @@ echo Html::beginForm(UrlHelper::createUrl($params), 'post', ['id' => 'confirmAcc
 
     <div class="saveResetRow">
         <div class="save">
-            <input type="submit" value="<?= Yii::t('user', 'confirm_btn_do') ?>" class="btn btn-primary">
+            <input type="submit" value="<?= Html::encodeTranslationForAttribute(Yii::t('user', 'confirm_btn_do')) ?>" class="btn btn-primary">
         </div>
 
         <?php if ($allowResend) { ?>
