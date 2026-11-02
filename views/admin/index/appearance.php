@@ -266,7 +266,7 @@ $handledSiteSettings = [];
                             <span class="input-group">
                                 <span class="input-group-addon"><?= ($speechListNo + 1) ?>.</span>
                                 <input name="multipleSpeechListNames[]" value="<?= Html::encode($speechListName) ?>" class="form-control"
-                                       title="<?= Html::encode($inputTitle) ?>" placeholder="- <?= Yii::t('speech', 'subqueue_inactive') ?> -">
+                                       title="<?= Html::encode($inputTitle) ?>" placeholder="- <?= Html::encodeTranslationForAttribute(Yii::t('speech', 'subqueue_inactive')) ?> -">
                             </span>
                             <span class="sr-only"><?= str_replace('%no%', 1, Yii::t('admin', 'con_speech_quota_name')) ?></span>
                         </label>
