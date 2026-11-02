@@ -136,7 +136,7 @@ if (count($consultation->agendaItems) > 0) {
                 <?= Yii::t('admin', 'motion_status') ?>:
             </label>
             <div class="statusHelpLink">
-                <a href="<?= Yii::t('admin', 'motion_status_help_link') ?>" target="_blank">
+                <a href="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_status_help_link')) ?>" target="_blank">
                     ▸ <?= Yii::t('admin', 'motion_status_help') ?>
                 </a>
             </div>

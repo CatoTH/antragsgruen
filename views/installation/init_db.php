@@ -152,7 +152,7 @@ if (!$form->databaseParamsComeFromEnv()) {
             <div class="rightColumn">
                 <input type="password" name="sqlPassword" value="" class="form-control" id="sqlPassword"<?php
                 if ($form->sqlPassword != '') {
-                    echo ' placeholder="' . Yii::t('manager', 'config_db_password_unch') . '"';
+                    echo ' placeholder="' . Html::encodeTranslationForAttribute(Yii::t('manager', 'config_db_password_unch')) . '"';
                 }
                 ?>>
                 <label style="font-weight: normal; font-size: 0.9em;">

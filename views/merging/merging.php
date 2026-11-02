@@ -138,7 +138,7 @@ $resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c')
 
     <section id="newAmendmentAlert" aria-live="polite" aria-labelledby="newAmendmentAlertTitle" class="hidden">
         <div class="holder">
-            <button class="btn btn-link btn-sm closeLink" type="button" title="<?= Yii::t('base', 'aria_close') ?>">
+            <button class="btn btn-link btn-sm closeLink" type="button" title="<?= Html::encodeTranslationForAttribute(Yii::t('base', 'aria_close')) ?>">
                 <span aria-hidden="true">&times;</span>
                 <span class="sr-only"><?= Yii::t('base', 'aria_close') ?></span>
             </button>

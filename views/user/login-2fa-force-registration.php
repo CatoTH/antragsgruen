@@ -45,7 +45,7 @@ echo Html::beginForm('', 'post', ['class' => 'forcedTfaForm']);
         <div class="secondFactorAdderBody">
             <div>
                 <h3><?= Yii::t('user', '2fa_add_step1') ?></h3>
-                <img src="<?= $result->getDataUri() ?>" alt="<?= Yii::t('user', '2fa_img_alt') ?>" class="tfaqr">
+                <img src="<?= $result->getDataUri() ?>" alt="<?= Html::encodeTranslationForAttribute(Yii::t('user', '2fa_img_alt')) ?>" class="tfaqr">
             </div>
             <h3><?= Yii::t('user', '2fa_add_step2') ?></h3>
             <label class="setFaField">

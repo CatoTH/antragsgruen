@@ -104,7 +104,7 @@ echo $this->render('_pdf', ['motionType' => $motionType]);
             ?>
         </ul>
 
-        <button type="button" class="sectionAdder btn btn-link" aria-label="<?= Yii::t('admin', 'motion_section_add') ?>">
+        <button type="button" class="sectionAdder btn btn-link" aria-label="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_section_add')) ?>">
             <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
             <?= Yii::t('admin', 'motion_section_add') ?>
         </button>

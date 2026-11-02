@@ -62,8 +62,8 @@ $linesAria = str_replace(['%FROM%', '%TO%'], [$firstLineNo, $lastLineNo], Yii::t
             ?>
         </div>
         <div class="changedIndicator unchanged"><span
-                class="glyphicon glyphicon-edit" title="<?= Yii::t('amend', 'merge_changed') ?>"
-                aria-label="<?= Yii::t('amend', 'merge_changed') ?>"></span></div>
+                class="glyphicon glyphicon-edit" title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'merge_changed')) ?>"
+                aria-label="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'merge_changed')) ?>"></span></div>
     </div>
     <div class="changeToolbar">
         <div class="statuses" data-amendments="<?= Html::encode(json_encode($jsStatusData)) ?>"></div>

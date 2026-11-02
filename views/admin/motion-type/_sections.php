@@ -46,7 +46,7 @@ $supportedLanguages = LanguageTools::getSupportedLanguages();
             ?>
             <label class="sectionTitle"><span class="sr-only"><?= Yii::t('admin', 'motion_section_name') ?></span>
                 <input type="text" name="<?= $sName ?>[title]" value="<?= Html::encode($section->title ?: '') ?>"
-                       required placeholder="<?= Yii::t('admin', 'motion_section_name_p') ?>" class="form-control">
+                       required placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_section_name_p')) ?>" class="form-control">
             </label>
 
             <?php if (count($supportedLanguages) > 1) { ?>
@@ -66,7 +66,7 @@ $supportedLanguages = LanguageTools::getSupportedLanguages();
                 <label class="sectionLanguageGrouping">
                     <span class="sr-only"><?= Yii::t('admin', 'motion_section_language_group') ?></span>
                     <input type="text" name="<?= $sName ?>[languageGrouping]" value="<?= Html::encode($section->getLanguageGrouping() ?? '') ?>"
-                           placeholder="<?= Yii::t('admin', 'motion_section_language_group_p') ?>" class="form-control">
+                           placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_section_language_group_p')) ?>" class="form-control">
                 </label>
                 <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_section_language_group_h')) ?>
             <?php } ?>
@@ -257,7 +257,7 @@ $supportedLanguages = LanguageTools::getSupportedLanguages();
         </div>
 
         <div class="explanationRow">
-            <textarea placeholder="<?= Yii::t('admin', 'motion_type_has_explanation') ?>"
+            <textarea placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_type_has_explanation')) ?>"
                       name="<?= $sName ?>[explanationHtml]" class="form-control" rows="2"><?php
                 echo Html::encode($section->getSettingsObj()->explanationHtml ?? '');
             ?></textarea>
@@ -281,7 +281,7 @@ $supportedLanguages = LanguageTools::getSupportedLanguages();
             $str = '<li class="no' . $i . '">';
             $str .= '<span class="drag-data-handle">&#9776;</span>';
             $str .= '<input type="text" name="' . $sectionName . '[tabular][' . $row->rowId . '][title]"';
-            $str .= ' placeholder="' . Yii::t('admin', 'motion_section_tab_p') . '" value="' . Html::encode($row->title) . '" class="form-control">';
+            $str .= ' placeholder="' . Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_section_tab_p')) . '" value="' . Html::encode($row->title) . '" class="form-control">';
             $str .= '<select name="' . $sectionName . '[tabular][' . $row->rowId . '][type]" class="form-control tabularTypeSelect">';
             foreach (TabularDataType::getDataTypes() as $dataId => $dataName) {
                 $str .= '<option value="' . $dataId . '"';
@@ -291,7 +291,7 @@ $supportedLanguages = LanguageTools::getSupportedLanguages();
                 $str .= '>' . Html::encode($dataName) . '</option>';
             }
             $str .= '</select>';
-            $str .= '<button type="button" class="delRow btn btn-link" title="' . Yii::t('admin', 'motion_section_rowdel') . '">';
+            $str .= '<button type="button" class="delRow btn btn-link" title="' . Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_section_rowdel')) . '">';
             $str .= '<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>';
             $str .= '<span class="sr-only">' . Yii::t('admin', 'motion_section_rowdel') . '</span>';
             $str .= '</button>';

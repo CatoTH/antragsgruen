@@ -99,7 +99,7 @@ if ($externalAuthenticator === null) {
             <label class="leftColumn control-label" for="userPwd"><?= Yii::t('user', 'pwd_change') ?>:</label>
             <div class="rightColumn">
                 <input type="password" name="pwd" value="" class="form-control" id="userPwd"
-                       placeholder="<?= Yii::t('user', 'pwd_change_hint') ?>" data-min-len="<?= $pwMinLen ?>">
+                       placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('user', 'pwd_change_hint')) ?>" data-min-len="<?= $pwMinLen ?>">
             </div>
         </div>
         <div class="stdTwoCols">
@@ -158,7 +158,7 @@ if ($externalAuthenticator === null) {
 
                         <div>
                             <h3><?= Yii::t('user', '2fa_add_step1') ?></h3>
-                            <img src="<?= $result->getDataUri() ?>" alt="<?= Yii::t('user', '2fa_img_alt') ?>" class="tfaqr">
+                            <img src="<?= $result->getDataUri() ?>" alt="<?= Html::encodeTranslationForAttribute(Yii::t('user', '2fa_img_alt')) ?>" class="tfaqr">
                         </div>
                         <h3><?= Yii::t('user', '2fa_add_step2') ?></h3>
                         <label>

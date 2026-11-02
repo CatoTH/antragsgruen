@@ -208,7 +208,7 @@ if (User::getCurrentUser()?->getSettingsObj()->allowPrivateComments) {
         $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
     }
     $str .= Html::beginForm('', 'post', ['class' => 'form-inline' . ($comment ? ' hidden' : '')]);
-    $str .= '<textarea class="form-control" name="noteText" title="' . Yii::t('motion', 'private_notes_write') . '">';
+    $str .= '<textarea class="form-control" name="noteText" title="' . Html::encodeTranslationForAttribute(Yii::t('motion', 'private_notes_write')) . '">';
     if ($comment) {
         $str .= Html::encode($comment->text);
     }

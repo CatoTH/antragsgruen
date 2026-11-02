@@ -271,7 +271,7 @@ abstract class TextSimpleCommon extends Text {
         }
 
         return '<div class="btn-group btn-group-xs greenHeaderDropDown amendmentTextModeSelector">
-          <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . \Yii::t('amend', 'textmode_set') . '">
+          <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="' . Html::encodeTranslationForAttribute(\Yii::t('amend', 'textmode_set')) . '">
             <span class="sr-only">' . \Yii::t('amend', 'textmode_set') . '</span>
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
           </button>

@@ -251,14 +251,14 @@ $viewText = preg_replace_callback('/<!--AMENDMENT_LINK_(?<sectionId>\d+)_(?<para
     }
 
     $imgUrl = StaticResourceTools::getResolvedResourceBase() . 'img/aa-new-icon.svg';
-    $title = '<img src="' . $imgUrl . '" alt="' . Yii::t('motion', 'amendment_create_paragraph') . '"></span>';
+    $title = '<img src="' . $imgUrl . '" alt="' . Html::encodeTranslationForAttribute(Yii::t('motion', 'amendment_create_paragraph')) . '"></span>';
     $amendCreateUrl = UrlHelper::createUrl([
         '/amendment/create',
         'motionSlug' => $motion->getMotionSlug(),
         'sectionId' => $matches['sectionId'],
         'paragraphNo' => $matches['paragraphNo'],
     ]);
-    return '<a class="btn btn-link btn-sm amendmentParaLink" href="' . Html::encode($amendCreateUrl) . '" title="' . Yii::t('motion', 'amendment_create_paragraph') . '"
+    return '<a class="btn btn-link btn-sm amendmentParaLink" href="' . Html::encode($amendCreateUrl) . '" title="' . Html::encodeTranslationForAttribute(Yii::t('motion', 'amendment_create_paragraph')) . '"
                 rel="nofollow">' . $title . '</a>';
 }, $viewText);
 

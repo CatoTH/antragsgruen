@@ -22,7 +22,7 @@ $end = Tools::dateSql2bootstraptime($data['end']);
             <input type="text" class="form-control"
                    name="deadlines[<?= $type ?>][start][]"
                    value="<?= Html::encode($start) ?>"
-                   placeholder="<?= Yii::t('admin', 'motion_deadline_from_p') ?>"
+                   placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_deadline_from_p')) ?>"
                    data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
@@ -35,13 +35,13 @@ $end = Tools::dateSql2bootstraptime($data['end']);
             <input type="text" class="form-control"
                    name="deadlines[<?= $type ?>][end][]"
                    value="<?= Html::encode($end) ?>"
-                   placeholder="<?= Yii::t('admin', 'motion_deadline_to_p') ?>"
+                   placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_deadline_to_p')) ?>"
                    data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
     </div>
     <div class="col">
-        <input type="text" class="form-control phaseTitle" placeholder="<?= Yii::t('admin', 'motion_deadline_name') ?>"
+        <input type="text" class="form-control phaseTitle" placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'motion_deadline_name')) ?>"
                name="deadlines[<?= $type ?>][title][]"
                value="<?= Html::encode($data['title'] ? $data['title'] : '') ?>">
     </div>

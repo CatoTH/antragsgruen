@@ -56,7 +56,7 @@ if ($debateInitData !== null) {
 }
 
 ?>
-<button type="button" title="<?= Yii::t('motion', 'fullscreen') ?>" class="btn btn-link btnFullscreen"
+<button type="button" title="<?= Html::encodeTranslationForAttribute(Yii::t('motion', 'fullscreen')) ?>" class="btn btn-link btnFullscreen"
         data-vue-element="fullscreen-projector" data-vue-initdata="<?= Html::encode($fullscreenInitData) ?>">
         <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
         <span class="sr-only"><?= Yii::t('motion', 'fullscreen') ?></span>

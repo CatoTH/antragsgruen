@@ -130,10 +130,10 @@ class ConsultationActivityFilterForm
         $prev = '<span aria-hidden="true">&laquo;</span>';
         if ($this->page > 0) {
             $url = Html::encode($this->getPageLink($urlBase, $this->page - 1));
-            $str .= '<li><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_prev') . '">' . $prev . '</a></li>';
+            $str .= '<li><a href="' . $url . '" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('con', 'activity_prev')) . '">' . $prev . '</a></li>';
         } else {
             $url = Html::encode($this->getPageLink($urlBase, 0));
-            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_prev') . '">' . $prev . '</a></li>';
+            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('con', 'activity_prev')) . '">' . $prev . '</a></li>';
         }
 
         $first = max($this->page - 5, 0);
@@ -161,10 +161,10 @@ class ConsultationActivityFilterForm
         $next = '<span aria-hidden="true">&raquo;</span>';
         if ($this->page < ($maxPage - 1)) {
             $url = Html::encode($this->getPageLink($urlBase, $this->page + 1));
-            $str .= '<li><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_next') . '">' . $next . '</a></li>';
+            $str .= '<li><a href="' . $url . '" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('con', 'activity_next')) . '">' . $next . '</a></li>';
         } else {
             $url = Html::encode($this->getPageLink($urlBase, $maxPage));
-            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="' . \Yii::t('con', 'activity_next') . '">' . $next . '</a></li>';
+            $str .= '<li class="disabled"><a href="' . $url . '" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('con', 'activity_next')) . '">' . $next . '</a></li>';
         }
 
         $str .= '</ul></nav>';

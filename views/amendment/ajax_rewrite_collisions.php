@@ -69,7 +69,7 @@ foreach ($collisions as $amendmentId => $sections) {
             if (in_array($sectionId, $fixedWidthSections)) {
                 echo 'fixedWidthFont ';
             }
-            echo 'motionTextFormattings texteditor texteditorBox" title="' . Yii::t('amend', 'merge1_modify_title') . '">';
+            echo 'motionTextFormattings texteditor texteditorBox" title="' . Html::encodeTranslationForAttribute(Yii::t('amend', 'merge1_modify_title')) . '">';
             echo $para['text'];
             echo '</div></section>';
         }

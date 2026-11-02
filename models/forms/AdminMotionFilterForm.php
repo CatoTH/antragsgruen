@@ -779,7 +779,7 @@ class AdminMotionFilterForm
 
         $str .= '<div>
             <input id="initiatorSelect" class="typeahead form-control" type="text"
-                placeholder="' . \Yii::t('admin', 'filter_initiator_name') . '"
+                placeholder="' . Html::encodeTranslationForAttribute(\Yii::t('admin', 'filter_initiator_name')) . '"
                 name="Search[initiator]" value="' . Html::encode($this->initiator ?: '') . '"
                 data-values="' . Html::encode(json_encode($values, JSON_THROW_ON_ERROR)) . '"></div>';
         $str .= '</div>';

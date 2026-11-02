@@ -181,7 +181,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                     <tr>
                         <td class="colCheck">
                             <input type="checkbox" name="selectAll" class="selectAll"
-                                   title="<?= Yii::t('amend', 'merge_amtable_all') ?>">
+                                   title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'merge_amtable_all')) ?>">
                         </td>
                     </tr>
                     </tfoot>

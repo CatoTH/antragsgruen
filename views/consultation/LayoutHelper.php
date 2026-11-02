@@ -130,7 +130,7 @@ class LayoutHelper
         $return .= '<p class="date">';
         if ($motion->getMyConsultation()->getSettings()->showIMotionEditDate && $motion->wasContentEdited()) {
             $return .= '<span class="edited"><span class="glyphicon glyphicon-edit" role="img"
-                aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
+                aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('motion', 'edited_on')) . '" title="' . Html::encodeTranslationForAttribute(\Yii::t('motion', 'edited_on')) . '"></span> ';
             $return .= Tools::formatMysqlDateTime($motion->dateContentModification);
             $return .= '</span>';
         }
@@ -173,7 +173,7 @@ class LayoutHelper
         $return .= '<p class="date">';
         if ($consultation->getSettings()->showIMotionEditDate && $amendment->wasContentEdited()) {
             $return .= '<span class="edited"><span class="glyphicon glyphicon-edit" role="img"
-                aria-label="' . \Yii::t('motion', 'edited_on') . '" title="' . \Yii::t('motion', 'edited_on') . '"></span> ';
+                aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('motion', 'edited_on')) . '" title="' . Html::encodeTranslationForAttribute(\Yii::t('motion', 'edited_on')) . '"></span> ';
             $return .= Tools::formatMysqlDateTime($amendment->dateContentModification);
             $return .= '</span>';
         }

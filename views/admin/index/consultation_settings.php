@@ -180,8 +180,8 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             </label>
             <div class="setPasswordHolder">
                 <input type="password" name="consultationPassword" class="form-control"
-                       placeholder="<?= Yii::t('admin', 'siteacc_con_pw_place') ?>"
-                       title="<?= Yii::t('admin', 'siteacc_con_pw_set') ?>">
+                       placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'siteacc_con_pw_place')) ?>"
+                       title="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'siteacc_con_pw_set')) ?>">
                 <label class="otherConsultations">
                     <input type="radio" name="otherConsultations" value="0"
                         <?= ($conPwd->allHaveSamePwd() ? '' : 'checked') ?>>
@@ -432,7 +432,7 @@ if ($consultation->havePrivilege(Privileges::PRIVILEGE_SITE_ADMIN, null)) {
             <label class="leftColumn" for="emailReplyTo">Reply-To:</label>
             <div class="rightColumn">
                 <input type="email" name="settings[emailReplyTo]" class="form-control" id="emailReplyTo"
-                       placeholder="<?= Yii::t('admin', 'con_email_replyto_place') ?>"
+                       placeholder="<?= Html::encodeTranslationForAttribute(Yii::t('admin', 'con_email_replyto_place')) ?>"
                        value="<?= Html::encode($settings->emailReplyTo ?: '') ?>">
             </div>
         </div>

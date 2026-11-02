@@ -67,7 +67,7 @@ class Image extends ISectionType
         $url  = $this->getImageUrl();
         $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_IMAGE . '">';
         if ($url) {
-            $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . \Yii::t('motion', 'image_current') . '" class="currentImage">';
+            $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . Html::encodeTranslationForAttribute(\Yii::t('motion', 'image_current')) . '" class="currentImage">';
             $required = '';
         } else {
             $required = match ($type->required) {

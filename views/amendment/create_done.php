@@ -89,7 +89,7 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
             <div class="input-group">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing"
-                            title="<?= Yii::t('motion', 'copy_to_clipboard') ?>">
+                            title="<?= Html::encodeTranslationForAttribute(Yii::t('motion', 'copy_to_clipboard')) ?>">
                         <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
                         <span class="sr-only"><?= Yii::t('motion', 'copy_to_clipboard') ?></span>
                     </button>

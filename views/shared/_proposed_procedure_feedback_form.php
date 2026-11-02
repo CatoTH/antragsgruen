@@ -23,12 +23,12 @@ $consultation = $imotion->getMyConsultation();
         ?>
         <div>
             <input type="text" name="proposalNotificationFrom" id="proposalNotificationFrom" class="form-control"
-                   title="<?= Yii::t('amend', 'proposal_notify_name') ?>"
+                   title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'proposal_notify_name')) ?>"
                    placeholder="<?= Html::encode($placeholderName) ?>">
         </div>
         <div>
             <input type="text" name="proposalNotificationReply" id="proposalNotificationReply" class="form-control"
-                   title="<?= Yii::t('amend', 'proposal_notify_replyto') ?>"
+                   title="<?= Html::encodeTranslationForAttribute(Yii::t('amend', 'proposal_notify_replyto')) ?>"
                    placeholder="<?= Html::encode($placeholderReplyTo) ?>">
         </div>
     </div>

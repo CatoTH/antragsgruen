@@ -20,7 +20,7 @@ class StdHooks extends Hooks
     public function beginPage(string $before): string
     {
         $out = '<header id="mainmenu">';
-        $out .= '<nav class="navbar" aria-label="' . \Yii::t('base', 'aria_mainmenu') . '">
+        $out .= '<nav class="navbar" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('base', 'aria_mainmenu')) . '">
         <div class="navbar-inner">';
         $out .= Layout::getStdNavbarHeader();
         $out .= '</div>
@@ -80,7 +80,7 @@ class StdHooks extends Hooks
         $out             = '';
         $showBreadcrumbs = (!$this->consultation || !$this->consultation->site || $this->consultation->site->getSettings()->showBreadcrumbs);
         if (count($this->layout->breadcrumbs) > 0 && $showBreadcrumbs) {
-            $out .= '<nav aria-label="' . \Yii::t('base', 'aria_breadcrumb') . '"><ol class="breadcrumb">';
+            $out .= '<nav aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('base', 'aria_breadcrumb')) . '"><ol class="breadcrumb">';
             foreach ($this->layout->breadcrumbs as $link => $name) {
                 if ($link === '' || is_numeric($link)) {
                     $out .= '<li>' . Html::encode($name) . '</li>';
@@ -447,7 +447,7 @@ class StdHooks extends Hooks
         <div class="content">
             ' . \Yii::t('con', 'aad_text') . '
             <div>
-                <a href="' . $url . '" title="' . \Yii::t('con', 'aad_btn') . '" class="btn btn-primary">
+                <a href="' . $url . '" title="' . Html::encodeTranslationForAttribute(\Yii::t('con', 'aad_btn')) . '" class="btn btn-primary">
                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Infos
                 </a>
             </div>
@@ -457,7 +457,7 @@ class StdHooks extends Hooks
 
     public function footerLine(string $before): string
     {
-        $out = '<footer class="footer" aria-label="' . \Yii::t('base', 'aria_footer') . '">';
+        $out = '<footer class="footer" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('base', 'aria_footer')) . '">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             if ($this->consultation) {
@@ -477,11 +477,11 @@ class StdHooks extends Hooks
         $out .= '<span class="version">';
         if (\Yii::$app->language === 'de') {
             $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
-            $out         .= '<a href="https://antragsgruen.de/" aria-label="' . \Yii::t('base', 'aria_antragsgruen') . '">Antragsgrün</a>, Version ' .
+            $out         .= '<a href="https://antragsgruen.de/" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('base', 'aria_antragsgruen')) . '">Antragsgrün</a>, Version ' .
                             Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);
         } else {
             $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
-            $out         .= '<a href="https://motion.tools/" aria-label="' . \Yii::t('base', 'aria_antragsgruen') . '">Antragsgrün</a>, Version ' .
+            $out         .= '<a href="https://motion.tools/" aria-label="' . Html::encodeTranslationForAttribute(\Yii::t('base', 'aria_antragsgruen')) . '">Antragsgrün</a>, Version ' .
                             Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);
         }
         $out .= '</span>';
