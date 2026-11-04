@@ -34,7 +34,7 @@ Installation
 #### Requirements:
 
 - A MySQL/MariaDB-database
-- PHP >= 8.2. Recommended: 8.4+. Required packages for Debian / Ubuntu Linux:
+- PHP >= 8.3. Recommended: 8.4+. Required packages for Debian / Ubuntu Linux:
 
 ```bash
 # Using PHP8-packages from [deb.sury.org](https://deb.sury.org/):
@@ -465,7 +465,7 @@ Developing
 
 ### Technical considerations & Long-Term Plans
 
-- PHP version support: Antragsgrün supports PHP versions until its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.2 is supported until end 2026, the first major version of Antragsgrün of 2027 will drop support for PHP 8.2).
+- PHP version support: Antragsgrün supports PHP versions until its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.3 is supported until end 2027, the first major version of Antragsgrün of 2028 will drop support for PHP 8.3).
 - PHP Framework: [Yii2](https://www.yiiframework.com/) is used. Long term, most parts should be step by step [migrated to Symfony](docs/technical/symfony-migration.md).
 - Testing Framework: The Codeception/Selenium based acceptance tests should be replaced by Playwright.
 - JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though gradually replaced by standard JavaScript. ECMAScript Modules are used as module system. For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
