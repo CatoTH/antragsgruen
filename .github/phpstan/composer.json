@@ -4,7 +4,7 @@
     },
     "config": {
         "platform": {
-          "php": "8.2.30"
+          "php": "8.3.36"
         },
         "allow-plugins": {
             "simplesamlphp/composer-module-installer": true,

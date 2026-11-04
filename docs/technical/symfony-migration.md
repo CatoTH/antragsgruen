@@ -39,7 +39,7 @@ The A steps are independent of each other and can be done in any order, alongsid
 
 | # | Step | Difficulty |
 |---|---|---|
-| A0 | Remove the `conflict` caps on `symfony/*` <7, `psr/cache` <3 and `webmozart/assert` <2 in `composer.json`, then move to 7.4 | simple–medium |
+| A0 | ~~Remove the `conflict` caps on `symfony/*` <7, `psr/cache` <3 and `webmozart/assert` <2 in `composer.json`, then move to 7.4~~ **Done.** The caps were there for SimpleSAMLphp 2.4, which Guzzle 8 had already made uninstallable (`simplesamlphp/assert` needs `guzzlehttp/psr7` 2.x). Guzzle is held at ^7.9 until `simplesamlphp/assert` supports psr7 3; SAML setups need SimpleSAMLphp ≥2.5 (Symfony 7.4, PHP ≥8.3) | simple–medium |
 | A1 | Move console commands (`commands/`, 12 files) to `symfony/console`. Migrations stay on `./yii migrate` | simple |
 | A2 | Replace `yii\helpers\Html` with `app\components\Html`, our own implementation of the methods we use. CSRF token and current URL come from `RequestContext`. **Done.** `yii\helpers\Url` (5 uses) and `ArrayHelper` (5 uses) are still left | simple, touches many files |
 | A3 | Replace the remaining direct `Yii::$app` calls with `RequestContext` or services. `Yii::$app->end()` becomes a thrown response | simple–medium |
