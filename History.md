@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.18.2 [not released yet]
+
+- Support multiple speaking lists on the home page in parallel.
+
 ### Version 4.18.1 (2026-11-02)
 
 - Several security-related issues found during an automated security-scan were resolved.

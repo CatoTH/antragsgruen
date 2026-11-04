@@ -1,12 +1,10 @@
 <?php
 
 use app\components\UrlHelper;
-use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $consultation = $controller->consultation;
-/** @var \app\models\settings\Layout $layout */
 $layout = $controller->layoutParams;
 
 $layout->addJsTranslation('speech');
@@ -28,30 +26,32 @@ $unregisterUrl = UrlHelper::createUrl(['/rest/speech/unregister', 'queueId' => '
     );
     const SPEECH_MIXINS = getSpeechCommonMixins();
 
-    const $element = $('.currentSpeechInline');
+    document.querySelectorAll('.currentSpeechInline').forEach(element => {
+        const $element = $(element);
 
-    /** @type {import('vue').App} */
-    const widget = createApp({
-        render() {
-            return h(resolveComponent('speech-user-inline-widget'), {
-                initQueue: this.initQueue,
-                user: this.user,
-                csrf: this.csrf,
-                title: this.title,
-            });
-        },
-        data() { return {
-            initQueue: $element.data('queue'),
-            user: $element.data('user'),
-            csrf: $("head").find("meta[name=csrf-token]").attr("content"),
-            title: $element.data('title'),
-            adminUrl: $element.data('admin-url'),
-        } }
+        /** @type {import('vue').App} */
+        const widget = createApp({
+            render() {
+                return h(resolveComponent('speech-user-inline-widget'), {
+                    initQueue: this.initQueue,
+                    user: this.user,
+                    csrf: this.csrf,
+                    title: this.title,
+                });
+            },
+            data() { return {
+                initQueue: $element.data('queue'),
+                user: $element.data('user'),
+                csrf: $("head").find("meta[name=csrf-token]").attr("content"),
+                title: $element.data('title'),
+                adminUrl: $element.data('admin-url'),
+            } }
+        });
+
+        widget.mixin(SPEECH_MIXINS);
+        widget.component('speech-user-inline-widget', userInlineWidget);
+        widget.directive('t', translateDirective);
+
+        widget.mount(element.querySelector('.currentSpeechList'));
     });
-
-    widget.mixin(SPEECH_MIXINS);
-    widget.component('speech-user-inline-widget', userInlineWidget);
-    widget.directive('t', translateDirective);
-
-    widget.mount('.currentSpeechInline .currentSpeechList');
 </script>
