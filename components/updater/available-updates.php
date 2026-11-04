@@ -22,10 +22,10 @@ foreach ($success as $msg) {
 
         <?php
 
-        if (version_compare(PHP_VERSION, '8.2.0', '<')) {
+        if (version_compare(PHP_VERSION, '8.3.0', '<')) {
             echo '<br><br><div class="alert alert-danger">' .
-                'You are using PHP version ' . PHP_VERSION . '. Please upgrade to PHP 8.2 or higher soon, ' .
-                'as PHP 8.0 and below <a href="https://secure.php.net/supported-versions.php">will not be supported after November 2023</a> anymore.' .
+                'You are using PHP version ' . PHP_VERSION . '. Please upgrade to PHP 8.3 or higher soon, ' .
+                'as PHP 8.2 and below <a href="https://secure.php.net/supported-versions.php">will not be supported after December 2026</a> anymore.' .
                 '</div>';
         } elseif (!extension_loaded('sodium')) {
             echo '<br><br><div class="alert alert-info">' .
