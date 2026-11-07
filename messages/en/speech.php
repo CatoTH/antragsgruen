@@ -122,7 +122,7 @@ return [
     'footer_title_plain'    => 'Speaking list',
     'footer_title_to'       => '%TITLE%',
     'footer_current'        => [
-        'text' => 'Currenty',
+        'text' => 'Currently',
         'js' => true,
     ],
     'footer_current_nobody' => [
