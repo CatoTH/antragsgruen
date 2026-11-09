@@ -70,6 +70,9 @@ return [
 
     'sb_mini_aria'   => 'Version réduite de la barre latérale',
     'sb_collecting'  => 'Motions en collecte',
+    'sb_quorum_title' => 'Aperçu du quorum',
+    'sb_quorum_reached' => 'Quorum atteint : %REACHED% / %ALL%',
+    'sb_quorum_none' => 'Aucune motion ni aucun amendement ne collecte actuellement de soutiens.',
 
     'activity_next' => 'Page suivante',
     'activity_prev' => 'Page précédente',
@@ -78,8 +81,16 @@ return [
     'collecting_title'   => 'Collecte de soutiens',
     'collecting_intro'   => 'Les motions et / ou amendements suivants sont à la recherche de soutiens :',
     'collecting_motions' => 'Motions en collecte',
-    'collecting_motion'  => 'Motion de %INITIATOR%. Statut actuel : %CURR%',
-    'collecting_amend'   => 'Amendement de %INITIATOR%, à partir de la ligne %LINE%. Statut actuel : %CURR%',
+    'collecting_motion'  => 'Motion de %INITIATOR%',
+    'collecting_amend'   => 'Amendement de %INITIATOR%, à partir de la ligne %LINE%',
+    'collecting_progress_supp'   => '%CURR% / %MIN% soutiens',
+    'collecting_progress_female' => '%CURR% / %MIN% femmes',
+    'collecting_needed'          => 'Encore nécessaire : %NEEDED% soutiens',
+    'collecting_needed_1'        => 'Encore nécessaire : 1 soutien',
+    'collecting_needed_female'   => 'Encore nécessaire : au moins %NEEDED% soutiens, dont %MISSING_F% femmes',
+    'collecting_needed_female_1' => 'Encore nécessaire : au moins %NEEDED% soutiens, dont 1 femme',
+    'collecting_needed_1_female' => 'Encore nécessaire : 1 femme de plus',
+    'collecting_reached'         => 'Quorum atteint – le dépôt par les auteur·e·s est en attente',
     'collecting_amends'  => 'Amendements en collecte',
 
     'noti_amendments_all'    => 'Tous les amendements',

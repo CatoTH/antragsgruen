@@ -319,6 +319,43 @@
   }
 }
 
+.supportProgressBar {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #e5e5e5;
+  overflow: hidden;
+
+  .supportProgressFill {
+    height: 100%;
+    background-color: $colorGreenLight;
+  }
+  &.reached .supportProgressFill {
+    background-color: $colorGreenDark;
+  }
+}
+
+.collectingList .supportCollectionProgress {
+  margin-top: 5px;
+  font-size: 0.9em;
+
+  .supportProgressRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 3px;
+  }
+  .supportProgressBar {
+    flex: 0 0 150px;
+  }
+  .supportProgressNeeded {
+    font-weight: bold;
+  }
+  &.reached .supportProgressNeeded {
+    font-weight: normal;
+    color: $colorGreenDark;
+  }
+}
+
 .motionListPetitions {
   .status {
     font-weight: bold;
