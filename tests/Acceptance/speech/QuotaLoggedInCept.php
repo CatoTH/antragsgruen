@@ -48,6 +48,15 @@ $I->see('Offener Platz', '.waitingMultiple');
 $I->click('.currentSpeechFooter .speechAdminLink');
 $I->wait(0.1);
 
+$I->dontSeeCheckboxIsChecked('.settingsPolicy .alternateSubqueues');
+$I->clickJS('.settingsPolicy .alternateSubqueues');
+$I->wait(0.2);
+$I->reloadPage();
+$I->waitForElement('.settingsPolicy .alternateSubqueues', 5);
+$I->seeCheckboxIsChecked('.settingsPolicy .alternateSubqueues');
+$I->clickJS('.settingsPolicy .alternateSubqueues');
+$I->wait(0.2);
+
 $I->seeElement('.slotActive.inactive .nameNobody'); // Nobody is speaking
 $I->seeElement('.slotPlaceholder.inactive .nameNobody'); // Nobody is proposed
 $I->see('Frauen', '.subqueues');

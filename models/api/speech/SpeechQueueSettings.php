@@ -11,6 +11,7 @@ class SpeechQueueSettings
         public bool $isOpenPoo,
         public bool $allowCustomNames,
         public bool $preferNonspeaker,
+        public bool $alternateSubqueues,
         public bool $showNames,
         public ?int $speakingTime = null,
     ) {
@@ -23,6 +24,7 @@ class SpeechQueueSettings
             isOpenPoo: $settings->isOpenPoo,
             allowCustomNames: $settings->allowCustomNames,
             preferNonspeaker: $settings->preferNonspeaker,
+            alternateSubqueues: $settings->alternateSubqueues,
             showNames: $settings->showNames,
             speakingTime: $settings->speakingTime,
         );

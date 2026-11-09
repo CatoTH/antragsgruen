@@ -3739,6 +3739,10 @@ components:
         prefer_nonspeaker:
           type: boolean
           example: false
+        alternate_subqueues:
+          type: boolean
+          description: If supplied, switches between available subqueues without catching up missed turns. Omission preserves the saved setting.
+          example: false
         allow_custom_names:
           type: boolean
           example: true
@@ -3901,6 +3905,7 @@ components:
         - subqueue
         - name
         - position
+        - is_point_of_order
       properties:
         id:
           type: integer
@@ -3913,6 +3918,10 @@ components:
         position:
           type: integer
           example: 1
+        is_point_of_order:
+          type: boolean
+          description: Whether this slot is a point-of-order request.
+          example: false
         date_started:
           type: string
           nullable: true
@@ -4049,6 +4058,7 @@ components:
         - is_open_poo
         - allow_custom_names
         - prefer_nonspeaker
+        - alternate_subqueues
         - show_names
       properties:
         is_open:
@@ -4062,6 +4072,10 @@ components:
           example: true
         prefer_nonspeaker:
           type: boolean
+          example: false
+        alternate_subqueues:
+          type: boolean
+          description: Suggests the next available subqueue after the last ordinary speaking slot, without catching up missed turns.
           example: false
         show_names:
           type: boolean

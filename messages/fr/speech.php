@@ -57,6 +57,7 @@ return [
     'admin_setting_open'     => 'Ouverte aux inscriptions',
     'admin_setting_open_poo' => 'Ouverte aux motions d\'ordre',
     'admin_prefer_nonspeak'  => 'Privilégier les personnes qui n\'ont pas encore parlé',
+    'admin_alternate_subqueues' => 'Alterner entre les sous-listes disponibles sans rattraper les tours manqués',
     'admin_show_names'       => 'Afficher publiquement les noms des personnes inscrites',
     'admin_allow_custom_names' => 'Les intervenants peuvent modifier leur nom',
     'admin_speaking_time'    => 'Afficher le temps de parole',
