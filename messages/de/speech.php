@@ -57,7 +57,6 @@ return [
     'admin_setting_open'     => 'Bewerbungen möglich',
     'admin_setting_open_poo' => 'Geschätsordnungsanträge möglich',
     'admin_prefer_nonspeak'  => 'Personen bevorzugen, die noch nicht sprachen',
-    'admin_alternate_subqueues' => 'Zwischen verfügbaren Teillisten wechseln, ohne ausgefallene Runden nachzuholen',
     'admin_show_names'       => 'Namen von Personen auf der Wartelist öffentlich anzeigen',
     'admin_allow_custom_names' => 'Bewerbende können ihren Namen ändern',
     'admin_speaking_time'    => 'Redezeit anzeigen',

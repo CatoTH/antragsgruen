@@ -53,7 +53,6 @@ return [
     'admin_setting_open' => 'Open om in te dienen',
     'admin_setting_open_poo' => 'Open Punten van Orde',
     'admin_prefer_nonspeak' => 'Geef voorrang aan personen die nog niet gesproken hebben',
-    'admin_alternate_subqueues' => 'Wissel af tussen beschikbare deellijsten zonder gemiste beurten in te halen',
     'admin_show_names' => 'Namen van personen op de wachtlijst openbaar tonen',
     'admin_allow_custom_names' => 'Sprekers kunnen hun naam aanpassen',
     'admin_speaking_time' => 'Toon spreek tijf',

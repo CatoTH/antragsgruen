@@ -53,7 +53,6 @@ return [
     'admin_setting_open' => 'Otvoreno za prijavu', // Original: Open to apply
     'admin_setting_open_poo' => 'Otvoren za zahtjeve za uspostavljanje reda', // Original: Open to Points of Orders
     'admin_prefer_nonspeak' => 'Preferiraj osobe koje još nisu razgovarale', // Original: Prefer persons who haven\\'t talked yet
-    'admin_alternate_subqueues' => 'Smjenjuj dostupne podliste bez nadoknađivanja propuštenih redova', // Original: Alternate available subqueues without making up missed turns
     'admin_allow_custom_names' => 'Govornici mogu mijenjati svoja imena', // Original: Speakers can change their names
     'admin_speaking_time' => 'Prikaz vremena za izlaganje', // Original: Show speaking time
     'admin_goto_components' => 'Kvota, (de)aktivacija', // Original: Quota, (de-)activation

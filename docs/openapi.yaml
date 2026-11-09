@@ -3739,10 +3739,6 @@ components:
         prefer_nonspeaker:
           type: boolean
           example: false
-        alternate_subqueues:
-          type: boolean
-          description: If supplied, switches between available subqueues without catching up missed turns. Omission preserves the saved setting.
-          example: false
         allow_custom_names:
           type: boolean
           example: true
@@ -3962,6 +3958,7 @@ components:
         - id
         - is_active
         - settings
+        - alternate_subqueues
         - subqueues
         - slots
         - current_time
@@ -3974,6 +3971,10 @@ components:
           example: true
         settings:
           $ref: '#/components/schemas/SpeechQueueSettings'
+        alternate_subqueues:
+          type: boolean
+          description: Consultation-wide option to alternate available subqueues without catching up missed turns.
+          example: false
         subqueues:
           type: array
           items:
@@ -4058,7 +4059,6 @@ components:
         - is_open_poo
         - allow_custom_names
         - prefer_nonspeaker
-        - alternate_subqueues
         - show_names
       properties:
         is_open:
@@ -4072,10 +4072,6 @@ components:
           example: true
         prefer_nonspeaker:
           type: boolean
-          example: false
-        alternate_subqueues:
-          type: boolean
-          description: Suggests the next available subqueue after the last ordinary speaking slot, without catching up missed turns.
           example: false
         show_names:
           type: boolean

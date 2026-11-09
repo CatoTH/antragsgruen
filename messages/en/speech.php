@@ -172,10 +172,6 @@ return [
         'text' => 'Prefer persons who haven\'t talked yet',
         'js' => true,
     ],
-    'admin_alternate_subqueues' => [
-        'text' => 'Alternate available subqueues without making up missed turns',
-        'js' => true,
-    ],
     'admin_show_names'       => [
         'text' => 'Show names of applicants publicly',
         'js' => true,

@@ -42,12 +42,6 @@
             </li>
             <li class="checkbox">
               <label @click="$event.stopPropagation()">
-                <input type="checkbox" class="alternateSubqueues" v-model="queue.settings.alternate_subqueues" @change="settingsChanged()"
-                  > <template v-t="['speech', 'admin_alternate_subqueues']"></template>
-              </label>
-            </li>
-            <li class="checkbox">
-              <label @click="$event.stopPropagation()">
                 <input type="checkbox" class="showNames" v-model="queue.settings.show_names" @change="settingsChanged()"
                   > <template v-t="['speech', 'admin_show_names']"></template>
               </label>
@@ -295,7 +289,7 @@ export default {
       return active.length > 0 ? active[0] : null;
     },
     slotProposal: function () {
-      if (this.queue.settings.alternate_subqueues) {
+      if (this.queue.alternate_subqueues) {
         return getAlternatingProposal(this.queue.subqueues, this.queue.slots);
       }
 
@@ -436,7 +430,6 @@ export default {
         is_open: this.queue.settings.is_open,
         is_open_poo: this.queue.settings.is_open_poo,
         prefer_nonspeaker: this.queue.settings.prefer_nonspeaker,
-        alternate_subqueues: this.queue.settings.alternate_subqueues,
         allow_custom_names: this.queue.settings.allow_custom_names,
         show_names: this.queue.settings.show_names,
         speaking_time: (this.hasSpeakingTime ? (this.speakingTime > 0 ? parseInt(this.speakingTime, 10) : 60) : null),

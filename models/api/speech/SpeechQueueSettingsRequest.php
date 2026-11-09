@@ -13,7 +13,6 @@ class SpeechQueueSettingsRequest
         public bool $preferNonspeaker,
         public bool $allowCustomNames,
         public bool $showNames,
-        public ?bool $alternateSubqueues = null,
         public ?int $speakingTime = null,
     ) {
     }

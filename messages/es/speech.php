@@ -57,7 +57,6 @@ return [
     'admin_setting_open'       => 'Abierta para inscripciones',
     'admin_setting_open_poo'   => 'Abierta a mociones de orden',
     'admin_prefer_nonspeak'    => 'Priorizar a las personas que aún no han hablado',
-    'admin_alternate_subqueues' => 'Alternar entre las sublistas disponibles sin recuperar los turnos perdidos',
     'admin_show_names'         => 'Mostrar públicamente los nombres de los solicitantes',
     'admin_allow_custom_names' => 'Los oradores pueden cambiar su nombre',
     'admin_speaking_time'      => 'Mostrar tiempo de intervención',

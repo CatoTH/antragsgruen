@@ -242,6 +242,7 @@ return [
     'con_prefix_hide' => '<strong>Sakrij potpise naslova</strong>', // Original: <strong>Hide title signatures</strong>
     'con_speech_lists' => '<strong>Lista govornika</strong>', // Original: <strong>Speaking lists</strong>
     'con_speech_quotas' => 'Više podredova po listi govornika', // Original: Multiple sub-queues per speaking list
+    'con_speech_alternate_subqueues' => 'Smjenjuj dostupne podliste bez nadoknađivanja propuštenih redova', // Original: Alternate available subqueues without making up missed turns
     'con_speech_quota_name' => 'Naziv sunčanog reda br. %no%', // Original: Name of sun-queue no. %no%
     'con_speech_active_first' => 'Odmah aktivirajte/objavite list govornika', // Original: Activate / publish the speaking list right away
     'con_speech_active_hint' => 'Korisnicima će biti vidljivo na početnoj stranici konsultacije. Međutim, prijava će i dalje biti moguća tek nakon izričitog otvaranja.', // Original: It will be visible on the consultation home page for users. However, applying will still only be possible after explicit opening it.

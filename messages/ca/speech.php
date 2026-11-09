@@ -53,7 +53,6 @@ return [
 	'admin_setting_open' => 'Obert per aplicar',
 	'admin_setting_open_poo' => 'Obert a punts d\'ordre',
 	'admin_prefer_nonspeak' => 'Preferència per a persones que no han parlat encara',
-	'admin_alternate_subqueues' => 'Alternar entre les subllistes disponibles sense recuperar els torns perduts',
 	'admin_allow_custom_names' => 'Els parlants poden canviar el seu nom',
 	'admin_speaking_time' => 'Mostrar temps de durada',
 	'admin_goto_components' => 'Quota, (des-)activació',

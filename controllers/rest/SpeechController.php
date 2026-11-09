@@ -205,9 +205,6 @@ class SpeechController extends RestBase
         $settings->isOpenPoo = $request->isOpenPoo;
         $settings->allowCustomNames = $request->allowCustomNames;
         $settings->preferNonspeaker = $request->preferNonspeaker;
-        if ($request->alternateSubqueues !== null) {
-            $settings->alternateSubqueues = $request->alternateSubqueues;
-        }
         $settings->showNames = $request->showNames;
         $settings->speakingTime = (($request->speakingTime !== null && $request->speakingTime > 0) ? $request->speakingTime : null);
         $queue->setSettings($settings);

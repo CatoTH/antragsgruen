@@ -240,6 +240,7 @@ return [
     'con_prefix_hide'         => '<strong>Ocultar signatures del títol</strong>',
     'con_speech_lists'        => '<strong>Llistes de parlants</strong>',
     'con_speech_quotas'       => 'Múltiples sub-queues per llista de parlants',
+    'con_speech_alternate_subqueues' => 'Alternar entre les subllistes disponibles sense recuperar els torns perduts',
     'con_speech_quota_name'   => 'Nom de la sub-cua núm. %no%',
     'con_speech_active_first' => 'Activar / publicar la llista de parlants immediatament',
     'con_speech_active_hint'  => 'Serà visible a la pàgina d\'inici de la consulta per als usuaris. No obstant això, solament serà possible sol·licitar després de la seva obertura explícita.',

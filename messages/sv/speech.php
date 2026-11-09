@@ -52,7 +52,6 @@ return [
     'admin_setting_open' => 'Öppen för anmälan',
     'admin_setting_open_poo' => 'Öppen för ordningsfrågor',
     'admin_prefer_nonspeak' => 'Prioritera personer som ännu inte har talat',
-    'admin_alternate_subqueues' => 'Växla mellan tillgängliga dellistor utan att ta igen missade turer',
     'admin_show_names' => 'Visa namn på anmälda offentligt',
     'admin_allow_custom_names' => 'Talare kan ändra sina namn',
     'admin_speaking_time' => 'Visa talartid',
