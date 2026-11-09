@@ -84,6 +84,25 @@ class LayoutHelper
         return $cache;
     }
 
+    public static function getSidebarQuorumCache(Consultation $consultation, ?string $language = null): HashedStaticCache
+    {
+        $cache = HashedStaticCache::getInstance('sidebarQuorum', [$consultation->id, $language ?? LanguageTools::getCurrentLanguage()]);
+        if (AntragsgruenApp::getInstance()->viewCacheFilePath) {
+            $cache->setIsSynchronized(true);
+        } else {
+            $cache->setSkipCache(true);
+        }
+
+        return $cache;
+    }
+
+    public static function flushSidebarQuorumCaches(Consultation $consultation): void
+    {
+        foreach (LanguageTools::getContentLanguages($consultation) as $language) {
+            self::getSidebarQuorumCache($consultation, $language)->flushCache();
+        }
+    }
+
     public static function flushViewCaches(Consultation $consultation): void
     {
         // These caches are keyed by the reader's language (see getHomePageCacheForType() etc.), so
@@ -94,6 +113,7 @@ class LayoutHelper
                 $homePageCache->flushCache();
             }
             self::getSidebarPdfCache($consultation, $language)->flushCache();
+            self::getSidebarQuorumCache($consultation, $language)->flushCache();
             foreach ($consultation->tags as $tag) {
                 self::getTagMotionListCache($consultation, $tag, true, $language)->flushCache();
                 self::getTagMotionListCache($consultation, $tag, false, $language)->flushCache();

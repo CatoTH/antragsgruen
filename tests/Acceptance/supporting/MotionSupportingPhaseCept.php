@@ -37,7 +37,8 @@ $I->gotoConsultationHome(true, 'supporter', 'supporter');
 $I->click('#sidebar .collecting a');
 
 $I->see('Support me!', '.motionList');
-$I->see('Aktueller Stand: 0 / 1', '.motion116');
+$I->see('0 / 1 Unterstützer*innen', '.motion116');
+$I->see('Noch nötig: 1 Unterstützer*in', '.motion116');
 
 $I->logout();
 

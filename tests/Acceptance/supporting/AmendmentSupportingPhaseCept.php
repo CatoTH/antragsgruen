@@ -67,7 +67,8 @@ $I->dontSee('Eingereicht (ungeprüft)', '.myAmendmentList');
 $I->click('#sidebar .collecting a');
 
 $I->see('ÄA von Testuser, ab Zeile 1', '.motionList');
-$I->see('Aktueller Stand: 0 / 1', '.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->see('0 / 1 Unterstützer*innen', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->see('Noch nötig: 1 Unterstützer*in', '.amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 
 $I->wantTo('check that amendments created as organizations are not in supporting phase');
