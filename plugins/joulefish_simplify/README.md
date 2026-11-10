@@ -1,8 +1,11 @@
 # Joulefish Simplify Plugin for Antragsgrün
 
 Integrates the [Joulefish Simplification API](https://simplify-joulefish.fn.deploybase.eu) into Antragsgrün to provide accessible language versions of motions:
-- **Einfache Sprache** (Plain Language, DIN ISO 24495-1 / DIN 8581-1)
+
+- **Stark vereinfachte Sprache** (based on Plain Language, DIN ISO 24495-1 / DIN 8581-1)\*
 - **Leichte Sprache** (Easy-to-Read Language, DIN SPEC 33429:2025-03)
+
+* based on that spec, however each text requires review by the taget audiance in German. Here is a guide https://www.netzwerk-leichte-sprache.de/ls/das-netzwerk-und-die-leichte-sprache/regeln AI is not a subsitute for target audiance.
 
 ## Features
 
@@ -18,9 +21,7 @@ Add `"joulefish_simplify"` to the `"plugins"` array:
 
 ```json
 {
-    "plugins": [
-        "joulefish_simplify"
-    ]
+  "plugins": ["joulefish_simplify"]
 }
 ```
 
@@ -42,10 +43,11 @@ Configuration values are resolved in the following priority order:
    - `JOULEFISH_API_KEY`: API authentication key (optional Bearer token)
 
 2. **Local Configuration File (`plugins/joulefish_simplify/config.json`)**:
+
    ```json
    {
-       "apiUrl": "https://simplify-joulefish.fn.deploybase.eu",
-       "apiKey": "your-api-key-here"
+     "apiUrl": "https://simplify-joulefish.fn.deploybase.eu",
+     "apiKey": "your-api-key-here"
    }
    ```
 
@@ -58,4 +60,3 @@ Configuration values are resolved in the following priority order:
 - `LayoutHooks.php`: Hooks into `beforeMotionView()` to inject the frontend widget above the motion content.
 - `controllers/SimplifyController.php`: Handles AJAX requests (`/joulefish_simplify/simplify/process`), fetches motion section text, queries the API using Guzzle, and manages cache persistence.
 - `views/motion_hook.php`: HTML & JavaScript component rendering the UI and handling button interactions.
-

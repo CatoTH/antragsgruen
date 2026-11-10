@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'title' => 'Vereinfachte Sprache',
-    'mode_plain' => 'Einfache Sprache',
+    'mode_plain' => 'Stark vereinfachte Sprache',
     'mode_easy' => 'Leichte Sprache',
     'loading' => 'Text wird vereinfacht...',
     'prompt' => 'Klicken Sie auf eine Schaltfläche oben, um eine vereinfachte Version zu generieren.',
