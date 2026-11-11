@@ -257,6 +257,11 @@ $handledSiteSettings = [];
                         <?= Html::checkbox('hasMultipleSpeechLists', $hasMultipleSpeechLists, ['id' => 'hasMultipleSpeechLists']) ?>
                         <?= Yii::t('admin', 'con_speech_quotas') ?>
                     </label>
+                    <label class="alternateSubqueuesSetting">
+                        <?= Html::checkbox('settings[speechAlternateSubqueues]', $settings->speechAlternateSubqueues, ['id' => 'speechAlternateSubqueues']) ?>
+                        <?= Yii::t('admin', 'con_speech_alternate_subqueues') ?>
+                    </label>
+                    <?php $handledSettings[] = 'speechAlternateSubqueues'; ?>
                     <div class="quotaList">
                         <?php
                         foreach ($speechListsPre as $speechListNo => $speechListName) {

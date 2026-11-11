@@ -98,8 +98,10 @@ export class AppearanceEdit {
             const checked = $(ev.currentTarget).prop("checked");
             if (checked) {
                 this.$form.find(".quotaName").removeClass("hidden");
+                this.$form.find(".alternateSubqueuesSetting").removeClass("hidden");
             } else {
                 this.$form.find(".quotaName").addClass("hidden");
+                this.$form.find(".alternateSubqueuesSetting").addClass("hidden");
             }
         }).trigger("change");
     }

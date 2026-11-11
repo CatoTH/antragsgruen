@@ -17,6 +17,7 @@ class SpeechQueueActiveSlot
     public ?int $userId;
     public ?string $userToken;
     public int $position;
+    public bool $isPointOfOrder;
 
     public ?\DateTime $dateStarted;
     public ?\DateTime $dateStopped;
@@ -35,6 +36,7 @@ class SpeechQueueActiveSlot
         $dto->userId = $entity->userId;
         $dto->userToken = $entity->userToken;
         $dto->position = $entity->position;
+        $dto->isPointOfOrder = $entity->isPointOfOrder();
         $dto->dateStarted = $entity->getDateStarted();
         $dto->dateStopped = $entity->getDateStopped();
         $dto->dateApplied = $entity->getDateApplied();

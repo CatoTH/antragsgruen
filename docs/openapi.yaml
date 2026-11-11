@@ -3901,6 +3901,7 @@ components:
         - subqueue
         - name
         - position
+        - is_point_of_order
       properties:
         id:
           type: integer
@@ -3913,6 +3914,10 @@ components:
         position:
           type: integer
           example: 1
+        is_point_of_order:
+          type: boolean
+          description: Whether this slot is a point-of-order request.
+          example: false
         date_started:
           type: string
           nullable: true
@@ -3953,6 +3958,7 @@ components:
         - id
         - is_active
         - settings
+        - alternate_subqueues
         - subqueues
         - slots
         - current_time
@@ -3965,6 +3971,10 @@ components:
           example: true
         settings:
           $ref: '#/components/schemas/SpeechQueueSettings'
+        alternate_subqueues:
+          type: boolean
+          description: Consultation-wide option to alternate available subqueues without catching up missed turns.
+          example: false
         subqueues:
           type: array
           items:

@@ -252,6 +252,7 @@ return [
     'con_prefix_hide' => '<strong>Kenmerken in titels verbergen</strong><br><small class="conPrefixHide">Kenmerken moeten nog steeds worden ingevoerd voor de sortering, maar worden niet meer getoond.</small>',
     'con_speech_lists' => '<strong>Sprekerslijsten</strong> aanbieden',
     'con_speech_quotas' => 'Gequoteerde sprekerslijsten',
+    'con_speech_alternate_subqueues' => 'Wissel af tussen beschikbare sublijsten zonder gemiste beurten in te halen',
     'con_speech_quota_name' => 'Naam van de %no%e sublijst',
     'con_speech_active_first' => 'Sprekerslijst direct zichtbaar maken',
     'con_speech_active_hint' => 'De sprekerslijst wordt direct zichtbaar op de startpagina. Aanmelden is echter pas mogelijk nadat de lijst expliciet is geopend onder "Sprekerslijst beheren".',
