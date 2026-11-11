@@ -257,7 +257,7 @@ return [
     'con_prefix_hide'         => '<strong>Hide title signatures</strong>',
     'con_speech_lists'        => '<strong>Speaking lists</strong>',
     'con_speech_quotas'       => 'Multiple sub-queues per speaking list',
-    'con_speech_alternate_subqueues' => 'Alternate available subqueues without making up missed turns',
+    'con_speech_alternate_subqueues' => 'Alternate available sub-queues without making up missed turns',
     'con_speech_quota_name'   => 'Name of sun-queue no. %no%',
     'con_speech_active_first' => 'Activate / publish the speaking list right away',
     'con_speech_active_hint'  => 'It will be visible on the consultation home page for users. However, applying will still only be possible after explicit opening it.',

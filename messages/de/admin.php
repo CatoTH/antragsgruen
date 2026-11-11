@@ -254,7 +254,7 @@ return [
 <small class="conPrefixHide">Antragskürzel müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann, werden aber nicht mehr angezeigt.</small>',
     'con_speech_lists'        => '<strong>Redelisten</strong> anbieten',
     'con_speech_quotas'       => 'Quotierte Redelisten',
-    'con_speech_alternate_subqueues' => 'Zwischen verfügbaren Teillisten wechseln, ohne ausgefallene Runden nachzuholen',
+    'con_speech_alternate_subqueues' => 'Zwischen verfügbaren Unterlisten wechseln, ohne ausgefallene Runden nachzuholen',
     'con_speech_quota_name'   => 'Name der %no%. Unterliste',
     'con_speech_active_first' => 'Redeliste sofort sichtbar machen',
     'con_speech_active_hint'  => 'Die Redeliste wird sofort auf der Startseite sichtbar. Allerdings können Nutzer*innen sich trotzdem erst bewerben, nachdem die Redeliste unter "Redeliste verwalten" explizit geöffnet wurde.',
