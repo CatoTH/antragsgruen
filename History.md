@@ -3,6 +3,7 @@
 ### Version 4.18.2 [not released yet]
 
 - Support multiple speaking lists on the home page in parallel.
+- Bugfix: The ODS export links for proposed procedures did not work.
 - Bugfix: URLs with a trailing slash like "/site/" were not found. The application now normalizes them, redirecting to the canonical URL.
 
 
