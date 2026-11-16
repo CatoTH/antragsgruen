@@ -74,11 +74,14 @@ export class MotionList {
             ev.preventDefault();
             ev.stopPropagation();
         });
-        $exportRow.find(".exportMotionDd, .exportAmendmentDd").each(function () {
+        $exportRow.find(".exportMotionDd, .exportAmendmentDd, .exportProcedureDd").each(function () {
             let $dd = $(this),
                 recalcLinks = function () {
                     const inactive = ($dd.find("input[name=inactive]").prop("checked") ? 1 : 0);
                     const replaced = ($dd.find("input[name=replaced]").prop("checked") ? 1 : 0);
+                    const comments = ($dd.find("input[name=comments]").prop("checked") ? 1 : 0);
+                    const onlypublic = ($dd.find("input[name=onlypublic]").prop("checked") ? 1 : 0);
+
                     const motionTypes = [];
                     $dd.find("input[name=motionType]:checked").each(function () {
                         motionTypes.push($(this).val());
@@ -94,6 +97,8 @@ export class MotionList {
 
                         link = link.replace("INACTIVE", inactive);
                         link = link.replace("REPLACED", replaced);
+                        link = link.replace("COMMENTS", comments);
+                        link = link.replace("ONLYPUBLIC", onlypublic);
                         link = link.replace("MOTIONTYPES", motionTypes.join(","));
                         const url = new URL(link, window.location.origin);
                         const path = url.pathname + url.search;
