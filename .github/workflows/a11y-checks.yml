@@ -46,6 +46,8 @@ jobs:
           extensions: >-
             curl, dom, fileinfo, iconv, intl,
             mbstring, mysql, pdo, zip
+        env:
+          update: true
 
       - uses: pnpm/action-setup@v6
         with:
