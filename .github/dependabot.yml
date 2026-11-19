@@ -17,7 +17,9 @@ updates:
           - "*"
 
   - package-ecosystem: "composer"
-    directory: "/"
+    directories:
+      - "/"
+      - "/.github/phpstan"
     schedule:
       interval: "monthly"
       timezone: "Europe/Berlin"
