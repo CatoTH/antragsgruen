@@ -58,6 +58,9 @@ return [
     'sb_comm_to'      => 'A',
     'sb_feeds'        => 'Feeds',
     'sb_collecting'   => 'Mociones en fase de recolección',
+    'sb_quorum_title' => 'Resumen del quórum',
+    'sb_quorum_reached' => 'Quórum alcanzado: %REACHED% / %ALL%',
+    'sb_quorum_none' => 'Actualmente ninguna moción ni enmienda está recopilando apoyos.',
 
     'search_no_query' => 'No se introdujo ningún término de búsqueda',
 
@@ -72,8 +75,16 @@ return [
     'collecting_title' => 'Recopilando apoyos',
     'collecting_intro' => 'Las siguientes mociones y/o enmiendas están buscando apoyos:',
     'collecting_motions' => 'Mociones en fase de recolección',
-    'collecting_motion'  => 'Moción de %INITIATOR%. Estado actual: %CURR%',
-    'collecting_amend'   => 'Enmienda de %INITIATOR%, a partir de la línea %LINE%. Estado actual: %CURR%',
+    'collecting_motion'  => 'Moción de %INITIATOR%',
+    'collecting_amend'   => 'Enmienda de %INITIATOR%, a partir de la línea %LINE%',
+    'collecting_progress_supp'   => '%CURR% / %MIN% apoyos',
+    'collecting_progress_female' => '%CURR% / %MIN% mujeres',
+    'collecting_needed'          => 'Aún se necesitan: %NEEDED% apoyos',
+    'collecting_needed_1'        => 'Aún se necesita: 1 apoyo',
+    'collecting_needed_female'   => 'Aún se necesitan: al menos %NEEDED% apoyos, de ellos %MISSING_F% mujeres',
+    'collecting_needed_female_1' => 'Aún se necesitan: al menos %NEEDED% apoyos, de ellos 1 mujer',
+    'collecting_needed_1_female' => 'Aún se necesita: 1 mujer más',
+    'collecting_reached'         => 'Quórum alcanzado – falta la presentación por parte de los proponentes',
     'collecting_amends'  => 'Enmiendas en fase de recolección',
 
     'noti_title' => 'Notificaciones',

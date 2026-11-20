@@ -58,6 +58,12 @@ return [
     ],
     'sb_feeds'             => 'Feeds',
     'sb_collecting'        => 'Collecting motions',
+    'sb_quorum_title'      => 'Quorum overview',
+    'sb_quorum_reached'    => [
+        'text' => 'Quorum reached: %REACHED% / %ALL%',
+        'description' => 'Sidebar: how many of the motions / amendments collecting supporters have reached their quorum',
+    ],
+    'sb_quorum_none'       => 'Currently no motions or amendments are collecting supporters.',
     'search_no_query'      => 'To search term entered',
     'new_item'             => 'New item',
 
@@ -70,8 +76,43 @@ return [
     'collecting_title'   => 'Collecting support',
     'collecting_intro'   => 'The following motions and / or amendments are looking for supporters:',
     'collecting_motions' => 'Collecting motions',
-    'collecting_motion'  => 'Motion by %INITIATOR%. Current status: %CURR%',
-    'collecting_amend'   => 'Amendment by %INITIATOR%, starting line %LINE%. Current status: %CURR%',
+    'collecting_motion'  => [
+        'text' => 'Motion by %INITIATOR%',
+        'placeholders' => ['%INITIATOR%', '%CURR%'],
+    ],
+    'collecting_amend'   => [
+        'text' => 'Amendment by %INITIATOR%, starting line %LINE%',
+        'placeholders' => ['%INITIATOR%', '%LINE%', '%CURR%'],
+    ],
+    'collecting_progress_supp'   => '%CURR% / %MIN% supporters',
+    'collecting_progress_female' => [
+        'text' => '%CURR% / %MIN% women',
+        'description' => 'Women among the supporters and initiators, relevant for the women quorum',
+    ],
+    'collecting_needed'          => [
+        'text' => 'Still needed: %NEEDED% supporters',
+        'placeholders' => ['%NEEDED%', '%MISSING%', '%MISSING_F%'],
+    ],
+    'collecting_needed_1'        => [
+        'text' => 'Still needed: 1 supporter',
+        'description' => 'Exactly one more supporter is needed',
+        'placeholders' => ['%NEEDED%', '%MISSING%', '%MISSING_F%'],
+    ],
+    'collecting_needed_female'   => [
+        'text' => 'Still needed: at least %NEEDED% supporters, including %MISSING_F% women',
+        'placeholders' => ['%NEEDED%', '%MISSING%', '%MISSING_F%'],
+    ],
+    'collecting_needed_female_1' => [
+        'text' => 'Still needed: at least %NEEDED% supporters, including 1 woman',
+        'description' => 'Several supporters are needed, exactly one of them a woman',
+        'placeholders' => ['%NEEDED%', '%MISSING%', '%MISSING_F%'],
+    ],
+    'collecting_needed_1_female' => [
+        'text' => 'Still needed: 1 more woman',
+        'description' => 'Exactly one more supporter is needed, and it has to be a woman',
+        'placeholders' => ['%NEEDED%', '%MISSING%', '%MISSING_F%'],
+    ],
+    'collecting_reached'         => 'Quorum reached – submission by the initiators is pending',
     'collecting_amends'  => 'Collecting amendments',
 
     'noti_title'            => 'Notifications',

@@ -21,6 +21,10 @@ $I->fillField('#typeMinSupportersFemale', 1);
 $I->checkOption('#typeAllowMoreSupporters');
 $page->saveForm();
 
+$page = $I->gotoStdAdminPage()->gotoAppearance();
+$I->checkOption('#collectingPage');
+$page->saveForm();
+
 
 $I->wantTo('create a motion');
 $I->gotoConsultationHome()->gotoMotionCreatePage()->fillInValidSampleData();
@@ -28,6 +32,14 @@ $I->selectOption('#initiatorGender', 'Männlich');
 $I->submitForm('#motionEditForm', [], 'save');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 $url = $I->executeJS('return $("#urlSharing").val()');
+$collectingRow = '.motion' . AcceptanceTester::FIRST_FREE_MOTION_ID;
+
+$I->wantTo('see the missing female supporter on the collecting page');
+$I->gotoConsultationHome();
+$I->click('#sidebar .collecting a');
+$I->see('0 / 1 Unterstützer*innen', $collectingRow);
+$I->see('0 / 1 Frauen', $collectingRow);
+$I->see('Noch nötig: 1 weitere Frau', $collectingRow);
 
 $I->logout();
 $I->loginAsStdUser();
@@ -43,6 +55,13 @@ $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->see('Du unterstützt diesen Antrag nun.');
 $I->see('aktueller Stand: 1 / 0');
 
+$I->wantTo('see that a woman is still missing on the collecting page');
+$I->gotoConsultationHome();
+$I->click('#sidebar .collecting a');
+$I->see('1 / 1 Unterstützer*innen', $collectingRow);
+$I->see('Noch nötig: 1 weitere Frau', $collectingRow);
+$I->amOnPage($url);
+
 $I->wantTo('support it as woman');
 $I->submitForm('.motionSupportForm', [], 'motionSupportRevoke');
 $I->see('aktueller Stand: 0 / 0');
@@ -51,3 +70,9 @@ $I->selectOption('#motionSupportGender', 'Weiblich');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->see('Du unterstützt diesen Antrag nun.');
 $I->see('Die Mindestzahl an Unterstützer*innen (1) wurde erreicht');
+
+$I->wantTo('see the reached quorum on the collecting page');
+$I->gotoConsultationHome();
+$I->click('#sidebar .collecting a');
+$I->see('1 / 1 Frauen', $collectingRow);
+$I->see('Quorum erreicht', $collectingRow);

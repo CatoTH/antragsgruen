@@ -13,6 +13,7 @@ use app\models\sectionTypes\{ISectionType, SectionLanguageMode};
 use app\models\settings\{MotionSection as MotionSectionSettings, AntragsgruenApp, Permissions, Privileges};
 use app\models\supportTypes\SupportBase;
 use app\models\votings\VotingItemGroup;
+use app\views\consultation\LayoutHelper;
 use yii\base\InvalidConfigException;
 use yii\db\{ActiveQueryInterface, ActiveRecord, AfterSaveEvent};
 
@@ -395,6 +396,10 @@ abstract class IMotion extends ActiveRecord implements IVotingItem
     public function onSupportersChanged(): void
     {
         $this->flushCacheItems(['supporters']);
+        $consultation = $this->getMyConsultation();
+        if ($consultation) {
+            LayoutHelper::flushSidebarQuorumCaches($consultation);
+        }
     }
 
     /**
