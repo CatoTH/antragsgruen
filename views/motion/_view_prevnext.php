@@ -14,6 +14,9 @@ use yii\helpers\Html;
 if ($reducedNavigation) {
     return;
 }
+if (!$motion->getMyConsultation()?->getSettings()->motionPrevNextLinks) {
+    return;
+}
 
 $prevNext = LayoutHelper::getPrevNextLinks($motion);
 
