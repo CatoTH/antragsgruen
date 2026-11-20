@@ -11,6 +11,7 @@
         "test:acceptance": "vendor/bin/codecept run Acceptance",
         "test:unit": "vendor/bin/codecept run Unit",
         "test:a11y": "node bin/test-a11y.mjs",
+        "test:playwright": "playwright test",
         "watch": "vite build --watch",
         "build": "vite build",
         "lint": "eslint --no-fix 'web/js/**/*.{js,ts}'",
@@ -21,6 +22,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
+        "@playwright/test": "1.65.1",
         "@types/bootbox": "^5.2.9",
         "@types/bootstrap": "^3.4.0",
         "@types/ckeditor": "^4.9.10",
