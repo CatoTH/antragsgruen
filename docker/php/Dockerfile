@@ -1,6 +1,6 @@
 ## Image with libraries necessary for actual deployment
 
-FROM php:8.5-fpm AS production
+FROM php:8.5.13-fpm@sha256:52ba6f178d0a08f348578b03595661b7ff13defafacf4c823d045f2ecba8db8f AS production
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

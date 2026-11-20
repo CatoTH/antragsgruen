@@ -27,6 +27,20 @@ updates:
         patterns:
           - "*"
 
+  - package-ecosystem: "docker"
+    directories:
+      - "/docker/php"
+      - "/docker/apache-single-container"
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-name: "php"
+    ignore:
+      - dependency-name: "php"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
