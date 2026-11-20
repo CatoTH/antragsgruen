@@ -10,6 +10,7 @@ class SpeechQueueAdmin
         public int $id,
         public bool $isActive,
         public SpeechQueueSettings $settings,
+        public bool $alternateSubqueues,
         /** @var SpeechSubqueueAdmin[] */
         public array $subqueues,
         /** @var SpeechSlot[] */
@@ -27,6 +28,7 @@ class SpeechQueueAdmin
             id: $queue->id,
             isActive: $queue->isActive,
             settings: SpeechQueueSettings::fromSettings($queue->settings),
+            alternateSubqueues: $entity->getMyConsultation()->getSettings()->speechAlternateSubqueues,
             subqueues: array_map(fn(\app\models\api\SpeechSubqueue $subqueue) => SpeechSubqueueAdmin::fromApiSubqueue($subqueue), $queue->subqueues),
             slots: array_map(fn(\app\models\api\SpeechQueueActiveSlot $slot) => SpeechSlot::fromApiSlot($slot), $queue->slots),
             currentTime: $queue->currentTime,

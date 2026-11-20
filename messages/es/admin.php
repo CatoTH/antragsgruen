@@ -256,6 +256,7 @@ return [
     'con_prefix_hide' => '<strong>Ocultar signaturas en los títulos</strong>',
     'con_speech_lists' => '<strong>Listas de intervención</strong>',
     'con_speech_quotas' => 'Varias sublistas por lista de intervención',
+    'con_speech_alternate_subqueues' => 'Alternar entre las sublistas disponibles sin recuperar los turnos perdidos',
     'con_speech_quota_name' => 'Nombre de la sublista n.º %no%',
     'con_speech_active_first' => 'Activar / publicar la lista de intervención de inmediato',
     'con_speech_active_hint' => 'Será visible para los usuarios en la página de inicio del evento. Sin embargo, solo se podrá inscribir una vez que se abra explícitamente.',

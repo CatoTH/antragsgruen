@@ -18,13 +18,19 @@ $I->dontSeeElement('.quotas');
 $I->executeJS('$("#hasSpeechLists").prop("checked", true).trigger("change");');
 $I->wait(0.1);
 $I->seeElement('.quotas');
+$I->dontSeeElement('.alternateSubqueuesSetting');
 $I->checkOption('#hasMultipleSpeechLists');
+$I->executeJS('$("#hasMultipleSpeechLists").trigger("change");');
+$I->seeElement('.alternateSubqueuesSetting');
+$I->dontSeeCheckboxIsChecked('#speechAlternateSubqueues');
+$I->checkOption('#speechAlternateSubqueues');
 $I->executeJS('$("#speechRequiresLogin").prop("checked", true).trigger("change");');
 $I->seeInField('.quotaName1 input', 'Offen / Männer');
 $I->fillField('.quotaName1 input', 'Offener Platz');
 // The fixture has the "Currently debated" module on, which would take the place of this widget
 $I->uncheckOption('#hasCurrentlyDebated');
 $page->saveForm();
+$I->seeCheckboxIsChecked('#speechAlternateSubqueues');
 
 $I->gotoConsultationHome();
 
@@ -47,6 +53,9 @@ $I->see('Offener Platz', '.waitingMultiple');
 // Goto admin widget & open for application
 $I->click('.currentSpeechFooter .speechAdminLink');
 $I->wait(0.1);
+
+$I->assertTrue($I->executeJS('return JSON.parse(document.querySelector(".manageSpeechQueueWidget").getAttribute("data-queue")).alternate_subqueues;'));
+$I->dontSeeElementInDOM('.settingsPolicy .alternateSubqueues');
 
 $I->seeElement('.slotActive.inactive .nameNobody'); // Nobody is speaking
 $I->seeElement('.slotPlaceholder.inactive .nameNobody'); // Nobody is proposed

@@ -256,6 +256,7 @@ return [
     'con_prefix_hide' => '<strong>Dölj signum i titeln</strong>',
     'con_speech_lists' => '<strong>Talarlistor</strong>',
     'con_speech_quotas' => 'Flera underköer per talarlista',
+    'con_speech_alternate_subqueues' => 'Växla mellan tillgängliga underlistor utan att ta igen missade turer',
     'con_speech_quota_name' => 'Namn på underlista nr %no%',
     'con_speech_active_first' => 'Aktivera / publicera talarlistan direkt',
     'con_speech_active_hint' => 'Den blir synlig på evenemangets startsida för användarna. Det går dock fortfarande bara att anmäla sig efter att listan uttryckligen har öppnats.',
