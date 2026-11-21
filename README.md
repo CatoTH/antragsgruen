@@ -466,6 +466,7 @@ Developing
 ### Technical considerations & Long-Term Plans
 
 - PHP version support: Antragsgrün supports PHP versions until its [end of life](https://www.php.net/supported-versions.php) (that is, if PHP 8.3 is supported until end 2027, the first major version of Antragsgrün of 2028 will drop support for PHP 8.3).
+- CI installs the latest available PHP patch release for each configured minor version, including when the runner has an older patch preinstalled. Installations should also keep PHP updated with the latest security patches; updating CI does not update deployed servers or containers.
 - PHP Framework: [Yii2](https://www.yiiframework.com/) is used. Long term, most parts should be step by step [migrated to Symfony](docs/technical/symfony-migration.md).
 - Testing Framework: The Codeception/Selenium based acceptance tests should be replaced by Playwright.
 - JavaScript: Good old [JQuery](https://jquery.com/) is used for simple interactions, though gradually replaced by standard JavaScript. ECMAScript Modules are used as module system. For more complex widgets like voting, speaking lists or amendment merging, [Vue.JS](https://vuejs.org/) is used. There is no plan to redesign Antragsgrün into being a Single-Page-App.
