@@ -28,17 +28,17 @@
         "@types/jquery": "^4.0.1",
         "@types/sortablejs": "^1.15.9",
         "@types/typeahead": "^0.11.32",
-        "@vitejs/plugin-vue": "^6.0.10",
+        "@vitejs/plugin-vue": "^6.0.11",
         "autoprefixer": "^10.6.2",
         "confusing-browser-globals": "^1.0.11",
-        "eslint": "^10.13.0",
+        "eslint": "^10.15.0",
         "eslint-plugin-promise": "^7.3.0",
-        "globals": "^17.13.0",
+        "globals": "^17.14.0",
         "pa11y": "^10.0.0",
-        "postcss": "^8.5.32",
-        "sass": "^1.107.0",
+        "postcss": "^8.5.33",
+        "sass": "^1.108.2",
         "terser": "^5.51.2",
-        "vite": "^8.3.5"
+        "vite": "^8.3.8"
     },
     "directories": {
         "bin": "./bin/"
@@ -53,7 +53,7 @@
         "moment": "^2.31.0",
         "requirejs": "^2.3.8",
         "sortablejs": "^1.15.7",
-        "vue": "^3.5.44",
+        "vue": "^3.5.45",
         "vue-draggable-plus": "^0.6.1",
         "vuedraggable": "^4.1.0"
     },
