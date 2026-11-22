@@ -632,9 +632,10 @@ class HTMLTools
         }
 
         $src_doc = new \DOMDocument();
+        // libxml can recover from markup diagnostics that Yii would turn into exceptions.
         $src_doc->loadHTML('<html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-</head><body>' . $html . "</body></html>");
+</head><body>' . $html . "</body></html>", LIBXML_NOERROR | LIBXML_NOWARNING);
         $bodies = $src_doc->getElementsByTagName('body');
         /** @var \DOMElement $dom */
         $dom    = $bodies->item(0);

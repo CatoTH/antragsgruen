@@ -283,6 +283,13 @@ Der Finanzausschuss beteiligt Vertreter*innen der Mitglieder aller betroffenen E
         $this->assertStringContainsString('<h4 class="lineSummary">' . $expected . ':</h4>', $formatted);
     }
 
+    public function testHtml2DomPreservesValidHtml(): void
+    {
+        $dom = HTMLTools::html2DOM('<p>Crème &amp; <em>sucre</em></p>');
+        $this->assertSame('Crème & sucre', $dom->textContent);
+        $this->assertSame('sucre', $dom->getElementsByTagName('em')->item(0)?->textContent);
+    }
+
     public function testHtml2DomToleratesUncorrectedHtml(): void
     {
         $dom = HTMLTools::html2DOM('<section><p>Lorem & ipsum <x-foo>dolor</x-foo></p></section>', false);
