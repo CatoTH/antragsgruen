@@ -3,6 +3,7 @@
 use app\models\policies\Nobody;
 use app\components\{Html, HTMLTools, LanguageTools, Tools, UrlHelper};
 use app\models\db\{Amendment, ConsultationMotionType, Motion, VotingBlock};
+use app\models\supportTypes\{SupportCollectionOverview, SupportCollectionProgress};
 
 /**
  * @var yii\web\View $this
@@ -16,6 +17,7 @@ use app\models\db\{Amendment, ConsultationMotionType, Motion, VotingBlock};
 $controller   = $this->context;
 /** @var \app\models\settings\Layout $layout */
 $layout       = $controller->layoutParams;
+/** @var \app\models\db\Consultation $consultation */
 $consultation = $controller->consultation;
 $settings = $consultation->getSettings();
 
@@ -310,6 +312,51 @@ if ($hasPDF) {
 
     $layout->menusHtml = array_merge($layout->menusHtml, $menusStd);
     $layout->menusHtmlSmall[] = '<section><h2>PDFs</h2><ul>' . implode('', $menusSmall) . '</ul></section>';
+}
+
+if ($settings->collectingPage) {
+    $cache = \app\views\consultation\LayoutHelper::getSidebarQuorumCache($consultation);
+    list($menuStd, $menuSmall) = $cache->getCached(function () use ($consultation) {
+        $overview = new SupportCollectionOverview($consultation);
+        $groups = [];
+        if ($overview->countMotions() > 0) {
+            $groups[] = ['quorumMotions', 'collectingMotions', Yii::t('con', 'collecting_motions'), $overview->countMotionsReached(), $overview->countMotions()];
+        }
+        if ($overview->countAmendments() > 0) {
+            $groups[] = ['quorumAmendments', 'collectingAmendments', Yii::t('con', 'collecting_amends'), $overview->countAmendmentsReached(), $overview->countAmendments()];
+        }
+
+        $html = '<section class="sidebar-box sidebar-box-quorum" aria-labelledby="sidebarQuorumTitle"><ul class="nav nav-list">';
+        $html .= '<li class="nav-header" id="sidebarQuorumTitle">' . Yii::t('con', 'sb_quorum_title') . '</li>';
+        $htmlSmall = '<section><h2>' . Yii::t('con', 'sb_quorum_title') . '</h2><ul>';
+        if (count($groups) === 0) {
+            $html .= '<li class="quorumNone"><i>' . Yii::t('con', 'sb_quorum_none') . '</i></li>';
+            $htmlSmall .= '<li><i>' . Yii::t('con', 'sb_quorum_none') . '</i></li>';
+        }
+        foreach ($groups as [$class, $anchor, $title, $reached, $all]) {
+            $link = UrlHelper::createUrl('consultation/collecting') . '#' . $anchor;
+            $summary = str_replace(['%REACHED%', '%ALL%'], [(string)$reached, (string)$all], Yii::t('con', 'sb_quorum_reached'));
+            $percentage = SupportCollectionProgress::getPercentage($reached, $all);
+
+            $html .= '<li class="' . $class . '">';
+            $html .= Html::a('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Html::encode($title), $link);
+            $html .= '<div class="supportProgressBar' . ($reached === $all ? ' reached' : '') . '" role="progressbar" ' .
+                     'aria-valuemin="0" aria-valuemax="' . $all . '" aria-valuenow="' . $reached . '" aria-label="' . Html::encode($summary) . '">';
+            $html .= '<div class="supportProgressFill" style="width: ' . $percentage . '%;"></div>';
+            $html .= '</div>';
+            $html .= '<div class="quorumSummary">' . Html::encode($summary) . '</div>';
+            $html .= '</li>';
+
+            $htmlSmall .= '<li>' . Html::a(Html::encode($title . ' (' . $summary . ')'), $link) . '</li>';
+        }
+        $html .= '</ul></section>';
+        $htmlSmall .= '</ul></section>';
+
+        return [$html, $htmlSmall];
+    });
+
+    $layout->menusHtml[] = $menuStd;
+    $layout->menusHtmlSmall[] = $menuSmall;
 }
 
 $layout->menusHtmlSmall[] = \app\models\layoutHooks\Layout::getSearchFormSmall();

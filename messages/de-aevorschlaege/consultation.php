@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'collecting_amend'   => 'Änderungsvorschlag von %INITIATOR%, ab Zeile %LINE%. Aktueller Stand: %CURR%',
+    'collecting_amend'   => 'Änderungsvorschlag von %INITIATOR%, ab Zeile %LINE%',
     'new_amendments'       => 'Neue Vorschläge',
     'My Amendments'        => 'Meine Änderungsvorschläge',
     'feed_amendments'      => 'Änderungsvorschläge',

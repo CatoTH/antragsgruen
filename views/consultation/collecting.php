@@ -5,12 +5,13 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
-use app\components\{Html, IMotionStatusFilter, MotionSorter, Tools, UrlHelper};
-use app\models\db\{Amendment, Motion};
+use app\components\{Html, Tools, UrlHelper};
+use app\models\supportTypes\{SupportCollectionOverview, SupportCollectionProgress};
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 
+/** @var \app\models\db\Consultation $consultation */
 $consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'collecting_bc');
 
@@ -18,12 +19,48 @@ $this->title  = Yii::t('con', 'collecting_bc');
 $layout = $controller->layoutParams;
 $layout->addBreadcrumb(Yii::t('con', 'collecting_bc'));
 
-$motions = [];
-foreach ($consultation->motions as $motion) {
-    if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-        $motions[] = $motion;
+$overview = new SupportCollectionOverview($consultation);
+
+$renderProgressBar = function (int $curr, int $min, string $label, bool $reached): string {
+    $percentage = SupportCollectionProgress::getPercentage($curr, $min);
+    $str = '<div class="supportProgressRow">';
+    $str .= '<div class="supportProgressBar' . ($reached ? ' reached' : '') . '" role="progressbar" ' .
+            'aria-valuemin="0" aria-valuemax="' . $min . '" aria-valuenow="' . $curr . '" aria-label="' . Html::encode($label) . '">';
+    $str .= '<div class="supportProgressFill" style="width: ' . $percentage . '%;"></div>';
+    $str .= '</div>';
+    $str .= '<span class="supportProgressLabel">' . Html::encode($label) . '</span>';
+    $str .= '</div>';
+    return $str;
+};
+
+$renderProgress = function (SupportCollectionProgress $progress) use ($renderProgressBar): string {
+    $str = '<div class="supportCollectionProgress' . ($progress->isReached() ? ' reached' : '') . '">';
+    $str .= $renderProgressBar(
+        $progress->curr,
+        $progress->min,
+        str_replace(['%CURR%', '%MIN%'], [(string)$progress->curr, (string)$progress->min], Yii::t('con', 'collecting_progress_supp')),
+        $progress->missing === 0
+    );
+    if ($progress->hasFemaleQuorum()) {
+        $str .= $renderProgressBar(
+            $progress->currFemale,
+            (int)$progress->minFemale,
+            str_replace(['%CURR%', '%MIN%'], [(string)$progress->currFemale, (string)$progress->minFemale], Yii::t('con', 'collecting_progress_female')),
+            $progress->missingFemale === 0
+        );
     }
-}
+
+    $str .= '<div class="supportProgressNeeded">';
+    $str .= Html::encode(str_replace(
+        ['%NEEDED%', '%MISSING%', '%MISSING_F%'],
+        [(string)$progress->getNeeded(), (string)$progress->missing, (string)$progress->missingFemale],
+        Yii::t('con', $progress->getNeededTextKey())
+    ));
+    $str .= '</div>';
+
+    $str .= '</div>';
+    return $str;
+};
 
 ?>
 
@@ -31,10 +68,10 @@ foreach ($consultation->motions as $motion) {
     <div class="content collectingPage"><?= Yii::t('con', 'collecting_intro') ?></div>
 
 <?php
-if (count($motions) > 0) {
-    echo '<h2 class="green">' . Yii::t('con', 'collecting_motions') . '</h2>';
-    echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
-    foreach ($motions as $motion) {
+if (count($overview->motions) > 0) {
+    echo '<h2 class="green" id="collectingMotions">' . Yii::t('con', 'collecting_motions') . '</h2>';
+    echo '<ul class="motionList motionListStd motionListWithoutAgenda collectingList">';
+    foreach ($overview->motions as ['motion' => $motion, 'progress' => $progress]) {
         echo '<li class="motion motion' . $motion->id . '">';
         echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
 
@@ -47,34 +84,24 @@ if (count($motions) > 0) {
         echo '</a></p>';
 
         echo '<p class="info">';
-        $max   = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-        $curr  = count($motion->getSupporters(true));
         echo str_replace(
             ['%INITIATOR%', '%CURR%'],
-            [$motion->getInitiatorsStr(), $curr . ' / ' . $max],
+            [$motion->getInitiatorsStr(), $progress->curr . ' / ' . $progress->min],
             Yii::t('con', 'collecting_motion')
         );
 
         echo '</p>';
+        echo $renderProgress($progress);
 
         echo '</li>';
     }
     echo '</ul>';
 }
 
-$motionsWithAmendments = [];
-$filter = IMotionStatusFilter::onlyUserVisible($consultation, false)->noResolutions();
-foreach ($filter->getFilteredConsultationMotions() as $motion) {
-    foreach ($motion->amendments as $amendment) {
-        if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS && !in_array($motion, $motionsWithAmendments, true)) {
-            $motionsWithAmendments[] = $motion;
-        }
-    }
-}
-if (count($motionsWithAmendments) > 0) {
-    echo '<h2 class="green">' . Yii::t('con', 'collecting_amends') . '</h2>';
-    echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
-    foreach ($motionsWithAmendments as $motion) {
+if (count($overview->amendmentsByMotion) > 0) {
+    echo '<h2 class="green" id="collectingAmendments">' . Yii::t('con', 'collecting_amends') . '</h2>';
+    echo '<ul class="motionList motionListStd motionListWithoutAgenda collectingList">';
+    foreach ($overview->amendmentsByMotion as ['motion' => $motion, 'amendments' => $amendments]) {
         echo '<li class="motion motion' . $motion->id . '">';
         echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
 
@@ -91,26 +118,20 @@ if (count($motionsWithAmendments) > 0) {
         echo '<h4 class="amendments">' . Yii::t('amend', 'amendments') . '</h4>';
         echo '<ul class="amendments">';
 
-        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->amendments);
-        foreach ($amendments as $amendment) {
-            if ($amendment->status !== Amendment::STATUS_COLLECTING_SUPPORTERS) {
-                continue;
-            }
-
+        foreach ($amendments as ['amendment' => $amendment, 'progress' => $progress]) {
             echo '<li class="amendment amendmentRow' . $amendment->id . '">';
             echo '<span class="date">' . Tools::formatMysqlDate($amendment->dateCreation) . '</span>' . "\n";
 
-            $max = $motion->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
-            $curr = count($amendment->getSupporters(true));
             $title = str_replace(
                 ['%INITIATOR%', '%LINE%', '%CURR%'],
-                [$amendment->getInitiatorsStr(), $amendment->getFirstDiffLine(), $curr . ' / ' . $max],
+                [$amendment->getInitiatorsStr(), $amendment->getFirstDiffLine(), $progress->curr . ' / ' . $progress->min],
                 Yii::t('con', 'collecting_amend')
             );
             echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
                        'class="amendmentTitle amendment' . $amendment->id . '">';
             echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
             echo Html::encode($title) . '</a>';
+            echo $renderProgress($progress);
 
             echo '</li>';
         }
