@@ -14,10 +14,30 @@ class Acceptance extends Module
     public function _before(TestInterface $test): void
     {
         $this->createDB();
+
+        /** @var AntragsgruenWebDriver $wd */
+        $wd = $this->getModule('Tests\Support\Helper\AntragsgruenWebDriver');
+        $wd->webDriver->manage()->deleteAllCookies();
     }
 
     public function _after(TestInterface $test): void
     {
+        /** @var AntragsgruenWebDriver $wd */
+        $wd = $this->getModule('Tests\Support\Helper\AntragsgruenWebDriver');
+
+        // Get browser console logs
+        $logs = $wd->webDriver->manage()->getLog('browser');
+        foreach ($logs as $entry) {
+            codecept_debug('[BROWSER] ' . $entry['level'] . ': ' . $entry['message']);
+        }
+
+        // Get performance logs (network requests, navigation events)
+        $perfLogs = $wd->webDriver->manage()->getLog('performance');
+        foreach ($perfLogs as $entry) {
+            $msg = json_decode($entry['message'], true);
+            codecept_debug('[PERF] ' . json_encode($msg['message'] ?? $entry));
+        }
+
         $this->deleteDB();
     }
 
