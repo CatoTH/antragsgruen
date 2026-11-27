@@ -203,6 +203,7 @@
 import { postJson } from "/js/modules/shared/ApiClient.js";
 import { registerListener } from "/js/modules/shared/LiveData.js";
 import translate from "/js/vue/Translate.vue.js";
+import { getAlternatingProposal } from "./AlternatingProposal.js";
 
 export default {
   props: ['initQueue', 'csrf', 'componentAdminLink', 'itemPerformOperationUrl', 'randomizeQueueUrl', 'resetQueueUrl', 'createItemUrl', 'setStatusUrl'],
@@ -288,6 +289,10 @@ export default {
       return active.length > 0 ? active[0] : null;
     },
     slotProposal: function () {
+      if (this.queue.alternate_subqueues) {
+        return getAlternatingProposal(this.queue.subqueues, this.queue.slots);
+      }
+
       const prevSpeakerNums = {};
       this.queue.slots.forEach(function (slot) {
         if (prevSpeakerNums[slot.subqueue.id] === undefined) {
