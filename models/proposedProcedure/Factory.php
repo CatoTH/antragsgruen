@@ -5,7 +5,7 @@ namespace app\models\proposedProcedure;
 use app\components\IMotionStatusFilter;
 use app\models\IMotionList;
 use app\models\settings\IMotionStatusEngine;
-use app\models\db\{Consultation, ConsultationAgendaItem, IMotion, Motion, VotingBlock};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion, VotingBlock};
 use app\models\settings\Consultation as ConsultationSettings;
 
 class Factory
@@ -83,10 +83,13 @@ class Factory
 
                 if (is_a($motion, Motion::class)) {
                     $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendments, $forbiddenStatuses, true);
-                    foreach ($amendments as $amendment) {
-                        $block->items[] = $amendment;
-                        $handledIMotions->addAmendment($amendment);
-                    }
+                } else {
+                    /** @var Amendment $motion */
+                    $amendments = IMotionStatusEngine::filterAmendmentsByForbiddenStatuses($motion->amendingAmendments, $forbiddenStatuses, true);
+                }
+                foreach ($amendments as $amendment) {
+                    $block->items[] = $amendment;
+                    $handledIMotions->addAmendment($amendment);
                 }
             }
             if (count($block->items) > 0) {

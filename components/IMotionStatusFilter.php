@@ -157,30 +157,50 @@ final class IMotionStatusFilter
      */
     public function getFilteredConsultationIMotionsSorted(): array
     {
-        $motions   = [];
+        $imotions = [];
         $motionIds = [];
+        $amendmentIds = [];
         $items     = ConsultationAgendaItem::getSortedFromConsultation($this->consultation);
 
         foreach ($items as $agendaItem) {
-            $newMotions = MotionSorter::getSortedIMotionsFlat($this->consultation, $agendaItem->getMyIMotions($this));
-            foreach ($newMotions as $newMotion) {
-                $motions[]   = $newMotion;
-                $motionIds[] = $newMotion->id;
+            $newIMotions = MotionSorter::getSortedIMotionsFlat($this->consultation, $agendaItem->getMyIMotions($this));
+            foreach ($newIMotions as $newIMotion) {
+                if ($newIMotion instanceof Motion) {
+                    $motionIds[] = $newIMotion->id;
+                } else {
+                    $amendmentIds[] = $newIMotion->id;
+                }
+                $imotions[]  = $newIMotion;
             }
         }
-        $noAgendaMotions = [];
+
+        $noAgendaIMotions = [];
         foreach ($this->getFilteredConsultationMotions() as $motion) {
             if ($motion->getMyMotionType()->amendmentsOnly) {
                 continue;
             }
             if (!in_array($motion->id, $motionIds)) {
-                $noAgendaMotions[] = $motion;
-                $motionIds[]       = $motion->id;
+                $noAgendaIMotions[] = $motion;
+                $motionIds[] = $motion->id;
             }
         }
-        $noAgendaMotions = MotionSorter::getSortedIMotionsFlat($this->consultation, $noAgendaMotions);
 
-        return array_merge($motions, $noAgendaMotions);
+        // Statute amendments
+        foreach ($this->consultation->motions as $motion) {
+            if (!$motion->getMyMotionType()->amendmentsOnly) {
+                continue;
+            }
+            foreach ($this->filterAndSortAmendments($motion->amendments) as $amendment) {
+                if ($amendment->amendingAmendmentId === null && !in_array($amendment->id, $amendmentIds)) {
+                    $noAgendaIMotions[] = $amendment;
+                    $amendmentIds[]    = $amendment->id;
+                }
+            }
+        }
+
+        $noAgendaIMotions = MotionSorter::getSortedIMotionsFlat($this->consultation, $noAgendaIMotions);
+
+        return array_merge($imotions, $noAgendaIMotions);
     }
 
     /**

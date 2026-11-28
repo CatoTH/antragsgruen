@@ -5,6 +5,7 @@
 - Support multiple speaking lists on the home page in parallel.
 - Bugfix: The ODS export links for proposed procedures did not work.
 - Bugfix: It was not possible to disable pagination for motions / amendments.
+- Bugfix: Amendments to statute amendments were not shown on the internal proposed procedure list.
 - Bugfix: URLs with a trailing slash like "/site/" were not found. The application now normalizes them, redirecting to the canonical URL.
 
 
