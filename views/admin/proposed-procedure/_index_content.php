@@ -132,7 +132,7 @@ foreach ($proposedAgenda as $proposedItem) {
                     </thead>
                     <tbody>
                     <?php
-                    $currentMotion = null;
+                    $currentIMotion = null;
                     foreach ($items as $item) {
                         if (is_a($item, Motion::class) && $item->getMyMotionType()->amendmentsOnly) {
                             continue;
@@ -146,8 +146,16 @@ foreach ($proposedAgenda as $proposedItem) {
                             $proposal = $item->getLatestProposal();
 
                             $classes = ['amendment' . $item->id];
-                            if ($item->motionId == $currentMotion) {
-                                $titlePre = '↳';
+                            if ($item->getMyMotionType()->amendmentsOnly) {
+                                if ($item->amendingAmendmentId && 'amendment.' . $item->amendingAmendmentId === $currentIMotion) {
+                                    $titlePre = '↳';
+                                } else {
+                                    $currentIMotion = 'amendment.' . $item->id;
+                                }
+                            } else {
+                                if ('motion.' . $item->motionId === $currentIMotion) {
+                                    $titlePre = '↳';
+                                }
                             }
                         } else {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-motion-visible');
@@ -157,7 +165,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             $proposal = $item->getLatestProposal();
 
                             $classes       = ['motion' . $item->id];
-                            $currentMotion = $item->id;
+                            $currentIMotion = 'motion.' . $item->id;
                         }
 
                         if ($item->status === IMotion::STATUS_WITHDRAWN) {
